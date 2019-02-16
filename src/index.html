@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>IoT Workbench</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -11,34 +11,87 @@
   <link rel="apple-touch-icon" href="icon.png">
   <!-- Place favicon.ico in the root directory -->
 
+  <link rel="stylesheet" href="css/jquery-ui.css">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/gui.css">
 
   <meta name="theme-color" content="#fafafa">
-</head>
-
-<body onload="init()">
-  <!--[if lte IE 9]>
-    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-  <![endif]-->
-
-  <!-- Add your site or application content here -->
-  <p>Hello world! This is HTML5 Boilerplate.</p>
-
-  <canvas id="board" width="800" height="400" style="border:1px solid #000000;"></canvas>
-
-  <script src="js/vendor/modernizr-{{MODERNIZR_VERSION}}.min.js"></script>
-  <script src="https://code.jquery.com/jquery-{{JQUERY_VERSION}}.min.js" integrity="{{JQUERY_SRI_HASH}}" crossorigin="anonymous"></script>
-  <script>window.jQuery || document.write('<script src="js/vendor/jquery-{{JQUERY_VERSION}}.min.js"><\/script>')</script>
+  <script type="text/javascript" src="lib/jquery-2.1.4.js"></script>
+  <script type="text/javascript" src="lib/jquery-ui.js"></script>
+  <script type="text/javascript" src="lib/seedrandom.js"></script>
   <script src="js/plugins.js"></script>
+  <script src="js/constants.js"></script>
   <script src="js/main.js"></script>
 
   <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
   <script>
-    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
-    ga('create', 'UA-XXXXX-Y', 'auto'); ga('send', 'pageview')
+    window.ga = function () {
+      ga.q.push(arguments)
+    };
+    ga.q = [];
+    ga.l = +new Date;
+    ga('create', 'UA-XXXXX-Y', 'auto');
+    ga('send', 'pageview')
   </script>
   <script src="https://www.google-analytics.com/analytics.js" async defer></script>
+
+</head>
+
+<body onload="init()">
+<!--[if lte IE 9]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade
+  your browser</a> to improve your experience and security.</p>
+<![endif]-->
+
+<!-- Add your site or application content here -->
+<div id="header">
+  <div id="header-left">
+    <img style="vertical-align: top" src="img/logo.png"/> <b><label id="name-label">Name</label></b> <span
+    style="font-size: 14px; margin-left: 10px"><label id="version-label">Version x</label></span>
+  </div>
+  <div id="header-right">
+    Sign in <img style="vertical-align: middle" src="img/facebook.png"> <img style="vertical-align: middle"
+                                                                             src="img/wechat.png"> <img
+    style="vertical-align: middle" src="img/twitter.png"> <img style="vertical-align: middle" src="img/youtube.png">
+  </div>
+</div>
+
+<div class="menuBar">
+  <div id="menuBar-left">
+    <ul class="nav">
+      <li><a class="top-a"><b>File</b></a>
+        <div class="col1-file">
+          <ul class="colSingle">
+            <li><a id="open_local_file" onclick="stateIO.open();">Open Local File</a></li>
+            <li><a id="save_local_file" onclick="stateIO.saveAs();">Save Local File</a></li>
+          </ul>
+        </div>
+      </li>
+      <li><a class="top-a"><b>Help</b></a>
+        <div class="col1">
+          <ul class="colSingle">
+            <li><a id="about_vpa" onclick="message.aboutIoT();">About IoT Workbench</a></li>
+            <li><a onclick="window.open('https://medium.com/@charlesxie')">Blog</a></li>
+            <li><a onclick="window.open('help/guide.html')">User's Guide</a></li>
+          </ul>
+          <ul class="colSingle">
+            <li><a onclick="window.open('http://energy.concord.org/~xie/')">Author:<br>&middot; Charles Xie
+            </a></li>
+            </a></li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<canvas id="board" width="800" height="400" style="display: block; margin: 0 auto;"></canvas>
+
 </body>
+
+<div id="credit"
+     style="position: absolute; margin-left: auto; margin-right: auto; left: 0; right: 0; z-index: 999; bottom: 5px; text-align: center; font-size: 80%; color: #888888"></div>
 
 </html>
