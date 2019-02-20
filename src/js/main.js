@@ -44,8 +44,9 @@ function init() {
   database.ref().on("value", function (snapshot) {
     snapshot.forEach(function (child) {
       let childData = child.val();
+      redLedState = childData.redLed;
+      greenLedState = childData.greenLed;
       blueLedState = childData.blueLed;
-      console.log("Firebase: " + blueLedState);
       draw();
     });
   });
