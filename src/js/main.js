@@ -5,15 +5,25 @@
 
 'use strict';
 
+let database;
+
 let canvas;
 let gridSize = 50;
+
 let redLedState;
-let greenLedState;
-let blueLedState;
 let redLedImage;
+let redLedImageX = 10;
+let redLedImageY = 500;
+
+let greenLedState;
 let greenLedImage;
+let greenLedImageX = 210;
+let greenLedImageY = 500;
+
+let blueLedState;
 let blueLedImage;
-let database;
+let blueLedImageX = 420;
+let blueLedImageY = 500;
 
 function init() {
 
@@ -55,13 +65,35 @@ function init() {
 }
 
 function click(e) {
-  let blueLedClicked = e.x > 310 && e.x < 310 + blueLedImage.width && e.y > 500 && e.y < 500 + blueLedImage.height;
+
+  let x = e.x - canvas.offsetLeft;
+  let y = e.y - canvas.offsetTop;
+
+  let redLedClicked = x > redLedImageX && x < redLedImageX + redLedImage.width && y > redLedImageY && y < redLedImageY + redLedImage.height;
+  if (redLedClicked) {
+    redLedState = !redLedState;
+    draw();
+    database.ref('rainbow_hat').update({redLed: redLedState});
+    return;
+  }
+
+  let greenLedClicked = x > greenLedImageX && x < greenLedImageX + greenLedImage.width && y > greenLedImageY && y < greenLedImageY + greenLedImage.height;
+  if (greenLedClicked) {
+    greenLedState = !greenLedState;
+    draw();
+    database.ref('rainbow_hat').update({greenLed: greenLedState});
+    return;
+  }
+
+  let blueLedClicked = x > blueLedImageX && x < blueLedImageX + blueLedImage.width && y > blueLedImageY && y < blueLedImageY + blueLedImage.height;
   if (blueLedClicked) {
     blueLedState = !blueLedState;
     draw();
-    console.log("clicked: " + e.x + "," + e.y + ", " + blueLedImage.src);
-    database.ref('rainbow_hat').update({ blueLed: blueLedState });
+    console.log("clicked: " + x + "," + y + ", " + blueLedImage.src);
+    database.ref('rainbow_hat').update({blueLed: blueLedState});
+    return;
   }
+
 }
 
 function resize() {
@@ -91,27 +123,14 @@ function draw() {
     ctx.drawImage(rpi, 10, 10);
   };
 
-  let buzzer = new Image();
-  buzzer.src = 'img/buzzer_off.png';
-  buzzer.onload = function () {
-    ctx.drawImage(buzzer, 10, 500);
-  };
+  redLedImage = document.getElementById(redLedState ? 'red_led_light_on' : 'red_led_light_off');
+  ctx.drawImage(redLedImage, redLedImageX, redLedImageY);
 
-  redLedImage = new Image();
-  redLedImage.src = 'img/red_led_light_off.png';
-  redLedImage.onload = function () {
-    ctx.drawImage(redLedImage, 110, 500);
-  };
-
-  greenLedImage = new Image();
-  greenLedImage.src = 'img/green_led_light_off.png';
-  greenLedImage.onload = function () {
-    ctx.drawImage(greenLedImage, 210, 500);
-  };
+  greenLedImage = document.getElementById(greenLedState ? 'green_led_light_on' : 'green_led_light_off');
+  ctx.drawImage(greenLedImage, greenLedImageX, greenLedImageY);
 
   blueLedImage = document.getElementById(blueLedState ? 'blue_led_light_on' : 'blue_led_light_off');
-  ctx.drawImage(blueLedImage, 310, 500);
-  console.log("img src = " + blueLedImage.src);
+  ctx.drawImage(blueLedImage, blueLedImageX, blueLedImageY);
 
 }
 
