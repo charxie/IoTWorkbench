@@ -10,6 +10,27 @@ let gridSize = 50;
 
 function init() {
 
+  // Initialize Firebase
+  let config = {
+    apiKey: "AIzaSyAT_mdZ9yMGg6BWkB1NWPIqAjXtP4cBwcA",
+    authDomain: "raspberry-pi-java.firebaseapp.com",
+    databaseURL: "https://raspberry-pi-java.firebaseio.com",
+    projectId: "raspberry-pi-java",
+    storageBucket: "raspberry-pi-java.appspot.com",
+    messagingSenderId: "498912746820"
+  };
+  firebase.initializeApp(config);
+
+  // Get a reference to the database service
+  let database = firebase.database();
+  console.log(database);
+  database.ref().on("value", function(snapshot) {
+    snapshot.forEach(function(child) {
+      let childData = child.val();
+      console.log(childData);
+    });
+  });
+
   canvas = document.getElementById("board");
   resizeCanvas();
   draw();
