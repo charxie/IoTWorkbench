@@ -28,6 +28,7 @@
   <script src="js/plugins.js"></script>
   <script src="js/constants.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/linechart.js"></script>
 
   <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
   <script>
@@ -92,7 +93,10 @@
 
 </div>
 
-<canvas id="board" width="800" height="400" style="display: block; margin: 0 auto;"></canvas>
+<div style="position: relative;">
+  <canvas id="board" width="800" height="400" style="display: block; margin: 0 auto; position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
+  <canvas id="linechart" width="300" height="200" style="position: absolute; left: 620px; top: 20px; z-index: 1;"></canvas>
+</div>
 
 </body>
 

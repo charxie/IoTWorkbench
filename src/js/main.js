@@ -9,6 +9,8 @@ let database;
 
 let canvas;
 let gridSize = 50;
+let linechart;
+let temperature = [];
 
 let redLedState;
 let redLedImage;
@@ -40,16 +42,18 @@ function init() {
 
   // Get a reference to the database service
   database = firebase.database();
-  console.log(database);
   database.ref().on("value", function (snapshot) {
     snapshot.forEach(function (child) {
       let childData = child.val();
       redLedState = childData.redLed;
       greenLedState = childData.greenLed;
       blueLedState = childData.blueLed;
+      temperature.push(childData.temperature);
       draw();
     });
   });
+
+  linechart = new LineChart("linechart", "Temperature", temperature, 35, 40);
 
   canvas = document.getElementById("board");
   canvas.addEventListener("click", click, false);
@@ -132,6 +136,8 @@ function draw() {
 
   blueLedImage = document.getElementById(blueLedState ? 'blue_led_light_on' : 'blue_led_light_off');
   ctx.drawImage(blueLedImage, blueLedImageX, blueLedImageY);
+
+  linechart.draw();
 
 }
 
