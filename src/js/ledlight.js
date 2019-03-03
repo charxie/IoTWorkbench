@@ -60,12 +60,16 @@ class LedLight {
     }
   }
 
-  isPressed(xClick, yClick) {
-    let pressed = xClick > this.x && xClick < this.x + this.width && yClick > this.y && yClick < this.y + this.height;
-    if (pressed) {
+  inside(x, y) {
+    return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height;
+  }
+
+  toggle(x, y) {
+    let inside = this.inside(x, y)
+    if (inside) {
       this.on = !this.on;
     }
-    return pressed;
+    return inside;
   }
 
 }

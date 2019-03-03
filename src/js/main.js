@@ -19,6 +19,7 @@ let blueLedLight;
 let buttonA;
 let buttonB;
 let buttonC;
+let mouseMoveObject;
 
 function init() {
 
@@ -50,6 +51,7 @@ function init() {
   canvas = document.getElementById("board");
   canvas.addEventListener("mousedown", mouseDown, false);
   canvas.addEventListener("mouseup", mouseUp, false);
+  canvas.addEventListener("mousemove", mouseMove, false);
   resizeCanvas();
 
   board = new Board("rainbow_hat", 10, 10, 481, 321);
@@ -82,25 +84,25 @@ function mouseDown(e) {
   let x = e.clientX - rect.x;
   let y = e.clientY - rect.y;
 
-  if (redLedLight.isPressed(x - board.x, y - board.y)) {
+  if (redLedLight.toggle(x - board.x, y - board.y)) {
     redLedLight.draw(ctx);
     database.ref('rainbow_hat').update({redLed: redLedLight.on});
     return;
   }
 
-  if (greenLedLight.isPressed(x - board.x, y - board.y)) {
+  if (greenLedLight.toggle(x - board.x, y - board.y)) {
     greenLedLight.draw(ctx);
     database.ref('rainbow_hat').update({greenLed: greenLedLight.on});
     return;
   }
 
-  if (blueLedLight.isPressed(x - board.x, y - board.y)) {
+  if (blueLedLight.toggle(x - board.x, y - board.y)) {
     blueLedLight.draw(ctx);
     database.ref('rainbow_hat').update({blueLed: blueLedLight.on});
     return;
   }
 
-  if (buttonA.isPressed(x - board.x, y - board.y)) {
+  if (buttonA.inside(x - board.x, y - board.y)) {
     buttonA.on = true;
     buttonA.draw(ctx);
     redLedLight.on = true;
@@ -109,7 +111,7 @@ function mouseDown(e) {
     return;
   }
 
-  if (buttonB.isPressed(x - board.x, y - board.y)) {
+  if (buttonB.inside(x - board.x, y - board.y)) {
     buttonB.on = true;
     buttonB.draw(ctx);
     greenLedLight.on = true;
@@ -118,7 +120,7 @@ function mouseDown(e) {
     return;
   }
 
-  if (buttonC.isPressed(x - board.x, y - board.y)) {
+  if (buttonC.inside(x - board.x, y - board.y)) {
     buttonC.on = true;
     buttonC.draw(ctx);
     blueLedLight.on = true;
@@ -138,7 +140,7 @@ function mouseUp(e) {
   let x = e.clientX - rect.x;
   let y = e.clientY - rect.y;
 
-  if (buttonA.isPressed(x - board.x, y - board.y)) {
+  if (buttonA.inside(x - board.x, y - board.y)) {
     buttonA.on = false;
     buttonA.draw(ctx);
     redLedLight.on = false;
@@ -147,7 +149,7 @@ function mouseUp(e) {
     return;
   }
 
-  if (buttonB.isPressed(x - board.x, y - board.y)) {
+  if (buttonB.inside(x - board.x, y - board.y)) {
     buttonB.on = false;
     buttonB.draw(ctx);
     greenLedLight.on = false;
@@ -156,7 +158,7 @@ function mouseUp(e) {
     return;
   }
 
-  if (buttonC.isPressed(x - board.x, y - board.y)) {
+  if (buttonC.inside(x - board.x, y - board.y)) {
     buttonC.on = false;
     buttonC.draw(ctx);
     blueLedLight.on = false;
@@ -164,6 +166,35 @@ function mouseUp(e) {
     database.ref('rainbow_hat').update({blueLed: false});
     return;
   }
+
+}
+
+function mouseMove(e) {
+
+  e.preventDefault();
+
+  let ctx = canvas.getContext("2d");
+  let rect = canvas.getBoundingClientRect();
+  let x = e.clientX - rect.x;
+  let y = e.clientY - rect.y;
+
+  if (redLedLight.inside(x - board.x, y - board.y)) {
+    mouseMoveObject = redLedLight;
+  } else if (greenLedLight.inside(x - board.x, y - board.y)) {
+    mouseMoveObject = greenLedLight;
+  } else if (blueLedLight.inside(x - board.x, y - board.y)) {
+    mouseMoveObject = blueLedLight;
+  } else if (buttonA.inside(x - board.x, y - board.y)) {
+    mouseMoveObject = buttonA;
+  } else if (buttonB.inside(x - board.x, y - board.y)) {
+    mouseMoveObject = buttonB;
+  } else if (buttonC.inside(x - board.x, y - board.y)) {
+    mouseMoveObject = buttonC;
+  } else {
+    mouseMoveObject = null;
+  }
+
+  draw();
 
 }
 
@@ -197,9 +228,40 @@ function draw() {
   buttonA.draw(ctx);
   buttonB.draw(ctx);
   buttonC.draw(ctx);
+  drawToolTips(ctx);
 
   linechart.draw();
 
+}
+
+function drawToolTips(ctx) {
+  let x = board.x;
+  let y = board.y - 25;
+  if (mouseMoveObject == redLedLight) {
+    x += redLedLight.x + redLedLight.width / 2;
+    y += redLedLight.y;
+    ctx.drawTooltip(x, y, 20, 8, 10, 'Red LED light', true);
+  } else if (mouseMoveObject == greenLedLight) {
+    x += greenLedLight.x + greenLedLight.width / 2;
+    y += greenLedLight.y;
+    ctx.drawTooltip(x, y, 20, 8, 10, 'Green LED light', true);
+  } else if (mouseMoveObject == blueLedLight) {
+    x += blueLedLight.x + blueLedLight.width / 2;
+    y += blueLedLight.y;
+    ctx.drawTooltip(x, y, 20, 8, 10, 'Blue LED light', true);
+  } else if (mouseMoveObject == buttonA) {
+    x += buttonA.x + buttonA.width / 2;
+    y += buttonA.y;
+    ctx.drawTooltip(x, y, 20, 8, 10, 'Button A', true);
+  } else if (mouseMoveObject == buttonB) {
+    x += buttonB.x + buttonB.width / 2;
+    y += buttonB.y;
+    ctx.drawTooltip(x, y, 20, 8, 10, 'Button B', true);
+  } else if (mouseMoveObject == buttonC) {
+    x += buttonC.x + buttonC.width / 2;
+    y += buttonC.y;
+    ctx.drawTooltip(x, y, 20, 8, 10, 'Button C', true);
+  }
 }
 
 function resizeCanvas() {

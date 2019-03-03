@@ -23,9 +23,8 @@ class Board {
     ctx.drawImage(image, this.x, this.y);
   }
 
-  isPressed(xClick, yClick) {
-    let pressed = xClick > this.x && xClick < this.x + this.width && yClick > this.y && yClick < this.y + this.height;
-    return this.pressed;
+  inside(x, y) {
+    return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height;
   }
 
 }

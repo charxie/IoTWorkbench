@@ -33,7 +33,7 @@ class Button {
     ctx.stroke();
   }
 
-  isPressed(x, y) {
+  inside(x, y) {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height;
   }
 
