@@ -12,6 +12,7 @@ let gridSize = 50;
 let linechart;
 let temperature = [];
 
+let board;
 let redLedLight;
 let greenLedLight;
 let blueLedLight;
@@ -34,23 +35,25 @@ function init() {
   database.ref().on("value", function (snapshot) {
     snapshot.forEach(function (child) {
       let childData = child.val();
-      //redLedState = childData.redLed;
-      //greenLedState = childData.greenLed;
-      //blueLedState = childData.blueLed;
+      redLedLight.pressed = childData.redLed;
+      greenLedLight.pressed = childData.greenLed;
+      blueLedLight.pressed = childData.blueLed;
       temperature.push(childData.temperature);
       draw();
     });
   });
 
-  linechart = new LineChart("linechart", "Temperature", temperature, 36, 39);
 
   canvas = document.getElementById("board");
   canvas.addEventListener("click", click, false);
   //resizeCanvas();
 
+  board = new Board(canvas, "Rainbow HAT", 10, 10, 481, 321);
   redLedLight = new LedLight(canvas, "Red LED", 100, 258, 18, 8);
-  greenLedLight = new LedLight(canvas, "Green LED", 100, 258, 18, 8);
-  blueLedLight = new LedLight(canvas, "Blue LED", 100, 258, 18, 8);
+  greenLedLight = new LedLight(canvas, "Green LED", 182, 258, 18, 8);
+  blueLedLight = new LedLight(canvas, "Blue LED", 264, 258, 18, 8);
+
+  linechart = new LineChart("linechart", "Temperature", temperature, 36, 39);
 
   draw();
 
@@ -69,9 +72,21 @@ function click(e) {
   let x = e.clientX - rect.x;
   let y = e.clientY - rect.y;
 
-  if (redLedLight.isPressed(x - 10, y - 10)) {
-    draw();
-    database.ref('rainbow_hat').update({redLed: true});
+  if (redLedLight.isPressed(x - board.x, y - board.y)) {
+    redLedLight.draw();
+    database.ref('rainbow_hat').update({redLed: redLedLight.on});
+    return;
+  }
+
+  if (greenLedLight.isPressed(x - board.x, y - board.y)) {
+    greenLedLight.draw();
+    database.ref('rainbow_hat').update({greenLed: greenLedLight.on});
+    return;
+  }
+
+  if (blueLedLight.isPressed(x - board.x, y - board.y)) {
+    blueLedLight.draw();
+    database.ref('rainbow_hat').update({blueLed: blueLedLight.on});
     return;
   }
 
@@ -98,12 +113,10 @@ function draw() {
   }
   ctx.stroke();
 
-  let rpi = new Image();
-  rpi.src = 'img/rainbow-hat.png';
-  rpi.onload = function () {
-    ctx.drawImage(rpi, 10, 10);
-  };
-
+  board.draw();
+  redLedLight.draw();
+  greenLedLight.draw();
+  blueLedLight.draw();
   linechart.draw();
 
 }
