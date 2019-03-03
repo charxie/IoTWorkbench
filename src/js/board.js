@@ -7,34 +7,24 @@
 class Board {
 
   properties() {
-    this.imageUrl = 'img/rainbow-hat.png';
-    this.pressed = false;
   }
 
-  constructor(canvas, name, x, y, width, height) {
+  constructor(imageId, x, y, width, height) {
     this.properties();
-    this.name = name;
+    this.imageId = imageId;
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.canvas = canvas;
   }
 
-  draw() {
-
-    let ctx = canvas.getContext("2d");
-    let image = new Image();
-    let that = this;
-    image.src = this.imageUrl;
-    image.onload = function () {
-      ctx.drawImage(image, that.x, that.y);
-    };
-
+  draw(ctx) {
+    let image = document.getElementById(this.imageId); // preload image
+    ctx.drawImage(image, this.x, this.y);
   }
 
-  isPressed(xPressed, yPressed) {
-    this.pressed = xPressed > this.x && xPressed < this.x + this.width && yPressed > this.y && yPressed < this.y + this.height;
+  isPressed(xClick, yClick) {
+    let pressed = xClick > this.x && xClick < this.x + this.width && yClick > this.y && yClick < this.y + this.height;
     return this.pressed;
   }
 

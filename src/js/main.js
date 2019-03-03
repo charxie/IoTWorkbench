@@ -48,10 +48,10 @@ function init() {
   canvas.addEventListener("click", click, false);
   //resizeCanvas();
 
-  board = new Board(canvas, "Rainbow HAT", 10, 10, 481, 321);
-  redLedLight = new LedLight(canvas, "Red LED", 100, 258, 18, 8);
-  greenLedLight = new LedLight(canvas, "Green LED", 182, 258, 18, 8);
-  blueLedLight = new LedLight(canvas, "Blue LED", 264, 258, 18, 8);
+  board = new Board("rainbow_hat", 10, 10, 481, 321);
+  redLedLight = new LedLight(board, 'red', 100, 258, 18, 8);
+  greenLedLight = new LedLight(board, 'green', 182, 258, 18, 8);
+  blueLedLight = new LedLight(board, 'blue', 264, 258, 18, 8);
 
   linechart = new LineChart("linechart", "Temperature", temperature, 36, 39);
 
@@ -68,24 +68,27 @@ function init() {
 
 function click(e) {
 
+  e.preventDefault();
+
+  let ctx = canvas.getContext("2d");
   let rect = canvas.getBoundingClientRect();
   let x = e.clientX - rect.x;
   let y = e.clientY - rect.y;
 
   if (redLedLight.isPressed(x - board.x, y - board.y)) {
-    redLedLight.draw();
+    redLedLight.draw(ctx);
     database.ref('rainbow_hat').update({redLed: redLedLight.on});
     return;
   }
 
   if (greenLedLight.isPressed(x - board.x, y - board.y)) {
-    greenLedLight.draw();
+    greenLedLight.draw(ctx);
     database.ref('rainbow_hat').update({greenLed: greenLedLight.on});
     return;
   }
 
   if (blueLedLight.isPressed(x - board.x, y - board.y)) {
-    blueLedLight.draw();
+    blueLedLight.draw(ctx);
     database.ref('rainbow_hat').update({blueLed: blueLedLight.on});
     return;
   }
@@ -112,11 +115,13 @@ function draw() {
     ctx.lineTo(i * gridSize, canvas.height);
   }
   ctx.stroke();
+  ctx.closePath();
+  ctx.restore();
 
-  board.draw();
-  redLedLight.draw();
-  greenLedLight.draw();
-  blueLedLight.draw();
+  board.draw(ctx);
+  redLedLight.draw(ctx);
+  greenLedLight.draw(ctx);
+  blueLedLight.draw(ctx);
   linechart.draw();
 
 }
