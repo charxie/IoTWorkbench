@@ -85,9 +85,14 @@
         </div>
       </li>
       <li><a class="top-a"><b>Examples</b></a>
-        <div class="col1-file">
+        <div class="col1-examples">
           <ul class="colSingle">
-            <li><a id="blink_red_led" onclick="alert('Blink red LED')">Blinking Red LED Light</a></li>
+            <li><input type="radio" name="examples" onchange="blinkAllLeds(this)">Blink All Leds</li>
+            <li><input type="radio" name="examples" onchange="randomColors(this)">Random Colors</li>
+            <li><input type="radio" name="examples" onchange="moveRainbow(this)">Move Rainbow</li>
+            <li><input type="radio" name="examples" onchange="bounceDot(this)">Bounce Dot</li>
+            <li><input type="radio" name="examples" onchange="moveTrains(this)">Move Trains</li>
+            <li><input type="radio" name="examples" onchange="rippleEffect(this)">Ripple Effect</li>
           </ul>
         </div>
       </li>
@@ -111,8 +116,8 @@
 </div>
 
 <div style="position: relative;">
-  <canvas id="board" width="1200" height="800" style="display: block; margin: 0 auto; position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
-  <canvas id="linechart" width="300" height="200" style="position: absolute; left: 620px; top: 20px; z-index: 1;"></canvas>
+  <canvas id="board" width="1000" height="700" style="display: block; margin: 0 auto; position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
+  <canvas id="linechart" width="420" height="300" style="border: 2px solid #006699; box-shadow: 0 0; position: absolute; left: 30px; top: 360px; z-index: 1;"></canvas>
 </div>
 
 </body>

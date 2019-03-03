@@ -38,9 +38,9 @@ function init() {
   database.ref().on("value", function (snapshot) {
     snapshot.forEach(function (child) {
       let childData = child.val();
-      redLedLight.pressed = childData.redLed;
-      greenLedLight.pressed = childData.greenLed;
-      blueLedLight.pressed = childData.blueLed;
+      redLedLight.on = childData.redLed;
+      greenLedLight.on = childData.greenLed;
+      blueLedLight.on = childData.blueLed;
       temperature.push(childData.temperature);
       draw();
     });
@@ -50,7 +50,7 @@ function init() {
   canvas = document.getElementById("board");
   canvas.addEventListener("mousedown", mouseDown, false);
   canvas.addEventListener("mouseup", mouseUp, false);
-  //resizeCanvas();
+  resizeCanvas();
 
   board = new Board("rainbow_hat", 10, 10, 481, 321);
   redLedLight = new LedLight(board, 'red', 100, 258, 18, 8);
@@ -205,4 +205,40 @@ function draw() {
 function resizeCanvas() {
   canvas.width = window.innerWidth * 0.99;
   canvas.height = window.innerHeight * 0.8;
+}
+
+function blinkAllLeds(radio) {
+  if (radio.checked) {
+    database.ref('rainbow_hat').update({task: 'blink_all_leds'});
+  }
+}
+
+function moveRainbow(radio) {
+  if (radio.checked) {
+    database.ref('rainbow_hat').update({task: 'move_rainbow'});
+  }
+}
+
+function moveTrains(radio) {
+  if (radio.checked) {
+    database.ref('rainbow_hat').update({task: 'move_trains'});
+  }
+}
+
+function randomColors(radio) {
+  if (radio.checked) {
+    database.ref('rainbow_hat').update({task: 'random_colors'});
+  }
+}
+
+function bounceDot(radio) {
+  if (radio.checked) {
+    database.ref('rainbow_hat').update({task: 'bounce_dot'});
+  }
+}
+
+function rippleEffect(radio) {
+  if (radio.checked) {
+    database.ref('rainbow_hat').update({task: 'ripple_effect'});
+  }
 }
