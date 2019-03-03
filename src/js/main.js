@@ -12,20 +12,9 @@ let gridSize = 50;
 let linechart;
 let temperature = [];
 
-let redLedState;
-let redLedImage;
-let redLedImageX = 10;
-let redLedImageY = 500;
-
-let greenLedState;
-let greenLedImage;
-let greenLedImageX = 210;
-let greenLedImageY = 500;
-
-let blueLedState;
-let blueLedImage;
-let blueLedImageX = 420;
-let blueLedImageY = 500;
+let redLedLight;
+let greenLedLight;
+let blueLedLight;
 
 function init() {
 
@@ -45,19 +34,24 @@ function init() {
   database.ref().on("value", function (snapshot) {
     snapshot.forEach(function (child) {
       let childData = child.val();
-      redLedState = childData.redLed;
-      greenLedState = childData.greenLed;
-      blueLedState = childData.blueLed;
+      //redLedState = childData.redLed;
+      //greenLedState = childData.greenLed;
+      //blueLedState = childData.blueLed;
       temperature.push(childData.temperature);
       draw();
     });
   });
 
-  linechart = new LineChart("linechart", "Temperature", temperature, 35, 40);
+  linechart = new LineChart("linechart", "Temperature", temperature, 36, 39);
 
   canvas = document.getElementById("board");
   canvas.addEventListener("click", click, false);
-  resizeCanvas();
+  //resizeCanvas();
+
+  redLedLight = new LedLight(canvas, "Red LED", 100, 258, 18, 8);
+  greenLedLight = new LedLight(canvas, "Green LED", 100, 258, 18, 8);
+  blueLedLight = new LedLight(canvas, "Blue LED", 100, 258, 18, 8);
+
   draw();
 
   window.addEventListener('resize', resize, false); // resize the canvas to fill browser window dynamically
@@ -71,31 +65,13 @@ function init() {
 
 function click(e) {
 
-  let x = e.x - canvas.offsetLeft;
-  let y = e.y - canvas.offsetTop;
+  let rect = canvas.getBoundingClientRect();
+  let x = e.clientX - rect.x;
+  let y = e.clientY - rect.y;
 
-  let redLedClicked = x > redLedImageX && x < redLedImageX + redLedImage.width && y > redLedImageY && y < redLedImageY + redLedImage.height;
-  if (redLedClicked) {
-    redLedState = !redLedState;
+  if (redLedLight.isPressed(x - 10, y - 10)) {
     draw();
-    database.ref('rainbow_hat').update({redLed: redLedState});
-    return;
-  }
-
-  let greenLedClicked = x > greenLedImageX && x < greenLedImageX + greenLedImage.width && y > greenLedImageY && y < greenLedImageY + greenLedImage.height;
-  if (greenLedClicked) {
-    greenLedState = !greenLedState;
-    draw();
-    database.ref('rainbow_hat').update({greenLed: greenLedState});
-    return;
-  }
-
-  let blueLedClicked = x > blueLedImageX && x < blueLedImageX + blueLedImage.width && y > blueLedImageY && y < blueLedImageY + blueLedImage.height;
-  if (blueLedClicked) {
-    blueLedState = !blueLedState;
-    draw();
-    console.log("clicked: " + x + "," + y + ", " + blueLedImage.src);
-    database.ref('rainbow_hat').update({blueLed: blueLedState});
+    database.ref('rainbow_hat').update({redLed: true});
     return;
   }
 
@@ -123,19 +99,10 @@ function draw() {
   ctx.stroke();
 
   let rpi = new Image();
-  rpi.src = 'img/raspberry_pi_3.png';
+  rpi.src = 'img/rainbow-hat.png';
   rpi.onload = function () {
     ctx.drawImage(rpi, 10, 10);
   };
-
-  redLedImage = document.getElementById(redLedState ? 'red_led_light_on' : 'red_led_light_off');
-  ctx.drawImage(redLedImage, redLedImageX, redLedImageY);
-
-  greenLedImage = document.getElementById(greenLedState ? 'green_led_light_on' : 'green_led_light_off');
-  ctx.drawImage(greenLedImage, greenLedImageX, greenLedImageY);
-
-  blueLedImage = document.getElementById(blueLedState ? 'blue_led_light_on' : 'blue_led_light_off');
-  ctx.drawImage(blueLedImage, blueLedImageX, blueLedImageY);
 
   linechart.draw();
 

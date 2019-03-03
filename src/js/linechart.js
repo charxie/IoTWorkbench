@@ -69,7 +69,9 @@ function LineChart(id, name, data, minimumValue, maximumValue) {
       tmpX = margin.left + dx * i;
       tmpY = (data[i] - minimumValue) * dy;
       ctx.lineTo(tmpX, horizontalAxisY - tmpY);
-      ctx.fillText(i + 1, tmpX - 4, horizontalAxisY + 10);
+      if ((i + 1) % 5 == 0 || data.length < 10) {
+        ctx.fillText(i + 1, tmpX - 4, horizontalAxisY + 10);
+      }
     }
     ctx.stroke();
 
@@ -89,7 +91,7 @@ function LineChart(id, name, data, minimumValue, maximumValue) {
     ctx.save();
     ctx.translate(15, canvas.height / 2 + 30);
     ctx.rotate(-Math.PI / 2);
-    let yAxisLabel = "Temperature (C)"
+    let yAxisLabel = "Temperature (°C)"
     ctx.fillText(yAxisLabel, 0, 0);
     ctx.restore();
   }
