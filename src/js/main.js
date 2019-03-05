@@ -19,7 +19,10 @@ let blueLedLight;
 let buttonA;
 let buttonB;
 let buttonC;
+let temperatureSensor;
+let barometricPressureSensor;
 let mouseMoveObject;
+let stateId = 'rainbow_hat_default';
 
 function init() {
 
@@ -61,6 +64,8 @@ function init() {
   buttonA = new Button(board, 72, 270, 72, 22);
   buttonB = new Button(board, 155, 270, 72, 22);
   buttonC = new Button(board, 238, 270, 72, 22);
+  temperatureSensor = new Sensor(board, 186, 133, 10, 10);
+  barometricPressureSensor = new Sensor(board, 228, 141, 8, 8);
 
   linechart = new LineChart("linechart", "Temperature", temperature, 36, 39);
 
@@ -86,19 +91,19 @@ function mouseDown(e) {
 
   if (redLedLight.toggle(x - board.x, y - board.y)) {
     redLedLight.draw(ctx);
-    database.ref('rainbow_hat').update({redLed: redLedLight.on});
+    database.ref(stateId).update({redLed: redLedLight.on});
     return;
   }
 
   if (greenLedLight.toggle(x - board.x, y - board.y)) {
     greenLedLight.draw(ctx);
-    database.ref('rainbow_hat').update({greenLed: greenLedLight.on});
+    database.ref(stateId).update({greenLed: greenLedLight.on});
     return;
   }
 
   if (blueLedLight.toggle(x - board.x, y - board.y)) {
     blueLedLight.draw(ctx);
-    database.ref('rainbow_hat').update({blueLed: blueLedLight.on});
+    database.ref(stateId).update({blueLed: blueLedLight.on});
     return;
   }
 
@@ -107,7 +112,7 @@ function mouseDown(e) {
     buttonA.draw(ctx);
     redLedLight.on = true;
     redLedLight.draw(ctx);
-    database.ref('rainbow_hat').update({redLed: true});
+    database.ref(stateId).update({redLed: true});
     return;
   }
 
@@ -116,7 +121,7 @@ function mouseDown(e) {
     buttonB.draw(ctx);
     greenLedLight.on = true;
     greenLedLight.draw(ctx);
-    database.ref('rainbow_hat').update({greenLed: true});
+    database.ref(stateId).update({greenLed: true});
     return;
   }
 
@@ -125,7 +130,7 @@ function mouseDown(e) {
     buttonC.draw(ctx);
     blueLedLight.on = true;
     blueLedLight.draw(ctx);
-    database.ref('rainbow_hat').update({blueLed: true});
+    database.ref(stateId).update({blueLed: true});
     return;
   }
 
@@ -145,7 +150,7 @@ function mouseUp(e) {
     buttonA.draw(ctx);
     redLedLight.on = false;
     redLedLight.draw(ctx);
-    database.ref('rainbow_hat').update({redLed: false});
+    database.ref(stateId).update({redLed: false});
     return;
   }
 
@@ -154,7 +159,7 @@ function mouseUp(e) {
     buttonB.draw(ctx);
     greenLedLight.on = false;
     greenLedLight.draw(ctx);
-    database.ref('rainbow_hat').update({greenLed: false});
+    database.ref(stateId).update({greenLed: false});
     return;
   }
 
@@ -163,7 +168,7 @@ function mouseUp(e) {
     buttonC.draw(ctx);
     blueLedLight.on = false;
     blueLedLight.draw(ctx);
-    database.ref('rainbow_hat').update({blueLed: false});
+    database.ref(stateId).update({blueLed: false});
     return;
   }
 
@@ -190,6 +195,10 @@ function mouseMove(e) {
     mouseMoveObject = buttonB;
   } else if (buttonC.inside(x - board.x, y - board.y)) {
     mouseMoveObject = buttonC;
+  } else if (temperatureSensor.inside(x - board.x, y - board.y)) {
+    mouseMoveObject = temperatureSensor;
+  } else if (barometricPressureSensor.inside(x - board.x, y - board.y)) {
+    mouseMoveObject = barometricPressureSensor;
   } else {
     mouseMoveObject = null;
   }
@@ -261,6 +270,14 @@ function drawToolTips(ctx) {
     x += buttonC.x + buttonC.width / 2;
     y += buttonC.y;
     ctx.drawTooltip(x, y, 20, 8, 10, 'Button C', true);
+  } else if (mouseMoveObject == temperatureSensor) {
+    x += temperatureSensor.x + temperatureSensor.width / 2;
+    y += temperatureSensor.y;
+    ctx.drawTooltip(x, y, 20, 8, 10, 'Temperature Sensor', true);
+  } else if (mouseMoveObject == barometricPressureSensor) {
+    x += barometricPressureSensor.x + barometricPressureSensor.width / 2;
+    y += barometricPressureSensor.y;
+    ctx.drawTooltip(x, y, 20, 8, 10, 'Barometric Pressure Sensor', true);
   }
 }
 
@@ -271,36 +288,36 @@ function resizeCanvas() {
 
 function blinkAllLeds(radio) {
   if (radio.checked) {
-    database.ref('rainbow_hat').update({task: 'blink_all_leds'});
+    database.ref(stateId).update({task: 'blink_all_leds'});
   }
 }
 
 function moveRainbow(radio) {
   if (radio.checked) {
-    database.ref('rainbow_hat').update({task: 'move_rainbow'});
+    database.ref(stateId).update({task: 'move_rainbow'});
   }
 }
 
 function moveTrains(radio) {
   if (radio.checked) {
-    database.ref('rainbow_hat').update({task: 'move_trains'});
+    database.ref(stateId).update({task: 'move_trains'});
   }
 }
 
 function randomColors(radio) {
   if (radio.checked) {
-    database.ref('rainbow_hat').update({task: 'random_colors'});
+    database.ref(stateId).update({task: 'random_colors'});
   }
 }
 
 function bounceDot(radio) {
   if (radio.checked) {
-    database.ref('rainbow_hat').update({task: 'bounce_dot'});
+    database.ref(stateId).update({task: 'bounce_dot'});
   }
 }
 
 function rippleEffect(radio) {
   if (radio.checked) {
-    database.ref('rainbow_hat').update({task: 'ripple_effect'});
+    database.ref(stateId).update({task: 'ripple_effect'});
   }
 }
