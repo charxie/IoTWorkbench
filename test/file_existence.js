@@ -46,7 +46,7 @@ const expectedFilesInDistDir = [
   'index.html',
 
   'js/',
-  'js/main.js',
+  'js/Main.js',
   'js/plugins.js',
   'js/vendor/',
   `js/vendor/jquery-${pkg.devDependencies.jquery}.min.js`,
