@@ -110,29 +110,29 @@ export class LineChart {
     ctx.fillRect(this.margin.left, this.margin.top, this.canvas.width - this.margin.left - this.margin.right, this.canvas.height - this.margin.top - this.margin.bottom);
   }
 
-  private onMouseMove(event: MouseEvent) {
+  private onMouseMove = (event: MouseEvent): void => {
     event.preventDefault();
     let rect = this.canvas.getBoundingClientRect();
     let x = event.clientX - rect.left - this.margin.left;
     let y = event.clientY - rect.top;
     this.draw();
-  }
+  };
 
-  private onMouseLeave(event: MouseEvent) {
+  private onMouseLeave = (event: MouseEvent): void => {
     event.preventDefault();
     this.draw();
-  }
+  };
 
-  private onTouchMove(event: TouchEvent) {
+  private onTouchMove = (event: TouchEvent): void => {
     event.preventDefault();
-  }
+  };
 
-  private onMouseClick(event: MouseEvent) {
+  private onMouseClick = (event: MouseEvent): void => {
     event.preventDefault();
-  }
+  };
 
-  private onMouseDoubleClick(event: MouseEvent) {
+  private onMouseDoubleClick = (event: MouseEvent): void => {
     event.preventDefault();
-  }
+  };
 
 }

@@ -8,12 +8,26 @@ import * as Constants from "./Constants";
 import {LedLight} from "./LedLight";
 import {Button} from "./Button";
 import {Sensor} from "./Sensor";
+import {LineChart} from "./LineChart";
 
+declare global {
+  interface CanvasRenderingContext2D {
+    drawTooltip(x, y, h, r, margin, text, centered);
+
+    drawRoundedRect(x, y, w, h, r);
+
+    fillRoundedRect(x, y, w, h, r);
+  }
+}
+
+declare var firebase;
+let database;
 let stateId = 'iot_workbench_default';
+
 let user = new User("Charles", null, "Xie");
 let canvas = document.getElementById("board") as HTMLCanvasElement;
 let context = canvas.getContext("2d");
-let gridSize = 50;
+let gridSize: number = 50;
 let board = new Board("rainbow-hat", 10, 10, 481, 321);
 let redLedLight = new LedLight(board, 'red', 100, 258, 18, 8);
 let greenLedLight = new LedLight(board, 'green', 182, 258, 18, 8);
@@ -25,8 +39,8 @@ let temperatureSensor = new Sensor(board, 186, 133, 10, 10);
 let barometricPressureSensor = new Sensor(board, 228, 141, 8, 8);
 let mouseMoveObject;
 
-declare var firebase;
-let database;
+let temperature: number[] = [];
+let linechart = new LineChart("linechart", "Temperature", temperature, 15, 20);
 
 window.onload = function () {
 
@@ -68,11 +82,10 @@ function initFirebase() {
   database.ref().on("value", function (snapshot) {
     snapshot.forEach(function (child) {
       let childData = child.val();
-      console.log(childData.redLed);
       redLedLight.on = childData.redLed;
       greenLedLight.on = childData.greenLed;
       blueLedLight.on = childData.blueLed;
-      //temperature.push(childData.temperature);
+      temperature.push(<number>childData.temperature);
       draw();
     });
   });
@@ -234,7 +247,7 @@ function draw() {
   buttonC.draw(context);
   drawToolTips();
 
-  //linechart.draw();
+  linechart.draw();
 
 }
 
@@ -317,12 +330,3 @@ function rippleEffect(radio) {
   }
 }
 
-declare global {
-  interface CanvasRenderingContext2D {
-    drawTooltip(x, y, h, r, margin, text, centered);
-
-    drawRoundedRect(x, y, w, h, r);
-
-    fillRoundedRect(x, y, w, h, r);
-  }
-}
