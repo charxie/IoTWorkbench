@@ -35,7 +35,7 @@ A basic HTML5 Boilerplate site initially looks something like this:
 ├── doc
 ├── img
 ├── js
-│   ├── main.js
+│   ├── Main.js
 │   ├── plugins.js
 │   └── vendor
 │       ├── jquery.min.js
