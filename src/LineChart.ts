@@ -1,4 +1,6 @@
 /*
+ * This draws lines from input data.
+ *
  * @author Charles Xie
  */
 

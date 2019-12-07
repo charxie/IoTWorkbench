@@ -17,6 +17,7 @@ bower_components
 Thumbs.db
 
 # Ignore built ts files
+src/*.js
 src/dist/**/*
 src/doc/**/*
 src/.cache/**/*
