@@ -8,19 +8,9 @@ import {Button} from "./Button";
 import {System} from "./System";
 import {Sensor} from "./Sensor";
 
-declare global {
-  interface CanvasRenderingContext2D {
-    drawTooltip(x, y, h, r, margin, text, centered);
-
-    drawRoundedRect(x, y, w, h, r);
-
-    fillRoundedRect(x, y, w, h, r);
-  }
-}
-
 export class RainbowHat extends Board {
 
-  private stateId = 'iot_workbench_default';
+  public temperature: number[] = [];
 
   public redLedLight: LedLight;
   public greenLedLight: LedLight;
@@ -31,10 +21,17 @@ export class RainbowHat extends Board {
   public temperatureSensor: Sensor;
   public barometricPressureSensor: Sensor;
 
+  private stateId = 'iot_workbench_default';
   private mouseMoveObject;
 
-  constructor(x: number, y: number, width: number, height: number) {
-    super("rainbow-hat", x, y, width, height);
+  constructor(x: number, y: number, width: number, height: number, canvasId: string) {
+    super("rainbow-hat-image", x, y, width, height);
+
+    this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    this.canvas.addEventListener("mousedown", this.mouseDown, false);
+    this.canvas.addEventListener("mouseup", this.mouseUp, false);
+    this.canvas.addEventListener("mousemove", this.mouseMove, false);
+
     this.redLedLight = new LedLight(this, 'red', 100, 258, 18, 8);
     this.greenLedLight = new LedLight(this, 'green', 182, 258, 18, 8);
     this.blueLedLight = new LedLight(this, 'blue', 264, 258, 18, 8);
@@ -43,66 +40,32 @@ export class RainbowHat extends Board {
     this.buttonC = new Button(this, 238, 270, 72, 22);
     this.temperatureSensor = new Sensor(this, 186, 133, 10, 10);
     this.barometricPressureSensor = new Sensor(this, 228, 141, 8, 8);
+
+    this.updateFromFirebase();
+
   }
 
-  public draw(context: CanvasRenderingContext2D): void {
-    super.draw(context);
+  public draw(): void {
+    let context = this.canvas.getContext('2d');
+    this.drawGrid(context);
+    super.draw();
     this.redLedLight.draw(context);
     this.greenLedLight.draw(context);
     this.blueLedLight.draw(context);
     this.buttonA.draw(context);
     this.buttonB.draw(context);
     this.buttonC.draw(context);
-    this.drawToolTips(context);
+    this.drawToolTips();
   }
 
-  public drawToolTips(context: CanvasRenderingContext2D) {
-    let x = this.x;
-    let y = this.y - 25;
-    if (this.mouseMoveObject == this.redLedLight) {
-      x += this.redLedLight.x + this.redLedLight.width / 2;
-      y += this.redLedLight.y;
-      context.drawTooltip(x, y, 20, 8, 10, 'Red LED light', true);
-    } else if (this.mouseMoveObject == this.greenLedLight) {
-      x += this.greenLedLight.x + this.greenLedLight.width / 2;
-      y += this.greenLedLight.y;
-      context.drawTooltip(x, y, 20, 8, 10, 'Green LED light', true);
-    } else if (this.mouseMoveObject == this.blueLedLight) {
-      x += this.blueLedLight.x + this.blueLedLight.width / 2;
-      y += this.blueLedLight.y;
-      context.drawTooltip(x, y, 20, 8, 10, 'Blue LED light', true);
-    } else if (this.mouseMoveObject == this.buttonA) {
-      x += this.buttonA.x + this.buttonA.width / 2;
-      y += this.buttonA.y;
-      context.drawTooltip(x, y, 20, 8, 10, 'Button A', true);
-    } else if (this.mouseMoveObject == this.buttonB) {
-      x += this.buttonB.x + this.buttonB.width / 2;
-      y += this.buttonB.y;
-      context.drawTooltip(x, y, 20, 8, 10, 'Button B', true);
-    } else if (this.mouseMoveObject == this.buttonC) {
-      x += this.buttonC.x + this.buttonC.width / 2;
-      y += this.buttonC.y;
-      context.drawTooltip(x, y, 20, 8, 10, 'Button C', true);
-    } else if (this.mouseMoveObject == this.temperatureSensor) {
-      x += this.temperatureSensor.x + this.temperatureSensor.width / 2;
-      y += this.temperatureSensor.y;
-      context.drawTooltip(x, y, 20, 8, 10, 'Temperature Sensor', true);
-    } else if (this.mouseMoveObject == this.barometricPressureSensor) {
-      x += this.barometricPressureSensor.x + this.barometricPressureSensor.width / 2;
-      y += this.barometricPressureSensor.y;
-      context.drawTooltip(x, y, 20, 8, 10, 'Barometric Pressure Sensor', true);
-    }
-
-  }
-
-  public mouseDown(canvas: HTMLCanvasElement, e: MouseEvent): void {
+  private mouseDown = (e: MouseEvent): void => {
 
     e.preventDefault();
 
-    let rect = canvas.getBoundingClientRect();
+    let rect = this.canvas.getBoundingClientRect();
     let dx = e.clientX - rect.x - this.x;
     let dy = e.clientY - rect.y - this.y;
-    let context = canvas.getContext("2d");
+    let context = this.canvas.getContext("2d");
 
     if (this.redLedLight.toggle(dx, dy)) {
       this.updateFirebase({redLed: this.redLedLight.on});
@@ -151,14 +114,14 @@ export class RainbowHat extends Board {
 
   }
 
-  public mouseUp(canvas: HTMLCanvasElement, e: MouseEvent): void {
+  private mouseUp = (e: MouseEvent): void => {
 
     e.preventDefault();
 
-    let rect = canvas.getBoundingClientRect();
+    let rect = this.canvas.getBoundingClientRect();
     let dx = e.clientX - rect.x - this.x;
     let dy = e.clientY - rect.y - this.y;
-    let context = canvas.getContext("2d");
+    let context = this.canvas.getContext("2d");
 
     if (this.buttonA.inside(dx, dy)) {
       this.buttonA.on = false;
@@ -189,14 +152,14 @@ export class RainbowHat extends Board {
 
   }
 
-  public mouseMove(canvas: HTMLCanvasElement, e: MouseEvent): void {
+  private mouseMove = (e: MouseEvent): void => {
 
     e.preventDefault();
 
-    let rect = canvas.getBoundingClientRect();
+    let rect = this.canvas.getBoundingClientRect();
     let dx = e.clientX - rect.x - this.x;
     let dy = e.clientY - rect.y - this.y;
-    let context = canvas.getContext("2d");
+    let context = this.canvas.getContext("2d");
 
     if (this.redLedLight.inside(dx, dy)) {
       this.mouseMoveObject = this.redLedLight;
@@ -218,22 +181,64 @@ export class RainbowHat extends Board {
       this.mouseMoveObject = null;
     }
 
-    this.draw(context);
+    this.draw();
 
   }
 
-  private updateFirebase(value): void {
+  drawToolTips(): void {
+    let context = this.canvas.getContext('2d');
+    let x = this.x;
+    let y = this.y - 25;
+    if (this.mouseMoveObject == this.redLedLight) {
+      x += this.redLedLight.x + this.redLedLight.width / 2;
+      y += this.redLedLight.y;
+      context.drawTooltip(x, y, 20, 8, 10, 'Red LED light', true);
+    } else if (this.mouseMoveObject == this.greenLedLight) {
+      x += this.greenLedLight.x + this.greenLedLight.width / 2;
+      y += this.greenLedLight.y;
+      context.drawTooltip(x, y, 20, 8, 10, 'Green LED light', true);
+    } else if (this.mouseMoveObject == this.blueLedLight) {
+      x += this.blueLedLight.x + this.blueLedLight.width / 2;
+      y += this.blueLedLight.y;
+      context.drawTooltip(x, y, 20, 8, 10, 'Blue LED light', true);
+    } else if (this.mouseMoveObject == this.buttonA) {
+      x += this.buttonA.x + this.buttonA.width / 2;
+      y += this.buttonA.y;
+      context.drawTooltip(x, y, 20, 8, 10, 'Button A', true);
+    } else if (this.mouseMoveObject == this.buttonB) {
+      x += this.buttonB.x + this.buttonB.width / 2;
+      y += this.buttonB.y;
+      context.drawTooltip(x, y, 20, 8, 10, 'Button B', true);
+    } else if (this.mouseMoveObject == this.buttonC) {
+      x += this.buttonC.x + this.buttonC.width / 2;
+      y += this.buttonC.y;
+      context.drawTooltip(x, y, 20, 8, 10, 'Button C', true);
+    } else if (this.mouseMoveObject == this.temperatureSensor) {
+      x += this.temperatureSensor.x + this.temperatureSensor.width / 2;
+      y += this.temperatureSensor.y;
+      context.drawTooltip(x, y, 20, 8, 10, 'Temperature Sensor', true);
+    } else if (this.mouseMoveObject == this.barometricPressureSensor) {
+      x += this.barometricPressureSensor.x + this.barometricPressureSensor.width / 2;
+      y += this.barometricPressureSensor.y;
+      context.drawTooltip(x, y, 20, 8, 10, 'Barometric Pressure Sensor', true);
+    }
+
+  }
+
+  updateFirebase(value): void {
     System.database.ref(this.stateId).update(value);
   }
 
-  private updateFromFirebase(): void {
+  updateFromFirebase(): void {
+    let that = this;
     System.database.ref().on("value", function (snapshot) {
       snapshot.forEach(function (child) {
         let childData = child.val();
-        this.redLedLight.on = childData.redLed;
-        this.greenLedLight.on = childData.greenLed;
-        this.blueLedLight.on = childData.blueLed;
-        //temperature.push(<number>childData.temperature);
+        that.redLedLight.on = childData.redLed;
+        that.greenLedLight.on = childData.greenLed;
+        that.blueLedLight.on = childData.blueLed;
+        that.temperature.push(<number>childData.temperature);
+        that.draw();
       });
     });
   }
