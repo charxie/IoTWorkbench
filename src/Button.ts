@@ -14,7 +14,7 @@ export class Button {
   on: boolean = false;
 
   private board: Board;
-  private pressedColor: string = '#cccccc';
+  private pressedColor: string = '#66cccccc';
 
   constructor(board: Board, x: number, y: number, width: number, height: number) {
     this.board = board;

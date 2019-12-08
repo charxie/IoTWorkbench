@@ -10,6 +10,8 @@ import {System} from "./System";
 
 let system = new System();
 let user = new User("Charles", null, "Xie");
+let board = new RainbowHat(10, 10, 481, 321, "rainbow-hat");
+export let linechart = new LineChart("linechart", "Temperature", board.temperature, 15, 20);
 
 window.onload = function () {
 
@@ -22,12 +24,10 @@ window.onload = function () {
   let creditLabel = document.getElementById('credit') as HTMLElement;
   creditLabel.innerHTML = Constants.Software.name + " " + Constants.Software.version + ", " + user.fullName + " , &copy; " + new Date().getFullYear();
 
-  let board = new RainbowHat(10, 10, 481, 321, "rainbow-hat");
   board.canvas.width = window.innerWidth * 0.99;
-  board.canvas.height = window.innerHeight * 0.8;
+  board.canvas.height = window.innerHeight * 0.75;
   board.draw();
 
-  let linechart = new LineChart("linechart", "Temperature", board.temperature, 15, 20);
   linechart.draw();
 
 }

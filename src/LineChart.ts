@@ -12,6 +12,7 @@ export class LineChart {
   maximumValue: number = 1;
 
   private canvas: HTMLCanvasElement;
+  private visible: boolean;
   private margin = {
     left: <number>30,
     right: <number>20,
@@ -25,6 +26,15 @@ export class LineChart {
     this.data = data;
     this.minimumValue = minimumValue;
     this.maximumValue = maximumValue;
+  }
+
+  public setVisible(visible: boolean): void {
+    this.canvas.style.display = visible ? "block" : "none";
+    this.visible = visible;
+  }
+
+  public isVisible(): boolean {
+    return this.visible;
   }
 
   public draw() {

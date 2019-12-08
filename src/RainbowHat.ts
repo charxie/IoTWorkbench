@@ -7,6 +7,7 @@ import {LedLight} from "./LedLight";
 import {Button} from "./Button";
 import {System} from "./System";
 import {Sensor} from "./Sensor";
+import {linechart} from "./Main";
 
 export class RainbowHat extends Board {
 
@@ -55,6 +56,8 @@ export class RainbowHat extends Board {
     this.buttonA.draw(context);
     this.buttonB.draw(context);
     this.buttonC.draw(context);
+    this.temperatureSensor.draw(context);
+    this.barometricPressureSensor.draw(context);
     this.drawToolTips();
   }
 
@@ -147,6 +150,15 @@ export class RainbowHat extends Board {
       this.blueLedLight.on = false;
       this.blueLedLight.draw(context);
       this.updateFirebase({blueLed: false});
+      return;
+    }
+
+    if (this.temperatureSensor.inside(dx, dy)) {
+      linechart.setVisible(!linechart.isVisible());
+      return;
+    }
+
+    if (this.barometricPressureSensor.inside(dx, dy)) {
       return;
     }
 
