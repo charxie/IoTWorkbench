@@ -97,17 +97,19 @@ export class LineChart {
   }
 
   private drawGraphWindow(ctx: CanvasRenderingContext2D) {
+    let canvas = this.canvas;
+    let margin = this.margin;
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(this.margin.left, this.canvas.height - this.margin.bottom);
-    ctx.lineTo(this.canvas.width - this.margin.right, this.canvas.height - this.margin.bottom);
-    ctx.lineTo(this.canvas.width - this.margin.right, this.margin.top);
-    ctx.lineTo(this.margin.left, this.margin.top);
+    ctx.moveTo(margin.left, canvas.height - margin.bottom);
+    ctx.lineTo(canvas.width - margin.right, canvas.height - margin.bottom);
+    ctx.lineTo(canvas.width - margin.right, margin.top);
+    ctx.lineTo(margin.left, margin.top);
     ctx.closePath();
     ctx.stroke();
     ctx.fillStyle = 'lightgray';
-    ctx.fillRect(this.margin.left, this.margin.top, this.canvas.width - this.margin.left - this.margin.right, this.canvas.height - this.margin.top - this.margin.bottom);
+    ctx.fillRect(margin.left, margin.top, canvas.width - margin.left - margin.right, canvas.height - margin.top - margin.bottom);
   }
 
   private onMouseMove = (event: MouseEvent): void => {
