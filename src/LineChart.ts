@@ -5,6 +5,7 @@
  */
 
 import {Util} from "./Util";
+import {Rectangle} from "./math/Rectangle";
 
 export class LineChart {
 
@@ -16,14 +17,15 @@ export class LineChart {
   xAxisLabel: string = "Time (s)";
   yAxisLabel: string = "Temperature (°C)";
 
-  private canvas: HTMLCanvasElement;
+  private readonly canvas: HTMLCanvasElement;
   private visible: boolean;
   private margin = {
     left: <number>40,
-    right: <number>20,
-    top: <number>20,
+    right: <number>25,
+    top: <number>25,
     bottom: <number>40
   };
+  private closeButton = new Rectangle(0, 0, 14, 14);
 
   constructor(elementId: string, name: string, data: number[], minimumValue: number, maximumValue: number) {
     this.canvas = document.getElementById(elementId) as HTMLCanvasElement;
@@ -31,6 +33,8 @@ export class LineChart {
     this.data = data;
     this.minimumValue = minimumValue;
     this.maximumValue = maximumValue;
+    this.closeButton.x = this.canvas.width - this.closeButton.width - 4;
+    this.closeButton.y += 4;
   }
 
   public setVisible(visible: boolean): void {
@@ -51,12 +55,26 @@ export class LineChart {
     this.canvas.addEventListener('touchmove', this.onTouchMove, false);
 
     let ctx = this.canvas.getContext('2d');
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = "white";
     ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    if (this.data && this.data.length > 1) {
+    if (this.data) {
       this.drawGraphWindow(ctx);
-      this.drawLineCharts(ctx);
+      this.drawAxisLabels(ctx);
+      if (this.data.length > 1) {
+        this.drawLineCharts(ctx);
+      }
     }
+    ctx.fillStyle = "black";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.rect(this.closeButton.x, this.closeButton.y, this.closeButton.width, this.closeButton.height);
+    ctx.stroke();
+    ctx.lineWidth = 0.5;
+    ctx.moveTo(this.closeButton.x + 2, this.closeButton.y + 2);
+    ctx.lineTo(this.closeButton.x + this.closeButton.width - 2, this.closeButton.y + this.closeButton.height - 2);
+    ctx.moveTo(this.closeButton.x + this.closeButton.width - 2, this.closeButton.y + 2);
+    ctx.lineTo(this.closeButton.x + 2, this.closeButton.y + this.closeButton.height - 2);
+    ctx.stroke();
 
   }
 
@@ -66,7 +84,7 @@ export class LineChart {
     let min = Number.MAX_VALUE;
     let max = -min;
     if (this.autoscale) {
-      for (var i = 0; i < this.data.length; i++) {
+      for (let i = 0; i < this.data.length; i++) {
         if (this.data[i] > max) {
           max = this.data[i];
         }
@@ -155,15 +173,20 @@ export class LineChart {
     ctx.fillText(maxString, 0, 0);
     ctx.restore();
 
-    // draw labels for x and y axis
-    ctx.font = "16px Arial";
+
+  }
+
+  private drawAxisLabels(ctx: CanvasRenderingContext2D) {
+    let graphWindowWidth = this.canvas.width - this.margin.left - this.margin.right;
+    let horizontalAxisY = this.canvas.height - this.margin.bottom;
+    ctx.font = "15px Arial";
+    ctx.fillStyle = "black";
     ctx.fillText(this.xAxisLabel, this.margin.left + graphWindowWidth / 2 - ctx.measureText(this.xAxisLabel).width / 2, horizontalAxisY + 30);
     ctx.save();
     ctx.translate(20, this.canvas.height / 2 + ctx.measureText(this.yAxisLabel).width / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(this.yAxisLabel, 0, 0);
     ctx.restore();
-
   }
 
   private drawGraphWindow(ctx: CanvasRenderingContext2D) {
@@ -185,8 +208,8 @@ export class LineChart {
   private onMouseMove = (event: MouseEvent): void => {
     event.preventDefault();
     let rect = this.canvas.getBoundingClientRect();
-    let x = event.clientX - rect.left - this.margin.left;
-    let y = event.clientY - rect.top;
+    let x = event.clientX - rect.x;
+    let y = event.clientY - rect.y;
     this.draw();
   };
 
@@ -201,6 +224,12 @@ export class LineChart {
 
   private onMouseClick = (event: MouseEvent): void => {
     event.preventDefault();
+    let rect = this.canvas.getBoundingClientRect();
+    let x = event.clientX - rect.x;
+    let y = event.clientY - rect.y;
+    if (this.closeButton.contains(x, y)) {
+      this.setVisible(false);
+    }
   };
 
   private onMouseDoubleClick = (event: MouseEvent): void => {
