@@ -35,6 +35,11 @@ export class LineChart {
     this.maximumValue = maximumValue;
     this.closeButton.x = this.canvas.width - this.closeButton.width - 4;
     this.closeButton.y += 4;
+    if (name == "Temperature") {
+      this.yAxisLabel = name + " (°C)";
+    } else if (name == "Pressure") {
+      this.yAxisLabel = name + " (hPa)";
+    }
   }
 
   public setVisible(visible: boolean): void {
@@ -229,11 +234,17 @@ export class LineChart {
     let y = event.clientY - rect.y;
     if (this.closeButton.contains(x, y)) {
       this.setVisible(false);
+    } else {
+      this.bringForward();
     }
   };
 
   private onMouseDoubleClick = (event: MouseEvent): void => {
     event.preventDefault();
   };
+
+  public bringForward(): void {
+    this.canvas.style.zIndex = (parseInt(this.canvas.style.zIndex) + 2).toString();
+  }
 
 }

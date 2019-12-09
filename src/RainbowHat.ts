@@ -7,11 +7,13 @@ import {LedLight} from "./LedLight";
 import {Button} from "./Button";
 import {System} from "./System";
 import {Sensor} from "./Sensor";
-import {linechart} from "./Main";
+import {temperatureGraph} from "./Main";
+import {pressureGraph} from "./Main";
 
 export class RainbowHat extends Board {
 
   public temperature: number[] = [];
+  public pressure: number[] = [];
 
   public redLedLight: LedLight;
   public greenLedLight: LedLight;
@@ -154,11 +156,20 @@ export class RainbowHat extends Board {
     }
 
     if (this.temperatureSensor.inside(dx, dy)) {
-      linechart.setVisible(!linechart.isVisible());
+      temperatureGraph.setVisible(!temperatureGraph.isVisible());
+      if (temperatureGraph.isVisible()) {
+        temperatureGraph.draw();
+        temperatureGraph.bringForward();
+      }
       return;
     }
 
     if (this.barometricPressureSensor.inside(dx, dy)) {
+      pressureGraph.setVisible(!pressureGraph.isVisible());
+      if (pressureGraph.isVisible()) {
+        pressureGraph.draw();
+        pressureGraph.bringForward();
+      }
       return;
     }
 
@@ -251,7 +262,11 @@ export class RainbowHat extends Board {
         that.blueLedLight.on = childData.blueLed;
         if (childData.allowTemperatureTransmission) {
           that.temperature.push(<number>childData.temperature);
-          linechart.draw();
+          temperatureGraph.draw();
+        }
+        if (childData.allowBarometricPressureTransmission) {
+          that.pressure.push(<number>childData.barometricPressure);
+          pressureGraph.draw();
         }
         that.draw();
       });

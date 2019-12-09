@@ -11,7 +11,8 @@ import {System} from "./System";
 let system = new System();
 let user = new User("Charles", null, "Xie");
 let board = new RainbowHat(10, 10, 481, 321, "rainbow-hat");
-export let linechart = new LineChart("linechart", "Temperature", board.temperature, 15, 20);
+export let temperatureGraph = new LineChart("temperature-linechart", "Temperature", board.temperature, 15, 20);
+export let pressureGraph = new LineChart("pressure-linechart", "Pressure", board.pressure, 100, 2000);
 
 window.onload = function () {
 
@@ -27,7 +28,5 @@ window.onload = function () {
   board.canvas.width = window.innerWidth * 0.99;
   board.canvas.height = window.innerHeight * 0.75;
   board.draw();
-
-  linechart.draw();
 
 }
