@@ -22,7 +22,7 @@ export class RainbowHat extends Board {
   public temperatureSensor: Sensor;
   public barometricPressureSensor: Sensor;
 
-  private stateId = 'iot_workbench_default';
+  private stateId = "rainbow_hat_default";
   private mouseMoveObject;
 
   constructor(x: number, y: number, width: number, height: number, canvasId: string) {
@@ -249,7 +249,10 @@ export class RainbowHat extends Board {
         that.redLedLight.on = childData.redLed;
         that.greenLedLight.on = childData.greenLed;
         that.blueLedLight.on = childData.blueLed;
-        that.temperature.push(<number>childData.temperature);
+        if (childData.allowTemperatureTransmission) {
+          that.temperature.push(<number>childData.temperature);
+          linechart.draw();
+        }
         that.draw();
       });
     });
