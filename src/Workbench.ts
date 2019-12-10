@@ -13,7 +13,7 @@ export class Workbench {
 
   canvas: HTMLCanvasElement;
 
-  private gridSize: number = 50;
+  private gridSize: number = 20;
 
   constructor(canvasId: string) {
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;

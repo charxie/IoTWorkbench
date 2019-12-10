@@ -19,8 +19,8 @@ export class System {
   playground: HTMLElement;
 
   private selectedElement: any;
-  private mouseDownX: number;
-  private mouseDownY: number;
+  private mouseDownRelativeX: number;
+  private mouseDownRelativeY: number;
 
   constructor() {
 
@@ -51,40 +51,41 @@ export class System {
   }
 
   private mouseDown = (e: MouseEvent): void => {
-
     e.preventDefault();
-
-    this.mouseDownX = e.clientX;
-    this.mouseDownY = e.clientY;
-    this.selectedElement = null;
-
-    if (this.board.inside(this.mouseDownX, this.mouseDownY)) {
+    if (this.board.inside(e.clientX, e.clientY)) {
       this.selectedElement = this.board;
+      this.mouseDownRelativeX = e.clientX - this.board.canvas.offsetLeft;
+      this.mouseDownRelativeY = e.clientY - this.board.canvas.offsetTop;
+    } else {
+      this.selectedElement = null;
     }
-
   }
 
   private mouseUp = (e: MouseEvent): void => {
-
     e.preventDefault();
-    let dx = e.clientX;
-    let dy = e.clientY;
     this.selectedElement = null;
-
   }
 
   private mouseMove = (e: MouseEvent): void => {
-
     e.preventDefault();
-
-    let dx = e.clientX - this.mouseDownX;
-    let dy = e.clientY - this.mouseDownY;
-
     if (this.selectedElement == this.board) {
+      let dx = e.clientX - this.mouseDownRelativeX;
+      let dy = e.clientY - this.mouseDownRelativeY;
+      let xmax = this.workbench.canvas.width - this.board.canvas.width;
+      if (dx < 0) {
+        dx = 0;
+      } else if (dx > xmax) {
+        dx = xmax;
+      }
+      let ymax = this.workbench.canvas.height - this.board.canvas.height;
+      if (dy < 0) {
+        dy = 0;
+      } else if (dy > ymax) {
+        dy = ymax;
+      }
       this.board.canvas.style.left = dx + "px";
       this.board.canvas.style.top = dy + "px";
     }
-
   }
 
 }
