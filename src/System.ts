@@ -5,6 +5,7 @@
 import {RainbowHat} from "./RainbowHat";
 import {LineChart} from "./LineChart";
 import {Workbench} from "./Workbench";
+import {Movable} from "./Movable";
 
 declare var firebase;
 
@@ -18,7 +19,7 @@ export class System {
   pressureGraph: LineChart;
   playground: HTMLElement;
 
-  private selectedElement: any;
+  private selectedMovable: Movable;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
 
@@ -52,40 +53,53 @@ export class System {
 
   private mouseDown = (e: MouseEvent): void => {
     e.preventDefault();
-    if (this.board.inside(e.clientX, e.clientY)) {
-      this.selectedElement = this.board;
-      this.mouseDownRelativeX = e.clientX - this.board.canvas.offsetLeft;
-      this.mouseDownRelativeY = e.clientY - this.board.canvas.offsetTop;
+    let rect = this.playground.getBoundingClientRect();
+    let x = e.clientX - rect.x;
+    let y = e.clientY - rect.y;
+    if (this.temperatureGraph.isVisible() && this.temperatureGraph.contains(x, y)) {
+      this.selectedMovable = this.temperatureGraph;
+    } else if (this.pressureGraph.isVisible() && this.pressureGraph.contains(x, y)) {
+      this.selectedMovable = this.pressureGraph;
+    } else if (this.board.contains(x, y)) {
+      this.selectedMovable = this.board;
     } else {
-      this.selectedElement = null;
+      this.selectedMovable = null;
+    }
+    if (this.selectedMovable != null) {
+      this.mouseDownRelativeX = e.clientX - this.selectedMovable.getX();
+      this.mouseDownRelativeY = e.clientY - this.selectedMovable.getY();
     }
   }
 
   private mouseUp = (e: MouseEvent): void => {
     e.preventDefault();
-    this.selectedElement = null;
+    this.selectedMovable = null;
   }
 
   private mouseMove = (e: MouseEvent): void => {
     e.preventDefault();
-    if (this.selectedElement == this.board) {
-      let dx = e.clientX - this.mouseDownRelativeX;
-      let dy = e.clientY - this.mouseDownRelativeY;
-      let xmax = this.workbench.canvas.width - this.board.canvas.width;
-      if (dx < 0) {
-        dx = 0;
-      } else if (dx > xmax) {
-        dx = xmax;
-      }
-      let ymax = this.workbench.canvas.height - this.board.canvas.height;
-      if (dy < 0) {
-        dy = 0;
-      } else if (dy > ymax) {
-        dy = ymax;
-      }
-      this.board.canvas.style.left = dx + "px";
-      this.board.canvas.style.top = dy + "px";
+    if (this.selectedMovable != null) {
+      this.moveTo(e.clientX, e.clientY, this.selectedMovable);
     }
+  }
+
+  private moveTo(x: number, y: number, m: Movable): void {
+    let dx = x - this.mouseDownRelativeX;
+    let dy = y - this.mouseDownRelativeY;
+    let xmax = this.workbench.getWidth() - m.getWidth();
+    if (dx < 0) {
+      dx = 0;
+    } else if (dx > xmax) {
+      dx = xmax;
+    }
+    let ymax = this.workbench.getHeight() - m.getHeight();
+    if (dy < 0) {
+      dy = 0;
+    } else if (dy > ymax) {
+      dy = ymax;
+    }
+    m.setX(dx);
+    m.setY(dy);
   }
 
 }

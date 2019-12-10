@@ -6,8 +6,9 @@
 
 import {Util} from "./Util";
 import {Rectangle} from "./math/Rectangle";
+import {Movable} from "./Movable";
 
-export class LineChart {
+export class LineChart implements Movable {
 
   name: string;
   data: number[];
@@ -245,6 +246,35 @@ export class LineChart {
 
   public bringForward(): void {
     this.canvas.style.zIndex = (parseInt(this.canvas.style.zIndex) + 2).toString();
+  }
+
+  public getX(): number {
+    return this.canvas.offsetLeft;
+  }
+
+  public setX(x: number): void {
+    this.canvas.style.left = x + "px";
+  }
+
+  public getY(): number {
+    return this.canvas.offsetTop;
+  }
+
+  public setY(y: number): void {
+    this.canvas.style.top = y + "px";
+  }
+
+  public getWidth(): number {
+    return this.canvas.width;
+  }
+
+  public getHeight(): number {
+    return this.canvas.height;
+  }
+
+  // detect if (x, y) is inside this chart
+  public contains(x: number, y: number): boolean {
+    return x > this.canvas.offsetLeft && x < this.canvas.offsetLeft + this.canvas.width && y > this.canvas.offsetTop && y < this.canvas.offsetTop + this.canvas.height;
   }
 
 }

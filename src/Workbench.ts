@@ -11,7 +11,7 @@ import {system} from "./Main";
 
 export class Workbench {
 
-  canvas: HTMLCanvasElement;
+  readonly canvas: HTMLCanvasElement;
 
   private gridSize: number = 20;
 
@@ -44,9 +44,17 @@ export class Workbench {
     context.restore();
   }
 
-  // detect if (x, y) is inside the workbench
-  public inside(x: number, y: number): boolean {
+  // detect if (x, y) is inside this workbench
+  public contains(x: number, y: number): boolean {
     return x > this.canvas.offsetLeft && x < this.canvas.offsetLeft + this.canvas.width && y > this.canvas.offsetTop && y < this.canvas.offsetTop + this.canvas.height;
+  }
+
+  public getWidth(): number {
+    return this.canvas.width;
+  }
+
+  public getHeight(): number {
+    return this.canvas.height;
   }
 
   private mouseDown = (e: MouseEvent): void => {

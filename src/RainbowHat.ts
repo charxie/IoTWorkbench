@@ -27,9 +27,8 @@ export class RainbowHat extends Board {
   private mouseOverObject;
 
   constructor(canvasId: string) {
-    super("rainbow-hat-image");
+    super(canvasId, "rainbow-hat-image");
 
-    this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     this.canvas.addEventListener("mousedown", this.mouseDown, false);
     this.canvas.addEventListener("mouseup", this.mouseUp, false);
     this.canvas.addEventListener("mousemove", this.mouseMove, false);
@@ -44,7 +43,6 @@ export class RainbowHat extends Board {
     this.barometricPressureSensor = new Sensor(this, 228, 141, 8, 8);
 
     this.updateFromFirebase();
-
   }
 
   public draw(): void {

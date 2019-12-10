@@ -17,7 +17,7 @@ export class LedLight implements ElectronicComponent {
   private radius: number = 4;
   private rays: number = 8;
   private color: string = "red";
-  private board: Board;
+  private readonly board: Board;
 
   constructor(board: Board, color: string, x: number, y: number, width: number, height: number) {
     this.name = "LED Light";
