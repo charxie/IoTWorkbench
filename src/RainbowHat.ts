@@ -8,6 +8,7 @@ import {Button} from "./Button";
 import {System} from "./System";
 import {Sensor} from "./Sensor";
 import {system} from "./Main";
+import {Rectangle} from "./math/Rectangle";
 
 export class RainbowHat extends Board {
 
@@ -23,8 +24,10 @@ export class RainbowHat extends Board {
   public temperatureSensor: Sensor;
   public barometricPressureSensor: Sensor;
 
-  private stateId = "rainbow_hat_default";
-  private mouseOverObject;
+  public handles: Rectangle[] = [];
+
+  private stateId: string = "rainbow_hat_default";
+  private mouseOverObject: any;
 
   constructor(canvasId: string) {
     super(canvasId, "rainbow-hat-image");
@@ -41,6 +44,11 @@ export class RainbowHat extends Board {
     this.buttonC = new Button(this, 238, 270, 72, 22);
     this.temperatureSensor = new Sensor(this, 186, 133, 10, 10);
     this.barometricPressureSensor = new Sensor(this, 228, 141, 8, 8);
+
+    this.handles.push(new Rectangle(5, 5, 30, 30));
+    this.handles.push(new Rectangle(448, 5, 30, 30));
+    this.handles.push(new Rectangle(448, 290, 30, 30));
+    this.handles.push(new Rectangle(5, 290, 30, 30));
 
     this.updateFromFirebase();
   }
@@ -86,7 +94,7 @@ export class RainbowHat extends Board {
       return;
     }
 
-    if (this.buttonA.inside(dx, dy)) {
+    if (this.buttonA.contains(dx, dy)) {
       this.buttonA.on = true;
       this.buttonA.draw(context);
       this.redLedLight.on = true;
@@ -95,7 +103,7 @@ export class RainbowHat extends Board {
       return;
     }
 
-    if (this.buttonB.inside(dx, dy)) {
+    if (this.buttonB.contains(dx, dy)) {
       this.buttonB.on = true;
       this.buttonB.draw(context);
       this.greenLedLight.on = true;
@@ -104,7 +112,7 @@ export class RainbowHat extends Board {
       return;
     }
 
-    if (this.buttonC.inside(dx, dy)) {
+    if (this.buttonC.contains(dx, dy)) {
       this.buttonC.on = true;
       this.buttonC.draw(context);
       this.blueLedLight.on = true;
@@ -124,7 +132,7 @@ export class RainbowHat extends Board {
     let dy = e.clientY - rect.y;
     let context = this.canvas.getContext("2d");
 
-    if (this.buttonA.inside(dx, dy)) {
+    if (this.buttonA.contains(dx, dy)) {
       this.buttonA.on = false;
       this.buttonA.draw(context);
       this.redLedLight.on = false;
@@ -133,7 +141,7 @@ export class RainbowHat extends Board {
       return;
     }
 
-    if (this.buttonB.inside(dx, dy)) {
+    if (this.buttonB.contains(dx, dy)) {
       this.buttonB.on = false;
       this.buttonB.draw(context);
       this.greenLedLight.on = false;
@@ -142,7 +150,7 @@ export class RainbowHat extends Board {
       return;
     }
 
-    if (this.buttonC.inside(dx, dy)) {
+    if (this.buttonC.contains(dx, dy)) {
       this.buttonC.on = false;
       this.buttonC.draw(context);
       this.blueLedLight.on = false;
@@ -151,7 +159,7 @@ export class RainbowHat extends Board {
       return;
     }
 
-    if (this.temperatureSensor.inside(dx, dy)) {
+    if (this.temperatureSensor.contains(dx, dy)) {
       system.temperatureGraph.setVisible(!system.temperatureGraph.isVisible());
       if (system.temperatureGraph.isVisible()) {
         system.temperatureGraph.draw();
@@ -160,7 +168,7 @@ export class RainbowHat extends Board {
       return;
     }
 
-    if (this.barometricPressureSensor.inside(dx, dy)) {
+    if (this.barometricPressureSensor.contains(dx, dy)) {
       system.pressureGraph.setVisible(!system.pressureGraph.isVisible());
       if (system.pressureGraph.isVisible()) {
         system.pressureGraph.draw();
@@ -179,28 +187,47 @@ export class RainbowHat extends Board {
     let dx = e.clientX - rect.x;
     let dy = e.clientY - rect.y;
 
-    if (this.redLedLight.inside(dx, dy)) {
+    if (this.redLedLight.contains(dx, dy)) {
       this.mouseOverObject = this.redLedLight;
-    } else if (this.greenLedLight.inside(dx, dy)) {
+      this.canvas.style.cursor = "pointer";
+    } else if (this.greenLedLight.contains(dx, dy)) {
       this.mouseOverObject = this.greenLedLight;
-    } else if (this.blueLedLight.inside(dx, dy)) {
+      this.canvas.style.cursor = "pointer";
+    } else if (this.blueLedLight.contains(dx, dy)) {
       this.mouseOverObject = this.blueLedLight;
-    } else if (this.buttonA.inside(dx, dy)) {
+      this.canvas.style.cursor = "pointer";
+    } else if (this.buttonA.contains(dx, dy)) {
       this.mouseOverObject = this.buttonA;
-    } else if (this.buttonB.inside(dx, dy)) {
+      this.canvas.style.cursor = "pointer";
+    } else if (this.buttonB.contains(dx, dy)) {
       this.mouseOverObject = this.buttonB;
-    } else if (this.buttonC.inside(dx, dy)) {
+      this.canvas.style.cursor = "pointer";
+    } else if (this.buttonC.contains(dx, dy)) {
       this.mouseOverObject = this.buttonC;
-    } else if (this.temperatureSensor.inside(dx, dy)) {
+      this.canvas.style.cursor = "pointer";
+    } else if (this.temperatureSensor.contains(dx, dy)) {
       this.mouseOverObject = this.temperatureSensor;
-    } else if (this.barometricPressureSensor.inside(dx, dy)) {
+      this.canvas.style.cursor = "pointer";
+    } else if (this.barometricPressureSensor.contains(dx, dy)) {
       this.mouseOverObject = this.barometricPressureSensor;
+      this.canvas.style.cursor = "pointer";
+    } else if (this.handles[0].contains(dx, dy)) {
+      this.mouseOverObject = this.handles[0];
+      this.canvas.style.cursor = "move";
+    } else if (this.handles[1].contains(dx, dy)) {
+      this.mouseOverObject = this.handles[1];
+      this.canvas.style.cursor = "move";
+    } else if (this.handles[2].contains(dx, dy)) {
+      this.mouseOverObject = this.handles[2];
+      this.canvas.style.cursor = "move";
+    } else if (this.handles[3].contains(dx, dy)) {
+      this.mouseOverObject = this.handles[3];
+      this.canvas.style.cursor = "move";
     } else {
       this.mouseOverObject = null;
+      this.canvas.style.cursor = "default";
     }
     this.draw();
-
-    this.canvas.style.cursor = this.mouseOverObject != null ? "pointer" : "move";
 
   }
 
@@ -240,8 +267,30 @@ export class RainbowHat extends Board {
       x += this.barometricPressureSensor.x + this.barometricPressureSensor.width / 2;
       y += this.barometricPressureSensor.y;
       context.drawTooltip(x, y, 20, 8, 10, 'Barometric Pressure Sensor', true);
+    } else if (this.mouseOverObject == this.handles[0]) {
+      x += this.handles[0].getXmax() + 20;
+      y += this.handles[0].getYmax() + 30;
+      context.drawTooltip(x, y, 20, 8, 10, 'Upper-left handle', true);
+    } else if (this.mouseOverObject == this.handles[1]) {
+      x += this.handles[1].getXmin() - 30;
+      y += this.handles[1].getYmax() + 30;
+      context.drawTooltip(x, y, 20, 8, 10, 'Upper-right handle', true);
+    } else if (this.mouseOverObject == this.handles[2]) {
+      x += this.handles[2].getXmin() - 30;
+      y += this.handles[2].getYmin() - 5;
+      context.drawTooltip(x, y, 20, 8, 10, 'Lower-right handle', true);
+    } else if (this.mouseOverObject == this.handles[3]) {
+      x += this.handles[3].getXmax() + 20;
+      y += this.handles[3].getYmin() - 5;
+      context.drawTooltip(x, y, 20, 8, 10, 'Lower-left handle', true);
     }
+  }
 
+  whichHandle(x: number, y: number): number {
+    for (let i = 0; i < this.handles.length; i++) {
+      if (this.handles[i].contains(x, y)) return i;
+    }
+    return -1;
   }
 
   updateFirebase(value): void {

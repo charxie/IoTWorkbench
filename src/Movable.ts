@@ -16,4 +16,6 @@ export interface Movable {
 
   getHeight(): number;
 
+  contains(x: number, y: number): boolean;
+
 }

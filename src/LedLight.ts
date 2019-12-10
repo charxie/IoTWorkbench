@@ -67,12 +67,12 @@ export class LedLight implements ElectronicComponent {
     }
   }
 
-  public inside(x: number, y: number): boolean {
+  public contains(x: number, y: number): boolean {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height;
   }
 
   public toggle(x: number, y: number) {
-    let inside = this.inside(x, y);
+    let inside = this.contains(x, y);
     if (inside) {
       this.on = !this.on;
     }

@@ -16,6 +16,30 @@ export class Rectangle {
     this.height = height;
   }
 
+  public getXmax(): number {
+    return this.x + this.width;
+  }
+
+  public getYmax(): number {
+    return this.y + this.height;
+  }
+
+  public getXmin(): number {
+    return this.x;
+  }
+
+  public getYmin(): number {
+    return this.y;
+  }
+
+  public getCenterX(): number {
+    return this.x + this.width / 2;
+  }
+
+  public getCenterY(): number {
+    return this.y + this.height / 2;
+  }
+
   public contains(px: number, py: number): boolean {
     return px > this.x && px < this.x + this.width && py > this.y && py < this.y + this.height;
   }

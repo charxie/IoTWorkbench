@@ -56,12 +56,12 @@ export class System {
     let rect = this.playground.getBoundingClientRect();
     let x = e.clientX - rect.x;
     let y = e.clientY - rect.y;
-    if (this.temperatureGraph.isVisible() && this.temperatureGraph.contains(x, y)) {
+    if (this.board.whichHandle(x - this.board.getX(), y - this.board.getY()) >= 0) {
+      this.selectedMovable = this.board;
+    } else if (this.temperatureGraph.isVisible() && this.temperatureGraph.contains(x, y)) {
       this.selectedMovable = this.temperatureGraph;
     } else if (this.pressureGraph.isVisible() && this.pressureGraph.contains(x, y)) {
       this.selectedMovable = this.pressureGraph;
-    } else if (this.board.contains(x, y)) {
-      this.selectedMovable = this.board;
     } else {
       this.selectedMovable = null;
     }
