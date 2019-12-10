@@ -4,15 +4,10 @@
 
 import * as Constants from "./Constants";
 import {User} from "./User";
-import {LineChart} from "./LineChart";
-import {RainbowHat} from "./RainbowHat";
 import {System} from "./System";
 
-let system = new System();
-let user = new User("Charles", null, "Xie");
-let board = new RainbowHat(10, 10, 481, 321, "rainbow-hat");
-export let temperatureGraph = new LineChart("temperature-linechart", "Temperature", board.temperature, 15, 20);
-export let pressureGraph = new LineChart("pressure-linechart", "Pressure", board.pressure, 100, 2000);
+export let system = new System();
+export let user = new User("Charles", null, "Xie");
 
 window.onload = function () {
 
@@ -25,8 +20,9 @@ window.onload = function () {
   let creditLabel = document.getElementById('credit') as HTMLElement;
   creditLabel.innerHTML = Constants.Software.name + " " + Constants.Software.version + ", " + user.fullName + " , &copy; " + new Date().getFullYear();
 
-  board.canvas.width = window.innerWidth * 0.99;
-  board.canvas.height = window.innerHeight * 0.75;
-  board.draw();
+  system.workbench.canvas.width = window.innerWidth * 0.99;
+  system.workbench.canvas.height = window.innerHeight * 0.75;
+  system.workbench.draw();
+  system.board.draw();
 
 }

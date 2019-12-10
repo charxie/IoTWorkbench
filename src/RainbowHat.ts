@@ -7,8 +7,7 @@ import {LedLight} from "./LedLight";
 import {Button} from "./Button";
 import {System} from "./System";
 import {Sensor} from "./Sensor";
-import {temperatureGraph} from "./Main";
-import {pressureGraph} from "./Main";
+import {system} from "./Main";
 
 export class RainbowHat extends Board {
 
@@ -25,10 +24,10 @@ export class RainbowHat extends Board {
   public barometricPressureSensor: Sensor;
 
   private stateId = "rainbow_hat_default";
-  private mouseMoveObject;
+  private mouseOverObject;
 
-  constructor(x: number, y: number, width: number, height: number, canvasId: string) {
-    super("rainbow-hat-image", x, y, width, height);
+  constructor(canvasId: string) {
+    super("rainbow-hat-image");
 
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     this.canvas.addEventListener("mousedown", this.mouseDown, false);
@@ -50,7 +49,6 @@ export class RainbowHat extends Board {
 
   public draw(): void {
     let context = this.canvas.getContext('2d');
-    this.drawGrid(context);
     super.draw();
     this.redLedLight.draw(context);
     this.greenLedLight.draw(context);
@@ -68,8 +66,8 @@ export class RainbowHat extends Board {
     e.preventDefault();
 
     let rect = this.canvas.getBoundingClientRect();
-    let dx = e.clientX - rect.x - this.x;
-    let dy = e.clientY - rect.y - this.y;
+    let dx = e.clientX - rect.x;
+    let dy = e.clientY - rect.y;
     let context = this.canvas.getContext("2d");
 
     if (this.redLedLight.toggle(dx, dy)) {
@@ -124,8 +122,8 @@ export class RainbowHat extends Board {
     e.preventDefault();
 
     let rect = this.canvas.getBoundingClientRect();
-    let dx = e.clientX - rect.x - this.x;
-    let dy = e.clientY - rect.y - this.y;
+    let dx = e.clientX - rect.x;
+    let dy = e.clientY - rect.y;
     let context = this.canvas.getContext("2d");
 
     if (this.buttonA.inside(dx, dy)) {
@@ -156,19 +154,19 @@ export class RainbowHat extends Board {
     }
 
     if (this.temperatureSensor.inside(dx, dy)) {
-      temperatureGraph.setVisible(!temperatureGraph.isVisible());
-      if (temperatureGraph.isVisible()) {
-        temperatureGraph.draw();
-        temperatureGraph.bringForward();
+      system.temperatureGraph.setVisible(!system.temperatureGraph.isVisible());
+      if (system.temperatureGraph.isVisible()) {
+        system.temperatureGraph.draw();
+        system.temperatureGraph.bringForward();
       }
       return;
     }
 
     if (this.barometricPressureSensor.inside(dx, dy)) {
-      pressureGraph.setVisible(!pressureGraph.isVisible());
-      if (pressureGraph.isVisible()) {
-        pressureGraph.draw();
-        pressureGraph.bringForward();
+      system.pressureGraph.setVisible(!system.pressureGraph.isVisible());
+      if (system.pressureGraph.isVisible()) {
+        system.pressureGraph.draw();
+        system.pressureGraph.bringForward();
       }
       return;
     }
@@ -180,67 +178,67 @@ export class RainbowHat extends Board {
     e.preventDefault();
 
     let rect = this.canvas.getBoundingClientRect();
-    let dx = e.clientX - rect.x - this.x;
-    let dy = e.clientY - rect.y - this.y;
-    let context = this.canvas.getContext("2d");
+    let dx = e.clientX - rect.x;
+    let dy = e.clientY - rect.y;
 
     if (this.redLedLight.inside(dx, dy)) {
-      this.mouseMoveObject = this.redLedLight;
+      this.mouseOverObject = this.redLedLight;
     } else if (this.greenLedLight.inside(dx, dy)) {
-      this.mouseMoveObject = this.greenLedLight;
+      this.mouseOverObject = this.greenLedLight;
     } else if (this.blueLedLight.inside(dx, dy)) {
-      this.mouseMoveObject = this.blueLedLight;
+      this.mouseOverObject = this.blueLedLight;
     } else if (this.buttonA.inside(dx, dy)) {
-      this.mouseMoveObject = this.buttonA;
+      this.mouseOverObject = this.buttonA;
     } else if (this.buttonB.inside(dx, dy)) {
-      this.mouseMoveObject = this.buttonB;
+      this.mouseOverObject = this.buttonB;
     } else if (this.buttonC.inside(dx, dy)) {
-      this.mouseMoveObject = this.buttonC;
+      this.mouseOverObject = this.buttonC;
     } else if (this.temperatureSensor.inside(dx, dy)) {
-      this.mouseMoveObject = this.temperatureSensor;
+      this.mouseOverObject = this.temperatureSensor;
     } else if (this.barometricPressureSensor.inside(dx, dy)) {
-      this.mouseMoveObject = this.barometricPressureSensor;
+      this.mouseOverObject = this.barometricPressureSensor;
     } else {
-      this.mouseMoveObject = null;
+      this.mouseOverObject = null;
     }
-
     this.draw();
+
+    this.canvas.style.cursor = this.mouseOverObject != null ? "pointer" : "move";
 
   }
 
   drawToolTips(): void {
     let context = this.canvas.getContext('2d');
-    let x = this.x;
-    let y = this.y - 25;
-    if (this.mouseMoveObject == this.redLedLight) {
+    let x = 0;
+    let y = -25;
+    if (this.mouseOverObject == this.redLedLight) {
       x += this.redLedLight.x + this.redLedLight.width / 2;
       y += this.redLedLight.y;
       context.drawTooltip(x, y, 20, 8, 10, 'Red LED light', true);
-    } else if (this.mouseMoveObject == this.greenLedLight) {
+    } else if (this.mouseOverObject == this.greenLedLight) {
       x += this.greenLedLight.x + this.greenLedLight.width / 2;
       y += this.greenLedLight.y;
       context.drawTooltip(x, y, 20, 8, 10, 'Green LED light', true);
-    } else if (this.mouseMoveObject == this.blueLedLight) {
+    } else if (this.mouseOverObject == this.blueLedLight) {
       x += this.blueLedLight.x + this.blueLedLight.width / 2;
       y += this.blueLedLight.y;
       context.drawTooltip(x, y, 20, 8, 10, 'Blue LED light', true);
-    } else if (this.mouseMoveObject == this.buttonA) {
+    } else if (this.mouseOverObject == this.buttonA) {
       x += this.buttonA.x + this.buttonA.width / 2;
       y += this.buttonA.y;
       context.drawTooltip(x, y, 20, 8, 10, 'Button A', true);
-    } else if (this.mouseMoveObject == this.buttonB) {
+    } else if (this.mouseOverObject == this.buttonB) {
       x += this.buttonB.x + this.buttonB.width / 2;
       y += this.buttonB.y;
       context.drawTooltip(x, y, 20, 8, 10, 'Button B', true);
-    } else if (this.mouseMoveObject == this.buttonC) {
+    } else if (this.mouseOverObject == this.buttonC) {
       x += this.buttonC.x + this.buttonC.width / 2;
       y += this.buttonC.y;
       context.drawTooltip(x, y, 20, 8, 10, 'Button C', true);
-    } else if (this.mouseMoveObject == this.temperatureSensor) {
+    } else if (this.mouseOverObject == this.temperatureSensor) {
       x += this.temperatureSensor.x + this.temperatureSensor.width / 2;
       y += this.temperatureSensor.y;
       context.drawTooltip(x, y, 20, 8, 10, 'Temperature Sensor', true);
-    } else if (this.mouseMoveObject == this.barometricPressureSensor) {
+    } else if (this.mouseOverObject == this.barometricPressureSensor) {
       x += this.barometricPressureSensor.x + this.barometricPressureSensor.width / 2;
       y += this.barometricPressureSensor.y;
       context.drawTooltip(x, y, 20, 8, 10, 'Barometric Pressure Sensor', true);
@@ -262,11 +260,11 @@ export class RainbowHat extends Board {
         that.blueLedLight.on = childData.blueLed;
         if (childData.allowTemperatureTransmission) {
           that.temperature.push(<number>childData.temperature);
-          temperatureGraph.draw();
+          system.temperatureGraph.draw();
         }
         if (childData.allowBarometricPressureTransmission) {
           that.pressure.push(<number>childData.barometricPressure);
-          pressureGraph.draw();
+          system.pressureGraph.draw();
         }
         that.draw();
       });

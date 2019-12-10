@@ -35,8 +35,8 @@ export class LedLight implements ElectronicComponent {
       ctx.lineWidth = 1;
       ctx.strokeStyle = this.color;
       ctx.fillStyle = this.color;
-      let centerX = this.board.x + this.x + this.width / 2;
-      let centerY = this.board.y + this.y + this.height / 2;
+      let centerX = this.x + this.width / 2;
+      let centerY = this.y + this.height / 2;
       ctx.arc(centerX, centerY, this.radius, 0, Math.PI * 2);
       ctx.fill();
       ctx.closePath();
@@ -61,7 +61,7 @@ export class LedLight implements ElectronicComponent {
       ctx.beginPath();
       ctx.lineWidth = 2;
       ctx.strokeStyle = this.color;
-      ctx.arc(this.board.x + this.x + this.width / 2, this.board.y + this.y + this.height / 2, this.radius, 0, Math.PI * 2);
+      ctx.arc(this.x + this.width / 2, this.y + this.height / 2, this.radius, 0, Math.PI * 2);
       ctx.stroke();
       ctx.closePath();
     }

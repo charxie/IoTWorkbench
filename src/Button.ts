@@ -25,15 +25,13 @@ export class Button {
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
-    let x0 = this.board.x + this.x;
-    let y0 = this.board.y + this.y;
     if (this.on) {
       ctx.fillStyle = this.pressedColor;
-      ctx.fillRect(x0, y0, this.width, this.height);
+      ctx.fillRect(this.x, this.y, this.width, this.height);
     }
     ctx.lineWidth = 1;
     ctx.strokeStyle = 'black';
-    ctx.rect(x0, y0, this.width, this.height);
+    ctx.rect(this.x, this.y, this.width, this.height);
     ctx.stroke();
   }
 
