@@ -27,12 +27,12 @@ export class System {
 
     if (!System.database) {
       let config = {
-        apiKey: "AIzaSyAT_mdZ9yMGg6BWkB1NWPIqAjXtP4cBwcA",
-        authDomain: "raspberry-pi-java.firebaseapp.com",
-        databaseURL: "https://raspberry-pi-java.firebaseio.com",
-        projectId: "raspberry-pi-java",
-        storageBucket: "raspberry-pi-java.appspot.com",
-        messagingSenderId: "498912746820"
+        apiKey: "${process.env.FIREBASE_API_KEY}",
+        authDomain: "${process.env.AUTH_DOMAIN}",
+        projectId: "${process.env.PROJECT_ID}",
+        storageBucket: "${process.env.STORAGE_BUCKET}",
+        messagingSenderId: "${process.env.MESSAGING_SENDER_ID}",
+        databaseURL: "https://raspberry-pi-java.firebaseio.com"
       };
       firebase.initializeApp(config);
       // Get a reference to the database service
