@@ -7,6 +7,8 @@ import {Board} from "./Board";
 export class Sensor {
 
   name: string;
+  data: number[] = [];
+  collectionInterval: number = 1; // in seconds
   x: number;
   y: number;
   width: number;

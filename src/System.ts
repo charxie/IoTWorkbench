@@ -41,8 +41,8 @@ export class System {
 
     this.workbench = new Workbench("workbench");
     this.board = new RainbowHat("rainbow-hat");
-    this.temperatureGraph = new LineChart("temperature-linechart", "Temperature", this.board.temperature, 15, 20);
-    this.pressureGraph = new LineChart("pressure-linechart", "Pressure", this.board.pressure, 100, 2000);
+    this.temperatureGraph = new LineChart("temperature-linechart", "Temperature", this.board.temperatureSensor);
+    this.pressureGraph = new LineChart("pressure-linechart", "Pressure", this.board.barometricPressureSensor);
 
     this.playground = document.getElementById("playground");
     this.playground.addEventListener("mousedown", this.mouseDown, false);

@@ -1,5 +1,5 @@
 /*
- * This draws lines from input data.
+ * This draws a line from the input sensor data stream (time series).
  *
  * @author Charles Xie
  */
@@ -7,11 +7,11 @@
 import {Util} from "./Util";
 import {Rectangle} from "./math/Rectangle";
 import {Movable} from "./Movable";
+import {Sensor} from "./Sensor";
 
 export class LineChart implements Movable {
 
   name: string;
-  data: number[];
   minimumValue: number = 0;
   maximumValue: number = 1;
   autoscale: boolean = true;
@@ -22,6 +22,7 @@ export class LineChart implements Movable {
   handle: Rectangle;
 
   private readonly canvas: HTMLCanvasElement;
+  private sensor: Sensor;
   private visible: boolean;
   private margin = {
     left: <number>40,
@@ -34,12 +35,10 @@ export class LineChart implements Movable {
   private clearButton = new Rectangle(0, 0, 14, 14);
   private selectedButton: Rectangle;
 
-  constructor(elementId: string, name: string, data: number[], minimumValue: number, maximumValue: number) {
+  constructor(elementId: string, name: string, sensor: Sensor) {
     this.canvas = document.getElementById(elementId) as HTMLCanvasElement;
     this.name = name;
-    this.data = data;
-    this.minimumValue = minimumValue;
-    this.maximumValue = maximumValue;
+    this.sensor = sensor;
     if (name == "Temperature") {
       this.yAxisLabel = name + " (°C)";
     } else if (name == "Pressure") {
@@ -76,10 +75,10 @@ export class LineChart implements Movable {
     let ctx = this.canvas.getContext('2d');
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    if (this.data) {
+    if (this.sensor.data) {
       this.drawGraphWindow(ctx);
       this.drawAxisLabels(ctx);
-      if (this.data.length > 1) {
+      if (this.sensor.data.length > 1) {
         this.drawLineCharts(ctx);
       }
     }
@@ -94,12 +93,12 @@ export class LineChart implements Movable {
     let min = Number.MAX_VALUE;
     let max = -min;
     if (this.autoscale) {
-      for (let i = 0; i < this.data.length; i++) {
-        if (this.data[i] > max) {
-          max = this.data[i];
+      for (let i = 0; i < this.sensor.data.length; i++) {
+        if (this.sensor.data[i] > max) {
+          max = this.sensor.data[i];
         }
-        if (this.data[i] < min) {
-          min = this.data[i];
+        if (this.sensor.data[i] < min) {
+          min = this.sensor.data[i];
         }
       }
     } else {
@@ -110,7 +109,7 @@ export class LineChart implements Movable {
     // determine the graph window
     let graphWindowWidth = this.canvas.width - this.margin.left - this.margin.right;
     let graphWindowHeight = this.canvas.height - this.margin.bottom - this.margin.top;
-    let dx = graphWindowWidth / (this.data.length - 1);
+    let dx = graphWindowWidth / (this.sensor.data.length - 1);
     let yOffset = 0.1 * graphWindowHeight;
     let dy = (graphWindowHeight - 2 * yOffset) / (max - min);
 
@@ -122,20 +121,20 @@ export class LineChart implements Movable {
     ctx.beginPath();
     let horizontalAxisY = this.canvas.height - this.margin.bottom;
     let tmpX = this.margin.left;
-    let tmpY = yOffset + (this.data[0] - min) * dy;
+    let tmpY = yOffset + (this.sensor.data[0] - min) * dy;
     ctx.moveTo(tmpX, horizontalAxisY - tmpY);
     ctx.fillText("0", tmpX - 4, horizontalAxisY + 10);
-    for (let i = 1; i < this.data.length; i++) {
+    for (let i = 1; i < this.sensor.data.length; i++) {
       tmpX = this.margin.left + dx * i;
-      tmpY = yOffset + (this.data[i] - min) * dy;
+      tmpY = yOffset + (this.sensor.data[i] - min) * dy;
       ctx.lineTo(tmpX, horizontalAxisY - tmpY);
     }
     ctx.stroke();
 
     // draw symbols on top of the line
-    for (let i = 0; i < this.data.length; i++) {
+    for (let i = 0; i < this.sensor.data.length; i++) {
       tmpX = this.margin.left + dx * i;
-      tmpY = yOffset + (this.data[i] - min) * dy;
+      tmpY = yOffset + (this.sensor.data[i] - min) * dy;
       ctx.beginPath();
       ctx.arc(tmpX, horizontalAxisY - tmpY, 3, 0, 2 * Math.PI);
       ctx.closePath();
@@ -146,15 +145,19 @@ export class LineChart implements Movable {
     }
 
     // draw x-axis tick marks
-    let interval = Math.pow(10, Util.countDigits(this.data.length) - 1);
-    for (let i = 0; i < this.data.length; i++) {
-      if (i % interval == 0 || this.data.length < 10) {
-        tmpX = this.margin.left + dx * i;
-        ctx.beginPath();
-        ctx.moveTo(tmpX, horizontalAxisY);
-        ctx.lineTo(tmpX, horizontalAxisY - 4);
-        ctx.stroke();
-        ctx.fillText("" + i, tmpX - 4, horizontalAxisY + 10);
+    let timeLength = this.sensor.data.length * this.sensor.collectionInterval;
+    let spacing = Math.pow(10, Util.countDigits(Math.round(timeLength)) - 1);
+    for (let i = 0; i < this.sensor.data.length; i++) {
+      let j = i * this.sensor.collectionInterval;
+      if (Math.abs(j - Math.floor(j)) < 0.0001) { // only plot at whole seconds
+        if (j % spacing == 0 || timeLength < 10) {
+          tmpX = this.margin.left + dx * i;
+          ctx.beginPath();
+          ctx.moveTo(tmpX, horizontalAxisY);
+          ctx.lineTo(tmpX, horizontalAxisY - 4);
+          ctx.stroke();
+          ctx.fillText(j.toString(), tmpX - 4, horizontalAxisY + 10);
+        }
       }
     }
 
@@ -290,7 +293,7 @@ export class LineChart implements Movable {
     if (this.closeButton.contains(x, y)) {
       this.setVisible(false);
     } else if (this.clearButton.contains(x, y)) {
-      this.data.length = 0;
+      this.sensor.data.length = 0;
     } else {
       this.bringForward();
     }

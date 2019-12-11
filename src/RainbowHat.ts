@@ -12,9 +12,6 @@ import {Rectangle} from "./math/Rectangle";
 
 export class RainbowHat extends Board {
 
-  public temperature: number[] = [];
-  public pressure: number[] = [];
-
   public redLedLight: LedLight;
   public greenLedLight: LedLight;
   public blueLedLight: LedLight;
@@ -297,6 +294,7 @@ export class RainbowHat extends Board {
     System.database.ref(this.stateId).update(value);
   }
 
+  // by default, sensors transmit data every second. This can be adjusted through Firebase.
   updateFromFirebase(): void {
     let that = this;
     System.database.ref().on("value", function (snapshot) {
@@ -306,11 +304,13 @@ export class RainbowHat extends Board {
         that.greenLedLight.on = childData.greenLed;
         that.blueLedLight.on = childData.blueLed;
         if (childData.allowTemperatureTransmission) {
-          that.temperature.push(<number>childData.temperature);
+          that.temperatureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
+          that.temperatureSensor.data.push(<number>childData.temperature);
           system.temperatureGraph.draw();
         }
         if (childData.allowBarometricPressureTransmission) {
-          that.pressure.push(<number>childData.barometricPressure);
+          that.barometricPressureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
+          that.barometricPressureSensor.data.push(<number>childData.barometricPressure);
           system.pressureGraph.draw();
         }
         that.draw();
