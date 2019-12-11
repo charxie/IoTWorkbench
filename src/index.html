@@ -9,9 +9,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fafafa">
 
-  <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/gui.css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/contextmenu.css">
 
   <!-- Firebase App is always required and must be first -->
   <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
@@ -53,6 +53,40 @@
           style="display: none; border: 2px solid #006699; position: absolute; left: 360px; top: 60px; z-index: 1002;"></canvas>
 </div>
 
+<menu id="workbench-context-menu" class="menu">
+  <li class="menu-item">
+    <button type="button" class="menu-btn"><span class="menu-text">Open</span></button>
+  </li>
+  <li class="menu-item disabled">
+    <button type="button" class="menu-btn"><span class="menu-text">Save</span></button>
+  </li>
+  <li class="menu-separator"></li>
+  <li class="menu-item">
+    <button type="button" class="menu-btn"><span class="menu-text">Delete</span></button>
+  </li>
+  <li class="menu-item submenu">
+    <button type="button" class="menu-btn"><span class="menu-text">Import</span></button>
+    <menu class="menu">
+  <li class="menu-item">
+    <button type="button" class="menu-btn"><span class="menu-text">Breadboard</span></button>
+  </li>
+  <li class="menu-item submenu">
+    <button type="button" class="menu-btn"><span class="menu-text">Sensors</span></button>
+    <menu class="menu">
+  <li class="menu-item">
+    <button type="button" class="menu-btn"><span class="menu-text">BME280</span></button>
+  </li>
+  <li class="menu-item">
+    <button type="button" class="menu-btn"><span class="menu-text">TSL2561</span></button>
+  </li>
+  <li class="menu-item">
+    <button type="button" class="menu-btn"><span class="menu-text">HCSR04</span></button>
+  </li>
+</menu>
+</li>
+</menu>
+</li>
+</menu>
 
 </body>
 

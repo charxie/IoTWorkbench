@@ -66,6 +66,7 @@ export class LineChart implements Movable {
     this.canvas.addEventListener('mousemove', this.onMouseMove, false);
     this.canvas.addEventListener('mouseleave', this.onMouseLeave, false);
     this.canvas.addEventListener('touchmove', this.onTouchMove, false);
+    this.canvas.addEventListener('contextmenu', this.openContextMenu, false);
 
     let ctx = this.canvas.getContext('2d');
     ctx.fillStyle = "white";
@@ -330,5 +331,10 @@ export class LineChart implements Movable {
   public contains(x: number, y: number): boolean {
     return x > this.canvas.offsetLeft && x < this.canvas.offsetLeft + this.canvas.width && y > this.canvas.offsetTop && y < this.canvas.offsetTop + this.canvas.height;
   }
+
+  private openContextMenu = (event: TouchEvent): void => {
+    event.preventDefault();
+    console.log(event);
+  };
 
 }

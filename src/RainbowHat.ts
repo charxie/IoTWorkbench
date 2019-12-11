@@ -32,6 +32,7 @@ export class RainbowHat extends Board {
     this.canvas.addEventListener("mousedown", this.mouseDown, false);
     this.canvas.addEventListener("mouseup", this.mouseUp, false);
     this.canvas.addEventListener("mousemove", this.mouseMove, false);
+    this.canvas.addEventListener('contextmenu', this.openContextMenu, false);
 
     this.redLedLight = new LedLight(this, 'red', 100, 258, 18, 8);
     this.greenLedLight = new LedLight(this, 'green', 182, 258, 18, 8);
@@ -317,5 +318,10 @@ export class RainbowHat extends Board {
       });
     });
   }
+
+  private openContextMenu = (event: TouchEvent): void => {
+    event.preventDefault();
+    console.log(event);
+  };
 
 }
