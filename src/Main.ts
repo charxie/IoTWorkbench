@@ -20,9 +20,17 @@ window.onload = function () {
   let creditLabel = document.getElementById('credit') as HTMLElement;
   creditLabel.innerHTML = Constants.Software.name + " " + Constants.Software.version + ", " + user.fullName + " , &copy; " + new Date().getFullYear();
 
+  draw();
+
+};
+
+window.onresize = function () {
+  draw();
+};
+
+function draw() {
   system.workbench.canvas.width = window.innerWidth * 0.99;
-  system.workbench.canvas.height = window.innerHeight * 0.75;
+  system.workbench.canvas.height = window.innerHeight - 120;
   system.workbench.draw();
   system.board.draw();
-
 }

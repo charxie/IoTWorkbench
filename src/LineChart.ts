@@ -17,16 +17,22 @@ export class LineChart implements Movable {
   autoscale: boolean = true;
   xAxisLabel: string = "Time (s)";
   yAxisLabel: string = "Temperature (°C)";
+  graphWindowColor: string = "white";
+  titleBarColor: string = "lightgray";
+  handle: Rectangle;
 
   private readonly canvas: HTMLCanvasElement;
   private visible: boolean;
   private margin = {
     left: <number>40,
     right: <number>25,
-    top: <number>25,
+    top: <number>40,
     bottom: <number>40
   };
+  private readonly titleBarHeight = 24;
   private closeButton = new Rectangle(0, 0, 14, 14);
+  private clearButton = new Rectangle(0, 0, 14, 14);
+  private selectedButton: Rectangle;
 
   constructor(elementId: string, name: string, data: number[], minimumValue: number, maximumValue: number) {
     this.canvas = document.getElementById(elementId) as HTMLCanvasElement;
@@ -34,13 +40,16 @@ export class LineChart implements Movable {
     this.data = data;
     this.minimumValue = minimumValue;
     this.maximumValue = maximumValue;
-    this.closeButton.x = this.canvas.width - this.closeButton.width - 4;
-    this.closeButton.y += 4;
     if (name == "Temperature") {
       this.yAxisLabel = name + " (°C)";
     } else if (name == "Pressure") {
       this.yAxisLabel = name + " (hPa)";
     }
+    this.handle = new Rectangle(0, 0, this.canvas.width, this.titleBarHeight);
+    this.closeButton.x = this.canvas.width - this.closeButton.width - 4;
+    this.closeButton.y += 4;
+    this.clearButton.x = this.canvas.width - 2 * (this.clearButton.width + 4);
+    this.clearButton.y += 4;
   }
 
   public setVisible(visible: boolean): void {
@@ -52,7 +61,11 @@ export class LineChart implements Movable {
     return this.visible;
   }
 
-  public draw() {
+  public onHandle(x: number, y: number): boolean {
+    return this.handle.contains(x, y);
+  }
+
+  public draw(): void {
 
     this.canvas.addEventListener('click', this.onMouseClick, false);
     this.canvas.addEventListener('dblclick', this.onMouseDoubleClick, false);
@@ -70,21 +83,12 @@ export class LineChart implements Movable {
         this.drawLineCharts(ctx);
       }
     }
-    ctx.fillStyle = "black";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.rect(this.closeButton.x, this.closeButton.y, this.closeButton.width, this.closeButton.height);
-    ctx.stroke();
-    ctx.lineWidth = 0.5;
-    ctx.moveTo(this.closeButton.x + 2, this.closeButton.y + 2);
-    ctx.lineTo(this.closeButton.x + this.closeButton.width - 2, this.closeButton.y + this.closeButton.height - 2);
-    ctx.moveTo(this.closeButton.x + this.closeButton.width - 2, this.closeButton.y + 2);
-    ctx.lineTo(this.closeButton.x + 2, this.closeButton.y + this.closeButton.height - 2);
-    ctx.stroke();
+    this.drawTitleBar(ctx);
+    this.drawToolTips(ctx);
 
   }
 
-  private drawLineCharts(ctx: CanvasRenderingContext2D) {
+  private drawLineCharts(ctx: CanvasRenderingContext2D): void {
 
     // detect minimum and maximum of y values
     let min = Number.MAX_VALUE;
@@ -179,10 +183,9 @@ export class LineChart implements Movable {
     ctx.fillText(maxString, 0, 0);
     ctx.restore();
 
-
   }
 
-  private drawAxisLabels(ctx: CanvasRenderingContext2D) {
+  private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
     let graphWindowWidth = this.canvas.width - this.margin.left - this.margin.right;
     let horizontalAxisY = this.canvas.height - this.margin.bottom;
     ctx.font = "15px Arial";
@@ -195,20 +198,58 @@ export class LineChart implements Movable {
     ctx.restore();
   }
 
-  private drawGraphWindow(ctx: CanvasRenderingContext2D) {
+  private drawGraphWindow(ctx: CanvasRenderingContext2D): void {
     let canvas = this.canvas;
     let margin = this.margin;
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(margin.left, canvas.height - margin.bottom);
-    ctx.lineTo(canvas.width - margin.right, canvas.height - margin.bottom);
-    ctx.lineTo(canvas.width - margin.right, margin.top);
-    ctx.lineTo(margin.left, margin.top);
-    ctx.closePath();
+    ctx.rect(margin.left, margin.top, canvas.width - margin.left - margin.right, canvas.height - margin.top - margin.bottom);
     ctx.stroke();
-    ctx.fillStyle = 'lightgray';
+    ctx.fillStyle = this.graphWindowColor;
     ctx.fillRect(margin.left, margin.top, canvas.width - margin.left - margin.right, canvas.height - margin.top - margin.bottom);
+  }
+
+  private drawTitleBar(ctx: CanvasRenderingContext2D): void {
+    // draw bar
+    ctx.fillStyle = this.titleBarColor;
+    ctx.fillRect(0, 0, this.canvas.width, 24);
+    ctx.fillStyle = "black";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, 24);
+    ctx.lineTo(this.canvas.width, this.titleBarHeight);
+    ctx.stroke();
+    this.drawButton(ctx, this.closeButton);
+    this.drawButton(ctx, this.clearButton);
+  }
+
+  private drawButton(ctx: CanvasRenderingContext2D, button: Rectangle): void {
+    ctx.beginPath();
+    ctx.rect(button.x, button.y, button.width, button.height);
+    ctx.stroke();
+    ctx.lineWidth = 0.5;
+    if (button == this.closeButton) {
+      ctx.moveTo(button.x + 2, button.y + 2);
+      ctx.lineTo(button.x + button.width - 2, button.y + button.height - 2);
+      ctx.moveTo(button.x + button.width - 2, button.y + 2);
+      ctx.lineTo(button.x + 2, button.y + button.height - 2);
+    } else if (button == this.clearButton) {
+      ctx.moveTo(button.x + 2, button.getCenterY());
+      ctx.lineTo(button.x + button.width - 2, button.getCenterY());
+    }
+    ctx.stroke();
+  }
+
+  private drawToolTips(ctx: CanvasRenderingContext2D): void {
+    switch (this.selectedButton) {
+      case this.closeButton:
+        ctx.drawTooltip(this.closeButton.getCenterX() - 20, this.closeButton.getCenterY() + 20, 20, 8, 10, "Close", true);
+        break;
+      case this.clearButton:
+        ctx.drawTooltip(this.clearButton.getCenterX() - 20, this.clearButton.getCenterY() + 20, 20, 8, 10, "Clear", true);
+        break;
+    }
   }
 
   private onMouseMove = (event: MouseEvent): void => {
@@ -216,6 +257,19 @@ export class LineChart implements Movable {
     let rect = this.canvas.getBoundingClientRect();
     let x = event.clientX - rect.x;
     let y = event.clientY - rect.y;
+    let ctx = this.canvas.getContext('2d');
+    this.selectedButton = null;
+    if (this.closeButton.contains(x, y)) {
+      this.canvas.style.cursor = "pointer";
+      this.selectedButton = this.closeButton;
+    } else if (this.clearButton.contains(x, y)) {
+      this.canvas.style.cursor = "pointer";
+      this.selectedButton = this.clearButton;
+    } else if (this.handle.contains(x, y)) {
+      this.canvas.style.cursor = "move";
+    } else {
+      this.canvas.style.cursor = "default";
+    }
     this.draw();
   };
 
@@ -235,6 +289,8 @@ export class LineChart implements Movable {
     let y = event.clientY - rect.y;
     if (this.closeButton.contains(x, y)) {
       this.setVisible(false);
+    } else if (this.clearButton.contains(x, y)) {
+      this.data.length = 0;
     } else {
       this.bringForward();
     }

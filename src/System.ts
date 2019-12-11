@@ -58,9 +58,9 @@ export class System {
     let y = e.clientY - rect.y;
     if (this.board.whichHandle(x - this.board.getX(), y - this.board.getY()) >= 0) {
       this.selectedMovable = this.board;
-    } else if (this.temperatureGraph.isVisible() && this.temperatureGraph.contains(x, y)) {
+    } else if (this.temperatureGraph.isVisible() && this.temperatureGraph.onHandle(x - this.temperatureGraph.getX(), y - this.temperatureGraph.getY())) {
       this.selectedMovable = this.temperatureGraph;
-    } else if (this.pressureGraph.isVisible() && this.pressureGraph.contains(x, y)) {
+    } else if (this.pressureGraph.isVisible() && this.pressureGraph.onHandle(x - this.pressureGraph.getX(), y - this.pressureGraph.getY())) {
       this.selectedMovable = this.pressureGraph;
     } else {
       this.selectedMovable = null;
