@@ -63,8 +63,6 @@ export class Workbench {
     let rect = this.canvas.getBoundingClientRect();
     let dx = e.clientX - rect.x;
     let dy = e.clientY - rect.y;
-    let menu = document.getElementById("workbench-context-menu") as HTMLMenuElement;
-    menu.classList.remove("show-menu");
   }
 
   private mouseUp = (e: MouseEvent): void => {

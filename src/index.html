@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/contextmenu.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
 
   <!-- Firebase App is always required and must be first -->
   <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
@@ -53,27 +54,42 @@
           style="display: none; border: 2px solid #006699; position: absolute; left: 360px; top: 60px; z-index: 1002;"></canvas>
 </div>
 
-<menu id="workbench-context-menu" class="menu">
+<menu id="board-context-menu" class="menu">
+
   <li class="menu-item">
-    <button type="button" class="menu-btn"><span class="menu-text">Open</span></button>
+    <button type="button" class="menu-btn"><i class="fas fa-edit"></i><span class="menu-text">Edit</span></button>
+  </li>
+  <li class="menu-item">
+    <button type="button" class="menu-btn"><i class="fas fa-code"></i><span class="menu-text">Code</span></button>
+  </li>
+
+</menu>
+
+
+<menu id="workbench-context-menu" class="menu">
+
+  <li class="menu-item">
+    <button type="button" class="menu-btn"><i class="fas fa-folder-open"></i><span class="menu-text">Open</span></button>
   </li>
   <li class="menu-item disabled">
-    <button type="button" class="menu-btn"><span class="menu-text">Save</span></button>
+    <button type="button" class="menu-btn"><i class="fas fa-download"></i><span class="menu-text">Save</span></button>
   </li>
   <li class="menu-separator"></li>
   <li class="menu-item">
-    <button type="button" class="menu-btn"><span class="menu-text">Delete</span></button>
+    <button type="button" class="menu-btn"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
   </li>
+
   <li class="menu-item submenu">
-    <button type="button" class="menu-btn"><span class="menu-text">Import</span></button>
+    <button type="button" class="menu-btn"><i class="fas fa-file-import"></i><span class="menu-text">Import</span></button>
     <menu class="menu">
-      <li class="menu-item">
-        <button type="button" class="menu-btn"><span class="menu-text">Breadboard</span></button>
-      </li>
-      <li class="menu-item submenu">
-        <button type="button" class="menu-btn"><span class="menu-text">Sensors</span></button>
-        <menu class="menu">
-          <li class="menu-item">
+  <li class="menu-item">
+    <button type="button" class="menu-btn"><span class="menu-text">Breadboard</span></button>
+  </li>
+
+  <li class="menu-item submenu">
+    <button type="button" class="menu-btn"><span class="menu-text">Sensors</span></button>
+    <menu class="menu">
+  <li class="menu-item">
     <button type="button" class="menu-btn"><span class="menu-text">BME280</span></button>
   </li>
   <li class="menu-item">
@@ -84,6 +100,25 @@
   </li>
 </menu>
 </li>
+
+<li class="menu-item submenu">
+  <button type="button" class="menu-btn"><span class="menu-text">Actuators</span></button>
+  <menu class="menu">
+<li class="menu-item">
+  <button type="button" class="menu-btn"><span class="menu-text">Buzzer</span></button>
+</li>
+<li class="menu-item">
+  <button type="button" class="menu-btn"><span class="menu-text">Servo Motor</span></button>
+</li>
+<li class="menu-item">
+  <button type="button" class="menu-btn"><span class="menu-text">LED Light</span></button>
+</li>
+<li class="menu-item">
+  <button type="button" class="menu-btn"><span class="menu-text">Multicolor LED Light</span></button>
+</li>
+</menu>
+</li>
+
 </menu>
 </li>
 </menu>

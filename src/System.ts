@@ -74,6 +74,11 @@ export class System {
   private mouseUp = (e: MouseEvent): void => {
     e.preventDefault();
     this.selectedMovable = null;
+    // close all menus upon mouse left click
+    let menu = document.getElementById("board-context-menu") as HTMLMenuElement;
+    menu.classList.remove("show-menu");
+    menu = document.getElementById("workbench-context-menu") as HTMLMenuElement;
+    menu.classList.remove("show-menu");
   }
 
   private mouseMove = (e: MouseEvent): void => {

@@ -65,6 +65,14 @@ export class RainbowHat extends Board {
     this.drawToolTips();
   }
 
+  private openContextMenu = (e: MouseEvent): void => {
+    e.preventDefault();
+    let menu = document.getElementById("board-context-menu") as HTMLMenuElement;
+    menu.style.left = e.clientX + "px";
+    menu.style.top = e.clientY + "px";
+    menu.classList.add("show-menu");
+  };
+
   private mouseDown = (e: MouseEvent): void => {
 
     e.preventDefault();
@@ -318,10 +326,5 @@ export class RainbowHat extends Board {
       });
     });
   }
-
-  private openContextMenu = (event: TouchEvent): void => {
-    event.preventDefault();
-    console.log(event);
-  };
 
 }
