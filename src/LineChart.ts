@@ -35,15 +35,10 @@ export class LineChart implements Movable {
   private clearButton = new Rectangle(0, 0, 14, 14);
   private selectedButton: Rectangle;
 
-  constructor(elementId: string, name: string, sensor: Sensor) {
+  constructor(elementId: string, sensor: Sensor) {
     this.canvas = document.getElementById(elementId) as HTMLCanvasElement;
-    this.name = name;
     this.sensor = sensor;
-    if (name == "Temperature") {
-      this.yAxisLabel = name + " (°C)";
-    } else if (name == "Pressure") {
-      this.yAxisLabel = name + " (hPa)";
-    }
+    this.yAxisLabel = sensor.name + " (" + sensor.unit + ")";
     this.handle = new Rectangle(0, 0, this.canvas.width, this.titleBarHeight);
     this.closeButton.x = this.canvas.width - this.closeButton.width - 4;
     this.closeButton.y += 4;

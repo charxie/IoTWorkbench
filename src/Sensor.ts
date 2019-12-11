@@ -6,8 +6,9 @@ import {Board} from "./Board";
 
 export class Sensor {
 
-  name: string;
-  data: number[] = [];
+  readonly name: string;
+  readonly unit: string;
+  readonly data: number[] = [];
   collectionInterval: number = 1; // in seconds
   x: number;
   y: number;
@@ -18,8 +19,10 @@ export class Sensor {
   private on: boolean = false;
   private pressedColor: string = 'white';
 
-  constructor(board: Board, x: number, y: number, width: number, height: number) {
+  constructor(board: Board, name: string, unit: string, x: number, y: number, width: number, height: number) {
     this.board = board;
+    this.name = name;
+    this.unit = unit;
     this.x = x;
     this.y = y;
     this.width = width;

@@ -39,8 +39,8 @@ export class RainbowHat extends Board {
     this.buttonA = new Button(this, 72, 270, 72, 22);
     this.buttonB = new Button(this, 155, 270, 72, 22);
     this.buttonC = new Button(this, 238, 270, 72, 22);
-    this.temperatureSensor = new Sensor(this, 186, 133, 10, 10);
-    this.barometricPressureSensor = new Sensor(this, 228, 141, 8, 8);
+    this.temperatureSensor = new Sensor(this, "Temperature", "°C", 186, 133, 10, 10);
+    this.barometricPressureSensor = new Sensor(this, "Pressure", "hPa", 228, 141, 8, 8);
 
     this.handles.push(new Rectangle(5, 5, 30, 30));
     this.handles.push(new Rectangle(448, 5, 30, 30));
