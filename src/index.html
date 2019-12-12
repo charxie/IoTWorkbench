@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/contextmenu.css">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
 
   <!-- Firebase App is always required and must be first -->
   <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
@@ -49,79 +48,14 @@
   <canvas id="rainbow-hat" width="480" height="321"
           style="display: block; margin: 0 auto; position: absolute; left: 10px; top: 10px; z-index: 99;"></canvas>
   <canvas id="temperature-linechart" width="420" height="300"
-          style="display: none; border: 2px solid #006699; position: absolute; left: 330px; top: 30px; z-index: 1001;"></canvas>
+          style="display: none; border: 2px solid #006699; position: absolute; left: 330px; top: 30px; z-index: 101;"></canvas>
   <canvas id="pressure-linechart" width="420" height="300"
-          style="display: none; border: 2px solid #006699; position: absolute; left: 360px; top: 60px; z-index: 1002;"></canvas>
+          style="display: none; border: 2px solid #006699; position: absolute; left: 360px; top: 60px; z-index: 102;"></canvas>
 </div>
 
-<menu id="board-context-menu" class="menu">
-
-  <li class="menu-item">
-    <button type="button" class="menu-btn"><i class="fas fa-edit"></i><span class="menu-text">Edit</span></button>
-  </li>
-  <li class="menu-item">
-    <button type="button" class="menu-btn"><i class="fas fa-code"></i><span class="menu-text">Code</span></button>
-  </li>
-
-</menu>
-
-
-<menu id="workbench-context-menu" class="menu">
-
-  <li class="menu-item">
-    <button type="button" class="menu-btn"><i class="fas fa-folder-open"></i><span class="menu-text">Open</span></button>
-  </li>
-  <li class="menu-item disabled">
-    <button type="button" class="menu-btn"><i class="fas fa-download"></i><span class="menu-text">Save</span></button>
-  </li>
-  <li class="menu-separator"></li>
-  <li class="menu-item">
-    <button type="button" class="menu-btn"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
-  </li>
-
-  <li class="menu-item submenu">
-    <button type="button" class="menu-btn"><i class="fas fa-file-import"></i><span class="menu-text">Import</span></button>
-    <menu class="menu">
-  <li class="menu-item">
-    <button type="button" class="menu-btn"><span class="menu-text">Breadboard</span></button>
-  </li>
-
-  <li class="menu-item submenu">
-    <button type="button" class="menu-btn"><span class="menu-text">Sensors</span></button>
-    <menu class="menu">
-  <li class="menu-item">
-    <button type="button" class="menu-btn"><span class="menu-text">BME280</span></button>
-  </li>
-  <li class="menu-item">
-    <button type="button" class="menu-btn"><span class="menu-text">TSL2561</span></button>
-  </li>
-  <li class="menu-item">
-    <button type="button" class="menu-btn"><span class="menu-text">HCSR04</span></button>
-  </li>
-</menu>
-</li>
-
-<li class="menu-item submenu">
-  <button type="button" class="menu-btn"><span class="menu-text">Actuators</span></button>
-  <menu class="menu">
-<li class="menu-item">
-  <button type="button" class="menu-btn"><span class="menu-text">Buzzer</span></button>
-</li>
-<li class="menu-item">
-  <button type="button" class="menu-btn"><span class="menu-text">Servo Motor</span></button>
-</li>
-<li class="menu-item">
-  <button type="button" class="menu-btn"><span class="menu-text">LED Light</span></button>
-</li>
-<li class="menu-item">
-  <button type="button" class="menu-btn"><span class="menu-text">Multicolor LED Light</span></button>
-</li>
-</menu>
-</li>
-
-</menu>
-</li>
-</menu>
+<div id="workbench-context-menu-placeholder"></div>
+<div id="board-context-menu-placeholder"></div>
+<div id="linechart-context-menu-placeholder"></div>
 
 </body>
 

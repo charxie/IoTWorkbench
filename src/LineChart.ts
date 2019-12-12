@@ -251,11 +251,11 @@ export class LineChart implements Movable {
     }
   }
 
-  private onMouseMove = (event: MouseEvent): void => {
-    event.preventDefault();
+  private onMouseMove = (e: MouseEvent): void => {
+    e.preventDefault();
     let rect = this.canvas.getBoundingClientRect();
-    let x = event.clientX - rect.x;
-    let y = event.clientY - rect.y;
+    let x = e.clientX - rect.x;
+    let y = e.clientY - rect.y;
     let ctx = this.canvas.getContext('2d');
     this.selectedButton = null;
     if (this.closeButton.contains(x, y)) {
@@ -272,20 +272,20 @@ export class LineChart implements Movable {
     this.draw();
   };
 
-  private onMouseLeave = (event: MouseEvent): void => {
-    event.preventDefault();
+  private onMouseLeave = (e: MouseEvent): void => {
+    e.preventDefault();
     this.draw();
   };
 
-  private onTouchMove = (event: TouchEvent): void => {
-    event.preventDefault();
+  private onTouchMove = (e: TouchEvent): void => {
+    e.preventDefault();
   };
 
-  private onMouseClick = (event: MouseEvent): void => {
-    event.preventDefault();
+  private onMouseClick = (e: MouseEvent): void => {
+    e.preventDefault();
     let rect = this.canvas.getBoundingClientRect();
-    let x = event.clientX - rect.x;
-    let y = event.clientY - rect.y;
+    let x = e.clientX - rect.x;
+    let y = e.clientY - rect.y;
     if (this.closeButton.contains(x, y)) {
       this.setVisible(false);
     } else if (this.clearButton.contains(x, y)) {
@@ -295,8 +295,16 @@ export class LineChart implements Movable {
     }
   };
 
-  private onMouseDoubleClick = (event: MouseEvent): void => {
-    event.preventDefault();
+  private onMouseDoubleClick = (e: MouseEvent): void => {
+    e.preventDefault();
+  };
+
+  private openContextMenu = (e: MouseEvent): void => {
+    e.preventDefault();
+    let menu = document.getElementById("linechart-context-menu") as HTMLMenuElement;
+    menu.style.left = e.clientX + "px";
+    menu.style.top = e.clientY + "px";
+    menu.classList.add("show-menu");
   };
 
   public bringForward(): void {
@@ -331,10 +339,5 @@ export class LineChart implements Movable {
   public contains(x: number, y: number): boolean {
     return x > this.canvas.offsetLeft && x < this.canvas.offsetLeft + this.canvas.width && y > this.canvas.offsetTop && y < this.canvas.offsetTop + this.canvas.height;
   }
-
-  private openContextMenu = (event: TouchEvent): void => {
-    event.preventDefault();
-    console.log(event);
-  };
 
 }

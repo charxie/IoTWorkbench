@@ -127,7 +127,7 @@ export class RainbowHat extends Board {
       return;
     }
 
-  }
+  };
 
   private mouseUp = (e: MouseEvent): void => {
 
@@ -183,7 +183,7 @@ export class RainbowHat extends Board {
       return;
     }
 
-  }
+  };
 
   private mouseMove = (e: MouseEvent): void => {
 
@@ -235,7 +235,7 @@ export class RainbowHat extends Board {
     }
     this.draw();
 
-  }
+  };
 
   drawToolTips(): void {
     let context = this.canvas.getContext('2d');
