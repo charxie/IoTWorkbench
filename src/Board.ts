@@ -18,11 +18,9 @@ declare global {
 export abstract class Board implements Movable {
 
   readonly canvas: HTMLCanvasElement;
-  private imageId: string;
 
-  constructor(canvasId: string, imageId: string) {
+  constructor(canvasId: string) {
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-    this.imageId = imageId;
   }
 
   public getX(): number {
@@ -49,12 +47,7 @@ export abstract class Board implements Movable {
     return this.canvas.height;
   }
 
-  // draw the background image for this board
-  public draw(): void {
-    let context = this.canvas.getContext('2d');
-    let image = document.getElementById(this.imageId) as HTMLImageElement; // preload image
-    context.drawImage(image, 0, 0);
-  }
+  public abstract draw(): void;
 
   // detect if (x, y) is inside this board
   public contains(x: number, y: number): boolean {

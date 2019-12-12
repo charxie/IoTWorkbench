@@ -10,6 +10,9 @@ import {Sensor} from "./Sensor";
 import {system} from "./Main";
 import {Rectangle} from "./math/Rectangle";
 
+// @ts-ignore
+import rainbowHatImage from "./img/rainbow-hat.png";
+
 export class RainbowHat extends Board {
 
   public redLedLight: LedLight;
@@ -25,35 +28,39 @@ export class RainbowHat extends Board {
 
   private stateId: string = "rainbow_hat_default";
   private mouseOverObject: any;
+  private boardImage: HTMLImageElement;
 
   constructor(canvasId: string) {
-    super(canvasId, "rainbow-hat-image");
+    super(canvasId);
 
     this.canvas.addEventListener("mousedown", this.mouseDown, false);
     this.canvas.addEventListener("mouseup", this.mouseUp, false);
     this.canvas.addEventListener("mousemove", this.mouseMove, false);
     this.canvas.addEventListener('contextmenu', this.openContextMenu, false);
 
-    this.redLedLight = new LedLight(this, 'red', 100, 258, 18, 8);
-    this.greenLedLight = new LedLight(this, 'green', 182, 258, 18, 8);
-    this.blueLedLight = new LedLight(this, 'blue', 264, 258, 18, 8);
-    this.buttonA = new Button(this, 72, 270, 72, 22);
-    this.buttonB = new Button(this, 155, 270, 72, 22);
-    this.buttonC = new Button(this, 238, 270, 72, 22);
-    this.temperatureSensor = new Sensor(this, "Temperature", "°C", 186, 133, 10, 10);
-    this.barometricPressureSensor = new Sensor(this, "Pressure", "hPa", 228, 141, 8, 8);
+    this.redLedLight = new LedLight(this, 'red', 65, 233, 18, 8);
+    this.greenLedLight = new LedLight(this, 'green', 147, 233, 18, 8);
+    this.blueLedLight = new LedLight(this, 'blue', 230, 233, 18, 8);
+    this.buttonA = new Button(this, 38, 245, 72, 24);
+    this.buttonB = new Button(this, 120, 245, 72, 24);
+    this.buttonC = new Button(this, 203, 245, 72, 24);
+    this.temperatureSensor = new Sensor(this, "Temperature", "°C", 152, 108, 12, 12);
+    this.barometricPressureSensor = new Sensor(this, "Pressure", "hPa", 187, 115, 20, 10);
 
     this.handles.push(new Rectangle(5, 5, 30, 30));
-    this.handles.push(new Rectangle(448, 5, 30, 30));
-    this.handles.push(new Rectangle(448, 290, 30, 30));
-    this.handles.push(new Rectangle(5, 290, 30, 30));
+    this.handles.push(new Rectangle(290, 5, 30, 30));
+    this.handles.push(new Rectangle(290, 250, 30, 30));
+    this.handles.push(new Rectangle(5, 250, 30, 30));
+
+    this.boardImage = new Image();
+    this.boardImage.src = rainbowHatImage;
 
     this.updateFromFirebase();
   }
 
   public draw(): void {
     let context = this.canvas.getContext('2d');
-    super.draw();
+    context.drawImage(this.boardImage, 0, 0);
     this.redLedLight.draw(context);
     this.greenLedLight.draw(context);
     this.blueLedLight.draw(context);
