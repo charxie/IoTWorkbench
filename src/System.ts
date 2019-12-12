@@ -6,6 +6,7 @@ import {RainbowHat} from "./RainbowHat";
 import {LineChart} from "./LineChart";
 import {Workbench} from "./Workbench";
 import {Movable} from "./Movable";
+import {RaspberryPi} from "./RaspberryPi";
 
 declare var firebase;
 
@@ -14,7 +15,8 @@ export class System {
   static database;
 
   workbench: Workbench;
-  board: RainbowHat;
+  raspberryPi: RaspberryPi;
+  rainbowHat: RainbowHat;
   temperatureGraph: LineChart;
   pressureGraph: LineChart;
   playground: HTMLElement;
@@ -40,9 +42,10 @@ export class System {
     }
 
     this.workbench = new Workbench("workbench");
-    this.board = new RainbowHat("rainbow-hat");
-    this.temperatureGraph = new LineChart("temperature-linechart", this.board.temperatureSensor);
-    this.pressureGraph = new LineChart("pressure-linechart", this.board.barometricPressureSensor);
+    this.raspberryPi = new RaspberryPi("raspberry-pi");
+    this.rainbowHat = new RainbowHat("rainbow-hat");
+    this.temperatureGraph = new LineChart("temperature-linechart", this.rainbowHat.temperatureSensor);
+    this.pressureGraph = new LineChart("pressure-linechart", this.rainbowHat.barometricPressureSensor);
 
     this.playground = document.getElementById("playground");
     this.playground.addEventListener("mousedown", this.mouseDown, false);
@@ -56,8 +59,8 @@ export class System {
     let rect = this.playground.getBoundingClientRect();
     let x = e.clientX - rect.x;
     let y = e.clientY - rect.y;
-    if (this.board.whichHandle(x - this.board.getX(), y - this.board.getY()) >= 0) {
-      this.selectedMovable = this.board;
+    if (this.rainbowHat.whichHandle(x - this.rainbowHat.getX(), y - this.rainbowHat.getY()) >= 0) {
+      this.selectedMovable = this.rainbowHat;
     } else if (this.temperatureGraph.isVisible() && this.temperatureGraph.onHandle(x - this.temperatureGraph.getX(), y - this.temperatureGraph.getY())) {
       this.selectedMovable = this.temperatureGraph;
     } else if (this.pressureGraph.isVisible() && this.pressureGraph.onHandle(x - this.pressureGraph.getX(), y - this.pressureGraph.getY())) {
@@ -77,7 +80,9 @@ export class System {
     // close all menus upon mouse left click
     let menu = document.getElementById("workbench-context-menu") as HTMLMenuElement;
     menu.classList.remove("show-menu");
-    menu = document.getElementById("board-context-menu") as HTMLMenuElement;
+    menu = document.getElementById("raspberry-pi-context-menu") as HTMLMenuElement;
+    menu.classList.remove("show-menu");
+    menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
     menu.classList.remove("show-menu");
     menu = document.getElementById("linechart-context-menu") as HTMLMenuElement;
     menu.classList.remove("show-menu");

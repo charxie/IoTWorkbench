@@ -74,7 +74,7 @@ export class RainbowHat extends Board {
 
   private openContextMenu = (e: MouseEvent): void => {
     e.preventDefault();
-    let menu = document.getElementById("board-context-menu") as HTMLMenuElement;
+    let menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
     menu.style.left = e.clientX + "px";
     menu.style.top = e.clientY + "px";
     menu.classList.add("show-menu");
