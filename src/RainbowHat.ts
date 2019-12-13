@@ -2,7 +2,7 @@
  * @author Charles Xie
  */
 
-import {Board} from "./Board";
+import {Hat} from "../Hat";
 import {LedLight} from "./LedLight";
 import {Button} from "./Button";
 import {System} from "./System";
@@ -12,8 +12,9 @@ import {Rectangle} from "./math/Rectangle";
 
 // @ts-ignore
 import rainbowHatImage from "./img/rainbow-hat.png";
+import {RaspberryPi} from "./RaspberryPi";
 
-export class RainbowHat extends Board {
+export class RainbowHat extends Hat {
 
   public redLedLight: LedLight;
   public greenLedLight: LedLight;
@@ -23,8 +24,6 @@ export class RainbowHat extends Board {
   public buttonC: Button;
   public temperatureSensor: Sensor;
   public barometricPressureSensor: Sensor;
-
-  public handles: Rectangle[] = [];
 
   private stateId: string = "rainbow_hat_default";
   private mouseOverObject: any;
@@ -60,7 +59,14 @@ export class RainbowHat extends Board {
 
   public draw(): void {
     let context = this.canvas.getContext('2d');
+    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    context.save();
+    context.shadowOffsetX = 8;
+    context.shadowOffsetY = 8;
+    context.shadowColor = "rgb(96, 96, 96)";
+    context.shadowBlur = 8;
     context.drawImage(this.boardImage, 0, 0);
+    context.restore();
     this.redLedLight.draw(context);
     this.greenLedLight.draw(context);
     this.blueLedLight.draw(context);
@@ -70,6 +76,10 @@ export class RainbowHat extends Board {
     this.temperatureSensor.draw(context);
     this.barometricPressureSensor.draw(context);
     this.drawToolTips();
+  }
+
+  public attach(raspberryPi: RaspberryPi): void {
+    super.attach(raspberryPi);
   }
 
   private openContextMenu = (e: MouseEvent): void => {
@@ -275,35 +285,32 @@ export class RainbowHat extends Board {
     } else if (this.mouseOverObject == this.temperatureSensor) {
       x += this.temperatureSensor.x + this.temperatureSensor.width / 2;
       y += this.temperatureSensor.y;
-      context.drawTooltip(x, y, 20, 8, 10, 'Temperature Sensor', true);
+      context.drawTooltip(x, y, 20, 8, 10, 'Temperature sensor', true);
     } else if (this.mouseOverObject == this.barometricPressureSensor) {
       x += this.barometricPressureSensor.x + this.barometricPressureSensor.width / 2;
       y += this.barometricPressureSensor.y;
-      context.drawTooltip(x, y, 20, 8, 10, 'Barometric Pressure Sensor', true);
+      context.drawTooltip(x, y, 20, 8, 10, 'Barometric pressure sensor', true);
     } else if (this.mouseOverObject == this.handles[0]) {
+      this.drawHandle(this.mouseOverObject, context);
       x += this.handles[0].getXmax() + 20;
       y += this.handles[0].getYmax() + 30;
       context.drawTooltip(x, y, 20, 8, 10, 'Upper-left handle', true);
     } else if (this.mouseOverObject == this.handles[1]) {
+      this.drawHandle(this.mouseOverObject, context);
       x += this.handles[1].getXmin() - 30;
       y += this.handles[1].getYmax() + 30;
       context.drawTooltip(x, y, 20, 8, 10, 'Upper-right handle', true);
     } else if (this.mouseOverObject == this.handles[2]) {
+      this.drawHandle(this.mouseOverObject, context);
       x += this.handles[2].getXmin() - 30;
       y += this.handles[2].getYmin() - 5;
       context.drawTooltip(x, y, 20, 8, 10, 'Lower-right handle', true);
     } else if (this.mouseOverObject == this.handles[3]) {
+      this.drawHandle(this.mouseOverObject, context);
       x += this.handles[3].getXmax() + 20;
       y += this.handles[3].getYmin() - 5;
       context.drawTooltip(x, y, 20, 8, 10, 'Lower-left handle', true);
     }
-  }
-
-  whichHandle(x: number, y: number): number {
-    for (let i = 0; i < this.handles.length; i++) {
-      if (this.handles[i].contains(x, y)) return i;
-    }
-    return -1;
   }
 
   updateFirebase(value): void {

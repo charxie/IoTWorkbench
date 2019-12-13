@@ -2,13 +2,22 @@
  * @author Charles Xie
  */
 
+import {Workbench} from "./Workbench";
+import {RaspberryPi} from "./RaspberryPi";
 import {RainbowHat} from "./RainbowHat";
 import {LineChart} from "./LineChart";
-import {Workbench} from "./Workbench";
 import {Movable} from "./Movable";
-import {RaspberryPi} from "./RaspberryPi";
 
 declare var firebase;
+declare global {
+  interface CanvasRenderingContext2D {
+    drawTooltip(x, y, h, r, margin, text, centered);
+
+    drawRoundedRect(x, y, w, h, r);
+
+    fillRoundedRect(x, y, w, h, r);
+  }
+}
 
 export class System {
 
@@ -51,6 +60,7 @@ export class System {
     this.playground.addEventListener("mousedown", this.mouseDown, false);
     this.playground.addEventListener("mouseup", this.mouseUp, false);
     this.playground.addEventListener("mousemove", this.mouseMove, false);
+    this.playground.addEventListener("mouseleave", this.mouseLeave, false);
 
   }
 
@@ -65,6 +75,8 @@ export class System {
       this.selectedMovable = this.temperatureGraph;
     } else if (this.pressureGraph.isVisible() && this.pressureGraph.onHandle(x - this.pressureGraph.getX(), y - this.pressureGraph.getY())) {
       this.selectedMovable = this.pressureGraph;
+    } else if (this.raspberryPi.whichHandle(x - this.raspberryPi.getX(), y - this.raspberryPi.getY()) >= 0) {
+      this.selectedMovable = this.raspberryPi;
     } else {
       this.selectedMovable = null;
     }
@@ -72,7 +84,7 @@ export class System {
       this.mouseDownRelativeX = e.clientX - this.selectedMovable.getX();
       this.mouseDownRelativeY = e.clientY - this.selectedMovable.getY();
     }
-  }
+  };
 
   private mouseUp = (e: MouseEvent): void => {
     e.preventDefault();
@@ -86,14 +98,19 @@ export class System {
     menu.classList.remove("show-menu");
     menu = document.getElementById("linechart-context-menu") as HTMLMenuElement;
     menu.classList.remove("show-menu");
-  }
+  };
+
+  private mouseLeave = (e: MouseEvent): void => {
+    e.preventDefault();
+    this.selectedMovable = null;
+  };
 
   private mouseMove = (e: MouseEvent): void => {
     e.preventDefault();
     if (this.selectedMovable != null) {
       this.moveTo(e.clientX, e.clientY, this.selectedMovable);
     }
-  }
+  };
 
   private moveTo(x: number, y: number, m: Movable): void {
     let dx = x - this.mouseDownRelativeX;

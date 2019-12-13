@@ -24,15 +24,6 @@ body {
   background-color: white;
 }
 
-canvas {
-  cursor: default;
-  border: solid 2px #dddddd;
-  background-color: #f6f6f6;
-  display: block;
-  box-shadow: 5px 5px 5px gray;
-  border-radius: 8px;
-}
-
 #header {
   font: 32px 'Verdana';
   position: relative;

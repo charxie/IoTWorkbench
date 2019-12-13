@@ -2,22 +2,13 @@
  * @author Charles Xie
  */
 
-import {System} from "./System";
 import {Movable} from "./Movable";
-
-declare global {
-  interface CanvasRenderingContext2D {
-    drawTooltip(x, y, h, r, margin, text, centered);
-
-    drawRoundedRect(x, y, w, h, r);
-
-    fillRoundedRect(x, y, w, h, r);
-  }
-}
+import {Rectangle} from "./math/Rectangle";
 
 export abstract class Board implements Movable {
 
   readonly canvas: HTMLCanvasElement;
+  public handles: Rectangle[] = [];
 
   constructor(canvasId: string) {
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
@@ -59,5 +50,20 @@ export abstract class Board implements Movable {
   abstract updateFirebase(value): void;
 
   abstract updateFromFirebase(): void;
+
+  whichHandle(x: number, y: number): number {
+    for (let i = 0; i < this.handles.length; i++) {
+      if (this.handles[i].contains(x, y)) return i;
+    }
+    return -1;
+  }
+
+  drawHandle(handle: Rectangle, context: CanvasRenderingContext2D): void {
+    context.strokeStyle = "yellow";
+    context.beginPath();
+    context.rect(handle.x, handle.y, handle.width, handle.height);
+    context.stroke();
+    context.closePath();
+  }
 
 }
