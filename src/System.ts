@@ -109,6 +109,8 @@ export class System {
     e.preventDefault();
     if (this.selectedMovable != null) {
       this.moveTo(e.clientX, e.clientY, this.selectedMovable);
+      localStorage.setItem("X: " + this.selectedMovable.getUid(), this.selectedMovable.getX().toString());
+      localStorage.setItem("Y: " + this.selectedMovable.getUid(), this.selectedMovable.getY().toString());
     }
   };
 
@@ -129,6 +131,17 @@ export class System {
     }
     m.setX(dx);
     m.setY(dy);
+    if (m instanceof RainbowHat) {
+      if (m.raspberryPi != null) {
+        m.raspberryPi.setX(m.getX());
+        m.raspberryPi.setY(m.getY());
+      }
+    } else if (m instanceof RaspberryPi) {
+      if (m.hat != null) {
+        m.hat.setX(m.getX());
+        m.hat.setY(m.getY());
+      }
+    }
   }
 
 }

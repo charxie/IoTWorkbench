@@ -32,6 +32,7 @@ export class RainbowHat extends Hat {
   constructor(canvasId: string) {
     super(canvasId);
 
+    this.uid = "Rainbow HAT";
     this.canvas.addEventListener("mousedown", this.mouseDown, false);
     this.canvas.addEventListener("mouseup", this.mouseUp, false);
     this.canvas.addEventListener("mousemove", this.mouseMove, false);
@@ -53,6 +54,7 @@ export class RainbowHat extends Hat {
 
     this.boardImage = new Image();
     this.boardImage.src = rainbowHatImage;
+    this.setY(20);
 
     this.updateFromFirebase();
   }
@@ -80,6 +82,10 @@ export class RainbowHat extends Hat {
 
   public attach(raspberryPi: RaspberryPi): void {
     super.attach(raspberryPi);
+    if (raspberryPi != null) {
+      this.setX(raspberryPi.getX());
+      this.setY(raspberryPi.getY());
+    }
   }
 
   private openContextMenu = (e: MouseEvent): void => {
@@ -88,6 +94,18 @@ export class RainbowHat extends Hat {
     menu.style.left = e.clientX + "px";
     menu.style.top = e.clientY + "px";
     menu.classList.add("show-menu");
+    let attachMenuItem = document.getElementById("rainbow-hat-attach-menu-item") as HTMLElement;
+    let detachMenuItem = document.getElementById("rainbow-hat-detach-menu-item") as HTMLElement;
+    if (this.raspberryPi != null) {
+      attachMenuItem.className = "menu-item disabled";
+      detachMenuItem.className = "menu-item";
+    } else {
+      let r1 = new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+      let r2 = new Rectangle(system.raspberryPi.getX(), system.raspberryPi.getY(), system.raspberryPi.getWidth(), system.raspberryPi.getHeight());
+      let onTop = r1.intersectRect(r2);
+      attachMenuItem.className = onTop ? "menu-item" : "menu-item disabled";
+      detachMenuItem.className = "menu-item disabled";
+    }
   };
 
   private mouseDown = (e: MouseEvent): void => {
@@ -188,6 +206,7 @@ export class RainbowHat extends Hat {
         system.temperatureGraph.draw();
         system.temperatureGraph.bringForward();
       }
+      localStorage.setItem("Visible: " + system.temperatureGraph.getUid(), system.temperatureGraph.isVisible() ? "true" : "false");
       return;
     }
 
@@ -197,6 +216,7 @@ export class RainbowHat extends Hat {
         system.pressureGraph.draw();
         system.pressureGraph.bringForward();
       }
+      localStorage.setItem("Visible: " + system.pressureGraph.getUid(), system.pressureGraph.isVisible() ? "true" : "false");
       return;
     }
 

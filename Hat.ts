@@ -12,6 +12,13 @@ export abstract class Hat extends Board {
   public raspberryPi: RaspberryPi;
 
   public attach(raspberryPi: RaspberryPi): void {
+    if (raspberryPi != null) {
+      raspberryPi.hat = this;
+    } else {
+      if (this.raspberryPi != null) {
+        this.raspberryPi.hat = null;
+      }
+    }
     this.raspberryPi = raspberryPi;
   }
 

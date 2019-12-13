@@ -9,9 +9,14 @@ export abstract class Board implements Movable {
 
   readonly canvas: HTMLCanvasElement;
   public handles: Rectangle[] = [];
+  uid: string;
 
   constructor(canvasId: string) {
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+  }
+
+  public getUid(): string {
+    return this.uid;
   }
 
   public getX(): number {

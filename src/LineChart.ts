@@ -34,8 +34,10 @@ export class LineChart implements Movable {
   private closeButton = new Rectangle(0, 0, 14, 14);
   private clearButton = new Rectangle(0, 0, 14, 14);
   private selectedButton: Rectangle;
+  readonly uid: string;
 
   constructor(elementId: string, sensor: Sensor) {
+    this.uid = sensor.name + " graph";
     this.canvas = document.getElementById(elementId) as HTMLCanvasElement;
     this.sensor = sensor;
     this.yAxisLabel = sensor.name + " (" + sensor.unit + ")";
@@ -44,6 +46,10 @@ export class LineChart implements Movable {
     this.closeButton.y += 4;
     this.clearButton.x = this.canvas.width - 2 * (this.clearButton.width + 4);
     this.clearButton.y += 4;
+  }
+
+  public getUid(): string {
+    return this.uid;
   }
 
   public setVisible(visible: boolean): void {

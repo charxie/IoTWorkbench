@@ -8,6 +8,7 @@ import {Board} from "./Board";
 // @ts-ignore
 import raspberryPiImage from "./img/raspberry-pi.png";
 import {Rectangle} from "./math/Rectangle";
+import {system} from "./Main";
 
 export class RaspberryPi extends Board {
 
@@ -19,6 +20,7 @@ export class RaspberryPi extends Board {
   constructor(canvasId: string) {
     super(canvasId);
 
+    this.uid = "Raspberry Pi";
     this.canvas.addEventListener("mousedown", this.mouseDown, false);
     this.canvas.addEventListener("mouseup", this.mouseUp, false);
     this.canvas.addEventListener("mousemove", this.mouseMove, false);
@@ -31,6 +33,8 @@ export class RaspberryPi extends Board {
 
     this.boardImage = new Image();
     this.boardImage.src = raspberryPiImage;
+    this.setX(20);
+    this.setY(20);
 
     this.updateFromFirebase();
   }

@@ -4,6 +4,8 @@
 
 export interface Movable {
 
+  getUid(): string;
+
   getX(): number;
 
   setX(x: number): void;

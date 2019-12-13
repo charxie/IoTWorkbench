@@ -44,6 +44,10 @@ export class Rectangle {
     return px > this.x && px < this.x + this.width && py > this.y && py < this.y + this.height;
   }
 
+  public intersectRect(r: Rectangle): boolean {
+    return !(r.x > this.getXmax() || r.getXmax() < this.x || r.y > this.getYmax() || r.getYmax() < this.y);
+  }
+
   public toString(): string {
     return "[" + this.x + ", " + this.y + ", " + this.width + ", " + this.height + "]";
   }
