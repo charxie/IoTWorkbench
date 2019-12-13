@@ -44,6 +44,13 @@ window.onload = function () {
   restoreLocation(system.pressureGraph);
   restoreVisibility(system.temperatureGraph);
   restoreVisibility(system.pressureGraph);
+  let x: string = localStorage.getItem("Attached: " + system.rainbowHat.getUid());
+  if (x != null) {
+    let i = parseInt(x);
+    if (i >= 0) {
+      system.rainbowHat.attach(system.raspberryPi);
+    }
+  }
 
   draw();
 

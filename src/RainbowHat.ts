@@ -85,6 +85,9 @@ export class RainbowHat extends Hat {
     if (raspberryPi != null) {
       this.setX(raspberryPi.getX());
       this.setY(raspberryPi.getY());
+      localStorage.setItem("Attached: " + this.getUid(), "0");
+    } else {
+      localStorage.setItem("Attached: " + this.getUid(), "-1");
     }
   }
 

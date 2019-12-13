@@ -294,6 +294,7 @@ export class LineChart implements Movable {
     let y = e.clientY - rect.y;
     if (this.closeButton.contains(x, y)) {
       this.setVisible(false);
+      localStorage.setItem("Visible: " + this.getUid(), "false");
     } else if (this.clearButton.contains(x, y)) {
       this.sensor.data.length = 0;
     } else {

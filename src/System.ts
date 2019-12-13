@@ -109,10 +109,25 @@ export class System {
     e.preventDefault();
     if (this.selectedMovable != null) {
       this.moveTo(e.clientX, e.clientY, this.selectedMovable);
-      localStorage.setItem("X: " + this.selectedMovable.getUid(), this.selectedMovable.getX().toString());
-      localStorage.setItem("Y: " + this.selectedMovable.getUid(), this.selectedMovable.getY().toString());
+      this.storeLocation(this.selectedMovable);
     }
   };
+
+  private storeLocation(m: Movable): void {
+    localStorage.setItem("X: " + m.getUid(), m.getX().toString());
+    localStorage.setItem("Y: " + m.getUid(), m.getY().toString());
+    if (m instanceof RainbowHat) {
+      if (m.raspberryPi != null) {
+        localStorage.setItem("X: " + m.raspberryPi.getUid(), m.raspberryPi.getX().toString());
+        localStorage.setItem("Y: " + m.raspberryPi.getUid(), m.raspberryPi.getY().toString());
+      }
+    } else if (m instanceof RaspberryPi) {
+      if (m.hat != null) {
+        localStorage.setItem("X: " + m.hat.getUid(), m.hat.getX().toString());
+        localStorage.setItem("Y: " + m.hat.getUid(), m.hat.getY().toString());
+      }
+    }
+  }
 
   private moveTo(x: number, y: number, m: Movable): void {
     let dx = x - this.mouseDownRelativeX;
