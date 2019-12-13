@@ -12,6 +12,7 @@ import {LineChartContextMenu} from "./LineChartContextMenu";
 import {RaspberryPiContextMenu} from "./RaspberryPiContextMenu";
 import {Movable} from "./Movable";
 import {LineChart} from "./LineChart";
+import {ToolsPanel} from "./ToolsPanel";
 
 export let system = new System();
 export let user = new User("Charles", null, "Xie");
@@ -36,6 +37,8 @@ window.onload = function () {
   rainbowHatContextMenu.addListeners();
   let lineChartContextMenu = new LineChartContextMenu();
   lineChartContextMenu.render("linechart-context-menu-placeholder");
+  let toolsPanel = new ToolsPanel();
+  toolsPanel.render("tools-panel");
 
   // read locally stored properties
   restoreLocation(system.raspberryPi);

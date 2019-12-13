@@ -60,7 +60,7 @@ export class System {
     this.playground.addEventListener("mousedown", this.mouseDown, false);
     this.playground.addEventListener("mouseup", this.mouseUp, false);
     this.playground.addEventListener("mousemove", this.mouseMove, false);
-    this.playground.addEventListener("mouseleave", this.mouseLeave, false);
+    document.addEventListener("mouseleave", this.mouseLeave, false);
 
   }
 
@@ -132,15 +132,15 @@ export class System {
   private moveTo(x: number, y: number, m: Movable): void {
     let dx = x - this.mouseDownRelativeX;
     let dy = y - this.mouseDownRelativeY;
-    let xmax = this.workbench.getWidth() - m.getWidth();
-    if (dx < 0) {
-      dx = 0;
+    let xmax = this.workbench.getX() + this.workbench.getWidth() - m.getWidth();
+    if (dx < this.workbench.getX()) {
+      dx = this.workbench.getX();
     } else if (dx > xmax) {
       dx = xmax;
     }
-    let ymax = this.workbench.getHeight() - m.getHeight();
-    if (dy < 0) {
-      dy = 0;
+    let ymax = this.workbench.getY() + this.workbench.getHeight() - m.getHeight();
+    if (dy < this.workbench.getY()) {
+      dy = this.workbench.getY();
     } else if (dy > ymax) {
       dy = ymax;
     }

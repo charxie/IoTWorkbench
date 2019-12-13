@@ -2,6 +2,8 @@
  * @author Charles Xie
  */
 
+import {system} from "./Main";
+
 export class Workbench {
 
   readonly canvas: HTMLCanvasElement;
@@ -41,6 +43,14 @@ export class Workbench {
   // detect if (x, y) is inside this workbench
   public contains(x: number, y: number): boolean {
     return x > this.canvas.offsetLeft && x < this.canvas.offsetLeft + this.canvas.width && y > this.canvas.offsetTop && y < this.canvas.offsetTop + this.canvas.height;
+  }
+
+  public getX(): number {
+    return 10;
+  }
+
+  public getY(): number {
+    return 10;
   }
 
   public getWidth(): number {

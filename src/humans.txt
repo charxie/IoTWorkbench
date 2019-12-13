@@ -3,11 +3,11 @@
 
 # TEAM
 
-    <name> -- <role> -- <twitter>
+    <name> Charles Xie <role> Developer <twitter> @qianxie
 
 # THANKS
 
-    <name>
+    <name> National Science Foundation
 
 # TECHNOLOGY COLOPHON
 

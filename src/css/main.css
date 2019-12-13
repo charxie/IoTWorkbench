@@ -53,6 +53,25 @@ body {
   padding-right: 8px
 }
 
+#tools-panel {
+  position: absolute;
+  right: 20px;
+  top: 80px;
+  bottom: 60px;
+  width: 120px;
+  margin: auto;
+  z-index: 20000;
+  background-color: lightgray;
+  border: 2px solid gray;
+  text-align: center;
+  font-family: 'sans-serif', 'Arial';
+  font-size: 10px;
+  line-height: 5px;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 2px 2px #888888;
+}
+
 /*
  * Remove text-shadow in selection highlight:
  * https://twitter.com/miketaylr/status/12228805301
