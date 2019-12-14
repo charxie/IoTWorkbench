@@ -56,7 +56,7 @@ export class System {
     this.temperatureGraph = new LineChart("temperature-linechart", this.rainbowHat.temperatureSensor);
     this.pressureGraph = new LineChart("pressure-linechart", this.rainbowHat.barometricPressureSensor);
 
-    this.playground = document.getElementById("playground");
+    this.playground = document.getElementById("digital-twins-playground");
     this.playground.addEventListener("mousedown", this.mouseDown, false);
     this.playground.addEventListener("mouseup", this.mouseUp, false);
     this.playground.addEventListener("mousemove", this.mouseMove, false);

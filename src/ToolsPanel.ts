@@ -5,7 +5,7 @@
 export class ToolsPanel {
 
   getUi(): string {
-    return `<h1><span style="background-color: #1c94c4">Tools</span></h1><h2>Boards</h2>`;
+    return `<div style="overflow-y: auto; height:300px;"><h1>Tools</h1><h2>Boards</h2></div>`;
   }
 
   render(selectorId: string): void {

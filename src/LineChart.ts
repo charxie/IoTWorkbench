@@ -310,7 +310,7 @@ export class LineChart implements Movable {
     e.preventDefault();
     let menu = document.getElementById("linechart-context-menu") as HTMLMenuElement;
     menu.style.left = e.clientX + "px";
-    menu.style.top = e.clientY + "px";
+    menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
     menu.classList.add("show-menu");
   };
 

@@ -95,7 +95,7 @@ export class RainbowHat extends Hat {
     e.preventDefault();
     let menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
     menu.style.left = e.clientX + "px";
-    menu.style.top = e.clientY + "px";
+    menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
     menu.classList.add("show-menu");
     let attachMenuItem = document.getElementById("rainbow-hat-attach-menu-item") as HTMLElement;
     let detachMenuItem = document.getElementById("rainbow-hat-detach-menu-item") as HTMLElement;
