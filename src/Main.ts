@@ -13,9 +13,21 @@ import {RaspberryPiContextMenu} from "./RaspberryPiContextMenu";
 import {Movable} from "./Movable";
 import {LineChart} from "./LineChart";
 import {ToolsPanel} from "./ToolsPanel";
+import {Code} from "../Code";
 
 export let system = new System();
+export let code = new Code();
 export let user = new User("Charles", null, "Xie");
+
+declare global {
+  interface CanvasRenderingContext2D {
+    drawTooltip(x, y, h, r, margin, text, centered);
+
+    drawRoundedRect(x, y, w, h, r);
+
+    fillRoundedRect(x, y, w, h, r);
+  }
+}
 
 window.onload = function () {
 
@@ -32,13 +44,13 @@ window.onload = function () {
   digitalTwinsTabButton.addEventListener("click", function (event) {
     selectTab(digitalTwinsTabButton, "digital-twins-playground");
   });
-  let circuitDiagramTabButton = document.getElementById("circuit-diagram-tab-button") as HTMLButtonElement;
-  circuitDiagramTabButton.addEventListener("click", function (event) {
-    selectTab(circuitDiagramTabButton, "circuit-diagram");
+  let diagramTabButton = document.getElementById("diagram-tab-button") as HTMLButtonElement;
+  diagramTabButton.addEventListener("click", function (event) {
+    selectTab(diagramTabButton, "diagram-playground");
   });
-  let visualCodeTabButton = document.getElementById("visual-code-tab-button") as HTMLButtonElement;
-  visualCodeTabButton.addEventListener("click", function (event) {
-    selectTab(visualCodeTabButton, "visual-code");
+  let codeTabButton = document.getElementById("code-tab-button") as HTMLButtonElement;
+  codeTabButton.addEventListener("click", function (event) {
+    selectTab(codeTabButton, "code-playground");
   });
 
   let workbenchContextMenu = new WorkbenchContextMenu();
@@ -68,6 +80,7 @@ window.onload = function () {
     }
   }
 
+  resize();
   draw();
 
 };
@@ -108,14 +121,20 @@ function restoreLocation(m: Movable) {
 }
 
 window.onresize = function () {
+  resize();
   draw();
 };
 
-function draw() {
+function resize() {
   let workbenchRect = system.workbench.canvas.getBoundingClientRect() as DOMRect;
   system.workbench.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
   system.workbench.canvas.height = window.innerHeight - workbenchRect.top - 50;
-  system.workbench.draw();
-  system.raspberryPi.draw();
-  system.rainbowHat.draw();
+  let codespaceRect = code.codespace.canvas.getBoundingClientRect() as DOMRect;
+  code.codespace.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
+  code.codespace.canvas.height = window.innerHeight - workbenchRect.top - 50;
+}
+
+function draw() {
+  system.draw();
+  code.draw();
 }

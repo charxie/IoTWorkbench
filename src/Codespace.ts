@@ -2,11 +2,14 @@
  * @author Charles Xie
  */
 
-export class Workbench {
+import {Block} from "../Block";
+import {Point} from "./math/Point";
+
+export class Codespace {
+
+  private blocks: Block[] = [];
 
   readonly canvas: HTMLCanvasElement;
-
-  private gridSize: number = 20;
 
   constructor(canvasId: string) {
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
@@ -14,28 +17,37 @@ export class Workbench {
     this.canvas.addEventListener("mouseup", this.mouseUp.bind(this), false);
     this.canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
     this.canvas.addEventListener('contextmenu', this.openContextMenu.bind(this), false);
+    this.blocks.push(new Block(20, 20, 160, 100, "X + Y"));
+    this.blocks.push(new Block(220, 220, 160, 100, "X * Y"));
   }
 
   public draw(): void {
-    let context = this.canvas.getContext('2d');
-    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.drawGrid(context);
+    let ctx = this.canvas.getContext('2d');
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    for (let i = 0; i < this.blocks.length; i++) {
+      this.blocks[i].draw(ctx);
+    }
+
+    let points = [];
+    points.push(new Point(188, 70));
+    points.push(new Point(240, 140));
+    points.push(new Point(20, 200));
+    points.push(new Point(212, 288));
+    this.drawSpline(points, ctx);
+
   }
 
-  public drawGrid(context: CanvasRenderingContext2D): void {
-    context.beginPath();
-    context.strokeStyle = "LightSkyBlue";
-    for (let i = 1; i <= this.canvas.height / this.gridSize; i++) {
-      context.moveTo(0, i * this.gridSize);
-      context.lineTo(this.canvas.width, i * this.gridSize);
+  private drawSpline(points: Point[], ctx: CanvasRenderingContext2D) {
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    let i;
+    for (i = 1; i < points.length - 2; i++) {
+      let xc = (points[i].x + points[i + 1].x) / 2;
+      let yc = (points[i].y + points[i + 1].y) / 2;
+      ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
     }
-    for (let i = 1; i <= this.canvas.width / this.gridSize; i++) {
-      context.moveTo(i * this.gridSize, 0);
-      context.lineTo(i * this.gridSize, this.canvas.height);
-    }
-    context.stroke();
-    context.closePath();
-    context.restore();
+    ctx.quadraticCurveTo(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y);
+    ctx.stroke();
   }
 
   // detect if (x, y) is inside this workbench

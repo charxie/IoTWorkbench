@@ -7,17 +7,9 @@ import {RaspberryPi} from "./RaspberryPi";
 import {RainbowHat} from "./RainbowHat";
 import {LineChart} from "./LineChart";
 import {Movable} from "./Movable";
+import {system} from "./Main";
 
 declare var firebase;
-declare global {
-  interface CanvasRenderingContext2D {
-    drawTooltip(x, y, h, r, margin, text, centered);
-
-    drawRoundedRect(x, y, w, h, r);
-
-    fillRoundedRect(x, y, w, h, r);
-  }
-}
 
 export class System {
 
@@ -62,6 +54,12 @@ export class System {
     this.playground.addEventListener("mousemove", this.mouseMove, false);
     document.addEventListener("mouseleave", this.mouseLeave, false);
 
+  }
+
+  draw(): void {
+    this.workbench.draw();
+    this.raspberryPi.draw();
+    this.rainbowHat.draw();
   }
 
   private mouseDown = (e: MouseEvent): void => {
