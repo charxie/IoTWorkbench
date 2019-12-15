@@ -24,6 +24,7 @@ export class RainbowHat extends Hat {
   public buttonC: Button;
   public temperatureSensor: Sensor;
   public barometricPressureSensor: Sensor;
+  public rgbLedLights: LedLight[] = [];
 
   private stateId: string = "rainbow_hat_default";
   private mouseOverObject: any;
@@ -38,14 +39,21 @@ export class RainbowHat extends Hat {
     this.canvas.addEventListener("mousemove", this.mouseMove, false);
     this.canvas.addEventListener('contextmenu', this.openContextMenu, false);
 
-    this.redLedLight = new LedLight(this, 'red', 65, 233, 18, 8);
-    this.greenLedLight = new LedLight(this, 'green', 147, 233, 18, 8);
-    this.blueLedLight = new LedLight(this, 'blue', 230, 233, 18, 8);
+    this.redLedLight = new LedLight(this, "LED Light", "red", 4, 8, 10, 65, 233, 18, 8);
+    this.greenLedLight = new LedLight(this, "LED Light", "green", 4, 8, 10, 147, 233, 18, 8);
+    this.blueLedLight = new LedLight(this, "LED Light", "blue", 4, 8, 10, 230, 233, 18, 8);
     this.buttonA = new Button(this, 38, 245, 72, 24);
     this.buttonB = new Button(this, 120, 245, 72, 24);
     this.buttonC = new Button(this, 203, 245, 72, 24);
     this.temperatureSensor = new Sensor(this, "Temperature", "°C", 152, 108, 12, 12);
     this.barometricPressureSensor = new Sensor(this, "Pressure", "hPa", 187, 115, 20, 10);
+    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 251, 78, 20, 20));
+    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 218, 62, 20, 20));
+    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 183, 53, 20, 20));
+    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 147, 50, 20, 20));
+    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 111, 53, 20, 20));
+    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 76, 62, 20, 20));
+    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 44, 78, 20, 20));
 
     this.handles.push(new Rectangle(5, 5, 30, 30));
     this.handles.push(new Rectangle(290, 5, 30, 30));
@@ -60,24 +68,27 @@ export class RainbowHat extends Hat {
   }
 
   public draw(): void {
-    let context = this.canvas.getContext('2d');
-    context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    context.save();
-    context.shadowOffsetX = 8;
-    context.shadowOffsetY = 8;
-    context.shadowColor = "rgb(96, 96, 96)";
-    context.shadowBlur = 8;
-    context.drawImage(this.boardImage, 0, 0);
-    context.restore();
-    this.redLedLight.draw(context);
-    this.greenLedLight.draw(context);
-    this.blueLedLight.draw(context);
-    this.buttonA.draw(context);
-    this.buttonB.draw(context);
-    this.buttonC.draw(context);
-    this.temperatureSensor.draw(context);
-    this.barometricPressureSensor.draw(context);
+    let ctx = this.canvas.getContext('2d');
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.save();
+    ctx.shadowOffsetX = 8;
+    ctx.shadowOffsetY = 8;
+    ctx.shadowColor = "rgb(96, 96, 96)";
+    ctx.shadowBlur = 8;
+    ctx.drawImage(this.boardImage, 0, 0);
+    ctx.restore();
+    this.redLedLight.draw(ctx);
+    this.greenLedLight.draw(ctx);
+    this.blueLedLight.draw(ctx);
+    this.buttonA.draw(ctx);
+    this.buttonB.draw(ctx);
+    this.buttonC.draw(ctx);
+    this.temperatureSensor.draw(ctx);
+    this.barometricPressureSensor.draw(ctx);
     this.drawToolTips();
+    for (let i = 0; i < this.rgbLedLights.length; i++) {
+      this.rgbLedLights[i].draw(ctx);
+    }
   }
 
   public attach(raspberryPi: RaspberryPi): void {
@@ -349,6 +360,15 @@ export class RainbowHat extends Hat {
         that.redLedLight.on = childData.redLed;
         that.greenLedLight.on = childData.greenLed;
         that.blueLedLight.on = childData.blueLed;
+        if (childData.rainbowRgb) {
+          for (let i = 0; i < that.rgbLedLights.length; i++) {
+            let r = childData.rainbowRgb[i][0];
+            let g = childData.rainbowRgb[i][1];
+            let b = childData.rainbowRgb[i][2];
+            that.rgbLedLights[i].on = r > 0 || g > 0 || b > 0;
+            that.rgbLedLights[i].color = "rgb(" + r + "," + g + "," + b + ")";
+          }
+        }
         if (childData.allowTemperatureTransmission) {
           that.temperatureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
           that.temperatureSensor.data.push(<number>childData.temperature);

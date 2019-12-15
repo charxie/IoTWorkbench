@@ -8,21 +8,25 @@ import {ElectronicComponent} from "./ElectronicComponent";
 export class LedLight implements ElectronicComponent {
 
   name: string;
+  color: string = "red";
+  radius: number = 4;
+  rays: number = 8;
+  rayLength: number = 5;
   x: number;
   y: number;
   width: number;
   height: number;
   on: boolean = false;
 
-  private radius: number = 4;
-  private rays: number = 8;
-  private color: string = "red";
   private readonly board: Board;
 
-  constructor(board: Board, color: string, x: number, y: number, width: number, height: number) {
-    this.name = "LED Light";
+  constructor(board: Board, name: string, color: string, radius: number, rays: number, rayLength: number, x: number, y: number, width: number, height: number) {
     this.board = board;
+    this.name = name;
     this.color = color;
+    this.radius = radius;
+    this.rays = rays;
+    this.rayLength = rayLength;
     this.x = x;
     this.y = y;
     this.width = width;
@@ -30,27 +34,30 @@ export class LedLight implements ElectronicComponent {
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
+    ctx.save();
     if (this.on) {
       ctx.beginPath();
       ctx.lineWidth = 1;
-      ctx.strokeStyle = this.color;
-      ctx.fillStyle = this.color;
       let centerX = this.x + this.width / 2;
       let centerY = this.y + this.height / 2;
+      let gradient = ctx.createRadialGradient(centerX, centerY, this.radius * 0.25, centerX, centerY, this.radius);
+      gradient.addColorStop(1, "rgba(255,255,255,0)");
+      gradient.addColorStop(0, this.color);
+      ctx.fillStyle = gradient;
       ctx.arc(centerX, centerY, this.radius, 0, Math.PI * 2);
-      ctx.fill();
       ctx.closePath();
+      ctx.fill();
       let x1, y1, x2, y2;
       let angle, cos, sin;
-      let gap = 2;
+      ctx.strokeStyle = "white";
       for (let i = 0; i < this.rays; i++) {
         angle = i * Math.PI * 2 / this.rays;
         cos = Math.cos(angle);
         sin = Math.sin(angle);
-        x1 = centerX + this.radius * cos;
-        y1 = centerY + this.radius * sin;
-        x2 = centerX + (this.radius * 3 + gap) * cos;
-        y2 = centerY + (this.radius * 3 + gap) * sin;
+        x1 = centerX + this.radius * cos * 2 / 3;
+        y1 = centerY + this.radius * sin * 2 / 3;
+        x2 = centerX + (this.radius + this.rayLength) * cos;
+        y2 = centerY + (this.radius + this.rayLength) * sin;
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
@@ -65,6 +72,7 @@ export class LedLight implements ElectronicComponent {
       ctx.stroke();
       ctx.closePath();
     }
+    ctx.restore();
   }
 
   public contains(x: number, y: number): boolean {
