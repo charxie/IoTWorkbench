@@ -4,11 +4,12 @@
 
 import {Board} from "./Board";
 import {ElectronicComponent} from "./ElectronicComponent";
+import {Util} from "./Util";
 
 export class LedLight implements ElectronicComponent {
 
   name: string;
-  color: string = "red";
+  color: string = "#ff0000";
   radius: number = 4;
   rays: number = 8;
   rayLength: number = 5;
@@ -40,30 +41,35 @@ export class LedLight implements ElectronicComponent {
       ctx.lineWidth = 1;
       let centerX = this.x + this.width / 2;
       let centerY = this.y + this.height / 2;
-      let gradient = ctx.createRadialGradient(centerX, centerY, this.radius * 0.25, centerX, centerY, this.radius);
-      gradient.addColorStop(1, "rgba(255,255,255,0)");
-      gradient.addColorStop(0, this.color);
-      ctx.fillStyle = gradient;
+      if (this.radius < 8) {
+        let x1, y1, x2, y2;
+        let angle, cos, sin;
+        ctx.strokeStyle = "white";
+        for (let i = 0; i < this.rays; i++) {
+          angle = i * Math.PI * 2 / this.rays;
+          cos = Math.cos(angle);
+          sin = Math.sin(angle);
+          x1 = centerX + this.radius * cos * 2 / 3;
+          y1 = centerY + this.radius * sin * 2 / 3;
+          x2 = centerX + (this.radius + this.rayLength) * cos;
+          y2 = centerY + (this.radius + this.rayLength) * sin;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+          ctx.closePath();
+        }
+        ctx.fillStyle = this.color;
+      } else {
+        let gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, this.radius);
+        gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+        gradient.addColorStop(0.5, Util.adjust(this.color, -100));
+        gradient.addColorStop(0, Util.adjust(this.color, 100));
+        ctx.fillStyle = gradient;
+      }
       ctx.arc(centerX, centerY, this.radius, 0, Math.PI * 2);
       ctx.closePath();
       ctx.fill();
-      let x1, y1, x2, y2;
-      let angle, cos, sin;
-      ctx.strokeStyle = "white";
-      for (let i = 0; i < this.rays; i++) {
-        angle = i * Math.PI * 2 / this.rays;
-        cos = Math.cos(angle);
-        sin = Math.sin(angle);
-        x1 = centerX + this.radius * cos * 2 / 3;
-        y1 = centerY + this.radius * sin * 2 / 3;
-        x2 = centerX + (this.radius + this.rayLength) * cos;
-        y2 = centerY + (this.radius + this.rayLength) * sin;
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
-        ctx.closePath();
-      }
     } else {
       ctx.beginPath();
       ctx.lineWidth = 2;

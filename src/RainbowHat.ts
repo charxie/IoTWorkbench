@@ -14,6 +14,7 @@ import {Rectangle} from "./math/Rectangle";
 import rainbowHatImage from "./img/rainbow-hat.png";
 import {RaspberryPi} from "./RaspberryPi";
 import {LedDisplay} from "./LedDisplay";
+import {Util} from "./Util";
 
 export class RainbowHat extends Hat {
 
@@ -386,7 +387,8 @@ export class RainbowHat extends Hat {
             let g = childData.rainbowRgb[i][1];
             let b = childData.rainbowRgb[i][2];
             that.rgbLedLights[i].on = r > 0 || g > 0 || b > 0;
-            that.rgbLedLights[i].color = "rgb(" + r + "," + g + "," + b + ")";
+            //that.rgbLedLights[i].color = "rgb(" + r + "," + g + "," + b + ")";
+            that.rgbLedLights[i].color = Util.rgbToHex(r, g, b);
           }
         }
         if (childData.allowTemperatureTransmission) {
