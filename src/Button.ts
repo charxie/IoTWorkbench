@@ -16,8 +16,9 @@ export class Button {
   private readonly board: Board;
   private pressedColor: string = '#66cccccc';
 
-  constructor(board: Board, x: number, y: number, width: number, height: number) {
+  constructor(board: Board, name: string, x: number, y: number, width: number, height: number) {
     this.board = board;
+    this.name = name;
     this.x = x;
     this.y = y;
     this.width = width;

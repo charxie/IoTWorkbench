@@ -15,6 +15,7 @@ import rainbowHatImage from "./img/rainbow-hat.png";
 import {RaspberryPi} from "./RaspberryPi";
 import {LedDisplay} from "./LedDisplay";
 import {Util} from "./Util";
+import {Buzzer} from "./Buzzer";
 
 export class RainbowHat extends Hat {
 
@@ -24,6 +25,7 @@ export class RainbowHat extends Hat {
   public buttonA: Button;
   public buttonB: Button;
   public buttonC: Button;
+  public buzzer: Buzzer;
   public temperatureSensor: Sensor;
   public barometricPressureSensor: Sensor;
   public rgbLedLights: LedLight[] = [];
@@ -46,9 +48,10 @@ export class RainbowHat extends Hat {
     this.redLedLight = new LedLight(this, "LED Light", "red", 4, 8, 10, 65, 233, 18, 8);
     this.greenLedLight = new LedLight(this, "LED Light", "green", 4, 8, 10, 147, 233, 18, 8);
     this.blueLedLight = new LedLight(this, "LED Light", "blue", 4, 8, 10, 230, 233, 18, 8);
-    this.buttonA = new Button(this, 38, 245, 72, 24);
-    this.buttonB = new Button(this, 120, 245, 72, 24);
-    this.buttonC = new Button(this, 203, 245, 72, 24);
+    this.buttonA = new Button(this, "Button A", 38, 245, 72, 24);
+    this.buttonB = new Button(this, "Button B", 120, 245, 72, 24);
+    this.buttonC = new Button(this, "Button C", 203, 245, 72, 24);
+    this.buzzer = new Buzzer(this, "Piezo Buzzer", 35, 170, 20, 20);
     this.temperatureSensor = new Sensor(this, "Temperature", "°C", 152, 108, 12, 12);
     this.barometricPressureSensor = new Sensor(this, "Pressure", "hPa", 187, 115, 20, 10);
     this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 251, 78, 20, 20));
@@ -98,6 +101,7 @@ export class RainbowHat extends Hat {
     this.buttonA.draw(ctx);
     this.buttonB.draw(ctx);
     this.buttonC.draw(ctx);
+    this.buzzer.draw(ctx);
     this.temperatureSensor.draw(ctx);
     this.barometricPressureSensor.draw(ctx);
     this.drawToolTips();
@@ -176,6 +180,7 @@ export class RainbowHat extends Hat {
       this.redLedLight.on = true;
       this.redLedLight.draw(context);
       this.updateFirebase({redLed: true});
+      this.buzzer.beep(1, 800, 200);
       return;
     }
 
@@ -185,6 +190,7 @@ export class RainbowHat extends Hat {
       this.greenLedLight.on = true;
       this.greenLedLight.draw(context);
       this.updateFirebase({greenLed: true});
+      this.buzzer.beep(1, 400, 200);
       return;
     }
 
@@ -194,6 +200,7 @@ export class RainbowHat extends Hat {
       this.blueLedLight.on = true;
       this.blueLedLight.draw(context);
       this.updateFirebase({blueLed: true});
+      this.buzzer.beep(1, 200, 200);
       return;
     }
 
