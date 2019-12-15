@@ -27,6 +27,10 @@ declare global {
 
     fillRoundedRect(x, y, w, h, r);
   }
+
+  interface String {
+    startsWith(s);
+  }
 }
 
 window.onload = function () {

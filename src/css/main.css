@@ -24,6 +24,11 @@ body {
   background-color: white;
 }
 
+@font-face{
+  font-family: 'digital-clock-font';
+  src: url('./font/radioland.ttf');
+}
+
 #header {
   font: 32px 'Verdana';
   position: relative;

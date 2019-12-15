@@ -33,7 +33,7 @@ export class LedLight implements ElectronicComponent {
     this.height = height;
   }
 
-  public draw(ctx: CanvasRenderingContext2D) {
+  public draw(ctx: CanvasRenderingContext2D): void {
     ctx.save();
     if (this.on) {
       ctx.beginPath();
@@ -79,7 +79,7 @@ export class LedLight implements ElectronicComponent {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height;
   }
 
-  public toggle(x: number, y: number) {
+  public toggle(x: number, y: number): boolean {
     let inside = this.contains(x, y);
     if (inside) {
       this.on = !this.on;

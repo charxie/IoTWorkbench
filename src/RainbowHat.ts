@@ -13,6 +13,7 @@ import {Rectangle} from "./math/Rectangle";
 // @ts-ignore
 import rainbowHatImage from "./img/rainbow-hat.png";
 import {RaspberryPi} from "./RaspberryPi";
+import {LedDisplay} from "./LedDisplay";
 
 export class RainbowHat extends Hat {
 
@@ -25,6 +26,8 @@ export class RainbowHat extends Hat {
   public temperatureSensor: Sensor;
   public barometricPressureSensor: Sensor;
   public rgbLedLights: LedLight[] = [];
+  public alphanumericDisplays: LedDisplay[] = [];
+  public decimalPointDisplays: LedDisplay[] = [];
 
   private stateId: string = "rainbow_hat_default";
   private mouseOverObject: any;
@@ -54,6 +57,17 @@ export class RainbowHat extends Hat {
     this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 111, 53, 20, 20));
     this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 76, 62, 20, 20));
     this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 44, 78, 20, 20));
+    this.alphanumericDisplays.push(new LedDisplay(this, "LED Display", 34, 214, 33, 65));
+    this.alphanumericDisplays.push(new LedDisplay(this, "LED Display", 95, 214, 33, 65));
+    this.alphanumericDisplays.push(new LedDisplay(this, "LED Display", 156, 214, 33, 65));
+    this.alphanumericDisplays.push(new LedDisplay(this, "LED Display", 218, 214, 33, 65));
+    this.decimalPointDisplays.push(new LedDisplay(this, "LED Display", 78, 214, 33, 65));
+    this.decimalPointDisplays.push(new LedDisplay(this, "LED Display", 139, 214, 33, 65));
+    this.decimalPointDisplays.push(new LedDisplay(this, "LED Display", 200, 214, 33, 65));
+    this.decimalPointDisplays.push(new LedDisplay(this, "LED Display", 261, 214, 33, 65));
+    for (let i = 0; i < this.decimalPointDisplays.length; i++) {
+      this.decimalPointDisplays[i].fontSize = "40px";
+    }
 
     this.handles.push(new Rectangle(5, 5, 30, 30));
     this.handles.push(new Rectangle(290, 5, 30, 30));
@@ -88,6 +102,12 @@ export class RainbowHat extends Hat {
     this.drawToolTips();
     for (let i = 0; i < this.rgbLedLights.length; i++) {
       this.rgbLedLights[i].draw(ctx);
+    }
+    for (let i = 0; i < this.alphanumericDisplays.length; i++) {
+      this.alphanumericDisplays[i].draw(ctx);
+    }
+    for (let i = 0; i < this.decimalPointDisplays.length; i++) {
+      this.decimalPointDisplays[i].draw(ctx);
     }
   }
 
@@ -373,11 +393,35 @@ export class RainbowHat extends Hat {
           that.temperatureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
           that.temperatureSensor.data.push(<number>childData.temperature);
           system.temperatureGraph.draw();
+          let t: number = childData.temperature;
+          let s: string = t.toString();
+          let i: number = s.indexOf(".");
+          if (i > 0 && i < 4) {
+            that.decimalPointDisplays[i - 1].setCharacter(".");
+          }
+          let integerPart: string = s.substring(0, i);
+          let decimalPart: string = s.substring(i + 1);
+          s = (integerPart + decimalPart).substr(0, 4);
+          for (i = 0; i < 4; i++) {
+            that.alphanumericDisplays[i].setCharacter(s[i]);
+          }
         }
         if (childData.allowBarometricPressureTransmission) {
           that.barometricPressureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
           that.barometricPressureSensor.data.push(<number>childData.barometricPressure);
           system.pressureGraph.draw();
+          let t: number = childData.barometricPressure;
+          let s: string = t.toString();
+          let i: number = s.indexOf(".");
+          if (i > 0 && i < 4) {
+            that.decimalPointDisplays[i - 1].setCharacter(".");
+          }
+          let integerPart: string = s.substring(0, i);
+          let decimalPart: string = s.substring(i + 1);
+          s = (integerPart + decimalPart).substr(0, 4);
+          for (i = 0; i < 4; i++) {
+            that.alphanumericDisplays[i].setCharacter(s[i]);
+          }
         }
         that.draw();
       });
