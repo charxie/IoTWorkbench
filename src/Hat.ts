@@ -4,8 +4,8 @@
  * @author Charles Xie
  */
 
-import {Board} from "./src/Board";
-import {RaspberryPi} from "./src/RaspberryPi";
+import {Board} from "./Board";
+import {RaspberryPi} from "./RaspberryPi";
 
 export abstract class Hat extends Board {
 

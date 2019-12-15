@@ -2,7 +2,7 @@
  * @author Charles Xie
  */
 
-import {Hat} from "../Hat";
+import {Hat} from "./Hat";
 import {Board} from "./Board";
 
 // @ts-ignore

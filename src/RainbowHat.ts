@@ -2,7 +2,11 @@
  * @author Charles Xie
  */
 
-import {Hat} from "../Hat";
+import {Hat} from "./Hat";
+import {RaspberryPi} from "./RaspberryPi";
+import {LedDisplay} from "./LedDisplay";
+import {Util} from "./Util";
+import {Buzzer} from "./Buzzer";
 import {LedLight} from "./LedLight";
 import {Button} from "./Button";
 import {System} from "./System";
@@ -11,11 +15,9 @@ import {system} from "./Main";
 import {Rectangle} from "./math/Rectangle";
 
 // @ts-ignore
+import $ from "jquery";
+// @ts-ignore
 import rainbowHatImage from "./img/rainbow-hat.png";
-import {RaspberryPi} from "./RaspberryPi";
-import {LedDisplay} from "./LedDisplay";
-import {Util} from "./Util";
-import {Buzzer} from "./Buzzer";
 
 export class RainbowHat extends Hat {
 
@@ -180,7 +182,7 @@ export class RainbowHat extends Hat {
       this.redLedLight.on = true;
       this.redLedLight.draw(context);
       this.updateFirebase({redLed: true});
-      this.buzzer.beep(1, 800, 200);
+      this.buzzer.beepButton("A");
       return;
     }
 
@@ -190,7 +192,7 @@ export class RainbowHat extends Hat {
       this.greenLedLight.on = true;
       this.greenLedLight.draw(context);
       this.updateFirebase({greenLed: true});
-      this.buzzer.beep(1, 400, 200);
+      this.buzzer.beepButton("B");
       return;
     }
 
@@ -200,7 +202,7 @@ export class RainbowHat extends Hat {
       this.blueLedLight.on = true;
       this.blueLedLight.draw(context);
       this.updateFirebase({blueLed: true});
-      this.buzzer.beep(1, 200, 200);
+      this.buzzer.beepButton("C");
       return;
     }
 
@@ -221,6 +223,9 @@ export class RainbowHat extends Hat {
       this.redLedLight.on = false;
       this.redLedLight.draw(context);
       this.updateFirebase({redLed: false});
+      $("#colorpicker").spectrum({
+        color: "#f00"
+      });
       return;
     }
 
@@ -388,13 +393,21 @@ export class RainbowHat extends Hat {
         that.redLedLight.on = childData.redLed;
         that.greenLedLight.on = childData.greenLed;
         that.blueLedLight.on = childData.blueLed;
+        if (that.redLedLight.on) {
+          that.buzzer.beepButton("A");
+        }
+        if (that.greenLedLight.on) {
+          that.buzzer.beepButton("B");
+        }
+        if (that.blueLedLight.on) {
+          that.buzzer.beepButton("C");
+        }
         if (childData.rainbowRgb) {
           for (let i = 0; i < that.rgbLedLights.length; i++) {
             let r = childData.rainbowRgb[i][0];
             let g = childData.rainbowRgb[i][1];
             let b = childData.rainbowRgb[i][2];
             that.rgbLedLights[i].on = r > 0 || g > 0 || b > 0;
-            //that.rgbLedLights[i].color = "rgb(" + r + "," + g + "," + b + ")";
             that.rgbLedLights[i].color = Util.rgbToHex(r, g, b);
           }
         }

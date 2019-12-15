@@ -52,6 +52,20 @@ export class Buzzer implements ElectronicComponent {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height;
   }
 
+  public beepButton(button: string): void {
+    switch (button) {
+      case "A":
+        this.beep(1, 800, 200);
+        break;
+      case "B":
+        this.beep(1, 400, 200);
+        break;
+      case "C":
+        this.beep(1, 200, 200);
+        break;
+    }
+  }
+
   public beep(volume: number, frequency: number, duration: number): void {
     this.on = true;
     if (this.audioContext == null) this.audioContext = new AudioContext();

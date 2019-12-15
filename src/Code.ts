@@ -1,7 +1,7 @@
 /*
  * @author Charles Xie
  */
-import {Codespace} from "./src/Codespace";
+import {Codespace} from "./Codespace";
 
 export class Code {
 

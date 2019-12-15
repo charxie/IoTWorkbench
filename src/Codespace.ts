@@ -2,7 +2,7 @@
  * @author Charles Xie
  */
 
-import {Block} from "../Block";
+import {Block} from "./Block";
 import {Point} from "./math/Point";
 
 export class Codespace {

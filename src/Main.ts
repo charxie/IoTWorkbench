@@ -13,7 +13,7 @@ import {RaspberryPiContextMenu} from "./RaspberryPiContextMenu";
 import {Movable} from "./Movable";
 import {LineChart} from "./LineChart";
 import {ToolsPanel} from "./ToolsPanel";
-import {Code} from "../Code";
+import {Code} from "./Code";
 
 export let system = new System();
 export let code = new Code();
