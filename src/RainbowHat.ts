@@ -15,9 +15,8 @@ import {system} from "./Main";
 import {Rectangle} from "./math/Rectangle";
 
 // @ts-ignore
-import $ from "jquery";
-// @ts-ignore
 import rainbowHatImage from "./img/rainbow-hat.png";
+import {ColorPicker} from "./ColorPicker";
 
 export class RainbowHat extends Hat {
 
@@ -131,21 +130,42 @@ export class RainbowHat extends Hat {
 
   private openContextMenu = (e: MouseEvent): void => {
     e.preventDefault();
-    let menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
-    menu.style.left = e.clientX + "px";
-    menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
-    menu.classList.add("show-menu");
-    let attachMenuItem = document.getElementById("rainbow-hat-attach-menu-item") as HTMLElement;
-    let detachMenuItem = document.getElementById("rainbow-hat-detach-menu-item") as HTMLElement;
-    if (this.raspberryPi != null) {
-      attachMenuItem.className = "menu-item disabled";
-      detachMenuItem.className = "menu-item";
+    let rect = this.canvas.getBoundingClientRect();
+    let dx = e.clientX - rect.x;
+    let dy = e.clientY - rect.y;
+    let iRgbLedLight = -1;
+    for (let i = 0; i < this.rgbLedLights.length; i++) {
+      if (this.rgbLedLights[i].contains(dx, dy)) {
+        iRgbLedLight = i;
+        break;
+      }
+    }
+    if (iRgbLedLight >= 0) {
+      let menu = document.getElementById("colorpicker-context-menu") as HTMLMenuElement;
+      menu.style.left = e.clientX + "px";
+      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
+      menu.classList.add("show-menu");
+      if (system.colorPicker == null) {
+        system.colorPicker = new ColorPicker();
+      }
+      system.colorPicker.draw();
     } else {
-      let r1 = new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());
-      let r2 = new Rectangle(system.raspberryPi.getX(), system.raspberryPi.getY(), system.raspberryPi.getWidth(), system.raspberryPi.getHeight());
-      let onTop = r1.intersectRect(r2);
-      attachMenuItem.className = onTop ? "menu-item" : "menu-item disabled";
-      detachMenuItem.className = "menu-item disabled";
+      let menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
+      menu.style.left = e.clientX + "px";
+      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
+      menu.classList.add("show-menu");
+      let attachMenuItem = document.getElementById("rainbow-hat-attach-menu-item") as HTMLElement;
+      let detachMenuItem = document.getElementById("rainbow-hat-detach-menu-item") as HTMLElement;
+      if (this.raspberryPi != null) {
+        attachMenuItem.className = "menu-item disabled";
+        detachMenuItem.className = "menu-item";
+      } else {
+        let r1 = new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        let r2 = new Rectangle(system.raspberryPi.getX(), system.raspberryPi.getY(), system.raspberryPi.getWidth(), system.raspberryPi.getHeight());
+        let onTop = r1.intersectRect(r2);
+        attachMenuItem.className = onTop ? "menu-item" : "menu-item disabled";
+        detachMenuItem.className = "menu-item disabled";
+      }
     }
   };
 
@@ -223,9 +243,6 @@ export class RainbowHat extends Hat {
       this.redLedLight.on = false;
       this.redLedLight.draw(context);
       this.updateFirebase({redLed: false});
-      $("#colorpicker").spectrum({
-        color: "#f00"
-      });
       return;
     }
 

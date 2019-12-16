@@ -7,7 +7,7 @@ import {RaspberryPi} from "./RaspberryPi";
 import {RainbowHat} from "./RainbowHat";
 import {LineChart} from "./LineChart";
 import {Movable} from "./Movable";
-import {system} from "./Main";
+import {ColorPicker} from "./ColorPicker";
 
 declare var firebase;
 
@@ -21,6 +21,7 @@ export class System {
   temperatureGraph: LineChart;
   pressureGraph: LineChart;
   playground: HTMLElement;
+  colorPicker: ColorPicker;
 
   private selectedMovable: Movable;
   private mouseDownRelativeX: number;
@@ -96,6 +97,8 @@ export class System {
     menu.classList.remove("show-menu");
     menu = document.getElementById("linechart-context-menu") as HTMLMenuElement;
     menu.classList.remove("show-menu");
+    //menu = document.getElementById("colorpicker-context-menu") as HTMLMenuElement;
+    //menu.classList.remove("show-menu");
   };
 
   private mouseLeave = (e: MouseEvent): void => {

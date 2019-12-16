@@ -10,6 +10,7 @@ import {RainbowHatContextMenu} from "./RainbowHatContextMenu";
 import {WorkbenchContextMenu} from "./WorkbenchContextMenu";
 import {LineChartContextMenu} from "./LineChartContextMenu";
 import {RaspberryPiContextMenu} from "./RaspberryPiContextMenu";
+import {ColorPickerContextMenu} from "./ColorPickerContextMenu";
 import {Movable} from "./Movable";
 import {LineChart} from "./LineChart";
 import {ToolsPanel} from "./ToolsPanel";
@@ -66,6 +67,8 @@ window.onload = function () {
   rainbowHatContextMenu.addListeners();
   let lineChartContextMenu = new LineChartContextMenu();
   lineChartContextMenu.render("linechart-context-menu-placeholder");
+  let colorPickerContextMenu = new ColorPickerContextMenu();
+  colorPickerContextMenu.render("colorpicker-context-menu-placeholder");
   let toolsPanel = new ToolsPanel();
   toolsPanel.render("tools-panel");
 
