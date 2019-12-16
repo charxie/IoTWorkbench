@@ -166,6 +166,7 @@ export class RainbowHat extends Hat {
         system.colorPicker = new ColorPicker();
       }
       system.colorPicker.setColorLabel(document.getElementById("colorpicker-label"));
+      system.colorPicker.setColorCode(document.getElementById("colorpicker-code"));
       system.colorPicker.setSelectedColor(this.rgbLedLights[this.indexOfSelectedRgbLedLight].color);
       system.colorPicker.draw();
     } else {

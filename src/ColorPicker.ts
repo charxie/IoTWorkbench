@@ -7,7 +7,9 @@ import {Util} from "./Util";
 export class ColorPicker {
 
   private rgbaColor: string = "#ffffffff";
+  private baseColor: string = "#ffffffff";
   private colorLabel: HTMLElement;
+  private colorCode: HTMLElement;
   private colorBlock: HTMLCanvasElement;
   private colorStrip: HTMLCanvasElement;
   private ctx1: CanvasRenderingContext2D;
@@ -32,9 +34,19 @@ export class ColorPicker {
     this.colorLabel = colorLabel;
   }
 
+  public setColorCode(colorCode: HTMLElement) {
+    this.colorCode = colorCode;
+  }
+
   public setSelectedColor(color: string): void {
     this.rgbaColor = color;
-    this.colorLabel.style.backgroundColor = color;
+    this.baseColor = color;
+    if (this.colorLabel) {
+      this.colorLabel.style.backgroundColor = color;
+    }
+    if (this.colorCode) {
+      this.colorCode.innerText = color;
+    }
   }
 
   public getSelectedColor(): string {
@@ -43,14 +55,16 @@ export class ColorPicker {
 
   public draw(): void {
     // draw color block
+    this.ctx1.clearRect(0, 0, this.colorBlock.width, this.colorBlock.height);
     this.ctx1.rect(0, 0, this.colorBlock.width, this.colorBlock.height);
     this.fillGradient();
-    this.ctx1.strokeStyle = "black";
+    this.ctx1.strokeStyle = "white";
     this.ctx1.lineWidth = 2;
     this.ctx1.beginPath();
-    this.ctx1.arc(this.savedBlockX, this.savedBlockY, 5, 0, 2 * Math.PI);
+    this.ctx1.arc(this.savedBlockX, this.savedBlockY, 6, 0, 2 * Math.PI);
     this.ctx1.stroke();
     // draw color strip
+    this.ctx2.clearRect(0, 0, this.colorStrip.width, this.colorStrip.height);
     this.ctx2.rect(0, 0, this.colorStrip.width, this.colorStrip.height);
     let gradient = this.ctx2.createLinearGradient(0, 0, 0, this.colorStrip.height);
     gradient.addColorStop(0, 'rgba(255, 0, 0, 1)');
@@ -70,14 +84,14 @@ export class ColorPicker {
   }
 
   private fillGradient(): void {
-    this.ctx1.fillStyle = this.rgbaColor;
+    this.ctx1.fillStyle = this.baseColor;
     this.ctx1.fillRect(0, 0, this.colorBlock.width, this.colorBlock.height);
-    let grdWhite = this.ctx2.createLinearGradient(0, 0, this.colorBlock.width, 0);
+    let grdWhite = this.ctx1.createLinearGradient(0, 0, this.colorBlock.width, 0);
     grdWhite.addColorStop(0, 'rgba(255, 255, 255, 1)');
     grdWhite.addColorStop(1, 'rgba(255, 255, 255, 0)');
     this.ctx1.fillStyle = grdWhite;
     this.ctx1.fillRect(0, 0, this.colorBlock.width, this.colorBlock.height);
-    let grdBlack = this.ctx2.createLinearGradient(0, 0, 0, this.colorBlock.height);
+    let grdBlack = this.ctx1.createLinearGradient(0, 0, 0, this.colorBlock.height);
     grdBlack.addColorStop(0, 'rgba(0, 0, 0, 0)');
     grdBlack.addColorStop(1, 'rgba(0, 0, 0, 1)');
     this.ctx1.fillStyle = grdBlack;
@@ -87,8 +101,7 @@ export class ColorPicker {
   private clickStrip(e: MouseEvent): void {
     this.savedStripY = e.offsetY;
     let imageData = this.ctx2.getImageData(e.offsetX, e.offsetY, 1, 1).data;
-    //this.rgbaColor = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
-    this.rgbaColor = Util.rgbToHex(imageData[0], imageData[1], imageData[2]);
+    this.baseColor = Util.rgbToHex(imageData[0], imageData[1], imageData[2]);
     this.draw();
   }
 
@@ -115,10 +128,12 @@ export class ColorPicker {
 
   private changeColor(e: MouseEvent): void {
     let imageData = this.ctx1.getImageData(e.offsetX, e.offsetY, 1, 1).data;
-    //this.rgbaColor = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
     this.rgbaColor = Util.rgbToHex(imageData[0], imageData[1], imageData[2]);
     if (this.colorLabel) {
       this.colorLabel.style.backgroundColor = this.rgbaColor;
+    }
+    if (this.colorCode) {
+      this.colorCode.innerText = this.rgbaColor;
     }
   }
 

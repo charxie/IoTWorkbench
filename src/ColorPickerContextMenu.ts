@@ -13,7 +13,9 @@ export class ColorPickerContextMenu {
                   <canvas id="color-strip" height="200" width="30"></canvas>
                 </div>
                 <div style="display: table; margin: auto; padding: 5px 5px 5px 5px;">
-                  <div id="colorpicker-label" style="vertical-align: middle; width: 40px; height: 20px; border: 2px solid black; display: inline-block;"></div>
+                  <div id="colorpicker-code" style="vertical-align: middle; text-align: center; width: 64px; height: 20px; border: 2px solid black; display: inline-block; font: 12px Verdana; user-select: all;">#FFFFFF</div>
+                  <div class="divider"></div>
+                  <div id="colorpicker-label" style="vertical-align: middle; width: 30px; height: 20px; border: 2px solid black; display: inline-block;"></div>
                   <div class="divider"></div>
                   <button id="colorpicker-cancel-button" style="font: 12px Verdana">Cancel</button>
                   <div class="divider"></div>
