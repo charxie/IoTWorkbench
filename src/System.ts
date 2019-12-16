@@ -97,8 +97,6 @@ export class System {
     menu.classList.remove("show-menu");
     menu = document.getElementById("linechart-context-menu") as HTMLMenuElement;
     menu.classList.remove("show-menu");
-    //menu = document.getElementById("colorpicker-context-menu") as HTMLMenuElement;
-    //menu.classList.remove("show-menu");
   };
 
   private mouseLeave = (e: MouseEvent): void => {

@@ -33,6 +33,7 @@ export class RainbowHat extends Hat {
   public alphanumericDisplays: LedDisplay[] = [];
   public decimalPointDisplays: LedDisplay[] = [];
 
+  private indexOfSelectedRgbLedLight: number = -1;
   private stateId: string = "rainbow_hat_default";
   private mouseOverObject: any;
   private boardImage: HTMLImageElement;
@@ -86,6 +87,23 @@ export class RainbowHat extends Hat {
     this.updateFromFirebase();
   }
 
+  public setSelectedRgbLedLightColor(color: string) {
+    if (this.indexOfSelectedRgbLedLight >= 0) {
+      this.rgbLedLights[this.indexOfSelectedRgbLedLight].color = color;
+      this.draw();
+      let list = [];
+      for (let i = 0; i < this.rgbLedLights.length; i++) {
+        let a = [];
+        let c = Util.hexToRgb(this.rgbLedLights[i].color);
+        a.push(c.r);
+        a.push(c.g);
+        a.push(c.b);
+        list.push(a);
+      }
+      this.updateFirebase({rainbowRgb: list});
+    }
+  }
+
   public draw(): void {
     let ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -133,14 +151,13 @@ export class RainbowHat extends Hat {
     let rect = this.canvas.getBoundingClientRect();
     let dx = e.clientX - rect.x;
     let dy = e.clientY - rect.y;
-    let iRgbLedLight = -1;
     for (let i = 0; i < this.rgbLedLights.length; i++) {
       if (this.rgbLedLights[i].contains(dx, dy)) {
-        iRgbLedLight = i;
+        this.indexOfSelectedRgbLedLight = i;
         break;
       }
     }
-    if (iRgbLedLight >= 0) {
+    if (this.indexOfSelectedRgbLedLight >= 0) {
       let menu = document.getElementById("colorpicker-context-menu") as HTMLMenuElement;
       menu.style.left = e.clientX + "px";
       menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
@@ -149,6 +166,8 @@ export class RainbowHat extends Hat {
         system.colorPicker = new ColorPicker();
       }
       system.colorPicker.draw();
+      system.colorPicker.colorLabel = document.getElementById("colorpicker-label") as HTMLElement;
+      system.colorPicker.colorLabel.style.backgroundColor = this.rgbLedLights[this.indexOfSelectedRgbLedLight].color;
     } else {
       let menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
       menu.style.left = e.clientX + "px";

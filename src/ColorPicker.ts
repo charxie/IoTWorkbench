@@ -2,9 +2,12 @@
  * @author Charles Xie
  */
 
+import {Util} from "./Util";
+
 export class ColorPicker {
 
   rgbaColor: string;
+  colorLabel: HTMLElement;
 
   private colorBlock: HTMLCanvasElement;
   private colorStrip: HTMLCanvasElement;
@@ -26,7 +29,7 @@ export class ColorPicker {
   }
 
   public draw(): void {
-    this.rgbaColor = 'rgba(255, 0, 0, 1)';
+    this.rgbaColor = "#ff0000";
     this.ctx1.rect(0, 0, this.colorBlock.width, this.colorBlock.height);
     this.fillGradient();
     this.ctx2.rect(0, 0, this.colorStrip.width, this.colorStrip.height);
@@ -61,7 +64,8 @@ export class ColorPicker {
     this.x = e.offsetX;
     this.y = e.offsetY;
     let imageData = this.ctx2.getImageData(this.x, this.y, 1, 1).data;
-    this.rgbaColor = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+    //this.rgbaColor = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+    this.rgbaColor = Util.rgbToHex(imageData[0], imageData[1], imageData[2]);
     this.fillGradient();
   }
 
@@ -84,7 +88,11 @@ export class ColorPicker {
     this.x = e.offsetX;
     this.y = e.offsetY;
     var imageData = this.ctx1.getImageData(this.x, this.y, 1, 1).data;
-    this.rgbaColor = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+    //this.rgbaColor = 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
+    this.rgbaColor = Util.rgbToHex(imageData[0], imageData[1], imageData[2]);
+    if (this.colorLabel) {
+      this.colorLabel.style.backgroundColor = this.rgbaColor;
+    }
   }
 
 }
