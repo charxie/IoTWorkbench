@@ -165,9 +165,9 @@ export class RainbowHat extends Hat {
       if (system.colorPicker == null) {
         system.colorPicker = new ColorPicker();
       }
+      system.colorPicker.setColorLabel(document.getElementById("colorpicker-label"));
+      system.colorPicker.setSelectedColor(this.rgbLedLights[this.indexOfSelectedRgbLedLight].color);
       system.colorPicker.draw();
-      system.colorPicker.colorLabel = document.getElementById("colorpicker-label") as HTMLElement;
-      system.colorPicker.colorLabel.style.backgroundColor = this.rgbLedLights[this.indexOfSelectedRgbLedLight].color;
     } else {
       let menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
       menu.style.left = e.clientX + "px";

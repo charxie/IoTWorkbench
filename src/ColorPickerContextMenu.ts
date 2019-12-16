@@ -33,7 +33,7 @@ export class ColorPickerContextMenu {
     };
     let okButton = document.getElementById("colorpicker-ok-button") as HTMLButtonElement;
     okButton.onclick = function () {
-      system.rainbowHat.setSelectedRgbLedLightColor(system.colorPicker.rgbaColor);
+      system.rainbowHat.setSelectedRgbLedLightColor(system.colorPicker.getSelectedColor());
       let menu = document.getElementById("colorpicker-context-menu") as HTMLMenuElement;
       menu.classList.remove("show-menu");
     };
