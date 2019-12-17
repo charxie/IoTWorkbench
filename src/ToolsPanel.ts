@@ -20,6 +20,20 @@ import panTiltHatImage from "./img/pan-tilt-hat.png";
 import fullBreadboardImage from "./img/full-breadboard.png";
 // @ts-ignore
 import halfBreadboardImage from "./img/half-breadboard.png";
+// @ts-ignore
+import redLedLightImage from "./img/red-led-light.png";
+// @ts-ignore
+import greenLedLightImage from "./img/green-led-light.png";
+// @ts-ignore
+import blueLedLightImage from "./img/blue-led-light.png";
+// @ts-ignore
+import tricolorLedLightImage from "./img/tricolor-led-light.png";
+// @ts-ignore
+import momentaryButtonImage from "./img/momentary-button.png";
+// @ts-ignore
+import toggleSwitchImage from "./img/toggle-switch.png";
+// @ts-ignore
+import piezoBuzzerImage from "./img/piezo-buzzer.png";
 
 export class ToolsPanel {
 
@@ -53,9 +67,16 @@ export class ToolsPanel {
               <div class="row" style="margin-right: 10px">
                 <div class="column">
                   <img src="${fullBreadboardImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Full Breadboard">
+                  <img src="${redLedLightImage}" style="width:100%; cursor: pointer;" title="Red LED Light">
+                  <img src="${greenLedLightImage}" style="width:100%; cursor: pointer;" title="Green LED Light">
+                  <img src="${blueLedLightImage}" style="width:100%; cursor: pointer;" title="Blue LED Light">
+                 <img src="${tricolorLedLightImage}" style="width:100%; cursor: pointer;" title="Tricolor LED Light">
                 </div>
                 <div class="column">
                   <img src="${halfBreadboardImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Half Breadboard">
+                  <img src="${momentaryButtonImage}" style="width:100%; cursor: pointer;" title="Momentary Button">
+                  <img src="${toggleSwitchImage}" style="width:100%; cursor: pointer;" title="Toggle Switch">
+                  <img src="${piezoBuzzerImage}" style="width:100%; cursor: pointer;" title="Piezo Buzzer">
                 </div>
               </div>
             </div>`;
