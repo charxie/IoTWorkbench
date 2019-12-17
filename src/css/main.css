@@ -58,6 +58,29 @@ body {
   padding-right: 8px
 }
 
+* {
+  box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 50%;
+  padding: 8px;
+}
+
+.column img {
+  margin-top: 12px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+  padding: 2px;
+}
+
 .divider {
   width: 8px;
   height: auto;
@@ -103,10 +126,10 @@ body {
   right: 20px;
   top: 130px;
   bottom: 60px;
-  width: 120px;
+  width: 200px;
   margin: auto;
   z-index: 20000;
-  background-color: gold;
+  background-color: white;
   border: 2px solid gray;
   text-align: center;
   font-family: 'sans-serif', 'Arial';

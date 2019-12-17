@@ -13,7 +13,7 @@ export class ColorPickerContextMenu {
                   <canvas id="color-strip" height="300" width="30"></canvas>
                 </div>
                 <div style="display: table; margin: auto; padding: 5px 5px 5px 5px;">
-                  <input type="text" id="colorpicker-hex-code" value="#FFFFFF" style="width: 60px; height: 20px; border: 1px solid black; vertical-align: middle; text-align: center; font: 12px Verdana;">
+                  <input type="text" readonly id="colorpicker-hex-code" value="#FFFFFF" style="width: 60px; height: 20px; border: 1px solid black; vertical-align: middle; text-align: center; font: 12px Verdana;">
                   <div class="divider"></div>
                   <div id="colorpicker-label" style="vertical-align: middle; width: 20px; height: 20px; border: 2px solid black; display: inline-block;"></div>
                   <div class="divider"></div>
