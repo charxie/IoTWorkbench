@@ -40,8 +40,9 @@ export class ColorPicker {
     let c = Util.hexToRgb(color);
     let hsv = Util.rgbToHsv(c.r, c.g, c.b);
     this.savedStripY = this.colorStrip.height * hsv.h;
-    this.savedBlockX = this.colorBlock.width * hsv.s;
-    this.savedBlockY = this.colorBlock.height * (1 - hsv.v);
+    // TODO: the position should be calculated by inverting the dual-axis shading used in fillGradient()
+    //this.savedBlockX = this.colorBlock.width * hsv.s;
+    //this.savedBlockY = this.colorBlock.height * (1 - hsv.v);
     if (this.colorLabel) {
       this.colorLabel.style.backgroundColor = color;
     }
@@ -68,13 +69,13 @@ export class ColorPicker {
     this.ctx2.clearRect(0, 0, this.colorStrip.width, this.colorStrip.height);
     this.ctx2.rect(0, 0, this.colorStrip.width, this.colorStrip.height);
     let gradient = this.ctx2.createLinearGradient(0, 0, 0, this.colorStrip.height);
-    gradient.addColorStop(0, 'rgba(255, 0, 0, 1)');
-    gradient.addColorStop(0.17, 'rgba(255, 255, 0, 1)');
-    gradient.addColorStop(0.34, 'rgba(0, 255, 0, 1)');
-    gradient.addColorStop(0.51, 'rgba(0, 255, 255, 1)');
-    gradient.addColorStop(0.68, 'rgba(0, 0, 255, 1)');
-    gradient.addColorStop(0.85, 'rgba(255, 0, 255, 1)');
-    gradient.addColorStop(1, 'rgba(255, 0, 0, 1)');
+    gradient.addColorStop(0, '#ff0000');
+    gradient.addColorStop(1.0 / 6.0, '#ffff00');
+    gradient.addColorStop(2.0 / 6.0, '#00ff00');
+    gradient.addColorStop(3.0 / 6.0, '#00ffff');
+    gradient.addColorStop(4.0 / 6.0, '#0000ff');
+    gradient.addColorStop(5.0 / 6.0, '#ff00ff');
+    gradient.addColorStop(1, '#ff0000');
     this.ctx2.fillStyle = gradient;
     this.ctx2.fill();
     this.ctx2.strokeStyle = "black";
