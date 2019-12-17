@@ -7,17 +7,15 @@ import {Util} from "./Util";
 export class ColorPicker {
 
   private rgbaColor: string = "#ffffffff";
-  private baseColor: string = "#ffffffff";
   private colorLabel: HTMLElement;
   private colorCode: HTMLElement;
   private colorBlock: HTMLCanvasElement;
-  private colorStrip: HTMLCanvasElement;
+  private colorStrip: HTMLCanvasElement; // this draws the hue of the color
   private ctx1: CanvasRenderingContext2D;
   private ctx2: CanvasRenderingContext2D;
   private savedBlockX: number = -10;
   private savedBlockY: number = -10;
   private savedStripY: number = -10;
-  private drag: boolean = false;
 
   constructor() {
     this.colorBlock = document.getElementById('color-block') as HTMLCanvasElement;
@@ -26,7 +24,6 @@ export class ColorPicker {
     this.ctx2 = this.colorStrip.getContext('2d');
     this.colorBlock.addEventListener("mousedown", this.mousedown.bind(this), false);
     this.colorBlock.addEventListener("mouseup", this.mouseup.bind(this), false);
-    this.colorBlock.addEventListener("mousemove", this.mousemove.bind(this), false);
     this.colorStrip.addEventListener("click", this.clickStrip.bind(this), false);
   }
 
@@ -40,7 +37,11 @@ export class ColorPicker {
 
   public setSelectedColor(color: string): void {
     this.rgbaColor = color;
-    this.baseColor = color;
+    let c = Util.hexToRgb(color);
+    let hsv = Util.rgbToHsv(c.r, c.g, c.b);
+    this.savedStripY = this.colorStrip.height * hsv.h;
+    this.savedBlockX = this.colorBlock.width * hsv.s;
+    this.savedBlockY = this.colorBlock.height * (1 - hsv.v);
     if (this.colorLabel) {
       this.colorLabel.style.backgroundColor = color;
     }
@@ -84,7 +85,7 @@ export class ColorPicker {
   }
 
   private fillGradient(): void {
-    this.ctx1.fillStyle = this.baseColor;
+    this.ctx1.fillStyle = Util.getHueColor(this.rgbaColor);
     this.ctx1.fillRect(0, 0, this.colorBlock.width, this.colorBlock.height);
     let grdWhite = this.ctx1.createLinearGradient(0, 0, this.colorBlock.width, 0);
     grdWhite.addColorStop(0, 'rgba(255, 255, 255, 1)');
@@ -101,26 +102,15 @@ export class ColorPicker {
   private clickStrip(e: MouseEvent): void {
     this.savedStripY = e.offsetY;
     let imageData = this.ctx2.getImageData(e.offsetX, e.offsetY, 1, 1).data;
-    this.baseColor = Util.rgbToHex(imageData[0], imageData[1], imageData[2]);
+    this.rgbaColor = Util.rgbToHex(imageData[0], imageData[1], imageData[2]);
     this.draw();
   }
 
   private mousedown(e: MouseEvent): void {
-    this.drag = true;
     this.changeColor(e);
   }
 
-  private mousemove(e: MouseEvent): void {
-    if (this.drag) {
-      this.changeColor(e);
-      this.savedBlockX = e.offsetX;
-      this.savedBlockY = e.offsetY;
-      this.draw();
-    }
-  }
-
   private mouseup(e: MouseEvent): void {
-    this.drag = false;
     this.savedBlockX = e.offsetX;
     this.savedBlockY = e.offsetY;
     this.draw();
