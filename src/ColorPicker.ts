@@ -8,7 +8,7 @@ export class ColorPicker {
 
   private rgbaColor: string = "#ffffffff";
   private colorLabel: HTMLElement;
-  private colorCode: HTMLElement;
+  private colorCode: HTMLInputElement;
   private colorBlock: HTMLCanvasElement;
   private colorStrip: HTMLCanvasElement; // this draws the hue of the color
   private ctx1: CanvasRenderingContext2D;
@@ -31,23 +31,36 @@ export class ColorPicker {
     this.colorLabel = colorLabel;
   }
 
-  public setColorCode(colorCode: HTMLElement) {
+  public setColorCode(colorCode: HTMLInputElement) {
     this.colorCode = colorCode;
   }
 
   public setSelectedColor(color: string): void {
     this.rgbaColor = color;
     let c = Util.hexToRgb(color);
-    let hsv = Util.rgbToHsv(c.r, c.g, c.b);
-    this.savedStripY = this.colorStrip.height * hsv.h;
-    // TODO: the position should be calculated by inverting the dual-axis shading used in fillGradient()
-    //this.savedBlockX = this.colorBlock.width * hsv.s;
-    //this.savedBlockY = this.colorBlock.height * (1 - hsv.v);
+    this.savedStripY = this.colorStrip.height * Util.rgbToHue(c.r, c.g, c.b) / 360;
     if (this.colorLabel) {
       this.colorLabel.style.backgroundColor = color;
     }
     if (this.colorCode) {
-      this.colorCode.innerText = color;
+      this.colorCode.value = color;
+      this.colorCode.select();
+    }
+  }
+
+  // TODO: the position should be calculated by inverting the dual-axis shading used in fillGradient()
+  // right now, we just use a brute-force method to search for the point that maps to the selected color
+  public setSelectedPoint(): void {
+    let c = Util.hexToRgb(this.rgbaColor);
+    let imageData = this.ctx1.getImageData(0, 0, this.colorBlock.width, this.colorBlock.height).data;
+    let n = imageData.length / 4;
+    for (let i = 0; i < n; i++) {
+      if (imageData[4 * i] == c.r && imageData[4 * i + 1] == c.g && imageData[4 * i + 2] == c.b) {
+        this.savedBlockX = i % this.colorBlock.width;
+        this.savedBlockY = i / this.colorBlock.width;
+        this.draw();
+        break;
+      }
     }
   }
 
@@ -78,10 +91,14 @@ export class ColorPicker {
     gradient.addColorStop(1, '#ff0000');
     this.ctx2.fillStyle = gradient;
     this.ctx2.fill();
+    this.ctx2.fillStyle = "white";
+    this.ctx2.beginPath();
+    this.ctx2.rect(0, this.savedStripY, this.colorStrip.width, 6);
+    this.ctx2.fill();
     this.ctx2.strokeStyle = "black";
     this.ctx2.lineWidth = 2;
     this.ctx2.beginPath();
-    this.ctx2.rect(0, this.savedStripY, this.colorStrip.width, 4);
+    this.ctx2.rect(0, this.savedStripY, this.colorStrip.width, 8);
     this.ctx2.stroke();
   }
 
@@ -124,7 +141,7 @@ export class ColorPicker {
       this.colorLabel.style.backgroundColor = this.rgbaColor;
     }
     if (this.colorCode) {
-      this.colorCode.innerText = this.rgbaColor;
+      this.colorCode.value = this.rgbaColor;
     }
   }
 
