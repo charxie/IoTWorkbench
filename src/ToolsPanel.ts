@@ -17,7 +17,9 @@ import capacitiveTouchHatImage from "./img/capacitive-touch-hat.png";
 // @ts-ignore
 import panTiltHatImage from "./img/pan-tilt-hat.png";
 // @ts-ignore
-import longBreadboardImage from "./img/long-breadboard.png";
+import fullBreadboardImage from "./img/full-breadboard.png";
+// @ts-ignore
+import halfBreadboardImage from "./img/half-breadboard.png";
 
 export class ToolsPanel {
 
@@ -27,30 +29,33 @@ export class ToolsPanel {
             <hr>
             <div style="overflow-y: auto; height:360px;">
               <h3 style="text-align: left">Microcontrollers</h3>
-              <div class="row">
+              <div class="row" style="margin-right: 10px">
                 <div class="column">
-                  <img src="./img/raspberry-pi.png" id="raspberry-pi-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Raspberry Pi">
+                  <img src="${raspberryPiImage}" id="raspberry-pi-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Raspberry Pi">
                 </div>
               </div>
               <br><br>
               <h3 style="text-align: left">HATs</h3>
-              <div class="row">
+              <div class="row" style="margin-right: 10px">
                 <div class="column">
-                  <img id="rainbow-hat-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Rainbow HAT">
-                  <img id="sense-hat-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Sense HAT">
-                  <img id="capacitive-touch-hat-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Capacitive Touch HAT">
+                  <img src="${rainbowHatImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Rainbow HAT">
+                  <img src="${senseHatImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Sense HAT">
+                  <img src="${capacitiveTouchHatImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Capacitive Touch HAT">
                </div>
                 <div class="column">
-                  <img id="unicorn-hat-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Unicorn HAT">
-                  <img id="crickit-hat-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Crickit HAT">
-                  <img id="pan-tilt-hat-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Pan-Tilt HAT">
+                  <img src="${unicornHatImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Unicorn HAT">
+                  <img src="${crickitHatImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Crickit HAT">
+                  <img src="${panTiltHatImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Pan-Tilt HAT">
                </div>
               </div>
               <br><br>
               <h3 style="text-align: left">Others</h3>
-              <div class="row">
+              <div class="row" style="margin-right: 10px">
                 <div class="column">
-                  <img id="long-breadboard-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Long Breadboard">
+                  <img src="${fullBreadboardImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Full Breadboard">
+                </div>
+                <div class="column">
+                  <img src="${halfBreadboardImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Half Breadboard">
                 </div>
               </div>
             </div>`;
@@ -59,22 +64,6 @@ export class ToolsPanel {
   render(selectorId: string): void {
     let element = document.getElementById(selectorId);
     element.innerHTML = this.getUi();
-    let image = document.getElementById("raspberry-pi-image") as HTMLImageElement;
-    image.src = raspberryPiImage;
-    image = document.getElementById("rainbow-hat-image") as HTMLImageElement;
-    image.src = rainbowHatImage;
-    image = document.getElementById("sense-hat-image") as HTMLImageElement;
-    image.src = senseHatImage;
-    image = document.getElementById("unicorn-hat-image") as HTMLImageElement;
-    image.src = unicornHatImage;
-    image = document.getElementById("crickit-hat-image") as HTMLImageElement;
-    image.src = crickitHatImage;
-    image = document.getElementById("capacitive-touch-hat-image") as HTMLImageElement;
-    image.src = capacitiveTouchHatImage;
-    image = document.getElementById("pan-tilt-hat-image") as HTMLImageElement;
-    image.src = panTiltHatImage;
-    image = document.getElementById("long-breadboard-image") as HTMLImageElement;
-    image.src = longBreadboardImage;
   }
 
 }
