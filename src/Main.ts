@@ -13,7 +13,7 @@ import {RaspberryPiContextMenu} from "./RaspberryPiContextMenu";
 import {ColorPickerContextMenu} from "./ColorPickerContextMenu";
 import {Movable} from "./Movable";
 import {LineChart} from "./LineChart";
-import {ToolsPanel} from "./ToolsPanel";
+import {ComponentsPanel} from "./ComponentsPanel";
 import {Code} from "./Code";
 
 export let system = new System();
@@ -34,6 +34,12 @@ declare global {
   }
 }
 
+let social = `<span style="font-size: 2em; vertical-align: middle"><i class="fab fa-facebook-square"></i></span>
+              <span style="font-size: 2em; vertical-align: middle"><i class="fab fa-weixin"></i></span>
+              <span style="font-size: 2em; vertical-align: middle"><i class="fab fa-twitter"></i></span>
+              <span style="font-size: 2em; vertical-align: middle"><i class="fab fa-weibo"></i></span>
+              <span style="font-size: 2em; vertical-align: middle"><i class="fab fa-youtube"></i></span>`;
+
 window.onload = function () {
 
   let signinLabel = document.getElementById("sign-in-label") as HTMLElement;
@@ -43,7 +49,7 @@ window.onload = function () {
   let versionLabel = document.getElementById("version-label") as HTMLElement;
   versionLabel.innerHTML = Constants.Software.version;
   let creditLabel = document.getElementById('credit') as HTMLElement;
-  creditLabel.innerHTML = Constants.Software.name + " " + Constants.Software.version + ", " + user.fullName + " , &copy; " + new Date().getFullYear();
+  creditLabel.innerHTML = social + "<div class='divider'></div>" + Constants.Software.name + " " + Constants.Software.version + ", " + user.fullName + " , &copy; " + new Date().getFullYear();
 
   let digitalTwinsTabButton = document.getElementById("digital-twins-tab-button") as HTMLButtonElement;
   digitalTwinsTabButton.addEventListener("click", function (event) {
@@ -69,8 +75,8 @@ window.onload = function () {
   lineChartContextMenu.render("linechart-context-menu-placeholder");
   let colorPickerContextMenu = new ColorPickerContextMenu();
   colorPickerContextMenu.render("colorpicker-context-menu-placeholder");
-  let toolsPanel = new ToolsPanel();
-  toolsPanel.render("tools-panel");
+  let componentsPanel = new ComponentsPanel();
+  componentsPanel.render("components-panel");
 
   // read locally stored properties
   restoreLocation(system.raspberryPi);

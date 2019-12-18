@@ -101,7 +101,7 @@ body {
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 14px 16px;
+  padding: 6px 16px;
   transition: 0.3s;
 }
 
@@ -121,7 +121,7 @@ body {
   border-top: none;
 }
 
-#tools-panel {
+#components-panel {
   position: fixed;
   right: 20px;
   top: 130px;

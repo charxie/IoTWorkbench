@@ -35,21 +35,41 @@
   </div>
   <div id="header-right">
     <label id="sign-in-label">Sign in</label>
-    <span style="font-size: 14px; margin-left: 10px">
-    <img style="vertical-align: middle" src="img/facebook.png">
-    <img style="vertical-align: middle" src="img/wechat.png">
-    <img style="vertical-align: middle" src="img/twitter.png">
-    <img style="vertical-align: middle" src="img/weibo.png">
-    <img style="vertical-align: middle" src="img/youtube.png">
-    <img style="vertical-align: middle" src="img/tiktok.png">
+    <span style="font-size: 14px; margin-left: 10px"></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i
+      class="fas fa-home"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i
+      class="fas fa-camera"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i class="fas fa-share-alt"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i
+      class="fas fa-cloud-upload-alt"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i
+      class="fas fa-download"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i class="fas fa-cog"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i
+      class="fas fa-question-circle"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i
+      class="fas fa-sign-out-alt"></i></span>
   </div>
 </div>
 
 <!-- Tab links -->
 <div id="tabs" class="tab">
-  <button id="digital-twins-tab-button" class="tablinks active">Digital Twins</button>
-  <button id="diagram-tab-button" class="tablinks">Diagram</button>
-  <button id="code-tab-button" class="tablinks">Code</button>
+  <button id="digital-twins-tab-button" class="tablinks active">
+    <span style="font-size: 1.5em; color: teal; vertical-align: middle"><i class="fas fa-clone"></i></span>
+    <div class="divider"></div>
+    Digital Twins
+  </button>
+  <button id="diagram-tab-button" class="tablinks">
+    <span style="font-size: 1.5em; color: teal; vertical-align: middle"><i class="fas fa-project-diagram"></i></span>
+    <div class="divider"></div>
+    Diagram
+  </button>
+  <button id="code-tab-button" class="tablinks">
+    <span style="font-size: 1.5em; color: teal; vertical-align: middle"><i class="fas fa-code"></i></span>
+    <div class="divider"></div>
+    Code
+  </button>
 </div>
 
 <div id="digital-twins-playground" style="position: absolute;" class="tabcontent">
@@ -63,7 +83,7 @@
           style="display: none; box-shadow: 5px 5px 5px gray; border: 2px solid #006699; border-radius: 8px; position: absolute; left: 330px; top: 30px; z-index: 101;"></canvas>
   <canvas id="pressure-linechart" width="420" height="300"
           style="display: none; box-shadow: 5px 5px 5px gray; border: 2px solid #006699; border-radius: 8px; position: absolute; left: 360px; top: 60px; z-index: 102;"></canvas>
-  <div id="tools-panel"></div>
+  <div id="components-panel"></div>
   <div id="workbench-context-menu-placeholder"></div>
   <div id="raspberry-pi-context-menu-placeholder"></div>
   <div id="rainbow-hat-context-menu-placeholder"></div>

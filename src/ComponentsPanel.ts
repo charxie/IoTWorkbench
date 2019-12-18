@@ -35,21 +35,21 @@ import toggleSwitchImage from "./img/toggle-switch.png";
 // @ts-ignore
 import piezoBuzzerImage from "./img/piezo-buzzer.png";
 
-export class ToolsPanel {
+export class ComponentsPanel {
 
   getUi(): string {
-    return `<h2 style="text-align: left; vertical-align: top; margin-top: 0; background-color: lightgoldenrodyellow;
-                padding: 10px 10px 10px 10px; border: 1px solid black; border-radius: 4px; box-shadow: 2px 2px 2px gray;">Components</h2>
+    return `<h2 style="text-align: center; vertical-align: top; margin-top: 0;">
+                <span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cubes"></i></span> Components</h2>
             <hr>
             <div style="overflow-y: auto; height:360px;">
-              <h3 style="text-align: left">Microcontrollers</h3>
+              <h3 style="text-align: left"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Microcontrollers</h3>
               <div class="row" style="margin-right: 10px">
                 <div class="column">
                   <img src="${raspberryPiImage}" id="raspberry-pi-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Raspberry Pi">
                 </div>
               </div>
               <br><br>
-              <h3 style="text-align: left">HATs</h3>
+              <h3 style="text-align: left"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> HATs</h3>
               <div class="row" style="margin-right: 10px">
                 <div class="column">
                   <img src="${rainbowHatImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Rainbow HAT">
@@ -63,7 +63,7 @@ export class ToolsPanel {
                </div>
               </div>
               <br><br>
-              <h3 style="text-align: left">Others</h3>
+              <h3 style="text-align: left"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Others</h3>
               <div class="row" style="margin-right: 10px">
                 <div class="column">
                   <img src="${fullBreadboardImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Full Breadboard">
