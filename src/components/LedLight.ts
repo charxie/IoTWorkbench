@@ -3,8 +3,8 @@
  */
 
 import {Board} from "./Board";
+import {Util} from "../Util";
 import {ElectronicComponent} from "./ElectronicComponent";
-import {Util} from "./Util";
 
 export class LedLight implements ElectronicComponent {
 

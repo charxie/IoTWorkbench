@@ -4,11 +4,11 @@
 
 import {Hat} from "./Hat";
 import {Board} from "./Board";
+import {Rectangle} from "../math/Rectangle";
+import {system} from "../Main"; // this is needed as we use augmented methods of canvas defined in Main.ts
 
 // @ts-ignore
-import raspberryPiImage from "./img/raspberry-pi.png";
-import {Rectangle} from "./math/Rectangle";
-import {system} from "./Main";
+import raspberryPiImage from "../img/raspberry-pi.png";
 
 export class RaspberryPi extends Board {
 

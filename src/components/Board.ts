@@ -2,8 +2,8 @@
  * @author Charles Xie
  */
 
-import {Movable} from "./Movable";
-import {Rectangle} from "./math/Rectangle";
+import {Movable} from "../Movable";
+import {Rectangle} from "../math/Rectangle";
 
 export abstract class Board implements Movable {
 

@@ -3,7 +3,7 @@
  */
 
 import {Block} from "./Block";
-import {Point} from "./math/Point";
+import {Point} from "../math/Point";
 
 export class Codespace {
 

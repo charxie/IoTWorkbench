@@ -3,8 +3,9 @@
  */
 
 import {Board} from "./Board";
+import {ElectronicComponent} from "./ElectronicComponent";
 
-export class Button {
+export class Button implements ElectronicComponent {
 
   name: string;
   x: number;

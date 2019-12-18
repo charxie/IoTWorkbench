@@ -5,18 +5,18 @@
 import {Hat} from "./Hat";
 import {RaspberryPi} from "./RaspberryPi";
 import {LedDisplay} from "./LedDisplay";
-import {Util} from "./Util";
 import {Buzzer} from "./Buzzer";
 import {LedLight} from "./LedLight";
 import {Button} from "./Button";
-import {System} from "./System";
 import {Sensor} from "./Sensor";
-import {system} from "./Main";
-import {Rectangle} from "./math/Rectangle";
+import {System} from "../System";
+import {system} from "../Main";
+import {Util} from "../Util";
+import {Rectangle} from "../math/Rectangle";
+import {ColorPicker} from "../tools/ColorPicker";
 
 // @ts-ignore
-import rainbowHatImage from "./img/rainbow-hat.png";
-import {ColorPicker} from "./ColorPicker";
+import rainbowHatImage from "../img/rainbow-hat.png";
 
 export class RainbowHat extends Hat {
 

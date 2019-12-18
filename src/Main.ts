@@ -2,23 +2,19 @@
  * @author Charles Xie
  */
 
-import * as Constants from "./Constants";
 import "@fortawesome/fontawesome-free/css/all.css";
+import * as Constants from "./Constants";
 import {User} from "./User";
 import {System} from "./System";
+import {Movable} from "./Movable";
+import {ComponentsPanel} from "./ComponentsPanel";
 import {RainbowHatContextMenu} from "./RainbowHatContextMenu";
 import {WorkbenchContextMenu} from "./WorkbenchContextMenu";
 import {LineChartContextMenu} from "./LineChartContextMenu";
 import {RaspberryPiContextMenu} from "./RaspberryPiContextMenu";
 import {ColorPickerContextMenu} from "./ColorPickerContextMenu";
-import {Movable} from "./Movable";
-import {LineChart} from "./LineChart";
-import {ComponentsPanel} from "./ComponentsPanel";
-import {Code} from "./Code";
-
-export let system = new System();
-export let code = new Code();
-export let user = new User("Charles", null, "Xie");
+import {Code} from "./code/Code";
+import {LineChart} from "./tools/LineChart";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -33,6 +29,10 @@ declare global {
     startsWith(s);
   }
 }
+
+export let system = new System();
+export let code = new Code();
+export let user = new User("Charles", null, "Xie");
 
 let social = `<span style="font-size: 2em; vertical-align: middle"><i class="fab fa-facebook-square"></i></span>
               <span style="font-size: 2em; vertical-align: middle"><i class="fab fa-weixin"></i></span>

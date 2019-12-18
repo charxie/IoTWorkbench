@@ -2,12 +2,12 @@
  * @author Charles Xie
  */
 
-import {Workbench} from "./Workbench";
-import {RaspberryPi} from "./RaspberryPi";
-import {RainbowHat} from "./RainbowHat";
-import {LineChart} from "./LineChart";
 import {Movable} from "./Movable";
-import {ColorPicker} from "./ColorPicker";
+import {Workbench} from "./Workbench";
+import {RaspberryPi} from "./components/RaspberryPi";
+import {RainbowHat} from "./components/RainbowHat";
+import {LineChart} from "./tools/LineChart";
+import {ColorPicker} from "./tools/ColorPicker";
 
 declare var firebase;
 

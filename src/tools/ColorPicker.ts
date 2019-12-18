@@ -2,7 +2,7 @@
  * @author Charles Xie
  */
 
-import {Util} from "./Util";
+import {Util} from "../Util";
 
 export class ColorPicker {
 

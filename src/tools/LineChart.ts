@@ -4,10 +4,10 @@
  * @author Charles Xie
  */
 
-import {Sensor} from "./Sensor";
-import {Movable} from "./Movable";
-import {Util} from "./Util";
-import {Rectangle} from "./math/Rectangle";
+import {Sensor} from "../components/Sensor";
+import {Movable} from "../Movable";
+import {Util} from "../Util";
+import {Rectangle} from "../math/Rectangle";
 
 export class LineChart implements Movable {
 

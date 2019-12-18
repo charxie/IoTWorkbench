@@ -4,7 +4,7 @@
 
 import {Board} from "./Board";
 import {ElectronicComponent} from "./ElectronicComponent";
-import {system} from "./Main";
+import {system} from "../Main";
 
 export class Buzzer implements ElectronicComponent {
 
