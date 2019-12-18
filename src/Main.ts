@@ -76,7 +76,7 @@ window.onload = function () {
   let colorPickerContextMenu = new ColorPickerContextMenu();
   colorPickerContextMenu.render("colorpicker-context-menu-placeholder");
   let componentsPanel = new ComponentsPanel();
-  componentsPanel.render("components-panel");
+  componentsPanel.render("digital-twins-playground-components-panel");
 
   // read locally stored properties
   restoreLocation(system.raspberryPi);

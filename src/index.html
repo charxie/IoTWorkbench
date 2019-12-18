@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
@@ -28,28 +28,29 @@
 <!-- Add your site or application content here -->
 <div id="header">
   <div id="header-left">
-    <img style="vertical-align: top" src="img/logo.png"/>
+    <img style="vertical-align: top" src="img/logo.png" alt="logo"/>
     <b><label id="name-label">Name</label></b>
-    <span style="font-size: 14px; margin-left: 10px">
-      Version <label id="version-label">x</label></span>
+    <span style="font-size: 14px; margin-left: 10px">V<label id="version-label">x</label></span>
   </div>
   <div id="header-right">
     <label id="sign-in-label">Sign in</label>
     <span style="font-size: 14px; margin-left: 10px"></span>
-    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i
-      class="fas fa-home"></i></span>
-    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i
-      class="fas fa-camera"></i></span>
-    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i class="fas fa-share-alt"></i></span>
-    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i
-      class="fas fa-cloud-upload-alt"></i></span>
-    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i
-      class="fas fa-download"></i></span>
-    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i class="fas fa-cog"></i></span>
-    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i
-      class="fas fa-question-circle"></i></span>
-    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer"><i
-      class="fas fa-sign-out-alt"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer">
+      <i class="fas fa-home"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer">
+      <i class="fas fa-camera"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer">
+      <i class="fas fa-share-alt"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer">
+      <i class="fas fa-cloud-upload-alt"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer">
+      <i class="fas fa-download"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer">
+      <i class="fas fa-cog"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer">
+      <i class="fas fa-question-circle"></i></span>
+    <span style="font-size: 3em; color: teal; vertical-align: middle; cursor: pointer">
+      <i class="fas fa-sign-out-alt"></i></span>
   </div>
 </div>
 
@@ -57,17 +58,17 @@
 <div id="tabs" class="tab">
   <button id="digital-twins-tab-button" class="tablinks active" title="Digital Twin Editor">
     <span style="font-size: 1.5em; color: teal; vertical-align: middle;"><i class="fas fa-clone"></i></span>
-    <div class="horizontal-divider"></div>
+    <span style="display:inline-block; width:10px;"></span>
     Digital Twins
   </button>
   <button id="diagram-tab-button" class="tablinks" title="Diagram Editor">
     <span style="font-size: 1.5em; color: teal; vertical-align: middle;"><i class="fas fa-project-diagram"></i></span>
-    <div class="horizontal-divider"></div>
+    <span style="display:inline-block; width:10px;"></span>
     Diagram
   </button>
   <button id="code-tab-button" class="tablinks" title="Code Editor">
     <span style="font-size: 1.5em; color: teal; vertical-align: middle;"><i class="fas fa-code"></i></span>
-    <div class="horizontal-divider"></div>
+    <span style="display:inline-block; width:10px;"></span>
     Code
   </button>
 </div>
@@ -83,7 +84,7 @@
           style="display: none; box-shadow: 5px 5px 5px gray; border: 2px solid #006699; border-radius: 8px; position: absolute; left: 330px; top: 30px; z-index: 101;"></canvas>
   <canvas id="pressure-linechart" width="420" height="300"
           style="display: none; box-shadow: 5px 5px 5px gray; border: 2px solid #006699; border-radius: 8px; position: absolute; left: 360px; top: 60px; z-index: 102;"></canvas>
-  <div id="components-panel"></div>
+  <div id="digital-twins-playground-components-panel"></div>
   <div id="workbench-context-menu-placeholder"></div>
   <div id="raspberry-pi-context-menu-placeholder"></div>
   <div id="rainbow-hat-context-menu-placeholder"></div>
