@@ -134,7 +134,7 @@ body {
   bottom: 60px;
   width: 200px;
   margin: auto;
-  z-index: 20000;
+  z-index: 100;
   background-color: white;
   border: 2px solid gray;
   text-align: center;

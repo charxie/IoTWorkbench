@@ -34,11 +34,11 @@ export let system = new System();
 export let code = new Code();
 export let user = new User("Charles", null, "Xie");
 
-let social = `<span style="font-size: 2em; vertical-align: middle"><i class="fab fa-facebook-square"></i></span>
-              <span style="font-size: 2em; vertical-align: middle"><i class="fab fa-weixin"></i></span>
-              <span style="font-size: 2em; vertical-align: middle"><i class="fab fa-twitter"></i></span>
-              <span style="font-size: 2em; vertical-align: middle"><i class="fab fa-weibo"></i></span>
-              <span style="font-size: 2em; vertical-align: middle"><i class="fab fa-youtube"></i></span>`;
+let social = `<span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-facebook-square"></i></span>
+              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-weixin"></i></span>
+              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-twitter"></i></span>
+              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-weibo"></i></span>
+              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-youtube"></i></span>`;
 
 window.onload = function () {
 
