@@ -33,7 +33,7 @@ export class RainbowHat extends Hat {
   public alphanumericDisplays: LedDisplay[] = [];
   public decimalPointDisplays: LedDisplay[] = [];
 
-  private indexOfSelectedRgbLedLight: number = -1;
+  indexOfSelectedRgbLedLight: number = -1;
   private stateId: string = "rainbow_hat_default";
   private mouseOverObject: any;
   private boardImage: HTMLImageElement;
@@ -170,6 +170,7 @@ export class RainbowHat extends Hat {
       system.colorPicker.setSelectedColor(this.rgbLedLights[this.indexOfSelectedRgbLedLight].color);
       system.colorPicker.draw();
       system.colorPicker.setSelectedPoint();
+      document.getElementById("colorpicker-title").innerText = "RGB LED Light " + this.indexOfSelectedRgbLedLight;
     } else {
       let menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
       menu.style.left = e.clientX + "px";

@@ -49,7 +49,7 @@ window.onload = function () {
   let versionLabel = document.getElementById("version-label") as HTMLElement;
   versionLabel.innerHTML = Constants.Software.version;
   let creditLabel = document.getElementById('credit') as HTMLElement;
-  creditLabel.innerHTML = social + "<div class='divider'></div>" + Constants.Software.name + " " + Constants.Software.version + ", " + user.fullName + " , &copy; " + new Date().getFullYear();
+  creditLabel.innerHTML = social + "<div class='horizontal-divider'></div>" + Constants.Software.name + " " + Constants.Software.version + ", " + user.fullName + " , &copy; " + new Date().getFullYear();
 
   let digitalTwinsTabButton = document.getElementById("digital-twins-tab-button") as HTMLButtonElement;
   digitalTwinsTabButton.addEventListener("click", function (event) {
@@ -145,6 +145,8 @@ function resize() {
   let codespaceRect = code.codespace.canvas.getBoundingClientRect() as DOMRect;
   code.codespace.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
   code.codespace.canvas.height = window.innerHeight - workbenchRect.top - 50;
+  let componentsScroller = document.getElementById("components-scroller") as HTMLDivElement;
+  componentsScroller.style.height = system.workbench.canvas.height * 0.8 + "px";
 }
 
 function draw() {

@@ -41,16 +41,16 @@ export class ComponentsPanel {
     return `<h2 style="text-align: center; vertical-align: top; margin-top: 0;">
                 <span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cubes"></i></span> Components</h2>
             <hr>
-            <div style="overflow-y: auto; height:360px;">
+            <div id="components-scroller" style="overflow-y: auto; height: 360px;">
               <h3 style="text-align: left"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Microcontrollers</h3>
-              <div class="row" style="margin-right: 10px">
+              <div class="row" style="margin-right: 10px; background-color: lightskyblue">
                 <div class="column">
                   <img src="${raspberryPiImage}" id="raspberry-pi-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Raspberry Pi">
                 </div>
               </div>
-              <br><br>
+              <div class="vertical-divider"></div>
               <h3 style="text-align: left"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> HATs</h3>
-              <div class="row" style="margin-right: 10px">
+              <div class="row" style="margin-right: 10px;  background-color: lightblue">
                 <div class="column">
                   <img src="${rainbowHatImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Rainbow HAT">
                   <img src="${senseHatImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Sense HAT">
@@ -62,9 +62,9 @@ export class ComponentsPanel {
                   <img src="${panTiltHatImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Pan-Tilt HAT">
                </div>
               </div>
-              <br><br>
+              <div class="vertical-divider"></div>
               <h3 style="text-align: left"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Others</h3>
-              <div class="row" style="margin-right: 10px">
+              <div class="row" style="margin-right: 10px;  background-color: lightyellow">
                 <div class="column">
                   <img src="${fullBreadboardImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Full Breadboard">
                   <img src="${redLedLightImage}" style="width:100%; cursor: pointer;" title="Red LED Light">

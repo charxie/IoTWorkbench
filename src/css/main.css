@@ -81,10 +81,16 @@ body {
   padding: 2px;
 }
 
-.divider {
+.horizontal-divider {
   width: 8px;
   height: auto;
   display: inline-block;
+}
+
+.vertical-divider {
+  width: auto;
+  height: 8px;
+  display: block;
 }
 
 /* Style the tab */
