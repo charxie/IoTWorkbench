@@ -151,6 +151,7 @@ export class RainbowHat extends Hat {
     let rect = this.canvas.getBoundingClientRect();
     let dx = e.clientX - rect.x;
     let dy = e.clientY - rect.y;
+    this.indexOfSelectedRgbLedLight = -1;
     for (let i = 0; i < this.rgbLedLights.length; i++) {
       if (this.rgbLedLights[i].contains(dx, dy)) {
         this.indexOfSelectedRgbLedLight = i;
@@ -353,8 +354,19 @@ export class RainbowHat extends Hat {
       this.mouseOverObject = this.handles[3];
       this.canvas.style.cursor = "move";
     } else {
-      this.mouseOverObject = null;
-      this.canvas.style.cursor = "default";
+      let onRgbLedLight = false;
+      for (let i = 0; i < this.rgbLedLights.length; i++) {
+        if (this.rgbLedLights[i].contains(dx, dy)) {
+          this.mouseOverObject = this.rgbLedLights[i];
+          this.canvas.style.cursor = "pointer";
+          onRgbLedLight = true;
+          break;
+        }
+      }
+      if (!onRgbLedLight) {
+        this.mouseOverObject = null;
+        this.canvas.style.cursor = "default";
+      }
     }
     this.draw();
 

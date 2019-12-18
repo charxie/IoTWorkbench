@@ -22,9 +22,11 @@ export class ColorPicker {
     this.ctx1 = this.colorBlock.getContext('2d');
     this.colorStrip = document.getElementById('color-strip') as HTMLCanvasElement;
     this.ctx2 = this.colorStrip.getContext('2d');
-    this.colorBlock.addEventListener("mousedown", this.mousedown.bind(this), false);
-    this.colorBlock.addEventListener("mouseup", this.mouseup.bind(this), false);
-    this.colorStrip.addEventListener("click", this.clickStrip.bind(this), false);
+    this.colorBlock.addEventListener("mousedown", this.mouseDownBlock.bind(this), false);
+    this.colorBlock.addEventListener("mouseup", this.mouseUpBlock.bind(this), false);
+    this.colorStrip.addEventListener("click", this.mouseClickStrip.bind(this), false);
+    this.colorStrip.addEventListener("mousedown", this.mouseDownStrip.bind(this), false);
+    this.colorStrip.addEventListener("mouseup", this.mouseUpStrip.bind(this), false);
   }
 
   public setColorLabel(colorLabel: HTMLElement) {
@@ -117,21 +119,32 @@ export class ColorPicker {
     this.ctx1.fillRect(0, 0, this.colorBlock.width, this.colorBlock.height);
   }
 
-  private clickStrip(e: MouseEvent): void {
+  private mouseDownStrip(e: MouseEvent): void {
+    e.stopPropagation();
+  }
+
+  private mouseUpStrip(e: MouseEvent): void {
+    e.stopPropagation();
+  }
+
+  private mouseClickStrip(e: MouseEvent): void {
     this.savedStripY = e.offsetY;
     let imageData = this.ctx2.getImageData(e.offsetX, e.offsetY, 1, 1).data;
     this.rgbaColor = Util.rgbToHex(imageData[0], imageData[1], imageData[2]);
     this.draw();
+    e.stopPropagation();
   }
 
-  private mousedown(e: MouseEvent): void {
+  private mouseDownBlock(e: MouseEvent): void {
     this.changeColor(e);
+    e.stopPropagation();
   }
 
-  private mouseup(e: MouseEvent): void {
+  private mouseUpBlock(e: MouseEvent): void {
     this.savedBlockX = e.offsetX;
     this.savedBlockY = e.offsetY;
     this.draw();
+    e.stopPropagation();
   }
 
   private changeColor(e: MouseEvent): void {

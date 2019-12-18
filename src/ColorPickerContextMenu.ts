@@ -8,7 +8,7 @@ export class ColorPickerContextMenu {
   getUi(): string {
     return `<menu id="colorpicker-context-menu" class="menu" style="width: 338px; z-index: 10000">
               <li class="menu-item">
-                <div id="colorpicker-title" style="padding: 10px; font-family: inherit"></div>
+                <div id="colorpicker-title" style="padding: 10px; font-family: inherit; font-size: 12px;"></div>
                 <div id="colorpicker" style="cursor: crosshair; margin: 1px 1px 1px 1px">
                   <canvas id="color-block" height="300" width="300"></canvas>
                   <canvas id="color-strip" height="300" width="30"></canvas>

@@ -43,14 +43,14 @@ export class ComponentsPanel {
             <hr>
             <div id="components-scroller" style="overflow-y: auto; height: 360px;">
               <h3 style="text-align: left"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Microcontrollers</h3>
-              <div class="row" style="margin-right: 10px; background-color: lightskyblue">
+              <div class="row" style="margin-right: 10px; background-color: lightskyblue; border: 1px solid #b81900; border-radius: 4px">
                 <div class="column">
                   <img src="${raspberryPiImage}" id="raspberry-pi-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Raspberry Pi">
                 </div>
               </div>
               <div class="vertical-divider"></div>
               <h3 style="text-align: left"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> HATs</h3>
-              <div class="row" style="margin-right: 10px;  background-color: lightblue">
+              <div class="row" style="margin-right: 10px;  background-color: lightblue; border: 1px solid #b81900; border-radius: 4px">
                 <div class="column">
                   <img src="${rainbowHatImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Rainbow HAT">
                   <img src="${senseHatImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Sense HAT">
@@ -64,7 +64,7 @@ export class ComponentsPanel {
               </div>
               <div class="vertical-divider"></div>
               <h3 style="text-align: left"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Others</h3>
-              <div class="row" style="margin-right: 10px;  background-color: lightyellow">
+              <div class="row" style="margin-right: 10px;  background-color: lightyellow; border: 1px solid #b81900; border-radius: 4px">
                 <div class="column">
                   <img src="${fullBreadboardImage}" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Full Breadboard">
                   <img src="${redLedLightImage}" style="width:100%; cursor: pointer;" title="Red LED Light">
