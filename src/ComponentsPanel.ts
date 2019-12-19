@@ -45,38 +45,38 @@ export class ComponentsPanel {
               <h3 style="text-align: left"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Microcontrollers</h3>
               <div class="row" style="margin-right: 10px; background-color: lightskyblue; border: 1px solid #b81900; border-radius: 4px">
                 <div class="column">
-                  <img src="${raspberryPiImage}" draggable="true" id="raspberry-pi-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Raspberry Pi">
+                  <img src="${raspberryPiImage}" draggable="true" id="raspberry-pi-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Raspberry Pi" alt="Raspberry Pi">
                 </div>
               </div>
               <div class="vertical-divider"></div>
               <h3 style="text-align: left"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> HATs</h3>
               <div class="row" style="margin-right: 10px;  background-color: lightblue; border: 1px solid #b81900; border-radius: 4px">
                 <div class="column">
-                  <img src="${rainbowHatImage}" draggable="true" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Rainbow HAT">
-                  <img src="${senseHatImage}" draggable="true" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Sense HAT">
-                  <img src="${capacitiveTouchHatImage}" draggable="true" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Capacitive Touch HAT">
+                  <img src="${rainbowHatImage}" draggable="true" id="rainbow-hat-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Rainbow HAT" alt="Rainbow HAT">
+                  <img src="${senseHatImage}" draggable="true" id="sense-hat-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Sense HAT" alt="Sense HAT">
+                  <img src="${capacitiveTouchHatImage}" draggable="true" id="capacitive-touch-hat-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Capacitive Touch HAT" alt="Capacitive Touch HAT">
                </div>
                 <div class="column">
-                  <img src="${unicornHatImage}" draggable="true" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Unicorn HAT">
-                  <img src="${crickitHatImage}" draggable="true" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Crickit HAT">
-                  <img src="${panTiltHatImage}" draggable="true" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Pan-Tilt HAT">
+                  <img src="${unicornHatImage}" draggable="true" id="unicorn-hat-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Unicorn HAT" alt="Unicorn HAT">
+                  <img src="${crickitHatImage}" draggable="true" id="crickit-hat-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Crickit HAT" alt="Crickit HAT">
+                  <img src="${panTiltHatImage}" draggable="true" id="pan-tilt-hat-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Pan-Tilt HAT" alt="Pan-Tilt HAT">
                </div>
               </div>
               <div class="vertical-divider"></div>
               <h3 style="text-align: left"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Others</h3>
               <div class="row" style="margin-right: 10px;  background-color: lightyellow; border: 1px solid #b81900; border-radius: 4px">
                 <div class="column">
-                  <img src="${fullBreadboardImage}" draggable="true" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Full Breadboard">
-                  <img src="${redLedLightImage}" draggable="true" style="width:100%; cursor: pointer;" title="Red LED Light">
-                  <img src="${greenLedLightImage}" draggable="true" style="width:100%; cursor: pointer;" title="Green LED Light">
-                  <img src="${blueLedLightImage}" draggable="true" style="width:100%; cursor: pointer;" title="Blue LED Light">
-                 <img src="${tricolorLedLightImage}" draggable="true" style="width:100%; cursor: pointer;" title="Tricolor LED Light">
+                  <img src="${fullBreadboardImage}" draggable="true" id="full-breadboard-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Full Breadboard" alt="Full Breadboard">
+                  <img src="${redLedLightImage}" draggable="true" id="red-led-light-image" style="width:100%; cursor: pointer;" title="Red LED Light" alt="Red LED Light">
+                  <img src="${greenLedLightImage}" draggable="true" id="green-led-light-image" style="width:100%; cursor: pointer;" title="Green LED Light" alt="Green LED Light">
+                  <img src="${blueLedLightImage}" draggable="true" id="blue-led-light-image" style="width:100%; cursor: pointer;" title="Blue LED Light" alt="Blue LED Light">
+                 <img src="${tricolorLedLightImage}" draggable="true" id="tricolor-led-light-image" style="width:100%; cursor: pointer;" title="Tricolor LED Light" alt="Tricolor LED Light">
                 </div>
                 <div class="column">
-                  <img src="${halfBreadboardImage}" draggable="true" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Half Breadboard">
-                  <img src="${momentaryButtonImage}" draggable="true" style="width:100%; cursor: pointer;" title="Momentary Button">
-                  <img src="${toggleSwitchImage}" draggable="true" style="width:100%; cursor: pointer;" title="Toggle Switch">
-                  <img src="${piezoBuzzerImage}" draggable="true" style="width:100%; cursor: pointer;" title="Piezo Buzzer">
+                  <img src="${halfBreadboardImage}" draggable="true" id="half-breadboard-image" style="width:100%; cursor: pointer; box-shadow: 5px 5px 5px gray;" title="Half Breadboard" alt="Half Breadboard">
+                  <img src="${momentaryButtonImage}" draggable="true" id="momentary-button-image" style="width:100%; cursor: pointer;" title="Momentary Button" alt="Momentary Button">
+                  <img src="${toggleSwitchImage}" draggable="true" id="toggle-switch-image" style="width:100%; cursor: pointer;" title="Toggle Switch" alt="Toggle Switch">
+                  <img src="${piezoBuzzerImage}" draggable="true" id="piezo-buzzer-image" style="width:100%; cursor: pointer;" title="Piezo Buzzer" alt="Piezo Buzzer">
                 </div>
               </div>
             </div>`;

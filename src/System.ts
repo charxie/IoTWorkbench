@@ -26,6 +26,7 @@ export class System {
   private selectedMovable: Movable;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
+  private draggedElementId: string;
 
   constructor() {
 
@@ -54,6 +55,43 @@ export class System {
     this.playground.addEventListener("mouseup", this.mouseUp, false);
     this.playground.addEventListener("mousemove", this.mouseMove, false);
     document.addEventListener("mouseleave", this.mouseLeave, false);
+
+    // drag and drop support
+    let that = this;
+    this.playground.addEventListener("dragstart", function (e) {
+      that.draggedElementId = (<HTMLElement>e.target).id;
+    });
+    this.playground.addEventListener("drag", function (e) {
+      // console.log("dragging: " + (<HTMLElement>e.target).id);
+    });
+    this.playground.addEventListener("dragend", function (e) {
+      // console.log("end drag: " + (<HTMLElement>e.target).id);
+    });
+
+    // prevent default to allow drop
+    this.playground.addEventListener("dragover", function (e) {
+      e.preventDefault();
+    }, false);
+    this.playground.addEventListener("drop", function (e) {
+      e.preventDefault();
+      console.log("drop: " + that.draggedElementId + ", " + (<HTMLElement>e.target).id);
+      if ((<HTMLElement>e.target).id == "workbench") {
+        switch (that.draggedElementId) {
+          case "raspberry-pi-image":
+            let playground = document.getElementById("digital-twins-playground") as HTMLDivElement;
+            let rpi = document.getElementById("raspberry-pi") as HTMLCanvasElement;
+            let newRpi = rpi.cloneNode(true) as HTMLCanvasElement;
+            newRpi.style.left = "10px";
+            newRpi.style.top = "10px";
+            newRpi.style.zIndex = "100000";
+            playground.appendChild(newRpi);
+            console.log(playground.childElementCount);
+            break;
+          case "rainbow-hat-image":
+            break;
+        }
+      }
+    }, false);
 
   }
 

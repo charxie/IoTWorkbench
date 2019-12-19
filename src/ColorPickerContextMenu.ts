@@ -6,7 +6,7 @@ import {system} from "./Main";
 export class ColorPickerContextMenu {
 
   getUi(): string {
-    return `<menu id="colorpicker-context-menu" class="menu" style="width: 338px; z-index: 10000">
+    return `<menu id="colorpicker-context-menu" class="menu" style="width: 338px; z-index: 10000;">
               <li class="menu-item">
                 <div id="colorpicker-title" style="text-align: center; padding: 4px; font-family: inherit; font-size: 14px;"></div>
                 <div id="colorpicker" style="cursor: crosshair; margin: 1px 1px 1px 1px">
