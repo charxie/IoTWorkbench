@@ -40,6 +40,17 @@ export class ColorPickerContextMenu {
       let menu = document.getElementById("colorpicker-context-menu") as HTMLMenuElement;
       menu.classList.remove("show-menu");
     };
+    // prevent the mouse event from being propagated to the playground
+    let menu = document.getElementById("colorpicker-context-menu");
+    menu.onmousedown = function (e) {
+      e.stopPropagation();
+    };
+    menu.onmouseup = function (e) {
+      e.stopPropagation();
+    };
+    menu.onmousemove = function (e) {
+      e.stopPropagation();
+    };
   }
 
 }

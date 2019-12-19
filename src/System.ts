@@ -64,7 +64,6 @@ export class System {
   }
 
   private mouseDown = (e: MouseEvent): void => {
-    e.preventDefault();
     let rect = this.playground.getBoundingClientRect();
     let x = e.clientX - rect.x;
     let y = e.clientY - rect.y;
@@ -86,7 +85,6 @@ export class System {
   };
 
   private mouseUp = (e: MouseEvent): void => {
-    e.preventDefault();
     this.selectedMovable = null;
     // close all menus upon mouse left click
     let menu = document.getElementById("workbench-context-menu") as HTMLMenuElement;
@@ -102,12 +100,10 @@ export class System {
   };
 
   private mouseLeave = (e: MouseEvent): void => {
-    e.preventDefault();
     this.selectedMovable = null;
   };
 
   private mouseMove = (e: MouseEvent): void => {
-    e.preventDefault();
     if (this.selectedMovable != null) {
       this.moveTo(e.clientX, e.clientY, this.selectedMovable);
       this.storeLocation(this.selectedMovable);
