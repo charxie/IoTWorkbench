@@ -3,24 +3,24 @@
  */
 
 import {Hat} from "./Hat";
-import {Board} from "./Board";
+import {Mcu} from "./Mcu";
 import {Rectangle} from "../math/Rectangle";
 import {system} from "../Main"; // this is needed as we use augmented methods of canvas defined in Main.ts
 
 // @ts-ignore
 import raspberryPiImage from "../img/raspberry-pi.png";
 
-export class RaspberryPi extends Board {
+export class RaspberryPi extends Mcu {
 
   hat: Hat;
 
   private boardImage: HTMLImageElement;
   private mouseOverObject: any;
 
-  constructor(canvasId: string) {
+  constructor(canvasId: string, index: number) {
     super(canvasId);
 
-    this.uid = "Raspberry Pi";
+    this.uid = "Raspberry Pi " + index;
     this.canvas.addEventListener("mousedown", this.mouseDown, false);
     this.canvas.addEventListener("mouseup", this.mouseUp, false);
     this.canvas.addEventListener("mousemove", this.mouseMove, false);

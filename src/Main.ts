@@ -15,6 +15,7 @@ import {RaspberryPiContextMenu} from "./RaspberryPiContextMenu";
 import {ColorPickerContextMenu} from "./ColorPickerContextMenu";
 import {Code} from "./code/Code";
 import {LineChart} from "./tools/LineChart";
+import {RaspberryPi} from "./components/RaspberryPi";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -79,7 +80,7 @@ window.onload = function () {
   componentsPanel.render("digital-twins-playground-components-panel");
 
   // read locally stored properties
-  restoreLocation(system.raspberryPi);
+  restoreLocations(system.mcus);
   restoreLocation(system.rainbowHat);
   restoreLocation(system.temperatureGraph);
   restoreLocation(system.pressureGraph);
@@ -89,7 +90,9 @@ window.onload = function () {
   if (x != null) {
     let i = parseInt(x);
     if (i >= 0) {
-      system.rainbowHat.attach(system.raspberryPi);
+      if (system.mcus[i] instanceof RaspberryPi) {
+        system.rainbowHat.attach(<RaspberryPi>system.mcus[i]);
+      }
     }
   }
 
@@ -119,6 +122,12 @@ function restoreVisibility(g: LineChart) {
   if (x != null) {
     g.setVisible("true" == x);
     g.draw();
+  }
+}
+
+function restoreLocations(m: Movable[]) {
+  for (let i = 0; i < m.length; i++) {
+    restoreLocation(m[i]);
   }
 }
 

@@ -135,12 +135,25 @@ export class RainbowHat extends Hat {
     }
   }
 
+  public whichRaspberryPi(): number {
+    let r1 = new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+    for (let i = 0; i < system.mcus.length; i++) {
+      let mcu = system.mcus[i];
+      if (mcu instanceof RaspberryPi) {
+        if (r1.intersectRect(new Rectangle(mcu.getX(), mcu.getY(), mcu.getWidth(), mcu.getHeight()))) {
+          return i;
+        }
+      }
+    }
+    return -1;
+  }
+
   public attach(raspberryPi: RaspberryPi): void {
     super.attach(raspberryPi);
     if (raspberryPi != null) {
       this.setX(raspberryPi.getX());
       this.setY(raspberryPi.getY());
-      localStorage.setItem("Attached: " + this.getUid(), "0");
+      localStorage.setItem("Attached: " + this.getUid(), system.mcus.indexOf(raspberryPi).toString());
     } else {
       localStorage.setItem("Attached: " + this.getUid(), "-1");
     }
@@ -183,10 +196,8 @@ export class RainbowHat extends Hat {
         attachMenuItem.className = "menu-item disabled";
         detachMenuItem.className = "menu-item";
       } else {
-        let r1 = new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());
-        let r2 = new Rectangle(system.raspberryPi.getX(), system.raspberryPi.getY(), system.raspberryPi.getWidth(), system.raspberryPi.getHeight());
-        let onTop = r1.intersectRect(r2);
-        attachMenuItem.className = onTop ? "menu-item" : "menu-item disabled";
+        let i = this.whichRaspberryPi();
+        attachMenuItem.className = i >= 0 ? "menu-item" : "menu-item disabled";
         detachMenuItem.className = "menu-item disabled";
       }
     }

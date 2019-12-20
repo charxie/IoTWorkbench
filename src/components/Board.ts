@@ -1,4 +1,6 @@
 /*
+ * A rectangular printed circuit board (PCB)
+ *
  * @author Charles Xie
  */
 

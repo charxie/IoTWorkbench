@@ -8,6 +8,8 @@ import {RaspberryPi} from "./components/RaspberryPi";
 import {RainbowHat} from "./components/RainbowHat";
 import {LineChart} from "./tools/LineChart";
 import {ColorPicker} from "./tools/ColorPicker";
+import {Mcu} from "./components/Mcu";
+import {system} from "./Main";
 
 declare var firebase;
 
@@ -16,7 +18,7 @@ export class System {
   static database;
 
   workbench: Workbench;
-  raspberryPi: RaspberryPi;
+  mcus: Mcu[] = [];
   rainbowHat: RainbowHat;
   temperatureGraph: LineChart;
   pressureGraph: LineChart;
@@ -45,12 +47,12 @@ export class System {
     }
 
     this.workbench = new Workbench("workbench");
-    this.raspberryPi = new RaspberryPi("raspberry-pi");
+    this.mcus.push(new RaspberryPi("raspberry-pi-0", 0));
     this.rainbowHat = new RainbowHat("rainbow-hat");
     this.temperatureGraph = new LineChart("temperature-linechart", this.rainbowHat.temperatureSensor);
     this.pressureGraph = new LineChart("pressure-linechart", this.rainbowHat.barometricPressureSensor);
 
-    this.playground = document.getElementById("digital-twins-playground");
+    this.playground = document.getElementById("digital-twins-playground") as HTMLDivElement;
     this.playground.addEventListener("mousedown", this.mouseDown, false);
     this.playground.addEventListener("mouseup", this.mouseUp, false);
     this.playground.addEventListener("mousemove", this.mouseMove, false);
@@ -78,14 +80,7 @@ export class System {
       if ((<HTMLElement>e.target).id == "workbench") {
         switch (that.draggedElementId) {
           case "raspberry-pi-image":
-            let playground = document.getElementById("digital-twins-playground") as HTMLDivElement;
-            let rpi = document.getElementById("raspberry-pi") as HTMLCanvasElement;
-            let newRpi = rpi.cloneNode(true) as HTMLCanvasElement;
-            newRpi.style.left = "10px";
-            newRpi.style.top = "10px";
-            newRpi.style.zIndex = "100000";
-            playground.appendChild(newRpi);
-            console.log(playground.childElementCount);
+            that.addRaspberryPi(e.offsetX, e.offsetY);
             break;
           case "rainbow-hat-image":
             break;
@@ -95,9 +90,30 @@ export class System {
 
   }
 
+  // progrmatically add a Raspberry Pi to the specified position
+  private addRaspberryPi(x: number, y: number): void {
+    let canvas = document.createElement("canvas");
+    canvas.id = "raspberry-pi-" + this.mcus.length;
+    canvas.width = 435;
+    canvas.height = 295;
+    canvas.style.display = "block";
+    canvas.style.margin = "auto";
+    canvas.style.position = "absolute";
+    canvas.style.left = "10px; top: 10px; z-index: 49;";
+    this.playground.appendChild(canvas);
+    let pi = new RaspberryPi(canvas.id, this.mcus.length);
+    this.mcus.push(pi);
+    pi.setX(x - canvas.width / 2);
+    pi.setY(y - canvas.height / 2);
+    system.draw();
+  }
+
   draw(): void {
     this.workbench.draw();
-    this.raspberryPi.draw();
+    let i;
+    for (i = 0; i < this.mcus.length; i++) {
+      this.mcus[i].draw();
+    }
     this.rainbowHat.draw();
   }
 
@@ -105,16 +121,21 @@ export class System {
     let rect = this.playground.getBoundingClientRect();
     let x = e.clientX - rect.x;
     let y = e.clientY - rect.y;
+    this.selectedMovable = null;
     if (this.rainbowHat.whichHandle(x - this.rainbowHat.getX(), y - this.rainbowHat.getY()) >= 0) {
       this.selectedMovable = this.rainbowHat;
     } else if (this.temperatureGraph.isVisible() && this.temperatureGraph.onHandle(x - this.temperatureGraph.getX(), y - this.temperatureGraph.getY())) {
       this.selectedMovable = this.temperatureGraph;
     } else if (this.pressureGraph.isVisible() && this.pressureGraph.onHandle(x - this.pressureGraph.getX(), y - this.pressureGraph.getY())) {
       this.selectedMovable = this.pressureGraph;
-    } else if (this.raspberryPi.whichHandle(x - this.raspberryPi.getX(), y - this.raspberryPi.getY()) >= 0) {
-      this.selectedMovable = this.raspberryPi;
     } else {
-      this.selectedMovable = null;
+      let i;
+      for (i = 0; i < this.mcus.length; i++) {
+        if (this.mcus[i].whichHandle(x - this.mcus[i].getX(), y - this.mcus[i].getY()) >= 0) {
+          this.selectedMovable = this.mcus[i];
+          break;
+        }
+      }
     }
     if (this.selectedMovable != null) {
       this.mouseDownRelativeX = e.clientX - this.selectedMovable.getX();

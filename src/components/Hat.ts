@@ -1,5 +1,5 @@
 /*
- * Hardware attached on top (HAT)
+ * Hardware attached on top (HAT) for Raspberry Pi, equivalent to shields for Arduino
  *
  * @author Charles Xie
  */

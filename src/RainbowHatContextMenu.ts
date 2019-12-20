@@ -3,6 +3,7 @@
  */
 
 import {system} from "./Main";
+import {RaspberryPi} from "./components/RaspberryPi";
 
 export class RainbowHatContextMenu {
 
@@ -39,7 +40,10 @@ export class RainbowHatContextMenu {
     e.preventDefault();
     let menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
     menu.classList.remove("show-menu");
-    system.rainbowHat.attach(system.raspberryPi);
+    let i = system.rainbowHat.whichRaspberryPi();
+    if (i >= 0) {
+      system.rainbowHat.attach(<RaspberryPi>system.mcus[i]);
+    }
   }
 
   private detachButtonClick(e: MouseEvent): void {
