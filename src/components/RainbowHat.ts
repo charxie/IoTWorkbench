@@ -137,10 +137,11 @@ export class RainbowHat extends Hat {
 
   public whichRaspberryPi(): number {
     let r1 = new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());
-    for (let i = 0; i < system.mcus.length; i++) {
+    for (let i = system.mcus.length - 1; i >= 0; i--) {
       let mcu = system.mcus[i];
       if (mcu instanceof RaspberryPi) {
-        if (r1.intersectRect(new Rectangle(mcu.getX(), mcu.getY(), mcu.getWidth(), mcu.getHeight()))) {
+        let a = 20;
+        if (r1.intersectRect(new Rectangle(mcu.getX() + a, mcu.getY() + a, mcu.getWidth() - 2 * a, mcu.getHeight() - 2 * a))) {
           return i;
         }
       }
@@ -153,9 +154,9 @@ export class RainbowHat extends Hat {
     if (raspberryPi != null) {
       this.setX(raspberryPi.getX());
       this.setY(raspberryPi.getY());
-      localStorage.setItem("Attached: " + this.getUid(), system.mcus.indexOf(raspberryPi).toString());
+      localStorage.setItem("Attachment: " + this.getUid(), raspberryPi.uid);
     } else {
-      localStorage.setItem("Attached: " + this.getUid(), "-1");
+      localStorage.removeItem("Attachment: " + this.getUid());
     }
   }
 

@@ -91,6 +91,18 @@ export class System {
     }, false);
   }
 
+  getRaspberryPiById(uid: string): RaspberryPi {
+    let pi = null;
+    for (let i = 0; i < this.mcus.length; i++) {
+      if (this.mcus[i] instanceof RaspberryPi) {
+        if (this.mcus[i].uid == uid) {
+          return <RaspberryPi>this.mcus[i];
+        }
+      }
+    }
+    return pi;
+  }
+
   removeRaspberryPi(selectedIndex: number): void {
     let canvas = system.mcus[selectedIndex].canvas;
     this.playground.removeChild(canvas);

@@ -87,13 +87,11 @@ window.onload = function () {
   restoreLocation(system.pressureGraph);
   restoreVisibility(system.temperatureGraph);
   restoreVisibility(system.pressureGraph);
-  let x: string = localStorage.getItem("Attached: " + system.rainbowHat.getUid());
-  if (x != null) {
-    let i = parseInt(x);
-    if (i >= 0) {
-      if (system.mcus[i] instanceof RaspberryPi) {
-        system.rainbowHat.attach(<RaspberryPi>system.mcus[i]);
-      }
+  let id: string = localStorage.getItem("Attachment: " + system.rainbowHat.getUid());
+  if (id != null) {
+    let pi = system.getRaspberryPiById(id);
+    if (pi) {
+      system.rainbowHat.attach(pi);
     }
   }
 
