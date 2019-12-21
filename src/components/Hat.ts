@@ -22,6 +22,13 @@ export abstract class Hat extends Board {
       }
     }
     this.raspberryPi = raspberryPi;
+    if (raspberryPi != null) {
+      this.setX(raspberryPi.getX());
+      this.setY(raspberryPi.getY());
+      localStorage.setItem("Attachment: " + this.getUid(), raspberryPi.uid);
+    } else {
+      localStorage.removeItem("Attachment: " + this.getUid());
+    }
   }
 
   public whichRaspberryPi(): number {

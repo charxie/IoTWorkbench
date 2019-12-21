@@ -4,8 +4,10 @@
 
 export class WorkbenchContextMenu {
 
+  id: string = "workbench-context-menu";
+
   getUi(): string {
-    return `<menu id="workbench-context-menu" class="menu" style="width: 120px; z-index: 10000">
+    return `<menu id="${this.id}" class="menu" style="width: 120px; z-index: 10000">
               <li class="menu-item">
                 <button type="button" class="menu-btn"><i class="fas fa-folder-open"></i><span class="menu-text">Open</span></button>
               </li>

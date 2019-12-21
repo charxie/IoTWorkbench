@@ -11,6 +11,10 @@ import {ColorPicker} from "./tools/ColorPicker";
 import {Mcu} from "./components/Mcu";
 import {Rectangle} from "./math/Rectangle";
 import {Hat} from "./components/Hat";
+import {SenseHat} from "./components/SenseHat";
+import {contextMenus} from "./Main";
+import {CapacitiveTouchHatContextMenu} from "./CapacitiveTouchHatContextMenu";
+import {CapacitiveTouchHat} from "./components/CapacitiveTouchHat";
 
 declare var firebase;
 
@@ -87,6 +91,16 @@ export class System {
             let rainbowHat = that.addHat("Rainbow HAT", e.offsetX, e.offsetY, "Rainbow HAT " + Date.now().toString(16));
             that.storeHatSequence();
             that.storeLocation(rainbowHat);
+            break;
+          case "sense-hat-image":
+            let senseHat = that.addHat("Sense HAT", e.offsetX, e.offsetY, "Sense HAT " + Date.now().toString(16));
+            that.storeHatSequence();
+            that.storeLocation(senseHat);
+            break;
+          case "capacitive-touch-hat-image":
+            let capacitiveTouchHat = that.addHat("Capacitive Touch HAT", e.offsetX, e.offsetY, "Capacitive Touch HAT " + Date.now().toString(16));
+            that.storeHatSequence();
+            that.storeLocation(capacitiveTouchHat);
             break;
         }
       }
@@ -174,26 +188,37 @@ export class System {
 
   addHat(type: string, x: number, y: number, uid: string): Hat {
     let canvas = document.createElement("canvas");
+    canvas.width = 330;
+    canvas.height = 290;
+    canvas.style.display = "block";
+    canvas.style.margin = "auto";
+    canvas.style.position = "absolute";
+    canvas.style.left = "10px";
+    canvas.style.top = "10px";
+    canvas.style.zIndex = "99";
+    this.playground.appendChild(canvas);
+    let hat = null;
     switch (type) {
       case "Rainbow HAT":
         canvas.id = "rainbow-hat-" + this.hats.length;
-        canvas.width = 330;
-        canvas.height = 290;
-        canvas.style.display = "block";
-        canvas.style.margin = "auto";
-        canvas.style.position = "absolute";
-        canvas.style.left = "10px";
-        canvas.style.top = "10px";
-        canvas.style.zIndex = "99";
-        this.playground.appendChild(canvas);
-        let hat = new RainbowHat(canvas.id, uid);
-        this.hats.push(hat);
-        hat.setX(x - canvas.width / 2);
-        hat.setY(y - canvas.height / 2);
-        this.draw();
-        return hat;
+        hat = new RainbowHat(canvas.id, uid);
+        break;
+      case "Sense HAT":
+        canvas.id = "sense-hat-" + this.hats.length;
+        hat = new SenseHat(canvas.id, uid);
+        break;
+      case "Capacitive Touch HAT":
+        canvas.id = "capacitive-touch-hat-" + this.hats.length;
+        hat = new CapacitiveTouchHat(canvas.id, uid);
+        break;
     }
-    return null;
+    if (hat != null) {
+      this.hats.push(hat);
+      hat.setX(x - canvas.width / 2);
+      hat.setY(y - canvas.height / 2);
+      this.draw();
+    }
+    return hat;
   }
 
   whichHat(x: number, y: number): number {
@@ -253,16 +278,10 @@ export class System {
   private mouseUp = (e: MouseEvent): void => {
     this.selectedMovable = null;
     // close all menus upon mouse left click
-    let menu = document.getElementById("workbench-context-menu") as HTMLMenuElement;
-    menu.classList.remove("show-menu");
-    menu = document.getElementById("raspberry-pi-context-menu") as HTMLMenuElement;
-    menu.classList.remove("show-menu");
-    menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
-    menu.classList.remove("show-menu");
-    menu = document.getElementById("linechart-context-menu") as HTMLMenuElement;
-    menu.classList.remove("show-menu");
-    menu = document.getElementById("colorpicker-context-menu") as HTMLMenuElement;
-    menu.classList.remove("show-menu");
+    Object.keys(contextMenus).forEach(key => {
+      let menu = document.getElementById(contextMenus[key].id) as HTMLMenuElement;
+      menu.classList.remove("show-menu");
+    });
   };
 
   private mouseLeave = (e: MouseEvent): void => {

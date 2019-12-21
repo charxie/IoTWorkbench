@@ -15,6 +15,8 @@ import {RaspberryPiContextMenu} from "./RaspberryPiContextMenu";
 import {ColorPickerContextMenu} from "./ColorPickerContextMenu";
 import {Code} from "./code/Code";
 import {LineChart} from "./tools/LineChart";
+import {SenseHatContextMenu} from "./SenseHatContextMenu";
+import {CapacitiveTouchHatContextMenu} from "./CapacitiveTouchHatContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -33,11 +35,7 @@ declare global {
 export let system = new System();
 export let code = new Code();
 export let user = new User("Charles", null, "Xie");
-export let workbenchContextMenu;
-export let raspberryPiContextMenu;
-export let rainbowHatContextMenu;
-export let lineChartContextMenu;
-export let colorPickerContextMenu;
+export let contextMenus: any = {};
 
 let social = `<span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-facebook-square"></i></span>
               <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-weixin"></i></span>
@@ -69,18 +67,38 @@ window.onload = function () {
     selectTab(codeTabButton, "code-playground");
   });
 
-  workbenchContextMenu = new WorkbenchContextMenu();
+  let workbenchContextMenu = new WorkbenchContextMenu();
   workbenchContextMenu.render("workbench-context-menu-placeholder");
-  raspberryPiContextMenu = new RaspberryPiContextMenu();
+  contextMenus.workbench = workbenchContextMenu;
+
+  let raspberryPiContextMenu = new RaspberryPiContextMenu();
   raspberryPiContextMenu.render("raspberry-pi-context-menu-placeholder");
   raspberryPiContextMenu.addListeners();
-  rainbowHatContextMenu = new RainbowHatContextMenu();
+  contextMenus.raspberryPi = raspberryPiContextMenu;
+
+  let rainbowHatContextMenu = new RainbowHatContextMenu();
   rainbowHatContextMenu.render("rainbow-hat-context-menu-placeholder");
   rainbowHatContextMenu.addListeners();
-  lineChartContextMenu = new LineChartContextMenu();
+  contextMenus.rainbowHat = rainbowHatContextMenu;
+
+  let senseHatContextMenu = new SenseHatContextMenu();
+  senseHatContextMenu.render("sense-hat-context-menu-placeholder");
+  senseHatContextMenu.addListeners();
+  contextMenus.senseHat = senseHatContextMenu;
+
+  let capacitiveTouchHatContextMenu = new CapacitiveTouchHatContextMenu();
+  capacitiveTouchHatContextMenu.render("capacitive-touch-hat-context-menu-placeholder");
+  capacitiveTouchHatContextMenu.addListeners();
+  contextMenus.capacitiveTouchHat = capacitiveTouchHatContextMenu;
+
+  let lineChartContextMenu = new LineChartContextMenu();
   lineChartContextMenu.render("linechart-context-menu-placeholder");
-  colorPickerContextMenu = new ColorPickerContextMenu();
+  contextMenus.lineChart = lineChartContextMenu;
+
+  let colorPickerContextMenu = new ColorPickerContextMenu();
   colorPickerContextMenu.render("colorpicker-context-menu-placeholder");
+  contextMenus.colorPicker = colorPickerContextMenu;
+
   let componentsPanel = new ComponentsPanel();
   componentsPanel.render("digital-twins-playground-components-panel");
 

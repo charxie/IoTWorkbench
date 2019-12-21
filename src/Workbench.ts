@@ -2,6 +2,8 @@
  * @author Charles Xie
  */
 
+import {contextMenus} from "./Main";
+
 export class Workbench {
 
   readonly canvas: HTMLCanvasElement;
@@ -84,7 +86,7 @@ export class Workbench {
 
   private openContextMenu(e: MouseEvent): void {
     e.preventDefault();
-    let menu = document.getElementById("workbench-context-menu") as HTMLMenuElement;
+    let menu = document.getElementById(contextMenus.workbench.id) as HTMLMenuElement;
     menu.style.left = e.clientX + "px";
     menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
     menu.classList.add("show-menu");

@@ -1,9 +1,10 @@
 /*
+ * Digital twin for the Rainbow HAT
+ *
  * @author Charles Xie
  */
 
 import {Hat} from "./Hat";
-import {RaspberryPi} from "./RaspberryPi";
 import {LedDisplay} from "./LedDisplay";
 import {Buzzer} from "./Buzzer";
 import {LedLight} from "./LedLight";
@@ -13,7 +14,7 @@ import {System} from "../System";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
-import {colorPickerContextMenu, rainbowHatContextMenu, system} from "../Main";
+import {contextMenus, system} from "../Main";
 
 // @ts-ignore
 import rainbowHatImage from "../img/rainbow-hat.png";
@@ -135,17 +136,6 @@ export class RainbowHat extends Hat {
     }
   }
 
-  public attach(raspberryPi: RaspberryPi): void {
-    super.attach(raspberryPi);
-    if (raspberryPi != null) {
-      this.setX(raspberryPi.getX());
-      this.setY(raspberryPi.getY());
-      localStorage.setItem("Attachment: " + this.getUid(), raspberryPi.uid);
-    } else {
-      localStorage.removeItem("Attachment: " + this.getUid());
-    }
-  }
-
   private openContextMenu = (e: MouseEvent): void => {
     e.preventDefault();
     let rect = this.canvas.getBoundingClientRect();
@@ -159,8 +149,8 @@ export class RainbowHat extends Hat {
       }
     }
     if (this.indexOfSelectedRgbLedLight >= 0) {
-      colorPickerContextMenu.rainbowHat = this;
-      let menu = document.getElementById("colorpicker-context-menu") as HTMLMenuElement;
+      contextMenus.colorPicker.rainbowHat = this;
+      let menu = document.getElementById(contextMenus.colorPicker.id) as HTMLMenuElement;
       menu.style.left = e.clientX + "px";
       menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
       menu.classList.add("show-menu");
@@ -174,8 +164,8 @@ export class RainbowHat extends Hat {
       system.colorPicker.setSelectedPoint();
       document.getElementById("colorpicker-title").innerText = "RGB LED Light " + this.indexOfSelectedRgbLedLight;
     } else {
-      rainbowHatContextMenu.hat = this;
-      let menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
+      contextMenus.rainbowHat.hat = this;
+      let menu = document.getElementById(contextMenus.rainbowHat.id) as HTMLMenuElement;
       menu.style.left = e.clientX + "px";
       menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
       menu.classList.add("show-menu");

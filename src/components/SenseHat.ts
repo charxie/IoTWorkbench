@@ -1,21 +1,20 @@
 /*
+ * Digital twin for the Sense HAT
+ *
  * @author Charles Xie
  */
 
 import {Hat} from "./Hat";
-import {Mcu} from "./Mcu";
 import {Rectangle} from "../math/Rectangle";
-import {contextMenus, system} from "../Main"; // this is needed as we use augmented methods of canvas defined in Main.ts
+import {contextMenus} from "../Main";
 
 // @ts-ignore
-import raspberryPiImage from "../img/raspberry-pi.png";
+import senseHatImage from "../img/sense-hat.png";
 
-export class RaspberryPi extends Mcu {
+export class SenseHat extends Hat {
 
-  hat: Hat;
-
-  private boardImage: HTMLImageElement;
   private mouseOverObject: any;
+  private boardImage: HTMLImageElement;
 
   constructor(canvasId: string, uid: string) {
     super(canvasId);
@@ -27,13 +26,12 @@ export class RaspberryPi extends Mcu {
     this.canvas.addEventListener('contextmenu', this.openContextMenu, false);
 
     this.handles.push(new Rectangle(5, 5, 30, 30));
-    this.handles.push(new Rectangle(395, 5, 30, 30));
-    this.handles.push(new Rectangle(395, 245, 30, 30));
-    this.handles.push(new Rectangle(5, 245, 30, 30));
+    this.handles.push(new Rectangle(290, 5, 30, 30));
+    this.handles.push(new Rectangle(290, 250, 30, 30));
+    this.handles.push(new Rectangle(5, 250, 30, 30));
 
     this.boardImage = new Image();
-    this.boardImage.src = raspberryPiImage;
-    this.setX(20);
+    this.boardImage.src = senseHatImage;
     this.setY(20);
 
     this.updateFromFirebase();
@@ -43,10 +41,10 @@ export class RaspberryPi extends Mcu {
     let ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     ctx.save();
-    ctx.shadowOffsetX = 10;
-    ctx.shadowOffsetY = 10;
+    ctx.shadowOffsetX = 8;
+    ctx.shadowOffsetY = 8;
     ctx.shadowColor = "rgb(96, 96, 96)";
-    ctx.shadowBlur = 10;
+    ctx.shadowBlur = 8;
     ctx.drawImage(this.boardImage, 0, 0);
     ctx.restore();
     this.drawToolTips();
@@ -54,11 +52,24 @@ export class RaspberryPi extends Mcu {
 
   private openContextMenu = (e: MouseEvent): void => {
     e.preventDefault();
-    let menu = document.getElementById(contextMenus.raspberryPi.id) as HTMLMenuElement;
+    let rect = this.canvas.getBoundingClientRect();
+    let dx = e.clientX - rect.x;
+    let dy = e.clientY - rect.y;
+    contextMenus.senseHat.hat = this;
+    let menu = document.getElementById(contextMenus.senseHat.id) as HTMLMenuElement;
     menu.style.left = e.clientX + "px";
     menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
     menu.classList.add("show-menu");
-    contextMenus.raspberryPi.raspberryPi = this;
+    let attachMenuItem = document.getElementById("sense-hat-attach-menu-item") as HTMLElement;
+    let detachMenuItem = document.getElementById("sense-hat-detach-menu-item") as HTMLElement;
+    if (this.raspberryPi != null) {
+      attachMenuItem.className = "menu-item disabled";
+      detachMenuItem.className = "menu-item";
+    } else {
+      let i = this.whichRaspberryPi();
+      attachMenuItem.className = i >= 0 ? "menu-item" : "menu-item disabled";
+      detachMenuItem.className = "menu-item disabled";
+    }
   };
 
   private mouseDown = (e: MouseEvent): void => {
@@ -68,10 +79,13 @@ export class RaspberryPi extends Mcu {
   };
 
   private mouseMove = (e: MouseEvent): void => {
-    // e.preventDefault();
+
+    e.preventDefault();
+
     let rect = this.canvas.getBoundingClientRect();
     let dx = e.clientX - rect.x;
     let dy = e.clientY - rect.y;
+
     if (this.handles[0].contains(dx, dy)) {
       this.mouseOverObject = this.handles[0];
       this.canvas.style.cursor = "move";
@@ -89,6 +103,7 @@ export class RaspberryPi extends Mcu {
       this.canvas.style.cursor = "default";
     }
     this.draw();
+
   };
 
   drawToolTips(): void {
@@ -119,11 +134,10 @@ export class RaspberryPi extends Mcu {
   }
 
   updateFirebase(value): void {
-    // TODO
   }
 
+  // by default, sensors transmit data every second. This can be adjusted through Firebase.
   updateFromFirebase(): void {
-    // TODO
   }
 
 }
