@@ -5,9 +5,10 @@
 import {system} from "./Main";
 import {RaspberryPi} from "./components/RaspberryPi";
 import {Hat} from "./components/Hat";
-import {RainbowHat} from "./components/RainbowHat";
 
 export class RainbowHatContextMenu {
+
+  hat: Hat;
 
   constructor() {
   }
@@ -44,19 +45,10 @@ export class RainbowHatContextMenu {
   }
 
   private deleteButtonClick(e: MouseEvent): void {
-    let selectedIndex = -1;
-    for (let i = 0; system.hats.length; i++) {
-      let hat = system.hats[i];
-      if (hat instanceof RainbowHat && hat.selected) {
-        selectedIndex = i;
-        break;
+    if (this.hat) {
+      if (confirm("Are you sure you want to delete " + this.hat.uid + "?")) {
+        system.removeHat(this.hat);
       }
-    }
-    if (selectedIndex >= 0) {
-      if (confirm("Are you sure you want to delete " + system.hats[selectedIndex].uid + "?")) {
-        system.removeHat(selectedIndex);
-      }
-      system.deselectAll();
     }
   }
 
@@ -64,14 +56,9 @@ export class RainbowHatContextMenu {
     e.preventDefault();
     let menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
     menu.classList.remove("show-menu");
-    for (let i = 0; i < system.hats.length; i++) {
-      let hat = system.hats[i];
-      if (hat.selected && hat instanceof RainbowHat) {
-        let pi = (<RainbowHat>hat).whichRaspberryPi();
-        if (pi >= 0) {
-          hat.attach(<RaspberryPi>system.mcus[i]);
-        }
-      }
+    let i = this.hat.whichRaspberryPi();
+    if (i >= 0) {
+      this.hat.attach(<RaspberryPi>system.mcus[i]);
     }
   }
 
@@ -79,12 +66,7 @@ export class RainbowHatContextMenu {
     e.preventDefault();
     let menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
     menu.classList.remove("show-menu");
-    for (let i = 0; i < system.hats.length; i++) {
-      let hat = system.hats[i];
-      if (hat.selected && hat instanceof RainbowHat) {
-        hat.attach(null);
-      }
-    }
+    this.hat.attach(null);
   }
 
 }

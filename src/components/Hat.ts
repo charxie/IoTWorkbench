@@ -6,6 +6,8 @@
 
 import {Board} from "./Board";
 import {RaspberryPi} from "./RaspberryPi";
+import {Rectangle} from "../math/Rectangle";
+import {system} from "../Main";
 
 export abstract class Hat extends Board {
 
@@ -20,6 +22,20 @@ export abstract class Hat extends Board {
       }
     }
     this.raspberryPi = raspberryPi;
+  }
+
+  public whichRaspberryPi(): number {
+    let r1 = new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+    for (let i = system.mcus.length - 1; i >= 0; i--) {
+      let mcu = system.mcus[i];
+      if (mcu instanceof RaspberryPi) {
+        let a = 20;
+        if (r1.intersectRect(new Rectangle(mcu.getX() + a, mcu.getY() + a, mcu.getWidth() - 2 * a, mcu.getHeight() - 2 * a))) {
+          return i;
+        }
+      }
+    }
+    return -1;
   }
 
 }

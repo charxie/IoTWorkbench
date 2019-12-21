@@ -12,7 +12,6 @@ export abstract class Board implements Movable {
   readonly canvas: HTMLCanvasElement;
   public handles: Rectangle[] = [];
   uid: string;
-  selected: boolean;
 
   constructor(canvasId: string) {
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;

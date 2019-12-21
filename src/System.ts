@@ -9,7 +9,6 @@ import {RainbowHat} from "./components/RainbowHat";
 import {LineChart} from "./tools/LineChart";
 import {ColorPicker} from "./tools/ColorPicker";
 import {Mcu} from "./components/Mcu";
-import {system} from "./Main";
 import {Rectangle} from "./math/Rectangle";
 import {Hat} from "./components/Hat";
 
@@ -107,11 +106,15 @@ export class System {
     return null;
   }
 
-  removeRaspberryPi(selectedIndex: number): void {
+  removeRaspberryPiByIndex(selectedIndex: number): void {
     let canvas = this.mcus[selectedIndex].canvas;
     this.playground.removeChild(canvas);
     this.mcus.splice(selectedIndex, 1);
     this.storeMcuSequence();
+  }
+
+  removeRaspberryPi(raspberryPi: RaspberryPi): void {
+    this.removeRaspberryPiByIndex(this.mcus.indexOf(raspberryPi));
   }
 
   addRaspberryPi(x: number, y: number, uid: string): RaspberryPi {
@@ -158,11 +161,15 @@ export class System {
     return null;
   }
 
-  removeHat(selectedIndex: number): void {
+  removeHatByIndex(selectedIndex: number): void {
     let canvas = this.hats[selectedIndex].canvas;
     this.playground.removeChild(canvas);
     this.hats.splice(selectedIndex, 1);
     this.storeHatSequence();
+  }
+
+  removeHat(hat: Hat): void {
+    this.removeHatByIndex(this.hats.indexOf(hat));
   }
 
   addHat(type: string, x: number, y: number, uid: string): Hat {
@@ -198,15 +205,6 @@ export class System {
       }
     }
     return -1;
-  }
-
-  deselectAll(): void {
-    for (let i = 0; i < system.mcus.length; i++) {
-      system.mcus[i].selected = false;
-    }
-    for (let i = 0; i < system.hats.length; i++) {
-      system.hats[i].selected = false;
-    }
   }
 
   draw(): void {

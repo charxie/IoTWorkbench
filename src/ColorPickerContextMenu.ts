@@ -6,6 +6,8 @@ import {RainbowHat} from "./components/RainbowHat";
 
 export class ColorPickerContextMenu {
 
+  rainbowHat: RainbowHat;
+
   getUi(): string {
     return `<menu id="colorpicker-context-menu" class="menu" style="width: 338px; z-index: 10000;">
               <li class="menu-item">
@@ -36,12 +38,10 @@ export class ColorPickerContextMenu {
       menu.classList.remove("show-menu");
     };
     let okButton = document.getElementById("colorpicker-ok-button") as HTMLButtonElement;
+    let that = this;
     okButton.onclick = function () {
-      for (let i = 0; i < system.hats.length; i++) {
-        let hat = system.hats[i];
-        if (hat.selected && hat instanceof RainbowHat) {
-          (<RainbowHat>hat).setSelectedRgbLedLightColor(system.colorPicker.getSelectedColor());
-        }
+      if (that.rainbowHat) {
+        that.rainbowHat.setSelectedRgbLedLightColor(system.colorPicker.getSelectedColor());
       }
       let menu = document.getElementById("colorpicker-context-menu") as HTMLMenuElement;
       menu.classList.remove("show-menu");

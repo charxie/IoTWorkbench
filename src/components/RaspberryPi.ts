@@ -5,7 +5,7 @@
 import {Hat} from "./Hat";
 import {Mcu} from "./Mcu";
 import {Rectangle} from "../math/Rectangle";
-import {system} from "../Main"; // this is needed as we use augmented methods of canvas defined in Main.ts
+import {raspberryPiContextMenu, system} from "../Main"; // this is needed as we use augmented methods of canvas defined in Main.ts
 
 // @ts-ignore
 import raspberryPiImage from "../img/raspberry-pi.png";
@@ -58,7 +58,7 @@ export class RaspberryPi extends Mcu {
     menu.style.left = e.clientX + "px";
     menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
     menu.classList.add("show-menu");
-    this.selected = true;
+    raspberryPiContextMenu.raspberryPi = this;
   };
 
   private mouseDown = (e: MouseEvent): void => {

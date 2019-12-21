@@ -7,6 +7,8 @@ import {RaspberryPi} from "./components/RaspberryPi";
 
 export class RaspberryPiContextMenu {
 
+  raspberryPi: RaspberryPi;
+
   getUi(): string {
     return `<menu id="raspberry-pi-context-menu" class="menu" style="width: 120px; z-index: 10000">
               <li class="menu-item">
@@ -29,19 +31,10 @@ export class RaspberryPiContextMenu {
   }
 
   private deleteButtonClick(e: MouseEvent): void {
-    let selectedIndex = -1;
-    for (let i = 0; system.mcus.length; i++) {
-      let mcu = system.mcus[i];
-      if (mcu instanceof RaspberryPi && mcu.selected) {
-        selectedIndex = i;
-        break;
+    if (this.raspberryPi) {
+      if (confirm("Are you sure you want to delete " + this.raspberryPi.uid + "?")) {
+        system.removeRaspberryPi(this.raspberryPi);
       }
-    }
-    if (selectedIndex >= 0) {
-      if (confirm("Are you sure you want to delete " + system.mcus[selectedIndex].uid + "?")) {
-        system.removeRaspberryPi(selectedIndex);
-      }
-      system.deselectAll();
     }
   }
 

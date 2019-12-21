@@ -10,10 +10,10 @@ import {LedLight} from "./LedLight";
 import {Button} from "./Button";
 import {Sensor} from "./Sensor";
 import {System} from "../System";
-import {system} from "../Main";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
+import {colorPickerContextMenu, rainbowHatContextMenu, system} from "../Main";
 
 // @ts-ignore
 import rainbowHatImage from "../img/rainbow-hat.png";
@@ -135,20 +135,6 @@ export class RainbowHat extends Hat {
     }
   }
 
-  public whichRaspberryPi(): number {
-    let r1 = new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());
-    for (let i = system.mcus.length - 1; i >= 0; i--) {
-      let mcu = system.mcus[i];
-      if (mcu instanceof RaspberryPi) {
-        let a = 20;
-        if (r1.intersectRect(new Rectangle(mcu.getX() + a, mcu.getY() + a, mcu.getWidth() - 2 * a, mcu.getHeight() - 2 * a))) {
-          return i;
-        }
-      }
-    }
-    return -1;
-  }
-
   public attach(raspberryPi: RaspberryPi): void {
     super.attach(raspberryPi);
     if (raspberryPi != null) {
@@ -162,7 +148,6 @@ export class RainbowHat extends Hat {
 
   private openContextMenu = (e: MouseEvent): void => {
     e.preventDefault();
-    this.selected = true;
     let rect = this.canvas.getBoundingClientRect();
     let dx = e.clientX - rect.x;
     let dy = e.clientY - rect.y;
@@ -174,6 +159,7 @@ export class RainbowHat extends Hat {
       }
     }
     if (this.indexOfSelectedRgbLedLight >= 0) {
+      colorPickerContextMenu.rainbowHat = this;
       let menu = document.getElementById("colorpicker-context-menu") as HTMLMenuElement;
       menu.style.left = e.clientX + "px";
       menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
@@ -188,6 +174,7 @@ export class RainbowHat extends Hat {
       system.colorPicker.setSelectedPoint();
       document.getElementById("colorpicker-title").innerText = "RGB LED Light " + this.indexOfSelectedRgbLedLight;
     } else {
+      rainbowHatContextMenu.hat = this;
       let menu = document.getElementById("rainbow-hat-context-menu") as HTMLMenuElement;
       menu.style.left = e.clientX + "px";
       menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
