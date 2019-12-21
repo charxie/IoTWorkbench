@@ -4,7 +4,6 @@
 
 import {Board} from "./Board";
 import {ElectronicComponent} from "./ElectronicComponent";
-import {system} from "../Main";
 
 export class Buzzer implements ElectronicComponent {
 
@@ -81,7 +80,7 @@ export class Buzzer implements ElectronicComponent {
     let that = this;
     setTimeout(function () {
       that.on = false;
-      system.rainbowHat.draw();
+      that.board.draw();
     }, 200);
   }
 

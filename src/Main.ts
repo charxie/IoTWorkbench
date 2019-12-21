@@ -15,7 +15,6 @@ import {RaspberryPiContextMenu} from "./RaspberryPiContextMenu";
 import {ColorPickerContextMenu} from "./ColorPickerContextMenu";
 import {Code} from "./code/Code";
 import {LineChart} from "./tools/LineChart";
-import {RaspberryPi} from "./components/RaspberryPi";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -34,6 +33,11 @@ declare global {
 export let system = new System();
 export let code = new Code();
 export let user = new User("Charles", null, "Xie");
+export let workbenchContextMenu;
+export let raspberryPiContextMenu;
+export let rainbowHatContextMenu;
+export let lineChartContextMenu;
+export let colorPickerContextMenu;
 
 let social = `<span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-facebook-square"></i></span>
               <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-weixin"></i></span>
@@ -65,35 +69,28 @@ window.onload = function () {
     selectTab(codeTabButton, "code-playground");
   });
 
-  let workbenchContextMenu = new WorkbenchContextMenu();
+  workbenchContextMenu = new WorkbenchContextMenu();
   workbenchContextMenu.render("workbench-context-menu-placeholder");
-  let raspberryPiContextMenu = new RaspberryPiContextMenu();
+  raspberryPiContextMenu = new RaspberryPiContextMenu();
   raspberryPiContextMenu.render("raspberry-pi-context-menu-placeholder");
   raspberryPiContextMenu.addListeners();
-  let rainbowHatContextMenu = new RainbowHatContextMenu();
+  rainbowHatContextMenu = new RainbowHatContextMenu();
   rainbowHatContextMenu.render("rainbow-hat-context-menu-placeholder");
   rainbowHatContextMenu.addListeners();
-  let lineChartContextMenu = new LineChartContextMenu();
+  lineChartContextMenu = new LineChartContextMenu();
   lineChartContextMenu.render("linechart-context-menu-placeholder");
-  let colorPickerContextMenu = new ColorPickerContextMenu();
+  colorPickerContextMenu = new ColorPickerContextMenu();
   colorPickerContextMenu.render("colorpicker-context-menu-placeholder");
   let componentsPanel = new ComponentsPanel();
   componentsPanel.render("digital-twins-playground-components-panel");
 
   // read locally stored properties
   restoreMcus();
-  restoreLocation(system.rainbowHat);
-  restoreLocation(system.temperatureGraph);
-  restoreLocation(system.pressureGraph);
-  restoreVisibility(system.temperatureGraph);
-  restoreVisibility(system.pressureGraph);
-  let id: string = localStorage.getItem("Attachment: " + system.rainbowHat.getUid());
-  if (id != null) {
-    let pi = system.getRaspberryPiById(id);
-    if (pi) {
-      system.rainbowHat.attach(pi);
-    }
-  }
+  restoreHats();
+  // restoreLocation(system.temperatureGraph);
+  // restoreLocation(system.pressureGraph);
+  // restoreVisibility(system.temperatureGraph);
+  // restoreVisibility(system.pressureGraph);
 
   resize();
   draw();
@@ -124,6 +121,35 @@ function restoreVisibility(g: LineChart) {
   }
 }
 
+function restoreHats() {
+  let s: string = localStorage.getItem("HAT Sequence");
+  if (s != null) {
+    let t = s.split(",");
+    if (t.length > 0) {
+      system.hats = [];
+    }
+    for (let i = 0; i < t.length; i++) {
+      t[i] = t[i].trim();
+      if (t[i].startsWith("Rainbow HAT")) {
+        system.addHat("Rainbow HAT", 0, 0, t[i]);
+      }
+    }
+  }
+  restoreLocations(system.hats);
+  for (let i = 0; i < system.hats.length; i++) {
+    let id: string = localStorage.getItem("Attachment: " + system.hats[i].getUid());
+    if (id != null) {
+      let pi = system.getRaspberryPiById(id);
+      if (pi) {
+        system.hats[i].attach(pi);
+      }
+    }
+  }
+  setTimeout(function () { // call this to refresh after inserting canvases
+    system.draw();
+  }, 0);
+}
+
 function restoreMcus() {
   let s: string = localStorage.getItem("MCU Sequence");
   if (s != null) {
@@ -137,7 +163,6 @@ function restoreMcus() {
         system.addRaspberryPi(0, 0, t[i]);
       }
     }
-    console.log(t);
   }
   restoreLocations(system.mcus);
   setTimeout(function () { // call this to refresh after inserting canvases

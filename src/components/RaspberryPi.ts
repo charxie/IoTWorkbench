@@ -17,7 +17,6 @@ export class RaspberryPi extends Mcu {
   private boardImage: HTMLImageElement;
   private mouseOverObject: any;
 
-
   constructor(canvasId: string, uid: string) {
     super(canvasId);
 

@@ -38,10 +38,10 @@ export class RainbowHat extends Hat {
   private mouseOverObject: any;
   private boardImage: HTMLImageElement;
 
-  constructor(canvasId: string) {
+  constructor(canvasId: string, uid: string) {
     super(canvasId);
 
-    this.uid = "Rainbow HAT";
+    this.uid = uid;
     this.canvas.addEventListener("mousedown", this.mouseDown, false);
     this.canvas.addEventListener("mouseup", this.mouseUp, false);
     this.canvas.addEventListener("mousemove", this.mouseMove, false);
@@ -162,6 +162,7 @@ export class RainbowHat extends Hat {
 
   private openContextMenu = (e: MouseEvent): void => {
     e.preventDefault();
+    this.selected = true;
     let rect = this.canvas.getBoundingClientRect();
     let dx = e.clientX - rect.x;
     let dy = e.clientY - rect.y;

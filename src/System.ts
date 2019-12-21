@@ -11,6 +11,7 @@ import {ColorPicker} from "./tools/ColorPicker";
 import {Mcu} from "./components/Mcu";
 import {system} from "./Main";
 import {Rectangle} from "./math/Rectangle";
+import {Hat} from "./components/Hat";
 
 declare var firebase;
 
@@ -20,7 +21,7 @@ export class System {
 
   workbench: Workbench;
   mcus: Mcu[] = [];
-  rainbowHat: RainbowHat;
+  hats: Hat[] = [];
   temperatureGraph: LineChart;
   pressureGraph: LineChart;
   playground: HTMLElement;
@@ -48,9 +49,8 @@ export class System {
     }
 
     this.workbench = new Workbench("workbench");
-    this.rainbowHat = new RainbowHat("rainbow-hat");
-    this.temperatureGraph = new LineChart("temperature-linechart", this.rainbowHat.temperatureSensor);
-    this.pressureGraph = new LineChart("pressure-linechart", this.rainbowHat.barometricPressureSensor);
+    //this.temperatureGraph = new LineChart("temperature-linechart", rainbowHat.temperatureSensor);
+    //this.pressureGraph = new LineChart("pressure-linechart", rainbowHat.barometricPressureSensor);
 
     this.playground = document.getElementById("digital-twins-playground") as HTMLDivElement;
     this.playground.addEventListener("mousedown", this.mouseDown, false);
@@ -85,14 +85,18 @@ export class System {
             that.storeLocation(pi);
             break;
           case "rainbow-hat-image":
+            let rainbowHat = that.addHat("Rainbow HAT", e.offsetX, e.offsetY, "Rainbow HAT " + Date.now().toString(16));
+            that.storeHatSequence();
+            that.storeLocation(rainbowHat);
             break;
         }
       }
     }, false);
   }
 
+  /* Raspberry Pi methods */
+
   getRaspberryPiById(uid: string): RaspberryPi {
-    let pi = null;
     for (let i = 0; i < this.mcus.length; i++) {
       if (this.mcus[i] instanceof RaspberryPi) {
         if (this.mcus[i].uid == uid) {
@@ -100,13 +104,13 @@ export class System {
         }
       }
     }
-    return pi;
+    return null;
   }
 
   removeRaspberryPi(selectedIndex: number): void {
-    let canvas = system.mcus[selectedIndex].canvas;
+    let canvas = this.mcus[selectedIndex].canvas;
     this.playground.removeChild(canvas);
-    system.mcus.splice(selectedIndex, 1);
+    this.mcus.splice(selectedIndex, 1);
     this.storeMcuSequence();
   }
 
@@ -118,7 +122,9 @@ export class System {
     canvas.style.display = "block";
     canvas.style.margin = "auto";
     canvas.style.position = "absolute";
-    canvas.style.left = "10px; top: 10px; z-index: 49;";
+    canvas.style.left = "10px";
+    canvas.style.top = "10px";
+    canvas.style.zIndex = "49";
     this.playground.appendChild(canvas);
     let pi = new RaspberryPi(canvas.id, uid);
     this.mcus.push(pi);
@@ -129,8 +135,8 @@ export class System {
   }
 
   whichRaspberryPi(x: number, y: number): number {
-    for (let i = 0; i < system.mcus.length; i++) {
-      let mcu = system.mcus[i];
+    for (let i = 0; i < this.mcus.length; i++) {
+      let mcu = this.mcus[i];
       if (mcu instanceof RaspberryPi) {
         let r = new Rectangle(mcu.getX(), mcu.getY(), mcu.getWidth(), mcu.getHeight());
         if (r.contains(x, y)) {
@@ -141,9 +147,65 @@ export class System {
     return -1;
   }
 
+  /* HAT methods */
+
+  getHatById(uid: string): Hat {
+    for (let i = 0; i < this.hats.length; i++) {
+      if (this.mcus[i].uid == uid) {
+        return this.hats[i];
+      }
+    }
+    return null;
+  }
+
+  removeHat(selectedIndex: number): void {
+    let canvas = this.hats[selectedIndex].canvas;
+    this.playground.removeChild(canvas);
+    this.hats.splice(selectedIndex, 1);
+    this.storeHatSequence();
+  }
+
+  addHat(type: string, x: number, y: number, uid: string): Hat {
+    let canvas = document.createElement("canvas");
+    switch (type) {
+      case "Rainbow HAT":
+        canvas.id = "rainbow-hat-" + this.hats.length;
+        canvas.width = 330;
+        canvas.height = 290;
+        canvas.style.display = "block";
+        canvas.style.margin = "auto";
+        canvas.style.position = "absolute";
+        canvas.style.left = "10px";
+        canvas.style.top = "10px";
+        canvas.style.zIndex = "99";
+        this.playground.appendChild(canvas);
+        let hat = new RainbowHat(canvas.id, uid);
+        this.hats.push(hat);
+        hat.setX(x - canvas.width / 2);
+        hat.setY(y - canvas.height / 2);
+        this.draw();
+        return hat;
+    }
+    return null;
+  }
+
+  whichHat(x: number, y: number): number {
+    for (let i = 0; i < this.hats.length; i++) {
+      let hat = this.hats[i];
+      let r = new Rectangle(hat.getX(), hat.getY(), hat.getWidth(), hat.getHeight());
+      if (r.contains(x, y)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   deselectAll(): void {
     for (let i = 0; i < system.mcus.length; i++) {
       system.mcus[i].selected = false;
+    }
+    for (let i = 0; i < system.hats.length; i++) {
+      system.hats[i].selected = false;
     }
   }
 
@@ -153,7 +215,9 @@ export class System {
     for (i = 0; i < this.mcus.length; i++) {
       this.mcus[i].draw();
     }
-    this.rainbowHat.draw();
+    for (i = 0; i < this.hats.length; i++) {
+      this.hats[i].draw();
+    }
   }
 
   private mouseDown = (e: MouseEvent): void => {
@@ -161,21 +225,27 @@ export class System {
     let x = e.clientX - rect.x;
     let y = e.clientY - rect.y;
     this.selectedMovable = null;
-    if (this.rainbowHat.whichHandle(x - this.rainbowHat.getX(), y - this.rainbowHat.getY()) >= 0) {
-      this.selectedMovable = this.rainbowHat;
-    } else if (this.temperatureGraph.isVisible() && this.temperatureGraph.onHandle(x - this.temperatureGraph.getX(), y - this.temperatureGraph.getY())) {
-      this.selectedMovable = this.temperatureGraph;
-    } else if (this.pressureGraph.isVisible() && this.pressureGraph.onHandle(x - this.pressureGraph.getX(), y - this.pressureGraph.getY())) {
-      this.selectedMovable = this.pressureGraph;
-    } else {
-      let i;
-      for (i = 0; i < this.mcus.length; i++) {
+    // if (this.temperatureGraph.isVisible() && this.temperatureGraph.onHandle(x - this.temperatureGraph.getX(), y - this.temperatureGraph.getY())) {
+    //   this.selectedMovable = this.temperatureGraph;
+    // } else if (this.pressureGraph.isVisible() && this.pressureGraph.onHandle(x - this.pressureGraph.getX(), y - this.pressureGraph.getY())) {
+    //   this.selectedMovable = this.pressureGraph;
+    // } else {
+    // always prioritize HATs over Raspberry Pi
+    for (let i = 0; i < this.hats.length; i++) {
+      if (this.hats[i].whichHandle(x - this.hats[i].getX(), y - this.hats[i].getY()) >= 0) {
+        this.selectedMovable = this.hats[i];
+        break;
+      }
+    }
+    if (this.selectedMovable == null) {
+      for (let i = 0; i < this.mcus.length; i++) {
         if (this.mcus[i].whichHandle(x - this.mcus[i].getX(), y - this.mcus[i].getY()) >= 0) {
           this.selectedMovable = this.mcus[i];
           break;
         }
       }
     }
+    //}
     if (this.selectedMovable != null) {
       this.mouseDownRelativeX = e.clientX - this.selectedMovable.getX();
       this.mouseDownRelativeY = e.clientY - this.selectedMovable.getY();
@@ -216,10 +286,18 @@ export class System {
     localStorage.setItem("MCU Sequence", s.substring(0, s.length - 2));
   }
 
+  storeHatSequence(): void {
+    let s: string = "";
+    for (let i = 0; i < this.hats.length; i++) {
+      s += this.hats[i].getUid() + ", ";
+    }
+    localStorage.setItem("HAT Sequence", s.substring(0, s.length - 2));
+  }
+
   private storeLocation(m: Movable): void {
     localStorage.setItem("X: " + m.getUid(), m.getX().toString());
     localStorage.setItem("Y: " + m.getUid(), m.getY().toString());
-    if (m instanceof RainbowHat) {
+    if (m instanceof Hat) {
       if (m.raspberryPi != null) {
         localStorage.setItem("X: " + m.raspberryPi.getUid(), m.raspberryPi.getX().toString());
         localStorage.setItem("Y: " + m.raspberryPi.getUid(), m.raspberryPi.getY().toString());
@@ -249,7 +327,7 @@ export class System {
     }
     m.setX(dx);
     m.setY(dy);
-    if (m instanceof RainbowHat) {
+    if (m instanceof Hat) {
       if (m.raspberryPi != null) {
         m.raspberryPi.setX(m.getX());
         m.raspberryPi.setY(m.getY());

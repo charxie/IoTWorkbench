@@ -2,6 +2,7 @@
  * @author Charles Xie
  */
 import {system} from "./Main";
+import {RainbowHat} from "./components/RainbowHat";
 
 export class ColorPickerContextMenu {
 
@@ -36,7 +37,12 @@ export class ColorPickerContextMenu {
     };
     let okButton = document.getElementById("colorpicker-ok-button") as HTMLButtonElement;
     okButton.onclick = function () {
-      system.rainbowHat.setSelectedRgbLedLightColor(system.colorPicker.getSelectedColor());
+      for (let i = 0; i < system.hats.length; i++) {
+        let hat = system.hats[i];
+        if (hat.selected && hat instanceof RainbowHat) {
+          (<RainbowHat>hat).setSelectedRgbLedLightColor(system.colorPicker.getSelectedColor());
+        }
+      }
       let menu = document.getElementById("colorpicker-context-menu") as HTMLMenuElement;
       menu.classList.remove("show-menu");
     };
