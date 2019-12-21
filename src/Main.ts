@@ -69,6 +69,7 @@ window.onload = function () {
   workbenchContextMenu.render("workbench-context-menu-placeholder");
   let raspberryPiContextMenu = new RaspberryPiContextMenu();
   raspberryPiContextMenu.render("raspberry-pi-context-menu-placeholder");
+  raspberryPiContextMenu.addListeners();
   let rainbowHatContextMenu = new RainbowHatContextMenu();
   rainbowHatContextMenu.render("rainbow-hat-context-menu-placeholder");
   rainbowHatContextMenu.addListeners();
@@ -80,7 +81,7 @@ window.onload = function () {
   componentsPanel.render("digital-twins-playground-components-panel");
 
   // read locally stored properties
-  restoreLocations(system.mcus);
+  restoreMcus();
   restoreLocation(system.rainbowHat);
   restoreLocation(system.temperatureGraph);
   restoreLocation(system.pressureGraph);
@@ -123,6 +124,27 @@ function restoreVisibility(g: LineChart) {
     g.setVisible("true" == x);
     g.draw();
   }
+}
+
+function restoreMcus() {
+  let s: string = localStorage.getItem("MCU Sequence");
+  if (s != null) {
+    let t = s.split(",");
+    if (t.length > 0) {
+      system.mcus = [];
+    }
+    for (let i = 0; i < t.length; i++) {
+      t[i] = t[i].trim();
+      if (t[i].startsWith("Raspberry Pi")) {
+        system.addRaspberryPi(0, 0, t[i]);
+      }
+    }
+    console.log(t);
+  }
+  restoreLocations(system.mcus);
+  setTimeout(function () { // call this to refresh after inserting canvases
+    system.draw();
+  }, 0);
 }
 
 function restoreLocations(m: Movable[]) {

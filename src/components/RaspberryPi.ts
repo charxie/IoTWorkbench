@@ -17,10 +17,11 @@ export class RaspberryPi extends Mcu {
   private boardImage: HTMLImageElement;
   private mouseOverObject: any;
 
-  constructor(canvasId: string, index: number) {
+
+  constructor(canvasId: string, uid: string) {
     super(canvasId);
 
-    this.uid = "Raspberry Pi " + index;
+    this.uid = uid;
     this.canvas.addEventListener("mousedown", this.mouseDown, false);
     this.canvas.addEventListener("mouseup", this.mouseUp, false);
     this.canvas.addEventListener("mousemove", this.mouseMove, false);
@@ -58,18 +59,17 @@ export class RaspberryPi extends Mcu {
     menu.style.left = e.clientX + "px";
     menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
     menu.classList.add("show-menu");
+    this.selected = true;
   };
 
   private mouseDown = (e: MouseEvent): void => {
-    e.preventDefault();
   };
 
   private mouseUp = (e: MouseEvent): void => {
-    e.preventDefault();
   };
 
   private mouseMove = (e: MouseEvent): void => {
-    e.preventDefault();
+    // e.preventDefault();
     let rect = this.canvas.getBoundingClientRect();
     let dx = e.clientX - rect.x;
     let dy = e.clientY - rect.y;

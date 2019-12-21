@@ -10,6 +10,7 @@ import {LineChart} from "./tools/LineChart";
 import {ColorPicker} from "./tools/ColorPicker";
 import {Mcu} from "./components/Mcu";
 import {system} from "./Main";
+import {Rectangle} from "./math/Rectangle";
 
 declare var firebase;
 
@@ -47,7 +48,6 @@ export class System {
     }
 
     this.workbench = new Workbench("workbench");
-    this.mcus.push(new RaspberryPi("raspberry-pi-0", 0));
     this.rainbowHat = new RainbowHat("rainbow-hat");
     this.temperatureGraph = new LineChart("temperature-linechart", this.rainbowHat.temperatureSensor);
     this.pressureGraph = new LineChart("pressure-linechart", this.rainbowHat.barometricPressureSensor);
@@ -80,18 +80,25 @@ export class System {
       if ((<HTMLElement>e.target).id == "workbench") {
         switch (that.draggedElementId) {
           case "raspberry-pi-image":
-            that.addRaspberryPi(e.offsetX, e.offsetY);
+            let pi = that.addRaspberryPi(e.offsetX, e.offsetY, "Raspberry Pi " + Date.now().toString(16));
+            that.storeMcuSequence();
+            that.storeLocation(pi);
             break;
           case "rainbow-hat-image":
             break;
         }
       }
     }, false);
-
   }
 
-  // progrmatically add a Raspberry Pi to the specified position
-  private addRaspberryPi(x: number, y: number): void {
+  removeRaspberryPi(selectedIndex: number): void {
+    let canvas = system.mcus[selectedIndex].canvas;
+    this.playground.removeChild(canvas);
+    system.mcus.splice(selectedIndex, 1);
+    this.storeMcuSequence();
+  }
+
+  addRaspberryPi(x: number, y: number, uid: string): RaspberryPi {
     let canvas = document.createElement("canvas");
     canvas.id = "raspberry-pi-" + this.mcus.length;
     canvas.width = 435;
@@ -101,11 +108,31 @@ export class System {
     canvas.style.position = "absolute";
     canvas.style.left = "10px; top: 10px; z-index: 49;";
     this.playground.appendChild(canvas);
-    let pi = new RaspberryPi(canvas.id, this.mcus.length);
+    let pi = new RaspberryPi(canvas.id, uid);
     this.mcus.push(pi);
     pi.setX(x - canvas.width / 2);
     pi.setY(y - canvas.height / 2);
-    system.draw();
+    this.draw();
+    return pi;
+  }
+
+  whichRaspberryPi(x: number, y: number): number {
+    for (let i = 0; i < system.mcus.length; i++) {
+      let mcu = system.mcus[i];
+      if (mcu instanceof RaspberryPi) {
+        let r = new Rectangle(mcu.getX(), mcu.getY(), mcu.getWidth(), mcu.getHeight());
+        if (r.contains(x, y)) {
+          return i;
+        }
+      }
+    }
+    return -1;
+  }
+
+  deselectAll(): void {
+    for (let i = 0; i < system.mcus.length; i++) {
+      system.mcus[i].selected = false;
+    }
   }
 
   draw(): void {
@@ -168,6 +195,14 @@ export class System {
       this.storeLocation(this.selectedMovable);
     }
   };
+
+  storeMcuSequence(): void {
+    let s: string = "";
+    for (let i = 0; i < this.mcus.length; i++) {
+      s += this.mcus[i].getUid() + ", ";
+    }
+    localStorage.setItem("MCU Sequence", s.substring(0, s.length - 2));
+  }
 
   private storeLocation(m: Movable): void {
     localStorage.setItem("X: " + m.getUid(), m.getX().toString());
