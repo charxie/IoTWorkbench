@@ -17,6 +17,9 @@ import {Code} from "./code/Code";
 import {LineChart} from "./tools/LineChart";
 import {SenseHatContextMenu} from "./SenseHatContextMenu";
 import {CapacitiveTouchHatContextMenu} from "./CapacitiveTouchHatContextMenu";
+import {UnicornHatContextMenu} from "./UnicornHatContextMenu";
+import {CrickitHatContextMenu} from "./CrickitHatContextMenu";
+import {PanTiltHatContextMenu} from "./PanTiltHatContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -85,6 +88,21 @@ window.onload = function () {
   senseHatContextMenu.render("sense-hat-context-menu-placeholder");
   senseHatContextMenu.addListeners();
   contextMenus.senseHat = senseHatContextMenu;
+
+  let unicornHatContextMenu = new UnicornHatContextMenu();
+  unicornHatContextMenu.render("unicorn-hat-context-menu-placeholder");
+  unicornHatContextMenu.addListeners();
+  contextMenus.unicornHat = unicornHatContextMenu;
+
+  let crickitHatContextMenu = new CrickitHatContextMenu();
+  crickitHatContextMenu.render("crickit-hat-context-menu-placeholder");
+  crickitHatContextMenu.addListeners();
+  contextMenus.crickitHat = crickitHatContextMenu;
+
+  let panTiltHatContextMenu = new PanTiltHatContextMenu();
+  panTiltHatContextMenu.render("pan-tilt-hat-context-menu-placeholder");
+  panTiltHatContextMenu.addListeners();
+  contextMenus.panTiltHat = panTiltHatContextMenu;
 
   let capacitiveTouchHatContextMenu = new CapacitiveTouchHatContextMenu();
   capacitiveTouchHatContextMenu.render("capacitive-touch-hat-context-menu-placeholder");

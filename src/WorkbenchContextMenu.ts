@@ -2,9 +2,14 @@
  * @author Charles Xie
  */
 
-export class WorkbenchContextMenu {
+import {ComponentContextMenu} from "./ComponentContextMenu";
 
-  id: string = "workbench-context-menu";
+export class WorkbenchContextMenu extends ComponentContextMenu {
+
+  constructor() {
+    super();
+    this.id = "workbench-context-menu";
+  }
 
   getUi(): string {
     return `<menu id="${this.id}" class="menu" style="width: 120px; z-index: 10000">
@@ -64,9 +69,8 @@ export class WorkbenchContextMenu {
             </menu>`;
   }
 
-  render(selectorId: string): void {
-    let element = document.getElementById(selectorId);
-    element.innerHTML = this.getUi();
+  addListeners(): void {
+    // TODO
   }
 
 }

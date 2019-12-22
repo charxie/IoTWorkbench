@@ -12,9 +12,12 @@ import {Mcu} from "./components/Mcu";
 import {Rectangle} from "./math/Rectangle";
 import {Hat} from "./components/Hat";
 import {SenseHat} from "./components/SenseHat";
-import {contextMenus} from "./Main";
-import {CapacitiveTouchHatContextMenu} from "./CapacitiveTouchHatContextMenu";
 import {CapacitiveTouchHat} from "./components/CapacitiveTouchHat";
+import {UnicornHat} from "./components/UnicornHat";
+import {CrickitHat} from "./components/CrickitHat";
+import {contextMenus} from "./Main";
+import {PanTiltHatContextMenu} from "./PanTiltHatContextMenu";
+import {PanTiltHat} from "./components/PanTiltHat";
 
 declare var firebase;
 
@@ -83,28 +86,35 @@ export class System {
       if ((<HTMLElement>e.target).id == "workbench") {
         switch (that.draggedElementId) {
           case "raspberry-pi-image":
-            let pi = that.addRaspberryPi(e.offsetX, e.offsetY, "Raspberry Pi " + Date.now().toString(16));
+            that.storeLocation(that.addRaspberryPi(e.offsetX, e.offsetY, "Raspberry Pi " + Date.now().toString(16)));
             that.storeMcuSequence();
-            that.storeLocation(pi);
             break;
           case "rainbow-hat-image":
-            let rainbowHat = that.addHat("Rainbow HAT", e.offsetX, e.offsetY, "Rainbow HAT " + Date.now().toString(16));
-            that.storeHatSequence();
-            that.storeLocation(rainbowHat);
+            that.addHatByAction("Rainbow HAT", e.offsetX, e.offsetY);
             break;
           case "sense-hat-image":
-            let senseHat = that.addHat("Sense HAT", e.offsetX, e.offsetY, "Sense HAT " + Date.now().toString(16));
-            that.storeHatSequence();
-            that.storeLocation(senseHat);
+            that.addHatByAction("Sense HAT", e.offsetX, e.offsetY);
             break;
           case "capacitive-touch-hat-image":
-            let capacitiveTouchHat = that.addHat("Capacitive Touch HAT", e.offsetX, e.offsetY, "Capacitive Touch HAT " + Date.now().toString(16));
-            that.storeHatSequence();
-            that.storeLocation(capacitiveTouchHat);
+            that.addHatByAction("Capacitive Touch HAT", e.offsetX, e.offsetY);
+            break;
+          case "unicorn-hat-image":
+            that.addHatByAction("Unicorn HAT", e.offsetX, e.offsetY);
+            break;
+          case "crickit-hat-image":
+            that.addHatByAction("Crickit HAT", e.offsetX, e.offsetY);
+            break;
+          case "pan-tilt-hat-image":
+            that.addHatByAction("Pan-Tilt HAT", e.offsetX, e.offsetY);
             break;
         }
       }
     }, false);
+  }
+
+  addHatByAction(name: string, x: number, y: number) {
+    this.storeLocation(this.addHat(name, x, y, name + " " + Date.now().toString(16)));
+    this.storeHatSequence();
   }
 
   /* Raspberry Pi methods */
@@ -188,8 +198,6 @@ export class System {
 
   addHat(type: string, x: number, y: number, uid: string): Hat {
     let canvas = document.createElement("canvas");
-    canvas.width = 330;
-    canvas.height = 290;
     canvas.style.display = "block";
     canvas.style.margin = "auto";
     canvas.style.position = "absolute";
@@ -201,15 +209,39 @@ export class System {
     switch (type) {
       case "Rainbow HAT":
         canvas.id = "rainbow-hat-" + this.hats.length;
+        canvas.width = 330;
+        canvas.height = 290;
         hat = new RainbowHat(canvas.id, uid);
         break;
       case "Sense HAT":
+        canvas.width = 330;
+        canvas.height = 290;
         canvas.id = "sense-hat-" + this.hats.length;
         hat = new SenseHat(canvas.id, uid);
         break;
       case "Capacitive Touch HAT":
+        canvas.width = 330;
+        canvas.height = 290;
         canvas.id = "capacitive-touch-hat-" + this.hats.length;
         hat = new CapacitiveTouchHat(canvas.id, uid);
+        break;
+      case "Unicorn HAT":
+        canvas.width = 330;
+        canvas.height = 380;
+        canvas.id = "unicorn-hat-" + this.hats.length;
+        hat = new UnicornHat(canvas.id, uid);
+        break;
+      case "Crickit HAT":
+        canvas.width = 330;
+        canvas.height = 290;
+        canvas.id = "crickit-hat-" + this.hats.length;
+        hat = new CrickitHat(canvas.id, uid);
+        break;
+      case "Pan-Tilt HAT":
+        canvas.width = 330;
+        canvas.height = 290;
+        canvas.id = "pan-tilt-hat-" + this.hats.length;
+        hat = new PanTiltHat(canvas.id, uid);
         break;
     }
     if (hat != null) {

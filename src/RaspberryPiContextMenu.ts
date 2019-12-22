@@ -4,11 +4,16 @@
 
 import {system} from "./Main";
 import {RaspberryPi} from "./components/RaspberryPi";
+import {ComponentContextMenu} from "./ComponentContextMenu";
 
-export class RaspberryPiContextMenu {
+export class RaspberryPiContextMenu extends ComponentContextMenu {
 
   raspberryPi: RaspberryPi;
-  id: string = "raspberry-pi-context-menu";
+
+  constructor() {
+    super();
+    this.id = "raspberry-pi-context-menu";
+  }
 
   getUi(): string {
     return `<menu id="${this.id}" class="menu" style="width: 120px; z-index: 10000">
@@ -19,11 +24,6 @@ export class RaspberryPiContextMenu {
                 <button type="button" id="raspberry-pi-context-menu-settings-button" class="menu-btn"><i class="fas fa-cog"></i><span class="menu-text">Settings</span></button>
               </li>
             </menu>`;
-  }
-
-  render(selectorId: string): void {
-    let element = document.getElementById(selectorId);
-    element.innerHTML = this.getUi();
   }
 
   addListeners(): void {
