@@ -15,7 +15,6 @@ import {CrickitHat} from "./components/CrickitHat";
 import {PanTiltHat} from "./components/PanTiltHat";
 import {contextMenus} from "./Main";
 import {Rectangle} from "./math/Rectangle";
-import {LineChart} from "./tools/LineChart";
 import {ColorPicker} from "./tools/ColorPicker";
 
 declare var firebase;
@@ -27,8 +26,6 @@ export class System {
   workbench: Workbench;
   mcus: Mcu[] = [];
   hats: Hat[] = [];
-  temperatureGraph: LineChart;
-  pressureGraph: LineChart;
   playground: HTMLElement;
   colorPicker: ColorPicker;
 
@@ -54,9 +51,6 @@ export class System {
     }
 
     this.workbench = new Workbench("workbench");
-    //this.temperatureGraph = new LineChart("temperature-linechart", rainbowHat.temperatureSensor);
-    //this.pressureGraph = new LineChart("pressure-linechart", rainbowHat.barometricPressureSensor);
-
     this.playground = document.getElementById("digital-twins-playground") as HTMLDivElement;
     this.playground.addEventListener("mousedown", this.mouseDown, false);
     this.playground.addEventListener("mouseup", this.mouseUp, false);
@@ -279,11 +273,16 @@ export class System {
     let x = e.clientX - rect.x;
     let y = e.clientY - rect.y;
     this.selectedMovable = null;
-    // if (this.temperatureGraph.isVisible() && this.temperatureGraph.onHandle(x - this.temperatureGraph.getX(), y - this.temperatureGraph.getY())) {
-    //   this.selectedMovable = this.temperatureGraph;
-    // } else if (this.pressureGraph.isVisible() && this.pressureGraph.onHandle(x - this.pressureGraph.getX(), y - this.pressureGraph.getY())) {
-    //   this.selectedMovable = this.pressureGraph;
-    // } else {
+    for (let i = 0; i < this.hats.length; i++) {
+      if (this.hats[i] instanceof RainbowHat) {
+        let r = <RainbowHat>this.hats[i];
+        if (r.temperatureGraph.isVisible() && r.temperatureGraph.onHandle(x - r.temperatureGraph.getX(), y - r.temperatureGraph.getY())) {
+          this.selectedMovable = r.temperatureGraph;
+        } else if (r.pressureGraph.isVisible() && r.pressureGraph.onHandle(x - r.pressureGraph.getX(), y - r.pressureGraph.getY())) {
+          this.selectedMovable = r.pressureGraph;
+        }
+      }
+    }
     // always prioritize HATs over Raspberry Pi
     for (let i = 0; i < this.hats.length; i++) {
       if (this.hats[i].whichHandle(x - this.hats[i].getX(), y - this.hats[i].getY()) >= 0) {
@@ -299,7 +298,6 @@ export class System {
         }
       }
     }
-    //}
     if (this.selectedMovable != null) {
       this.mouseDownRelativeX = e.clientX - this.selectedMovable.getX();
       this.mouseDownRelativeY = e.clientY - this.selectedMovable.getY();

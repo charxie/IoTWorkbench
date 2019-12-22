@@ -26,9 +26,9 @@ export class UnicornHat extends Hat {
     this.canvas.addEventListener('contextmenu', this.openContextMenu, false);
 
     this.handles.push(new Rectangle(5, 5, 30, 30));
-    this.handles.push(new Rectangle(290, 5, 30, 30));
-    this.handles.push(new Rectangle(290, 250, 30, 30));
-    this.handles.push(new Rectangle(5, 250, 30, 30));
+    this.handles.push(new Rectangle(280, 5, 30, 30));
+    this.handles.push(new Rectangle(280, 325, 30, 30));
+    this.handles.push(new Rectangle(5, 325, 30, 30));
 
     this.boardImage = new Image();
     this.boardImage.src = unicornHatImage;

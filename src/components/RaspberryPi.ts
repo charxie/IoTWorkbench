@@ -27,8 +27,8 @@ export class RaspberryPi extends Mcu {
     this.canvas.addEventListener('contextmenu', this.openContextMenu, false);
 
     this.handles.push(new Rectangle(5, 5, 30, 30));
-    this.handles.push(new Rectangle(395, 5, 30, 30));
-    this.handles.push(new Rectangle(395, 245, 30, 30));
+    this.handles.push(new Rectangle(390, 5, 30, 30));
+    this.handles.push(new Rectangle(390, 245, 30, 30));
     this.handles.push(new Rectangle(5, 245, 30, 30));
 
     this.boardImage = new Image();

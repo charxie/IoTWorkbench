@@ -18,6 +18,7 @@ import {contextMenus, system} from "../Main";
 
 // @ts-ignore
 import rainbowHatImage from "../img/rainbow-hat.png";
+import {LineChart} from "../tools/LineChart";
 
 export class RainbowHat extends Hat {
 
@@ -33,6 +34,9 @@ export class RainbowHat extends Hat {
   public rgbLedLights: LedLight[] = [];
   public alphanumericDisplays: LedDisplay[] = [];
   public decimalPointDisplays: LedDisplay[] = [];
+
+  public temperatureGraph: LineChart;
+  public pressureGraph: LineChart;
 
   indexOfSelectedRgbLedLight: number = -1;
   private stateId: string = "rainbow_hat_default";
@@ -76,10 +80,13 @@ export class RainbowHat extends Hat {
       this.decimalPointDisplays[i].fontSize = "40px";
     }
 
+    this.temperatureGraph = new LineChart("temperature-linechart", this.temperatureSensor);
+    this.pressureGraph = new LineChart("pressure-linechart", this.barometricPressureSensor);
+
     this.handles.push(new Rectangle(5, 5, 30, 30));
-    this.handles.push(new Rectangle(290, 5, 30, 30));
-    this.handles.push(new Rectangle(290, 250, 30, 30));
-    this.handles.push(new Rectangle(5, 250, 30, 30));
+    this.handles.push(new Rectangle(280, 5, 30, 30));
+    this.handles.push(new Rectangle(280, 240, 30, 30));
+    this.handles.push(new Rectangle(5, 240, 30, 30));
 
     this.boardImage = new Image();
     this.boardImage.src = rainbowHatImage;
@@ -278,22 +285,22 @@ export class RainbowHat extends Hat {
     }
 
     if (this.temperatureSensor.contains(dx, dy)) {
-      system.temperatureGraph.setVisible(!system.temperatureGraph.isVisible());
-      if (system.temperatureGraph.isVisible()) {
-        system.temperatureGraph.draw();
-        system.temperatureGraph.bringForward();
+      this.temperatureGraph.setVisible(!this.temperatureGraph.isVisible());
+      if (this.temperatureGraph.isVisible()) {
+        this.temperatureGraph.draw();
+        this.temperatureGraph.bringForward();
       }
-      localStorage.setItem("Visible: " + system.temperatureGraph.getUid(), system.temperatureGraph.isVisible() ? "true" : "false");
+      localStorage.setItem("Visible: " + this.temperatureGraph.getUid(), this.temperatureGraph.isVisible() ? "true" : "false");
       return;
     }
 
     if (this.barometricPressureSensor.contains(dx, dy)) {
-      system.pressureGraph.setVisible(!system.pressureGraph.isVisible());
-      if (system.pressureGraph.isVisible()) {
-        system.pressureGraph.draw();
-        system.pressureGraph.bringForward();
+      this.pressureGraph.setVisible(!this.pressureGraph.isVisible());
+      if (this.pressureGraph.isVisible()) {
+        this.pressureGraph.draw();
+        this.pressureGraph.bringForward();
       }
-      localStorage.setItem("Visible: " + system.pressureGraph.getUid(), system.pressureGraph.isVisible() ? "true" : "false");
+      localStorage.setItem("Visible: " + this.pressureGraph.getUid(), this.pressureGraph.isVisible() ? "true" : "false");
       return;
     }
 
@@ -455,7 +462,7 @@ export class RainbowHat extends Hat {
         if (childData.allowTemperatureTransmission) {
           that.temperatureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
           that.temperatureSensor.data.push(<number>childData.temperature);
-          system.temperatureGraph.draw();
+          that.temperatureGraph.draw();
           let t: number = childData.temperature;
           let s: string = t.toString();
           let i: number = s.indexOf(".");
@@ -472,7 +479,7 @@ export class RainbowHat extends Hat {
         if (childData.allowBarometricPressureTransmission) {
           that.barometricPressureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
           that.barometricPressureSensor.data.push(<number>childData.barometricPressure);
-          system.pressureGraph.draw();
+          that.pressureGraph.draw();
           let t: number = childData.barometricPressure;
           let s: string = t.toString();
           let i: number = s.indexOf(".");

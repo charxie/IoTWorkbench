@@ -25,6 +25,9 @@ export class RainbowHatContextMenu extends HatContextMenu {
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-code-button"><i class="fas fa-code"></i><span class="menu-text">Code</span></button>
               </li>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-settings-button"><i class="fas fa-cog"></i><span class="menu-text">Settings</span></button>
+              </li>
             </menu>`;
   }
 

@@ -164,7 +164,6 @@ function restoreHats() {
     if (t.length > 0) {
       system.hats = [];
     }
-    console.log(t);
     for (let i = 0; i < t.length; i++) {
       t[i] = t[i].trim();
       let name = t[i].substring(0, t[i].indexOf("#") - 1);
