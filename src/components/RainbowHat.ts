@@ -80,9 +80,6 @@ export class RainbowHat extends Hat {
       this.decimalPointDisplays[i].fontSize = "40px";
     }
 
-    this.temperatureGraph = new LineChart("temperature-linechart", this.temperatureSensor);
-    this.pressureGraph = new LineChart("pressure-linechart", this.barometricPressureSensor);
-
     this.handles.push(new Rectangle(5, 5, 30, 30));
     this.handles.push(new Rectangle(280, 5, 30, 30));
     this.handles.push(new Rectangle(280, 240, 30, 30));
@@ -285,22 +282,32 @@ export class RainbowHat extends Hat {
     }
 
     if (this.temperatureSensor.contains(dx, dy)) {
-      this.temperatureGraph.setVisible(!this.temperatureGraph.isVisible());
+      if (this.temperatureGraph == null) {
+        this.temperatureGraph = system.addLineChart(this.temperatureSensor,
+          e.pageX - this.canvas.width / 2, e.pageY - this.canvas.height * 4 / 5, "Temperature Line Chart #" + Date.now().toString(16));
+      } else {
+        this.temperatureGraph.setVisible(!this.temperatureGraph.isVisible());
+      }
       if (this.temperatureGraph.isVisible()) {
         this.temperatureGraph.draw();
         this.temperatureGraph.bringForward();
       }
-      localStorage.setItem("Visible: " + this.temperatureGraph.getUid(), this.temperatureGraph.isVisible() ? "true" : "false");
+      localStorage.setItem(this.temperatureSensor.name + " Graph Visibility @" + this.getUid(), this.temperatureGraph.isVisible() ? "true" : "false");
       return;
     }
 
     if (this.barometricPressureSensor.contains(dx, dy)) {
-      this.pressureGraph.setVisible(!this.pressureGraph.isVisible());
+      if (this.pressureGraph == null) {
+        this.pressureGraph = system.addLineChart(this.barometricPressureSensor,
+          e.pageX - this.canvas.width / 2, e.pageY - this.canvas.height * 4 / 5, "Pressure Line Chart #" + Date.now().toString(16));
+      } else {
+        this.pressureGraph.setVisible(!this.pressureGraph.isVisible());
+      }
       if (this.pressureGraph.isVisible()) {
         this.pressureGraph.draw();
         this.pressureGraph.bringForward();
       }
-      localStorage.setItem("Visible: " + this.pressureGraph.getUid(), this.pressureGraph.isVisible() ? "true" : "false");
+      localStorage.setItem(this.barometricPressureSensor.name + " Graph Visibility @" + this.getUid(), this.pressureGraph.isVisible() ? "true" : "false");
       return;
     }
 

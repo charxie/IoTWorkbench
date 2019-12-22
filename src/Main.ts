@@ -20,6 +20,8 @@ import {CapacitiveTouchHatContextMenu} from "./ui/CapacitiveTouchHatContextMenu"
 import {UnicornHatContextMenu} from "./ui/UnicornHatContextMenu";
 import {CrickitHatContextMenu} from "./ui/CrickitHatContextMenu";
 import {PanTiltHatContextMenu} from "./ui/PanTiltHatContextMenu";
+import {RainbowHat} from "./components/RainbowHat";
+import {Sensor} from "./components/Sensor";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -123,10 +125,6 @@ window.onload = function () {
   // read locally stored properties
   restoreMcus();
   restoreHats();
-  // restoreLocation(system.temperatureGraph);
-  // restoreLocation(system.pressureGraph);
-  // restoreVisibility(system.temperatureGraph);
-  // restoreVisibility(system.pressureGraph);
 
   resize();
   draw();
@@ -149,14 +147,6 @@ function selectTab(button: HTMLButtonElement, tabId: string) {
   button.className += " active";
 }
 
-function restoreVisibility(g: LineChart) {
-  let x: string = localStorage.getItem("Visible: " + g.getUid());
-  if (x != null) {
-    g.setVisible("true" == x);
-    g.draw();
-  }
-}
-
 function restoreHats() {
   let s: string = localStorage.getItem("HAT Sequence");
   if (s != null) {
@@ -172,17 +162,35 @@ function restoreHats() {
   }
   restoreLocations(system.hats);
   for (let i = 0; i < system.hats.length; i++) {
-    let id: string = localStorage.getItem("Attachment: " + system.hats[i].getUid());
+    let h = system.hats[i];
+    let id: string = localStorage.getItem("Attachment: " + h.getUid());
     if (id != null) {
       let pi = system.getRaspberryPiById(id);
       if (pi) {
         system.hats[i].attach(pi);
       }
     }
+    if (h instanceof RainbowHat) {
+      let r: RainbowHat = <RainbowHat>h;
+      r.temperatureGraph = addLineChart(r, r.temperatureSensor);
+      r.pressureGraph = addLineChart(r, r.barometricPressureSensor);
+      if (r.temperatureGraph) r.temperatureGraph.draw();
+      if (r.pressureGraph) r.pressureGraph.draw();
+    }
   }
   setTimeout(function () { // call this to refresh after inserting canvases
     system.draw();
   }, 100);
+}
+
+function addLineChart(r: RainbowHat, s: Sensor) {
+  let v = localStorage.getItem(s.name + " Graph Visibility @" + r.getUid());
+  if (v == "true") {
+    let x = localStorage.getItem(s.name + " Graph X @" + r.getUid());
+    let y = localStorage.getItem(s.name + " Graph Y @" + r.getUid());
+    return system.addLineChart(s, x ? parseInt(x) : r.getX(), y ? parseInt(y) : r.getY() + r.getHeight() / 2, s.name + " Line Chart " + Date.now().toString(16));
+  }
+  return null;
 }
 
 function restoreMcus() {

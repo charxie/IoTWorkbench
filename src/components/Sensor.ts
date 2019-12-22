@@ -14,8 +14,8 @@ export class Sensor {
   y: number;
   width: number;
   height: number;
+  readonly board: Board;
 
-  private readonly board: Board;
   private on: boolean = false;
   private pressedColor: string = 'white';
 

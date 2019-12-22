@@ -16,6 +16,9 @@ import {PanTiltHat} from "./components/PanTiltHat";
 import {contextMenus} from "./Main";
 import {Rectangle} from "./math/Rectangle";
 import {ColorPicker} from "./tools/ColorPicker";
+import {LineChart} from "./tools/LineChart";
+import {ElectronicComponent} from "./components/ElectronicComponent";
+import {Sensor} from "./components/Sensor";
 
 declare var firebase;
 
@@ -26,6 +29,7 @@ export class System {
   workbench: Workbench;
   mcus: Mcu[] = [];
   hats: Hat[] = [];
+  lineCharts: LineChart[] = [];
   playground: HTMLElement;
   colorPicker: ColorPicker;
 
@@ -257,6 +261,64 @@ export class System {
     return -1;
   }
 
+  /* line chart methods */
+
+  getLineChartById(uid: string): LineChart {
+    for (let i = 0; i < this.lineCharts.length; i++) {
+      if (this.lineCharts[i].uid == uid) {
+        return this.lineCharts[i];
+      }
+    }
+    return null;
+  }
+
+  removeLineChartByIndex(selectedIndex: number): void {
+    let canvas = this.lineCharts[selectedIndex].canvas;
+    this.playground.removeChild(canvas);
+    this.lineCharts.splice(selectedIndex, 1);
+    //this.storeLineChartSequence();
+  }
+
+  removeLineChart(lineChart: LineChart): void {
+    this.removeLineChartByIndex(this.lineCharts.indexOf(lineChart));
+  }
+
+  addLineChart(s: Sensor, x: number, y: number, uid: string): LineChart {
+    let canvas = document.createElement("canvas");
+    canvas.style.margin = "auto";
+    canvas.style.position = "absolute";
+    canvas.style.left = "10px";
+    canvas.style.top = "10px";
+    canvas.style.zIndex = "101";
+    canvas.style.boxShadow = "5px 5px 5px gray";
+    canvas.style.border = "2px solid #006699";
+    canvas.style.borderRadius = "8px";
+    canvas.width = 420;
+    canvas.height = 300;
+    canvas.id = "line-chart-" + this.lineCharts.length;
+    this.playground.appendChild(canvas);
+    let lineChart: LineChart = new LineChart(canvas.id, uid, s);
+    this.lineCharts.push(lineChart);
+    lineChart.setX(x);
+    lineChart.setY(y);
+    lineChart.setVisible(true);
+    this.draw();
+    return lineChart;
+  }
+
+  whichLineChart(x: number, y: number): number {
+    for (let i = 0; i < this.lineCharts.length; i++) {
+      let c = this.lineCharts[i];
+      let r = new Rectangle(c.getX(), c.getY(), c.getWidth(), c.getHeight());
+      if (r.contains(x, y)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  /* draw and mouse */
+
   draw(): void {
     this.workbench.draw();
     let i;
@@ -276,9 +338,9 @@ export class System {
     for (let i = 0; i < this.hats.length; i++) {
       if (this.hats[i] instanceof RainbowHat) {
         let r = <RainbowHat>this.hats[i];
-        if (r.temperatureGraph.isVisible() && r.temperatureGraph.onHandle(x - r.temperatureGraph.getX(), y - r.temperatureGraph.getY())) {
+        if (r.temperatureGraph != null && r.temperatureGraph.isVisible() && r.temperatureGraph.onHandle(x - r.temperatureGraph.getX(), y - r.temperatureGraph.getY())) {
           this.selectedMovable = r.temperatureGraph;
-        } else if (r.pressureGraph.isVisible() && r.pressureGraph.onHandle(x - r.pressureGraph.getX(), y - r.pressureGraph.getY())) {
+        } else if (r.pressureGraph != null && r.pressureGraph.isVisible() && r.pressureGraph.onHandle(x - r.pressureGraph.getX(), y - r.pressureGraph.getY())) {
           this.selectedMovable = r.pressureGraph;
         }
       }
@@ -341,17 +403,23 @@ export class System {
   }
 
   private storeLocation(m: Movable): void {
-    localStorage.setItem("X: " + m.getUid(), m.getX().toString());
-    localStorage.setItem("Y: " + m.getUid(), m.getY().toString());
-    if (m instanceof Hat) {
-      if (m.raspberryPi != null) {
-        localStorage.setItem("X: " + m.raspberryPi.getUid(), m.raspberryPi.getX().toString());
-        localStorage.setItem("Y: " + m.raspberryPi.getUid(), m.raspberryPi.getY().toString());
-      }
-    } else if (m instanceof RaspberryPi) {
-      if (m.hat != null) {
-        localStorage.setItem("X: " + m.hat.getUid(), m.hat.getX().toString());
-        localStorage.setItem("Y: " + m.hat.getUid(), m.hat.getY().toString());
+    if (m instanceof LineChart) { // line charts are not independent, they are associated with sensors
+      let c = <LineChart>m;
+      localStorage.setItem(c.name + " X @" + c.sensor.board.getUid(), m.getX().toString());
+      localStorage.setItem(c.name + " Y @" + c.sensor.board.getUid(), m.getY().toString());
+    } else {
+      localStorage.setItem("X: " + m.getUid(), m.getX().toString());
+      localStorage.setItem("Y: " + m.getUid(), m.getY().toString());
+      if (m instanceof Hat) {
+        if (m.raspberryPi != null) {
+          localStorage.setItem("X: " + m.raspberryPi.getUid(), m.raspberryPi.getX().toString());
+          localStorage.setItem("Y: " + m.raspberryPi.getUid(), m.raspberryPi.getY().toString());
+        }
+      } else if (m instanceof RaspberryPi) {
+        if (m.hat != null) {
+          localStorage.setItem("X: " + m.hat.getUid(), m.hat.getX().toString());
+          localStorage.setItem("Y: " + m.hat.getUid(), m.hat.getY().toString());
+        }
       }
     }
   }

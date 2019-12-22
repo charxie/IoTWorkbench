@@ -20,9 +20,9 @@ export class LineChart implements Movable {
   graphWindowColor: string = "white";
   titleBarColor: string = "lightgray";
   handle: Rectangle;
+  readonly canvas: HTMLCanvasElement;
+  sensor: Sensor;
 
-  private readonly canvas: HTMLCanvasElement;
-  private sensor: Sensor;
   private visible: boolean;
   private margin = {
     left: <number>40,
@@ -36,8 +36,9 @@ export class LineChart implements Movable {
   private selectedButton: Rectangle;
   readonly uid: string;
 
-  constructor(elementId: string, sensor: Sensor) {
-    this.uid = sensor.name + " graph";
+  constructor(elementId: string, uid: string, sensor: Sensor) {
+    this.name = sensor.name + " Graph";
+    this.uid = uid;
     this.canvas = document.getElementById(elementId) as HTMLCanvasElement;
     this.sensor = sensor;
     this.yAxisLabel = sensor.name + " (" + sensor.unit + ")";
@@ -294,7 +295,7 @@ export class LineChart implements Movable {
     let y = e.clientY - rect.y;
     if (this.closeButton.contains(x, y)) {
       this.setVisible(false);
-      localStorage.setItem("Visible: " + this.getUid(), "false");
+      localStorage.setItem(this.sensor.name + " Graph Visibility @" + this.sensor.board.getUid(), "false");
     } else if (this.clearButton.contains(x, y)) {
       this.sensor.data.length = 0;
     } else {
