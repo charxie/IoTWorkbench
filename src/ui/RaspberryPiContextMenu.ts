@@ -2,8 +2,8 @@
  * @author Charles Xie
  */
 
-import {system} from "./Main";
-import {RaspberryPi} from "./components/RaspberryPi";
+import {system} from "../Main";
+import {RaspberryPi} from "../components/RaspberryPi";
 import {ComponentContextMenu} from "./ComponentContextMenu";
 
 export class RaspberryPiContextMenu extends ComponentContextMenu {

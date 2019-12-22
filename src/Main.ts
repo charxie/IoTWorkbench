@@ -8,18 +8,18 @@ import {User} from "./User";
 import {System} from "./System";
 import {Movable} from "./Movable";
 import {ComponentsPanel} from "./ComponentsPanel";
-import {RainbowHatContextMenu} from "./RainbowHatContextMenu";
-import {WorkbenchContextMenu} from "./WorkbenchContextMenu";
-import {LineChartContextMenu} from "./LineChartContextMenu";
-import {RaspberryPiContextMenu} from "./RaspberryPiContextMenu";
-import {ColorPickerContextMenu} from "./ColorPickerContextMenu";
+import {RainbowHatContextMenu} from "./ui/RainbowHatContextMenu";
+import {WorkbenchContextMenu} from "./ui/WorkbenchContextMenu";
+import {LineChartContextMenu} from "./ui/LineChartContextMenu";
+import {RaspberryPiContextMenu} from "./ui/RaspberryPiContextMenu";
+import {ColorPickerContextMenu} from "./ui/ColorPickerContextMenu";
 import {Code} from "./code/Code";
 import {LineChart} from "./tools/LineChart";
-import {SenseHatContextMenu} from "./SenseHatContextMenu";
-import {CapacitiveTouchHatContextMenu} from "./CapacitiveTouchHatContextMenu";
-import {UnicornHatContextMenu} from "./UnicornHatContextMenu";
-import {CrickitHatContextMenu} from "./CrickitHatContextMenu";
-import {PanTiltHatContextMenu} from "./PanTiltHatContextMenu";
+import {SenseHatContextMenu} from "./ui/SenseHatContextMenu";
+import {CapacitiveTouchHatContextMenu} from "./ui/CapacitiveTouchHatContextMenu";
+import {UnicornHatContextMenu} from "./ui/UnicornHatContextMenu";
+import {CrickitHatContextMenu} from "./ui/CrickitHatContextMenu";
+import {PanTiltHatContextMenu} from "./ui/PanTiltHatContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -164,11 +164,11 @@ function restoreHats() {
     if (t.length > 0) {
       system.hats = [];
     }
+    console.log(t);
     for (let i = 0; i < t.length; i++) {
       t[i] = t[i].trim();
-      if (t[i].startsWith("Rainbow HAT")) {
-        system.addHat("Rainbow HAT", 0, 0, t[i]);
-      }
+      let name = t[i].substring(0, t[i].indexOf("#") - 1);
+      system.addHat(name, 0, 0, t[i]);
     }
   }
   restoreLocations(system.hats);
@@ -183,7 +183,7 @@ function restoreHats() {
   }
   setTimeout(function () { // call this to refresh after inserting canvases
     system.draw();
-  }, 0);
+  }, 100);
 }
 
 function restoreMcus() {

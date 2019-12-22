@@ -4,20 +4,19 @@
 
 import {Movable} from "./Movable";
 import {Workbench} from "./Workbench";
-import {RaspberryPi} from "./components/RaspberryPi";
-import {RainbowHat} from "./components/RainbowHat";
-import {LineChart} from "./tools/LineChart";
-import {ColorPicker} from "./tools/ColorPicker";
 import {Mcu} from "./components/Mcu";
-import {Rectangle} from "./math/Rectangle";
+import {RaspberryPi} from "./components/RaspberryPi";
 import {Hat} from "./components/Hat";
+import {RainbowHat} from "./components/RainbowHat";
 import {SenseHat} from "./components/SenseHat";
 import {CapacitiveTouchHat} from "./components/CapacitiveTouchHat";
 import {UnicornHat} from "./components/UnicornHat";
 import {CrickitHat} from "./components/CrickitHat";
-import {contextMenus} from "./Main";
-import {PanTiltHatContextMenu} from "./PanTiltHatContextMenu";
 import {PanTiltHat} from "./components/PanTiltHat";
+import {contextMenus} from "./Main";
+import {Rectangle} from "./math/Rectangle";
+import {LineChart} from "./tools/LineChart";
+import {ColorPicker} from "./tools/ColorPicker";
 
 declare var firebase;
 
@@ -113,7 +112,7 @@ export class System {
   }
 
   addHatByAction(name: string, x: number, y: number) {
-    this.storeLocation(this.addHat(name, x, y, name + " " + Date.now().toString(16)));
+    this.storeLocation(this.addHat(name, x, y, name + " #" + Date.now().toString(16)));
     this.storeHatSequence();
   }
 
@@ -214,33 +213,33 @@ export class System {
         hat = new RainbowHat(canvas.id, uid);
         break;
       case "Sense HAT":
+        canvas.id = "sense-hat-" + this.hats.length;
         canvas.width = 330;
         canvas.height = 290;
-        canvas.id = "sense-hat-" + this.hats.length;
         hat = new SenseHat(canvas.id, uid);
         break;
       case "Capacitive Touch HAT":
+        canvas.id = "capacitive-touch-hat-" + this.hats.length;
         canvas.width = 330;
         canvas.height = 290;
-        canvas.id = "capacitive-touch-hat-" + this.hats.length;
         hat = new CapacitiveTouchHat(canvas.id, uid);
         break;
       case "Unicorn HAT":
+        canvas.id = "unicorn-hat-" + this.hats.length;
         canvas.width = 330;
         canvas.height = 380;
-        canvas.id = "unicorn-hat-" + this.hats.length;
         hat = new UnicornHat(canvas.id, uid);
         break;
       case "Crickit HAT":
+        canvas.id = "crickit-hat-" + this.hats.length;
         canvas.width = 330;
         canvas.height = 290;
-        canvas.id = "crickit-hat-" + this.hats.length;
         hat = new CrickitHat(canvas.id, uid);
         break;
       case "Pan-Tilt HAT":
+        canvas.id = "pan-tilt-hat-" + this.hats.length;
         canvas.width = 330;
         canvas.height = 290;
-        canvas.id = "pan-tilt-hat-" + this.hats.length;
         hat = new PanTiltHat(canvas.id, uid);
         break;
     }

@@ -1,9 +1,9 @@
 /*
  * @author Charles Xie
  */
-import {Hat} from "./components/Hat";
-import {system} from "./Main";
-import {RaspberryPi} from "./components/RaspberryPi";
+import {Hat} from "../components/Hat";
+import {system} from "../Main";
+import {RaspberryPi} from "../components/RaspberryPi";
 import {ComponentContextMenu} from "./ComponentContextMenu";
 
 export abstract class HatContextMenu extends ComponentContextMenu {
