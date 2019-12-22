@@ -34,6 +34,7 @@ export class RaspberryPiContextMenu extends ComponentContextMenu {
   private deleteButtonClick(e: MouseEvent): void {
     if (this.raspberryPi) {
       if (confirm("Are you sure you want to delete " + this.raspberryPi.uid + "?")) {
+        this.raspberryPi.hat = null;
         system.removeRaspberryPi(this.raspberryPi);
       }
     }

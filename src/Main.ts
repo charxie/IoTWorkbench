@@ -7,21 +7,20 @@ import * as Constants from "./Constants";
 import {User} from "./User";
 import {System} from "./System";
 import {Movable} from "./Movable";
+import {RainbowHat} from "./components/RainbowHat";
+import {Sensor} from "./components/Sensor";
+import {Code} from "./code/Code";
 import {ComponentsPanel} from "./ComponentsPanel";
 import {RainbowHatContextMenu} from "./ui/RainbowHatContextMenu";
 import {WorkbenchContextMenu} from "./ui/WorkbenchContextMenu";
 import {LineChartContextMenu} from "./ui/LineChartContextMenu";
 import {RaspberryPiContextMenu} from "./ui/RaspberryPiContextMenu";
 import {ColorPickerContextMenu} from "./ui/ColorPickerContextMenu";
-import {Code} from "./code/Code";
-import {LineChart} from "./tools/LineChart";
 import {SenseHatContextMenu} from "./ui/SenseHatContextMenu";
 import {CapacitiveTouchHatContextMenu} from "./ui/CapacitiveTouchHatContextMenu";
 import {UnicornHatContextMenu} from "./ui/UnicornHatContextMenu";
 import {CrickitHatContextMenu} from "./ui/CrickitHatContextMenu";
 import {PanTiltHatContextMenu} from "./ui/PanTiltHatContextMenu";
-import {RainbowHat} from "./components/RainbowHat";
-import {Sensor} from "./components/Sensor";
 
 declare global {
   interface CanvasRenderingContext2D {

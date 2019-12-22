@@ -11,9 +11,21 @@ import {system} from "../Main";
 
 export abstract class Hat extends Board {
 
-  public raspberryPi: RaspberryPi;
+  raspberryPi: RaspberryPi;
 
-  public attach(raspberryPi: RaspberryPi): void {
+  tryAttach(): void {
+    let i = this.whichRaspberryPi();
+    if (i >= 0) {
+      let pi = <RaspberryPi>system.mcus[i];
+      if (pi.hat) {
+        alert(pi.uid + " already has a HAT: " + pi.hat.uid + ".");
+      } else {
+        this.attach(pi);
+      }
+    }
+  }
+
+  attach(raspberryPi: RaspberryPi): void {
     if (raspberryPi != null) {
       raspberryPi.hat = this;
     } else {
@@ -31,7 +43,7 @@ export abstract class Hat extends Board {
     }
   }
 
-  public whichRaspberryPi(): number {
+  whichRaspberryPi(): number {
     let r1 = new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight());
     for (let i = system.mcus.length - 1; i >= 0; i--) {
       let mcu = system.mcus[i];

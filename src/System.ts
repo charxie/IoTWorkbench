@@ -8,6 +8,7 @@ import {Mcu} from "./components/Mcu";
 import {RaspberryPi} from "./components/RaspberryPi";
 import {Hat} from "./components/Hat";
 import {RainbowHat} from "./components/RainbowHat";
+import {Sensor} from "./components/Sensor";
 import {SenseHat} from "./components/SenseHat";
 import {CapacitiveTouchHat} from "./components/CapacitiveTouchHat";
 import {UnicornHat} from "./components/UnicornHat";
@@ -17,8 +18,6 @@ import {contextMenus} from "./Main";
 import {Rectangle} from "./math/Rectangle";
 import {ColorPicker} from "./tools/ColorPicker";
 import {LineChart} from "./tools/LineChart";
-import {ElectronicComponent} from "./components/ElectronicComponent";
-import {Sensor} from "./components/Sensor";
 
 declare var firebase;
 
@@ -80,38 +79,56 @@ export class System {
     this.playground.addEventListener("drop", function (e) {
       e.preventDefault();
       console.log("drop: " + that.draggedElementId + ", " + (<HTMLElement>e.target).id);
-      if ((<HTMLElement>e.target).id == "workbench") {
-        switch (that.draggedElementId) {
-          case "raspberry-pi-image":
-            that.storeLocation(that.addRaspberryPi(e.offsetX, e.offsetY, "Raspberry Pi " + Date.now().toString(16)));
+      let id = (<HTMLElement>e.target).id;
+      switch (that.draggedElementId) {
+        case "raspberry-pi-image":
+          if (id == "workbench") {
+            that.storeLocation(that.addRaspberryPi(e.offsetX, e.offsetY, "Raspberry Pi #" + Date.now().toString(16)));
             that.storeMcuSequence();
-            break;
-          case "rainbow-hat-image":
+          }
+          break;
+        case "rainbow-hat-image":
+          if (id == "workbench" || id.startsWith("raspberry-pi")) {
             that.addHatByAction("Rainbow HAT", e.offsetX, e.offsetY);
-            break;
-          case "sense-hat-image":
+          }
+          break;
+        case "sense-hat-image":
+          if (id == "workbench" || id.startsWith("raspberry-pi")) {
             that.addHatByAction("Sense HAT", e.offsetX, e.offsetY);
-            break;
-          case "capacitive-touch-hat-image":
+          }
+          break;
+        case "capacitive-touch-hat-image":
+          if (id == "workbench" || id.startsWith("raspberry-pi")) {
             that.addHatByAction("Capacitive Touch HAT", e.offsetX, e.offsetY);
-            break;
-          case "unicorn-hat-image":
+          }
+          break;
+        case "unicorn-hat-image":
+          if (id == "workbench" || id.startsWith("raspberry-pi")) {
             that.addHatByAction("Unicorn HAT", e.offsetX, e.offsetY);
-            break;
-          case "crickit-hat-image":
+          }
+          break;
+        case "crickit-hat-image":
+          if (id == "workbench" || id.startsWith("raspberry-pi")) {
             that.addHatByAction("Crickit HAT", e.offsetX, e.offsetY);
-            break;
-          case "pan-tilt-hat-image":
+          }
+          break;
+        case "pan-tilt-hat-image":
+          if (id == "workbench" || id.startsWith("raspberry-pi")) {
             that.addHatByAction("Pan-Tilt HAT", e.offsetX, e.offsetY);
-            break;
-        }
+          }
+          break;
       }
     }, false);
   }
 
-  addHatByAction(name: string, x: number, y: number) {
-    this.storeLocation(this.addHat(name, x, y, name + " #" + Date.now().toString(16)));
+  addHatByAction(name: string, x: number, y: number): Hat {
+    let hat = this.addHat(name, x, y, name + " #" + Date.now().toString(16));
+    this.storeLocation(hat);
     this.storeHatSequence();
+    if (this.whichRaspberryPi(x, y) >= 0) {
+      hat.tryAttach();
+    }
+    return hat;
   }
 
   /* Raspberry Pi methods */
@@ -335,7 +352,7 @@ export class System {
     let x = e.clientX - rect.x;
     let y = e.clientY - rect.y;
     this.selectedMovable = null;
-    for (let i = 0; i < this.hats.length; i++) {
+    for (let i = this.hats.length - 1; i >= 0; i--) {
       if (this.hats[i] instanceof RainbowHat) {
         let r = <RainbowHat>this.hats[i];
         if (r.temperatureGraph != null && r.temperatureGraph.isVisible() && r.temperatureGraph.onHandle(x - r.temperatureGraph.getX(), y - r.temperatureGraph.getY())) {
@@ -346,14 +363,14 @@ export class System {
       }
     }
     // always prioritize HATs over Raspberry Pi
-    for (let i = 0; i < this.hats.length; i++) {
+    for (let i = this.hats.length - 1; i >= 0; i--) {
       if (this.hats[i].whichHandle(x - this.hats[i].getX(), y - this.hats[i].getY()) >= 0) {
         this.selectedMovable = this.hats[i];
         break;
       }
     }
     if (this.selectedMovable == null) {
-      for (let i = 0; i < this.mcus.length; i++) {
+      for (let i = this.mcus.length - 1; i >= 0; i--) {
         if (this.mcus[i].whichHandle(x - this.mcus[i].getX(), y - this.mcus[i].getY()) >= 0) {
           this.selectedMovable = this.mcus[i];
           break;

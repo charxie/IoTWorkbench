@@ -22,6 +22,7 @@ export abstract class HatContextMenu extends ComponentContextMenu {
   deleteButtonClick(e: MouseEvent): void {
     if (this.hat) {
       if (confirm("Are you sure you want to delete " + this.hat.uid + "?")) {
+        this.hat.attach(null);
         system.removeHat(this.hat);
       }
     }
@@ -31,10 +32,7 @@ export abstract class HatContextMenu extends ComponentContextMenu {
     e.preventDefault();
     let menu = document.getElementById(this.id) as HTMLMenuElement;
     menu.classList.remove("show-menu");
-    let i = this.hat.whichRaspberryPi();
-    if (i >= 0) {
-      this.hat.attach(<RaspberryPi>system.mcus[i]);
-    }
+    this.hat.tryAttach();
   }
 
   detachButtonClick(e: MouseEvent): void {
