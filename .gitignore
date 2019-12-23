@@ -3,7 +3,7 @@
 # Useful .gitignore templates: https://github.com/github/gitignore
 
 # API keys and secrets
-../.env
+.env
 
 # Dependency directory
 node_modules
@@ -23,5 +23,6 @@ workbench/**/*
 doc/**/*
 .cache/**/*
 
-# ignore yarn.lock
+# ignore files
 yarn.lock
+package-lock.json
