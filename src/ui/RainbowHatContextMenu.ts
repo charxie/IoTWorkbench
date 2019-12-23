@@ -31,4 +31,15 @@ export class RainbowHatContextMenu extends HatContextMenu {
             </menu>`;
   }
 
+  addListeners(): void {
+    super.addListeners();
+    let settingsButton = document.getElementById(this.id + "-settings-button");
+    settingsButton.addEventListener("click", this.settingsButtonClick.bind(this), false);
+  }
+
+  settingsButtonClick(e: MouseEvent): void {
+    if (this.hat) {
+    }
+  }
+
 }

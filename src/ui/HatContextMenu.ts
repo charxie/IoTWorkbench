@@ -3,8 +3,8 @@
  */
 import {Hat} from "../components/Hat";
 import {system} from "../Main";
-import {RaspberryPi} from "../components/RaspberryPi";
 import {ComponentContextMenu} from "./ComponentContextMenu";
+import $ from "jquery";
 
 export abstract class HatContextMenu extends ComponentContextMenu {
 
@@ -21,6 +21,9 @@ export abstract class HatContextMenu extends ComponentContextMenu {
 
   deleteButtonClick(e: MouseEvent): void {
     if (this.hat) {
+      $(function () {
+        console.log("xxx");
+      });
       if (confirm("Are you sure you want to delete " + this.hat.uid + "?")) {
         this.hat.attach(null);
         system.removeHat(this.hat);
@@ -29,17 +32,17 @@ export abstract class HatContextMenu extends ComponentContextMenu {
   }
 
   attachButtonClick(e: MouseEvent): void {
-    e.preventDefault();
-    let menu = document.getElementById(this.id) as HTMLMenuElement;
-    menu.classList.remove("show-menu");
-    this.hat.tryAttach();
+    //e.preventDefault();
+    if (this.hat) {
+      this.hat.tryAttach();
+    }
   }
 
   detachButtonClick(e: MouseEvent): void {
-    e.preventDefault();
-    let menu = document.getElementById(this.id) as HTMLMenuElement;
-    menu.classList.remove("show-menu");
-    this.hat.attach(null);
+    //e.preventDefault();
+    if (this.hat) {
+      this.hat.attach(null);
+    }
   }
 
 }
