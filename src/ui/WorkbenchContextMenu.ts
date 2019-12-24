@@ -2,6 +2,8 @@
  * @author Charles Xie
  */
 
+import $ from "jquery";
+import {system} from "../Main";
 import {ComponentContextMenu} from "./ComponentContextMenu";
 
 export class WorkbenchContextMenu extends ComponentContextMenu {
@@ -21,7 +23,7 @@ export class WorkbenchContextMenu extends ComponentContextMenu {
               </li>
               <li class="menu-separator"></li>
               <li class="menu-item">
-                <button type="button" class="menu-btn"><i class="fas fa-cog"></i><span class="menu-text">Settings</span></button>
+                <button type="button" class="menu-btn" id="${this.id}-settings-button"><i class="fas fa-cog"></i><span class="menu-text">Settings</span></button>
               </li>
               <li class="menu-item submenu">
                 <button type="button" class="menu-btn"><i class="fas fa-file-import"></i><span class="menu-text">Import</span></button>
@@ -70,7 +72,43 @@ export class WorkbenchContextMenu extends ComponentContextMenu {
   }
 
   addListeners(): void {
-    // TODO
+    let settingsButton = document.getElementById(this.id + "-settings-button");
+    settingsButton.addEventListener("click", this.settingsButtonClick.bind(this), false);
+  }
+
+  private getSettingsUI(): string {
+    return `<div style="font-size: 90%;">
+              <table class="w3-table-all w3-left w3-hoverable">
+                <tr>
+                  <td>Grid lines:</td>
+                  <td><input type="checkbox" id="workbench-show-grid-checkbox">Show</td>
+                </tr>
+              </table>
+            </div>`;
+  }
+
+  settingsButtonClick(e: MouseEvent): void {
+    $("#modal-dialog").html(this.getSettingsUI());
+    let showGridCheckBox = document.getElementById("workbench-show-grid-checkbox") as HTMLInputElement;
+    showGridCheckBox.checked = system.workbench.showGrid;
+    $("#modal-dialog").dialog({
+      resizable: false,
+      modal: true,
+      title: "Workbench Settings",
+      height: 400,
+      width: 400,
+      buttons: {
+        'OK': function () {
+          system.workbench.showGrid = showGridCheckBox.checked;
+          system.workbench.draw();
+          localStorage.setItem("Workbench Show Grid", system.workbench.showGrid ? "true" : "false");
+          $(this).dialog('close');
+        },
+        'Cancel': function () {
+          $(this).dialog('close');
+        }
+      }
+    });
   }
 
 }

@@ -2,7 +2,13 @@
  * @author Charles Xie
  */
 
+import $ from "jquery";
+// @ts-ignore
+window.jQuery = $;
+import "jquery-ui-bundle/jquery-ui.min.css";
+import "jquery-ui-bundle/jquery-ui";
 import "@fortawesome/fontawesome-free/css/all.css";
+
 import * as Constants from "./Constants";
 import {User} from "./User";
 import {System} from "./System";
@@ -21,12 +27,6 @@ import {CapacitiveTouchHatContextMenu} from "./ui/CapacitiveTouchHatContextMenu"
 import {UnicornHatContextMenu} from "./ui/UnicornHatContextMenu";
 import {CrickitHatContextMenu} from "./ui/CrickitHatContextMenu";
 import {PanTiltHatContextMenu} from "./ui/PanTiltHatContextMenu";
-
-import $ from "jquery";
-// @ts-ignore
-window.jQuery = $;
-import "jquery-ui-bundle/jquery-ui.min.css";
-import "jquery-ui-bundle/jquery-ui";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -79,6 +79,7 @@ window.onload = function () {
 
   let workbenchContextMenu = new WorkbenchContextMenu();
   workbenchContextMenu.render("workbench-context-menu-placeholder");
+  workbenchContextMenu.addListeners();
   contextMenus.workbench = workbenchContextMenu;
 
   let raspberryPiContextMenu = new RaspberryPiContextMenu();
@@ -128,6 +129,7 @@ window.onload = function () {
   componentsPanel.render("digital-twins-playground-components-panel");
 
   // read locally stored properties
+  restoreWorkbench();
   restoreMcus();
   restoreHats();
 
@@ -137,6 +139,11 @@ window.onload = function () {
   }, 1000);
 
 };
+
+function restoreWorkbench() {
+  let x = localStorage.getItem("Workbench Show Grid");
+  system.workbench.showGrid = (x == "true") || (x == null);
+}
 
 function selectTab(button: HTMLButtonElement, tabId: string) {
   // Get all elements with class="tabcontent" and hide them

@@ -12,13 +12,13 @@ import {Button} from "./Button";
 import {Sensor} from "./Sensor";
 import {System} from "../System";
 import {Util} from "../Util";
+import {contextMenus, system} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
-import {contextMenus, system} from "../Main";
+import {LineChart} from "../tools/LineChart";
 
 // @ts-ignore
 import rainbowHatImage from "../img/rainbow-hat.png";
-import {LineChart} from "../tools/LineChart";
 
 export class RainbowHat extends Hat {
 

@@ -7,8 +7,8 @@ import {contextMenus} from "./Main";
 export class Workbench {
 
   readonly canvas: HTMLCanvasElement;
-
-  private gridSize: number = 20;
+  showGrid: boolean = true;
+  gridSize: number = 20;
 
   constructor(canvasId: string) {
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
@@ -21,7 +21,9 @@ export class Workbench {
   public draw(): void {
     let context = this.canvas.getContext('2d');
     context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.drawGrid(context);
+    if (this.showGrid) {
+      this.drawGrid(context);
+    }
   }
 
   public drawGrid(context: CanvasRenderingContext2D): void {
