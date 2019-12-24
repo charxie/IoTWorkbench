@@ -29,13 +29,13 @@ export class LedDisplay implements ElectronicComponent {
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
-    ctx.save();
     if (this.character) {
+      ctx.save();
       ctx.fillStyle = "lightgreen";
       ctx.font = this.fontSize + " " + this.fontFamily;
       ctx.fillText(this.character, this.x, this.y);
+      ctx.restore();
     }
-    ctx.restore();
   }
 
   public setCharacter(character: string): void {

@@ -22,6 +22,12 @@ import {UnicornHatContextMenu} from "./ui/UnicornHatContextMenu";
 import {CrickitHatContextMenu} from "./ui/CrickitHatContextMenu";
 import {PanTiltHatContextMenu} from "./ui/PanTiltHatContextMenu";
 
+import $ from "jquery";
+// @ts-ignore
+window.jQuery = $;
+import "jquery-ui-bundle/jquery-ui.min.css";
+import "jquery-ui-bundle/jquery-ui";
+
 declare global {
   interface CanvasRenderingContext2D {
     drawTooltip(x, y, h, r, margin, text, centered);
@@ -125,8 +131,10 @@ window.onload = function () {
   restoreMcus();
   restoreHats();
 
-  resize();
-  draw();
+  setTimeout(function () { // call this to refresh after inserting canvases
+    resize();
+    draw();
+  }, 1000);
 
 };
 
@@ -177,9 +185,6 @@ function restoreHats() {
       if (r.pressureGraph) r.pressureGraph.draw();
     }
   }
-  setTimeout(function () { // call this to refresh after inserting canvases
-    system.draw();
-  }, 100);
 }
 
 function addLineChart(r: RainbowHat, s: Sensor) {
@@ -207,9 +212,6 @@ function restoreMcus() {
     }
   }
   restoreLocations(system.mcus);
-  setTimeout(function () { // call this to refresh after inserting canvases
-    system.draw();
-  }, 0);
 }
 
 function restoreLocations(m: Movable[]) {
@@ -242,7 +244,7 @@ function resize() {
   code.codespace.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
   code.codespace.canvas.height = window.innerHeight - workbenchRect.top - 50;
   let componentsScroller = document.getElementById("components-scroller") as HTMLDivElement;
-  componentsScroller.style.height = system.workbench.canvas.height * 0.8 + "px";
+  componentsScroller.style.height = system.workbench.canvas.height * 0.85 + "px";
 }
 
 function draw() {

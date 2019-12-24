@@ -163,8 +163,6 @@ export class System {
     canvas.style.display = "block";
     canvas.style.margin = "auto";
     canvas.style.position = "absolute";
-    canvas.style.left = "10px";
-    canvas.style.top = "10px";
     canvas.style.zIndex = "49";
     this.playground.appendChild(canvas);
     let pi = new RaspberryPi(canvas.id, uid);

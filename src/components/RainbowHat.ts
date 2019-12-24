@@ -39,7 +39,8 @@ export class RainbowHat extends Hat {
   public pressureGraph: LineChart;
 
   indexOfSelectedRgbLedLight: number = -1;
-  private stateId: string = "rainbow_hat_default";
+  stateId: string = "rainbow_hat_default";
+
   private mouseOverObject: any;
   private boardImage: HTMLImageElement;
 
@@ -436,72 +437,94 @@ export class RainbowHat extends Hat {
   }
 
   updateFirebase(value): void {
-    System.database.ref(this.stateId).update(value);
+    if (this.raspberryPi != null) {
+      System.database.ref(this.stateId).update(value);
+    }
+  }
+
+  turnoff(): void {
+    this.redLedLight.on = false;
+    this.greenLedLight.on = false;
+    this.blueLedLight.on = false;
+    for (let i = 0; i < this.rgbLedLights.length; i++) {
+      this.rgbLedLights[i].on = false;
+    }
+    for (let i = 0; i < 4; i++) {
+      this.alphanumericDisplays[i].setCharacter(null);
+      this.decimalPointDisplays[i].setCharacter(null);
+    }
+    this.draw();
   }
 
   // by default, sensors transmit data every second. This can be adjusted through Firebase.
   updateFromFirebase(): void {
     let that = this;
     System.database.ref().on("value", function (snapshot) {
-      snapshot.forEach(function (child) {
-        let childData = child.val();
-        that.redLedLight.on = childData.redLed;
-        that.greenLedLight.on = childData.greenLed;
-        that.blueLedLight.on = childData.blueLed;
-        if (that.redLedLight.on) {
-          that.buzzer.beepButton("A");
-        }
-        if (that.greenLedLight.on) {
-          that.buzzer.beepButton("B");
-        }
-        if (that.blueLedLight.on) {
-          that.buzzer.beepButton("C");
-        }
-        if (childData.rainbowRgb) {
-          for (let i = 0; i < that.rgbLedLights.length; i++) {
-            let r = childData.rainbowRgb[i][0];
-            let g = childData.rainbowRgb[i][1];
-            let b = childData.rainbowRgb[i][2];
-            that.rgbLedLights[i].on = r > 0 || g > 0 || b > 0;
-            that.rgbLedLights[i].color = Util.rgbToHex(r, g, b);
+      if (that.raspberryPi != null) { // TODO: We should stop the incoming update instead of shortcircuiting here
+        snapshot.forEach(function (child) {
+          let childData = child.val();
+          that.redLedLight.on = childData.redLed;
+          that.greenLedLight.on = childData.greenLed;
+          that.blueLedLight.on = childData.blueLed;
+          if (that.redLedLight.on) {
+            that.buzzer.beepButton("A");
           }
-        }
-        if (childData.allowTemperatureTransmission) {
-          that.temperatureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
-          that.temperatureSensor.data.push(<number>childData.temperature);
-          that.temperatureGraph.draw();
-          let t: number = childData.temperature;
-          let s: string = t.toString();
-          let i: number = s.indexOf(".");
-          if (i > 0 && i < 4) {
-            that.decimalPointDisplays[i - 1].setCharacter(".");
+          if (that.greenLedLight.on) {
+            that.buzzer.beepButton("B");
           }
-          let integerPart: string = s.substring(0, i);
-          let decimalPart: string = s.substring(i + 1);
-          s = (integerPart + decimalPart).substr(0, 4);
-          for (i = 0; i < 4; i++) {
-            that.alphanumericDisplays[i].setCharacter(s[i]);
+          if (that.blueLedLight.on) {
+            that.buzzer.beepButton("C");
           }
-        }
-        if (childData.allowBarometricPressureTransmission) {
-          that.barometricPressureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
-          that.barometricPressureSensor.data.push(<number>childData.barometricPressure);
-          that.pressureGraph.draw();
-          let t: number = childData.barometricPressure;
-          let s: string = t.toString();
-          let i: number = s.indexOf(".");
-          if (i > 0 && i < 4) {
-            that.decimalPointDisplays[i - 1].setCharacter(".");
+          if (childData.rainbowRgb) {
+            for (let i = 0; i < that.rgbLedLights.length; i++) {
+              let r = childData.rainbowRgb[i][0];
+              let g = childData.rainbowRgb[i][1];
+              let b = childData.rainbowRgb[i][2];
+              that.rgbLedLights[i].on = r > 0 || g > 0 || b > 0;
+              that.rgbLedLights[i].color = Util.rgbToHex(r, g, b);
+            }
           }
-          let integerPart: string = s.substring(0, i);
-          let decimalPart: string = s.substring(i + 1);
-          s = (integerPart + decimalPart).substr(0, 4);
-          for (i = 0; i < 4; i++) {
-            that.alphanumericDisplays[i].setCharacter(s[i]);
+          if (childData.allowTemperatureTransmission) {
+            that.temperatureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
+            that.temperatureSensor.data.push(<number>childData.temperature);
+            if (that.temperatureGraph) {
+              that.temperatureGraph.draw();
+            }
+            let t: number = childData.temperature;
+            let s: string = t.toString();
+            let i: number = s.indexOf(".");
+            if (i > 0 && i < 4) {
+              that.decimalPointDisplays[i - 1].setCharacter(".");
+            }
+            let integerPart: string = s.substring(0, i);
+            let decimalPart: string = s.substring(i + 1);
+            s = (integerPart + decimalPart).substr(0, 4);
+            for (i = 0; i < 4; i++) {
+              that.alphanumericDisplays[i].setCharacter(s[i]);
+            }
           }
-        }
-        that.draw();
-      });
+          if (childData.allowBarometricPressureTransmission) {
+            that.barometricPressureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
+            that.barometricPressureSensor.data.push(<number>childData.barometricPressure);
+            if (that.pressureGraph) {
+              that.pressureGraph.draw();
+            }
+            let t: number = childData.barometricPressure;
+            let s: string = t.toString();
+            let i: number = s.indexOf(".");
+            if (i > 0 && i < 4) {
+              that.decimalPointDisplays[i - 1].setCharacter(".");
+            }
+            let integerPart: string = s.substring(0, i);
+            let decimalPart: string = s.substring(i + 1);
+            s = (integerPart + decimalPart).substr(0, 4);
+            for (i = 0; i < 4; i++) {
+              that.alphanumericDisplays[i].setCharacter(s[i]);
+            }
+          }
+          that.draw();
+        });
+      }
     });
   }
 

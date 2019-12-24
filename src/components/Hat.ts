@@ -8,6 +8,7 @@ import {Board} from "./Board";
 import {RaspberryPi} from "./RaspberryPi";
 import {Rectangle} from "../math/Rectangle";
 import {system} from "../Main";
+import $ from "jquery";
 
 export abstract class Hat extends Board {
 
@@ -18,7 +19,20 @@ export abstract class Hat extends Board {
     if (i >= 0) {
       let pi = <RaspberryPi>system.mcus[i];
       if (pi.hat) {
-        alert(pi.uid + " already has a HAT: " + pi.hat.uid + ".");
+        let that = this;
+        $("#modal-dialog").html("<div style='font-size: 90%;'>" + pi.uid +" already has a HAT: "+ pi.hat.uid+".</div>");
+        $("#modal-dialog").dialog({
+          resizable: false,
+          modal: true,
+          title: "Attach HAT",
+          height: 200,
+          width: 300,
+          buttons: {
+            'OK': function () {
+              $(this).dialog('close');
+            }
+          }
+        });
       } else {
         this.attach(pi);
       }
@@ -38,8 +52,10 @@ export abstract class Hat extends Board {
       this.setX(raspberryPi.getX());
       this.setY(raspberryPi.getY());
       localStorage.setItem("Attachment: " + this.getUid(), raspberryPi.uid);
+      this.updateFromFirebase();
     } else {
       localStorage.removeItem("Attachment: " + this.getUid());
+      this.turnoff();
     }
   }
 

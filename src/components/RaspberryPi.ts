@@ -68,20 +68,19 @@ export class RaspberryPi extends Mcu {
   };
 
   private mouseMove = (e: MouseEvent): void => {
-    // e.preventDefault();
-    let rect = this.canvas.getBoundingClientRect();
-    let dx = e.clientX - rect.x;
-    let dy = e.clientY - rect.y;
-    if (this.handles[0].contains(dx, dy)) {
+    //e.preventDefault();
+    let x = e.offsetX;
+    let y = e.offsetY;
+    if (this.handles[0].contains(x, y)) {
       this.mouseOverObject = this.handles[0];
       this.canvas.style.cursor = "move";
-    } else if (this.handles[1].contains(dx, dy)) {
+    } else if (this.handles[1].contains(x, y)) {
       this.mouseOverObject = this.handles[1];
       this.canvas.style.cursor = "move";
-    } else if (this.handles[2].contains(dx, dy)) {
+    } else if (this.handles[2].contains(x, y)) {
       this.mouseOverObject = this.handles[2];
       this.canvas.style.cursor = "move";
-    } else if (this.handles[3].contains(dx, dy)) {
+    } else if (this.handles[3].contains(x, y)) {
       this.mouseOverObject = this.handles[3];
       this.canvas.style.cursor = "move";
     } else {

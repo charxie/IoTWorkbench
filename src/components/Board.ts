@@ -58,6 +58,9 @@ export abstract class Board implements Movable {
 
   abstract updateFromFirebase(): void;
 
+  turnoff(): void {
+  }
+
   whichHandle(x: number, y: number): number {
     for (let i = 0; i < this.handles.length; i++) {
       if (this.handles[i].contains(x, y)) return i;

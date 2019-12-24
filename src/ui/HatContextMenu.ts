@@ -21,13 +21,25 @@ export abstract class HatContextMenu extends ComponentContextMenu {
 
   deleteButtonClick(e: MouseEvent): void {
     if (this.hat) {
-      $(function () {
-        console.log("xxx");
+      let that = this;
+      $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to delete " + this.hat.uid + "?</div>");
+      $("#modal-dialog").dialog({
+        resizable: false,
+        modal: true,
+        title: "Delete",
+        height: 200,
+        width: 300,
+        buttons: {
+          'OK': function () {
+            that.hat.attach(null);
+            system.removeHat(that.hat);
+            $(this).dialog('close');
+          },
+          'Cancel': function () {
+            $(this).dialog('close');
+          }
+        }
       });
-      if (confirm("Are you sure you want to delete " + this.hat.uid + "?")) {
-        this.hat.attach(null);
-        system.removeHat(this.hat);
-      }
     }
   }
 

@@ -21,7 +21,7 @@ export class WorkbenchContextMenu extends ComponentContextMenu {
               </li>
               <li class="menu-separator"></li>
               <li class="menu-item">
-                <button type="button" class="menu-btn"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
+                <button type="button" class="menu-btn"><i class="fas fa-cog"></i><span class="menu-text">Settings</span></button>
               </li>
               <li class="menu-item submenu">
                 <button type="button" class="menu-btn"><i class="fas fa-file-import"></i><span class="menu-text">Import</span></button>
