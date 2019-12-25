@@ -15,7 +15,7 @@ import {System} from "./System";
 import {Movable} from "./Movable";
 import {RainbowHat} from "./components/RainbowHat";
 import {Sensor} from "./components/Sensor";
-import {Code} from "./code/Code";
+import {Flowchart} from "./flowchart/Flowchart";
 import {ComponentsPanel} from "./ComponentsPanel";
 import {RainbowHatContextMenu} from "./ui/RainbowHatContextMenu";
 import {WorkbenchContextMenu} from "./ui/WorkbenchContextMenu";
@@ -43,7 +43,7 @@ declare global {
 }
 
 export let system = new System();
-export let code = new Code();
+export let flowchart = new Flowchart();
 export let user = new User("Charles", null, "Xie");
 export let contextMenus: any = {};
 
@@ -68,9 +68,9 @@ window.onload = function () {
   digitalTwinsTabButton.addEventListener("click", function (event) {
     selectTab(digitalTwinsTabButton, "digital-twins-playground");
   });
-  let diagramTabButton = document.getElementById("diagram-tab-button") as HTMLButtonElement;
-  diagramTabButton.addEventListener("click", function (event) {
-    selectTab(diagramTabButton, "diagram-playground");
+  let flowchartTabButton = document.getElementById("flowchart-tab-button") as HTMLButtonElement;
+  flowchartTabButton.addEventListener("click", function (event) {
+    selectTab(flowchartTabButton, "flowchart-playground");
   });
   let codeTabButton = document.getElementById("code-tab-button") as HTMLButtonElement;
   codeTabButton.addEventListener("click", function (event) {
@@ -247,14 +247,14 @@ function resize() {
   let workbenchRect = system.workbench.canvas.getBoundingClientRect() as DOMRect;
   system.workbench.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
   system.workbench.canvas.height = window.innerHeight - workbenchRect.top - 50;
-  let codespaceRect = code.codespace.canvas.getBoundingClientRect() as DOMRect;
-  code.codespace.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
-  code.codespace.canvas.height = window.innerHeight - workbenchRect.top - 50;
+  let flowspaceRect = flowchart.flowspace.canvas.getBoundingClientRect() as DOMRect;
+  flowchart.flowspace.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
+  flowchart.flowspace.canvas.height = window.innerHeight - workbenchRect.top - 50;
   let componentsScroller = document.getElementById("components-scroller") as HTMLDivElement;
   componentsScroller.style.height = system.workbench.canvas.height * 0.85 + "px";
 }
 
 function draw() {
   system.draw();
-  code.draw();
+  flowchart.draw();
 }

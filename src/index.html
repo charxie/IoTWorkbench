@@ -62,10 +62,10 @@
     <span style="display:inline-block; width:10px;"></span>
     Digital Twins
   </button>
-  <button id="diagram-tab-button" class="tablinks" title="Diagram Editor">
+  <button id="flowchart-tab-button" class="tablinks" title="Flowchart Editor">
     <span style="font-size: 1.5em; color: teal; vertical-align: middle;"><i class="fas fa-project-diagram"></i></span>
     <span style="display:inline-block; width:10px;"></span>
-    Diagram
+    Flowchart
   </button>
   <button id="code-tab-button" class="tablinks" title="Code Editor">
     <span style="font-size: 1.5em; color: teal; vertical-align: middle;"><i class="fas fa-code"></i></span>
@@ -90,11 +90,12 @@
   <div id="colorpicker-context-menu-placeholder"></div>
 </div>
 
-<div id="diagram-playground" style="position: absolute; display: none;" class="tabcontent"></div>
+<div id="flowchart-playground" style="position: absolute; display: none;" class="tabcontent">
+  <canvas id="flowspace" width="800" height="600"
+          style="display: block; border: 2px solid #009999; margin: 10px 10px 10px 10px; position: absolute; z-index: 0;"></canvas>
+</div>
 
 <div id="code-playground" style="position: absolute; display: none;" class="tabcontent">
-  <canvas id="codespace" width="800" height="600"
-          style="display: block; border: 2px solid #009999; margin: 10px 10px 10px 10px; position: absolute; z-index: 0;"></canvas>
 </div>
 
 <div id="modal-dialog"></div>

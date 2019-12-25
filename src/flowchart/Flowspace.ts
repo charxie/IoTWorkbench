@@ -5,7 +5,7 @@
 import {Block} from "./Block";
 import {Point} from "../math/Point";
 
-export class Codespace {
+export class Flowspace {
 
   private blocks: Block[] = [];
 
