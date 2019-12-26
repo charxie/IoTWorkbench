@@ -14,7 +14,7 @@ import {UnicornHat} from "./UnicornHat";
 import {CrickitHat} from "./CrickitHat";
 import {PanTiltHat} from "./PanTiltHat";
 import {Movable} from "../Movable";
-import {contextMenus} from "../Main";
+import {closeAllContextMenus} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
 import {LineChart} from "../tools/LineChart";
@@ -383,11 +383,7 @@ export class System {
 
   private mouseUp = (e: MouseEvent): void => {
     this.selectedMovable = null;
-    // close all menus upon mouse left click
-    Object.keys(contextMenus).forEach(key => {
-      let menu = document.getElementById(contextMenus[key].id) as HTMLMenuElement;
-      menu.classList.remove("show-menu");
-    });
+    closeAllContextMenus(); // close all menus upon mouse left click
   };
 
   private mouseLeave = (e: MouseEvent): void => {

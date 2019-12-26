@@ -48,6 +48,13 @@ export let flowchart = new Flowchart();
 export let user = new User("Charles", null, "Xie");
 export let contextMenus: any = {};
 
+export function closeAllContextMenus() {
+  Object.keys(contextMenus).forEach(key => {
+    let menu = document.getElementById(contextMenus[key].id) as HTMLMenuElement;
+    menu.classList.remove("show-menu");
+  });
+}
+
 let social = `<span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-facebook-square"></i></span>
               <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-weixin"></i></span>
               <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-twitter"></i></span>

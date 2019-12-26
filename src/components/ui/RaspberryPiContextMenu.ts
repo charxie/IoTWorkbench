@@ -78,7 +78,6 @@ export class RaspberryPiContextMenu extends MyContextMenu {
         width: 300,
         buttons: {
           'OK': function () {
-            console.log("xxx");
             that.raspberryPi.hat = null;
             system.removeRaspberryPi(that.raspberryPi);
             $(this).dialog('close');

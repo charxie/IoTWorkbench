@@ -3,8 +3,8 @@
  */
 
 import $ from "jquery";
-import {system} from "../../Main";
 import {MyContextMenu} from "../../MyContextMenu";
+import {closeAllContextMenus, flowchart} from "../../Main";
 
 export class FlowViewContextMenu extends MyContextMenu {
 
@@ -31,15 +31,6 @@ export class FlowViewContextMenu extends MyContextMenu {
                 <menu class="menu" style="width: 160px;">
                   <li class="menu-item">
                     <button type="button" class="menu-btn"><span class="menu-text">Breadboard</span></button>
-                  </li>
-
-                  <li class="menu-item submenu">
-                    <button type="button" class="menu-btn"><span class="menu-text">Sensors</span></button>
-                    <menu class="menu" style="width: 120px;">
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">BME280</span></button>
-                      </li>
-                    </menu>
                   </li>
 
                   <li class="menu-item submenu">
@@ -73,6 +64,8 @@ export class FlowViewContextMenu extends MyContextMenu {
   }
 
   settingsButtonClick(e: MouseEvent): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
     $("#modal-dialog").html(this.getSettingsUI());
     $("#modal-dialog").dialog({
       resizable: false,

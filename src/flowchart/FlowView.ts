@@ -2,10 +2,9 @@
  * @author Charles Xie
  */
 
-import {Block} from "./Block";
 import {Point} from "../math/Point";
 import {Flowchart} from "./Flowchart";
-import {contextMenus} from "../Main";
+import {closeAllContextMenus} from "../Main";
 
 export class FlowView {
 
@@ -74,11 +73,8 @@ export class FlowView {
   }
 
   private mouseUp(e: MouseEvent): void {
-    // close all menus upon mouse left click
-    Object.keys(contextMenus).forEach(key => {
-      let menu = document.getElementById(contextMenus[key].id) as HTMLMenuElement;
-      menu.classList.remove("show-menu");
-    });
+    // close all context menus upon mouse left click
+    closeAllContextMenus();
   }
 
   private mouseMove(e: MouseEvent): void {
