@@ -4,7 +4,7 @@
 
 import $ from "jquery";
 import {HatContextMenu} from "./HatContextMenu";
-import {RainbowHat} from "../components/RainbowHat";
+import {RainbowHat} from "../RainbowHat";
 
 export class RainbowHatContextMenu extends HatContextMenu {
 

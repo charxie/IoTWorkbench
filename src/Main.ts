@@ -11,22 +11,23 @@ import "@fortawesome/fontawesome-free/css/all.css";
 
 import * as Constants from "./Constants";
 import {User} from "./User";
-import {System} from "./System";
+import {System} from "./components/System";
 import {Movable} from "./Movable";
 import {RainbowHat} from "./components/RainbowHat";
 import {Sensor} from "./components/Sensor";
 import {Flowchart} from "./flowchart/Flowchart";
-import {ComponentsPanel} from "./ComponentsPanel";
-import {RainbowHatContextMenu} from "./ui/RainbowHatContextMenu";
-import {WorkbenchContextMenu} from "./ui/WorkbenchContextMenu";
-import {LineChartContextMenu} from "./ui/LineChartContextMenu";
-import {RaspberryPiContextMenu} from "./ui/RaspberryPiContextMenu";
-import {ColorPickerContextMenu} from "./ui/ColorPickerContextMenu";
-import {SenseHatContextMenu} from "./ui/SenseHatContextMenu";
-import {CapacitiveTouchHatContextMenu} from "./ui/CapacitiveTouchHatContextMenu";
-import {UnicornHatContextMenu} from "./ui/UnicornHatContextMenu";
-import {CrickitHatContextMenu} from "./ui/CrickitHatContextMenu";
-import {PanTiltHatContextMenu} from "./ui/PanTiltHatContextMenu";
+import {ComponentsPanel} from "./components/ui/ComponentsPanel";
+import {RainbowHatContextMenu} from "./components/ui/RainbowHatContextMenu";
+import {WorkbenchContextMenu} from "./components/ui/WorkbenchContextMenu";
+import {LineChartContextMenu} from "./components/ui/LineChartContextMenu";
+import {RaspberryPiContextMenu} from "./components/ui/RaspberryPiContextMenu";
+import {ColorPickerContextMenu} from "./components/ui/ColorPickerContextMenu";
+import {SenseHatContextMenu} from "./components/ui/SenseHatContextMenu";
+import {CapacitiveTouchHatContextMenu} from "./components/ui/CapacitiveTouchHatContextMenu";
+import {UnicornHatContextMenu} from "./components/ui/UnicornHatContextMenu";
+import {CrickitHatContextMenu} from "./components/ui/CrickitHatContextMenu";
+import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
+import {FlowViewContextMenu} from "./flowchart/ui/FlowViewContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -77,6 +78,40 @@ window.onload = function () {
     selectTab(codeTabButton, "code-playground");
   });
 
+  setupContextMenuForDigitalTwins();
+  setupContextMenuForFlowchart();
+
+  let lineChartContextMenu = new LineChartContextMenu();
+  lineChartContextMenu.render("linechart-context-menu-placeholder");
+  contextMenus.lineChart = lineChartContextMenu;
+
+  let colorPickerContextMenu = new ColorPickerContextMenu();
+  colorPickerContextMenu.render("colorpicker-context-menu-placeholder");
+  contextMenus.colorPicker = colorPickerContextMenu;
+
+  let componentsPanel = new ComponentsPanel();
+  componentsPanel.render("digital-twins-playground-components-panel");
+
+  // read locally stored properties
+  restoreWorkbench();
+  restoreMcus();
+  restoreHats();
+
+  setTimeout(function () { // call this to refresh after inserting canvases
+    resize();
+    draw();
+  }, 1000);
+
+};
+
+function setupContextMenuForFlowchart() {
+  let flowViewContextMenu = new FlowViewContextMenu();
+  flowViewContextMenu.render("flow-view-context-menu-placeholder");
+  flowViewContextMenu.addListeners();
+  contextMenus.flowView = flowViewContextMenu;
+}
+
+function setupContextMenuForDigitalTwins() {
   let workbenchContextMenu = new WorkbenchContextMenu();
   workbenchContextMenu.render("workbench-context-menu-placeholder");
   workbenchContextMenu.addListeners();
@@ -116,29 +151,7 @@ window.onload = function () {
   capacitiveTouchHatContextMenu.render("capacitive-touch-hat-context-menu-placeholder");
   capacitiveTouchHatContextMenu.addListeners();
   contextMenus.capacitiveTouchHat = capacitiveTouchHatContextMenu;
-
-  let lineChartContextMenu = new LineChartContextMenu();
-  lineChartContextMenu.render("linechart-context-menu-placeholder");
-  contextMenus.lineChart = lineChartContextMenu;
-
-  let colorPickerContextMenu = new ColorPickerContextMenu();
-  colorPickerContextMenu.render("colorpicker-context-menu-placeholder");
-  contextMenus.colorPicker = colorPickerContextMenu;
-
-  let componentsPanel = new ComponentsPanel();
-  componentsPanel.render("digital-twins-playground-components-panel");
-
-  // read locally stored properties
-  restoreWorkbench();
-  restoreMcus();
-  restoreHats();
-
-  setTimeout(function () { // call this to refresh after inserting canvases
-    resize();
-    draw();
-  }, 1000);
-
-};
+}
 
 function restoreWorkbench() {
   let x = localStorage.getItem("Workbench Show Grid");
@@ -247,9 +260,9 @@ function resize() {
   let workbenchRect = system.workbench.canvas.getBoundingClientRect() as DOMRect;
   system.workbench.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
   system.workbench.canvas.height = window.innerHeight - workbenchRect.top - 50;
-  let flowspaceRect = flowchart.flowspace.canvas.getBoundingClientRect() as DOMRect;
-  flowchart.flowspace.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
-  flowchart.flowspace.canvas.height = window.innerHeight - workbenchRect.top - 50;
+  let flowspaceRect = flowchart.flowview.canvas.getBoundingClientRect() as DOMRect;
+  flowchart.flowview.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
+  flowchart.flowview.canvas.height = window.innerHeight - workbenchRect.top - 50;
   let componentsScroller = document.getElementById("components-scroller") as HTMLDivElement;
   componentsScroller.style.height = system.workbench.canvas.height * 0.85 + "px";
 }

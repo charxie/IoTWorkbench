@@ -2,12 +2,12 @@
  * @author Charles Xie
  */
 
-import {system} from "../Main";
-import {RaspberryPi} from "../components/RaspberryPi";
-import {ComponentContextMenu} from "./ComponentContextMenu";
+import {system} from "../../Main";
+import {RaspberryPi} from "../RaspberryPi";
+import {MyContextMenu} from "../../MyContextMenu";
 import $ from "jquery";
 
-export class RaspberryPiContextMenu extends ComponentContextMenu {
+export class RaspberryPiContextMenu extends MyContextMenu {
 
   raspberryPi: RaspberryPi;
 
@@ -78,6 +78,7 @@ export class RaspberryPiContextMenu extends ComponentContextMenu {
         width: 300,
         buttons: {
           'OK': function () {
+            console.log("xxx");
             that.raspberryPi.hat = null;
             system.removeRaspberryPi(that.raspberryPi);
             $(this).dialog('close');

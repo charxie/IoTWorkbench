@@ -4,30 +4,29 @@
 
 import {Block} from "./Block";
 import {Point} from "../math/Point";
+import {Flowchart} from "./Flowchart";
+import {contextMenus} from "../Main";
 
-export class Flowspace {
+export class FlowView {
 
-  private blocks: Block[] = [];
-
+  flowchart: Flowchart;
   readonly canvas: HTMLCanvasElement;
 
-  constructor(canvasId: string) {
+  constructor(canvasId: string, flowchart: Flowchart) {
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     this.canvas.addEventListener("mousedown", this.mouseDown.bind(this), false);
     this.canvas.addEventListener("mouseup", this.mouseUp.bind(this), false);
     this.canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
     this.canvas.addEventListener('contextmenu', this.openContextMenu.bind(this), false);
-    this.blocks.push(new Block(20, 20, 160, 100, "X + Y"));
-    this.blocks.push(new Block(220, 220, 160, 100, "X * Y"));
+    this.flowchart = flowchart;
   }
 
   public draw(): void {
     let ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    for (let i = 0; i < this.blocks.length; i++) {
-      this.blocks[i].draw(ctx);
+    for (let i = 0; i < this.flowchart.blocks.length; i++) {
+      this.flowchart.blocks[i].draw(ctx);
     }
-
     let points = [];
     points.push(new Point(188, 70));
     points.push(new Point(240, 140));
@@ -50,7 +49,7 @@ export class Flowspace {
     ctx.stroke();
   }
 
-  // detect if (x, y) is inside this workbench
+  // detect if (x, y) is inside this flowview
   public contains(x: number, y: number): boolean {
     return x > this.canvas.offsetLeft && x < this.canvas.offsetLeft + this.canvas.width && y > this.canvas.offsetTop && y < this.canvas.offsetTop + this.canvas.height;
   }
@@ -72,31 +71,23 @@ export class Flowspace {
   }
 
   private mouseDown(e: MouseEvent): void {
-    e.preventDefault();
-    let rect = this.canvas.getBoundingClientRect();
-    let dx = e.clientX - rect.x;
-    let dy = e.clientY - rect.y;
   }
 
   private mouseUp(e: MouseEvent): void {
-    e.preventDefault();
-    let rect = this.canvas.getBoundingClientRect();
-    let dx = e.clientX - rect.x;
-    let dy = e.clientY - rect.y;
-    let context = this.canvas.getContext("2d");
+    // close all menus upon mouse left click
+    Object.keys(contextMenus).forEach(key => {
+      let menu = document.getElementById(contextMenus[key].id) as HTMLMenuElement;
+      menu.classList.remove("show-menu");
+    });
   }
 
   private mouseMove(e: MouseEvent): void {
     e.preventDefault();
-    let rect = this.canvas.getBoundingClientRect();
-    let dx = e.clientX - rect.x;
-    let dy = e.clientY - rect.y;
-    let context = this.canvas.getContext("2d");
   }
 
   private openContextMenu(e: MouseEvent): void {
     e.preventDefault();
-    let menu = document.getElementById("workbench-context-menu") as HTMLMenuElement;
+    let menu = document.getElementById("flow-view-context-menu") as HTMLMenuElement;
     menu.style.left = e.clientX + "px";
     menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
     menu.classList.add("show-menu");

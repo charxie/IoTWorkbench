@@ -10,7 +10,7 @@ import {Buzzer} from "./Buzzer";
 import {LedLight} from "./LedLight";
 import {Button} from "./Button";
 import {Sensor} from "./Sensor";
-import {System} from "../System";
+import {System} from "./System";
 import {Util} from "../Util";
 import {contextMenus, system} from "../Main";
 import {Rectangle} from "../math/Rectangle";

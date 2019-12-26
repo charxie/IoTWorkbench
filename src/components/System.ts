@@ -2,22 +2,22 @@
  * @author Charles Xie
  */
 
-import {Movable} from "./Movable";
 import {Workbench} from "./Workbench";
-import {Mcu} from "./components/Mcu";
-import {RaspberryPi} from "./components/RaspberryPi";
-import {Hat} from "./components/Hat";
-import {RainbowHat} from "./components/RainbowHat";
-import {Sensor} from "./components/Sensor";
-import {SenseHat} from "./components/SenseHat";
-import {CapacitiveTouchHat} from "./components/CapacitiveTouchHat";
-import {UnicornHat} from "./components/UnicornHat";
-import {CrickitHat} from "./components/CrickitHat";
-import {PanTiltHat} from "./components/PanTiltHat";
-import {contextMenus} from "./Main";
-import {Rectangle} from "./math/Rectangle";
-import {ColorPicker} from "./tools/ColorPicker";
-import {LineChart} from "./tools/LineChart";
+import {Mcu} from "./Mcu";
+import {RaspberryPi} from "./RaspberryPi";
+import {Hat} from "./Hat";
+import {RainbowHat} from "./RainbowHat";
+import {Sensor} from "./Sensor";
+import {SenseHat} from "./SenseHat";
+import {CapacitiveTouchHat} from "./CapacitiveTouchHat";
+import {UnicornHat} from "./UnicornHat";
+import {CrickitHat} from "./CrickitHat";
+import {PanTiltHat} from "./PanTiltHat";
+import {Movable} from "../Movable";
+import {contextMenus} from "../Main";
+import {Rectangle} from "../math/Rectangle";
+import {ColorPicker} from "../tools/ColorPicker";
+import {LineChart} from "../tools/LineChart";
 
 declare var firebase;
 

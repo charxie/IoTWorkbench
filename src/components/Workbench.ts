@@ -2,7 +2,7 @@
  * @author Charles Xie
  */
 
-import {contextMenus} from "./Main";
+import {contextMenus} from "../Main";
 
 export class Workbench {
 

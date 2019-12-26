@@ -3,37 +3,37 @@
  */
 
 // @ts-ignore
-import raspberryPiImage from "./img/raspberry-pi.png";
+import raspberryPiImage from "../../img/raspberry-pi.png";
 // @ts-ignore
-import rainbowHatImage from "./img/rainbow-hat.png";
+import rainbowHatImage from "../../img/rainbow-hat.png";
 // @ts-ignore
-import senseHatImage from "./img/sense-hat.png";
+import senseHatImage from "../../img/sense-hat.png";
 // @ts-ignore
-import unicornHatImage from "./img/unicorn-hat.png";
+import unicornHatImage from "../../img/unicorn-hat.png";
 // @ts-ignore
-import crickitHatImage from "./img/crickit-hat.png";
+import crickitHatImage from "../../img/crickit-hat.png";
 // @ts-ignore
-import capacitiveTouchHatImage from "./img/capacitive-touch-hat.png";
+import capacitiveTouchHatImage from "../../img/capacitive-touch-hat.png";
 // @ts-ignore
-import panTiltHatImage from "./img/pan-tilt-hat.png";
+import panTiltHatImage from "../../img/pan-tilt-hat.png";
 // @ts-ignore
-import fullBreadboardImage from "./img/full-breadboard.png";
+import fullBreadboardImage from "../../img/full-breadboard.png";
 // @ts-ignore
-import halfBreadboardImage from "./img/half-breadboard.png";
+import halfBreadboardImage from "../../img/half-breadboard.png";
 // @ts-ignore
-import redLedLightImage from "./img/red-led-light.png";
+import redLedLightImage from "../../img/red-led-light.png";
 // @ts-ignore
-import greenLedLightImage from "./img/green-led-light.png";
+import greenLedLightImage from "../../img/green-led-light.png";
 // @ts-ignore
-import blueLedLightImage from "./img/blue-led-light.png";
+import blueLedLightImage from "../../img/blue-led-light.png";
 // @ts-ignore
-import tricolorLedLightImage from "./img/tricolor-led-light.png";
+import tricolorLedLightImage from "../../img/tricolor-led-light.png";
 // @ts-ignore
-import momentaryButtonImage from "./img/momentary-button.png";
+import momentaryButtonImage from "../../img/momentary-button.png";
 // @ts-ignore
-import toggleSwitchImage from "./img/toggle-switch.png";
+import toggleSwitchImage from "../../img/toggle-switch.png";
 // @ts-ignore
-import piezoBuzzerImage from "./img/piezo-buzzer.png";
+import piezoBuzzerImage from "../../img/piezo-buzzer.png";
 
 export class ComponentsPanel {
 

@@ -3,14 +3,14 @@
  */
 
 import $ from "jquery";
-import {system} from "../Main";
-import {ComponentContextMenu} from "./ComponentContextMenu";
+import {system} from "../../Main";
+import {MyContextMenu} from "../../MyContextMenu";
 
-export class WorkbenchContextMenu extends ComponentContextMenu {
+export class FlowViewContextMenu extends MyContextMenu {
 
   constructor() {
     super();
-    this.id = "workbench-context-menu";
+    this.id = "flow-view-context-menu";
   }
 
   getUi(): string {
@@ -39,12 +39,6 @@ export class WorkbenchContextMenu extends ComponentContextMenu {
                       <li class="menu-item">
                         <button type="button" class="menu-btn"><span class="menu-text">BME280</span></button>
                       </li>
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">TSL2561</span></button>
-                      </li>
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">HCSR04</span></button>
-                      </li>
                     </menu>
                   </li>
 
@@ -53,15 +47,6 @@ export class WorkbenchContextMenu extends ComponentContextMenu {
                     <menu class="menu" style="width: 180px;">
                       <li class="menu-item">
                         <button type="button" class="menu-btn"><span class="menu-text">Buzzer</span></button>
-                      </li>
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">Servo Motor</span></button>
-                      </li>
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">LED Light</span></button>
-                      </li>
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">Multicolor LED Light</span></button>
                       </li>
                     </menu>
                   </li>
@@ -80,8 +65,8 @@ export class WorkbenchContextMenu extends ComponentContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Grid lines:</td>
-                  <td><input type="checkbox" id="workbench-show-grid-checkbox">Show</td>
+                  <td>X:</td>
+                  <td>Y</td>
                 </tr>
               </table>
             </div>`;
@@ -89,19 +74,14 @@ export class WorkbenchContextMenu extends ComponentContextMenu {
 
   settingsButtonClick(e: MouseEvent): void {
     $("#modal-dialog").html(this.getSettingsUI());
-    let showGridCheckBox = document.getElementById("workbench-show-grid-checkbox") as HTMLInputElement;
-    showGridCheckBox.checked = system.workbench.showGrid;
     $("#modal-dialog").dialog({
       resizable: false,
       modal: true,
-      title: "Workbench Settings",
+      title: "Flowchart Settings",
       height: 400,
       width: 400,
       buttons: {
         'OK': function () {
-          system.workbench.showGrid = showGridCheckBox.checked;
-          system.workbench.draw();
-          localStorage.setItem("Workbench Show Grid", system.workbench.showGrid ? "true" : "false");
           $(this).dialog('close');
         },
         'Cancel': function () {

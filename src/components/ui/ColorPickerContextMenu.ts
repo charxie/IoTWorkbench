@@ -1,8 +1,8 @@
 /*
  * @author Charles Xie
  */
-import {system} from "../Main";
-import {RainbowHat} from "../components/RainbowHat";
+import {system} from "../../Main";
+import {RainbowHat} from "../RainbowHat";
 
 export class ColorPickerContextMenu {
 

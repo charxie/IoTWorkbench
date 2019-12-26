@@ -2,11 +2,11 @@
  * @author Charles Xie
  */
 import $ from "jquery";
-import {system} from "../Main";
-import {Hat} from "../components/Hat";
-import {ComponentContextMenu} from "./ComponentContextMenu";
+import {system} from "../../Main";
+import {Hat} from "../Hat";
+import {MyContextMenu} from "../../MyContextMenu";
 
-export abstract class HatContextMenu extends ComponentContextMenu {
+export abstract class HatContextMenu extends MyContextMenu {
 
   hat: Hat;
 

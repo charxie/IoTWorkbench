@@ -2,7 +2,7 @@
  * @author Charles Xie
  */
 
-export abstract class ComponentContextMenu {
+export abstract class MyContextMenu {
 
   id: string;
 
