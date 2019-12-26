@@ -2,27 +2,21 @@
  * @author Charles Xie
  */
 
-export class Block {
+import {Block} from "./Block";
 
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  name: string;
-  radius: number = 10;
-  margin: number = 30;
+export class RainbowHatBlock extends Block {
 
-  constructor(x: number, y: number, width: number, height: number, name: string) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.name = name;
+  constructor(x: number, y: number, width: number, height: number) {
+    super(x, y, width, height, "Rainbow HAT");
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
 
-    ctx.fillStyle = "lightgray";
+    var grd = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
+    grd.addColorStop(0, "white");
+    grd.addColorStop(0.1, "gray");
+    grd.addColorStop(1, "dimgray");
+    ctx.fillStyle = grd;
     ctx.fillRoundedRect(this.x, this.y, this.width, this.height, this.radius);
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
@@ -37,7 +31,7 @@ export class Block {
     ctx.stroke();
 
     ctx.fillStyle = "black";
-    ctx.font = "20px Arial";
+    ctx.font = "12px Arial";
     let textMetrics = ctx.measureText(this.name);
     ctx.fillText(this.name, this.x + this.width / 2 - textMetrics.width / 2, this.y + this.height / 2 + 8);
 

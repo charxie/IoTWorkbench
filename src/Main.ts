@@ -28,6 +28,7 @@ import {UnicornHatContextMenu} from "./components/ui/UnicornHatContextMenu";
 import {CrickitHatContextMenu} from "./components/ui/CrickitHatContextMenu";
 import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
 import {FlowViewContextMenu} from "./flowchart/ui/FlowViewContextMenu";
+import {FlowchartElementsPanel} from "./flowchart/ui/FlowchartElementsPanel";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -98,6 +99,9 @@ window.onload = function () {
 
   let componentsPanel = new ComponentsPanel();
   componentsPanel.render("digital-twins-playground-components-panel");
+
+  let elementsPanel = new FlowchartElementsPanel();
+  elementsPanel.render("flowchart-elements-panel");
 
   // read locally stored properties
   restoreWorkbench();

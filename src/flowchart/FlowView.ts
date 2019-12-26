@@ -23,16 +23,16 @@ export class FlowView {
   public draw(): void {
     let ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.flowchart.rainbowHatBlock.draw(ctx);
     for (let i = 0; i < this.flowchart.blocks.length; i++) {
       this.flowchart.blocks[i].draw(ctx);
     }
-    let points = [];
-    points.push(new Point(188, 70));
-    points.push(new Point(240, 140));
-    points.push(new Point(20, 200));
-    points.push(new Point(212, 288));
-    this.drawSpline(points, ctx);
-
+    // let points = [];
+    // points.push(new Point(188, 70));
+    // points.push(new Point(240, 140));
+    // points.push(new Point(20, 200));
+    // points.push(new Point(212, 288));
+    // this.drawSpline(points, ctx);
   }
 
   private drawSpline(points: Point[], ctx: CanvasRenderingContext2D) {

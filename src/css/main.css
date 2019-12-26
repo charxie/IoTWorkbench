@@ -146,6 +146,25 @@ body {
   box-shadow: 2px 2px #888888;
 }
 
+#flowchart-elements-panel {
+  position: fixed;
+  right: 20px;
+  top: 130px;
+  bottom: 60px;
+  width: 200px;
+  margin: auto;
+  z-index: 100;
+  background-color: white;
+  border: 2px solid gray;
+  text-align: center;
+  font-family: 'sans-serif', 'Arial';
+  font-size: 10px;
+  line-height: 5px;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 2px 2px #888888;
+}
+
 /*
  * Remove text-shadow in selection highlight:
  * https://twitter.com/miketaylr/status/12228805301
