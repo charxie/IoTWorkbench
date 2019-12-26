@@ -2,15 +2,18 @@
  * @author Charles Xie
  */
 
-export class Block {
+import {Movable} from "../Movable";
 
+export class Block implements Movable {
+
+  uid: string;
   x: number;
   y: number;
   width: number;
   height: number;
   name: string;
-  radius: number = 10;
-  margin: number = 30;
+  radius: number = 5;
+  margin: number = 30; // margin for inset
 
   constructor(x: number, y: number, width: number, height: number, name: string) {
     this.x = x;
@@ -18,6 +21,38 @@ export class Block {
     this.width = width;
     this.height = height;
     this.name = name;
+  }
+
+  getUid(): string {
+    return this.uid;
+  }
+
+  getX(): number {
+    return this.x;
+  }
+
+  setX(x: number): void {
+    this.x = x;
+  }
+
+  getY(): number {
+    return this.y;
+  }
+
+  setY(y: number): void {
+    this.y = y;
+  }
+
+  getWidth(): number {
+    return this.width;
+  }
+
+  getHeight(): number {
+    return this.height;
+  }
+
+  contains(x: number, y: number): boolean {
+    return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
