@@ -11,8 +11,8 @@ export class ConditionalBlock extends Block {
     super(x, y, width, height);
     this.name = "F(x)";
     let dy = this.height / 2;
-    this.pins.push(new Pin("X", 0, dy, false));
-    this.pins.push(new Pin("R", this.width, dy, true));
+    this.pins.push(new Pin(this, "X", 0, dy, false));
+    this.pins.push(new Pin(this,"R", this.width, dy, true));
     this.margin = 15;
   }
 

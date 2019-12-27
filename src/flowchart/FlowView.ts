@@ -99,25 +99,9 @@ export class FlowView {
     for (let i = 0; i < this.flowchart.blocks.length; i++) {
       this.flowchart.blocks[i].draw(ctx);
     }
-    // let points = [];
-    // points.push(new Point(188, 70));
-    // points.push(new Point(240, 140));
-    // points.push(new Point(20, 200));
-    // points.push(new Point(212, 288));
-    // this.drawSpline(points, ctx);
-  }
-
-  private drawSpline(points: Point[], ctx: CanvasRenderingContext2D) {
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    let i;
-    for (i = 1; i < points.length - 2; i++) {
-      let xc = (points[i].x + points[i + 1].x) / 2;
-      let yc = (points[i].y + points[i + 1].y) / 2;
-      ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+    for (let i = 0; i < this.flowchart.connectors.length; i++) {
+      this.flowchart.connectors[i].draw(ctx);
     }
-    ctx.quadraticCurveTo(points[i].x, points[i].y, points[i + 1].x, points[i + 1].y);
-    ctx.stroke();
   }
 
   // detect if (x, y) is inside this flowview

@@ -4,18 +4,29 @@
 
 import {FlowView} from "./FlowView";
 import {Block} from "./Block";
+import {Connector} from "./Connector";
 import {RainbowHatBlock} from "./RainbowHatBlock";
-import {LogicBlock} from "./LogicBlock";
 import {ConditionalBlock} from "./ConditionalBlock";
+import {LogicBlock} from "./LogicBlock";
 import {MathBlock} from "./MathBlock";
 
 export class Flowchart {
 
   blocks: Block[] = [];
+  connectors: Connector[] = [];
   flowview: FlowView;
 
   constructor() {
     this.flowview = new FlowView("flow-view", this);
+  }
+
+  x(): void {
+    let a = new LogicBlock(50, 100, 60, 80, "Or");
+    let b = new LogicBlock(200, 200, 60, 80, "And");
+    this.blocks.push(a);
+    this.blocks.push(b);
+    let c = new Connector(a.pins[2], b.pins[0]);
+    this.connectors.push(c);
   }
 
   removeBlock(uid: string) {
