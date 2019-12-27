@@ -5,8 +5,7 @@
 import {ConditionalBlock} from "../ConditionalBlock";
 import {LogicBlock} from "../LogicBlock";
 import {NegationBlock} from "../NegationBlock";
-import {AddBlock} from "../AddBlock";
-import {MultiplyBlock} from "../MultiplyBlock";
+import {MathBlock} from "../MathBlock";
 
 export class FlowchartElementsPanel {
 
@@ -33,8 +32,8 @@ export class FlowchartElementsPanel {
                   <td></td>
                   </tr>
                  <tr>
-                  <td><canvas draggable="true" id="math-multiply-block" width="60px" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="math-add-block" width="60px" height="70px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="math-multiply-block" width="60px" height="70px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
             </div>`;
@@ -47,24 +46,14 @@ export class FlowchartElementsPanel {
     this.drawLogicBlock("Or", "logic-or-block");
     this.drawLogicBlock("And", "logic-and-block");
     this.drawLogicBlock("Not", "logic-not-block");
-    this.drawAdditionBlock("+", "math-add-block");
-    this.drawMultiplicationBlock("×", "math-multiply-block");
+    this.drawMathBlock("+", "math-add-block");
+    this.drawMathBlock("×", "math-multiply-block");
   }
 
-  private drawMultiplicationBlock(name: string, canvasId: string): void {
+  private drawMathBlock(name: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new MultiplyBlock(8, 8, canvas.width - 16, canvas.height - 16, name);
-    block.name = name;
-    block.small = true;
-    block.margin = 12;
-    block.draw(ctx);
-  }
-
-  private drawAdditionBlock(name: string, canvasId: string): void {
-    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-    let ctx = canvas.getContext('2d');
-    let block = new AddBlock(8, 8, canvas.width - 16, canvas.height - 16, name);
+    let block = new MathBlock(8, 8, canvas.width - 16, canvas.height - 16, name);
     block.name = name;
     block.small = true;
     block.margin = 12;

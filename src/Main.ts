@@ -107,6 +107,7 @@ window.onload = function () {
   restoreWorkbench();
   restoreMcus();
   restoreHats();
+  restoreBlocks();
 
   setTimeout(function () { // call this to refresh after inserting canvases
     resize();
@@ -260,6 +261,24 @@ function restoreLocation(m: Movable) {
   if (y != null) {
     m.setY(parseInt(y));
   }
+}
+
+function restoreBlocks() {
+  let s: string = localStorage.getItem("Block Sequence");
+  console.log(s);
+  if (s != null) {
+    let t = s.split(",");
+    if (t.length > 0) {
+      flowchart.blocks = [];
+    }
+    for (let i = 0; i < t.length; i++) {
+      t[i] = t[i].trim();
+      let name = t[i].substring(0, t[i].indexOf("#") - 1);
+      flowchart.addBlock(name, 0, 0, t[i]);
+    }
+  }
+  restoreLocations(flowchart.blocks);
+  flowchart.addBlock("Rainbow HAT Block", 10, 10, "rainbow hat"); // TODO
 }
 
 window.onresize = function () {

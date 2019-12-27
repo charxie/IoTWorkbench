@@ -5,9 +5,9 @@
 import {FlowView} from "./FlowView";
 import {Block} from "./Block";
 import {RainbowHatBlock} from "./RainbowHatBlock";
-import {ConditionalBlock} from "./ConditionalBlock";
 import {LogicBlock} from "./LogicBlock";
-import {NegationBlock} from "./NegationBlock";
+import {ConditionalBlock} from "./ConditionalBlock";
+import {MathBlock} from "./MathBlock";
 
 export class Flowchart {
 
@@ -15,12 +15,39 @@ export class Flowchart {
   flowview: FlowView;
 
   constructor() {
-    this.blocks.push(new RainbowHatBlock(20, 20));
-    this.blocks.push(new ConditionalBlock(200, 50, 60, 80));
-    this.blocks.push(new LogicBlock(300, 120, 60, 80, "Or"));
-    this.blocks.push(new LogicBlock(390, 120, 60, 80, "And"));
-    this.blocks.push(new NegationBlock(480, 150, 60,80));
     this.flowview = new FlowView("flow-view", this);
+  }
+
+  addBlock(name: string, x: number, y: number, uid: string): Block {
+    let block: Block = null;
+    switch (name) {
+      case "Conditional Block":
+        block = new ConditionalBlock(x, y, 60, 80);
+        break;
+      case "Logic And Block":
+        block = new LogicBlock(x, y, 60, 80, "And");
+        break;
+      case "Logic Or Block":
+        block = new LogicBlock(x, y, 60, 80, "Or");
+        break;
+      case "Logic Not Block":
+        block = new ConditionalBlock(x, y, 60, 80);
+        break;
+      case "Add Block":
+        block = new MathBlock(x, y, 60, 80, "+");
+        break;
+      case "Multiply Block":
+        block = new MathBlock(x, y, 60, 80, "×");
+        break;
+      case "Rainbow HAT Block":
+        block = new RainbowHatBlock(20, 20);
+        break;
+    }
+    if (block != null) {
+      block.uid = uid;
+      this.blocks.push(block);
+    }
+    return block;
   }
 
   draw(): void {

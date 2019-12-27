@@ -71,14 +71,14 @@ export class System {
     this.playground.addEventListener("dragend", function (e) {
       // console.log("end drag: " + (<HTMLElement>e.target).id);
     });
-
     // prevent default to allow drop
     this.playground.addEventListener("dragover", function (e) {
       e.preventDefault();
     }, false);
+
     this.playground.addEventListener("drop", function (e) {
       e.preventDefault();
-      console.log("drop: " + that.draggedElementId + ", " + (<HTMLElement>e.target).id);
+      // console.log("drop: " + that.draggedElementId + ", " + (<HTMLElement>e.target).id);
       let id = (<HTMLElement>e.target).id;
       switch (that.draggedElementId) {
         case "raspberry-pi-image":

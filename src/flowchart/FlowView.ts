@@ -6,6 +6,11 @@ import {Flowchart} from "./Flowchart";
 import {closeAllContextMenus} from "../Main";
 import {Movable} from "../Movable";
 import {Point} from "../math/Point";
+import {Block} from "./Block";
+import {ConditionalBlock} from "./ConditionalBlock";
+import {LogicBlock} from "./LogicBlock";
+import {NegationBlock} from "./NegationBlock";
+import {MathBlock} from "./MathBlock";
 
 export class FlowView {
 
@@ -15,20 +20,90 @@ export class FlowView {
   private selectedMovable: Movable;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
+  private draggedElementId: string;
 
   constructor(canvasId: string, flowchart: Flowchart) {
+    this.flowchart = flowchart;
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     this.canvas.addEventListener("mousedown", this.mouseDown.bind(this), false);
     this.canvas.addEventListener("mouseup", this.mouseUp.bind(this), false);
     this.canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
     this.canvas.addEventListener('contextmenu', this.openContextMenu.bind(this), false);
-    this.flowchart = flowchart;
+    document.addEventListener("mouseleave", this.mouseLeave.bind(this), false);
+
+    let playground = document.getElementById("flowchart-playground") as HTMLDivElement;
+
+    // drag and drop support
+    let that = this;
+    playground.addEventListener("dragstart", function (e) {
+      that.draggedElementId = (<HTMLElement>e.target).id;
+    });
+
+    // prevent default to allow drop
+    playground.addEventListener("dragover", function (e) {
+      e.preventDefault();
+    }, false);
+
+    playground.addEventListener("drop", function (e) {
+      e.preventDefault();
+      let id = (<HTMLElement>e.target).id;
+      if (id == "flow-view") {
+        switch (that.draggedElementId) {
+          case "conditional-block":
+            let block = new ConditionalBlock(e.offsetX, e.offsetY, 60, 80);
+            block.uid = "Conditional Block #" + Date.now().toString(16);
+            that.storeBlock(block);
+            break;
+          case "logic-and-block":
+            block = new LogicBlock(e.offsetX, e.offsetY, 60, 80, "And");
+            block.uid = "Logic And Block #" + Date.now().toString(16);
+            that.storeBlock(block);
+            break;
+          case "logic-or-block":
+            block = new LogicBlock(e.offsetX, e.offsetY, 60, 80, "Or");
+            block.uid = "Logic Or Block #" + Date.now().toString(16);
+            that.storeBlock(block);
+            break;
+          case "logic-not-block":
+            block = new NegationBlock(e.offsetX, e.offsetY, 60, 80);
+            block.uid = "Logic Not Block #" + Date.now().toString(16);
+            that.storeBlock(block);
+            break;
+          case "math-add-block":
+            block = new MathBlock(e.offsetX, e.offsetY, 60, 80, "+");
+            block.uid = "Add Block #" + Date.now().toString(16);
+            that.storeBlock(block);
+            break;
+          case "math-multiply-block":
+            block = new MathBlock(e.offsetX, e.offsetY, 60, 80, "×");
+            block.uid = "Multiply Block #" + Date.now().toString(16);
+            that.storeBlock(block);
+            break;
+        }
+      }
+    }, false);
+  }
+
+  private storeBlock(block: Block): void {
+    this.flowchart.blocks.push(block);
+    this.draw();
+    let s: string = "";
+    for (let i = 0; i < this.flowchart.blocks.length; i++) {
+      s += this.flowchart.blocks[i].getUid() + ", ";
+    }
+    localStorage.setItem("Block Sequence", s.substring(0, s.length - 2));
+    this.storeBlockLocation(block);
+  }
+
+  private storeBlockLocation(block: Block) {
+    localStorage.setItem("X: " + block.getUid(), block.getX().toString());
+    localStorage.setItem("Y: " + block.getUid(), block.getY().toString());
   }
 
   public draw(): void {
     let ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
+    for (let i = 0; i < this.flowchart.blocks.length; i++) {
       this.flowchart.blocks[i].draw(ctx);
     }
     // let points = [];
@@ -132,6 +207,10 @@ export class FlowView {
     }
   }
 
+  private mouseLeave = (e: MouseEvent): void => {
+    this.selectedMovable = null;
+  };
+
   private openContextMenu(e: MouseEvent): void {
     e.preventDefault();
     let menu = document.getElementById("flow-view-context-menu") as HTMLMenuElement;
@@ -157,6 +236,9 @@ export class FlowView {
     }
     m.setX(dx);
     m.setY(dy);
+    if (m instanceof Block) {
+      this.storeBlockLocation(m);
+    }
   }
 
 }

@@ -5,7 +5,7 @@
 import {Block} from "./Block";
 import {Pin} from "./Pin";
 
-export class MultiplyBlock extends Block {
+export class MathBlock extends Block {
 
   constructor(x: number, y: number, width: number, height: number, name:string) {
     super(x, y, width, height);
