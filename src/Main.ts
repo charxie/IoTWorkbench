@@ -29,6 +29,7 @@ import {CrickitHatContextMenu} from "./components/ui/CrickitHatContextMenu";
 import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
 import {FlowViewContextMenu} from "./flowchart/ui/FlowViewContextMenu";
 import {FlowchartElementsPanel} from "./flowchart/ui/FlowchartElementsPanel";
+import {BlockContextMenu} from "./flowchart/ui/BlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -76,10 +77,12 @@ window.onload = function () {
   let digitalTwinsTabButton = document.getElementById("digital-twins-tab-button") as HTMLButtonElement;
   digitalTwinsTabButton.addEventListener("click", function (event) {
     selectTab(digitalTwinsTabButton, "digital-twins-playground");
+    system.draw();
   });
   let flowchartTabButton = document.getElementById("flowchart-tab-button") as HTMLButtonElement;
   flowchartTabButton.addEventListener("click", function (event) {
     selectTab(flowchartTabButton, "flowchart-playground");
+    flowchart.draw();
   });
   let codeTabButton = document.getElementById("code-tab-button") as HTMLButtonElement;
   codeTabButton.addEventListener("click", function (event) {
@@ -104,10 +107,10 @@ window.onload = function () {
   elementsPanel.render("flowchart-elements-panel");
 
   // read locally stored properties
+  restoreBlocks();
   restoreWorkbench();
   restoreMcus();
   restoreHats();
-  restoreBlocks();
 
   setTimeout(function () { // call this to refresh after inserting canvases
     resize();
@@ -121,6 +124,11 @@ function setupContextMenuForFlowchart() {
   flowViewContextMenu.render("flow-view-context-menu-placeholder");
   flowViewContextMenu.addListeners();
   contextMenus.flowView = flowViewContextMenu;
+
+  let blockContextMenu = new BlockContextMenu();
+  blockContextMenu.render("block-context-menu-placeholder");
+  blockContextMenu.addListeners();
+  contextMenus.block = blockContextMenu;
 }
 
 function setupContextMenuForDigitalTwins() {
@@ -274,11 +282,12 @@ function restoreBlocks() {
     for (let i = 0; i < t.length; i++) {
       t[i] = t[i].trim();
       let name = t[i].substring(0, t[i].indexOf("#") - 1);
-      flowchart.addBlock(name, 0, 0, t[i]);
+      if (name.indexOf("HAT") == -1) { // Do not add HAT blocks. They are added by the digital twins.
+        flowchart.addBlock(name, 0, 0, t[i]);
+      }
     }
   }
   restoreLocations(flowchart.blocks);
-  flowchart.addBlock("Rainbow HAT Block", 10, 10, "rainbow hat"); // TODO
 }
 
 window.onresize = function () {

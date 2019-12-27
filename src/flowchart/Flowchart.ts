@@ -18,6 +18,20 @@ export class Flowchart {
     this.flowview = new FlowView("flow-view", this);
   }
 
+  removeBlock(uid: string) {
+    let selectedIndex = -1;
+    for (let i = 0; i < this.blocks.length; i++) {
+      if (uid == this.blocks[i].uid) {
+        selectedIndex = i;
+        break;
+      }
+    }
+    if (selectedIndex != -1) {
+      this.blocks.splice(selectedIndex, 1);
+      this.storeBlocks();
+    }
+  }
+
   addBlock(name: string, x: number, y: number, uid: string): Block {
     let block: Block = null;
     switch (name) {
@@ -53,5 +67,19 @@ export class Flowchart {
   draw(): void {
     this.flowview.draw();
   }
+
+  storeBlocks(): void {
+    let s: string = "";
+    for (let i = 0; i < this.blocks.length; i++) {
+      s += this.blocks[i].getUid() + ", ";
+    }
+    localStorage.setItem("Block Sequence", s.substring(0, s.length - 2));
+  }
+
+  storeBlockLocation(block: Block) {
+    localStorage.setItem("X: " + block.getUid(), block.getX().toString());
+    localStorage.setItem("Y: " + block.getUid(), block.getY().toString());
+  }
+
 
 }

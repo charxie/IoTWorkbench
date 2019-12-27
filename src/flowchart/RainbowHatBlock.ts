@@ -3,9 +3,9 @@
  */
 
 import {Pin} from "./Pin";
-import {Block} from "./Block";
+import {HatBlock} from "./HatBlock";
 
-export class RainbowHatBlock extends Block {
+export class RainbowHatBlock extends HatBlock {
 
   constructor(x: number, y: number) {
     super(x, y, 125, 250);

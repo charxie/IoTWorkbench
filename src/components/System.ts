@@ -14,7 +14,7 @@ import {UnicornHat} from "./UnicornHat";
 import {CrickitHat} from "./CrickitHat";
 import {PanTiltHat} from "./PanTiltHat";
 import {Movable} from "../Movable";
-import {closeAllContextMenus} from "../Main";
+import {closeAllContextMenus, flowchart} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
 import {LineChart} from "../tools/LineChart";
@@ -197,7 +197,7 @@ export class System {
     return null;
   }
 
-  removeHatByIndex(selectedIndex: number): void {
+  private removeHatByIndex(selectedIndex: number): void {
     let canvas = this.hats[selectedIndex].canvas;
     this.playground.removeChild(canvas);
     this.hats.splice(selectedIndex, 1);
@@ -206,6 +206,9 @@ export class System {
 
   removeHat(hat: Hat): void {
     this.removeHatByIndex(this.hats.indexOf(hat));
+    let s = hat.uid.substring(0, hat.uid.indexOf("#") - 1);
+    let blockId = hat.uid.replace(s, s + " Block");
+    flowchart.removeBlock(blockId);
   }
 
   addHat(type: string, x: number, y: number, uid: string): Hat {
@@ -261,6 +264,14 @@ export class System {
       hat.setX(x - canvas.width / 2);
       hat.setY(y - canvas.height / 2);
       this.draw();
+      let blockId = uid.replace(type, type + " Block");
+      let block = flowchart.addBlock(type + " Block", 10, 10, blockId);
+      let blockX = localStorage.getItem("X: " + blockId);
+      let blockY = localStorage.getItem("Y: " + blockId);
+      if (blockX && blockY) {
+        block.setX(parseInt(blockX));
+        block.setY(parseInt(blockY));
+      }
     }
     return hat;
   }

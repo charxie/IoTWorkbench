@@ -3,7 +3,7 @@
  */
 
 import {Flowchart} from "./Flowchart";
-import {closeAllContextMenus} from "../Main";
+import {closeAllContextMenus, contextMenus} from "../Main";
 import {Movable} from "../Movable";
 import {Point} from "../math/Point";
 import {Block} from "./Block";
@@ -11,6 +11,8 @@ import {ConditionalBlock} from "./ConditionalBlock";
 import {LogicBlock} from "./LogicBlock";
 import {NegationBlock} from "./NegationBlock";
 import {MathBlock} from "./MathBlock";
+import {RainbowHatBlock} from "./RainbowHatBlock";
+import {HatBlock} from "./HatBlock";
 
 export class FlowView {
 
@@ -87,17 +89,8 @@ export class FlowView {
   private storeBlock(block: Block): void {
     this.flowchart.blocks.push(block);
     this.draw();
-    let s: string = "";
-    for (let i = 0; i < this.flowchart.blocks.length; i++) {
-      s += this.flowchart.blocks[i].getUid() + ", ";
-    }
-    localStorage.setItem("Block Sequence", s.substring(0, s.length - 2));
-    this.storeBlockLocation(block);
-  }
-
-  private storeBlockLocation(block: Block) {
-    localStorage.setItem("X: " + block.getUid(), block.getX().toString());
-    localStorage.setItem("Y: " + block.getUid(), block.getY().toString());
+    this.flowchart.storeBlocks();
+    this.flowchart.storeBlockLocation(block);
   }
 
   public draw(): void {
@@ -213,10 +206,27 @@ export class FlowView {
 
   private openContextMenu(e: MouseEvent): void {
     e.preventDefault();
-    let menu = document.getElementById("flow-view-context-menu") as HTMLMenuElement;
-    menu.style.left = e.clientX + "px";
-    menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
-    menu.classList.add("show-menu");
+    let block = null;
+    for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
+      if (this.flowchart.blocks[i].contains(e.offsetX, e.offsetY)) {
+        block = this.flowchart.blocks[i];
+        break;
+      }
+    }
+    if (block) {
+      contextMenus.block.block = block;
+      let menu = document.getElementById("block-context-menu") as HTMLMenuElement;
+      menu.style.left = e.clientX + "px";
+      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
+      menu.classList.add("show-menu");
+      let deleteMenuItem = document.getElementById("block-delete-menu-item") as HTMLElement;
+      deleteMenuItem.className = block instanceof HatBlock ? "menu-item disabled" : "menu-item";
+    } else {
+      let menu = document.getElementById("flow-view-context-menu") as HTMLMenuElement;
+      menu.style.left = e.clientX + "px";
+      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
+      menu.classList.add("show-menu");
+    }
   }
 
   private moveTo(x: number, y: number, m: Movable): void {
@@ -237,7 +247,7 @@ export class FlowView {
     m.setX(dx);
     m.setY(dy);
     if (m instanceof Block) {
-      this.storeBlockLocation(m);
+      this.flowchart.storeBlockLocation(m);
     }
   }
 
