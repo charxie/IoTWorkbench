@@ -4,29 +4,36 @@
 
 import {FlowView} from "./FlowView";
 import {Block} from "./Block";
-import {Connector} from "./Connector";
+import {PortConnector} from "./PortConnector";
 import {RainbowHatBlock} from "./RainbowHatBlock";
 import {ConditionalBlock} from "./ConditionalBlock";
 import {LogicBlock} from "./LogicBlock";
 import {MathBlock} from "./MathBlock";
+import {Port} from "./Port";
 
 export class Flowchart {
 
   blocks: Block[] = [];
-  connectors: Connector[] = [];
+  connectors: PortConnector[] = [];
   flowview: FlowView;
 
   constructor() {
     this.flowview = new FlowView("flow-view", this);
   }
 
-  test(): void {
-    let a = new LogicBlock(50, 100, 60, 80, "Or");
-    let b = new LogicBlock(200, 200, 60, 80, "And");
-    this.blocks.push(a);
-    this.blocks.push(b);
-    let c = new Connector(a.ports[2], b.ports[0]);
-    this.connectors.push(c);
+  addPortConnector(port1: Port, port2: Port): boolean {
+    let existing = false;
+    for (let i = 0; i < this.connectors.length; i++) {
+      if ((this.connectors[i].port1 == port1 && this.connectors[i].port2 == port2) || (this.connectors[i].port1 == port2 && this.connectors[i].port2 == port1)) {
+        existing = true;
+        break;
+      }
+    }
+    if (existing) {
+      return false;
+    }
+    this.connectors.push(new PortConnector(port1, port2));
+    return true;
   }
 
   removeBlock(uid: string) {

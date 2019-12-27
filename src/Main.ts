@@ -31,6 +31,10 @@ import {FlowViewContextMenu} from "./flowchart/ui/FlowViewContextMenu";
 import {FlowchartElementsPanel} from "./flowchart/ui/FlowchartElementsPanel";
 import {BlockContextMenu} from "./flowchart/ui/BlockContextMenu";
 
+import {Sound} from "./Sound";
+// @ts-ignore
+import clickSound from "./sound/stapler.mp3";
+
 declare global {
   interface CanvasRenderingContext2D {
     drawTooltip(x, y, h, r, margin, text, centered);
@@ -49,6 +53,7 @@ export let system = new System();
 export let flowchart = new Flowchart();
 export let user = new User("Charles", null, "Xie");
 export let contextMenus: any = {};
+export let sound = new Sound();
 
 export function closeAllContextMenus() {
   Object.keys(contextMenus).forEach(key => {
@@ -116,6 +121,8 @@ window.onload = function () {
     resize();
     draw();
   }, 1000);
+
+  sound.setSource(clickSound);
 
 };
 

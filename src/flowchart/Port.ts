@@ -21,8 +21,14 @@ export class Port {
     this.arc = new Arc(x, y, this.radius, 0.5 * Math.PI, 1.5 * Math.PI, anticlockwise);
   }
 
-  getPoint() {
+  getRelativePoint(): Point {
     return new Point(this.arc.x + (this.arc.anticlockwise ? this.radius : -this.radius), this.arc.y);
+  }
+
+  getAbsolutePoint(): Point {
+    let p = this.getRelativePoint();
+    p.translate(this.block.x, this.block.y);
+    return p;
   }
 
   contains(x: number, y: number): boolean {

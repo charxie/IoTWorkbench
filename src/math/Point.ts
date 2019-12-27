@@ -12,6 +12,11 @@ export class Point {
     this.y = y;
   }
 
+  translate(dx: number, dy: number): void {
+    this.x += dx;
+    this.y += dy;
+  }
+
   public toString(): string {
     return "(" + this.x + ", " + this.y + ")";
   }

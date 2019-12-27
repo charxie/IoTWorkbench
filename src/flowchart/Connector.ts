@@ -2,36 +2,28 @@
  * @author Charles Xie
  */
 
-import {Port} from "./Port";
-
 export class Connector {
 
-  port1: Port;
-  port2: Port;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
 
-  constructor(port1: Port, port2: Port) {
-    this.port1 = port1;
-    this.port2 = port2;
+  constructor() {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
-    let p = this.port1.getPoint();
-    let q = this.port2.getPoint();
-    let x1 = this.port1.block.getX() + p.x;
-    let y1 = this.port1.block.getY() + p.y;
-    let x2 = this.port2.block.getX() + q.x;
-    let y2 = this.port2.block.getY() + q.y;
-    let dy = (y2 - y1) / 4;
-    let cx = (x1 + x2) / 2;
-    let cy = (y1 + y2) / 2;
-    ctx.moveTo(x1, y1);
-    let x = (cx + x1) / 2;
-    let y = (cy + y1) / 2 - dy;
+    let dy = (this.y2 - this.y1) / 4;
+    let cx = (this.x1 + this.x2) / 2;
+    let cy = (this.y1 + this.y2) / 2;
+    ctx.moveTo(this.x1, this.y1);
+    let x = (cx + this.x1) / 2;
+    let y = (cy + this.y1) / 2 - dy;
     ctx.quadraticCurveTo(x, y, cx, cy);
-    x = (cx + x2) / 2;
-    y = (cy + y2) / 2 + dy;
-    ctx.quadraticCurveTo(x, y, x2, y2);
+    x = (cx + this.x2) / 2;
+    y = (cy + this.y2) / 2 + dy;
+    ctx.quadraticCurveTo(x, y, this.x2, this.y2);
     ctx.stroke();
   }
 

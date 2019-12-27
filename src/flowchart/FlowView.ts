@@ -3,16 +3,17 @@
  */
 
 import {Flowchart} from "./Flowchart";
-import {closeAllContextMenus, contextMenus} from "../Main";
+import {closeAllContextMenus, contextMenus, sound} from "../Main";
 import {Movable} from "../Movable";
-import {Point} from "../math/Point";
 import {Block} from "./Block";
 import {ConditionalBlock} from "./ConditionalBlock";
 import {LogicBlock} from "./LogicBlock";
 import {NegationBlock} from "./NegationBlock";
 import {MathBlock} from "./MathBlock";
-import {RainbowHatBlock} from "./RainbowHatBlock";
 import {HatBlock} from "./HatBlock";
+import {Port} from "./Port";
+import {PortConnector} from "./PortConnector";
+import {Connector} from "./Connector";
 
 export class FlowView {
 
@@ -20,9 +21,11 @@ export class FlowView {
   readonly canvas: HTMLCanvasElement;
 
   private selectedMovable: Movable;
+  private selectedPort: Port;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private draggedElementId: string;
+  private connector: Connector;
 
   constructor(canvasId: string, flowchart: Flowchart) {
     this.flowchart = flowchart;
@@ -32,6 +35,8 @@ export class FlowView {
     this.canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
     this.canvas.addEventListener('contextmenu', this.openContextMenu.bind(this), false);
     document.addEventListener("mouseleave", this.mouseLeave.bind(this), false);
+
+    this.connector = new Connector();
 
     let playground = document.getElementById("flowchart-playground") as HTMLDivElement;
 
@@ -102,6 +107,9 @@ export class FlowView {
     for (let i = 0; i < this.flowchart.connectors.length; i++) {
       this.flowchart.connectors[i].draw(ctx);
     }
+    if (this.selectedPort) {
+      this.connector.draw(ctx);
+    }
   }
 
   // detect if (x, y) is inside this flowview
@@ -127,6 +135,7 @@ export class FlowView {
 
   private mouseDown(e: MouseEvent): void {
     this.selectedMovable = null;
+    this.selectedPort = null;
     let x = e.offsetX;
     let y = e.offsetY;
     for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
@@ -138,50 +147,84 @@ export class FlowView {
     if (this.selectedMovable != null) {
       this.mouseDownRelativeX = x - this.selectedMovable.getX();
       this.mouseDownRelativeY = y - this.selectedMovable.getY();
+    } else {
+      outerloop:
+        for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
+          let block = this.flowchart.blocks[n];
+          for (let i = 0; i < block.ports.length; i++) {
+            if (block.ports[i].contains(x - block.x, y - block.y)) {
+              this.selectedPort = block.ports[i];
+              let p = this.selectedPort.getAbsolutePoint();
+              this.connector.x1 = p.x;
+              this.connector.y1 = p.y;
+              break outerloop;
+            }
+          }
+        }
     }
   }
 
   private mouseUp(e: MouseEvent): void {
+    let x = e.offsetX;
+    let y = e.offsetY;
+    outerloop:
+      for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
+        let block = this.flowchart.blocks[n];
+        for (let i = 0; i < block.ports.length; i++) {
+          if (block.ports[i].contains(x - block.x, y - block.y)) {
+            if (this.flowchart.addPortConnector(this.selectedPort, block.ports[i])) {
+              sound.play();
+            }
+            break outerloop;
+          }
+        }
+      }
     this.selectedMovable = null;
+    this.selectedPort = null;
+    this.draw();
     closeAllContextMenus(); // close all context menus upon mouse left click
   }
 
   private mouseMove(e: MouseEvent): void {
     let x = e.offsetX;
     let y = e.offsetY
-    if (this.selectedMovable != null) {
-      this.moveTo(x, y, this.selectedMovable);
-      this.draw();
-      //this.storeLocation(this.selectedMovable);
-    } else {
-      let overWhat = "Default";
-      outerloop:
-        for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
-          let block = this.flowchart.blocks[n];
-          if (block.contains(x, y)) {
-            overWhat = "Block";
-            break outerloop;
-          } else {
-            for (let i = 0; i < block.ports.length; i++) {
-              if (block.ports[i].contains(x - block.x, y - block.y)) {
-                overWhat = "Port";
-                break outerloop;
-              }
+    let overWhat = "Default";
+    outerloop:
+      for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
+        let block = this.flowchart.blocks[n];
+        if (block.contains(x, y)) {
+          overWhat = "Block";
+          break outerloop;
+        } else {
+          for (let i = 0; i < block.ports.length; i++) {
+            if (block.ports[i].contains(x - block.x, y - block.y)) {
+              overWhat = "Port";
+              break outerloop;
             }
           }
         }
-      switch (overWhat) {
-        case "Port":
-          this.canvas.style.cursor = "pointer";
-          break;
-        case "Block":
-          this.canvas.style.cursor = "move";
-          break;
-        default:
-          this.canvas.style.cursor = "default";
-          break;
       }
+    switch (overWhat) {
+      case "Port":
+        this.canvas.style.cursor = "pointer";
+        break;
+      case "Block":
+        this.canvas.style.cursor = "move";
+        break;
+      default:
+        this.canvas.style.cursor = "default";
+        break;
     }
+
+    if (this.selectedMovable != null) {
+      this.moveTo(x, y, this.selectedMovable);
+      this.draw();
+    } else if (this.selectedPort != null) {
+      this.connector.x2 = e.offsetX;
+      this.connector.y2 = e.offsetY;
+      this.draw();
+    }
+
   }
 
   private mouseLeave = (e: MouseEvent): void => {
