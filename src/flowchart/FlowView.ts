@@ -162,16 +162,16 @@ export class FlowView {
             overWhat = "Block";
             break outerloop;
           } else {
-            for (let i = 0; i < block.pins.length; i++) {
-              if (block.pins[i].contains(x - block.x, y - block.y)) {
-                overWhat = "Pin";
+            for (let i = 0; i < block.ports.length; i++) {
+              if (block.ports[i].contains(x - block.x, y - block.y)) {
+                overWhat = "Port";
                 break outerloop;
               }
             }
           }
         }
       switch (overWhat) {
-        case "Pin":
+        case "Port":
           this.canvas.style.cursor = "pointer";
           break;
         case "Block":

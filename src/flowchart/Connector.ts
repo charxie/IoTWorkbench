@@ -2,26 +2,26 @@
  * @author Charles Xie
  */
 
-import {Pin} from "./Pin";
+import {Port} from "./Port";
 
 export class Connector {
 
-  pin1: Pin;
-  pin2: Pin;
+  port1: Port;
+  port2: Port;
 
-  constructor(pin1: Pin, pin2: Pin) {
-    this.pin1 = pin1;
-    this.pin2 = pin2;
+  constructor(port1: Port, port2: Port) {
+    this.port1 = port1;
+    this.port2 = port2;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
-    let p = this.pin1.getPoint();
-    let q = this.pin2.getPoint();
-    let x1 = this.pin1.block.getX() + p.x;
-    let y1 = this.pin1.block.getY() + p.y;
-    let x2 = this.pin2.block.getX() + q.x;
-    let y2 = this.pin2.block.getY() + q.y;
+    let p = this.port1.getPoint();
+    let q = this.port2.getPoint();
+    let x1 = this.port1.block.getX() + p.x;
+    let y1 = this.port1.block.getY() + p.y;
+    let x2 = this.port2.block.getX() + q.x;
+    let y2 = this.port2.block.getY() + q.y;
     let dy = (y2 - y1) / 4;
     let cx = (x1 + x2) / 2;
     let cy = (y1 + y2) / 2;

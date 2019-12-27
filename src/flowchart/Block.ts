@@ -2,12 +2,12 @@
  * @author Charles Xie
  */
 
-import {Pin} from "./Pin";
+import {Port} from "./Port";
 import {Movable} from "../Movable";
 
 export abstract class Block implements Movable {
 
-  pins: Pin[] = [];
+  ports: Port[] = [];
   uid: string;
   x: number;
   y: number;
@@ -83,27 +83,28 @@ export abstract class Block implements Movable {
     ctx.save();
     ctx.fillStyle = "black";
     ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
+    ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
     let textMetrics = ctx.measureText(this.name);
     ctx.translate(this.x + this.width / 2 + 5, this.y + this.height / 2 + textMetrics.width / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(this.name, 0, 0);
     ctx.restore();
 
-    // draw the pins
+    // draw the ports
     ctx.font = this.small ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
     ctx.fillStyle = "lightgray";
-    for (let i = 0; i < this.pins.length; i++) {
+    for (let i = 0; i < this.ports.length; i++) {
       ctx.lineWidth = 1;
       ctx.beginPath();
-      let a = this.pins[i].arc;
+      let a = this.ports[i].arc;
       let ax = a.x + this.x;
       let ay = a.y + this.y;
       ctx.arc(ax, ay, a.radius, a.startAngle, a.endAngle, a.anticlockwise);
       ctx.fill();
       ctx.stroke();
       ctx.lineWidth = 0.75;
-      let t = this.pins[i].uid;
+      let t = this.ports[i].uid;
       if (a.anticlockwise) {
         ctx.strokeText(t, ax - ctx.measureText(t).width - (this.small ? 2 : 4), ay + 4);
       } else {

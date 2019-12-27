@@ -288,7 +288,6 @@ function restoreBlocks() {
     }
   }
   restoreLocations(flowchart.blocks);
-  flowchart.x();
 }
 
 window.onresize = function () {

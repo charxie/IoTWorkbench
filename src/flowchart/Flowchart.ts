@@ -20,12 +20,12 @@ export class Flowchart {
     this.flowview = new FlowView("flow-view", this);
   }
 
-  x(): void {
+  test(): void {
     let a = new LogicBlock(50, 100, 60, 80, "Or");
     let b = new LogicBlock(200, 200, 60, 80, "And");
     this.blocks.push(a);
     this.blocks.push(b);
-    let c = new Connector(a.pins[2], b.pins[0]);
+    let c = new Connector(a.ports[2], b.ports[0]);
     this.connectors.push(c);
   }
 

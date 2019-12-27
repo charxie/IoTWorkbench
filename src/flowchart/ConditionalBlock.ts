@@ -3,7 +3,7 @@
  */
 
 import {Block} from "./Block";
-import {Pin} from "./Pin";
+import {Port} from "./Port";
 
 export class ConditionalBlock extends Block {
 
@@ -11,8 +11,8 @@ export class ConditionalBlock extends Block {
     super(x, y, width, height);
     this.name = "F(x)";
     let dy = this.height / 2;
-    this.pins.push(new Pin(this, "X", 0, dy, false));
-    this.pins.push(new Pin(this,"R", this.width, dy, true));
+    this.ports.push(new Port(this, "X", 0, dy, false));
+    this.ports.push(new Port(this,"R", this.width, dy, true));
     this.margin = 15;
   }
 

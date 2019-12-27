@@ -6,7 +6,7 @@ import {Block} from "./Block";
 import {Arc} from "../math/Arc";
 import {Point} from "../math/Point";
 
-export class Pin {
+export class Port {
 
   block: Block;
   uid: string;
