@@ -2,12 +2,10 @@
  * @author Charles Xie
  */
 
-import {Point} from "../math/Point";
 import {Flowchart} from "./Flowchart";
 import {closeAllContextMenus} from "../Main";
 import {Movable} from "../Movable";
-import {Hat} from "../components/Hat";
-import {RaspberryPi} from "../components/RaspberryPi";
+import {Point} from "../math/Point";
 
 export class FlowView {
 
@@ -30,8 +28,7 @@ export class FlowView {
   public draw(): void {
     let ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.flowchart.rainbowHatBlock.draw(ctx);
-    for (let i = 0; i < this.flowchart.blocks.length; i++) {
+    for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
       this.flowchart.blocks[i].draw(ctx);
     }
     // let points = [];
@@ -80,9 +77,6 @@ export class FlowView {
     this.selectedMovable = null;
     let x = e.offsetX;
     let y = e.offsetY;
-    if (this.flowchart.rainbowHatBlock.contains(x, y)) {
-      this.selectedMovable = this.flowchart.rainbowHatBlock;
-    }
     for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
       if (this.flowchart.blocks[i].contains(x, y)) {
         this.selectedMovable = this.flowchart.blocks[i];
@@ -109,16 +103,21 @@ export class FlowView {
       //this.storeLocation(this.selectedMovable);
     } else {
       let overWhat = "Default";
-      let block = this.flowchart.rainbowHatBlock;
-      for (let i = 0; i < block.pins.length; i++) {
-        if (block.pins[i].contains(x - block.x, y - block.y)) {
-          overWhat = "Pin";
-          break;
+      outerloop:
+        for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
+          let block = this.flowchart.blocks[n];
+          if (block.contains(x, y)) {
+            overWhat = "Block";
+            break outerloop;
+          } else {
+            for (let i = 0; i < block.pins.length; i++) {
+              if (block.pins[i].contains(x - block.x, y - block.y)) {
+                overWhat = "Pin";
+                break outerloop;
+              }
+            }
+          }
         }
-      }
-      if (block.contains(x, y)) {
-        overWhat = "Block";
-      }
       switch (overWhat) {
         case "Pin":
           this.canvas.style.cursor = "pointer";

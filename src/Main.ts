@@ -276,6 +276,8 @@ function resize() {
   flowchart.flowview.canvas.height = window.innerHeight - workbenchRect.top - 50;
   let componentsScroller = document.getElementById("components-scroller") as HTMLDivElement;
   componentsScroller.style.height = system.workbench.canvas.height * 0.85 + "px";
+  let elementsScroller = document.getElementById("elements-scroller") as HTMLDivElement;
+  elementsScroller.style.height = flowchart.flowview.canvas.height * 0.85 + "px";
 }
 
 function draw() {

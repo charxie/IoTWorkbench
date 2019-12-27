@@ -5,17 +5,21 @@
 import {FlowView} from "./FlowView";
 import {Block} from "./Block";
 import {RainbowHatBlock} from "./RainbowHatBlock";
+import {ConditionalBlock} from "./ConditionalBlock";
+import {LogicBlock} from "./LogicBlock";
+import {NegationBlock} from "./NegationBlock";
 
 export class Flowchart {
 
-  rainbowHatBlock: RainbowHatBlock;
   blocks: Block[] = [];
   flowview: FlowView;
 
   constructor() {
-    this.rainbowHatBlock = new RainbowHatBlock(20, 20);
-    //this.blocks.push(new Block(20, 20, 200, 100, "X + Y"));
-    //this.blocks.push(new Block(220, 220, 160, 100, "X * Y"));
+    this.blocks.push(new RainbowHatBlock(20, 20));
+    this.blocks.push(new ConditionalBlock(200, 50, 60, 80));
+    this.blocks.push(new LogicBlock(300, 120, 60, 80, "Or"));
+    this.blocks.push(new LogicBlock(390, 120, 60, 80, "And"));
+    this.blocks.push(new NegationBlock(480, 150, 60,80));
     this.flowview = new FlowView("flow-view", this);
   }
 

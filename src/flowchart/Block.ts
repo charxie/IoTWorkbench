@@ -2,10 +2,12 @@
  * @author Charles Xie
  */
 
+import {Pin} from "./Pin";
 import {Movable} from "../Movable";
 
-export class Block implements Movable {
+export abstract class Block implements Movable {
 
+  pins: Pin[] = [];
   uid: string;
   x: number;
   y: number;
@@ -14,13 +16,13 @@ export class Block implements Movable {
   name: string;
   radius: number = 5;
   margin: number = 30; // margin for inset
+  small: boolean; // true when used for small icons
 
-  constructor(x: number, y: number, width: number, height: number, name: string) {
+  constructor(x: number, y: number, width: number, height: number) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.name = name;
   }
 
   getUid(): string {
@@ -57,12 +59,18 @@ export class Block implements Movable {
 
   draw(ctx: CanvasRenderingContext2D): void {
 
-    ctx.fillStyle = "lightgray";
+    // draw the block with shade
+    let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
+    shade.addColorStop(0, "white");
+    shade.addColorStop(this.small ? 0.1 : 0.05, "darkgray");
+    shade.addColorStop(1, "gray");
+    ctx.fillStyle = shade;
     ctx.fillRoundedRect(this.x, this.y, this.width, this.height, this.radius);
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawRoundedRect(this.x, this.y, this.width, this.height, this.radius);
 
+    // draw the inset
     ctx.fillStyle = "white";
     ctx.beginPath();
     ctx.rect(this.x + this.margin, this.y + this.margin, this.width - 2 * this.margin, this.height - 2 * this.margin);
@@ -71,23 +79,38 @@ export class Block implements Movable {
     ctx.strokeStyle = "black";
     ctx.stroke();
 
+    // draw the name
+    ctx.save();
     ctx.fillStyle = "black";
-    ctx.font = "20px Arial";
+    ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
     let textMetrics = ctx.measureText(this.name);
-    ctx.fillText(this.name, this.x + this.width / 2 - textMetrics.width / 2, this.y + this.height / 2 + 8);
+    ctx.translate(this.x + this.width / 2 + 5, this.y + this.height / 2 + textMetrics.width / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(this.name, 0, 0);
+    ctx.restore();
 
-    let r = 8;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y + this.height / 3, r, 0.5 * Math.PI, 1.5 * Math.PI, false);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(this.x, this.y + this.height * 2 / 3, r, 0.5 * Math.PI, 1.5 * Math.PI, false);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(this.x + this.width, this.y + this.height / 2, r, 0.5 * Math.PI, 1.5 * Math.PI, true);
-    ctx.stroke();
+    // draw the pins
+    ctx.font = this.small ? "9px Arial" : "12px Arial";
+    ctx.strokeStyle = "black";
+    ctx.fillStyle = "lightgray";
+    for (let i = 0; i < this.pins.length; i++) {
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      let a = this.pins[i].arc;
+      let ax = a.x + this.x;
+      let ay = a.y + this.y;
+      ctx.arc(ax, ay, a.radius, a.startAngle, a.endAngle, a.anticlockwise);
+      ctx.fill();
+      ctx.stroke();
+      ctx.lineWidth = 0.75;
+      let t = this.pins[i].uid;
+      if (a.anticlockwise) {
+        ctx.strokeText(t, ax - ctx.measureText(t).width - (this.small ? 2 : 4), ay + 4);
+      } else {
+        ctx.strokeText(t, ax + (this.small ? 2 : 4), ay + 4)
+      }
+    }
 
   }
-
 
 }
