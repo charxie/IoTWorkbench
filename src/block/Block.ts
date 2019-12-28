@@ -72,7 +72,6 @@ export abstract class Block implements Movable {
 
     // draw the block with shade
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
-
     shade.addColorStop(0, "white");
     shade.addColorStop(this.small ? 0.1 : 0.05, Util.adjust(this.color, 50));
     shade.addColorStop(1, this.color);
@@ -108,24 +107,7 @@ export abstract class Block implements Movable {
     ctx.font = this.small ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
     for (let i = 0; i < this.ports.length; i++) {
-      ctx.lineWidth = this.small ? 1 : 2;
-      ctx.fillStyle = this.ports[i].input ? "white" : "darkgray";
-      ctx.beginPath();
-      let a = this.ports[i].arc;
-      let ax = a.x + this.x;
-      let ay = a.y + this.y;
-      ctx.arc(ax, ay, a.radius, a.startAngle, a.endAngle, a.anticlockwise);
-      ctx.fill();
-      ctx.stroke();
-      if (!this.small) {
-        ctx.lineWidth = 0.75;
-        let t = this.ports[i].uid;
-        if (a.anticlockwise) {
-          ctx.strokeText(t, ax - ctx.measureText(t).width - (this.small ? 2 : 4), ay + 4);
-        } else {
-          ctx.strokeText(t, ax + (this.small ? 2 : 4), ay + 4)
-        }
-      }
+      this.ports[i].draw(ctx, this.small);
     }
 
   }

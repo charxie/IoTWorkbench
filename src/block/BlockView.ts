@@ -14,6 +14,7 @@ import {HatBlock} from "./HatBlock";
 import {Port} from "./Port";
 import {Connector} from "./Connector";
 import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
+import {PortConnector} from "./PortConnector";
 
 export class BlockView {
 
@@ -22,11 +23,13 @@ export class BlockView {
 
   private selectedMovable: Movable;
   private selectedPort: Port;
+  private selectedPortConnector: PortConnector;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private draggedElementId: string;
-  private connector: Connector;
+  private connectorOntheFly: Connector;
   private gridSize: number = 100;
+  private overWhat: any;
 
   constructor(canvasId: string, flowchart: Flowchart) {
     this.flowchart = flowchart;
@@ -37,7 +40,7 @@ export class BlockView {
     this.canvas.addEventListener('contextmenu', this.openContextMenu.bind(this), false);
     document.addEventListener("mouseleave", this.mouseLeave.bind(this), false);
 
-    this.connector = new Connector();
+    this.connectorOntheFly = new Connector();
 
     let playground = document.getElementById("block-playground") as HTMLDivElement;
 
@@ -58,39 +61,39 @@ export class BlockView {
       if (id == "block-view") {
         switch (that.draggedElementId) {
           case "unary-function-block":
-            let block = new UnaryFunctionBlock(e.offsetX, e.offsetY, 60, 80);
-            block.uid = "Unary Function Block #" + Date.now().toString(16);
-            that.storeBlock(block);
+            let unaryFunctionBlock = new UnaryFunctionBlock(e.offsetX, e.offsetY, 60, 80);
+            unaryFunctionBlock.uid = "Unary Function Block #" + Date.now().toString(16);
+            that.storeBlock(unaryFunctionBlock);
             break;
           case "binary-function-block":
-            block = new BinaryFunctionBlock(e.offsetX, e.offsetY, 60, 100);
-            block.uid = "Binary Function Block #" + Date.now().toString(16);
-            that.storeBlock(block);
+            let binaryFunctionBlock = new BinaryFunctionBlock(e.offsetX, e.offsetY, 60, 100);
+            binaryFunctionBlock.uid = "Binary Function Block #" + Date.now().toString(16);
+            that.storeBlock(binaryFunctionBlock);
             break;
           case "logic-and-block":
-            block = new LogicBlock(e.offsetX, e.offsetY, 60, 80, "And");
-            block.uid = "Logic And Block #" + Date.now().toString(16);
-            that.storeBlock(block);
+            let andBlock = new LogicBlock(e.offsetX, e.offsetY, 60, 80, "And");
+            andBlock.uid = "Logic And Block #" + Date.now().toString(16);
+            that.storeBlock(andBlock);
             break;
           case "logic-or-block":
-            block = new LogicBlock(e.offsetX, e.offsetY, 60, 80, "Or");
-            block.uid = "Logic Or Block #" + Date.now().toString(16);
-            that.storeBlock(block);
+            let orBlock = new LogicBlock(e.offsetX, e.offsetY, 60, 80, "Or");
+            orBlock.uid = "Logic Or Block #" + Date.now().toString(16);
+            that.storeBlock(orBlock);
             break;
           case "logic-not-block":
-            block = new NegationBlock(e.offsetX, e.offsetY, 60, 80);
-            block.uid = "Logic Not Block #" + Date.now().toString(16);
-            that.storeBlock(block);
+            let notBlock = new NegationBlock(e.offsetX, e.offsetY, 60, 80);
+            notBlock.uid = "Logic Not Block #" + Date.now().toString(16);
+            that.storeBlock(notBlock);
             break;
           case "math-add-block":
-            block = new MathBlock(e.offsetX, e.offsetY, 60, 80, "+");
-            block.uid = "Add Block #" + Date.now().toString(16);
-            that.storeBlock(block);
+            let addBlock = new MathBlock(e.offsetX, e.offsetY, 60, 80, "+");
+            addBlock.uid = "Add Block #" + Date.now().toString(16);
+            that.storeBlock(addBlock);
             break;
           case "math-multiply-block":
-            block = new MathBlock(e.offsetX, e.offsetY, 60, 80, "×");
-            block.uid = "Multiply Block #" + Date.now().toString(16);
-            that.storeBlock(block);
+            let multiplyBlock = new MathBlock(e.offsetX, e.offsetY, 60, 80, "×");
+            multiplyBlock.uid = "Multiply Block #" + Date.now().toString(16);
+            that.storeBlock(multiplyBlock);
             break;
         }
       }
@@ -110,14 +113,14 @@ export class BlockView {
     ctx.save();
     this.drawGrid(ctx);
     ctx.lineWidth = 3;
-    for (let i = 0; i < this.flowchart.connectors.length; i++) {
-      this.flowchart.connectors[i].draw(ctx);
+    for (let c of this.flowchart.connectors) {
+      c.draw(ctx);
     }
-    for (let i = 0; i < this.flowchart.blocks.length; i++) {
-      this.flowchart.blocks[i].draw(ctx);
+    for (let b of this.flowchart.blocks) {
+      b.draw(ctx);
     }
-    if (this.selectedPort) {
-      this.connector.draw(ctx);
+    if (this.selectedPort && !this.selectedPort.input) {
+      this.connectorOntheFly.draw(ctx);
     }
   }
 
@@ -176,13 +179,17 @@ export class BlockView {
       outerloop:
         for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
           let block = this.flowchart.blocks[n];
-          for (let i = 0; i < block.ports.length; i++) {
-            if (block.ports[i].contains(x - block.x, y - block.y)) {
-              this.selectedPort = block.ports[i];
-              if (!this.selectedPort.input) {
+          for (let p of block.ports) {
+            if (p.near(x - block.x, y - block.y)) {
+              this.selectedPort = p;
+              if (this.selectedPort.input) {
+                // if the selected port is an input, select one of its connectors
+                this.selectedPortConnector = this.flowchart.getConnector(this.selectedPort);
+              } else {
+                // if the seleted port is an output, clicking on it starts a new connector
                 let p = this.selectedPort.getAbsolutePoint();
-                this.connector.x1 = p.x;
-                this.connector.y1 = p.y;
+                this.connectorOntheFly.x1 = p.x;
+                this.connectorOntheFly.y1 = p.y;
               }
               break outerloop;
             }
@@ -197,9 +204,9 @@ export class BlockView {
     outerloop:
       for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
         let block = this.flowchart.blocks[n];
-        for (let i = 0; i < block.ports.length; i++) {
-          if (block.ports[i].input && block.ports[i].contains(x - block.x, y - block.y)) {
-            if (this.flowchart.addPortConnector(this.selectedPort, block.ports[i])) {
+        for (let p of block.ports) {
+          if (p.input && p.near(x - block.x, y - block.y)) {
+            if (this.flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
               sound.play();
               this.flowchart.storePortConnectors();
             }
@@ -215,45 +222,59 @@ export class BlockView {
 
   private mouseMove(e: MouseEvent): void {
     let x = e.offsetX;
-    let y = e.offsetY
-    let overWhat = "Default";
+    let y = e.offsetY;
+    if (this.overWhat != null) {
+      if (this.overWhat instanceof Port) {
+        this.overWhat.close = false;
+      }
+      this.overWhat = null;
+    }
     outerloop:
       for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
         let block = this.flowchart.blocks[n];
         if (block.contains(x, y)) {
-          overWhat = "Block";
-          break outerloop;
+          this.overWhat = block;
+          break;
         } else {
-          for (let i = 0; i < block.ports.length; i++) {
-            if (block.ports[i].contains(x - block.x, y - block.y)) {
-              overWhat = "Port";
+          for (let p of block.ports) {
+            if (p.near(x - block.x, y - block.y)) {
+              this.overWhat = p;
               break outerloop;
             }
           }
         }
       }
-    switch (overWhat) {
-      case "Port":
-        this.canvas.style.cursor = "pointer";
-        break;
-      case "Block":
-        this.canvas.style.cursor = "move";
-        break;
-      default:
-        this.canvas.style.cursor = "default";
-        break;
+    if (this.overWhat instanceof Port) {
+      this.canvas.style.cursor = "pointer";
+    } else if (this.overWhat instanceof Block) {
+      this.canvas.style.cursor = "move";
+    } else {
+      this.canvas.style.cursor = "default";
     }
 
     if (this.selectedMovable != null) {
       this.moveTo(x, y, this.selectedMovable);
-      this.draw();
     } else if (this.selectedPort != null) {
-      if (!this.selectedPort.input) {
-        this.connector.x2 = e.offsetX;
-        this.connector.y2 = e.offsetY;
-        this.draw();
+      if (this.selectedPort.input) {
+        if (this.selectedPortConnector) { // if the clicked port is an input and there is a connector to it
+          this.flowchart.removePortConnector(this.selectedPortConnector);
+          this.selectedPort = this.selectedPortConnector.output; // switch the selected port to the output end of the selected connector
+          let p = this.selectedPort.getAbsolutePoint(); // this activates the connector on the fly that originates from the output end
+          this.connectorOntheFly.x1 = p.x;
+          this.connectorOntheFly.y1 = p.y;
+          this.connectorOntheFly.x2 = e.offsetX;
+          this.connectorOntheFly.y2 = e.offsetY;
+          this.selectedPortConnector = null;
+        }
+      } else {
+        this.connectorOntheFly.x2 = e.offsetX;
+        this.connectorOntheFly.y2 = e.offsetY;
+        if (this.overWhat instanceof Port) {
+          this.overWhat.close = true;
+        }
       }
     }
+    this.draw();
 
   }
 

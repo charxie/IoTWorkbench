@@ -134,10 +134,10 @@ export class System {
   /* Raspberry Pi methods */
 
   getRaspberryPiById(uid: string): RaspberryPi {
-    for (let i = 0; i < this.mcus.length; i++) {
-      if (this.mcus[i] instanceof RaspberryPi) {
-        if (this.mcus[i].uid == uid) {
-          return <RaspberryPi>this.mcus[i];
+    for (let m of this.mcus) {
+      if (m instanceof RaspberryPi) {
+        if (m.uid == uid) {
+          return <RaspberryPi>m;
         }
       }
     }
@@ -174,12 +174,10 @@ export class System {
   }
 
   whichRaspberryPi(x: number, y: number): number {
-    for (let i = 0; i < this.mcus.length; i++) {
-      let mcu = this.mcus[i];
-      if (mcu instanceof RaspberryPi) {
-        let r = new Rectangle(mcu.getX(), mcu.getY(), mcu.getWidth(), mcu.getHeight());
-        if (r.contains(x, y)) {
-          return i;
+    for (let m of this.mcus) {
+      if (m instanceof RaspberryPi) {
+        if (new Rectangle(m.getX(), m.getY(), m.getWidth(), m.getHeight()).contains(x, y)) {
+          return this.mcus.indexOf(m);
         }
       }
     }
@@ -189,9 +187,9 @@ export class System {
   /* HAT methods */
 
   getHatById(uid: string): Hat {
-    for (let i = 0; i < this.hats.length; i++) {
-      if (this.mcus[i].uid == uid) {
-        return this.hats[i];
+    for (let h of this.hats) {
+      if (h.uid == uid) {
+        return h;
       }
     }
     return null;
@@ -225,37 +223,37 @@ export class System {
       case "Rainbow HAT":
         canvas.id = "rainbow-hat-" + this.hats.length;
         canvas.width = 330;
-        canvas.height = 290;
+        canvas.height = 280;
         hat = new RainbowHat(canvas.id, uid);
         break;
       case "Sense HAT":
         canvas.id = "sense-hat-" + this.hats.length;
         canvas.width = 330;
-        canvas.height = 290;
+        canvas.height = 275;
         hat = new SenseHat(canvas.id, uid);
         break;
       case "Capacitive Touch HAT":
         canvas.id = "capacitive-touch-hat-" + this.hats.length;
         canvas.width = 330;
-        canvas.height = 290;
+        canvas.height = 280;
         hat = new CapacitiveTouchHat(canvas.id, uid);
         break;
       case "Unicorn HAT":
         canvas.id = "unicorn-hat-" + this.hats.length;
         canvas.width = 330;
-        canvas.height = 380;
+        canvas.height = 370;
         hat = new UnicornHat(canvas.id, uid);
         break;
       case "Crickit HAT":
         canvas.id = "crickit-hat-" + this.hats.length;
         canvas.width = 330;
-        canvas.height = 290;
+        canvas.height = 280;
         hat = new CrickitHat(canvas.id, uid);
         break;
       case "Pan-Tilt HAT":
         canvas.id = "pan-tilt-hat-" + this.hats.length;
         canvas.width = 330;
-        canvas.height = 290;
+        canvas.height = 280;
         hat = new PanTiltHat(canvas.id, uid);
         break;
     }
@@ -276,23 +274,22 @@ export class System {
     return hat;
   }
 
-  whichHat(x: number, y: number): number {
-    for (let i = 0; i < this.hats.length; i++) {
-      let hat = this.hats[i];
+  whichHat(x: number, y: number): Hat {
+    for (let hat of this.hats) {
       let r = new Rectangle(hat.getX(), hat.getY(), hat.getWidth(), hat.getHeight());
       if (r.contains(x, y)) {
-        return i;
+        return hat;
       }
     }
-    return -1;
+    return null;
   }
 
   /* line chart methods */
 
   getLineChartById(uid: string): LineChart {
-    for (let i = 0; i < this.lineCharts.length; i++) {
-      if (this.lineCharts[i].uid == uid) {
-        return this.lineCharts[i];
+    for (let c of this.lineCharts) {
+      if (c.uid == uid) {
+        return c;
       }
     }
     return null;
@@ -332,27 +329,25 @@ export class System {
     return lineChart;
   }
 
-  whichLineChart(x: number, y: number): number {
-    for (let i = 0; i < this.lineCharts.length; i++) {
-      let c = this.lineCharts[i];
+  whichLineChart(x: number, y: number): LineChart {
+    for (let c of this.lineCharts) {
       let r = new Rectangle(c.getX(), c.getY(), c.getWidth(), c.getHeight());
       if (r.contains(x, y)) {
-        return i;
+        return c;
       }
     }
-    return -1;
+    return null;
   }
 
   /* draw and mouse */
 
   draw(): void {
     this.workbench.draw();
-    let i;
-    for (i = 0; i < this.mcus.length; i++) {
-      this.mcus[i].draw();
+    for (let m of this.mcus) {
+      m.draw();
     }
-    for (i = 0; i < this.hats.length; i++) {
-      this.hats[i].draw();
+    for (let h of this.hats) {
+      h.draw();
     }
   }
 
@@ -410,16 +405,16 @@ export class System {
 
   storeMcuSequence(): void {
     let s: string = "";
-    for (let i = 0; i < this.mcus.length; i++) {
-      s += this.mcus[i].getUid() + ", ";
+    for (let m of this.mcus) {
+      s += m.getUid() + ", ";
     }
     localStorage.setItem("MCU Sequence", s.substring(0, s.length - 2));
   }
 
   storeHatSequence(): void {
     let s: string = "";
-    for (let i = 0; i < this.hats.length; i++) {
-      s += this.hats[i].getUid() + ", ";
+    for (let h of this.hats) {
+      s += h.getUid() + ", ";
     }
     localStorage.setItem("HAT Sequence", s.substring(0, s.length - 2));
   }

@@ -80,17 +80,17 @@ window.onload = function () {
   creditLabel.innerHTML = social + "<div class='horizontal-divider'></div>" + Constants.Software.name + " " + Constants.Software.version + ", " + user.fullName + " , &copy; " + new Date().getFullYear();
 
   let modelTabButton = document.getElementById("model-tab-button") as HTMLButtonElement;
-  modelTabButton.addEventListener("click", function (event) {
+  modelTabButton.addEventListener("click", function () {
     selectTab(modelTabButton, "model-playground");
     system.draw();
   });
   let blockTabButton = document.getElementById("block-tab-button") as HTMLButtonElement;
-  blockTabButton.addEventListener("click", function (event) {
+  blockTabButton.addEventListener("click", function () {
     selectTab(blockTabButton, "block-playground");
     flowchart.draw();
   });
   let codeTabButton = document.getElementById("code-tab-button") as HTMLButtonElement;
-  codeTabButton.addEventListener("click", function (event) {
+  codeTabButton.addEventListener("click", function () {
     selectTab(codeTabButton, "code-playground");
   });
 
@@ -209,20 +209,19 @@ function restoreHats() {
     if (t.length > 0) {
       system.hats = [];
     }
-    for (let i = 0; i < t.length; i++) {
-      t[i] = t[i].trim();
-      let name = t[i].substring(0, t[i].indexOf("#") - 1);
-      system.addHat(name, 0, 0, t[i]);
+    for (let i of t) {
+      i = i.trim();
+      let name = i.substring(0, i.indexOf("#") - 1);
+      system.addHat(name, 0, 0, i);
     }
   }
   restoreLocations(system.hats);
-  for (let i = 0; i < system.hats.length; i++) {
-    let h = system.hats[i];
+  for (let h of system.hats) {
     let id: string = localStorage.getItem("Attachment: " + h.getUid());
     if (id != null) {
       let pi = system.getRaspberryPiById(id);
       if (pi) {
-        system.hats[i].attach(pi);
+        h.attach(pi);
       }
     }
     if (h instanceof RainbowHat) {
@@ -252,10 +251,10 @@ function restoreMcus() {
     if (t.length > 0) {
       system.mcus = [];
     }
-    for (let i = 0; i < t.length; i++) {
-      t[i] = t[i].trim();
-      if (t[i].startsWith("Raspberry Pi")) {
-        system.addRaspberryPi(0, 0, t[i]);
+    for (let i of t) {
+      i = i.trim();
+      if (i.startsWith("Raspberry Pi")) {
+        system.addRaspberryPi(0, 0, i);
       }
     }
   }
@@ -263,8 +262,8 @@ function restoreMcus() {
 }
 
 function restoreLocations(m: Movable[]) {
-  for (let i = 0; i < m.length; i++) {
-    restoreLocation(m[i]);
+  for (let i of m) {
+    restoreLocation(i);
   }
 }
 
@@ -286,11 +285,11 @@ function restoreBlocks() {
     if (t.length > 0) {
       flowchart.blocks = [];
     }
-    for (let i = 0; i < t.length; i++) {
-      t[i] = t[i].trim();
-      let name = t[i].substring(0, t[i].indexOf("#") - 1);
+    for (let i of t) {
+      i = i.trim();
+      let name = i.substring(0, i.indexOf("#") - 1);
       if (name.indexOf("HAT") == -1) { // Do not add HAT blocks. They are added by the model components.
-        flowchart.addBlock(name, 0, 0, t[i]);
+        flowchart.addBlock(name, 0, 0, i);
       }
     }
   }
@@ -299,18 +298,20 @@ function restoreBlocks() {
 
 function restoreConnectors() {
   let s = localStorage.getItem("Port Connectors");
-  let t = s.split("|");
-  for (let i = 0; i < t.length; i++) {
-    let x = t[i].split(",");
-    let blockId1 = x[0].substring(0, x[0].indexOf("@") - 1).trim();
-    let portId1 = x[0].substring(x[0].indexOf("@") + 1).trim();
-    let blockId2 = x[1].substring(0, x[1].indexOf("@") - 1).trim();
-    let portId2 = x[1].substring(x[1].indexOf("@") + 1).trim();
-    // console.log(blockId1 + ":" + portId1 + " --- " + blockId2 + ":" + portId2);
-    let block1 = flowchart.getBlock(blockId1);
-    let block2 = flowchart.getBlock(blockId2);
-    if (block1 && block2) {
-      flowchart.addPortConnector(block1.getPort(portId1), block2.getPort(portId2));
+  if (s != null && s.trim().length > 0) {
+    let t = s.split("|");
+    for (let i of t) {
+      let x = i.split(",");
+      let blockId1 = x[0].substring(0, x[0].indexOf("@") - 1).trim();
+      let portId1 = x[0].substring(x[0].indexOf("@") + 1).trim();
+      let blockId2 = x[1].substring(0, x[1].indexOf("@") - 1).trim();
+      let portId2 = x[1].substring(x[1].indexOf("@") + 1).trim();
+      // console.log(blockId1 + ":" + portId1 + " --- " + blockId2 + ":" + portId2);
+      let block1 = flowchart.getBlock(blockId1);
+      let block2 = flowchart.getBlock(blockId2);
+      if (block1 && block2) {
+        flowchart.addPortConnector(block1.getPort(portId1), block2.getPort(portId2), "Port Connector #" + flowchart.connectors.length);
+      }
     }
   }
 }
@@ -324,9 +325,9 @@ function resize() {
   let workbenchRect = system.workbench.canvas.getBoundingClientRect() as DOMRect;
   system.workbench.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
   system.workbench.canvas.height = window.innerHeight - workbenchRect.top - 50;
-  let flowspaceRect = flowchart.blockView.canvas.getBoundingClientRect() as DOMRect;
-  flowchart.blockView.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
-  flowchart.blockView.canvas.height = window.innerHeight - workbenchRect.top - 50;
+  let blockViewRect = flowchart.blockView.canvas.getBoundingClientRect() as DOMRect;
+  flowchart.blockView.canvas.width = window.innerWidth - 2 * blockViewRect.left - 4;
+  flowchart.blockView.canvas.height = window.innerHeight - blockViewRect.top - 50;
   let componentsScroller = document.getElementById("components-scroller") as HTMLDivElement;
   componentsScroller.style.height = system.workbench.canvas.height * 0.85 + "px";
   let elementsScroller = document.getElementById("elements-scroller") as HTMLDivElement;

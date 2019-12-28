@@ -26,6 +26,12 @@ export class Arc {
     return dx * dx + dy * dy < this.radius * this.radius;
   }
 
+  public near(x: number, y: number): boolean {
+    let dx = x - this.x;
+    let dy = y - this.y;
+    return dx * dx + dy * dy < 4 * this.radius * this.radius;
+  }
+
   public toString(): string {
     return "(" + this.x + ", " + this.y + ", " + this.radius + ", " + this.startAngle + ", " + this.endAngle + ", " + this.anticlockwise + ")";
   }

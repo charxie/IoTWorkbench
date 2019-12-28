@@ -23,10 +23,21 @@ export class Flowchart {
     this.blockView = new BlockView("block-view", this);
   }
 
-  addPortConnector(port1: Port, port2: Port): boolean {
+  /* connector methods */
+
+  getConnector(port: Port): PortConnector {
+    for (let connector of this.connectors) {
+      if (connector.input == port || connector.output == port) {
+        return connector;
+      }
+    }
+    return null;
+  }
+
+  addPortConnector(output: Port, input: Port, uid: string): boolean {
     let existing = false;
-    for (let i = 0; i < this.connectors.length; i++) {
-      if ((this.connectors[i].port1 == port1 && this.connectors[i].port2 == port2) || (this.connectors[i].port1 == port2 && this.connectors[i].port2 == port1)) {
+    for (let c of this.connectors) {
+      if (c.input == input && c.output == output) {
         existing = true;
         break;
       }
@@ -34,27 +45,34 @@ export class Flowchart {
     if (existing) {
       return false;
     }
-    let c = new PortConnector(port1, port2);
-    c.uid = "Port Connector #" + Date.now().toString(16);
+    let c = new PortConnector(output, input);
+    c.uid = uid;
     this.connectors.push(c);
     return true;
   }
 
+  removePortConnector(connector: PortConnector): void {
+    this.connectors.splice(this.connectors.indexOf(connector), 1);
+    this.storePortConnectors();
+  }
+
+  /* block methods */
+
   removeBlock(uid: string) {
-    let selectedIndex = -1;
-    for (let i = 0; i < this.blocks.length; i++) {
-      if (uid == this.blocks[i].uid) {
-        selectedIndex = i;
+    let selectedBlock: Block = null;
+    for (let b of this.blocks) {
+      if (uid == b.uid) {
+        selectedBlock = b;
         break;
       }
     }
-    if (selectedIndex != -1) {
+    if (selectedBlock != null) {
       let connectorsToRemove = [];
-      for (let i = 0; i < this.connectors.length; i++) {
-        let block1 = this.connectors[i].port1.block;
-        let block2 = this.connectors[i].port2.block;
-        if (block1 == this.blocks[selectedIndex] || block2 == this.blocks[selectedIndex]) {
-          connectorsToRemove.push(i);
+      for (let c of this.connectors) {
+        let block1 = c.input.block;
+        let block2 = c.output.block;
+        if (block1 == selectedBlock || block2 == selectedBlock) {
+          connectorsToRemove.push(this.connectors.indexOf(c));
         }
       }
       if (connectorsToRemove.length > 0) {
@@ -62,9 +80,18 @@ export class Flowchart {
           this.connectors.splice(connectorsToRemove[i], 1);
         }
       }
-      this.blocks.splice(selectedIndex, 1);
+      this.blocks.splice(this.blocks.indexOf(selectedBlock), 1);
       this.storeBlocks();
     }
+  }
+
+  getBlock(uid: string): Block {
+    for (let b of this.blocks) {
+      if (b.uid == uid) {
+        return b;
+      }
+    }
+    return null;
   }
 
   addBlock(name: string, x: number, y: number, uid: string): Block {
@@ -102,23 +129,18 @@ export class Flowchart {
     return block;
   }
 
+  /* rendering methods */
+
   draw(): void {
     this.blockView.draw();
   }
 
-  getBlock(uid: string): Block {
-    for (let i = 0; i < this.blocks.length; i++) {
-      if (this.blocks[i].uid == uid) {
-        return this.blocks[i];
-      }
-    }
-    return null;
-  }
+  /* storage methods */
 
   storePortConnectors(): void {
     let s = "";
-    for (let i = 0; i < this.connectors.length; i++) {
-      s += this.connectors[i].port1.block.uid + " @" + this.connectors[i].port1.uid + ", " + this.connectors[i].port2.block.uid + " @" + this.connectors[i].port2.uid + "|";
+    for (let c of this.connectors) {
+      s += c.output.block.uid + " @" + c.output.uid + ", " + c.input.block.uid + " @" + c.input.uid + "|";
     }
     s = s.substring(0, s.length - 1);
     localStorage.setItem("Port Connectors", s);
@@ -126,8 +148,8 @@ export class Flowchart {
 
   storeBlocks(): void {
     let s: string = "";
-    for (let i = 0; i < this.blocks.length; i++) {
-      s += this.blocks[i].getUid() + ", ";
+    for (let b of this.blocks) {
+      s += b.getUid() + ", ";
     }
     localStorage.setItem("Block Sequence", s.substring(0, s.length - 2));
   }
@@ -136,6 +158,5 @@ export class Flowchart {
     localStorage.setItem("X: " + block.getUid(), block.getX().toString());
     localStorage.setItem("Y: " + block.getUid(), block.getY().toString());
   }
-
 
 }

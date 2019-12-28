@@ -38,7 +38,7 @@ export class RainbowHat extends Hat {
   public temperatureGraph: LineChart;
   public pressureGraph: LineChart;
 
-  indexOfSelectedRgbLedLight: number = -1;
+  selectedRgbLedLight: LedLight;
   stateId: string = "rainbow_hat_default";
 
   private mouseOverObject: any;
@@ -77,8 +77,8 @@ export class RainbowHat extends Hat {
     this.decimalPointDisplays.push(new LedDisplay(this, "LED Display", 139, 214, 33, 65));
     this.decimalPointDisplays.push(new LedDisplay(this, "LED Display", 200, 214, 33, 65));
     this.decimalPointDisplays.push(new LedDisplay(this, "LED Display", 261, 214, 33, 65));
-    for (let i = 0; i < this.decimalPointDisplays.length; i++) {
-      this.decimalPointDisplays[i].fontSize = "40px";
+    for (let display of this.decimalPointDisplays) {
+      display.fontSize = "40px";
     }
 
     this.handles.push(new Rectangle(5, 5, 30, 30));
@@ -94,13 +94,13 @@ export class RainbowHat extends Hat {
   }
 
   public setSelectedRgbLedLightColor(color: string) {
-    if (this.indexOfSelectedRgbLedLight >= 0) {
-      this.rgbLedLights[this.indexOfSelectedRgbLedLight].color = color;
+    if (this.selectedRgbLedLight != null) {
+      this.selectedRgbLedLight.color = color;
       this.draw();
       let list = [];
-      for (let i = 0; i < this.rgbLedLights.length; i++) {
+      for (let light of this.rgbLedLights) {
         let a = [];
-        let c = Util.hexToRgb(this.rgbLedLights[i].color);
+        let c = Util.hexToRgb(light.color);
         a.push(c.r);
         a.push(c.g);
         a.push(c.b);
@@ -130,14 +130,14 @@ export class RainbowHat extends Hat {
     this.temperatureSensor.draw(ctx);
     this.barometricPressureSensor.draw(ctx);
     this.drawToolTips();
-    for (let i = 0; i < this.rgbLedLights.length; i++) {
-      this.rgbLedLights[i].draw(ctx);
+    for (let light of this.rgbLedLights) {
+      light.draw(ctx);
     }
-    for (let i = 0; i < this.alphanumericDisplays.length; i++) {
-      this.alphanumericDisplays[i].draw(ctx);
+    for (let display of this.alphanumericDisplays) {
+      display.draw(ctx);
     }
-    for (let i = 0; i < this.decimalPointDisplays.length; i++) {
-      this.decimalPointDisplays[i].draw(ctx);
+    for (let display of this.decimalPointDisplays) {
+      display.draw(ctx);
     }
   }
 
@@ -146,14 +146,14 @@ export class RainbowHat extends Hat {
     let rect = this.canvas.getBoundingClientRect();
     let dx = e.clientX - rect.x;
     let dy = e.clientY - rect.y;
-    this.indexOfSelectedRgbLedLight = -1;
-    for (let i = 0; i < this.rgbLedLights.length; i++) {
-      if (this.rgbLedLights[i].contains(dx, dy)) {
-        this.indexOfSelectedRgbLedLight = i;
+    this.selectedRgbLedLight = null;
+    for (let light of this.rgbLedLights) {
+      if (light.contains(dx, dy)) {
+        this.selectedRgbLedLight = light;
         break;
       }
     }
-    if (this.indexOfSelectedRgbLedLight >= 0) {
+    if (this.selectedRgbLedLight != null) {
       contextMenus.colorPicker.rainbowHat = this;
       let menu = document.getElementById(contextMenus.colorPicker.id) as HTMLMenuElement;
       menu.style.left = e.clientX + "px";
@@ -164,10 +164,10 @@ export class RainbowHat extends Hat {
       }
       system.colorPicker.setColorLabel(document.getElementById("colorpicker-label"));
       system.colorPicker.setColorCode(document.getElementById("colorpicker-hex-code") as HTMLInputElement);
-      system.colorPicker.setSelectedColor(this.rgbLedLights[this.indexOfSelectedRgbLedLight].color);
+      system.colorPicker.setSelectedColor(this.selectedRgbLedLight.color);
       system.colorPicker.draw();
       system.colorPicker.setSelectedPoint();
-      document.getElementById("colorpicker-title").innerText = "RGB LED Light " + this.indexOfSelectedRgbLedLight;
+      document.getElementById("colorpicker-title").innerText = "RGB LED Light " + this.rgbLedLights.indexOf(this.selectedRgbLedLight);
     } else {
       contextMenus.rainbowHat.hat = this;
       let menu = document.getElementById(contextMenus.rainbowHat.id) as HTMLMenuElement;
@@ -360,9 +360,9 @@ export class RainbowHat extends Hat {
       this.canvas.style.cursor = "move";
     } else {
       let onRgbLedLight = false;
-      for (let i = 0; i < this.rgbLedLights.length; i++) {
-        if (this.rgbLedLights[i].contains(dx, dy)) {
-          this.mouseOverObject = this.rgbLedLights[i];
+      for (let light of this.rgbLedLights) {
+        if (light.contains(dx, dy)) {
+          this.mouseOverObject = light;
           this.canvas.style.cursor = "pointer";
           onRgbLedLight = true;
           break;
@@ -446,8 +446,8 @@ export class RainbowHat extends Hat {
     this.redLedLight.on = false;
     this.greenLedLight.on = false;
     this.blueLedLight.on = false;
-    for (let i = 0; i < this.rgbLedLights.length; i++) {
-      this.rgbLedLights[i].on = false;
+    for (let light of this.rgbLedLights) {
+      light.on = false;
     }
     for (let i = 0; i < 4; i++) {
       this.alphanumericDisplays[i].setCharacter(null);

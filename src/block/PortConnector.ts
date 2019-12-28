@@ -7,22 +7,22 @@ import {Port} from "./Port";
 export class PortConnector {
 
   uid: string;
-  port1: Port;
-  port2: Port;
+  output: Port;
+  input: Port;
 
-  constructor(port1: Port, port2: Port) {
-    this.port1 = port1;
-    this.port2 = port2;
+  constructor(output: Port, input: Port) {
+    this.output = output;
+    this.input = input;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
-    let p = this.port1.getRelativePoint();
-    let q = this.port2.getRelativePoint();
-    let x1 = this.port1.block.getX() + p.x;
-    let y1 = this.port1.block.getY() + p.y;
-    let x2 = this.port2.block.getX() + q.x;
-    let y2 = this.port2.block.getY() + q.y;
+    let p = this.input.getRelativePoint();
+    let q = this.output.getRelativePoint();
+    let x1 = this.input.block.getX() + p.x;
+    let y1 = this.input.block.getY() + p.y;
+    let x2 = this.output.block.getX() + q.x;
+    let y2 = this.output.block.getY() + q.y;
     let dy = (y2 - y1) / 4;
     let cx = (x1 + x2) / 2;
     let cy = (y1 + y2) / 2;
