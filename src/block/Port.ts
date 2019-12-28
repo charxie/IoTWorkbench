@@ -8,6 +8,7 @@ import {Point} from "../math/Point";
 
 export class Port {
 
+  input: boolean; // a port must be either input or output. If this is false, then this is a port for output.
   block: Block;
   uid: string;
   name: string;
@@ -15,8 +16,9 @@ export class Port {
 
   private radius: number = 5;
 
-  constructor(block: Block, uid: string, x: number, y: number, anticlockwise: boolean) {
+  constructor(block: Block, input: boolean, uid: string, x: number, y: number, anticlockwise: boolean) {
     this.block = block;
+    this.input = input;
     this.uid = uid;
     this.arc = new Arc(x, y, this.radius, 0.5 * Math.PI, 1.5 * Math.PI, anticlockwise);
   }

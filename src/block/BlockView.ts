@@ -179,9 +179,11 @@ export class BlockView {
           for (let i = 0; i < block.ports.length; i++) {
             if (block.ports[i].contains(x - block.x, y - block.y)) {
               this.selectedPort = block.ports[i];
-              let p = this.selectedPort.getAbsolutePoint();
-              this.connector.x1 = p.x;
-              this.connector.y1 = p.y;
+              if (!this.selectedPort.input) {
+                let p = this.selectedPort.getAbsolutePoint();
+                this.connector.x1 = p.x;
+                this.connector.y1 = p.y;
+              }
               break outerloop;
             }
           }
@@ -196,7 +198,7 @@ export class BlockView {
       for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
         let block = this.flowchart.blocks[n];
         for (let i = 0; i < block.ports.length; i++) {
-          if (block.ports[i].contains(x - block.x, y - block.y)) {
+          if (block.ports[i].input && block.ports[i].contains(x - block.x, y - block.y)) {
             if (this.flowchart.addPortConnector(this.selectedPort, block.ports[i])) {
               sound.play();
               this.flowchart.storePortConnectors();
@@ -246,9 +248,11 @@ export class BlockView {
       this.moveTo(x, y, this.selectedMovable);
       this.draw();
     } else if (this.selectedPort != null) {
-      this.connector.x2 = e.offsetX;
-      this.connector.y2 = e.offsetY;
-      this.draw();
+      if (!this.selectedPort.input) {
+        this.connector.x2 = e.offsetX;
+        this.connector.y2 = e.offsetY;
+        this.draw();
+      }
     }
 
   }

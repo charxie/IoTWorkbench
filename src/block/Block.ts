@@ -93,21 +93,23 @@ export abstract class Block implements Movable {
 
     // draw the name
     ctx.save();
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "gray";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = this.small ? 0.75 : 1;
     ctx.font = this.small ? "12px Times" : "bold 16px Times";
     ctx.font = this.small ? "12px Times" : "bold 16px Times";
     let textMetrics = ctx.measureText(this.name);
     ctx.translate(this.x + this.width / 2 + 5, this.y + this.height / 2 + textMetrics.width / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText(this.name, 0, 0);
+    ctx.strokeText(this.name, 0, 0);
     ctx.restore();
 
     // draw the ports
     ctx.font = this.small ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
-    ctx.fillStyle = "white";
     for (let i = 0; i < this.ports.length; i++) {
       ctx.lineWidth = this.small ? 1 : 2;
+      ctx.fillStyle = this.ports[i].input ? "white" : "darkgray";
       ctx.beginPath();
       let a = this.ports[i].arc;
       let ax = a.x + this.x;
@@ -115,12 +117,14 @@ export abstract class Block implements Movable {
       ctx.arc(ax, ay, a.radius, a.startAngle, a.endAngle, a.anticlockwise);
       ctx.fill();
       ctx.stroke();
-      ctx.lineWidth = 0.75;
-      let t = this.ports[i].uid;
-      if (a.anticlockwise) {
-        ctx.strokeText(t, ax - ctx.measureText(t).width - (this.small ? 2 : 4), ay + 4);
-      } else {
-        ctx.strokeText(t, ax + (this.small ? 2 : 4), ay + 4)
+      if (!this.small) {
+        ctx.lineWidth = 0.75;
+        let t = this.ports[i].uid;
+        if (a.anticlockwise) {
+          ctx.strokeText(t, ax - ctx.measureText(t).width - (this.small ? 2 : 4), ay + 4);
+        } else {
+          ctx.strokeText(t, ax + (this.small ? 2 : 4), ay + 4)
+        }
       }
     }
 

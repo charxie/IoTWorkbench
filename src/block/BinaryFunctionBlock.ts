@@ -12,9 +12,9 @@ export class BinaryFunctionBlock extends Block {
     this.name = "F(x, y)";
     this.color = "#FF6347";
     let dy = this.height / 3;
-    this.ports.push(new Port(this, "X", 0, dy, false));
-    this.ports.push(new Port(this, "Y", 0, 2 * dy, false));
-    this.ports.push(new Port(this, "R", this.width, dy, true));
+    this.ports.push(new Port(this, true,"X", 0, dy, false));
+    this.ports.push(new Port(this, true,"Y", 0, 2 * dy, false));
+    this.ports.push(new Port(this, false,"R", this.width, this.height / 2, true));
     this.margin = 15;
   }
 
