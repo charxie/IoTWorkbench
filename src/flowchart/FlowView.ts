@@ -12,7 +12,6 @@ import {NegationBlock} from "./NegationBlock";
 import {MathBlock} from "./MathBlock";
 import {HatBlock} from "./HatBlock";
 import {Port} from "./Port";
-import {PortConnector} from "./PortConnector";
 import {Connector} from "./Connector";
 
 export class FlowView {
@@ -101,11 +100,11 @@ export class FlowView {
   public draw(): void {
     let ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    for (let i = 0; i < this.flowchart.blocks.length; i++) {
-      this.flowchart.blocks[i].draw(ctx);
-    }
     for (let i = 0; i < this.flowchart.connectors.length; i++) {
       this.flowchart.connectors[i].draw(ctx);
+    }
+    for (let i = 0; i < this.flowchart.blocks.length; i++) {
+      this.flowchart.blocks[i].draw(ctx);
     }
     if (this.selectedPort) {
       this.connector.draw(ctx);
@@ -174,6 +173,7 @@ export class FlowView {
           if (block.ports[i].contains(x - block.x, y - block.y)) {
             if (this.flowchart.addPortConnector(this.selectedPort, block.ports[i])) {
               sound.play();
+              this.flowchart.storePortConnectors();
             }
             break outerloop;
           }

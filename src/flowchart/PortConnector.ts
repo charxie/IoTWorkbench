@@ -6,6 +6,7 @@ import {Port} from "./Port";
 
 export class PortConnector {
 
+  uid: string;
   port1: Port;
   port2: Port;
 

@@ -10,6 +10,7 @@ import {ConditionalBlock} from "./ConditionalBlock";
 import {LogicBlock} from "./LogicBlock";
 import {MathBlock} from "./MathBlock";
 import {Port} from "./Port";
+import {NegationBlock} from "./NegationBlock";
 
 export class Flowchart {
 
@@ -32,7 +33,9 @@ export class Flowchart {
     if (existing) {
       return false;
     }
-    this.connectors.push(new PortConnector(port1, port2));
+    let c = new PortConnector(port1, port2);
+    c.uid = "Port Connector #" + Date.now().toString(16);
+    this.connectors.push(c);
     return true;
   }
 
@@ -45,6 +48,19 @@ export class Flowchart {
       }
     }
     if (selectedIndex != -1) {
+      let connectorsToRemove = [];
+      for (let i = 0; i < this.connectors.length; i++) {
+        let block1 = this.connectors[i].port1.block;
+        let block2 = this.connectors[i].port2.block;
+        if (block1 == this.blocks[selectedIndex] || block2 == this.blocks[selectedIndex]) {
+          connectorsToRemove.push(i);
+        }
+      }
+      if (connectorsToRemove.length > 0) {
+        for (let i = connectorsToRemove.length - 1; i >= 0; i--) {
+          this.connectors.splice(connectorsToRemove[i], 1);
+        }
+      }
       this.blocks.splice(selectedIndex, 1);
       this.storeBlocks();
     }
@@ -63,7 +79,7 @@ export class Flowchart {
         block = new LogicBlock(x, y, 60, 80, "Or");
         break;
       case "Logic Not Block":
-        block = new ConditionalBlock(x, y, 60, 80);
+        block = new NegationBlock(x, y, 60, 80);
         break;
       case "Add Block":
         block = new MathBlock(x, y, 60, 80, "+");
@@ -84,6 +100,24 @@ export class Flowchart {
 
   draw(): void {
     this.flowview.draw();
+  }
+
+  getBlock(uid: string): Block {
+    for (let i = 0; i < this.blocks.length; i++) {
+      if (this.blocks[i].uid == uid) {
+        return this.blocks[i];
+      }
+    }
+    return null;
+  }
+
+  storePortConnectors(): void {
+    let s = "";
+    for (let i = 0; i < this.connectors.length; i++) {
+      s += this.connectors[i].port1.block.uid + " @" + this.connectors[i].port1.uid + ", " + this.connectors[i].port2.block.uid + " @" + this.connectors[i].port2.uid + "|";
+    }
+    s = s.substring(0, s.length - 1);
+    localStorage.setItem("Port Connectors", s);
   }
 
   storeBlocks(): void {

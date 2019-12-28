@@ -25,6 +25,15 @@ export abstract class Block implements Movable {
     this.height = height;
   }
 
+  getPort(uid: string): Port {
+    for (let i = 0; i < this.ports.length; i++) {
+      if (this.ports[i].uid == uid) {
+        return this.ports[i];
+      }
+    }
+    return null;
+  }
+
   getUid(): string {
     return this.uid;
   }
@@ -112,6 +121,10 @@ export abstract class Block implements Movable {
       }
     }
 
+  }
+
+  public toString(): string {
+    return this.uid;
   }
 
 }

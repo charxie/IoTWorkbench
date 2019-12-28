@@ -116,6 +116,7 @@ window.onload = function () {
   restoreWorkbench();
   restoreMcus();
   restoreHats();
+  restoreConnectors();
 
   setTimeout(function () { // call this to refresh after inserting canvases
     resize();
@@ -280,7 +281,6 @@ function restoreLocation(m: Movable) {
 
 function restoreBlocks() {
   let s: string = localStorage.getItem("Block Sequence");
-  console.log(s);
   if (s != null) {
     let t = s.split(",");
     if (t.length > 0) {
@@ -295,6 +295,24 @@ function restoreBlocks() {
     }
   }
   restoreLocations(flowchart.blocks);
+}
+
+function restoreConnectors() {
+  let s = localStorage.getItem("Port Connectors");
+  let t = s.split("|");
+  for (let i = 0; i < t.length; i++) {
+    let x = t[i].split(",");
+    let blockId1 = x[0].substring(0, x[0].indexOf("@") - 1).trim();
+    let portId1 = x[0].substring(x[0].indexOf("@") + 1).trim();
+    let blockId2 = x[1].substring(0, x[1].indexOf("@") - 1).trim();
+    let portId2 = x[1].substring(x[1].indexOf("@") + 1).trim();
+    // console.log(blockId1 + ":" + portId1 + " --- " + blockId2 + ":" + portId2);
+    let block1 = flowchart.getBlock(blockId1);
+    let block2 = flowchart.getBlock(blockId2);
+    if (block1 && block2) {
+      flowchart.addPortConnector(block1.getPort(portId1), block2.getPort(portId2));
+    }
+  }
 }
 
 window.onresize = function () {
