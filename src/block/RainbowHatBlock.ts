@@ -10,6 +10,7 @@ export class RainbowHatBlock extends HatBlock {
   constructor(x: number, y: number) {
     super(x, y, 125, 250);
     this.name = "Rainbow HAT";
+    this.color = "#808000";
     let dy = this.height / 11;
     this.ports.push(new Port(this,"PB", this.width, dy, true)); // coordinates relative to this block
     this.ports.push(new Port(this,"BA", this.width, 2 * dy, true));

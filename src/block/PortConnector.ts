@@ -27,10 +27,10 @@ export class PortConnector {
     let cx = (x1 + x2) / 2;
     let cy = (y1 + y2) / 2;
     ctx.moveTo(x1, y1);
-    let x = (cx + x1) / 2;
+    let x = (cx + x1) / 2; // control point for the first half
     let y = (cy + y1) / 2 - dy;
     ctx.quadraticCurveTo(x, y, cx, cy);
-    x = (cx + x2) / 2;
+    x = (cx + x2) / 2; // control point for the second half
     y = (cy + y2) / 2 + dy;
     ctx.quadraticCurveTo(x, y, x2, y2);
     ctx.stroke();

@@ -6,11 +6,11 @@ import $ from "jquery";
 import {MyContextMenu} from "../../MyContextMenu";
 import {closeAllContextMenus, flowchart} from "../../Main";
 
-export class FlowViewContextMenu extends MyContextMenu {
+export class BlockViewContextMenu extends MyContextMenu {
 
   constructor() {
     super();
-    this.id = "flow-view-context-menu";
+    this.id = "block-view-context-menu";
   }
 
   getUi(): string {
@@ -70,7 +70,7 @@ export class FlowViewContextMenu extends MyContextMenu {
     $("#modal-dialog").dialog({
       resizable: false,
       modal: true,
-      title: "Flowchart Settings",
+      title: "Block View Settings",
       height: 400,
       width: 400,
       buttons: {

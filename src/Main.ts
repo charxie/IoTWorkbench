@@ -15,7 +15,7 @@ import {System} from "./components/System";
 import {Movable} from "./Movable";
 import {RainbowHat} from "./components/RainbowHat";
 import {Sensor} from "./components/Sensor";
-import {Flowchart} from "./flowchart/Flowchart";
+import {Flowchart} from "./block/Flowchart";
 import {ComponentsPanel} from "./components/ui/ComponentsPanel";
 import {RainbowHatContextMenu} from "./components/ui/RainbowHatContextMenu";
 import {WorkbenchContextMenu} from "./components/ui/WorkbenchContextMenu";
@@ -27,9 +27,9 @@ import {CapacitiveTouchHatContextMenu} from "./components/ui/CapacitiveTouchHatC
 import {UnicornHatContextMenu} from "./components/ui/UnicornHatContextMenu";
 import {CrickitHatContextMenu} from "./components/ui/CrickitHatContextMenu";
 import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
-import {FlowViewContextMenu} from "./flowchart/ui/FlowViewContextMenu";
-import {FlowchartElementsPanel} from "./flowchart/ui/FlowchartElementsPanel";
-import {BlockContextMenu} from "./flowchart/ui/BlockContextMenu";
+import {BlockViewContextMenu} from "./block/ui/BlockViewContextMenu";
+import {BlockElementsPanel} from "./block/ui/BlockElementsPanel";
+import {BlockContextMenu} from "./block/ui/BlockContextMenu";
 
 import {Sound} from "./Sound";
 // @ts-ignore
@@ -79,14 +79,14 @@ window.onload = function () {
   let creditLabel = document.getElementById('credit') as HTMLElement;
   creditLabel.innerHTML = social + "<div class='horizontal-divider'></div>" + Constants.Software.name + " " + Constants.Software.version + ", " + user.fullName + " , &copy; " + new Date().getFullYear();
 
-  let digitalTwinsTabButton = document.getElementById("digital-twins-tab-button") as HTMLButtonElement;
-  digitalTwinsTabButton.addEventListener("click", function (event) {
-    selectTab(digitalTwinsTabButton, "digital-twins-playground");
+  let modelTabButton = document.getElementById("model-tab-button") as HTMLButtonElement;
+  modelTabButton.addEventListener("click", function (event) {
+    selectTab(modelTabButton, "model-playground");
     system.draw();
   });
-  let flowchartTabButton = document.getElementById("flowchart-tab-button") as HTMLButtonElement;
-  flowchartTabButton.addEventListener("click", function (event) {
-    selectTab(flowchartTabButton, "flowchart-playground");
+  let blockTabButton = document.getElementById("block-tab-button") as HTMLButtonElement;
+  blockTabButton.addEventListener("click", function (event) {
+    selectTab(blockTabButton, "block-playground");
     flowchart.draw();
   });
   let codeTabButton = document.getElementById("code-tab-button") as HTMLButtonElement;
@@ -94,8 +94,8 @@ window.onload = function () {
     selectTab(codeTabButton, "code-playground");
   });
 
-  setupContextMenuForDigitalTwins();
-  setupContextMenuForFlowchart();
+  setupContextMenuForModel();
+  setupContextMenuForBlock();
 
   let lineChartContextMenu = new LineChartContextMenu();
   lineChartContextMenu.render("linechart-context-menu-placeholder");
@@ -106,10 +106,10 @@ window.onload = function () {
   contextMenus.colorPicker = colorPickerContextMenu;
 
   let componentsPanel = new ComponentsPanel();
-  componentsPanel.render("digital-twins-playground-components-panel");
+  componentsPanel.render("model-playground-components-panel");
 
-  let elementsPanel = new FlowchartElementsPanel();
-  elementsPanel.render("flowchart-elements-panel");
+  let elementsPanel = new BlockElementsPanel();
+  elementsPanel.render("block-elements-panel");
 
   // read locally stored properties
   restoreBlocks();
@@ -127,9 +127,9 @@ window.onload = function () {
 
 };
 
-function setupContextMenuForFlowchart() {
-  let flowViewContextMenu = new FlowViewContextMenu();
-  flowViewContextMenu.render("flow-view-context-menu-placeholder");
+function setupContextMenuForBlock() {
+  let flowViewContextMenu = new BlockViewContextMenu();
+  flowViewContextMenu.render("block-view-context-menu-placeholder");
   flowViewContextMenu.addListeners();
   contextMenus.flowView = flowViewContextMenu;
 
@@ -139,7 +139,7 @@ function setupContextMenuForFlowchart() {
   contextMenus.block = blockContextMenu;
 }
 
-function setupContextMenuForDigitalTwins() {
+function setupContextMenuForModel() {
   let workbenchContextMenu = new WorkbenchContextMenu();
   workbenchContextMenu.render("workbench-context-menu-placeholder");
   workbenchContextMenu.addListeners();
@@ -289,7 +289,7 @@ function restoreBlocks() {
     for (let i = 0; i < t.length; i++) {
       t[i] = t[i].trim();
       let name = t[i].substring(0, t[i].indexOf("#") - 1);
-      if (name.indexOf("HAT") == -1) { // Do not add HAT blocks. They are added by the digital twins.
+      if (name.indexOf("HAT") == -1) { // Do not add HAT blocks. They are added by the model components.
         flowchart.addBlock(name, 0, 0, t[i]);
       }
     }
@@ -324,13 +324,13 @@ function resize() {
   let workbenchRect = system.workbench.canvas.getBoundingClientRect() as DOMRect;
   system.workbench.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
   system.workbench.canvas.height = window.innerHeight - workbenchRect.top - 50;
-  let flowspaceRect = flowchart.flowview.canvas.getBoundingClientRect() as DOMRect;
-  flowchart.flowview.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
-  flowchart.flowview.canvas.height = window.innerHeight - workbenchRect.top - 50;
+  let flowspaceRect = flowchart.blockView.canvas.getBoundingClientRect() as DOMRect;
+  flowchart.blockView.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
+  flowchart.blockView.canvas.height = window.innerHeight - workbenchRect.top - 50;
   let componentsScroller = document.getElementById("components-scroller") as HTMLDivElement;
   componentsScroller.style.height = system.workbench.canvas.height * 0.85 + "px";
   let elementsScroller = document.getElementById("elements-scroller") as HTMLDivElement;
-  elementsScroller.style.height = flowchart.flowview.canvas.height * 0.85 + "px";
+  elementsScroller.style.height = flowchart.blockView.canvas.height * 0.85 + "px";
 }
 
 function draw() {

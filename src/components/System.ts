@@ -54,7 +54,7 @@ export class System {
     }
 
     this.workbench = new Workbench("workbench");
-    this.playground = document.getElementById("digital-twins-playground") as HTMLDivElement;
+    this.playground = document.getElementById("model-playground") as HTMLDivElement;
     this.playground.addEventListener("mousedown", this.mouseDown, false);
     this.playground.addEventListener("mouseup", this.mouseUp, false);
     this.playground.addEventListener("mousemove", this.mouseMove, false);

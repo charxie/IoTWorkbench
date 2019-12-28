@@ -6,15 +6,16 @@ import {Flowchart} from "./Flowchart";
 import {closeAllContextMenus, contextMenus, sound} from "../Main";
 import {Movable} from "../Movable";
 import {Block} from "./Block";
-import {ConditionalBlock} from "./ConditionalBlock";
+import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
 import {LogicBlock} from "./LogicBlock";
 import {NegationBlock} from "./NegationBlock";
 import {MathBlock} from "./MathBlock";
 import {HatBlock} from "./HatBlock";
 import {Port} from "./Port";
 import {Connector} from "./Connector";
+import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
 
-export class FlowView {
+export class BlockView {
 
   flowchart: Flowchart;
   readonly canvas: HTMLCanvasElement;
@@ -25,6 +26,7 @@ export class FlowView {
   private mouseDownRelativeY: number;
   private draggedElementId: string;
   private connector: Connector;
+  private gridSize: number = 100;
 
   constructor(canvasId: string, flowchart: Flowchart) {
     this.flowchart = flowchart;
@@ -37,7 +39,7 @@ export class FlowView {
 
     this.connector = new Connector();
 
-    let playground = document.getElementById("flowchart-playground") as HTMLDivElement;
+    let playground = document.getElementById("block-playground") as HTMLDivElement;
 
     // drag and drop support
     let that = this;
@@ -53,11 +55,16 @@ export class FlowView {
     playground.addEventListener("drop", function (e) {
       e.preventDefault();
       let id = (<HTMLElement>e.target).id;
-      if (id == "flow-view") {
+      if (id == "block-view") {
         switch (that.draggedElementId) {
-          case "conditional-block":
-            let block = new ConditionalBlock(e.offsetX, e.offsetY, 60, 80);
-            block.uid = "Conditional Block #" + Date.now().toString(16);
+          case "unary-function-block":
+            let block = new UnaryFunctionBlock(e.offsetX, e.offsetY, 60, 80);
+            block.uid = "Unary Function Block #" + Date.now().toString(16);
+            that.storeBlock(block);
+            break;
+          case "binary-function-block":
+            block = new BinaryFunctionBlock(e.offsetX, e.offsetY, 60, 100);
+            block.uid = "Binary Function Block #" + Date.now().toString(16);
             that.storeBlock(block);
             break;
           case "logic-and-block":
@@ -100,6 +107,9 @@ export class FlowView {
   public draw(): void {
     let ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.save();
+    this.drawGrid(ctx);
+    ctx.lineWidth = 3;
     for (let i = 0; i < this.flowchart.connectors.length; i++) {
       this.flowchart.connectors[i].draw(ctx);
     }
@@ -111,7 +121,23 @@ export class FlowView {
     }
   }
 
-  // detect if (x, y) is inside this flowview
+  public drawGrid(ctx: CanvasRenderingContext2D): void {
+    ctx.beginPath();
+    ctx.strokeStyle = "white";
+    for (let i = 1; i <= this.canvas.height / this.gridSize; i++) {
+      ctx.moveTo(0, i * this.gridSize);
+      ctx.lineTo(this.canvas.width, i * this.gridSize);
+    }
+    for (let i = 1; i <= this.canvas.width / this.gridSize; i++) {
+      ctx.moveTo(i * this.gridSize, 0);
+      ctx.lineTo(i * this.gridSize, this.canvas.height);
+    }
+    ctx.stroke();
+    ctx.closePath();
+    ctx.restore();
+  }
+
+  // detect if (x, y) is inside this view
   public contains(x: number, y: number): boolean {
     return x > this.canvas.offsetLeft && x < this.canvas.offsetLeft + this.canvas.width && y > this.canvas.offsetTop && y < this.canvas.offsetTop + this.canvas.height;
   }
@@ -249,7 +275,7 @@ export class FlowView {
       let deleteMenuItem = document.getElementById("block-delete-menu-item") as HTMLElement;
       deleteMenuItem.className = block instanceof HatBlock ? "menu-item disabled" : "menu-item";
     } else {
-      let menu = document.getElementById("flow-view-context-menu") as HTMLMenuElement;
+      let menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;
       menu.style.left = e.clientX + "px";
       menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
       menu.classList.add("show-menu");

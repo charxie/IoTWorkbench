@@ -57,15 +57,15 @@
 
 <!-- Tab links -->
 <div id="tabs" class="tab">
-  <button id="digital-twins-tab-button" class="tablinks active" title="Digital Twin Editor">
+  <button id="model-tab-button" class="tablinks active" title="Model Editor">
     <span style="font-size: 1.5em; color: teal; vertical-align: middle;"><i class="fas fa-clone"></i></span>
     <span style="display:inline-block; width:10px;"></span>
-    Digital Twins
+    Model
   </button>
-  <button id="flowchart-tab-button" class="tablinks" title="Flowchart Editor">
+  <button id="block-tab-button" class="tablinks" title="Block Editor">
     <span style="font-size: 1.5em; color: teal; vertical-align: middle;"><i class="fas fa-project-diagram"></i></span>
     <span style="display:inline-block; width:10px;"></span>
-    Flowchart
+    Block
   </button>
   <button id="code-tab-button" class="tablinks" title="Code Editor">
     <span style="font-size: 1.5em; color: teal; vertical-align: middle;"><i class="fas fa-code"></i></span>
@@ -74,10 +74,10 @@
   </button>
 </div>
 
-<div id="digital-twins-playground" style="position: absolute;" class="tabcontent">
+<div id="model-playground" style="position: absolute;" class="tabcontent">
   <canvas id="workbench" width="800" height="600"
           style="display: block; border: 2px solid #009999; margin: 10px 10px 10px 10px; position: absolute; z-index: 0;"></canvas>
-  <div id="digital-twins-playground-components-panel"></div>
+  <div id="model-playground-components-panel"></div>
   <div id="workbench-context-menu-placeholder"></div>
   <div id="raspberry-pi-context-menu-placeholder"></div>
   <div id="rainbow-hat-context-menu-placeholder"></div>
@@ -90,11 +90,11 @@
   <div id="colorpicker-context-menu-placeholder"></div>
 </div>
 
-<div id="flowchart-playground" style="position: absolute; display: none;" class="tabcontent">
-  <canvas id="flow-view" width="800" height="600"
-          style="display: block; border: 2px solid #009999; margin: 10px 10px 10px 10px; position: absolute; z-index: 0;"></canvas>
-  <div id="flowchart-elements-panel"></div>
-  <div id="flow-view-context-menu-placeholder"></div>
+<div id="block-playground" style="position: absolute; display: none;" class="tabcontent">
+  <canvas id="block-view" width="800" height="600"
+          style="background-color: #d4d0c8; display: block; border: 2px solid #009999; margin: 10px 10px 10px 10px; position: absolute; z-index: 0;"></canvas>
+  <div id="block-elements-panel"></div>
+  <div id="block-view-context-menu-placeholder"></div>
   <div id="block-context-menu-placeholder"></div>
 </div>
 

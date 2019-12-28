@@ -2,24 +2,25 @@
  * @author Charles Xie
  */
 
-import {FlowView} from "./FlowView";
+import {BlockView} from "./BlockView";
 import {Block} from "./Block";
 import {PortConnector} from "./PortConnector";
 import {RainbowHatBlock} from "./RainbowHatBlock";
-import {ConditionalBlock} from "./ConditionalBlock";
+import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
 import {LogicBlock} from "./LogicBlock";
 import {MathBlock} from "./MathBlock";
 import {Port} from "./Port";
 import {NegationBlock} from "./NegationBlock";
+import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
 
 export class Flowchart {
 
   blocks: Block[] = [];
   connectors: PortConnector[] = [];
-  flowview: FlowView;
+  blockView: BlockView;
 
   constructor() {
-    this.flowview = new FlowView("flow-view", this);
+    this.blockView = new BlockView("block-view", this);
   }
 
   addPortConnector(port1: Port, port2: Port): boolean {
@@ -69,8 +70,11 @@ export class Flowchart {
   addBlock(name: string, x: number, y: number, uid: string): Block {
     let block: Block = null;
     switch (name) {
-      case "Conditional Block":
-        block = new ConditionalBlock(x, y, 60, 80);
+      case "Unary Function Block":
+        block = new UnaryFunctionBlock(x, y, 60, 80);
+        break;
+      case "Binary Function Block":
+        block = new BinaryFunctionBlock(x, y, 60, 100);
         break;
       case "Logic And Block":
         block = new LogicBlock(x, y, 60, 80, "And");
@@ -99,7 +103,7 @@ export class Flowchart {
   }
 
   draw(): void {
-    this.flowview.draw();
+    this.blockView.draw();
   }
 
   getBlock(uid: string): Block {

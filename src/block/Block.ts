@@ -4,6 +4,7 @@
 
 import {Port} from "./Port";
 import {Movable} from "../Movable";
+import {Util} from "../Util";
 
 export abstract class Block implements Movable {
 
@@ -13,6 +14,7 @@ export abstract class Block implements Movable {
   y: number;
   width: number;
   height: number;
+  color: string = "#666666";
   name: string;
   radius: number = 5;
   margin: number = 30; // margin for inset
@@ -70,9 +72,10 @@ export abstract class Block implements Movable {
 
     // draw the block with shade
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
+
     shade.addColorStop(0, "white");
-    shade.addColorStop(this.small ? 0.1 : 0.05, "darkgray");
-    shade.addColorStop(1, "gray");
+    shade.addColorStop(this.small ? 0.1 : 0.05, Util.adjust(this.color, 50));
+    shade.addColorStop(1, this.color);
     ctx.fillStyle = shade;
     ctx.fillRoundedRect(this.x, this.y, this.width, this.height, this.radius);
     ctx.lineWidth = 1;
@@ -91,8 +94,8 @@ export abstract class Block implements Movable {
     // draw the name
     ctx.save();
     ctx.fillStyle = "black";
-    ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
-    ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
+    ctx.font = this.small ? "12px Times" : "bold 16px Times";
+    ctx.font = this.small ? "12px Times" : "bold 16px Times";
     let textMetrics = ctx.measureText(this.name);
     ctx.translate(this.x + this.width / 2 + 5, this.y + this.height / 2 + textMetrics.width / 2);
     ctx.rotate(-Math.PI / 2);
@@ -102,9 +105,9 @@ export abstract class Block implements Movable {
     // draw the ports
     ctx.font = this.small ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
-    ctx.fillStyle = "lightgray";
+    ctx.fillStyle = "white";
     for (let i = 0; i < this.ports.length; i++) {
-      ctx.lineWidth = 1;
+      ctx.lineWidth = this.small ? 1 : 2;
       ctx.beginPath();
       let a = this.ports[i].arc;
       let ax = a.x + this.x;
