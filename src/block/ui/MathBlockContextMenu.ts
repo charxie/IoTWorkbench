@@ -49,6 +49,8 @@ export class MathBlockContextMenu extends BlockContextMenu {
                       <option value="Subtract Block">−</option>
                       <option value="Multiply Block">×</option>
                       <option value="Divide Block">÷</option>
+                      <option value="Modulus Block">%</option>
+                      <option value="Exponentiation Block">^</option>
                     </select>
                     <div class='horizontal-divider'></div>B
                   </td>

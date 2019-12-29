@@ -71,7 +71,7 @@ export class BlockView {
             that.storeBlock(binaryFunctionBlock);
             break;
           case "logic-and-block":
-            let andBlock = new LogicBlock(e.offsetX, e.offsetY, 60, 80, "And Block", "And");
+            let andBlock = new LogicBlock(e.offsetX, e.offsetY, 60, 80, "AND Block", "AND");
             andBlock.uid = andBlock.name + " #" + Date.now().toString(16);
             that.storeBlock(andBlock);
             break;

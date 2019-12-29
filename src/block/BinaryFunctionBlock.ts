@@ -9,7 +9,7 @@ export class BinaryFunctionBlock extends Block {
 
   constructor(x: number, y: number, width: number, height: number) {
     super(x, y, width, height);
-    this.symbol = "F(x, y)";
+    this.symbol = "F(X, Y)";
     this.name = "Binary Function Block";
     this.color = "#FF6347";
     let dy = this.height / 3;

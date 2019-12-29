@@ -28,11 +28,11 @@ export class BlockElementsPanel {
               <div style="margin-right: 10px; background-color: lightgreen; border: 1px solid #b81900; border-radius: 4px">
                 <table width="100%">
                   <tr>
-                  <td><canvas draggable="true" id="logic-and-block" width="60px" height="70px" style="left: 10px; cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="logic-not-block" width="60px" height="70px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="logic-and-block" width="60px" height="80px" style="left: 10px; cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="logic-not-block" width="60px" height="80px" style="cursor: pointer;"/></td>
                   </tr>
                  <tr>
-                  <td><canvas draggable="true" id="math-add-block" width="60px" height="70px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="math-add-block" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td></td>
                  </tr>
                 </table>
@@ -43,9 +43,9 @@ export class BlockElementsPanel {
   render(selectorId: string): void {
     let element = document.getElementById(selectorId);
     element.innerHTML = this.getUi();
-    this.drawFunctionBlock("F(x)", "unary-function-block");
-    this.drawFunctionBlock("F(x, y)", "binary-function-block");
-    this.drawLogicBlock("And Block", "And", "logic-and-block");
+    this.drawFunctionBlock("F(X)", "unary-function-block");
+    this.drawFunctionBlock("F(X, Y)", "binary-function-block");
+    this.drawLogicBlock("And Block", "AND", "logic-and-block");
     this.drawNegationBlock("logic-not-block");
     this.drawMathBlock("Add Block", "+", "math-add-block");
   }
@@ -74,7 +74,6 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new NegationBlock(8, 8, canvas.width - 16, canvas.height - 16);
-    block.name = name;
     block.small = true;
     block.margin = 12;
     block.draw(ctx);
@@ -84,9 +83,9 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = null;
-    if (type == "F(x)") {
+    if (type == "F(X)") {
       block = new UnaryFunctionBlock(8, 8, canvas.width - 16, canvas.height - 16);
-    } else if (type == "F(x, y)") {
+    } else if (type == "F(X, Y)") {
       block = new BinaryFunctionBlock(8, 8, canvas.width - 16, canvas.height - 16);
     }
     if (block != null) {

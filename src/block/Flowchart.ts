@@ -103,26 +103,41 @@ export class Flowchart {
       case "Binary Function Block":
         block = new BinaryFunctionBlock(x, y, 60, 100);
         break;
-      case "And Block":
-        block = new LogicBlock(x, y, 60, 80, name, "And");
-        break;
-      case "Or Block":
-        block = new LogicBlock(x, y, 60, 80, name, "Or");
-        break;
-      case "Not Block":
+      case "NOT Block":
         block = new NegationBlock(x, y, 60, 80);
         break;
+      case "AND Block":
+        block = new LogicBlock(x, y, 60, 90, name, "AND");
+        break;
+      case "OR Block":
+        block = new LogicBlock(x, y, 60, 90, name, "OR");
+        break;
+      case "NOR Block":
+        block = new LogicBlock(x, y, 60, 90, name, "NOR");
+        break;
+      case "XOR Block":
+        block = new LogicBlock(x, y, 60, 90, name, "XOR");
+        break;
+      case "XNOR Block":
+        block = new LogicBlock(x, y, 60, 90, name, "XNOR");
+        break;
       case "Add Block":
-        block = new MathBlock(x, y, 60, 80, name, "+");
+        block = new MathBlock(x, y, 60, 60, name, "+");
         break;
       case "Subtract Block":
-        block = new MathBlock(x, y, 60, 80, name, "−");
+        block = new MathBlock(x, y, 60, 60, name, "−");
         break;
       case "Multiply Block":
-        block = new MathBlock(x, y, 60, 80, name, "×");
+        block = new MathBlock(x, y, 60, 60, name, "×");
         break;
       case "Divide Block":
-        block = new MathBlock(x, y, 60, 80, name, "÷");
+        block = new MathBlock(x, y, 60, 60, name, "÷");
+        break;
+      case "Modulus Block":
+        block = new MathBlock(x, y, 60, 60, name, "%");
+        break;
+      case "Exponentiation Block":
+        block = new MathBlock(x, y, 60, 60, name, "^");
         break;
       case "Rainbow HAT Block":
         block = new RainbowHatBlock(20, 20);

@@ -45,8 +45,11 @@ export class LogicBlockContextMenu extends BlockContextMenu {
                   <td>
                     R<div class='horizontal-divider'></div>=<div class='horizontal-divider'></div>A<div class='horizontal-divider'></div>
                     <select id="logic-block-operator">
-                      <option value="And Block">And</option>
-                      <option value="Or Block">Or</option>
+                      <option value="AND Block">AND</option>
+                      <option value="OR Block">OR</option>
+                      <option value="XOR Block">XOR</option>
+                      <option value="NOR Block">NOR</option>
+                      <option value="XNOR Block">XNOR</option>
                     </select>
                     <div class='horizontal-divider'></div>B
                   </td>
