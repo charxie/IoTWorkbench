@@ -16,6 +16,7 @@ export abstract class Block implements Movable {
   height: number;
   color: string = "#666666";
   name: string;
+  symbol: string;
   radius: number = 5;
   margin: number = 30; // margin for inset
   small: boolean; // true when used for small icons
@@ -28,9 +29,9 @@ export abstract class Block implements Movable {
   }
 
   getPort(uid: string): Port {
-    for (let i = 0; i < this.ports.length; i++) {
-      if (this.ports[i].uid == uid) {
-        return this.ports[i];
+    for (let p of this.ports) {
+      if (p.uid == uid) {
+        return p;
       }
     }
     return null;
@@ -90,24 +91,38 @@ export abstract class Block implements Movable {
     ctx.strokeStyle = "black";
     ctx.stroke();
 
-    // draw the name
+    // draw the symbol or name (if symbol is not available)
     ctx.save();
     ctx.fillStyle = "gray";
     ctx.strokeStyle = "black";
     ctx.lineWidth = this.small ? 0.75 : 1;
-    ctx.font = this.small ? "12px Times" : "bold 16px Times";
-    ctx.font = this.small ? "12px Times" : "bold 16px Times";
-    let textMetrics = ctx.measureText(this.name);
-    ctx.translate(this.x + this.width / 2 + 5, this.y + this.height / 2 + textMetrics.width / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.strokeText(this.name, 0, 0);
+    if (this.symbol) {
+      let textWidth = ctx.measureText(this.symbol).width;
+      if (textWidth < this.width - 2 * this.margin - 20) {
+        ctx.font = this.small ? "16px Arial" : "bold 20px Arial";
+        textWidth = ctx.measureText(this.symbol).width;
+        ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.height / 2 + (this.small ? 5 : 7));
+      } else {
+        ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
+        textWidth = ctx.measureText(this.symbol).width;
+        ctx.translate(this.x + this.width / 2 + 5, this.y + this.height / 2 + textWidth / 2);
+        ctx.rotate(-Math.PI / 2);
+      }
+      ctx.fillText(this.symbol, 0, 0);
+    } else {
+      ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
+      let textMetrics = ctx.measureText(this.name);
+      ctx.translate(this.x + this.width / 2 + 5, this.y + this.height / 2 + textMetrics.width / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(this.name, 0, 0);
+    }
     ctx.restore();
 
     // draw the ports
     ctx.font = this.small ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
-    for (let i = 0; i < this.ports.length; i++) {
-      this.ports[i].draw(ctx, this.small);
+    for (let p of this.ports) {
+      p.draw(ctx, this.small);
     }
 
   }

@@ -71,29 +71,19 @@ export class BlockView {
             that.storeBlock(binaryFunctionBlock);
             break;
           case "logic-and-block":
-            let andBlock = new LogicBlock(e.offsetX, e.offsetY, 60, 80, "And");
-            andBlock.uid = "Logic And Block #" + Date.now().toString(16);
+            let andBlock = new LogicBlock(e.offsetX, e.offsetY, 60, 80, "And Block", "And");
+            andBlock.uid = andBlock.name + " #" + Date.now().toString(16);
             that.storeBlock(andBlock);
-            break;
-          case "logic-or-block":
-            let orBlock = new LogicBlock(e.offsetX, e.offsetY, 60, 80, "Or");
-            orBlock.uid = "Logic Or Block #" + Date.now().toString(16);
-            that.storeBlock(orBlock);
             break;
           case "logic-not-block":
             let notBlock = new NegationBlock(e.offsetX, e.offsetY, 60, 80);
-            notBlock.uid = "Logic Not Block #" + Date.now().toString(16);
+            notBlock.uid = notBlock.name + " #" + Date.now().toString(16);
             that.storeBlock(notBlock);
             break;
           case "math-add-block":
-            let addBlock = new MathBlock(e.offsetX, e.offsetY, 60, 80, "+");
-            addBlock.uid = "Add Block #" + Date.now().toString(16);
+            let addBlock = new MathBlock(e.offsetX, e.offsetY, 60, 80, "Add Block", "+");
+            addBlock.uid = addBlock.name + " #" + Date.now().toString(16);
             that.storeBlock(addBlock);
-            break;
-          case "math-multiply-block":
-            let multiplyBlock = new MathBlock(e.offsetX, e.offsetY, 60, 80, "×");
-            multiplyBlock.uid = "Multiply Block #" + Date.now().toString(16);
-            that.storeBlock(multiplyBlock);
             break;
         }
       }
@@ -291,14 +281,18 @@ export class BlockView {
         break;
       }
     }
-    if (block) {
-      contextMenus.block.block = block;
-      let menu = document.getElementById("block-context-menu") as HTMLMenuElement;
+    if (block instanceof MathBlock) {
+      contextMenus.mathBlock.block = block;
+      let menu = document.getElementById("math-block-context-menu") as HTMLMenuElement;
       menu.style.left = e.clientX + "px";
       menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
       menu.classList.add("show-menu");
-      let deleteMenuItem = document.getElementById("block-delete-menu-item") as HTMLElement;
-      deleteMenuItem.className = block instanceof HatBlock ? "menu-item disabled" : "menu-item";
+    } else if (block instanceof LogicBlock) {
+      contextMenus.logicBlock.block = block;
+      let menu = document.getElementById("logic-block-context-menu") as HTMLMenuElement;
+      menu.style.left = e.clientX + "px";
+      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
+      menu.classList.add("show-menu");
     } else {
       let menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;
       menu.style.left = e.clientX + "px";

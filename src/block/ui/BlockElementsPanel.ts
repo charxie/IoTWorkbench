@@ -19,7 +19,7 @@ export class BlockElementsPanel {
                 <table width="100%">
                   <tr>
                   <td><canvas draggable="true" id="unary-function-block" width="60px" height="80px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="binary-function-block" width="60px" height="80px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="binary-function-block" width="60px" height="90px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -29,16 +29,12 @@ export class BlockElementsPanel {
                 <table width="100%">
                   <tr>
                   <td><canvas draggable="true" id="logic-and-block" width="60px" height="70px" style="left: 10px; cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="logic-or-block" width="60px" height="70px" style="left: 110px; cursor: pointer;"/></td>
-                  </tr>
-                  <tr>
                   <td><canvas draggable="true" id="logic-not-block" width="60px" height="70px" style="cursor: pointer;"/></td>
-                  <td></td>
                   </tr>
                  <tr>
                   <td><canvas draggable="true" id="math-add-block" width="60px" height="70px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="math-multiply-block" width="60px" height="70px" style="cursor: pointer;"/></td>
-                  </tr>
+                  <td></td>
+                 </tr>
                 </table>
               </div>
             </div>`;
@@ -49,45 +45,51 @@ export class BlockElementsPanel {
     element.innerHTML = this.getUi();
     this.drawFunctionBlock("F(x)", "unary-function-block");
     this.drawFunctionBlock("F(x, y)", "binary-function-block");
-    this.drawLogicBlock("Or", "logic-or-block");
-    this.drawLogicBlock("And", "logic-and-block");
-    this.drawLogicBlock("Not", "logic-not-block");
-    this.drawMathBlock("+", "math-add-block");
-    this.drawMathBlock("×", "math-multiply-block");
+    this.drawLogicBlock("And Block", "And", "logic-and-block");
+    this.drawNegationBlock("logic-not-block");
+    this.drawMathBlock("Add Block", "+", "math-add-block");
   }
 
-  private drawMathBlock(name: string, canvasId: string): void {
+  private drawMathBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new MathBlock(8, 8, canvas.width - 16, canvas.height - 16, name);
+    let block = new MathBlock(8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
     block.name = name;
     block.small = true;
     block.margin = 12;
     block.draw(ctx);
   }
 
-  private drawLogicBlock(name: string, canvasId: string): void {
+  private drawLogicBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = (name == "Not") ? new NegationBlock(8, 8, canvas.width - 16, canvas.height - 16) :
-      new LogicBlock(8, 8, canvas.width - 16, canvas.height - 16, name);
+    let block = new LogicBlock(8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
     block.name = name;
     block.small = true;
     block.margin = 12;
     block.draw(ctx);
   }
 
-  private drawFunctionBlock(name: string, canvasId: string): void {
+  private drawNegationBlock(canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new NegationBlock(8, 8, canvas.width - 16, canvas.height - 16);
+    block.name = name;
+    block.small = true;
+    block.margin = 12;
+    block.draw(ctx);
+  }
+
+  private drawFunctionBlock(type: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = null;
-    if (name == "F(x)") {
+    if (type == "F(x)") {
       block = new UnaryFunctionBlock(8, 8, canvas.width - 16, canvas.height - 16);
-    } else if (name == "F(x, y)") {
+    } else if (type == "F(x, y)") {
       block = new BinaryFunctionBlock(8, 8, canvas.width - 16, canvas.height - 16);
     }
     if (block != null) {
-      block.name = name;
       block.small = true;
       block.margin = 12;
       block.draw(ctx);

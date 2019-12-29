@@ -7,9 +7,10 @@ import {Port} from "./Port";
 
 export class MathBlock extends Block {
 
-  constructor(x: number, y: number, width: number, height: number, name: string) {
+  constructor(x: number, y: number, width: number, height: number, name: string, symbol: string) {
     super(x, y, width, height);
     this.name = name;
+    this.symbol = symbol;
     this.color = "#008080";
     this.ports.push(new Port(this, true, "A", 0, this.height / 3, false));
     this.ports.push(new Port(this, true, "B", 0, this.height * 2 / 3, false));

@@ -103,20 +103,26 @@ export class Flowchart {
       case "Binary Function Block":
         block = new BinaryFunctionBlock(x, y, 60, 100);
         break;
-      case "Logic And Block":
-        block = new LogicBlock(x, y, 60, 80, "And");
+      case "And Block":
+        block = new LogicBlock(x, y, 60, 80, name, "And");
         break;
-      case "Logic Or Block":
-        block = new LogicBlock(x, y, 60, 80, "Or");
+      case "Or Block":
+        block = new LogicBlock(x, y, 60, 80, name, "Or");
         break;
-      case "Logic Not Block":
+      case "Not Block":
         block = new NegationBlock(x, y, 60, 80);
         break;
       case "Add Block":
-        block = new MathBlock(x, y, 60, 80, "+");
+        block = new MathBlock(x, y, 60, 80, name, "+");
+        break;
+      case "Subtract Block":
+        block = new MathBlock(x, y, 60, 80, name, "−");
         break;
       case "Multiply Block":
-        block = new MathBlock(x, y, 60, 80, "×");
+        block = new MathBlock(x, y, 60, 80, name, "×");
+        break;
+      case "Divide Block":
+        block = new MathBlock(x, y, 60, 80, name, "÷");
         break;
       case "Rainbow HAT Block":
         block = new RainbowHatBlock(20, 20);

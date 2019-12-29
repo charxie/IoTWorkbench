@@ -29,11 +29,12 @@ import {CrickitHatContextMenu} from "./components/ui/CrickitHatContextMenu";
 import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
 import {BlockViewContextMenu} from "./block/ui/BlockViewContextMenu";
 import {BlockElementsPanel} from "./block/ui/BlockElementsPanel";
-import {BlockContextMenu} from "./block/ui/BlockContextMenu";
+import {MathBlockContextMenu} from "./block/ui/MathBlockContextMenu";
 
 import {Sound} from "./Sound";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
+import {LogicBlockContextMenu} from "./block/ui/LogicBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -128,15 +129,20 @@ window.onload = function () {
 };
 
 function setupContextMenuForBlock() {
-  let flowViewContextMenu = new BlockViewContextMenu();
-  flowViewContextMenu.render("block-view-context-menu-placeholder");
-  flowViewContextMenu.addListeners();
-  contextMenus.flowView = flowViewContextMenu;
+  let blockViewContextMenu = new BlockViewContextMenu();
+  blockViewContextMenu.render("block-view-context-menu-placeholder");
+  blockViewContextMenu.addListeners();
+  contextMenus.blockView = blockViewContextMenu;
 
-  let blockContextMenu = new BlockContextMenu();
-  blockContextMenu.render("block-context-menu-placeholder");
-  blockContextMenu.addListeners();
-  contextMenus.block = blockContextMenu;
+  let mathBlockContextMenu = new MathBlockContextMenu();
+  mathBlockContextMenu.render("math-block-context-menu-placeholder");
+  mathBlockContextMenu.addListeners();
+  contextMenus.mathBlock = mathBlockContextMenu;
+
+  let logicBlockContextMenu = new LogicBlockContextMenu();
+  logicBlockContextMenu.render("logic-block-context-menu-placeholder");
+  logicBlockContextMenu.addListeners();
+  contextMenus.logicBlock = logicBlockContextMenu;
 }
 
 function setupContextMenuForModel() {
@@ -280,6 +286,7 @@ function restoreLocation(m: Movable) {
 
 function restoreBlocks() {
   let s: string = localStorage.getItem("Block Sequence");
+  console.log(s);
   if (s != null) {
     let t = s.split(",");
     if (t.length > 0) {
@@ -325,9 +332,8 @@ function resize() {
   let workbenchRect = system.workbench.canvas.getBoundingClientRect() as DOMRect;
   system.workbench.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
   system.workbench.canvas.height = window.innerHeight - workbenchRect.top - 50;
-  let blockViewRect = flowchart.blockView.canvas.getBoundingClientRect() as DOMRect;
-  flowchart.blockView.canvas.width = window.innerWidth - 2 * blockViewRect.left - 4;
-  flowchart.blockView.canvas.height = window.innerHeight - blockViewRect.top - 50;
+  flowchart.blockView.canvas.width = system.workbench.canvas.width;
+  flowchart.blockView.canvas.height = system.workbench.canvas.height;
   let componentsScroller = document.getElementById("components-scroller") as HTMLDivElement;
   componentsScroller.style.height = system.workbench.canvas.height * 0.85 + "px";
   let elementsScroller = document.getElementById("elements-scroller") as HTMLDivElement;
