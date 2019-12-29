@@ -6,11 +6,11 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 
-export class MathBlockContextMenu extends BlockContextMenu {
+export class FunctionBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "math-block-context-menu";
+    this.id = "function-block-context-menu";
   }
 
   getUi(): string {
@@ -38,21 +38,6 @@ export class MathBlockContextMenu extends BlockContextMenu {
                   <td>ID:</td>
                   <td>${this.block.uid.substring(this.block.uid.indexOf("#"))}</td>
                 </tr>
-                <tr>
-                  <td>Operator:</td>
-                  <td>
-                    R<div class='horizontal-divider'></div>=<div class='horizontal-divider'></div>A<div class='horizontal-divider'></div>
-                    <select id="math-block-operator">
-                      <option value="Add Block">+</option>
-                      <option value="Subtract Block">−</option>
-                      <option value="Multiply Block">×</option>
-                      <option value="Divide Block">÷</option>
-                      <option value="Modulus Block">%</option>
-                      <option value="Exponentiation Block">^</option>
-                    </select>
-                    <div class='horizontal-divider'></div>B
-                  </td>
-                </tr>
               </table>
             </div>`;
   }
@@ -63,24 +48,14 @@ export class MathBlockContextMenu extends BlockContextMenu {
     if (this.block) {
       let that = this;
       $("#modal-dialog").html(this.getSettingsUI());
-      let e = document.getElementById("math-block-operator") as HTMLSelectElement;
-      e.value = this.block.name;
       $("#modal-dialog").dialog({
         resizable: false,
         modal: true,
-        title: "Math Block Settings",
+        title: "Function Block Settings",
         height: 300,
         width: 400,
         buttons: {
           'OK': function () {
-            that.block.name = e.options[e.selectedIndex].value;
-            that.block.symbol = e.options[e.selectedIndex].text;
-            that.block.uid = that.block.name + " #" + Date.now().toString(16);
-            flowchart.draw();
-            // update the local storage since we have changed the UID of this block
-            flowchart.storeBlocks();
-            flowchart.storeBlockLocation(that.block);
-            flowchart.storePortConnectors();
             $(this).dialog('close');
           },
           'Cancel': function () {

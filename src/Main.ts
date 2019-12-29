@@ -10,12 +10,12 @@ import "jquery-ui-bundle/jquery-ui";
 import "@fortawesome/fontawesome-free/css/all.css";
 
 import * as Constants from "./Constants";
-import {User} from "./User";
-import {System} from "./components/System";
 import {Movable} from "./Movable";
+import {User} from "./User";
+
+import {System} from "./components/System";
 import {RainbowHat} from "./components/RainbowHat";
 import {Sensor} from "./components/Sensor";
-import {Flowchart} from "./block/Flowchart";
 import {ComponentsPanel} from "./components/ui/ComponentsPanel";
 import {RainbowHatContextMenu} from "./components/ui/RainbowHatContextMenu";
 import {WorkbenchContextMenu} from "./components/ui/WorkbenchContextMenu";
@@ -27,14 +27,18 @@ import {CapacitiveTouchHatContextMenu} from "./components/ui/CapacitiveTouchHatC
 import {UnicornHatContextMenu} from "./components/ui/UnicornHatContextMenu";
 import {CrickitHatContextMenu} from "./components/ui/CrickitHatContextMenu";
 import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
+
+import {Flowchart} from "./block/Flowchart";
 import {BlockViewContextMenu} from "./block/ui/BlockViewContextMenu";
 import {BlockElementsPanel} from "./block/ui/BlockElementsPanel";
+import {LogicBlockContextMenu} from "./block/ui/LogicBlockContextMenu";
 import {MathBlockContextMenu} from "./block/ui/MathBlockContextMenu";
+import {FunctionBlockContextMenu} from "./block/ui/FunctionBlockContextMenu";
+import {HatBlockContextMenu} from "./block/ui/HatBlockContextMenu";
 
 import {Sound} from "./Sound";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
-import {LogicBlockContextMenu} from "./block/ui/LogicBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -43,6 +47,10 @@ declare global {
     drawRoundedRect(x, y, w, h, r);
 
     fillRoundedRect(x, y, w, h, r);
+
+    drawHalfRoundedRect(x, y, w, h, r, side);
+
+    fillHalfRoundedRect(x, y, w, h, r, side);
   }
 
   interface String {
@@ -122,6 +130,22 @@ window.onload = function () {
   setTimeout(function () { // call this to refresh after inserting canvases
     resize();
     draw();
+    let startTab = localStorage.getItem("Start Tab");
+    if (startTab) {
+      switch (startTab) {
+        case "model-playground":
+          selectTab(modelTabButton, startTab);
+          system.draw();
+          break;
+        case "block-playground":
+          selectTab(blockTabButton, startTab);
+          flowchart.draw();
+          break;
+        case "code-playground":
+          selectTab(codeTabButton, startTab);
+          break;
+      }
+    }
   }, 1000);
 
   sound.setSource(clickSound);
@@ -143,6 +167,16 @@ function setupContextMenuForBlock() {
   logicBlockContextMenu.render("logic-block-context-menu-placeholder");
   logicBlockContextMenu.addListeners();
   contextMenus.logicBlock = logicBlockContextMenu;
+
+  let functionBlockContextMenu = new FunctionBlockContextMenu();
+  functionBlockContextMenu.render("function-block-context-menu-placeholder");
+  functionBlockContextMenu.addListeners();
+  contextMenus.functionBlock = functionBlockContextMenu;
+
+  let hatBlockContextMenu = new HatBlockContextMenu();
+  hatBlockContextMenu.render("hat-block-context-menu-placeholder");
+  hatBlockContextMenu.addListeners();
+  contextMenus.hatBlock = hatBlockContextMenu;
 }
 
 function setupContextMenuForModel() {
@@ -206,6 +240,7 @@ function selectTab(button: HTMLButtonElement, tabId: string) {
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(tabId).style.display = "block";
   button.className += " active";
+  localStorage.setItem("Start Tab", tabId);
 }
 
 function restoreHats() {

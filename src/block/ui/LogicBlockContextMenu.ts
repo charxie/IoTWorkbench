@@ -3,9 +3,7 @@
  */
 
 import $ from "jquery";
-import {Block} from "../Block";
-import {MyContextMenu} from "../../MyContextMenu";
-import {closeAllContextMenus, flowchart, system} from "../../Main";
+import {closeAllContextMenus, flowchart} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 
 export class LogicBlockContextMenu extends BlockContextMenu {

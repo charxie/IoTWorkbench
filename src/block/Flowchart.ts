@@ -4,14 +4,14 @@
 
 import {BlockView} from "./BlockView";
 import {Block} from "./Block";
-import {PortConnector} from "./PortConnector";
-import {RainbowHatBlock} from "./RainbowHatBlock";
 import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
+import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
+import {NegationBlock} from "./NegationBlock";
 import {LogicBlock} from "./LogicBlock";
 import {MathBlock} from "./MathBlock";
+import {RainbowHatBlock} from "./RainbowHatBlock";
 import {Port} from "./Port";
-import {NegationBlock} from "./NegationBlock";
-import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
+import {PortConnector} from "./PortConnector";
 
 export class Flowchart {
 

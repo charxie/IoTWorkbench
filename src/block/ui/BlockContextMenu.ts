@@ -5,7 +5,7 @@
 import $ from "jquery";
 import {Block} from "../Block";
 import {MyContextMenu} from "../../MyContextMenu";
-import {closeAllContextMenus, flowchart, system} from "../../Main";
+import {closeAllContextMenus, flowchart} from "../../Main";
 
 export abstract class BlockContextMenu extends MyContextMenu {
 

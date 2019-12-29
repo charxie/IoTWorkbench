@@ -99,6 +99,52 @@ if (typeof CanvasRenderingContext2D.prototype.fillRoundedRect !== 'function') {
   }
 }
 
+if (typeof CanvasRenderingContext2D.prototype.fillHalfRoundedRect !== 'function') {
+  CanvasRenderingContext2D.prototype.fillHalfRoundedRect = function fillHalfRoundedRect(x, y, w, h, r, side) {
+    this.beginPath();
+    switch (side) {
+      case "Top":
+        this.moveTo(x + r, y);
+        this.lineTo(x + w - r, y); // top line
+        this.quadraticCurveTo(x + w, y, x + w, y + r); // upper right corner
+        this.lineTo(x + w, y + h); // right line
+        this.lineTo(x, y + h); // bottom line
+        this.lineTo(x, y + r); // left line
+        this.quadraticCurveTo(x, y, x + r, y); // upper left corner
+        break;
+      case "Bottom":
+        this.moveTo(x, y);
+        this.lineTo(x + w, y); // top line
+        this.lineTo(x + w, y + h - r); // right line
+        this.quadraticCurveTo(x + w, y + h, x + w - r, y + h); // lower right corner
+        this.lineTo(x + r, y + h); // lower line
+        this.quadraticCurveTo(x, y + h, x, y + h - r); // lower left corner
+        this.lineTo(x, y); // left line
+        break;
+      case "Left":
+        this.moveTo(x + r, y);
+        this.lineTo(x + w, y); // top line
+        this.lineTo(x + w, y + h); // right line
+        this.lineTo(x + r, y + h); // bottom line
+        this.quadraticCurveTo(x, y + h, x, y + h - r); // lower right corner
+        this.lineTo(x, y + r); // left line
+        this.quadraticCurveTo(x, y, x + r, y); // upper left corner
+        break;
+      case "Right":
+        this.moveTo(x, y);
+        this.lineTo(x + w - r, y); // top line
+        this.quadraticCurveTo(x + w, y, x + w, y + r); // upper right corner
+        this.lineTo(x + w, y + h - r); // right line
+        this.quadraticCurveTo(x + w, y + h, x + w - r, y + h); // lower right corner
+        this.lineTo(x, y + h); // bottom line
+        this.lineTo(x, y); // left line
+        break;
+    }
+    this.closePath();
+    this.fill();
+  }
+}
+
 if (typeof CanvasRenderingContext2D.prototype.drawRoundedRect !== 'function') {
   CanvasRenderingContext2D.prototype.drawRoundedRect = function drawRoundedRect(x, y, w, h, r) {
     this.beginPath();
@@ -111,6 +157,52 @@ if (typeof CanvasRenderingContext2D.prototype.drawRoundedRect !== 'function') {
     this.quadraticCurveTo(x, y + h, x, y + h - r);
     this.lineTo(x, y + r);
     this.quadraticCurveTo(x, y, x + r, y);
+    this.closePath();
+    this.stroke();
+  }
+}
+
+if (typeof CanvasRenderingContext2D.prototype.drawHalfRoundedRect !== 'function') {
+  CanvasRenderingContext2D.prototype.drawHalfRoundedRect = function drawHalfRoundedRect(x, y, w, h, r, side) {
+    this.beginPath();
+    switch (side) {
+      case "Top":
+        this.moveTo(x + r, y);
+        this.lineTo(x + w - r, y); // top line
+        this.quadraticCurveTo(x + w, y, x + w, y + r); // upper right corner
+        this.lineTo(x + w, y + h); // right line
+        this.lineTo(x, y + h); // bottom line
+        this.lineTo(x, y + r); // left line
+        this.quadraticCurveTo(x, y, x + r, y); // upper left corner
+        break;
+      case "Bottom":
+        this.moveTo(x, y);
+        this.lineTo(x + w, y); // top line
+        this.lineTo(x + w, y + h - r); // right line
+        this.quadraticCurveTo(x + w, y + h, x + w - r, y + h); // lower right corner
+        this.lineTo(x + r, y + h); // lower line
+        this.quadraticCurveTo(x, y + h, x, y + h - r); // lower left corner
+        this.lineTo(x, y); // left line
+        break;
+      case "Left":
+        this.moveTo(x + r, y);
+        this.lineTo(x + w, y); // top line
+        this.lineTo(x + w, y + h); // right line
+        this.lineTo(x + r, y + h); // bottom line
+        this.quadraticCurveTo(x, y + h, x, y + h - r); // lower right corner
+        this.lineTo(x, y + r); // left line
+        this.quadraticCurveTo(x, y, x + r, y); // upper left corner
+        break;
+      case "Right":
+        this.moveTo(x, y);
+        this.lineTo(x + w - r, y); // top line
+        this.quadraticCurveTo(x + w, y, x + w, y + r); // upper right corner
+        this.lineTo(x + w, y + h - r); // right line
+        this.quadraticCurveTo(x + w, y + h, x + w - r, y + h); // lower right corner
+        this.lineTo(x, y + h); // bottom line
+        this.lineTo(x, y); // left line
+        break;
+    }
     this.closePath();
     this.stroke();
   }

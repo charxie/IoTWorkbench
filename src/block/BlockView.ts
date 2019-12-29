@@ -6,14 +6,15 @@ import {Flowchart} from "./Flowchart";
 import {closeAllContextMenus, contextMenus, sound} from "../Main";
 import {Movable} from "../Movable";
 import {Block} from "./Block";
+import {FunctionBlock} from "./FunctionBlock";
 import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
-import {LogicBlock} from "./LogicBlock";
+import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
 import {NegationBlock} from "./NegationBlock";
+import {LogicBlock} from "./LogicBlock";
 import {MathBlock} from "./MathBlock";
 import {HatBlock} from "./HatBlock";
 import {Port} from "./Port";
 import {Connector} from "./Connector";
-import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
 import {PortConnector} from "./PortConnector";
 
 export class BlockView {
@@ -290,6 +291,18 @@ export class BlockView {
     } else if (block instanceof LogicBlock) {
       contextMenus.logicBlock.block = block;
       let menu = document.getElementById("logic-block-context-menu") as HTMLMenuElement;
+      menu.style.left = e.clientX + "px";
+      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
+      menu.classList.add("show-menu");
+    } else if (block instanceof FunctionBlock) {
+      contextMenus.functionBlock.block = block;
+      let menu = document.getElementById("function-block-context-menu") as HTMLMenuElement;
+      menu.style.left = e.clientX + "px";
+      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
+      menu.classList.add("show-menu");
+    } else if (block instanceof HatBlock) {
+      contextMenus.hatBlock.block = block;
+      let menu = document.getElementById("hat-block-context-menu") as HTMLMenuElement;
       menu.style.left = e.clientX + "px";
       menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
       menu.classList.add("show-menu");

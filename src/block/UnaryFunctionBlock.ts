@@ -2,10 +2,10 @@
  * @author Charles Xie
  */
 
-import {Block} from "./Block";
 import {Port} from "./Port";
+import {FunctionBlock} from "./FunctionBlock";
 
-export class UnaryFunctionBlock extends Block {
+export class UnaryFunctionBlock extends FunctionBlock {
 
   constructor(x: number, y: number, width: number, height: number) {
     super(x, y, width, height);
