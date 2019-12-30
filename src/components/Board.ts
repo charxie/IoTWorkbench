@@ -17,6 +17,9 @@ export abstract class Board implements Movable {
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
   }
 
+  update(): void {
+  }
+
   public getUid(): string {
     return this.uid;
   }

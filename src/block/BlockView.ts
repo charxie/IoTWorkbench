@@ -16,10 +16,12 @@ import {HatBlock} from "./HatBlock";
 import {Port} from "./Port";
 import {Connector} from "./Connector";
 import {PortConnector} from "./PortConnector";
+import {Slider} from "./Slider";
 
 export class BlockView {
 
   flowchart: Flowchart;
+  skipMainMouseEvent: boolean = false; // when a block is handling its own mouse events, set this flag true
   readonly canvas: HTMLCanvasElement;
 
   private selectedMovable: Movable;
@@ -85,6 +87,11 @@ export class BlockView {
             let addBlock = new MathBlock(e.offsetX, e.offsetY, 60, 80, "Add Block", "+");
             addBlock.uid = addBlock.name + " #" + Date.now().toString(16);
             that.storeBlock(addBlock);
+            break;
+          case "slider-block":
+            let slider = new Slider("Slider", e.offsetX, e.offsetY, 100, 60);
+            slider.uid = slider.name + " #" + Date.now().toString(16);
+            that.storeBlock(slider);
             break;
         }
       }
@@ -187,86 +194,105 @@ export class BlockView {
           }
         }
     }
+
+    for (let b of this.flowchart.blocks) {
+      if (b instanceof Slider) {
+        b.mouseDown(e);
+      }
+    }
   }
 
   private mouseUp(e: MouseEvent): void {
-    let x = e.offsetX;
-    let y = e.offsetY;
-    outerloop:
-      for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
-        let block = this.flowchart.blocks[n];
-        for (let p of block.ports) {
-          if (p.input && p.near(x - block.x, y - block.y)) {
-            if (this.flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
-              sound.play();
-              this.flowchart.storePortConnectors();
+    if (!this.skipMainMouseEvent) {
+      let x = e.offsetX;
+      let y = e.offsetY;
+      outerloop:
+        for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
+          let block = this.flowchart.blocks[n];
+          for (let p of block.ports) {
+            if (p.input && p.near(x - block.x, y - block.y)) {
+              if (this.flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
+                sound.play();
+                this.flowchart.storePortConnectors();
+              }
+              break outerloop;
             }
-            break outerloop;
           }
         }
+      this.selectedMovable = null;
+      this.selectedPort = null;
+    }
+    for (let b of this.flowchart.blocks) {
+      if (b instanceof Slider) {
+        b.mouseUp(e);
       }
-    this.selectedMovable = null;
-    this.selectedPort = null;
+    }
     this.draw();
     closeAllContextMenus(); // close all context menus upon mouse left click
   }
 
   private mouseMove(e: MouseEvent): void {
-    let x = e.offsetX;
-    let y = e.offsetY;
-    if (this.overWhat != null) {
-      if (this.overWhat instanceof Port) {
-        this.overWhat.close = false;
+    if (!this.skipMainMouseEvent) {
+      let x = e.offsetX;
+      let y = e.offsetY;
+      if (this.overWhat != null) {
+        if (this.overWhat instanceof Port) {
+          this.overWhat.close = false;
+        }
+        this.overWhat = null;
       }
-      this.overWhat = null;
-    }
-    outerloop:
-      for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
-        let block = this.flowchart.blocks[n];
-        if (block.contains(x, y)) {
-          this.overWhat = block;
-          break;
-        } else {
-          for (let p of block.ports) {
-            if (p.near(x - block.x, y - block.y)) {
-              this.overWhat = p;
-              break outerloop;
+      outerloop:
+        for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
+          let block = this.flowchart.blocks[n];
+          if (block.contains(x, y)) {
+            this.overWhat = block;
+            break;
+          } else {
+            for (let p of block.ports) {
+              if (p.near(x - block.x, y - block.y)) {
+                this.overWhat = p;
+                break outerloop;
+              }
             }
           }
         }
+
+      if (this.selectedMovable != null) {
+        this.moveTo(x, y, this.selectedMovable);
+      } else if (this.selectedPort != null) {
+        if (this.selectedPort.input) {
+          if (this.selectedPortConnector) { // if the clicked port is an input and there is a connector to it
+            this.flowchart.removePortConnector(this.selectedPortConnector);
+            this.selectedPort = this.selectedPortConnector.output; // switch the selected port to the output end of the selected connector
+            let p = this.selectedPort.getAbsolutePoint(); // this activates the connector on the fly that originates from the output end
+            this.connectorOntheFly.x1 = p.x;
+            this.connectorOntheFly.y1 = p.y;
+            this.connectorOntheFly.x2 = e.offsetX;
+            this.connectorOntheFly.y2 = e.offsetY;
+            this.selectedPortConnector = null;
+          }
+        } else {
+          this.connectorOntheFly.x2 = e.offsetX;
+          this.connectorOntheFly.y2 = e.offsetY;
+          if (this.overWhat instanceof Port) {
+            this.overWhat.close = true;
+          }
+        }
       }
+    }
     if (this.overWhat instanceof Port) {
-      this.canvas.style.cursor = "pointer";
+      this.canvas.style.cursor = this.overWhat.input ? "default" : "grab";
     } else if (this.overWhat instanceof Block) {
       this.canvas.style.cursor = "move";
     } else {
-      this.canvas.style.cursor = "default";
+      this.canvas.style.cursor = this.selectedPort != null ? "grabbing" : "default";
     }
-
-    if (this.selectedMovable != null) {
-      this.moveTo(x, y, this.selectedMovable);
-    } else if (this.selectedPort != null) {
-      if (this.selectedPort.input) {
-        if (this.selectedPortConnector) { // if the clicked port is an input and there is a connector to it
-          this.flowchart.removePortConnector(this.selectedPortConnector);
-          this.selectedPort = this.selectedPortConnector.output; // switch the selected port to the output end of the selected connector
-          let p = this.selectedPort.getAbsolutePoint(); // this activates the connector on the fly that originates from the output end
-          this.connectorOntheFly.x1 = p.x;
-          this.connectorOntheFly.y1 = p.y;
-          this.connectorOntheFly.x2 = e.offsetX;
-          this.connectorOntheFly.y2 = e.offsetY;
-          this.selectedPortConnector = null;
-        }
-      } else {
-        this.connectorOntheFly.x2 = e.offsetX;
-        this.connectorOntheFly.y2 = e.offsetY;
-        if (this.overWhat instanceof Port) {
-          this.overWhat.close = true;
-        }
+    for (let b of this.flowchart.blocks) {
+      if (b instanceof Slider) {
+        b.mouseMove(e);
       }
     }
     this.draw();
-
   }
 
   private mouseLeave = (e: MouseEvent): void => {
@@ -306,6 +332,12 @@ export class BlockView {
       menu.style.left = e.clientX + "px";
       menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
       menu.classList.add("show-menu");
+    } else if (block instanceof Slider) {
+      contextMenus.slider.block = block;
+      let menu = document.getElementById("slider-context-menu") as HTMLMenuElement;
+      menu.style.left = e.clientX + "px";
+      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
+      menu.classList.add("show-menu");
     } else {
       let menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;
       menu.style.left = e.clientX + "px";
@@ -331,6 +363,7 @@ export class BlockView {
     }
     m.setX(dx);
     m.setY(dy);
+    m.update();
     if (m instanceof Block) {
       this.flowchart.storeBlockLocation(m);
     }

@@ -65,13 +65,19 @@ export class Port {
     if (!small) {
       ctx.lineWidth = 0.75;
       let t = this.uid;
-      if (this.arc.anticlockwise) {
-        ctx.strokeText(t, ax - ctx.measureText(t).width - (small ? 2 : 4), ay + 4);
-      } else {
-        ctx.strokeText(t, ax + (small ? 2 : 4), ay + 4)
+      if (t != null) {
+        if (this.arc.anticlockwise) {
+          ctx.strokeText(t, ax - ctx.measureText(t).width - (small ? 2 : 4), ay + 4);
+        } else {
+          ctx.strokeText(t, ax + (small ? 2 : 4), ay + 4)
+        }
       }
       ctx.restore();
     }
+  }
+
+  public toString(): string {
+    return this.block.toString() + " @" + this.uid;
   }
 
 }

@@ -35,6 +35,7 @@ import {LogicBlockContextMenu} from "./block/ui/LogicBlockContextMenu";
 import {MathBlockContextMenu} from "./block/ui/MathBlockContextMenu";
 import {FunctionBlockContextMenu} from "./block/ui/FunctionBlockContextMenu";
 import {HatBlockContextMenu} from "./block/ui/HatBlockContextMenu";
+import {SliderContextMenu} from "./block/ui/SliderContextMenu";
 
 import {Sound} from "./Sound";
 // @ts-ignore
@@ -177,6 +178,11 @@ function setupContextMenuForBlock() {
   hatBlockContextMenu.render("hat-block-context-menu-placeholder");
   hatBlockContextMenu.addListeners();
   contextMenus.hatBlock = hatBlockContextMenu;
+
+  let sliderContextMenu = new SliderContextMenu();
+  sliderContextMenu.render("slider-context-menu-placeholder");
+  sliderContextMenu.addListeners();
+  contextMenus.slider = sliderContextMenu;
 }
 
 function setupContextMenuForModel() {
@@ -317,6 +323,7 @@ function restoreLocation(m: Movable) {
   if (y != null) {
     m.setY(parseInt(y));
   }
+  m.update();
 }
 
 function restoreBlocks() {

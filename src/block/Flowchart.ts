@@ -12,6 +12,7 @@ import {MathBlock} from "./MathBlock";
 import {RainbowHatBlock} from "./RainbowHatBlock";
 import {Port} from "./Port";
 import {PortConnector} from "./PortConnector";
+import {Slider} from "./Slider";
 
 export class Flowchart {
 
@@ -142,6 +143,9 @@ export class Flowchart {
       case "Rainbow HAT Block":
         block = new RainbowHatBlock(20, 20);
         break;
+      case "Slider":
+        block = new Slider(name, 50, 50, 100, 60);
+        break;
     }
     if (block != null) {
       block.uid = uid;
@@ -161,7 +165,9 @@ export class Flowchart {
   storePortConnectors(): void {
     let s = "";
     for (let c of this.connectors) {
-      s += c.output.block.uid + " @" + c.output.uid + ", " + c.input.block.uid + " @" + c.input.uid + "|";
+      if (c.output != null && c.input != null) {
+        s += c.output.block.uid + " @" + c.output.uid + ", " + c.input.block.uid + " @" + c.input.uid + "|";
+      }
     }
     s = s.substring(0, s.length - 1);
     localStorage.setItem("Port Connectors", s);

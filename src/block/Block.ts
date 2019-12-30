@@ -28,6 +28,9 @@ export abstract class Block implements Movable {
     this.height = height;
   }
 
+  update(): void {
+  }
+
   getPort(uid: string): Port {
     for (let p of this.ports) {
       if (p.uid == uid) {

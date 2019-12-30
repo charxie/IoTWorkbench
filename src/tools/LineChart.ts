@@ -49,6 +49,9 @@ export class LineChart implements Movable {
     this.clearButton.y += 4;
   }
 
+  update(): void {
+  }
+
   public getUid(): string {
     return this.uid;
   }
