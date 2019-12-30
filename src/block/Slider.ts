@@ -22,7 +22,7 @@ export class Slider extends Block {
     this.halfHeight = this.height / 2;
     this.name = name;
     this.color = "#483D8B";
-    this.ports.push(new Port(this, true, null, this.width, this.height / 2, true));
+    this.ports.push(new Port(this, false, null, this.width, this.height / 2, true));
     this.knob = new Rectangle(this.x + this.width / 2 - 2, this.y + this.halfHeight + 4, 4, this.halfHeight - 8);
   }
 

@@ -40,6 +40,7 @@ import {SliderContextMenu} from "./block/ui/SliderContextMenu";
 import {Sound} from "./Sound";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
+import {Slider} from "./block/Slider";
 
 declare global {
   interface CanvasRenderingContext2D {

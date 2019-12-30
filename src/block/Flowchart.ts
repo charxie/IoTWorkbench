@@ -145,7 +145,7 @@ export class Flowchart {
         block = new RainbowHatBlock(20, 20);
         break;
       case "Slider":
-        block = new Slider(name, 50, 50, 100, 60);
+        block = new Slider(name, x, y, 100, 60);
         break;
     }
     if (block != null) {
