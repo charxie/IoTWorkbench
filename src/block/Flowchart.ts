@@ -13,6 +13,7 @@ import {RainbowHatBlock} from "./RainbowHatBlock";
 import {Port} from "./Port";
 import {PortConnector} from "./PortConnector";
 import {Slider} from "./Slider";
+import {BlockContextMenu} from "./ui/BlockContextMenu";
 
 export class Flowchart {
 
@@ -54,7 +55,7 @@ export class Flowchart {
 
   removePortConnector(connector: PortConnector): void {
     this.connectors.splice(this.connectors.indexOf(connector), 1);
-    this.storePortConnectors();
+    this.storeConnectorStates();
   }
 
   /* block methods */
@@ -82,7 +83,7 @@ export class Flowchart {
         }
       }
       this.blocks.splice(this.blocks.indexOf(selectedBlock), 1);
-      this.storeBlocks();
+      this.storeBlockStates();
     }
   }
 
@@ -162,28 +163,22 @@ export class Flowchart {
 
   /* storage methods */
 
-  storePortConnectors(): void {
-    let s = "";
+  storeBlockStates(): void {
+    let blockStates = [];
+    for (let b of this.blocks) {
+      blockStates.push(new Block.State(b));
+    }
+    localStorage.setItem("Block States", JSON.stringify(blockStates));
+  }
+
+  storeConnectorStates(): void {
+    let connectorStates = [];
     for (let c of this.connectors) {
       if (c.output != null && c.input != null) {
-        s += c.output.block.uid + " @" + c.output.uid + ", " + c.input.block.uid + " @" + c.input.uid + "|";
+        connectorStates.push(new PortConnector.State(c));
       }
     }
-    s = s.substring(0, s.length - 1);
-    localStorage.setItem("Port Connectors", s);
-  }
-
-  storeBlocks(): void {
-    let s: string = "";
-    for (let b of this.blocks) {
-      s += b.getUid() + ", ";
-    }
-    localStorage.setItem("Block Sequence", s.substring(0, s.length - 2));
-  }
-
-  storeBlockLocation(block: Block) {
-    localStorage.setItem("X: " + block.getUid(), block.getX().toString());
-    localStorage.setItem("Y: " + block.getUid(), block.getY().toString());
+    localStorage.setItem("Connector States", JSON.stringify(connectorStates));
   }
 
 }

@@ -101,8 +101,7 @@ export class BlockView {
   private storeBlock(block: Block): void {
     this.flowchart.blocks.push(block);
     this.draw();
-    this.flowchart.storeBlocks();
-    this.flowchart.storeBlockLocation(block);
+    this.flowchart.storeBlockStates();
   }
 
   public draw(): void {
@@ -213,7 +212,7 @@ export class BlockView {
             if (p.input && p.near(x - block.x, y - block.y)) {
               if (this.flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
                 sound.play();
-                this.flowchart.storePortConnectors();
+                this.flowchart.storeConnectorStates();
               }
               break outerloop;
             }
@@ -365,7 +364,7 @@ export class BlockView {
     m.setY(dy);
     m.update();
     if (m instanceof Block) {
-      this.flowchart.storeBlockLocation(m);
+      this.flowchart.storeBlockStates();
     }
   }
 

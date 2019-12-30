@@ -77,9 +77,8 @@ export class LogicBlockContextMenu extends BlockContextMenu {
             that.block.uid = that.block.name + " #" + Date.now().toString(16);
             flowchart.draw();
             // update the local storage since we have changed the UID of this block
-            flowchart.storeBlocks();
-            flowchart.storeBlockLocation(that.block);
-            flowchart.storePortConnectors();
+            flowchart.storeBlockStates();
+            flowchart.storeConnectorStates();
             $(this).dialog('close');
           },
           'Cancel': function () {

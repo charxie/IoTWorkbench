@@ -83,8 +83,7 @@ export class System {
       switch (that.draggedElementId) {
         case "raspberry-pi-image":
           if (id == "workbench") {
-            that.storeLocation(that.addRaspberryPi(e.offsetX, e.offsetY, "Raspberry Pi #" + Date.now().toString(16)));
-            that.storeMcuSequence();
+            that.storeMcuStates();
           }
           break;
         case "rainbow-hat-image":
@@ -122,9 +121,8 @@ export class System {
   }
 
   addHatByAction(name: string, x: number, y: number): Hat {
-    let hat = this.addHat(name, x, y, name + " #" + Date.now().toString(16));
-    this.storeLocation(hat);
-    this.storeHatSequence();
+    let hat = this.addHat(name, x, y, name + " #" + Date.now().toString(16), true);
+    this.storeHatStates();
     if (this.whichRaspberryPi(x, y) >= 0) {
       hat.tryAttach();
     }
@@ -148,14 +146,14 @@ export class System {
     let canvas = this.mcus[selectedIndex].canvas;
     this.playground.removeChild(canvas);
     this.mcus.splice(selectedIndex, 1);
-    this.storeMcuSequence();
+    this.storeMcuStates();
   }
 
   removeRaspberryPi(raspberryPi: RaspberryPi): void {
     this.removeRaspberryPiByIndex(this.mcus.indexOf(raspberryPi));
   }
 
-  addRaspberryPi(x: number, y: number, uid: string): RaspberryPi {
+  addRaspberryPi(x: number, y: number, uid: string, shiftToCenter: boolean): RaspberryPi {
     let canvas = document.createElement("canvas");
     canvas.id = "raspberry-pi-" + this.mcus.length;
     canvas.width = 435;
@@ -167,8 +165,13 @@ export class System {
     this.playground.appendChild(canvas);
     let pi = new RaspberryPi(canvas.id, uid);
     this.mcus.push(pi);
-    pi.setX(x - canvas.width / 2);
-    pi.setY(y - canvas.height / 2);
+    if (shiftToCenter) {
+      pi.setX(x - canvas.width / 2);
+      pi.setY(y - canvas.height / 2);
+    } else {
+      pi.setX(x);
+      pi.setY(y);
+    }
     this.draw();
     return pi;
   }
@@ -199,7 +202,7 @@ export class System {
     let canvas = this.hats[selectedIndex].canvas;
     this.playground.removeChild(canvas);
     this.hats.splice(selectedIndex, 1);
-    this.storeHatSequence();
+    this.storeHatStates();
   }
 
   removeHat(hat: Hat): void {
@@ -209,7 +212,7 @@ export class System {
     flowchart.removeBlock(blockId);
   }
 
-  addHat(type: string, x: number, y: number, uid: string): Hat {
+  addHat(type: string, x: number, y: number, uid: string, shiftToCenter: boolean): Hat {
     let canvas = document.createElement("canvas");
     canvas.style.display = "block";
     canvas.style.margin = "auto";
@@ -259,8 +262,13 @@ export class System {
     }
     if (hat != null) {
       this.hats.push(hat);
-      hat.setX(x - canvas.width / 2);
-      hat.setY(y - canvas.height / 2);
+      if (shiftToCenter) {
+        hat.setX(x - canvas.width / 2);
+        hat.setY(y - canvas.height / 2);
+      } else {
+        hat.setX(x);
+        hat.setY(y);
+      }
       this.draw();
       let blockId = uid.replace(type, type + " Block");
       let block = flowchart.addBlock(type + " Block", 10, 10, blockId);
@@ -399,46 +407,25 @@ export class System {
   private mouseMove = (e: MouseEvent): void => {
     if (this.selectedMovable != null) {
       this.moveTo(e.clientX, e.clientY, this.selectedMovable);
-      this.storeLocation(this.selectedMovable);
     }
   };
 
-  storeMcuSequence(): void {
-    let s: string = "";
+  // storage methods
+
+  storeMcuStates(): void {
+    let mcuStates = [];
     for (let m of this.mcus) {
-      s += m.getUid() + ", ";
+      mcuStates.push(new Mcu.State(m));
     }
-    localStorage.setItem("MCU Sequence", s.substring(0, s.length - 2));
+    localStorage.setItem("MCU States", JSON.stringify(mcuStates));
   }
 
-  storeHatSequence(): void {
-    let s: string = "";
+  storeHatStates(): void {
+    let hatStates = [];
     for (let h of this.hats) {
-      s += h.getUid() + ", ";
+      hatStates.push(new Hat.State(h));
     }
-    localStorage.setItem("HAT Sequence", s.substring(0, s.length - 2));
-  }
-
-  private storeLocation(m: Movable): void {
-    if (m instanceof LineChart) { // line charts are not independent, they are associated with sensors
-      let c = <LineChart>m;
-      localStorage.setItem(c.name + " X @" + c.sensor.board.getUid(), m.getX().toString());
-      localStorage.setItem(c.name + " Y @" + c.sensor.board.getUid(), m.getY().toString());
-    } else {
-      localStorage.setItem("X: " + m.getUid(), m.getX().toString());
-      localStorage.setItem("Y: " + m.getUid(), m.getY().toString());
-      if (m instanceof Hat) {
-        if (m.raspberryPi != null) {
-          localStorage.setItem("X: " + m.raspberryPi.getUid(), m.raspberryPi.getX().toString());
-          localStorage.setItem("Y: " + m.raspberryPi.getUid(), m.raspberryPi.getY().toString());
-        }
-      } else if (m instanceof RaspberryPi) {
-        if (m.hat != null) {
-          localStorage.setItem("X: " + m.hat.getUid(), m.hat.getX().toString());
-          localStorage.setItem("Y: " + m.hat.getUid(), m.hat.getY().toString());
-        }
-      }
-    }
+    localStorage.setItem("HAT States", JSON.stringify(hatStates));
   }
 
   private moveTo(x: number, y: number, m: Movable): void {
@@ -459,14 +446,18 @@ export class System {
     m.setX(dx);
     m.setY(dy);
     if (m instanceof Hat) {
+      this.storeHatStates();
       if (m.raspberryPi != null) {
         m.raspberryPi.setX(m.getX());
         m.raspberryPi.setY(m.getY());
+        this.storeMcuStates();
       }
     } else if (m instanceof RaspberryPi) {
+      this.storeMcuStates();
       if (m.hat != null) {
         m.hat.setX(m.getX());
         m.hat.setY(m.getY());
+        this.storeHatStates();
       }
     }
   }

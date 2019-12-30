@@ -14,13 +14,25 @@ export abstract class Hat extends Board {
 
   raspberryPi: RaspberryPi;
 
+  static State = class {
+    uid: string;
+    x: number;
+    y: number;
+
+    constructor(hat: Hat) {
+      this.uid = hat.uid;
+      this.x = hat.getX();
+      this.y = hat.getY();
+    }
+  };
+
   tryAttach(): void {
     let i = this.whichRaspberryPi();
     if (i >= 0) {
       let pi = <RaspberryPi>system.mcus[i];
       if (pi.hat) {
         let that = this;
-        $("#modal-dialog").html("<div style='font-size: 90%;'>" + pi.uid +" already has a HAT: "+ pi.hat.uid+".</div>");
+        $("#modal-dialog").html("<div style='font-size: 90%;'>" + pi.uid + " already has a HAT: " + pi.hat.uid + ".</div>");
         $("#modal-dialog").dialog({
           resizable: false,
           modal: true,

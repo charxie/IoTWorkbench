@@ -10,6 +10,20 @@ export class PortConnector {
   output: Port;
   input: Port;
 
+  static State = class {
+    inputBlockId: string;
+    inputPortId: string;
+    outputBlockId: string;
+    outputPortId: string;
+
+    constructor(c: PortConnector) {
+      this.inputPortId = c.input.uid;
+      this.outputPortId = c.output.uid;
+      this.inputBlockId = c.input.block.uid;
+      this.outputBlockId = c.output.block.uid;
+    }
+  };
+
   constructor(output: Port, input: Port) {
     this.output = output;
     this.input = input;

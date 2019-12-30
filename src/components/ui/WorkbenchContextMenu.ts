@@ -101,7 +101,7 @@ export class WorkbenchContextMenu extends MyContextMenu {
         'OK': function () {
           system.workbench.showGrid = showGridCheckBox.checked;
           system.workbench.draw();
-          localStorage.setItem("Workbench Show Grid", system.workbench.showGrid ? "true" : "false");
+          system.workbench.storeState();
           $(this).dialog('close');
         },
         'Cancel': function () {

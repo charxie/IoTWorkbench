@@ -21,6 +21,18 @@ export abstract class Block implements Movable {
   margin: number = 30; // margin for inset
   small: boolean; // true when used for small icons
 
+  static State = class {
+    uid: string;
+    x: number;
+    y: number;
+
+    constructor(block: Block) {
+      this.uid = block.uid;
+      this.x = block.x;
+      this.y = block.y;
+    }
+  };
+
   constructor(x: number, y: number, width: number, height: number) {
     this.x = x;
     this.y = y;

@@ -227,11 +227,6 @@ function setupContextMenuForModel() {
   contextMenus.capacitiveTouchHat = capacitiveTouchHatContextMenu;
 }
 
-function restoreWorkbench() {
-  let x = localStorage.getItem("Workbench Show Grid");
-  system.workbench.showGrid = (x == "true") || (x == null);
-}
-
 function selectTab(button: HTMLButtonElement, tabId: string) {
   // Get all elements with class="tabcontent" and hide them
   let tabcontent = document.getElementsByClassName("tabcontent") as HTMLCollectionOf<HTMLElement>;
@@ -249,20 +244,37 @@ function selectTab(button: HTMLButtonElement, tabId: string) {
   localStorage.setItem("Start Tab", tabId);
 }
 
-function restoreHats() {
-  let s: string = localStorage.getItem("HAT Sequence");
+function restoreWorkbench() {
+  let s = localStorage.getItem("Workbench State");
   if (s != null) {
-    let t = s.split(",");
-    if (t.length > 0) {
-      system.hats = [];
-    }
-    for (let i of t) {
-      i = i.trim();
-      let name = i.substring(0, i.indexOf("#") - 1);
-      system.addHat(name, 0, 0, i);
+    let state = JSON.parse(s);
+    system.workbench.showGrid = state.showGrid;
+  }
+}
+
+function restoreMcus() {
+  system.mcus = [];
+  let s: string = localStorage.getItem("MCU States");
+  if (s != null) {
+    let states = JSON.parse(s);
+    for (let state of states) {
+      if (state.uid.startsWith("Raspberry Pi")) {
+        system.addRaspberryPi(state.x, state.y, state.uid, false);
+      }
     }
   }
-  restoreLocations(system.hats);
+}
+
+function restoreHats() {
+  system.hats = [];
+  let s: string = localStorage.getItem("HAT States");
+  if (s != null) {
+    let states = JSON.parse(s);
+    for (let state of states) {
+      let name = state.uid.substring(0, state.uid.indexOf("#") - 1);
+      system.addHat(name, state.x, state.y, state.uid, false);
+    }
+  }
   for (let h of system.hats) {
     let id: string = localStorage.getItem("Attachment: " + h.getUid());
     if (id != null) {
@@ -272,11 +284,10 @@ function restoreHats() {
       }
     }
     if (h instanceof RainbowHat) {
-      let r: RainbowHat = <RainbowHat>h;
-      r.temperatureGraph = addLineChart(r, r.temperatureSensor);
-      r.pressureGraph = addLineChart(r, r.barometricPressureSensor);
-      if (r.temperatureGraph) r.temperatureGraph.draw();
-      if (r.pressureGraph) r.pressureGraph.draw();
+      h.temperatureGraph = addLineChart(h, h.temperatureSensor);
+      h.pressureGraph = addLineChart(h, h.barometricPressureSensor);
+      if (h.temperatureGraph) h.temperatureGraph.draw();
+      if (h.pressureGraph) h.pressureGraph.draw();
     }
   }
 }
@@ -291,75 +302,33 @@ function addLineChart(r: RainbowHat, s: Sensor) {
   return null;
 }
 
-function restoreMcus() {
-  let s: string = localStorage.getItem("MCU Sequence");
-  if (s != null) {
-    let t = s.split(",");
-    if (t.length > 0) {
-      system.mcus = [];
-    }
-    for (let i of t) {
-      i = i.trim();
-      if (i.startsWith("Raspberry Pi")) {
-        system.addRaspberryPi(0, 0, i);
-      }
-    }
-  }
-  restoreLocations(system.mcus);
-}
-
-function restoreLocations(m: Movable[]) {
-  for (let i of m) {
-    restoreLocation(i);
-  }
-}
-
-function restoreLocation(m: Movable) {
-  let x: string = localStorage.getItem("X: " + m.getUid());
-  if (x != null) {
-    m.setX(parseInt(x));
-  }
-  let y: string = localStorage.getItem("Y: " + m.getUid());
-  if (y != null) {
-    m.setY(parseInt(y));
-  }
-  m.update();
-}
-
 function restoreBlocks() {
-  let s: string = localStorage.getItem("Block Sequence");
-  console.log(s);
+  flowchart.blocks = [];
+  let s: string = localStorage.getItem("Block States");
   if (s != null) {
-    let t = s.split(",");
-    if (t.length > 0) {
-      flowchart.blocks = [];
-    }
-    for (let i of t) {
-      i = i.trim();
-      let name = i.substring(0, i.indexOf("#") - 1);
-      if (name.indexOf("HAT") == -1) { // Do not add HAT blocks. They are added by the model components.
-        flowchart.addBlock(name, 0, 0, i);
+    let states = JSON.parse(s);
+    if (states.length > 0) {
+      for (let state of states) {
+        let name = state.uid.substring(0, state.uid.indexOf("#") - 1);
+        if (name.indexOf("HAT") == -1) { // Do not add HAT blocks. They are added by the model components.
+          flowchart.addBlock(name, state.x, state.y, state.uid);
+        }
       }
     }
   }
-  restoreLocations(flowchart.blocks);
 }
 
 function restoreConnectors() {
-  let s = localStorage.getItem("Port Connectors");
-  if (s != null && s.trim().length > 0) {
-    let t = s.split("|");
-    for (let i of t) {
-      let x = i.split(",");
-      let blockId1 = x[0].substring(0, x[0].indexOf("@") - 1).trim();
-      let portId1 = x[0].substring(x[0].indexOf("@") + 1).trim();
-      let blockId2 = x[1].substring(0, x[1].indexOf("@") - 1).trim();
-      let portId2 = x[1].substring(x[1].indexOf("@") + 1).trim();
-      // console.log(blockId1 + ":" + portId1 + " --- " + blockId2 + ":" + portId2);
-      let block1 = flowchart.getBlock(blockId1);
-      let block2 = flowchart.getBlock(blockId2);
-      if (block1 && block2) {
-        flowchart.addPortConnector(block1.getPort(portId1), block2.getPort(portId2), "Port Connector #" + flowchart.connectors.length);
+  let s = localStorage.getItem("Connector States");
+  if (s != null) {
+    let states = JSON.parse(s);
+    if (states.length > 0) {
+      for (let state of states) {
+        let inputBlock = flowchart.getBlock(state.inputBlockId);
+        let outputBlock = flowchart.getBlock(state.outputBlockId);
+        if (inputBlock && outputBlock) {
+          flowchart.addPortConnector(inputBlock.getPort(state.inputPortId), outputBlock.getPort(state.outputPortId), "Port Connector #" + flowchart.connectors.length);
+        }
       }
     }
   }

@@ -2,7 +2,7 @@
  * @author Charles Xie
  */
 
-import {contextMenus} from "../Main";
+import {contextMenus, system} from "../Main";
 
 export class Workbench {
 
@@ -10,12 +10,24 @@ export class Workbench {
   showGrid: boolean = true;
   gridSize: number = 20;
 
+  static State = class {
+    showGrid: boolean = true;
+
+    constructor(workbench: Workbench) {
+      this.showGrid = workbench.showGrid;
+    }
+  };
+
   constructor(canvasId: string) {
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     this.canvas.addEventListener("mousedown", this.mouseDown.bind(this), false);
     this.canvas.addEventListener("mouseup", this.mouseUp.bind(this), false);
     this.canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
     this.canvas.addEventListener('contextmenu', this.openContextMenu.bind(this), false);
+  }
+
+  storeState() {
+    localStorage.setItem("Workbench State", JSON.stringify(new Workbench.State(this)));
   }
 
   public draw(): void {
