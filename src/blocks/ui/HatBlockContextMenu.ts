@@ -34,11 +34,11 @@ export class HatBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Type:</td>
-                  <td>${this.block.uid.substring(0, this.block.uid.indexOf("HAT") + 3)}</td>
+                  <td>${this.block.getUid().substring(0, this.block.getUid().indexOf("HAT") + 3)}</td>
                 </tr>
                 <tr>
                   <td>ID:</td>
-                  <td>${this.block.uid.substring(this.block.uid.indexOf("#"))}</td>
+                  <td>${this.block.getUid().substring(this.block.getUid().indexOf("#"))}</td>
                 </tr>
               </table>
             </div>`;

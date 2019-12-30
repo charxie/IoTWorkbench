@@ -8,13 +8,12 @@ import {Point} from "../math/Point";
 
 export class Port {
 
-  input: boolean; // a port must be either input or output. If this is false, then this is a port for output.
-  close: boolean; // when a connector end is close to this port
-  block: Block;
-  uid: string;
-  name: string;
-  arc: Arc;
-
+  private block: Block;
+  private input: boolean; // a port must be either input or output. If this is false, then this is a port for output.
+  private close: boolean; // when a connector end is close to this port
+  private uid: string;
+  private name: string;
+  private arc: Arc;
   private radius: number = 5;
 
   constructor(block: Block, input: boolean, uid: string, x: number, y: number, anticlockwise: boolean) {
@@ -24,13 +23,33 @@ export class Port {
     this.arc = new Arc(x, y, this.radius, 0.5 * Math.PI, 1.5 * Math.PI, anticlockwise);
   }
 
+  getBlock(): Block {
+    return this.block;
+  }
+
+  getUid(): string {
+    return this.uid;
+  }
+
+  isInput(): boolean {
+    return this.input;
+  }
+
+  isClose(): boolean {
+    return this.close;
+  }
+
+  setClose(close: boolean): void {
+    this.close = close;
+  }
+
   getRelativePoint(): Point {
     return new Point(this.arc.x + (this.arc.anticlockwise ? this.radius : -this.radius), this.arc.y);
   }
 
   getAbsolutePoint(): Point {
     let p = this.getRelativePoint();
-    p.translate(this.block.x, this.block.y);
+    p.translate(this.block.getX(), this.block.getY());
     return p;
   }
 
@@ -44,8 +63,8 @@ export class Port {
 
   draw(ctx: CanvasRenderingContext2D, small: boolean): void {
     ctx.save();
-    let ax = this.arc.x + this.block.x;
-    let ay = this.arc.y + this.block.y;
+    let ax = this.arc.x + this.block.getX();
+    let ay = this.arc.y + this.block.getY();
     ctx.lineWidth = small ? 1 : 2;
     if (this.close && this.input) {
       let shade = ctx.createRadialGradient(ax, ay, this.radius, ax, ay, 3 * this.radius);

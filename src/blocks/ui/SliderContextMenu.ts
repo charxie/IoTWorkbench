@@ -36,7 +36,11 @@ export class SliderContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>ID:</td>
-                  <td>${this.block.uid.substring(this.block.uid.indexOf("#"))}</td>
+                  <td>${this.block.getUid().substring(this.block.getUid().indexOf("#"))}</td>
+                </tr>
+                <tr>
+                  <td>Name:</td>
+                  <td><input type="text" id="slider-name-field"></td>
                 </tr>
                 <tr>
                   <td>Minimum:</td>
@@ -64,6 +68,8 @@ export class SliderContextMenu extends BlockContextMenu {
     if (this.block) {
       let that = this;
       $("#modal-dialog").html(this.getSettingsUI());
+      let e = document.getElementById("slider-name-field") as HTMLInputElement;
+      e.value = this.block.getName();
       $("#modal-dialog").dialog({
         resizable: false,
         modal: true,
@@ -72,6 +78,10 @@ export class SliderContextMenu extends BlockContextMenu {
         width: 400,
         buttons: {
           'OK': function () {
+            let nameField = document.getElementById("slider-name-field") as HTMLInputElement;
+            that.block.setName(nameField.value);
+            flowchart.storeBlockStates();
+            flowchart.draw();
             $(this).dialog('close');
           },
           'Cancel': function () {

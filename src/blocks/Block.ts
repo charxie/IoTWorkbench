@@ -8,23 +8,23 @@ import {Util} from "../Util";
 
 export abstract class Block implements Movable {
 
-  ports: Port[] = [];
-  uid: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  color: string = "#666666";
-  name: string;
-  symbol: string;
-  radius: number = 5;
-  margin: number = 30; // margin for inset
-  small: boolean; // true when used for small icons
+  protected ports: Port[] = [];
+  protected uid: string;
+  protected x: number;
+  protected y: number;
+  protected width: number;
+  protected height: number;
+  protected color: string = "#666666";
+  protected name: string;
+  protected symbol: string;
+  protected radius: number = 5;
+  protected margin: number = 30; // margin for inset
+  protected small: boolean; // true when used for small icons
 
   static State = class {
-    uid: string;
-    x: number;
-    y: number;
+    readonly uid: string;
+    readonly x: number;
+    readonly y: number;
 
     constructor(block: Block) {
       this.uid = block.uid;
@@ -33,7 +33,8 @@ export abstract class Block implements Movable {
     }
   };
 
-  constructor(x: number, y: number, width: number, height: number) {
+  constructor(uid: string, x: number, y: number, width: number, height: number) {
+    this.uid = uid;
     this.x = x;
     this.y = y;
     this.width = width;
@@ -43,9 +44,13 @@ export abstract class Block implements Movable {
   update(): void {
   }
 
+  getPorts(): Port[] {
+    return this.ports;
+  }
+
   getPort(uid: string): Port {
     for (let p of this.ports) {
-      if (p.uid == uid) {
+      if (p.getUid() == uid) {
         return p;
       }
     }
@@ -54,6 +59,26 @@ export abstract class Block implements Movable {
 
   getUid(): string {
     return this.uid;
+  }
+
+  setUid(uid: string): void {
+    this.uid = uid;
+  }
+
+  getName(): string {
+    return this.name;
+  }
+
+  setName(name: string): void {
+    this.name = name;
+  }
+
+  getSymbol(): string {
+    return this.symbol;
+  }
+
+  setSymbol(symbol: string): void {
+    this.symbol = symbol;
   }
 
   getX(): number {
@@ -78,6 +103,22 @@ export abstract class Block implements Movable {
 
   getHeight(): number {
     return this.height;
+  }
+
+  setColor(color: string): void {
+    this.color = color;
+  }
+
+  getColor(): string {
+    return this.color;
+  }
+
+  setSmall(small: boolean): void {
+    this.small = small;
+  }
+
+  setMargin(margin: number): void {
+    this.margin = margin;
   }
 
   contains(x: number, y: number): boolean {

@@ -40,6 +40,7 @@ import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
 import {Sound} from "./Sound";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
+import {Slider} from "./blocks/Slider";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -346,9 +347,11 @@ function restoreBlocks() {
     let states = JSON.parse(s);
     if (states.length > 0) {
       for (let state of states) {
-        let name = state.uid.substring(0, state.uid.indexOf("#") - 1);
-        if (name.indexOf("HAT") == -1) { // Do not add HAT blocks. They are added by the model components.
-          flowchart.addBlock(name, state.x, state.y, state.uid);
+        let type = state.uid.substring(0, state.uid.indexOf("#") - 1);
+        if (type.indexOf("HAT") != -1) continue; // Do not add HAT blocks. They are added by the model components.
+        let block = flowchart.addBlock(type, state.x, state.y, state.uid);
+        if (block instanceof Slider) {
+          block.setName(state.name);
         }
       }
     }

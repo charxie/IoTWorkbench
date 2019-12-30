@@ -36,7 +36,7 @@ export class MathBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>ID:</td>
-                  <td>${this.block.uid.substring(this.block.uid.indexOf("#"))}</td>
+                  <td>${this.block.getUid().substring(this.block.getUid().indexOf("#"))}</td>
                 </tr>
                 <tr>
                   <td>Operator:</td>
@@ -64,7 +64,7 @@ export class MathBlockContextMenu extends BlockContextMenu {
       let that = this;
       $("#modal-dialog").html(this.getSettingsUI());
       let e = document.getElementById("math-block-operator") as HTMLSelectElement;
-      e.value = this.block.name;
+      e.value = this.block.getName();
       $("#modal-dialog").dialog({
         resizable: false,
         modal: true,
@@ -73,9 +73,9 @@ export class MathBlockContextMenu extends BlockContextMenu {
         width: 400,
         buttons: {
           'OK': function () {
-            that.block.name = e.options[e.selectedIndex].value;
-            that.block.symbol = e.options[e.selectedIndex].text;
-            that.block.uid = that.block.name + " #" + Date.now().toString(16);
+            that.block.setName(e.options[e.selectedIndex].value);
+            that.block.setSymbol(e.options[e.selectedIndex].text);
+            that.block.setUid(that.block.getName() + " #" + Date.now().toString(16));
             flowchart.draw();
             // update the local storage since we have changed the UID of this block
             flowchart.storeBlockStates();

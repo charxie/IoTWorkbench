@@ -28,7 +28,7 @@ export class Flowchart {
 
   getConnector(port: Port): PortConnector {
     for (let connector of this.connectors) {
-      if (connector.input == port || connector.output == port) {
+      if (connector.getInput() == port || connector.getOutput() == port) {
         return connector;
       }
     }
@@ -38,7 +38,7 @@ export class Flowchart {
   addPortConnector(output: Port, input: Port, uid: string): boolean {
     let existing = false;
     for (let c of this.connectors) {
-      if (c.input == input && c.output == output) {
+      if (c.getInput() == input && c.getOutput() == output) {
         existing = true;
         break;
       }
@@ -46,8 +46,7 @@ export class Flowchart {
     if (existing) {
       return false;
     }
-    let c = new PortConnector(output, input);
-    c.uid = uid;
+    let c = new PortConnector(uid, output, input);
     this.connectors.push(c);
     return true;
   }
@@ -62,7 +61,7 @@ export class Flowchart {
   removeBlock(uid: string) {
     let selectedBlock: Block = null;
     for (let b of this.blocks) {
-      if (uid == b.uid) {
+      if (uid == b.getUid()) {
         selectedBlock = b;
         break;
       }
@@ -70,8 +69,8 @@ export class Flowchart {
     if (selectedBlock != null) {
       let connectorsToRemove = [];
       for (let c of this.connectors) {
-        let block1 = c.input.block;
-        let block2 = c.output.block;
+        let block1 = c.getInput().getBlock();
+        let block2 = c.getOutput().getBlock();
         if (block1 == selectedBlock || block2 == selectedBlock) {
           connectorsToRemove.push(this.connectors.indexOf(c));
         }
@@ -88,7 +87,7 @@ export class Flowchart {
 
   getBlock(uid: string): Block {
     for (let b of this.blocks) {
-      if (b.uid == uid) {
+      if (b.getUid() == uid) {
         return b;
       }
     }
@@ -99,56 +98,55 @@ export class Flowchart {
     let block: Block = null;
     switch (name) {
       case "Unary Function Block":
-        block = new UnaryFunctionBlock(x, y, 60, 80);
+        block = new UnaryFunctionBlock(uid, x, y, 60, 80);
         break;
       case "Binary Function Block":
-        block = new BinaryFunctionBlock(x, y, 60, 100);
+        block = new BinaryFunctionBlock(uid, x, y, 60, 100);
         break;
       case "NOT Block":
-        block = new NegationBlock(x, y, 60, 80);
+        block = new NegationBlock(uid, x, y, 60, 80);
         break;
       case "AND Block":
-        block = new LogicBlock(x, y, 60, 90, name, "AND");
+        block = new LogicBlock(uid, x, y, 60, 90, name, "AND");
         break;
       case "OR Block":
-        block = new LogicBlock(x, y, 60, 90, name, "OR");
+        block = new LogicBlock(uid, x, y, 60, 90, name, "OR");
         break;
       case "NOR Block":
-        block = new LogicBlock(x, y, 60, 90, name, "NOR");
+        block = new LogicBlock(uid, x, y, 60, 90, name, "NOR");
         break;
       case "XOR Block":
-        block = new LogicBlock(x, y, 60, 90, name, "XOR");
+        block = new LogicBlock(uid, x, y, 60, 90, name, "XOR");
         break;
       case "XNOR Block":
-        block = new LogicBlock(x, y, 60, 90, name, "XNOR");
+        block = new LogicBlock(uid, x, y, 60, 90, name, "XNOR");
         break;
       case "Add Block":
-        block = new MathBlock(x, y, 60, 60, name, "+");
+        block = new MathBlock(uid, x, y, 60, 60, name, "+");
         break;
       case "Subtract Block":
-        block = new MathBlock(x, y, 60, 60, name, "−");
+        block = new MathBlock(uid, x, y, 60, 60, name, "−");
         break;
       case "Multiply Block":
-        block = new MathBlock(x, y, 60, 60, name, "×");
+        block = new MathBlock(uid, x, y, 60, 60, name, "×");
         break;
       case "Divide Block":
-        block = new MathBlock(x, y, 60, 60, name, "÷");
+        block = new MathBlock(uid, x, y, 60, 60, name, "÷");
         break;
       case "Modulus Block":
-        block = new MathBlock(x, y, 60, 60, name, "%");
+        block = new MathBlock(uid, x, y, 60, 60, name, "%");
         break;
       case "Exponentiation Block":
-        block = new MathBlock(x, y, 60, 60, name, "^");
+        block = new MathBlock(uid, x, y, 60, 60, name, "^");
         break;
       case "Rainbow HAT Block":
-        block = new RainbowHatBlock(20, 20);
+        block = new RainbowHatBlock(uid, 20, 20);
         break;
       case "Slider":
-        block = new Slider(name, x, y, 100, 60);
+        block = new Slider(uid, name, x, y, 100, 60);
         break;
     }
     if (block != null) {
-      block.uid = uid;
       this.blocks.push(block);
     }
     return block;
@@ -165,7 +163,11 @@ export class Flowchart {
   storeBlockStates(): void {
     let blockStates = [];
     for (let b of this.blocks) {
-      blockStates.push(new Block.State(b));
+      if (b instanceof Slider) {
+        blockStates.push(new Slider.State(b));
+      } else {
+        blockStates.push(new Block.State(b));
+      }
     }
     localStorage.setItem("Block States", JSON.stringify(blockStates));
   }
@@ -173,7 +175,7 @@ export class Flowchart {
   storeConnectorStates(): void {
     let connectorStates = [];
     for (let c of this.connectors) {
-      if (c.output != null && c.input != null) {
+      if (c.getOutput() != null && c.getInput() != null) {
         connectorStates.push(new PortConnector.State(c));
       }
     }

@@ -7,8 +7,8 @@ import {FunctionBlock} from "./FunctionBlock";
 
 export class UnaryFunctionBlock extends FunctionBlock {
 
-  constructor(x: number, y: number, width: number, height: number) {
-    super(x, y, width, height);
+  constructor(uid: string, x: number, y: number, width: number, height: number) {
+    super(uid, x, y, width, height);
     this.symbol = "F(X)";
     this.name = "Unary Function Block";
     this.color = "#FF6347";

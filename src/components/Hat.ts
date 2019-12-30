@@ -9,16 +9,15 @@ import {RaspberryPi} from "./RaspberryPi";
 import {Rectangle} from "../math/Rectangle";
 import {system} from "../Main";
 import $ from "jquery";
-import {Attachment} from "./Attachment";
 
 export abstract class Hat extends Board {
 
   raspberryPi: RaspberryPi;
 
   static State = class {
-    uid: string;
-    x: number;
-    y: number;
+    readonly uid: string;
+    readonly x: number;
+    readonly y: number;
 
     constructor(hat: Hat) {
       this.uid = hat.uid;

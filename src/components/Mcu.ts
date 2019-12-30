@@ -9,9 +9,9 @@ import {Board} from "./Board";
 export abstract class Mcu extends Board {
 
   static State = class {
-    uid: string;
-    x: number;
-    y: number;
+    readonly uid: string;
+    readonly x: number;
+    readonly y: number;
 
     constructor(mcu: Mcu) {
       this.uid = mcu.uid;

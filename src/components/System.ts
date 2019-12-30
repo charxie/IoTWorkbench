@@ -303,7 +303,6 @@ export class System {
     let canvas = this.lineCharts[selectedIndex].canvas;
     this.playground.removeChild(canvas);
     this.lineCharts.splice(selectedIndex, 1);
-    //this.storeLineChartSequence();
   }
 
   removeLineChart(lineChart: LineChart): void {

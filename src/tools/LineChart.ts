@@ -38,10 +38,10 @@ export class LineChart implements Movable {
   readonly uid: string;
 
   public static State = class {
-    uid: string;
-    visible: boolean;
-    x: number;
-    y: number;
+    readonly uid: string;
+    readonly visible: boolean;
+    readonly x: number;
+    readonly y: number;
 
     constructor(lineChart: LineChart) {
       this.uid = lineChart.sensor.name + " @" + lineChart.sensor.board.getUid();

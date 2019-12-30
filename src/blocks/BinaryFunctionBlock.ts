@@ -7,8 +7,8 @@ import {FunctionBlock} from "./FunctionBlock";
 
 export class BinaryFunctionBlock extends FunctionBlock {
 
-  constructor(x: number, y: number, width: number, height: number) {
-    super(x, y, width, height);
+  constructor(uid: string, x: number, y: number, width: number, height: number) {
+    super(uid, x, y, width, height);
     this.symbol = "F(X, Y)";
     this.name = "Binary Function Block";
     this.color = "#FF6347";

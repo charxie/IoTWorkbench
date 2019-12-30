@@ -6,37 +6,50 @@ import {Port} from "./Port";
 
 export class PortConnector {
 
-  uid: string;
-  output: Port;
-  input: Port;
+  private uid: string;
+  private output: Port;
+  private input: Port;
 
   static State = class {
-    inputBlockId: string;
-    inputPortId: string;
-    outputBlockId: string;
-    outputPortId: string;
+    readonly inputBlockId: string;
+    readonly inputPortId: string;
+    readonly outputBlockId: string;
+    readonly outputPortId: string;
 
     constructor(c: PortConnector) {
-      this.inputPortId = c.input.uid;
-      this.outputPortId = c.output.uid;
-      this.inputBlockId = c.input.block.uid;
-      this.outputBlockId = c.output.block.uid;
+      this.inputPortId = c.input.getUid();
+      this.outputPortId = c.output.getUid();
+      this.inputBlockId = c.input.getBlock().getUid();
+      this.outputBlockId = c.output.getBlock().getUid();
     }
   };
 
-  constructor(output: Port, input: Port) {
+  constructor(uid: string, output: Port, input: Port) {
+    this.uid = uid;
     this.output = output;
     this.input = input;
+  }
+
+  getUid(): string {
+    return this.uid;
+  }
+
+  getInput(): Port {
+    return this.input;
+  }
+
+  getOutput(): Port {
+    return this.output;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
     let p = this.input.getRelativePoint();
     let q = this.output.getRelativePoint();
-    let x1 = this.input.block.getX() + p.x;
-    let y1 = this.input.block.getY() + p.y;
-    let x2 = this.output.block.getX() + q.x;
-    let y2 = this.output.block.getY() + q.y;
+    let x1 = this.input.getBlock().getX() + p.x;
+    let y1 = this.input.getBlock().getY() + p.y;
+    let x2 = this.output.getBlock().getX() + q.x;
+    let y2 = this.output.getBlock().getY() + q.y;
     let dy = (y2 - y1) / 4;
     let cx = (x1 + x2) / 2;
     let cy = (y1 + y2) / 2;

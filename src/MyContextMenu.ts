@@ -4,7 +4,7 @@
 
 export abstract class MyContextMenu {
 
-  id: string;
+  protected id: string;
 
   abstract getUi(): string;
 

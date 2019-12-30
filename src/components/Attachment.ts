@@ -9,8 +9,8 @@ import {Hat} from "./Hat";
 
 export class Attachment {
 
-  raspberryPiId: string;
-  hatId: string;
+  readonly raspberryPiId: string;
+  readonly hatId: string;
 
   constructor(raspberryPi: RaspberryPi, hat: Hat) {
     this.raspberryPiId = raspberryPi.uid;

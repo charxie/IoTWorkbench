@@ -36,7 +36,7 @@ export class FunctionBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>ID:</td>
-                  <td>${this.block.uid.substring(this.block.uid.indexOf("#"))}</td>
+                  <td>${this.block.getUid().substring(this.block.getUid().indexOf("#"))}</td>
                 </tr>
               </table>
             </div>`;

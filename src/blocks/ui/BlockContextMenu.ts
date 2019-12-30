@@ -9,7 +9,7 @@ import {closeAllContextMenus, flowchart} from "../../Main";
 
 export abstract class BlockContextMenu extends MyContextMenu {
 
-  block: Block;
+  protected block: Block;
 
   addListeners(): void {
     let deleteButton = document.getElementById(this.id + "-delete-button");
@@ -23,7 +23,7 @@ export abstract class BlockContextMenu extends MyContextMenu {
     closeAllContextMenus();
     if (this.block) {
       let that = this;
-      $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to delete " + this.block.uid + "?</div>");
+      $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to delete " + this.block.getUid() + "?</div>");
       $("#modal-dialog").dialog({
         resizable: false,
         modal: true,
@@ -32,7 +32,7 @@ export abstract class BlockContextMenu extends MyContextMenu {
         width: 300,
         buttons: {
           'OK': function () {
-            flowchart.removeBlock(that.block.uid);
+            flowchart.removeBlock(that.block.getUid());
             flowchart.draw();
             $(this).dialog('close');
           },

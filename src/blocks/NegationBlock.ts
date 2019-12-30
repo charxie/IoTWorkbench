@@ -7,8 +7,8 @@ import {Port} from "./Port";
 
 export class NegationBlock extends Block {
 
-  constructor(x: number, y: number, width: number, height: number) {
-    super(x, y, width, height);
+  constructor(uid: string, x: number, y: number, width: number, height: number) {
+    super(uid, x, y, width, height);
     this.name = "Not Block";
     this.symbol = "NOT";
     this.color = "#B8860B";

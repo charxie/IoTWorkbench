@@ -20,10 +20,9 @@ import {Slider} from "./Slider";
 
 export class BlockView {
 
-  flowchart: Flowchart;
-  skipMainMouseEvent: boolean = false; // when a block is handling its own mouse events, set this flag true
   readonly canvas: HTMLCanvasElement;
 
+  private flowchart: Flowchart;
   private selectedMovable: Movable;
   private selectedPort: Port;
   private selectedPortConnector: PortConnector;
@@ -33,6 +32,7 @@ export class BlockView {
   private connectorOntheFly: Connector;
   private gridSize: number = 100;
   private overWhat: any;
+  private skipMainMouseEvent: boolean = false; // when a block is handling its own mouse events, set this flag true
 
   constructor(canvasId: string, flowchart: Flowchart) {
     this.flowchart = flowchart;
@@ -62,40 +62,35 @@ export class BlockView {
       e.preventDefault();
       let id = (<HTMLElement>e.target).id;
       if (id == "block-view") {
+        let x = e.offsetX;
+        let y = e.offsetY;
+        let timestamp = Date.now().toString(16);
         switch (that.draggedElementId) {
           case "unary-function-block":
-            let unaryFunctionBlock = new UnaryFunctionBlock(e.offsetX, e.offsetY, 60, 80);
-            unaryFunctionBlock.uid = "Unary Function Block #" + Date.now().toString(16);
-            that.storeBlock(unaryFunctionBlock);
+            that.storeBlock(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x, y, 60, 80));
             break;
           case "binary-function-block":
-            let binaryFunctionBlock = new BinaryFunctionBlock(e.offsetX, e.offsetY, 60, 100);
-            binaryFunctionBlock.uid = "Binary Function Block #" + Date.now().toString(16);
-            that.storeBlock(binaryFunctionBlock);
+            that.storeBlock(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x, y, 60, 100));
             break;
           case "logic-and-block":
-            let andBlock = new LogicBlock(e.offsetX, e.offsetY, 60, 80, "AND Block", "AND");
-            andBlock.uid = andBlock.name + " #" + Date.now().toString(16);
-            that.storeBlock(andBlock);
+            that.storeBlock(new LogicBlock("AND Block #" + timestamp, x, y, 60, 80, "AND Block", "AND"));
             break;
           case "logic-not-block":
-            let notBlock = new NegationBlock(e.offsetX, e.offsetY, 60, 80);
-            notBlock.uid = notBlock.name + " #" + Date.now().toString(16);
-            that.storeBlock(notBlock);
+            that.storeBlock(new NegationBlock("NOT Block #" + timestamp, x, y, 60, 80));
             break;
           case "math-add-block":
-            let addBlock = new MathBlock(e.offsetX, e.offsetY, 60, 80, "Add Block", "+");
-            addBlock.uid = addBlock.name + " #" + Date.now().toString(16);
-            that.storeBlock(addBlock);
+            that.storeBlock(new MathBlock("Add Block #" + timestamp, x, y, 60, 80, "Add Block", "+"));
             break;
           case "slider-block":
-            let slider = new Slider("Slider", e.offsetX, e.offsetY, 100, 60);
-            slider.uid = slider.name + " #" + Date.now().toString(16);
-            that.storeBlock(slider);
+            that.storeBlock(new Slider("Slider #" + timestamp, "Variable", x, y, 100, 60));
             break;
         }
       }
     }, false);
+  }
+
+  preventMainMouseEvent(b: boolean): void {
+    this.skipMainMouseEvent = b;
   }
 
   private storeBlock(block: Block): void {
@@ -116,7 +111,7 @@ export class BlockView {
     for (let b of this.flowchart.blocks) {
       b.draw(ctx);
     }
-    if (this.selectedPort && !this.selectedPort.input) {
+    if (this.selectedPort && !this.selectedPort.isInput()) {
       this.connectorOntheFly.draw(ctx);
     }
   }
@@ -176,10 +171,10 @@ export class BlockView {
       outerloop:
         for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
           let block = this.flowchart.blocks[n];
-          for (let p of block.ports) {
-            if (p.near(x - block.x, y - block.y)) {
+          for (let p of block.getPorts()) {
+            if (p.near(x - block.getX(), y - block.getY())) {
               this.selectedPort = p;
-              if (this.selectedPort.input) {
+              if (this.selectedPort.isInput()) {
                 // if the selected port is an input, select one of its connectors
                 this.selectedPortConnector = this.flowchart.getConnector(this.selectedPort);
               } else {
@@ -208,8 +203,8 @@ export class BlockView {
       outerloop:
         for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
           let block = this.flowchart.blocks[n];
-          for (let p of block.ports) {
-            if (p.input && p.near(x - block.x, y - block.y)) {
+          for (let p of block.getPorts()) {
+            if (p.isInput() && p.near(x - block.getX(), y - block.getY())) {
               if (this.flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
                 sound.play();
                 this.flowchart.storeConnectorStates();
@@ -236,7 +231,7 @@ export class BlockView {
       let y = e.offsetY;
       if (this.overWhat != null) {
         if (this.overWhat instanceof Port) {
-          this.overWhat.close = false;
+          this.overWhat.setClose(false);
         }
         this.overWhat = null;
       }
@@ -247,8 +242,8 @@ export class BlockView {
             this.overWhat = block;
             break;
           } else {
-            for (let p of block.ports) {
-              if (p.near(x - block.x, y - block.y)) {
+            for (let p of block.getPorts()) {
+              if (p.near(x - block.getX(), y - block.getY())) {
                 this.overWhat = p;
                 break outerloop;
               }
@@ -259,10 +254,10 @@ export class BlockView {
       if (this.selectedMovable != null) {
         this.moveTo(x, y, this.selectedMovable);
       } else if (this.selectedPort != null) {
-        if (this.selectedPort.input) {
+        if (this.selectedPort.isInput()) {
           if (this.selectedPortConnector) { // if the clicked port is an input and there is a connector to it
             this.flowchart.removePortConnector(this.selectedPortConnector);
-            this.selectedPort = this.selectedPortConnector.output; // switch the selected port to the output end of the selected connector
+            this.selectedPort = this.selectedPortConnector.getOutput(); // switch the selected port to the output end of the selected connector
             let p = this.selectedPort.getAbsolutePoint(); // this activates the connector on the fly that originates from the output end
             this.connectorOntheFly.x1 = p.x;
             this.connectorOntheFly.y1 = p.y;
@@ -274,13 +269,13 @@ export class BlockView {
           this.connectorOntheFly.x2 = e.offsetX;
           this.connectorOntheFly.y2 = e.offsetY;
           if (this.overWhat instanceof Port) {
-            this.overWhat.close = true;
+            this.overWhat.setClose(true);
           }
         }
       }
     }
     if (this.overWhat instanceof Port) {
-      this.canvas.style.cursor = this.overWhat.input ? "default" : "grab";
+      this.canvas.style.cursor = this.overWhat.isInput() ? "default" : "grab";
     } else if (this.overWhat instanceof Block) {
       this.canvas.style.cursor = "move";
     } else {

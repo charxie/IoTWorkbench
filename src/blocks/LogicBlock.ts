@@ -7,8 +7,8 @@ import {Port} from "./Port";
 
 export class LogicBlock extends Block {
 
-  constructor(x: number, y: number, width: number, height: number, name: string, symbol: string) {
-    super(x, y, width, height);
+  constructor(uid: string, x: number, y: number, width: number, height: number, name: string, symbol: string) {
+    super(uid, x, y, width, height);
     this.name = name;
     this.symbol = symbol;
     this.color = "#B8860B";

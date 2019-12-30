@@ -8,6 +8,7 @@ import {NegationBlock} from "../NegationBlock";
 import {LogicBlock} from "../LogicBlock";
 import {MathBlock} from "../MathBlock";
 import {Slider} from "../Slider";
+import {FunctionBlock} from "../FunctionBlock";
 
 export class BlockElementsPanel {
 
@@ -65,53 +66,53 @@ export class BlockElementsPanel {
   private drawSlider(name: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new Slider(name, 8, 8, canvas.width - 16, canvas.height - 16);
-    block.small = true;
-    block.margin = 12;
+    let block = new Slider("Slider Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setSmall(true);
+    block.setMargin(12);
     block.draw(ctx);
   }
 
   private drawMathBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new MathBlock(8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
-    block.name = name;
-    block.small = true;
-    block.margin = 12;
+    let block = new MathBlock("Math Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    block.setName(name);
+    block.setSmall(true);
+    block.setMargin(12);
     block.draw(ctx);
   }
 
   private drawLogicBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new LogicBlock(8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
-    block.name = name;
-    block.small = true;
-    block.margin = 12;
+    let block = new LogicBlock("Logic Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    block.setName(name);
+    block.setSmall(true);
+    block.setMargin(12);
     block.draw(ctx);
   }
 
   private drawNegationBlock(canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new NegationBlock(8, 8, canvas.width - 16, canvas.height - 16);
-    block.small = true;
-    block.margin = 12;
+    let block = new NegationBlock("Negation Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setSmall(true);
+    block.setMargin(12);
     block.draw(ctx);
   }
 
   private drawFunctionBlock(type: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = null;
+    let block: FunctionBlock = null;
     if (type == "F(X)") {
-      block = new UnaryFunctionBlock(8, 8, canvas.width - 16, canvas.height - 16);
+      block = new UnaryFunctionBlock("Unary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     } else if (type == "F(X, Y)") {
-      block = new BinaryFunctionBlock(8, 8, canvas.width - 16, canvas.height - 16);
+      block = new BinaryFunctionBlock("Binary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     }
     if (block != null) {
-      block.small = true;
-      block.margin = 12;
+      block.setSmall(true);
+      block.setMargin(12);
       block.draw(ctx);
     }
   }
