@@ -10,7 +10,6 @@ import "jquery-ui-bundle/jquery-ui";
 import "@fortawesome/fontawesome-free/css/all.css";
 
 import * as Constants from "./Constants";
-import {Movable} from "./Movable";
 import {User} from "./User";
 
 import {System} from "./components/System";
@@ -28,19 +27,18 @@ import {UnicornHatContextMenu} from "./components/ui/UnicornHatContextMenu";
 import {CrickitHatContextMenu} from "./components/ui/CrickitHatContextMenu";
 import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
 
-import {Flowchart} from "./block/Flowchart";
-import {BlockViewContextMenu} from "./block/ui/BlockViewContextMenu";
-import {BlockElementsPanel} from "./block/ui/BlockElementsPanel";
-import {LogicBlockContextMenu} from "./block/ui/LogicBlockContextMenu";
-import {MathBlockContextMenu} from "./block/ui/MathBlockContextMenu";
-import {FunctionBlockContextMenu} from "./block/ui/FunctionBlockContextMenu";
-import {HatBlockContextMenu} from "./block/ui/HatBlockContextMenu";
-import {SliderContextMenu} from "./block/ui/SliderContextMenu";
+import {Flowchart} from "./blocks/Flowchart";
+import {BlockViewContextMenu} from "./blocks/ui/BlockViewContextMenu";
+import {BlockElementsPanel} from "./blocks/ui/BlockElementsPanel";
+import {LogicBlockContextMenu} from "./blocks/ui/LogicBlockContextMenu";
+import {MathBlockContextMenu} from "./blocks/ui/MathBlockContextMenu";
+import {FunctionBlockContextMenu} from "./blocks/ui/FunctionBlockContextMenu";
+import {HatBlockContextMenu} from "./blocks/ui/HatBlockContextMenu";
+import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
 
 import {Sound} from "./Sound";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
-import {Slider} from "./block/Slider";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -276,14 +274,18 @@ function restoreHats() {
       system.addHat(name, state.x, state.y, state.uid, false);
     }
   }
-  for (let h of system.hats) {
-    let id: string = localStorage.getItem("Attachment: " + h.getUid());
-    if (id != null) {
-      let pi = system.getRaspberryPiById(id);
-      if (pi) {
-        h.attach(pi);
+  s = localStorage.getItem("Attachments");
+  if (s != null) {
+    let states = JSON.parse(s);
+    for (let state of states) {
+      let pi = system.getRaspberryPiById(state.raspberryPiId);
+      let hat = system.getHatById(state.hatId);
+      if (hat != null && pi != null) {
+        hat.attach(pi);
       }
     }
+  }
+  for (let h of system.hats) {
     if (h instanceof RainbowHat) {
       h.temperatureGraph = addLineChart(h, h.temperatureSensor);
       h.pressureGraph = addLineChart(h, h.barometricPressureSensor);

@@ -9,6 +9,7 @@ import {RaspberryPi} from "./RaspberryPi";
 import {Rectangle} from "../math/Rectangle";
 import {system} from "../Main";
 import $ from "jquery";
+import {Attachment} from "./Attachment";
 
 export abstract class Hat extends Board {
 
@@ -63,12 +64,12 @@ export abstract class Hat extends Board {
     if (raspberryPi != null) {
       this.setX(raspberryPi.getX());
       this.setY(raspberryPi.getY());
-      localStorage.setItem("Attachment: " + this.getUid(), raspberryPi.uid);
       this.updateFromFirebase();
     } else {
       localStorage.removeItem("Attachment: " + this.getUid());
       this.turnoff();
     }
+    system.storeAttachments();
   }
 
   whichRaspberryPi(): number {

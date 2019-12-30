@@ -18,6 +18,7 @@ import {closeAllContextMenus, flowchart} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
 import {LineChart} from "../tools/LineChart";
+import {Attachment} from "./Attachment";
 
 declare var firebase;
 
@@ -410,24 +411,6 @@ export class System {
     }
   };
 
-  // storage methods
-
-  storeMcuStates(): void {
-    let mcuStates = [];
-    for (let m of this.mcus) {
-      mcuStates.push(new Mcu.State(m));
-    }
-    localStorage.setItem("MCU States", JSON.stringify(mcuStates));
-  }
-
-  storeHatStates(): void {
-    let hatStates = [];
-    for (let h of this.hats) {
-      hatStates.push(new Hat.State(h));
-    }
-    localStorage.setItem("HAT States", JSON.stringify(hatStates));
-  }
-
   private moveTo(x: number, y: number, m: Movable): void {
     let dx = x - this.mouseDownRelativeX;
     let dy = y - this.mouseDownRelativeY;
@@ -460,6 +443,35 @@ export class System {
         this.storeHatStates();
       }
     }
+  }
+
+  // storage methods
+
+  storeMcuStates(): void {
+    let mcuStates = [];
+    for (let m of this.mcus) {
+      mcuStates.push(new Mcu.State(m));
+    }
+    localStorage.setItem("MCU States", JSON.stringify(mcuStates));
+  }
+
+  storeHatStates(): void {
+    let hatStates = [];
+    for (let h of this.hats) {
+      hatStates.push(new Hat.State(h));
+    }
+    localStorage.setItem("HAT States", JSON.stringify(hatStates));
+  }
+
+
+  storeAttachments(): void {
+    let states = [];
+    for (let h of this.hats) {
+      if (h.raspberryPi != null) {
+        states.push(new Attachment(h.raspberryPi, h));
+      }
+    }
+    localStorage.setItem("Attachments", JSON.stringify(states));
   }
 
 }

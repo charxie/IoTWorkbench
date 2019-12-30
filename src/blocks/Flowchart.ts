@@ -13,7 +13,6 @@ import {RainbowHatBlock} from "./RainbowHatBlock";
 import {Port} from "./Port";
 import {PortConnector} from "./PortConnector";
 import {Slider} from "./Slider";
-import {BlockContextMenu} from "./ui/BlockContextMenu";
 
 export class Flowchart {
 
