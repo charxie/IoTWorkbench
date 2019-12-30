@@ -13,12 +13,12 @@ import {CapacitiveTouchHat} from "./CapacitiveTouchHat";
 import {UnicornHat} from "./UnicornHat";
 import {CrickitHat} from "./CrickitHat";
 import {PanTiltHat} from "./PanTiltHat";
+import {Attachment} from "./Attachment";
 import {Movable} from "../Movable";
 import {closeAllContextMenus, flowchart} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
 import {LineChart} from "../tools/LineChart";
-import {Attachment} from "./Attachment";
 
 declare var firebase;
 
@@ -84,6 +84,7 @@ export class System {
       switch (that.draggedElementId) {
         case "raspberry-pi-image":
           if (id == "workbench") {
+            that.addRaspberryPi("Raspberry Pi", e.offsetX, e.offsetY, true);
             that.storeMcuStates();
           }
           break;
@@ -154,7 +155,7 @@ export class System {
     this.removeRaspberryPiByIndex(this.mcus.indexOf(raspberryPi));
   }
 
-  addRaspberryPi(x: number, y: number, uid: string, shiftToCenter: boolean): RaspberryPi {
+  addRaspberryPi(uid: string, x: number, y: number, shiftToCenter: boolean): RaspberryPi {
     let canvas = document.createElement("canvas");
     canvas.id = "raspberry-pi-" + this.mcus.length;
     canvas.width = 435;

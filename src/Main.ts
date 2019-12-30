@@ -91,11 +91,13 @@ window.onload = function () {
   let modelTabButton = document.getElementById("model-tab-button") as HTMLButtonElement;
   modelTabButton.addEventListener("click", function () {
     selectTab(modelTabButton, "model-playground");
+    resize();
     system.draw();
   });
   let blockTabButton = document.getElementById("block-tab-button") as HTMLButtonElement;
   blockTabButton.addEventListener("click", function () {
     selectTab(blockTabButton, "block-playground");
+    resize();
     flowchart.draw();
   });
   let codeTabButton = document.getElementById("code-tab-button") as HTMLButtonElement;
@@ -128,8 +130,6 @@ window.onload = function () {
   restoreConnectors();
 
   setTimeout(function () { // call this to refresh after inserting canvases
-    resize();
-    draw();
     let startTab = localStorage.getItem("Start Tab");
     if (startTab) {
       switch (startTab) {
@@ -145,6 +145,8 @@ window.onload = function () {
           selectTab(codeTabButton, startTab);
           break;
       }
+      resize();
+      draw();
     }
   }, 1000);
 
@@ -258,7 +260,7 @@ function restoreMcus() {
     let states = JSON.parse(s);
     for (let state of states) {
       if (state.uid.startsWith("Raspberry Pi")) {
-        system.addRaspberryPi(state.x, state.y, state.uid, false);
+        system.addRaspberryPi(state.uid, state.x, state.y, false);
       }
     }
   }
@@ -343,15 +345,20 @@ window.onresize = function () {
 };
 
 function resize() {
-  let workbenchRect = system.workbench.canvas.getBoundingClientRect() as DOMRect;
-  system.workbench.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
-  system.workbench.canvas.height = window.innerHeight - workbenchRect.top - 50;
-  flowchart.blockView.canvas.width = system.workbench.canvas.width;
-  flowchart.blockView.canvas.height = system.workbench.canvas.height;
-  let componentsScroller = document.getElementById("components-scroller") as HTMLDivElement;
-  componentsScroller.style.height = system.workbench.canvas.height * 0.85 + "px";
-  let elementsScroller = document.getElementById("elements-scroller") as HTMLDivElement;
-  elementsScroller.style.height = flowchart.blockView.canvas.height * 0.85 + "px";
+  if (document.getElementById("model-playground").style.display == "block") {
+    let workbenchRect = system.workbench.canvas.getBoundingClientRect() as DOMRect;
+    system.workbench.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
+    system.workbench.canvas.height = window.innerHeight - workbenchRect.top - 50;
+    let componentsScroller = document.getElementById("components-scroller") as HTMLDivElement;
+    componentsScroller.style.height = system.workbench.canvas.height * 0.85 + "px";
+  }
+  if (document.getElementById("block-playground").style.display == "block") {
+    let blockViewRect = flowchart.blockView.canvas.getBoundingClientRect() as DOMRect;
+    flowchart.blockView.canvas.width = window.innerWidth - 2 * blockViewRect.left - 4;
+    flowchart.blockView.canvas.height = window.innerHeight - blockViewRect.top - 50;
+    let elementsScroller = document.getElementById("elements-scroller") as HTMLDivElement;
+    elementsScroller.style.height = flowchart.blockView.canvas.height * 0.85 + "px";
+  }
 }
 
 function draw() {
