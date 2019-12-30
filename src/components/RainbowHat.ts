@@ -293,7 +293,7 @@ export class RainbowHat extends Hat {
         this.temperatureGraph.draw();
         this.temperatureGraph.bringForward();
       }
-      localStorage.setItem(this.temperatureSensor.name + " Graph Visibility @" + this.getUid(), this.temperatureGraph.isVisible() ? "true" : "false");
+      system.storeLineChartStates();
       return;
     }
 
@@ -308,7 +308,7 @@ export class RainbowHat extends Hat {
         this.pressureGraph.draw();
         this.pressureGraph.bringForward();
       }
-      localStorage.setItem(this.barometricPressureSensor.name + " Graph Visibility @" + this.getUid(), this.pressureGraph.isVisible() ? "true" : "false");
+      system.storeLineChartStates();
       return;
     }
 

@@ -11,6 +11,7 @@ import "@fortawesome/fontawesome-free/css/all.css";
 
 import * as Constants from "./Constants";
 import {User} from "./User";
+import {LineChart} from "./tools/LineChart";
 
 import {System} from "./components/System";
 import {RainbowHat} from "./components/RainbowHat";
@@ -270,10 +271,31 @@ function restoreHats() {
   system.hats = [];
   let s: string = localStorage.getItem("HAT States");
   if (s != null) {
-    let states = JSON.parse(s);
-    for (let state of states) {
-      let name = state.uid.substring(0, state.uid.indexOf("#") - 1);
-      system.addHat(name, state.x, state.y, state.uid, false);
+    let hatStates = JSON.parse(s);
+    for (let hatState of hatStates) {
+      let name = hatState.uid.substring(0, hatState.uid.indexOf("#") - 1);
+      let hat = system.addHat(name, hatState.x, hatState.y, hatState.uid, false);
+      let blockName = name + " Block";
+      let block = flowchart.addBlock(blockName, 10, 10, hat.uid.replace(name, blockName));
+      let bs: string = localStorage.getItem("Block States");
+      if (bs != null) {
+        let blockStates = JSON.parse(bs);
+        if (blockStates.length > 0) {
+          for (let blockState of blockStates) {
+            let i = hatState.uid.indexOf("#") - 1;
+            let hatName = hatState.uid.substring(0, i);
+            let hatId = hatState.uid.substring(i);
+            i = blockState.uid.indexOf("#") - 1;
+            let blockName = blockState.uid.substring(0, i);
+            let blockId = blockState.uid.substring(i);
+            if (blockName.startsWith(hatName) && blockId == hatId) { // find out the stored state of the HAT block
+              // restore the HAT block state after adding it here
+              block.setX(blockState.x);
+              block.setY(blockState.y);
+            }
+          }
+        }
+      }
     }
   }
   s = localStorage.getItem("Attachments");
@@ -289,22 +311,32 @@ function restoreHats() {
   }
   for (let h of system.hats) {
     if (h instanceof RainbowHat) {
-      h.temperatureGraph = addLineChart(h, h.temperatureSensor);
-      h.pressureGraph = addLineChart(h, h.barometricPressureSensor);
-      if (h.temperatureGraph) h.temperatureGraph.draw();
-      if (h.pressureGraph) h.pressureGraph.draw();
+      h.temperatureGraph = system.addLineChart(h.temperatureSensor, h.getX(), h.getY(), h.temperatureSensor.name + " @" + h.temperatureSensor.board.getUid());
+      h.pressureGraph = system.addLineChart(h.barometricPressureSensor, h.getX(), h.getY(), h.barometricPressureSensor.name + " @" + h.barometricPressureSensor.board.getUid());
+      h.temperatureGraph.setVisible(false);
+      h.pressureGraph.setVisible(false);
+      let lcs = localStorage.getItem("Line Chart States");
+      if (lcs != null) {
+        let lineChartStates = JSON.parse(lcs);
+        for (let lineChartState of lineChartStates) {
+          if (lineChartState.uid == h.temperatureGraph.uid) {
+            setLineChartState(h.temperatureGraph, lineChartState);
+          } else if (lineChartState.uid == h.pressureGraph.uid) {
+            setLineChartState(h.pressureGraph, lineChartState);
+          }
+        }
+      }
     }
   }
 }
 
-function addLineChart(r: RainbowHat, s: Sensor) {
-  let v = localStorage.getItem(s.name + " Graph Visibility @" + r.getUid());
-  if (v == "true") {
-    let x = localStorage.getItem(s.name + " Graph X @" + r.getUid());
-    let y = localStorage.getItem(s.name + " Graph Y @" + r.getUid());
-    return system.addLineChart(s, x ? parseInt(x) : r.getX(), y ? parseInt(y) : r.getY() + r.getHeight() / 2, s.name + " Line Chart " + Date.now().toString(16));
+function setLineChartState(graph: LineChart, state: any) {
+  graph.setVisible(state.visible);
+  graph.setX(state.x);
+  graph.setY(state.y);
+  if (graph.isVisible()) {
+    graph.draw();
   }
-  return null;
 }
 
 function restoreBlocks() {

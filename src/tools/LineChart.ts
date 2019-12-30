@@ -8,6 +8,7 @@ import {Sensor} from "../components/Sensor";
 import {Movable} from "../Movable";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
+import {system} from "../Main";
 
 export class LineChart implements Movable {
 
@@ -35,6 +36,20 @@ export class LineChart implements Movable {
   private clearButton = new Rectangle(0, 0, 14, 14);
   private selectedButton: Rectangle;
   readonly uid: string;
+
+  public static State = class {
+    uid: string;
+    visible: boolean;
+    x: number;
+    y: number;
+
+    constructor(lineChart: LineChart) {
+      this.uid = lineChart.sensor.name + " @" + lineChart.sensor.board.getUid();
+      this.visible = lineChart.visible;
+      this.x = lineChart.getX();
+      this.y = lineChart.getY();
+    }
+  };
 
   constructor(elementId: string, uid: string, sensor: Sensor) {
     this.name = sensor.name + " Graph";
@@ -298,7 +313,7 @@ export class LineChart implements Movable {
     let y = e.clientY - rect.y;
     if (this.closeButton.contains(x, y)) {
       this.setVisible(false);
-      localStorage.setItem(this.sensor.name + " Graph Visibility @" + this.sensor.board.getUid(), "false");
+      system.storeLineChartStates();
     } else if (this.clearButton.contains(x, y)) {
       this.sensor.data.length = 0;
     } else {

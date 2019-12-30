@@ -128,6 +128,8 @@ export class System {
     if (this.whichRaspberryPi(x, y) >= 0) {
       hat.tryAttach();
     }
+    let blockName = name + " Block";
+    flowchart.addBlock(blockName, 10, 10, hat.uid.replace(name, blockName));
     return hat;
   }
 
@@ -272,14 +274,6 @@ export class System {
         hat.setY(y);
       }
       this.draw();
-      let blockId = uid.replace(type, type + " Block");
-      let block = flowchart.addBlock(type + " Block", 10, 10, blockId);
-      let blockX = localStorage.getItem("X: " + blockId);
-      let blockY = localStorage.getItem("Y: " + blockId);
-      if (blockX && blockY) {
-        block.setX(parseInt(blockX));
-        block.setY(parseInt(blockY));
-      }
     }
     return hat;
   }
@@ -443,6 +437,8 @@ export class System {
         m.hat.setY(m.getY());
         this.storeHatStates();
       }
+    } else if (m instanceof LineChart) {
+      this.storeLineChartStates();
     }
   }
 
@@ -464,7 +460,6 @@ export class System {
     localStorage.setItem("HAT States", JSON.stringify(hatStates));
   }
 
-
   storeAttachments(): void {
     let states = [];
     for (let h of this.hats) {
@@ -473,6 +468,17 @@ export class System {
       }
     }
     localStorage.setItem("Attachments", JSON.stringify(states));
+  }
+
+  storeLineChartStates(): void {
+    let states = [];
+    for (let h of this.hats) {
+      if (h instanceof RainbowHat) {
+        states.push(new LineChart.State(h.temperatureGraph));
+        states.push(new LineChart.State(h.pressureGraph));
+      }
+    }
+    localStorage.setItem("Line Chart States", JSON.stringify(states));
   }
 
 }
