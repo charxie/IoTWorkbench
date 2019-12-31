@@ -49,6 +49,9 @@ export abstract class Block implements Movable {
   update(): void {
   }
 
+  refresh(): void {
+  }
+
   // get the blocks that this one outputs to through a port connector
   outputTo(): Block[] {
     let blocks: Block[] = [];

@@ -5,6 +5,7 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
+import {flowchart} from "../Main";
 
 export class Sticker extends Block {
 
@@ -80,6 +81,10 @@ export class Sticker extends Block {
 
   update(): void {
     super.update();
+    this.refresh();
+  }
+
+  refresh(): void {
     this.text = this.ports[0].getValue().toString();
   }
 

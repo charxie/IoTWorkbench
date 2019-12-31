@@ -4,6 +4,7 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
+import {flowchart} from "../Main";
 
 export class MathBlock extends Block {
 
@@ -45,6 +46,11 @@ export class MathBlock extends Block {
       case "Modulus Block":
         this.portR.setValue(a % b);
         break;
+    }
+    for (let c of flowchart.connectors) {
+      if (c.getOutput() == this.portR) {
+        c.getInput().setValue(c.getOutput().getValue());
+      }
     }
   }
 

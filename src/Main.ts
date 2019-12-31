@@ -132,6 +132,9 @@ window.onload = function () {
   restoreHats();
   restoreConnectors();
 
+  flowchart.traverse(flowchart.blocks[0]);
+  flowchart.traverse(flowchart.blocks[1]);
+
   setTimeout(function () { // call this to refresh after inserting canvases
     let startTab = localStorage.getItem("Start Tab");
     if (startTab) {
@@ -368,10 +371,10 @@ function restoreBlocks() {
           block.setMaximum(state.maximum);
           block.setSteps(state.steps);
           block.setValue(state.value);
-          block.update();
         } else if (block instanceof Sticker) {
           block.setName(state.name);
         }
+        block.refresh();
       }
     }
   }

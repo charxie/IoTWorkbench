@@ -25,26 +25,16 @@ export class Flowchart {
     this.blockView = new BlockView("block-view", this);
   }
 
-  // traverse(current:Block):void {
-  //   //process current block here
-  //   console.log(current.getUid());
-  //   //visit children of current
-  //   for (let cki in current.out) {
-  //     if (current.out.hasOwnProperty(cki)) {
-  //       let ck = current.out[cki];
-  //       let child = tree[ck];
-  //       if (child) {
-  //         traverse(child);
-  //       }
-  //     }
-  //   }
-  // }
-
-  updateConnectors(): void {
-    for (let connector of this.connectors) {
-      connector.getInput().setValue(connector.getOutput().getValue());
+  traverse(current: Block): void {
+    //process current block here
+    current.update();
+    //visit children of current
+    let outputTo = current.outputTo();
+    for (let next in outputTo) {
+      if (outputTo.hasOwnProperty(next)) {
+        this.traverse(outputTo[next]);
+      }
     }
-    this.draw();
   }
 
   /* connector methods */
