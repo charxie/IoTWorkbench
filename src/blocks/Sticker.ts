@@ -34,7 +34,7 @@ export class Sticker extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.color = "#FFF86B";
-    this.ports.push(new Port(this, true, null, 0, this.height / 2, false));
+    this.ports.push(new Port(this, true, "I", 0, this.height / 2, false));
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -64,6 +64,11 @@ export class Sticker extends Block {
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + barHeight, this.width, this.height - barHeight, this.radius, "Bottom");
+    if (this.text) {
+      ctx.font = "14px Times Roman";
+      ctx.strokeStyle = "black";
+      ctx.strokeText(this.text, this.x + 10, this.y + barHeight + 20);
+    }
 
     // draw the port
     ctx.font = this.small ? "9px Arial" : "12px Arial";
@@ -71,6 +76,11 @@ export class Sticker extends Block {
     this.ports[0].setY(this.height / 2);
     this.ports[0].draw(ctx, this.small);
 
+  }
+
+  update(): void {
+    super.update();
+    this.text = this.ports[0].getValue().toString();
   }
 
 }

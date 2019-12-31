@@ -86,7 +86,7 @@ export class BlockView {
             that.storeBlock(new Slider("Slider #" + timestamp, "Variable", x, y, 100, 60));
             break;
           case "sticker-block":
-            that.storeBlock(new Sticker("Sticker #" + timestamp, "Text Display", x, y, 80, 80));
+            that.storeBlock(new Sticker("Sticker #" + timestamp, "Text Display", x, y, 120, 120));
             break;
         }
       }

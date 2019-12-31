@@ -8,11 +8,11 @@ import {Point} from "../math/Point";
 
 export class Port {
 
+  private value: number = 0;
   private block: Block;
   private input: boolean; // a port must be either input or output. If this is false, then this is a port for output.
   private close: boolean; // when a connector end is close to this port
   private uid: string;
-  private name: string;
   private arc: Arc;
   private radius: number = 5;
 
@@ -21,6 +21,14 @@ export class Port {
     this.input = input;
     this.uid = uid;
     this.arc = new Arc(x, y, this.radius, 0.5 * Math.PI, 1.5 * Math.PI, anticlockwise);
+  }
+
+  setValue(value: number): void {
+    this.value = value;
+  }
+
+  getValue(): number {
+    return this.value;
   }
 
   setX(x: number): void {
@@ -91,8 +99,8 @@ export class Port {
     ctx.stroke();
     if (!small) {
       ctx.lineWidth = 0.75;
-      let t = this.uid;
-      if (t != null) {
+      if (this.block.getPorts().length > 1) {
+        let t = this.uid;
         if (this.arc.anticlockwise) {
           ctx.strokeText(t, ax - ctx.measureText(t).width - (small ? 2 : 4), ay + 4);
         } else {

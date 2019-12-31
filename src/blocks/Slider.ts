@@ -54,7 +54,7 @@ export class Slider extends Block {
     this.halfHeight = this.height / 2;
     this.name = name;
     this.color = "#483D8B";
-    this.ports.push(new Port(this, false, null, this.width, this.height / 2, true));
+    this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
     this.knob = new Rectangle(this.x + this.width / 2 - 2, this.y + this.halfHeight + 4, 4, this.halfHeight - 8);
     this.trackLeft = this.x + 8;
     this.trackRight = this.x + this.width - 8;
@@ -194,6 +194,10 @@ export class Slider extends Block {
         this.knob.x = this.trackRight - this.knobHalfSize;
       }
       this.value = this.minimum + (this.maximum - this.minimum) / (this.trackRight - this.trackLeft) * (this.knob.x + this.knobHalfSize - this.trackLeft);
+      this.ports[0].setValue(this.value);
+      console.log("out to: " + this.outputTo());
+      console.log("in from: " + this.inputFrom());
+      flowchart.updateConnectors();
       flowchart.storeBlockStates();
     } else {
       if (this.onKnob(x, y)) {

@@ -5,6 +5,7 @@
 import {Port} from "./Port";
 import {Movable} from "../Movable";
 import {Util} from "../Util";
+import {flowchart} from "../Main";
 
 export abstract class Block implements Movable {
 
@@ -46,6 +47,34 @@ export abstract class Block implements Movable {
   }
 
   update(): void {
+  }
+
+  // get the blocks that this one outputs to through a port connector
+  outputTo(): Block[] {
+    let blocks: Block[] = [];
+    for (let p of this.ports) {
+      if (p.isInput()) continue;
+      for (let c of flowchart.connectors) {
+        if (c.getOutput() == p) {
+          blocks.push(c.getInput().getBlock());
+        }
+      }
+    }
+    return blocks;
+  }
+
+  // get the blocks that input to this one through a port connector
+  inputFrom(): Block[] {
+    let blocks: Block[] = [];
+    for (let p of this.ports) {
+      if (!p.isInput()) continue;
+      for (let c of flowchart.connectors) {
+        if (c.getInput() == p) {
+          blocks.push(c.getOutput().getBlock());
+        }
+      }
+    }
+    return blocks;
   }
 
   getPorts(): Port[] {

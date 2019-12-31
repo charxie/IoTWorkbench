@@ -386,7 +386,7 @@ function restoreConnectors() {
         let inputBlock = flowchart.getBlock(state.inputBlockId);
         let outputBlock = flowchart.getBlock(state.outputBlockId);
         if (inputBlock && outputBlock) {
-          flowchart.addPortConnector(inputBlock.getPort(state.inputPortId), outputBlock.getPort(state.outputPortId), "Port Connector #" + flowchart.connectors.length);
+          flowchart.addPortConnector(outputBlock.getPort(state.outputPortId), inputBlock.getPort(state.inputPortId), "Port Connector #" + flowchart.connectors.length);
         }
       }
     }
@@ -419,3 +419,45 @@ function draw() {
   system.draw();
   flowchart.draw();
 }
+
+let graph = {
+  a: {
+    name: 'x',
+    in: [],
+    out: ['c']
+  },
+  b: {
+    name: 'y',
+    in: [],
+    out: ['c']
+  },
+  c: {
+    name: '+',
+    in: ['a', 'b'],
+    out: ['d']
+  },
+  d: {
+    name: 't',
+    in: ['c'],
+    out: []
+  }
+};
+
+let traverse = function (tree, current) {
+  //process current node here
+  console.log(current.name);
+  //visit children of current
+  for (let cki in current.out) {
+    if (current.out.hasOwnProperty(cki)) {
+      let ck = current.out[cki];
+      let child = tree[ck];
+      if (child) {
+        traverse(tree, child);
+      }
+    }
+  }
+}
+
+//call on root node
+//traverse(graph, graph["a"]);
+//traverse(graph, graph["b"]);

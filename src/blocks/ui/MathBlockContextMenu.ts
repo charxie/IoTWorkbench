@@ -61,6 +61,8 @@ export class MathBlockContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block) {
+      //console.log("out to: " + this.block.outputTo());
+      //console.log("in from: " + this.block.inputFrom());
       let that = this;
       $("#modal-dialog").html(this.getSettingsUI());
       let e = document.getElementById("math-block-operator") as HTMLSelectElement;
