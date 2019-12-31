@@ -15,7 +15,7 @@ export abstract class Block implements Movable {
   protected width: number;
   protected height: number;
   protected color: string = "#666666";
-  protected name: string;
+  protected name: string = "Text Display";
   protected symbol: string;
   protected radius: number = 5;
   protected margin: number = 30; // margin for inset
@@ -25,11 +25,15 @@ export abstract class Block implements Movable {
     readonly uid: string;
     readonly x: number;
     readonly y: number;
+    readonly width: number;
+    readonly height: number;
 
     constructor(block: Block) {
       this.uid = block.uid;
       this.x = block.x;
       this.y = block.y;
+      this.width = block.width;
+      this.height = block.height;
     }
   };
 
@@ -101,8 +105,16 @@ export abstract class Block implements Movable {
     return this.width;
   }
 
+  setWidth(width: number): void {
+    this.width = width;
+  }
+
   getHeight(): number {
     return this.height;
+  }
+
+  setHeight(height: number): void {
+    this.height = height;
   }
 
   setColor(color: string): void {

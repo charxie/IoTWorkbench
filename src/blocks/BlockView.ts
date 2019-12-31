@@ -17,6 +17,7 @@ import {Port} from "./Port";
 import {Connector} from "./Connector";
 import {PortConnector} from "./PortConnector";
 import {Slider} from "./Slider";
+import {Sticker} from "./Sticker";
 
 export class BlockView {
 
@@ -83,6 +84,9 @@ export class BlockView {
             break;
           case "slider-block":
             that.storeBlock(new Slider("Slider #" + timestamp, "Variable", x, y, 100, 60));
+            break;
+          case "sticker-block":
+            that.storeBlock(new Sticker("Sticker #" + timestamp, "Text Display", x, y, 80, 80));
             break;
         }
       }
@@ -302,38 +306,29 @@ export class BlockView {
         break;
       }
     }
+    let menu: HTMLMenuElement = null;
     if (block instanceof MathBlock) {
       contextMenus.mathBlock.block = block;
-      let menu = document.getElementById("math-block-context-menu") as HTMLMenuElement;
-      menu.style.left = e.clientX + "px";
-      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
-      menu.classList.add("show-menu");
+      menu = document.getElementById("math-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof LogicBlock) {
       contextMenus.logicBlock.block = block;
-      let menu = document.getElementById("logic-block-context-menu") as HTMLMenuElement;
-      menu.style.left = e.clientX + "px";
-      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
-      menu.classList.add("show-menu");
+      menu = document.getElementById("logic-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof FunctionBlock) {
       contextMenus.functionBlock.block = block;
-      let menu = document.getElementById("function-block-context-menu") as HTMLMenuElement;
-      menu.style.left = e.clientX + "px";
-      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
-      menu.classList.add("show-menu");
+      menu = document.getElementById("function-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof HatBlock) {
       contextMenus.hatBlock.block = block;
-      let menu = document.getElementById("hat-block-context-menu") as HTMLMenuElement;
-      menu.style.left = e.clientX + "px";
-      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
-      menu.classList.add("show-menu");
+      menu = document.getElementById("hat-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof Slider) {
       contextMenus.slider.block = block;
-      let menu = document.getElementById("slider-context-menu") as HTMLMenuElement;
-      menu.style.left = e.clientX + "px";
-      menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
-      menu.classList.add("show-menu");
+      menu = document.getElementById("slider-context-menu") as HTMLMenuElement;
+    } else if (block instanceof Sticker) {
+      contextMenus.sticker.block = block;
+      menu = document.getElementById("sticker-context-menu") as HTMLMenuElement;
     } else {
-      let menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;
+      menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;
+    }
+    if (menu != null) {
       menu.style.left = e.clientX + "px";
       menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
       menu.classList.add("show-menu");

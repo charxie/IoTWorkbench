@@ -9,6 +9,7 @@ import {LogicBlock} from "../LogicBlock";
 import {MathBlock} from "../MathBlock";
 import {Slider} from "../Slider";
 import {FunctionBlock} from "../FunctionBlock";
+import {Sticker} from "../Sticker";
 
 export class BlockElementsPanel {
 
@@ -44,8 +45,8 @@ export class BlockElementsPanel {
               <div style="margin-right: 10px; background-color: lightcyan; border: 1px solid #b81900; border-radius: 4px">
                 <table width="100%">
                   <tr>
-                  <td><canvas draggable="true" id="slider-block" width="100px" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="display-block" width="60px" height="90px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="slider-block" width="80px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="sticker-block" width="60px" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -61,6 +62,16 @@ export class BlockElementsPanel {
     this.drawNegationBlock("logic-not-block");
     this.drawMathBlock("Add Block", "+", "math-add-block");
     this.drawSlider("Slider", "slider-block");
+    this.drawSticker("Sticker", "sticker-block");
+  }
+
+  private drawSticker(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new Sticker("Sticker Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setSmall(true);
+    block.setMargin(12);
+    block.draw(ctx);
   }
 
   private drawSlider(name: string, canvasId: string): void {

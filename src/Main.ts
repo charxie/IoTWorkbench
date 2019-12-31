@@ -29,6 +29,7 @@ import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
 
 import {Flowchart} from "./blocks/Flowchart";
 import {Slider} from "./blocks/Slider";
+import {Sticker} from "./blocks/Sticker";
 import {BlockViewContextMenu} from "./blocks/ui/BlockViewContextMenu";
 import {BlockElementsPanel} from "./blocks/ui/BlockElementsPanel";
 import {LogicBlockContextMenu} from "./blocks/ui/LogicBlockContextMenu";
@@ -36,6 +37,7 @@ import {MathBlockContextMenu} from "./blocks/ui/MathBlockContextMenu";
 import {FunctionBlockContextMenu} from "./blocks/ui/FunctionBlockContextMenu";
 import {HatBlockContextMenu} from "./blocks/ui/HatBlockContextMenu";
 import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
+import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 
 import {Sound} from "./Sound";
 // @ts-ignore
@@ -185,6 +187,11 @@ function setupContextMenuForBlock() {
   sliderContextMenu.render("slider-context-menu-placeholder");
   sliderContextMenu.addListeners();
   contextMenus.slider = sliderContextMenu;
+
+  let stickerContextMenu = new StickerContextMenu();
+  stickerContextMenu.render("sticker-context-menu-placeholder");
+  stickerContextMenu.addListeners();
+  contextMenus.sticker = stickerContextMenu;
 }
 
 function setupContextMenuForModel() {
@@ -349,6 +356,12 @@ function restoreBlocks() {
         let type = state.uid.substring(0, state.uid.indexOf("#") - 1);
         if (type.indexOf("HAT") != -1) continue; // Do not add HAT blocks. They are added by the model components.
         let block = flowchart.addBlock(type, state.x, state.y, state.uid);
+        if (state.width) {
+          block.setWidth(state.width);
+        }
+        if (state.height) {
+          block.setHeight(state.height);
+        }
         if (block instanceof Slider) {
           block.setName(state.name);
           block.setMinimum(state.minimum);
@@ -356,6 +369,8 @@ function restoreBlocks() {
           block.setSteps(state.steps);
           block.setValue(state.value);
           block.update();
+        } else if (block instanceof Sticker) {
+          block.setName(state.name);
         }
       }
     }

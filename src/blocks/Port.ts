@@ -23,6 +23,14 @@ export class Port {
     this.arc = new Arc(x, y, this.radius, 0.5 * Math.PI, 1.5 * Math.PI, anticlockwise);
   }
 
+  setX(x: number): void {
+    this.arc.x = x;
+  }
+
+  setY(y: number): void {
+    this.arc.y = y;
+  }
+
   getBlock(): Block {
     return this.block;
   }

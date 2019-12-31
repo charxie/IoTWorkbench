@@ -16,7 +16,6 @@ export class Slider extends Block {
   private trackRight: number;
   private readonly halfHeight: number;
   private knobGrabbed: boolean;
-  private knobPosition: number;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private minimum: number = 0;
@@ -29,6 +28,8 @@ export class Slider extends Block {
     readonly uid: string;
     readonly x: number;
     readonly y: number;
+    readonly width: number;
+    readonly height: number;
     readonly minimum: number;
     readonly maximum: number;
     readonly steps: number;
@@ -39,6 +40,8 @@ export class Slider extends Block {
       this.uid = slider.uid;
       this.x = slider.x;
       this.y = slider.y;
+      this.width = slider.width;
+      this.height = slider.height;
       this.minimum = slider.minimum;
       this.maximum = slider.maximum;
       this.steps = slider.steps;
@@ -53,6 +56,8 @@ export class Slider extends Block {
     this.color = "#483D8B";
     this.ports.push(new Port(this, false, null, this.width, this.height / 2, true));
     this.knob = new Rectangle(this.x + this.width / 2 - 2, this.y + this.halfHeight + 4, 4, this.halfHeight - 8);
+    this.trackLeft = this.x + 8;
+    this.trackRight = this.x + this.width - 8;
   }
 
   setValue(value: number): void {
@@ -152,7 +157,6 @@ export class Slider extends Block {
     ctx.stroke();
 
     // draw the port
-    ctx.font = this.small ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
     this.ports[0].draw(ctx, this.small);
 

@@ -13,6 +13,7 @@ import {RainbowHatBlock} from "./RainbowHatBlock";
 import {Port} from "./Port";
 import {PortConnector} from "./PortConnector";
 import {Slider} from "./Slider";
+import {Sticker} from "./Sticker";
 
 export class Flowchart {
 
@@ -145,6 +146,9 @@ export class Flowchart {
       case "Slider":
         block = new Slider(uid, name, x, y, 100, 60);
         break;
+      case "Sticker":
+        block = new Sticker(uid, name, x, y, 80, 80);
+        break;
     }
     if (block != null) {
       this.blocks.push(block);
@@ -165,6 +169,8 @@ export class Flowchart {
     for (let b of this.blocks) {
       if (b instanceof Slider) {
         blockStates.push(new Slider.State(b));
+      } else if (b instanceof Sticker) {
+        blockStates.push(new Sticker.State(b));
       } else {
         blockStates.push(new Block.State(b));
       }
