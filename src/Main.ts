@@ -131,9 +131,7 @@ window.onload = function () {
   restoreMcus();
   restoreHats();
   restoreConnectors();
-
-  flowchart.traverse(flowchart.blocks[0]);
-  flowchart.traverse(flowchart.blocks[1]);
+  flowchart.updateResults();
 
   setTimeout(function () { // call this to refresh after inserting canvases
     let startTab = localStorage.getItem("Start Tab");
@@ -422,45 +420,3 @@ function draw() {
   system.draw();
   flowchart.draw();
 }
-
-let graph = {
-  a: {
-    name: 'x',
-    in: [],
-    out: ['c']
-  },
-  b: {
-    name: 'y',
-    in: [],
-    out: ['c']
-  },
-  c: {
-    name: '+',
-    in: ['a', 'b'],
-    out: ['d']
-  },
-  d: {
-    name: 't',
-    in: ['c'],
-    out: []
-  }
-};
-
-let traverse = function (tree, current) {
-  //process current node here
-  console.log(current.name);
-  //visit children of current
-  for (let cki in current.out) {
-    if (current.out.hasOwnProperty(cki)) {
-      let ck = current.out[cki];
-      let child = tree[ck];
-      if (child) {
-        traverse(tree, child);
-      }
-    }
-  }
-}
-
-//call on root node
-//traverse(graph, graph["a"]);
-//traverse(graph, graph["b"]);

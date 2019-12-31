@@ -14,6 +14,7 @@ import {Port} from "./Port";
 import {PortConnector} from "./PortConnector";
 import {Slider} from "./Slider";
 import {Sticker} from "./Sticker";
+import {flowchart} from "../Main";
 
 export class Flowchart {
 
@@ -35,6 +36,15 @@ export class Flowchart {
         this.traverse(outputTo[next]);
       }
     }
+  }
+
+  updateResults(): void {
+    for (let b of this.blocks) {
+      if (b instanceof Slider) {
+        this.traverse(b);
+      }
+    }
+    this.draw();
   }
 
   /* connector methods */
@@ -66,6 +76,8 @@ export class Flowchart {
 
   removePortConnector(connector: PortConnector): void {
     this.connectors.splice(this.connectors.indexOf(connector), 1);
+    connector.destroy();
+    this.updateResults();
     this.storeConnectorStates();
   }
 
@@ -86,6 +98,7 @@ export class Flowchart {
         let block2 = c.getOutput().getBlock();
         if (block1 == selectedBlock || block2 == selectedBlock) {
           connectorsToRemove.push(this.connectors.indexOf(c));
+          c.destroy();
         }
       }
       if (connectorsToRemove.length > 0) {
@@ -94,6 +107,7 @@ export class Flowchart {
         }
       }
       this.blocks.splice(this.blocks.indexOf(selectedBlock), 1);
+      this.updateResults();
       this.storeBlockStates();
     }
   }

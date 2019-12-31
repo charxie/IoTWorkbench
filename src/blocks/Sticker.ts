@@ -85,7 +85,7 @@ export class Sticker extends Block {
   }
 
   refresh(): void {
-    this.text = this.ports[0].getValue().toString();
+    this.text = this.ports[0].getValue().toPrecision(5);
   }
 
 }

@@ -30,6 +30,11 @@ export class PortConnector {
     this.input = input;
   }
 
+  destroy(): void {
+    this.input.setValue(0);
+    this.output.setValue(0);
+  }
+
   getUid(): string {
     return this.uid;
   }

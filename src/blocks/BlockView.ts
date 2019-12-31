@@ -211,6 +211,7 @@ export class BlockView {
           if (p.isInput() && p.near(x - block.getX(), y - block.getY())) {
             if (this.flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
               sound.play();
+              this.flowchart.traverse(this.selectedPort.getBlock());
               this.flowchart.storeConnectorStates();
             }
             break outerloop;
