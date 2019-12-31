@@ -68,25 +68,25 @@ export class BlockView {
         let timestamp = Date.now().toString(16);
         switch (that.draggedElementId) {
           case "unary-function-block":
-            that.storeBlock(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x, y, 60, 80));
+            that.storeBlock(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "binary-function-block":
-            that.storeBlock(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x, y, 60, 100));
+            that.storeBlock(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
             break;
           case "logic-and-block":
-            that.storeBlock(new LogicBlock("AND Block #" + timestamp, x, y, 60, 80, "AND Block", "AND"));
+            that.storeBlock(new LogicBlock("AND Block #" + timestamp, x - 30, y - 40, 60, 80, "AND Block", "AND"));
             break;
           case "logic-not-block":
-            that.storeBlock(new NegationBlock("NOT Block #" + timestamp, x, y, 60, 80));
+            that.storeBlock(new NegationBlock("NOT Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "math-add-block":
-            that.storeBlock(new MathBlock("Add Block #" + timestamp, x, y, 60, 80, "Add Block", "+"));
+            that.storeBlock(new MathBlock("Add Block #" + timestamp, x - 30, y - 40, 60, 80, "Add Block", "+"));
             break;
           case "slider-block":
-            that.storeBlock(new Slider("Slider #" + timestamp, "Variable", x, y, 100, 60));
+            that.storeBlock(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));
             break;
           case "sticker-block":
-            that.storeBlock(new Sticker("Sticker #" + timestamp, "Text Display", x, y, 120, 120));
+            that.storeBlock(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));
             break;
         }
       }
