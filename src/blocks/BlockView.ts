@@ -3,7 +3,7 @@
  */
 
 import {Flowchart} from "./Flowchart";
-import {closeAllContextMenus, contextMenus, sound} from "../Main";
+import {closeAllContextMenus, contextMenus, flowchart, sound} from "../Main";
 import {Movable} from "../Movable";
 import {Block} from "./Block";
 import {FunctionBlock} from "./FunctionBlock";
@@ -32,7 +32,7 @@ export class BlockView {
   private connectorOntheFly: Connector;
   private gridSize: number = 100;
   private overWhat: any;
-  private skipMainMouseEvent: boolean = false; // when a block is handling its own mouse events, set this flag true
+  private preventMainMouseEvent: boolean = false; // when a block is handling its own mouse events, set this flag true
 
   constructor(canvasId: string, flowchart: Flowchart) {
     this.flowchart = flowchart;
@@ -87,10 +87,6 @@ export class BlockView {
         }
       }
     }, false);
-  }
-
-  preventMainMouseEvent(b: boolean): void {
-    this.skipMainMouseEvent = b;
   }
 
   private storeBlock(block: Block): void {
@@ -188,34 +184,38 @@ export class BlockView {
           }
         }
     }
-
+    let onKnob = false;
     for (let b of this.flowchart.blocks) {
       if (b instanceof Slider) {
-        b.mouseDown(e);
+        if (b.mouseDownOnKnob(e)) {
+          onKnob = true;
+          break;
+        }
       }
     }
+    this.preventMainMouseEvent = onKnob;
+    this.canvas.style.cursor = onKnob ? "grabbing" : "default";
   }
 
   private mouseUp(e: MouseEvent): void {
-    if (!this.skipMainMouseEvent) {
-      let x = e.offsetX;
-      let y = e.offsetY;
-      outerloop:
-        for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
-          let block = this.flowchart.blocks[n];
-          for (let p of block.getPorts()) {
-            if (p.isInput() && p.near(x - block.getX(), y - block.getY())) {
-              if (this.flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
-                sound.play();
-                this.flowchart.storeConnectorStates();
-              }
-              break outerloop;
+    let x = e.offsetX;
+    let y = e.offsetY;
+    outerloop:
+      for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
+        let block = this.flowchart.blocks[n];
+        for (let p of block.getPorts()) {
+          if (p.isInput() && p.near(x - block.getX(), y - block.getY())) {
+            if (this.flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
+              sound.play();
+              this.flowchart.storeConnectorStates();
             }
+            break outerloop;
           }
         }
-      this.selectedMovable = null;
-      this.selectedPort = null;
-    }
+      }
+    this.selectedMovable = null;
+    this.selectedPort = null;
+    this.preventMainMouseEvent = false;
     for (let b of this.flowchart.blocks) {
       if (b instanceof Slider) {
         b.mouseUp(e);
@@ -226,7 +226,7 @@ export class BlockView {
   }
 
   private mouseMove(e: MouseEvent): void {
-    if (!this.skipMainMouseEvent) {
+    if (!this.preventMainMouseEvent) {
       let x = e.offsetX;
       let y = e.offsetY;
       if (this.overWhat != null) {
@@ -273,13 +273,13 @@ export class BlockView {
           }
         }
       }
-    }
-    if (this.overWhat instanceof Port) {
-      this.canvas.style.cursor = this.overWhat.isInput() ? "default" : "grab";
-    } else if (this.overWhat instanceof Block) {
-      this.canvas.style.cursor = "move";
-    } else {
-      this.canvas.style.cursor = this.selectedPort != null ? "grabbing" : "default";
+      if (this.overWhat instanceof Port) {
+        this.canvas.style.cursor = this.overWhat.isInput() ? "default" : "grab";
+      } else if (this.overWhat instanceof Block) {
+        this.canvas.style.cursor = "move";
+      } else {
+        this.canvas.style.cursor = this.selectedPort != null ? "grabbing" : "default";
+      }
     }
     for (let b of this.flowchart.blocks) {
       if (b instanceof Slider) {

@@ -11,6 +11,9 @@ import {Rectangle} from "../math/Rectangle";
 export class Slider extends Block {
 
   private knob: Rectangle;
+  private knobHalfSize: number = 4;
+  private trackLeft: number;
+  private trackRight: number;
   private readonly halfHeight: number;
   private knobGrabbed: boolean;
   private knobPosition: number;
@@ -18,7 +21,7 @@ export class Slider extends Block {
   private mouseDownRelativeY: number;
   private minimum: number = 0;
   private maximum: number = 100;
-  private steps: number = 20;
+  private steps: number = 10;
   private value: number = 50;
 
   static State = class {
@@ -86,7 +89,10 @@ export class Slider extends Block {
 
   update(): void {
     super.update();
-    this.knob.setRect(this.x + this.width / 2 - 3, this.y + this.halfHeight + 4, 6, this.halfHeight - 8);
+    this.trackLeft = this.x + 8;
+    this.trackRight = this.x + this.width - 8;
+    let x = this.trackLeft + (this.value - this.minimum) / (this.maximum - this.minimum) * (this.trackRight - this.trackLeft);
+    this.knob.setRect(x - this.knobHalfSize, this.y + this.halfHeight + 4, 2 * this.knobHalfSize, this.halfHeight - 8);
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -120,13 +126,25 @@ export class Slider extends Block {
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.halfHeight, this.width, this.halfHeight, this.radius, "Bottom");
 
-    // draw the track and knob
+    // draw the track with tickmarks
     ctx.lineWidth = 2;
     ctx.strokeStyle = "dimgray";
     ctx.beginPath();
-    ctx.moveTo(this.x + 5, this.y + this.halfHeight * 3 / 2);
-    ctx.lineTo(this.x + this.width - 10, this.y + this.halfHeight * 3 / 2);
+    let y0 = this.y + this.halfHeight * 3 / 2;
+    ctx.moveTo(this.trackLeft, y0);
+    ctx.lineTo(this.trackRight, y0);
     ctx.stroke();
+    ctx.lineWidth = 0.5;
+    let dx = (this.trackRight - this.trackLeft) / this.steps;
+    for (let i = 0; i <= this.steps; i++) {
+      ctx.beginPath();
+      ctx.moveTo(this.trackLeft + dx * i, y0 - 6);
+      ctx.lineTo(this.trackLeft + dx * i, y0);
+      ctx.stroke();
+    }
+
+    // draw the knob
+    ctx.lineWidth = 1;
     ctx.fillStyle = "gray";
     ctx.beginPath();
     ctx.rect(this.knob.x, this.knob.y, this.knob.width, this.knob.height);
@@ -144,32 +162,40 @@ export class Slider extends Block {
     return this.knob.contains(x, y);
   }
 
-  mouseDown(e: MouseEvent): void {
+  mouseDownOnKnob(e: MouseEvent): boolean {
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.onKnob(x, y)) {
       this.mouseDownRelativeX = x - this.knob.getCenterX();
       this.mouseDownRelativeY = y - this.knob.getCenterY();
       this.knobGrabbed = true;
-      flowchart.blockView.preventMainMouseEvent(true);
-    } else {
-      flowchart.blockView.preventMainMouseEvent(false);
+      return true;
     }
+    return false;
   }
 
   mouseUp(e: MouseEvent): void {
     this.knobGrabbed = false;
+    flowchart.blockView.canvas.style.cursor = "default";
   }
 
   mouseMove(e: MouseEvent): void {
     let x = e.offsetX;
     let y = e.offsetY;
-    if (this.onKnob(x, y)) {
-      if (e.target instanceof HTMLCanvasElement) {
-        e.target.style.cursor = this.knobGrabbed ? "grabbing" : "grab";
+    if (this.knobGrabbed) {
+      this.knob.x = x - this.mouseDownRelativeX;
+      if (this.knob.x < this.trackLeft - this.knobHalfSize) {
+        this.knob.x = this.trackLeft - this.knobHalfSize;
+      } else if (this.knob.x > this.trackRight - this.knobHalfSize) {
+        this.knob.x = this.trackRight - this.knobHalfSize;
       }
-      if (this.knobGrabbed) {
-
+      this.value = this.minimum + (this.maximum - this.minimum) / (this.trackRight - this.trackLeft) * (this.knob.x + this.knobHalfSize - this.trackLeft);
+      flowchart.storeBlockStates();
+    } else {
+      if (this.onKnob(x, y)) {
+        if (e.target instanceof HTMLCanvasElement) {
+          e.target.style.cursor = this.knobGrabbed ? "grabbing" : "grab";
+        }
       }
     }
   }

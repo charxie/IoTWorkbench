@@ -15,7 +15,6 @@ import {LineChart} from "./tools/LineChart";
 
 import {System} from "./components/System";
 import {RainbowHat} from "./components/RainbowHat";
-import {Sensor} from "./components/Sensor";
 import {ComponentsPanel} from "./components/ui/ComponentsPanel";
 import {RainbowHatContextMenu} from "./components/ui/RainbowHatContextMenu";
 import {WorkbenchContextMenu} from "./components/ui/WorkbenchContextMenu";
@@ -29,6 +28,7 @@ import {CrickitHatContextMenu} from "./components/ui/CrickitHatContextMenu";
 import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
 
 import {Flowchart} from "./blocks/Flowchart";
+import {Slider} from "./blocks/Slider";
 import {BlockViewContextMenu} from "./blocks/ui/BlockViewContextMenu";
 import {BlockElementsPanel} from "./blocks/ui/BlockElementsPanel";
 import {LogicBlockContextMenu} from "./blocks/ui/LogicBlockContextMenu";
@@ -40,7 +40,6 @@ import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
 import {Sound} from "./Sound";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
-import {Slider} from "./blocks/Slider";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -352,6 +351,11 @@ function restoreBlocks() {
         let block = flowchart.addBlock(type, state.x, state.y, state.uid);
         if (block instanceof Slider) {
           block.setName(state.name);
+          block.setMinimum(state.minimum);
+          block.setMaximum(state.maximum);
+          block.setSteps(state.steps);
+          block.setValue(state.value);
+          block.update();
         }
       }
     }

@@ -3,8 +3,9 @@
  */
 
 import $ from "jquery";
-import {closeAllContextMenus, flowchart} from "../../Main";
+import {Slider} from "../Slider";
 import {BlockContextMenu} from "./BlockContextMenu";
+import {closeAllContextMenus, flowchart} from "../../Main";
 
 export class SliderContextMenu extends BlockContextMenu {
 
@@ -55,8 +56,8 @@ export class SliderContextMenu extends BlockContextMenu {
                   <td><input type="text" id="slider-steps-field"></td>
                 </tr>
                 <tr>
-                  <td>Current Value:</td>
-                  <td><input type="text" id="slider-current-value-field"></td>
+                  <td>Value:</td>
+                  <td><input type="text" id="slider-value-field"></td>
                 </tr>
               </table>
             </div>`;
@@ -66,10 +67,18 @@ export class SliderContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block) {
-      let that = this;
+      let slider = <Slider>this.block;
       $("#modal-dialog").html(this.getSettingsUI());
       let e = document.getElementById("slider-name-field") as HTMLInputElement;
-      e.value = this.block.getName();
+      e.value = slider.getName();
+      e = document.getElementById("slider-minimum-field") as HTMLInputElement;
+      e.value = slider.getMinimum().toString();
+      e = document.getElementById("slider-maximum-field") as HTMLInputElement;
+      e.value = slider.getMaximum().toString();
+      e = document.getElementById("slider-steps-field") as HTMLInputElement;
+      e.value = slider.getSteps().toString();
+      e = document.getElementById("slider-value-field") as HTMLInputElement;
+      e.value = slider.getValue().toFixed(3);
       $("#modal-dialog").dialog({
         resizable: false,
         modal: true,
@@ -78,8 +87,16 @@ export class SliderContextMenu extends BlockContextMenu {
         width: 400,
         buttons: {
           'OK': function () {
-            let nameField = document.getElementById("slider-name-field") as HTMLInputElement;
-            that.block.setName(nameField.value);
+            let f = document.getElementById("slider-name-field") as HTMLInputElement;
+            slider.setName(f.value);
+            f = document.getElementById("slider-minimum-field") as HTMLInputElement;
+            slider.setMinimum(parseFloat(f.value));
+            f = document.getElementById("slider-maximum-field") as HTMLInputElement;
+            slider.setMaximum(parseFloat(f.value));
+            f = document.getElementById("slider-steps-field") as HTMLInputElement;
+            slider.setSteps(parseInt(f.value));
+            f = document.getElementById("slider-value-field") as HTMLInputElement;
+            slider.setValue(parseFloat(f.value));
             flowchart.storeBlockStates();
             flowchart.draw();
             $(this).dialog('close');
