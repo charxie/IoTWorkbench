@@ -23,7 +23,7 @@ export class BlockView {
 
   readonly canvas: HTMLCanvasElement;
 
-  private flowchart: Flowchart;
+  flowchart: Flowchart;
   private selectedMovable: Movable;
   private selectedPort: Port;
   private selectedPortConnector: PortConnector;
@@ -344,6 +344,7 @@ export class BlockView {
       contextMenus.sticker.block = block;
       menu = document.getElementById("sticker-context-menu") as HTMLMenuElement;
     } else {
+      contextMenus.blockView.view = this;
       menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;
     }
     if (menu != null) {

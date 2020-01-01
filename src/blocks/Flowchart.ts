@@ -214,4 +214,26 @@ export class Flowchart {
     localStorage.setItem("Connector States", JSON.stringify(connectorStates));
   }
 
+  static State = class {
+    readonly blockStates = [];
+    readonly connectorStates = [];
+
+    constructor(flowchart: Flowchart) {
+      for (let b of flowchart.blocks) {
+        if (b instanceof Slider) {
+          this.blockStates.push(new Slider.State(b));
+        } else if (b instanceof Sticker) {
+          this.blockStates.push(new Sticker.State(b));
+        } else {
+          this.blockStates.push(new Block.State(b));
+        }
+      }
+      for (let c of flowchart.connectors) {
+        if (c.getOutput() != null && c.getInput() != null) {
+          this.connectorStates.push(new PortConnector.State(c));
+        }
+      }
+    }
+  };
+
 }

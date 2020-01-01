@@ -1,7 +1,15 @@
 /*
  * @author Charles Xie
  */
+
 export class Util {
+
+  static saveText(text: string, filename: string): void {
+    let a = document.createElement('a');
+    a.setAttribute('href', 'data:text/plain;charset=utf-u,' + encodeURIComponent(text));
+    a.setAttribute('download', filename);
+    a.click();
+  }
 
   static countDigits(x: number): number {
     return x.toString().length;
@@ -12,7 +20,7 @@ export class Util {
   }
 
   static hexToRgb(hex: string): any {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
       r: parseInt(result[1], 16),
       g: parseInt(result[2], 16),
@@ -28,30 +36,30 @@ export class Util {
     r /= 255;
     g /= 255;
     b /= 255;
-    var max = Math.max(r, g, b);
-    var min = Math.min(r, g, b);
-    var c = max - min;
-    var hue;
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
+    let c = max - min;
+    let hue;
     if (c == 0) {
       hue = 0;
     } else {
       switch (max) {
         case r:
-          var segment = (g - b) / c;
-          var shift = 0 / 60;       // R° / (360° / hex sides)
+          let segment = (g - b) / c;
+          let shift = 0 / 60;       // R° / (360° / hex sides)
           if (segment < 0) {        // hue > 180, full rotation
             shift = 360 / 60;       // R° / (360° / hex sides)
           }
           hue = segment + shift;
           break;
         case g:
-          var segment = (b - r) / c;
-          var shift = 120 / 60;     // G° / (360° / hex sides)
+          segment = (b - r) / c;
+          shift = 120 / 60;     // G° / (360° / hex sides)
           hue = segment + shift;
           break;
         case b:
-          var segment = (r - g) / c;
-          var shift = 240 / 60;     // B° / (360° / hex sides)
+          segment = (r - g) / c;
+          shift = 240 / 60;     // B° / (360° / hex sides)
           hue = segment + shift;
           break;
       }
