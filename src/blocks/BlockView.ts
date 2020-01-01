@@ -80,7 +80,7 @@ export class BlockView {
             that.storeBlock(new NegationBlock("NOT Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "math-add-block":
-            that.storeBlock(new MathBlock("Add Block #" + timestamp, x - 30, y - 40, 60, 80, "Add Block", "+"));
+            that.storeBlock(new MathBlock("Add Block #" + timestamp, x - 30, y - 40, 60, 60, "Add Block", "+"));
             break;
           case "slider-block":
             that.storeBlock(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));
@@ -213,20 +213,22 @@ export class BlockView {
   private mouseUp(e: MouseEvent): void {
     let x = e.offsetX;
     let y = e.offsetY;
-    outerloop:
-      for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
-        let block = this.flowchart.blocks[n];
-        for (let p of block.getPorts()) {
-          if (p.isInput() && p.near(x - block.getX(), y - block.getY())) {
-            if (this.flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
-              sound.play();
-              this.flowchart.traverse(this.selectedPort.getBlock());
-              this.flowchart.storeConnectorStates();
+    if (this.selectedPort != null) {
+      outerloop:
+        for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
+          let block = this.flowchart.blocks[n];
+          for (let p of block.getPorts()) {
+            if (p.isInput() && p.near(x - block.getX(), y - block.getY())) {
+              if (this.flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
+                sound.play();
+                this.flowchart.traverse(this.selectedPort.getBlock());
+                this.flowchart.storeConnectorStates();
+              }
+              break outerloop;
             }
-            break outerloop;
           }
         }
-      }
+    }
     this.selectedMovable = null;
     this.selectedPort = null;
     this.preventMainMouseEvent = false;
@@ -304,7 +306,13 @@ export class BlockView {
   }
 
   private mouseLeave = (e: MouseEvent): void => {
+    e.preventDefault();
     this.selectedMovable = null;
+    for (let b of this.flowchart.blocks) {
+      if (b instanceof Slider) {
+        b.mouseLeave(e);
+      }
+    }
   };
 
   private openContextMenu(e: MouseEvent): void {

@@ -158,11 +158,18 @@ export class Slider extends Block {
     }
 
     // draw the knob
-    ctx.lineWidth = 1;
+    ctx.save();
     ctx.fillStyle = "gray";
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 1;
+    ctx.shadowBlur = 2;
+    ctx.shadowColor = "black";
     ctx.beginPath();
     ctx.rect(this.knob.x, this.knob.y, this.knob.width, this.knob.height);
     ctx.fill();
+    ctx.restore();
+    ctx.lineWidth = 0.75;
+    ctx.strokeStyle = "black";
     ctx.stroke();
 
     // draw the port
@@ -173,6 +180,10 @@ export class Slider extends Block {
 
   onDraggableArea(x: number, y: number): boolean {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.halfHeight;
+  }
+
+  isKnobGrabbed(): boolean {
+    return this.knobGrabbed;
   }
 
   onKnob(x: number, y: number): boolean {
@@ -217,6 +228,11 @@ export class Slider extends Block {
         }
       }
     }
+  }
+
+  mouseLeave(e: MouseEvent): void {
+    this.knobGrabbed = false;
+    flowchart.blockView.canvas.style.cursor = "default";
   }
 
 }

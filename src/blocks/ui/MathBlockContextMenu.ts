@@ -61,8 +61,6 @@ export class MathBlockContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block) {
-      //console.log("out to: " + this.block.outputTo());
-      //console.log("in from: " + this.block.inputFrom());
       let that = this;
       $("#modal-dialog").html(this.getSettingsUI());
       let e = document.getElementById("math-block-operator") as HTMLSelectElement;
@@ -78,6 +76,7 @@ export class MathBlockContextMenu extends BlockContextMenu {
             that.block.setName(e.options[e.selectedIndex].value);
             that.block.setSymbol(e.options[e.selectedIndex].text);
             that.block.setUid(that.block.getName() + " #" + Date.now().toString(16));
+            flowchart.updateResults();
             flowchart.draw();
             // update the local storage since we have changed the UID of this block
             flowchart.storeBlockStates();

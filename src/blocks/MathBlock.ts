@@ -46,6 +46,9 @@ export class MathBlock extends Block {
       case "Modulus Block":
         this.portR.setValue(a % b);
         break;
+      case "Exponentiation Block":
+        this.portR.setValue(a ** b);
+        break;
     }
     for (let c of flowchart.connectors) {
       if (c.getOutput() == this.portR) {
