@@ -11,6 +11,7 @@ import "@fortawesome/fontawesome-free/css/all.css";
 
 import * as Constants from "./Constants";
 import {User} from "./User";
+import {StateIO} from "./StateIO";
 import {LineChart} from "./tools/LineChart";
 
 import {System} from "./components/System";
@@ -28,8 +29,6 @@ import {CrickitHatContextMenu} from "./components/ui/CrickitHatContextMenu";
 import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
 
 import {Flowchart} from "./blocks/Flowchart";
-import {Slider} from "./blocks/Slider";
-import {Sticker} from "./blocks/Sticker";
 import {BlockViewContextMenu} from "./blocks/ui/BlockViewContextMenu";
 import {BlockElementsPanel} from "./blocks/ui/BlockElementsPanel";
 import {LogicBlockContextMenu} from "./blocks/ui/LogicBlockContextMenu";
@@ -126,11 +125,11 @@ window.onload = function () {
   elementsPanel.render("block-elements-panel");
 
   // read locally stored properties
-  restoreBlocks();
+  StateIO.restoreBlocks(localStorage.getItem("Block States"));
   restoreWorkbench();
   restoreMcus();
   restoreHats();
-  restoreConnectors();
+  StateIO.restoreConnectors(localStorage.getItem("Connector States"));
   flowchart.updateResults();
 
   setTimeout(function () { // call this to refresh after inserting canvases
@@ -344,53 +343,6 @@ function setLineChartState(graph: LineChart, state: any) {
   graph.setY(state.y);
   if (graph.isVisible()) {
     graph.draw();
-  }
-}
-
-function restoreBlocks() {
-  flowchart.blocks = [];
-  let s: string = localStorage.getItem("Block States");
-  if (s != null) {
-    let states = JSON.parse(s);
-    if (states.length > 0) {
-      for (let state of states) {
-        let type = state.uid.substring(0, state.uid.indexOf("#") - 1);
-        if (type.indexOf("HAT") != -1) continue; // Do not add HAT blocks. They are added by the model components.
-        let block = flowchart.addBlock(type, state.x, state.y, state.uid);
-        if (state.width) {
-          block.setWidth(state.width);
-        }
-        if (state.height) {
-          block.setHeight(state.height);
-        }
-        if (block instanceof Slider) {
-          block.setName(state.name);
-          block.setMinimum(state.minimum);
-          block.setMaximum(state.maximum);
-          block.setSteps(state.steps);
-          block.setValue(state.value);
-        } else if (block instanceof Sticker) {
-          block.setName(state.name);
-        }
-        block.refresh();
-      }
-    }
-  }
-}
-
-function restoreConnectors() {
-  let s = localStorage.getItem("Connector States");
-  if (s != null) {
-    let states = JSON.parse(s);
-    if (states.length > 0) {
-      for (let state of states) {
-        let inputBlock = flowchart.getBlock(state.inputBlockId);
-        let outputBlock = flowchart.getBlock(state.outputBlockId);
-        if (inputBlock && outputBlock) {
-          flowchart.addPortConnector(outputBlock.getPort(state.outputPortId), inputBlock.getPort(state.inputPortId), "Port Connector #" + flowchart.connectors.length);
-        }
-      }
-    }
   }
 }
 

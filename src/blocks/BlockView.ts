@@ -101,7 +101,9 @@ export class BlockView {
 
   public draw(): void {
     let ctx = this.canvas.getContext('2d');
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.fillStyle = this.canvas.style.backgroundColor; // we have to do this otherwise its screenshot will not have a color background
+    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawGrid(ctx);
     ctx.lineWidth = 4;
     ctx.strokeStyle = "black";

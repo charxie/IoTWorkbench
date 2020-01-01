@@ -4,10 +4,10 @@
 
 export class Util {
 
-  static saveText(text: string, filename: string): void {
-    let a = document.createElement('a');
-    a.setAttribute('href', 'data:text/plain;charset=utf-u,' + encodeURIComponent(text));
-    a.setAttribute('download', filename);
+  static saveText(text: string, fileName: string): void {
+    let a = document.createElement('a') as HTMLAnchorElement
+    a.href = 'data:text/plain;charset=utf-u,' + encodeURIComponent(text);
+    a.download = fileName;
     a.click();
   }
 
