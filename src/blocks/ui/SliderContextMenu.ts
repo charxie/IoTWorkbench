@@ -15,7 +15,7 @@ export class SliderContextMenu extends BlockContextMenu {
   }
 
   getUi(): string {
-    return `<menu id="${this.id}" class="menu" style="width: 120px; z-index: 10000">
+    return `<menu id="${this.id}" class="menu" style="width: 140px; z-index: 10000">
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
               </li>
@@ -23,7 +23,7 @@ export class SliderContextMenu extends BlockContextMenu {
                 <button type="button" class="menu-btn" id="${this.id}-code-button"><i class="fas fa-code"></i><span class="menu-text">Code</span></button>
               </li>
               <li class="menu-item">
-                <button type="button" class="menu-btn" id="${this.id}-settings-button"><i class="fas fa-cog"></i><span class="menu-text">Settings</span></button>
+                <button type="button" class="menu-btn" id="${this.id}-properties-button"><i class="fas fa-cog"></i><span class="menu-text">Properties</span></button>
               </li>
             </menu>`;
   }
@@ -32,13 +32,9 @@ export class SliderContextMenu extends BlockContextMenu {
     super.addListeners();
   }
 
-  getSettingsUI(): string {
+  protected getPropertiesUI(): string {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
-                <tr>
-                  <td>ID:</td>
-                  <td>${this.block.getUid().substring(this.block.getUid().indexOf("#"))}</td>
-                </tr>
                 <tr>
                   <td>Name:</td>
                   <td><input type="text" id="slider-name-field"></td>
@@ -59,44 +55,54 @@ export class SliderContextMenu extends BlockContextMenu {
                   <td>Value:</td>
                   <td><input type="text" id="slider-value-field"></td>
                 </tr>
+                <tr>
+                  <td>Width:</td>
+                  <td><input type="text" id="slider-width-field"></td>
+                </tr>
+                <tr>
+                  <td>Height:</td>
+                  <td><input type="text" id="slider-height-field"></td>
+                </tr>
               </table>
             </div>`;
   }
 
-  settingsButtonClick(e: MouseEvent): void {
+  protected propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block) {
       let slider = <Slider>this.block;
-      $("#modal-dialog").html(this.getSettingsUI());
-      let e = document.getElementById("slider-name-field") as HTMLInputElement;
-      e.value = slider.getName();
-      e = document.getElementById("slider-minimum-field") as HTMLInputElement;
-      e.value = slider.getMinimum().toString();
-      e = document.getElementById("slider-maximum-field") as HTMLInputElement;
-      e.value = slider.getMaximum().toString();
-      e = document.getElementById("slider-steps-field") as HTMLInputElement;
-      e.value = slider.getSteps().toString();
-      e = document.getElementById("slider-value-field") as HTMLInputElement;
-      e.value = slider.getValue().toFixed(3);
+      $("#modal-dialog").html(this.getPropertiesUI());
+      let nameInputElement = document.getElementById("slider-name-field") as HTMLInputElement;
+      nameInputElement.value = slider.getName();
+      let minimumInputElement = document.getElementById("slider-minimum-field") as HTMLInputElement;
+      minimumInputElement.value = slider.getMinimum().toString();
+      let maximumInputElement = document.getElementById("slider-maximum-field") as HTMLInputElement;
+      maximumInputElement.value = slider.getMaximum().toString();
+      let stepsInputElement = document.getElementById("slider-steps-field") as HTMLInputElement;
+      stepsInputElement.value = slider.getSteps().toString();
+      let valueInputElement = document.getElementById("slider-value-field") as HTMLInputElement;
+      valueInputElement.value = slider.getValue().toFixed(3);
+      let widthInputElement = document.getElementById("slider-width-field") as HTMLInputElement;
+      widthInputElement.value = slider.getWidth().toString();
+      let heightInputElement = document.getElementById("slider-height-field") as HTMLInputElement;
+      heightInputElement.value = slider.getHeight().toString();
       $("#modal-dialog").dialog({
         resizable: false,
         modal: true,
-        title: "Slider Settings",
-        height: 400,
-        width: 400,
+        title: slider.getUid(),
+        height: 450,
+        width: 300,
         buttons: {
           'OK': function () {
-            let f = document.getElementById("slider-name-field") as HTMLInputElement;
-            slider.setName(f.value);
-            f = document.getElementById("slider-minimum-field") as HTMLInputElement;
-            slider.setMinimum(parseFloat(f.value));
-            f = document.getElementById("slider-maximum-field") as HTMLInputElement;
-            slider.setMaximum(parseFloat(f.value));
-            f = document.getElementById("slider-steps-field") as HTMLInputElement;
-            slider.setSteps(parseInt(f.value));
-            f = document.getElementById("slider-value-field") as HTMLInputElement;
-            slider.setValue(parseFloat(f.value));
+            slider.setName(nameInputElement.value);
+            slider.setMinimum(parseFloat(minimumInputElement.value));
+            slider.setMaximum(parseFloat(maximumInputElement.value));
+            slider.setSteps(parseInt(stepsInputElement.value));
+            slider.setValue(parseFloat(valueInputElement.value));
+            slider.setWidth(parseInt(widthInputElement.value));
+            slider.setHeight(parseInt(heightInputElement.value));
+            slider.refresh();
             flowchart.storeBlockStates();
             flowchart.draw();
             $(this).dialog('close');

@@ -330,6 +330,9 @@ export class BlockView {
     if (block instanceof MathBlock) {
       contextMenus.mathBlock.block = block;
       menu = document.getElementById("math-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof NegationBlock) {
+      contextMenus.notBlock.block = block;
+      menu = document.getElementById("not-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof LogicBlock) {
       contextMenus.logicBlock.block = block;
       menu = document.getElementById("logic-block-context-menu") as HTMLMenuElement;

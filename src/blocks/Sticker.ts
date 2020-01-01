@@ -5,7 +5,6 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
-import {flowchart} from "../Main";
 
 export class Sticker extends Block {
 
@@ -90,7 +89,9 @@ export class Sticker extends Block {
   }
 
   refresh(): void {
+    super.refresh();
     this.text = this.ports[0].getValue().toPrecision(5);
+    this.ports[0].setY(this.height / 2);
   }
 
 }

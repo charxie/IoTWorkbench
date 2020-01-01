@@ -14,11 +14,11 @@ export abstract class BlockContextMenu extends MyContextMenu {
   addListeners(): void {
     let deleteButton = document.getElementById(this.id + "-delete-button");
     deleteButton.addEventListener("click", this.deleteButtonClick.bind(this), false);
-    let settingsButton = document.getElementById(this.id + "-settings-button");
-    settingsButton.addEventListener("click", this.settingsButtonClick.bind(this), false);
+    let propertiesButton = document.getElementById(this.id + "-properties-button");
+    propertiesButton.addEventListener("click", this.propertiesButtonClick.bind(this), false);
   }
 
-  deleteButtonClick(e: MouseEvent): void {
+  protected deleteButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block) {
@@ -44,8 +44,8 @@ export abstract class BlockContextMenu extends MyContextMenu {
     }
   }
 
-  abstract getSettingsUI(): string;
+  protected abstract getPropertiesUI(): string;
 
-  abstract settingsButtonClick(e: MouseEvent): void;
+  protected abstract propertiesButtonClick(e: MouseEvent): void;
 
 }

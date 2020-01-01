@@ -103,10 +103,13 @@ export class Slider extends Block {
   }
 
   refresh(): void {
+    super.refresh();
     this.trackLeft = this.x + 8;
     this.trackRight = this.x + this.width - 8;
     let x = this.trackLeft + (this.value - this.minimum) / (this.maximum - this.minimum) * (this.trackRight - this.trackLeft);
     this.knob.setRect(x - this.knobHalfSize, this.y + this.halfHeight + 4, 2 * this.knobHalfSize, this.halfHeight - 8);
+    this.ports[0].setX(this.width);
+    this.ports[0].setY(this.height / 2);
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -180,10 +183,6 @@ export class Slider extends Block {
 
   onDraggableArea(x: number, y: number): boolean {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.halfHeight;
-  }
-
-  isKnobGrabbed(): boolean {
-    return this.knobGrabbed;
   }
 
   onKnob(x: number, y: number): boolean {

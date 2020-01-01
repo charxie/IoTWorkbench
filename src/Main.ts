@@ -31,6 +31,7 @@ import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
 import {Flowchart} from "./blocks/Flowchart";
 import {BlockViewContextMenu} from "./blocks/ui/BlockViewContextMenu";
 import {BlockElementsPanel} from "./blocks/ui/BlockElementsPanel";
+import {NotBlockContextMenu} from "./blocks/ui/NotBlockContextMenu";
 import {LogicBlockContextMenu} from "./blocks/ui/LogicBlockContextMenu";
 import {MathBlockContextMenu} from "./blocks/ui/MathBlockContextMenu";
 import {FunctionBlockContextMenu} from "./blocks/ui/FunctionBlockContextMenu";
@@ -167,6 +168,11 @@ function setupContextMenuForBlock() {
   mathBlockContextMenu.render("math-block-context-menu-placeholder");
   mathBlockContextMenu.addListeners();
   contextMenus.mathBlock = mathBlockContextMenu;
+
+  let notBlockContextMenu = new NotBlockContextMenu();
+  notBlockContextMenu.render("not-block-context-menu-placeholder");
+  notBlockContextMenu.addListeners();
+  contextMenus.notBlock = notBlockContextMenu;
 
   let logicBlockContextMenu = new LogicBlockContextMenu();
   logicBlockContextMenu.render("logic-block-context-menu-placeholder");

@@ -3,20 +3,20 @@
  */
 
 import $ from "jquery";
-import {closeAllContextMenus} from "../../Main";
+import {closeAllContextMenus, flowchart} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 
-export class HatBlockContextMenu extends BlockContextMenu {
+export class NotBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "hat-block-context-menu";
+    this.id = "not-block-context-menu";
   }
 
   getUi(): string {
     return `<menu id="${this.id}" class="menu" style="width: 140px; z-index: 10000">
               <li class="menu-item">
-                <button type="button" class="menu-btn" id="${this.id}-code-button"><i class="fas fa-code"></i><span class="menu-text">Code</span></button>
+                <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
               </li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-properties-button"><i class="fas fa-cog"></i><span class="menu-text">Properties</span></button>
@@ -25,20 +25,19 @@ export class HatBlockContextMenu extends BlockContextMenu {
   }
 
   addListeners(): void {
-    let settingsButton = document.getElementById(this.id + "-properties-button");
-    settingsButton.addEventListener("click", this.propertiesButtonClick.bind(this), false);
+    super.addListeners();
   }
 
   getPropertiesUI(): string {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Type:</td>
-                  <td>${this.block.getUid().substring(0, this.block.getUid().indexOf("HAT") + 3)}</td>
+                  <td>Width:</td>
+                  <td><input type="text" id="not-block-width-field"></td>
                 </tr>
                 <tr>
-                  <td>ID:</td>
-                  <td>${this.block.getUid().substring(this.block.getUid().indexOf("#"))}</td>
+                  <td>Height:</td>
+                  <td><input type="text" id="not-block-height-field"></td>
                 </tr>
               </table>
             </div>`;
@@ -50,14 +49,26 @@ export class HatBlockContextMenu extends BlockContextMenu {
     if (this.block) {
       let that = this;
       $("#modal-dialog").html(this.getPropertiesUI());
+      let widthInputElement = document.getElementById("not-block-width-field") as HTMLInputElement;
+      widthInputElement.value = this.block.getWidth().toString();
+      let heightInputElement = document.getElementById("not-block-height-field") as HTMLInputElement;
+      heightInputElement.value = this.block.getHeight().toString();
       $("#modal-dialog").dialog({
         resizable: false,
         modal: true,
-        title: "HAT Block Properties",
+        title: that.block.getUid(),
         height: 300,
-        width: 400,
+        width: 300,
         buttons: {
           'OK': function () {
+            that.block.setUid(that.block.getName() + " #" + Date.now().toString(16));
+            that.block.setWidth(parseInt(widthInputElement.value));
+            that.block.setHeight(parseInt(heightInputElement.value));
+            that.block.refresh();
+            flowchart.draw();
+            // update the local storage since we have changed the UID of this block
+            flowchart.storeBlockStates();
+            flowchart.storeConnectorStates();
             $(this).dialog('close');
           },
           'Cancel': function () {
