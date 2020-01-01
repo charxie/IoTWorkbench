@@ -42,6 +42,7 @@ import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 import {Sound} from "./Sound";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
+import {ToggleSwitchContextMenu} from "./blocks/ui/ToggleSwitchContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -188,6 +189,11 @@ function setupContextMenuForBlock() {
   hatBlockContextMenu.render("hat-block-context-menu-placeholder");
   hatBlockContextMenu.addListeners();
   contextMenus.hatBlock = hatBlockContextMenu;
+
+  let toggleSwitchContextMenu = new ToggleSwitchContextMenu();
+  toggleSwitchContextMenu.render("toggle-switch-context-menu-placeholder");
+  toggleSwitchContextMenu.addListeners();
+  contextMenus.slider = toggleSwitchContextMenu;
 
   let sliderContextMenu = new SliderContextMenu();
   sliderContextMenu.render("slider-context-menu-placeholder");

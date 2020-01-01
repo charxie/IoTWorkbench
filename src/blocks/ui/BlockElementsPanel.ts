@@ -10,6 +10,7 @@ import {MathBlock} from "../MathBlock";
 import {Slider} from "../Slider";
 import {FunctionBlock} from "../FunctionBlock";
 import {Sticker} from "../Sticker";
+import {ToggleSwitch} from "../ToggleSwitch";
 
 export class BlockElementsPanel {
 
@@ -48,6 +49,9 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="slider-block" width="80px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="sticker-block" width="60px" height="60px" style="cursor: pointer;"/></td>
                   </tr>
+                  <tr>
+                  <td><canvas draggable="true" id="toggle-switch-block" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  </tr>
                 </table>
               </div>
             </div>`;
@@ -61,6 +65,7 @@ export class BlockElementsPanel {
     this.drawLogicBlock("AND Block", "AND", "logic-and-block");
     this.drawNegationBlock("logic-not-block");
     this.drawMathBlock("Add Block", "+", "math-add-block");
+    this.drawToggleSwitch("Switch", "toggle-switch-block");
     this.drawSlider("Slider", "slider-block");
     this.drawSticker("Sticker", "sticker-block");
   }
@@ -69,6 +74,15 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new Sticker("Sticker Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setSmall(true);
+    block.setMargin(12);
+    block.draw(ctx);
+  }
+
+  private drawToggleSwitch(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new ToggleSwitch("Toggle Switch Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setSmall(true);
     block.setMargin(12);
     block.draw(ctx);

@@ -9,6 +9,7 @@ import {Util} from "../Util";
 export class Sticker extends Block {
 
   private text: string;
+  private decimals: number = 3;
   private barHeight: number;
 
   static State = class {
@@ -19,6 +20,7 @@ export class Sticker extends Block {
     readonly width: number;
     readonly height: number;
     readonly text: string;
+    readonly decimals: number;
 
     constructor(sticker: Sticker) {
       this.name = sticker.name;
@@ -28,6 +30,7 @@ export class Sticker extends Block {
       this.width = sticker.width;
       this.height = sticker.height;
       this.text = sticker.text;
+      this.decimals = sticker.decimals;
     }
   };
 
@@ -38,10 +41,18 @@ export class Sticker extends Block {
     this.ports.push(new Port(this, true, "I", 0, this.height / 2, false));
   }
 
+  setDecimals(decimals: number): void {
+    this.decimals = decimals;
+  }
+
+  getDecimals(): number {
+    return this.decimals;
+  }
+
   draw(ctx: CanvasRenderingContext2D): void {
 
     // draw the upper bar with shade
-    this.barHeight = this.height / 5;
+    this.barHeight = this.height / 4;
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
     shade.addColorStop(0, "white");
     shade.addColorStop(this.small ? 0.2 : 0.1, Util.adjust(this.color, -20));
@@ -84,7 +95,7 @@ export class Sticker extends Block {
   }
 
   updateModel(): void {
-    this.text = this.ports[0].getValue().toPrecision(5); // text is part of the model
+    this.text = this.ports[0].getValue().toFixed(this.decimals); // text is part of the model
   }
 
   refreshView(): void {

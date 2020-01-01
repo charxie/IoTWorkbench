@@ -15,6 +15,7 @@ import {PortConnector} from "./PortConnector";
 import {Slider} from "./Slider";
 import {Sticker} from "./Sticker";
 import {flowchart} from "../Main";
+import {ToggleSwitch} from "./ToggleSwitch";
 
 export class Flowchart {
 
@@ -166,6 +167,9 @@ export class Flowchart {
         break;
       case "Rainbow HAT Block":
         block = new RainbowHatBlock(uid, 20, 20);
+        break;
+      case "Switch":
+        block = new ToggleSwitch(uid, name, x, y, 60, 60);
         break;
       case "Slider":
         block = new Slider(uid, name, x, y, 100, 60);
