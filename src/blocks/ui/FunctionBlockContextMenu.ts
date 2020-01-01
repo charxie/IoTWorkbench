@@ -66,7 +66,7 @@ export class FunctionBlockContextMenu extends BlockContextMenu {
           'OK': function () {
             that.block.setWidth(parseInt(widthInputElement.value));
             that.block.setHeight(parseInt(heightInputElement.value));
-            that.block.refresh();
+            that.block.refreshView();
             flowchart.draw();
             $(this).dialog('close');
           },

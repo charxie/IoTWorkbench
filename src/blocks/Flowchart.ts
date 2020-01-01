@@ -27,10 +27,8 @@ export class Flowchart {
   }
 
   traverse(current: Block): void {
-    //process current block here
-    current.update();
-    //visit children of current
-    let outputTo = current.outputTo();
+    current.updateModel();
+    let outputTo = current.outputTo(); // visit children of current
     for (let next in outputTo) {
       if (outputTo.hasOwnProperty(next)) {
         this.traverse(outputTo[next]);

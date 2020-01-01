@@ -20,15 +20,18 @@ export class BlockViewContextMenu extends MyContextMenu {
   }
 
   getUi(): string {
-    return `<menu id="${this.id}" class="menu" style="width: 140px; z-index: 10000">
+    return `<menu id="${this.id}" class="menu" style="width: 160px; z-index: 10000">
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-open-button"><i class="fas fa-folder-open"></i><span class="menu-text">Open</span></button>
               </li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-save-button"><i class="fas fa-download"></i><span class="menu-text">Save</span></button>
               </li>
+              <li class="menu-item disabled">
+                <button type="button" class="menu-btn" id="${this.id}-copy-image-button"><i class="fas fa-copy"></i><span class="menu-text">Copy Image</span></button>
+              </li>
               <li class="menu-item">
-                <button type="button" class="menu-btn" id="${this.id}-screenshot-button"><i class="fas fa-camera"></i><span class="menu-text">Screenshot</span></button>
+                <button type="button" class="menu-btn" id="${this.id}-save-screenshot-button"><i class="fas fa-camera"></i><span class="menu-text">Save Screenshot</span></button>
               </li>
               <li class="menu-separator"></li>
               <li class="menu-item">
@@ -42,7 +45,9 @@ export class BlockViewContextMenu extends MyContextMenu {
     openButton.addEventListener("click", this.openButtonClick.bind(this), false);
     let saveButton = document.getElementById(this.id + "-save-button");
     saveButton.addEventListener("click", this.saveButtonClick.bind(this), false);
-    let screenshotButton = document.getElementById(this.id + "-screenshot-button");
+    let copyImageButton = document.getElementById(this.id + "-copy-image-button");
+    copyImageButton.addEventListener("click", this.copyImageButtonClick.bind(this), false);
+    let screenshotButton = document.getElementById(this.id + "-save-screenshot-button");
     screenshotButton.addEventListener("click", this.screenshotButtonClick.bind(this), false);
     let settingsButton = document.getElementById(this.id + "-settings-button");
     settingsButton.addEventListener("click", this.settingsButtonClick.bind(this), false);
@@ -58,6 +63,12 @@ export class BlockViewContextMenu extends MyContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     StateIO.saveAs(JSON.stringify(new Flowchart.State(this.view.flowchart)));
+  }
+
+  private copyImageButtonClick(e: MouseEvent): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    //this.view.canvas.toBlob(blob => navigator.clipboard.write([new ClipboardItem({'image/png': blob})]));
   }
 
   private screenshotButtonClick(e: MouseEvent): void {

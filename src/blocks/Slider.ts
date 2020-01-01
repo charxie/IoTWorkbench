@@ -92,18 +92,12 @@ export class Slider extends Block {
     return this.steps;
   }
 
-  update(): void {
-    super.update();
+  updateModel(): void {
     this.ports[0].setValue(this.value);
-    for (let c of flowchart.connectors) {
-      if (c.getOutput() == this.ports[0]) {
-        c.getInput().setValue(c.getOutput().getValue());
-      }
-    }
+    this.updateConnectors();
   }
 
-  refresh(): void {
-    super.refresh();
+  refreshView(): void {
     this.trackLeft = this.x + 8;
     this.trackRight = this.x + this.width - 8;
     let x = this.trackLeft + (this.value - this.minimum) / (this.maximum - this.minimum) * (this.trackRight - this.trackLeft);
@@ -217,7 +211,7 @@ export class Slider extends Block {
         this.knob.x = this.trackRight - this.knobHalfSize;
       }
       this.value = this.minimum + (this.maximum - this.minimum) / (this.trackRight - this.trackLeft) * (this.knob.x + this.knobHalfSize - this.trackLeft);
-      this.update();
+      this.updateModel();
       flowchart.traverse(this);
       flowchart.storeBlockStates();
     } else {

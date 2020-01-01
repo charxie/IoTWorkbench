@@ -22,15 +22,13 @@ export class UnaryFunctionBlock extends FunctionBlock {
     this.margin = 15;
   }
 
-  refresh(): void {
-    super.refresh();
+  refreshView(): void {
     this.portX.setY(this.height / 2);
     this.portR.setX(this.width);
     this.portR.setY(this.height / 2);
   }
 
-  update(): void {
-    super.update();
+  updateModel(): void {
   }
 
 }

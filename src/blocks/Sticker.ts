@@ -83,14 +83,12 @@ export class Sticker extends Block {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
   }
 
-  update(): void {
-    super.update();
-    this.refresh();
+  updateModel(): void {
+    this.text = this.ports[0].getValue().toPrecision(5); // text is part of the model
   }
 
-  refresh(): void {
-    super.refresh();
-    this.text = this.ports[0].getValue().toPrecision(5);
+  refreshView(): void {
+    this.updateModel();
     this.ports[0].setY(this.height / 2);
   }
 

@@ -75,7 +75,7 @@ export class StickerContextMenu extends BlockContextMenu {
             sticker.setName(nameInputElement.value);
             sticker.setWidth(parseInt(widthInputElement.value));
             sticker.setHeight(parseInt(heightInputElement.value));
-            sticker.refresh();
+            sticker.refreshView();
             flowchart.storeBlockStates();
             flowchart.draw();
             $(this).dialog('close');

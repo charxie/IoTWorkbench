@@ -39,7 +39,7 @@ export class StateIO {
         } else if (block instanceof Sticker) {
           block.setName(state.name);
         }
-        block.refresh();
+        block.refreshView();
       }
     }
   }

@@ -102,7 +102,7 @@ export class SliderContextMenu extends BlockContextMenu {
             slider.setValue(parseFloat(valueInputElement.value));
             slider.setWidth(parseInt(widthInputElement.value));
             slider.setHeight(parseInt(heightInputElement.value));
-            slider.refresh();
+            slider.refreshView();
             flowchart.storeBlockStates();
             flowchart.draw();
             $(this).dialog('close');

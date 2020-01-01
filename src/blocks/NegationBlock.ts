@@ -22,15 +22,14 @@ export class NegationBlock extends Block {
     this.margin = 15;
   }
 
-  refresh(): void {
-    super.refresh();
+  refreshView(): void {
     this.portX.setY(this.height / 2);
     this.portR.setX(this.width);
     this.portR.setY(this.height / 2);
   }
 
-  update(): void {
-    super.update();
+  updateModel(): void {
+    this.portR.setValue(this.portX.getValue() > 0 ? 0 : 1);
   }
 
 }

@@ -20,6 +20,6 @@ export interface Movable {
 
   contains(x: number, y: number): boolean;
 
-  refresh() : void;
+  refreshView() : void;
 
 }

@@ -26,16 +26,14 @@ export class MathBlock extends Block {
     this.margin = 15;
   }
 
-  refresh(): void {
-    super.refresh();
+  refreshView(): void {
     this.portA.setY(this.height / 3);
     this.portB.setY(this.height * 2 / 3);
     this.portR.setX(this.width);
     this.portR.setY(this.height / 2);
   }
 
-  update(): void {
-    super.update();
+  updateModel(): void {
     let a = this.portA.getValue();
     let b = this.portB.getValue();
     switch (this.name) {
@@ -58,11 +56,7 @@ export class MathBlock extends Block {
         this.portR.setValue(a ** b);
         break;
     }
-    for (let c of flowchart.connectors) {
-      if (c.getOutput() == this.portR) {
-        c.getInput().setValue(c.getOutput().getValue());
-      }
-    }
+    this.updateConnectors();
   }
 
 }

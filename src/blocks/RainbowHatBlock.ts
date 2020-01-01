@@ -68,12 +68,10 @@ export class RainbowHatBlock extends HatBlock {
     this.ports.push(this.portDisplay);
   }
 
-  refresh(): void {
-    super.refresh();
+  refreshView(): void {
   }
 
-  update(): void {
-    super.update();
+  updateModel(): void {
   }
 
 }

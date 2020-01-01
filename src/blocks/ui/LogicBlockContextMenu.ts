@@ -85,7 +85,7 @@ export class LogicBlockContextMenu extends BlockContextMenu {
             that.block.setUid(that.block.getName() + " #" + Date.now().toString(16));
             that.block.setWidth(parseInt(widthInputElement.value));
             that.block.setHeight(parseInt(heightInputElement.value));
-            that.block.refresh();
+            that.block.refreshView();
             flowchart.draw();
             // update the local storage since we have changed the UID of this block
             flowchart.storeBlockStates();

@@ -46,10 +46,18 @@ export abstract class Block implements Movable {
     this.height = height;
   }
 
-  update(): void {
-  }
+  abstract refreshView(): void;
 
-  refresh(): void {
+  abstract updateModel(): void;
+
+  // scan all the connectors to find out those whose output port is from this block.
+  // if found, update the input port with the current value from the output port.
+  protected updateConnectors(): void {
+    for (let c of flowchart.connectors) {
+      if (this.ports.indexOf(c.getOutput()) != -1) {
+        c.getInput().setValue(c.getOutput().getValue());
+      }
+    }
   }
 
   // get the blocks that this one outputs to through a port connector

@@ -376,7 +376,7 @@ export class BlockView {
     }
     m.setX(dx);
     m.setY(dy);
-    m.refresh();
+    m.refreshView();
     if (m instanceof Block) {
       this.flowchart.storeBlockStates();
     }
