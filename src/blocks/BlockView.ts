@@ -102,9 +102,14 @@ export class BlockView {
   public draw(): void {
     let ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    ctx.save();
     this.drawGrid(ctx);
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "black";
+    for (let c of this.flowchart.connectors) {
+      c.draw(ctx);
+    }
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "white";
     for (let c of this.flowchart.connectors) {
       c.draw(ctx);
     }
@@ -112,13 +117,19 @@ export class BlockView {
       b.draw(ctx);
     }
     if (this.selectedPort && !this.selectedPort.isInput()) {
+      ctx.save();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "dimgray";
+      ctx.setLineDash([5, 5]); // dashes and spaces
       this.connectorOntheFly.draw(ctx);
+      ctx.restore();
     }
   }
 
   public drawGrid(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
     ctx.strokeStyle = "white";
+    ctx.lineWidth = 1;
     for (let i = 1; i <= this.canvas.height / this.gridSize; i++) {
       ctx.moveTo(0, i * this.gridSize);
       ctx.lineTo(this.canvas.width, i * this.gridSize);
@@ -128,8 +139,6 @@ export class BlockView {
       ctx.lineTo(i * this.gridSize, this.canvas.height);
     }
     ctx.stroke();
-    ctx.closePath();
-    ctx.restore();
   }
 
   // detect if (x, y) is inside this view
@@ -159,7 +168,7 @@ export class BlockView {
     let x = e.offsetX;
     let y = e.offsetY;
     for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
-      if (this.flowchart.blocks[i].contains(x, y)) {
+      if (this.flowchart.blocks[i].onDraggableArea(x, y)) {
         this.selectedMovable = this.flowchart.blocks[i];
         break;
       }
@@ -243,7 +252,7 @@ export class BlockView {
       outerloop:
         for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
           let block = this.flowchart.blocks[n];
-          if (block.contains(x, y)) {
+          if (block.onDraggableArea(x, y)) {
             this.overWhat = block;
             break;
           } else {

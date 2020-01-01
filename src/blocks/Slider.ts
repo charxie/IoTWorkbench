@@ -55,7 +55,7 @@ export class Slider extends Block {
     this.name = name;
     this.color = "#483D8B";
     this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
-    this.knob = new Rectangle(this.x + this.width / 2 - 2, this.y + this.halfHeight + 4, 4, this.halfHeight - 8);
+    this.knob = new Rectangle(this.x + this.width / 2 - this.knobHalfSize / 2, this.y + this.halfHeight + 4, this.knobHalfSize, this.halfHeight - 8);
     this.trackLeft = this.x + 8;
     this.trackRight = this.x + this.width - 8;
   }
@@ -169,6 +169,10 @@ export class Slider extends Block {
     ctx.strokeStyle = "black";
     this.ports[0].draw(ctx, this.small);
 
+  }
+
+  onDraggableArea(x: number, y: number): boolean {
+    return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.halfHeight;
   }
 
   onKnob(x: number, y: number): boolean {

@@ -10,6 +10,7 @@ import {flowchart} from "../Main";
 export class Sticker extends Block {
 
   private text: string;
+  private barHeight: number;
 
   static State = class {
     readonly name: string;
@@ -41,34 +42,34 @@ export class Sticker extends Block {
   draw(ctx: CanvasRenderingContext2D): void {
 
     // draw the upper bar with shade
-    let barHeight = this.height / 5;
-    let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + barHeight);
+    this.barHeight = this.height / 5;
+    let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
     shade.addColorStop(0, "white");
     shade.addColorStop(this.small ? 0.2 : 0.1, Util.adjust(this.color, -20));
     shade.addColorStop(1, Util.adjust(this.color, -100));
     ctx.fillStyle = shade;
-    ctx.fillHalfRoundedRect(this.x, this.y, this.width, barHeight, this.radius, "Top");
+    ctx.fillHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
-    ctx.drawHalfRoundedRect(this.x, this.y, this.width, barHeight, this.radius, "Top");
+    ctx.drawHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
     if (!this.small) {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Times Roman";
       let titleWidth = ctx.measureText(this.name).width;
-      ctx.strokeText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + barHeight / 2 + 3);
+      ctx.strokeText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
 
     // draw the text area
     ctx.fillStyle = this.color;
     ctx.beginPath();
-    ctx.fillHalfRoundedRect(this.x, this.y + barHeight, this.width, this.height - barHeight, this.radius, "Bottom");
+    ctx.fillHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
-    ctx.drawHalfRoundedRect(this.x, this.y + barHeight, this.width, this.height - barHeight, this.radius, "Bottom");
+    ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
     if (this.text) {
       ctx.font = "14px Times Roman";
       ctx.strokeStyle = "black";
-      ctx.strokeText(this.text, this.x + 10, this.y + barHeight + 20);
+      ctx.strokeText(this.text, this.x + 10, this.y + this.barHeight + 20);
     }
 
     // draw the port
@@ -77,6 +78,10 @@ export class Sticker extends Block {
     this.ports[0].setY(this.height / 2);
     this.ports[0].draw(ctx, this.small);
 
+  }
+
+  onDraggableArea(x: number, y: number): boolean {
+    return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
   }
 
   update(): void {

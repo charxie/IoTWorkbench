@@ -169,6 +169,10 @@ export abstract class Block implements Movable {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height;
   }
 
+  onDraggableArea(x: number, y: number): boolean {
+    return this.contains(x, y);
+  }
+
   draw(ctx: CanvasRenderingContext2D): void {
 
     // draw the block with shade
