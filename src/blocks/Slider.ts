@@ -7,11 +7,8 @@ import {Block} from "./Block";
 import {flowchart} from "../Main";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
-import {DataSource} from "./DataSource";
 
-export class Slider extends Block implements DataSource {
-
-  readonly discriminator: "DataSource";
+export class Slider extends Block {
 
   private knob: Rectangle;
   private knobHalfSize: number = 4;
@@ -54,6 +51,7 @@ export class Slider extends Block implements DataSource {
 
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
+    this.source = true;
     this.halfHeight = this.height / 2;
     this.name = name;
     this.color = "#483D8B";

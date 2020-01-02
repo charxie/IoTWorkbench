@@ -42,7 +42,7 @@ export class StateIO {
           block.setName(state.name);
         } else if (block instanceof Sticker) {
           block.setName(state.name);
-          block.setDecimals(state.decimals);
+          block.setDecimals(state.decimals ? state.decimals : 3);
         }
         block.refreshView();
       }
@@ -77,6 +77,8 @@ export class StateIO {
           that.restoreBlocks(JSON.stringify(s.blockStates));
           that.restoreConnectors(JSON.stringify(s.connectorStates));
           flowchart.updateResults();
+          flowchart.storeBlockStates();
+          flowchart.storeConnectorStates();
         };
       }
     };

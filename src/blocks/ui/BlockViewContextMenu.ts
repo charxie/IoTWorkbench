@@ -20,7 +20,7 @@ export class BlockViewContextMenu extends MyContextMenu {
   }
 
   getUi(): string {
-    return `<menu id="${this.id}" class="menu" style="width: 160px; z-index: 10000">
+    return `<menu id="${this.id}" class="menu" style="width: 170px; z-index: 10000">
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-open-button"><i class="fas fa-folder-open"></i><span class="menu-text">Open</span></button>
               </li>

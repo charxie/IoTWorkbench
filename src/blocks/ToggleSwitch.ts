@@ -8,11 +8,8 @@ import {Util} from "../Util";
 import {Arc} from "../math/Arc";
 import {Stadium} from "../math/Stadium";
 import {flowchart} from "../Main";
-import {DataSource} from "./DataSource";
 
-export class ToggleSwitch extends Block implements DataSource {
-
-  readonly discriminator: "DataSource";
+export class ToggleSwitch extends Block {
 
   private value: number = 0;
   private knob: Arc;
@@ -49,6 +46,7 @@ export class ToggleSwitch extends Block implements DataSource {
 
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
+    this.source = true;
     this.halfHeight = this.height / 2;
     this.name = name;
     this.color = "#FF1493";

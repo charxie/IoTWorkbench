@@ -10,6 +10,7 @@ import {flowchart} from "../Main";
 export abstract class Block implements Movable {
 
   protected ports: Port[] = [];
+  protected source: boolean = false;
   protected uid: string;
   protected x: number;
   protected y: number;
@@ -49,6 +50,10 @@ export abstract class Block implements Movable {
   abstract refreshView(): void;
 
   abstract updateModel(): void;
+
+  isSource(): boolean {
+    return this.source;
+  }
 
   // scan all the connectors to find out those whose output port is from this block.
   // if found, update the input port with the current value from the output port.
