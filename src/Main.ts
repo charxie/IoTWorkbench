@@ -90,7 +90,7 @@ window.onload = function () {
   let versionLabel = document.getElementById("version-label") as HTMLElement;
   versionLabel.innerHTML = Constants.Software.version;
   let creditLabel = document.getElementById('credit') as HTMLElement;
-  creditLabel.innerHTML = social + "<div class='horizontal-divider'></div>" + Constants.Software.name + " " + Constants.Software.version + ", " + user.fullName + " , &copy; " + new Date().getFullYear();
+  creditLabel.innerHTML = social + "<div class='horizontal-divider'></div>" + Constants.Software.name + " " + Constants.Software.version + ", created by Charles Xie , &copy; " + new Date().getFullYear();
 
   let modelTabButton = document.getElementById("model-tab-button") as HTMLButtonElement;
   modelTabButton.addEventListener("click", function () {

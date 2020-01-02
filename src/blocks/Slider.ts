@@ -185,7 +185,7 @@ export class Slider extends Block {
     return this.knob.contains(x, y);
   }
 
-  mouseDownOnKnob(e: MouseEvent): boolean {
+  mouseDown(e: MouseEvent): boolean {
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.onKnob(x, y)) {

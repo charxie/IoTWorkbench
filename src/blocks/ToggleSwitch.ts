@@ -130,10 +130,11 @@ export class ToggleSwitch extends Block {
 
     if (!this.small) {
       ctx.font = "8px Arial";
-      textWidth = ctx.measureText("ON").width;
+      ctx.fillStyle = "black";
+      textWidth = ctx.measureText("OFF").width;
       let textCenterY = this.track.rectangle.getCenterY() + 3;
-      ctx.strokeText("ON", this.trackMin - textWidth - 12, textCenterY);
-      ctx.strokeText("OFF", this.trackMax + 11, textCenterY);
+      ctx.fillText("OFF", this.trackMin - textWidth - 12, textCenterY);
+      ctx.fillText("ON", this.trackMax + 13, textCenterY);
     }
 
     // draw the knob
@@ -165,7 +166,7 @@ export class ToggleSwitch extends Block {
     return this.knob.contains(x, y);
   }
 
-  mouseDownOnKnob(e: MouseEvent): boolean {
+  mouseDown(e: MouseEvent): boolean {
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.onKnob(x, y)) {

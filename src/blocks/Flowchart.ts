@@ -57,15 +57,10 @@ export class Flowchart {
   }
 
   addPortConnector(output: Port, input: Port, uid: string): boolean {
-    let existing = false;
     for (let c of this.connectors) {
-      if (c.getInput() == input && c.getOutput() == output) {
-        existing = true;
-        break;
+      if (c.getInput() == input) { // this input port is already taken
+        return false;
       }
-    }
-    if (existing) {
-      return false;
     }
     let c = new PortConnector(uid, output, input);
     this.connectors.push(c);

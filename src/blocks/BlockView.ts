@@ -204,17 +204,15 @@ export class BlockView {
           }
         }
     }
-    let onKnob = false;
+    let grab = false;
     for (let b of this.flowchart.blocks) {
-      if (b instanceof Slider || b instanceof ToggleSwitch) {
-        if (b.mouseDownOnKnob(e)) {
-          onKnob = true;
-          break;
-        }
+      if (b.mouseDown(e)) {
+        grab = true;
+        break;
       }
     }
-    this.preventMainMouseEvent = onKnob;
-    this.canvas.style.cursor = onKnob ? "grabbing" : "default";
+    this.preventMainMouseEvent = grab;
+    this.canvas.style.cursor = grab ? "grabbing" : "default";
   }
 
   private mouseUp(e: MouseEvent): void {
@@ -240,9 +238,7 @@ export class BlockView {
     this.selectedPort = null;
     this.preventMainMouseEvent = false;
     for (let b of this.flowchart.blocks) {
-      if (b instanceof Slider || b instanceof ToggleSwitch) {
-        b.mouseUp(e);
-      }
+      b.mouseUp(e);
     }
     this.draw();
     closeAllContextMenus(); // close all context menus upon mouse left click
@@ -305,9 +301,7 @@ export class BlockView {
       }
     }
     for (let b of this.flowchart.blocks) {
-      if (b instanceof Slider || b instanceof ToggleSwitch) {
-        b.mouseMove(e);
-      }
+      b.mouseMove(e);
     }
     this.draw();
   }
@@ -316,9 +310,7 @@ export class BlockView {
     e.preventDefault();
     this.selectedMovable = null;
     for (let b of this.flowchart.blocks) {
-      if (b instanceof Slider || b instanceof ToggleSwitch) {
-        b.mouseLeave(e);
-      }
+      b.mouseLeave(e);
     }
   };
 

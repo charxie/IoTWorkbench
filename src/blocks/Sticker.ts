@@ -55,7 +55,7 @@ export class Sticker extends Block {
   draw(ctx: CanvasRenderingContext2D): void {
 
     // draw the upper bar with shade
-    this.barHeight = this.height / 4;
+    this.barHeight = this.height / 3;
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
     shade.addColorStop(0, "white");
     shade.addColorStop(this.small ? 0.2 : 0.1, Util.adjust(this.color, -20));
@@ -68,8 +68,9 @@ export class Sticker extends Block {
     if (!this.small) {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Times Roman";
+      ctx.fillStyle = "black";
       let titleWidth = ctx.measureText(this.name).width;
-      ctx.strokeText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
+      ctx.fillText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
 
     // draw the text area

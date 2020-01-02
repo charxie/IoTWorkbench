@@ -248,4 +248,19 @@ export abstract class Block implements Movable {
     return this.uid;
   }
 
+  /* handle mouse events within the block */
+
+  mouseDown(e: MouseEvent): boolean {
+    return false;
+  }
+
+  mouseUp(e: MouseEvent): void {
+  }
+
+  mouseMove(e: MouseEvent): void {
+  }
+
+  mouseLeave(e: MouseEvent): void {
+  }
+
 }
