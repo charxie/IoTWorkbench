@@ -8,11 +8,11 @@ import {Point} from "../math/Point";
 
 export class Port {
 
+  private readonly block: Block;
   private value: number = 0;
-  private block: Block;
-  private input: boolean; // a port must be either input or output. If this is false, then this is a port for output.
+  private readonly input: boolean; // a port must be either input or output. If this is false, then this is a port for output.
   private close: boolean; // when a connector end is close to this port
-  private uid: string;
+  private readonly uid: string;
   private arc: Arc;
   private radius: number = 5;
 

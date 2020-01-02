@@ -216,7 +216,7 @@ export abstract class Block implements Movable {
     if (this.symbol) {
       let textWidth = ctx.measureText(this.symbol).width;
       if (textWidth < this.width - 2 * this.margin - 20) {
-        ctx.font = this.small ? "16px Arial" : "bold 20px Arial";
+        ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
         textWidth = ctx.measureText(this.symbol).width;
         ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.height / 2 + (this.small ? 5 : 7));
       } else {

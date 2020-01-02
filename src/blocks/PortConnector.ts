@@ -6,9 +6,9 @@ import {Port} from "./Port";
 
 export class PortConnector {
 
-  private uid: string;
-  private output: Port;
-  private input: Port;
+  private readonly uid: string;
+  private readonly output: Port;
+  private readonly input: Port;
 
   static State = class {
     readonly inputBlockId: string;

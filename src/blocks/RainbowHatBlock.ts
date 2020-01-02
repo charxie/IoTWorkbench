@@ -7,23 +7,23 @@ import {HatBlock} from "./HatBlock";
 
 export class RainbowHatBlock extends HatBlock {
 
-  private portPiezoBuzzer: Port;
-  private portButtonA: Port;
-  private portButtonB: Port;
-  private portButtonC: Port;
-  private portRedLed: Port;
-  private portGreenLed: Port;
-  private portBlueLed: Port;
-  private portTemperatureSensor: Port;
-  private portPressureSensor: Port;
-  private portRgbLed1: Port;
-  private portRgbLed2: Port;
-  private portRgbLed3: Port;
-  private portRgbLed4: Port;
-  private portRgbLed5: Port;
-  private portRgbLed6: Port;
-  private portRgbLed7: Port;
-  private portDisplay: Port;
+  private readonly portPiezoBuzzer: Port;
+  private readonly portButtonA: Port;
+  private readonly portButtonB: Port;
+  private readonly portButtonC: Port;
+  private readonly portRedLed: Port;
+  private readonly portGreenLed: Port;
+  private readonly portBlueLed: Port;
+  private readonly portTemperatureSensor: Port;
+  private readonly portPressureSensor: Port;
+  private readonly portRgbLed1: Port;
+  private readonly portRgbLed2: Port;
+  private readonly portRgbLed3: Port;
+  private readonly portRgbLed4: Port;
+  private readonly portRgbLed5: Port;
+  private readonly portRgbLed6: Port;
+  private readonly portRgbLed7: Port;
+  private readonly portDisplay: Port;
 
   constructor(uid: string, x: number, y: number) {
     super(uid, x, y, 125, 250);

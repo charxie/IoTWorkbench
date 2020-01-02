@@ -4,13 +4,12 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
-import {flowchart} from "../Main";
 
 export class MathBlock extends Block {
 
-  private portA: Port;
-  private portB: Port;
-  private portR: Port;
+  private readonly portA: Port;
+  private readonly portB: Port;
+  private readonly portR: Port;
 
   constructor(uid: string, x: number, y: number, width: number, height: number, name: string, symbol: string) {
     super(uid, x, y, width, height);

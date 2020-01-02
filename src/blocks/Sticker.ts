@@ -5,6 +5,9 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
+import {flowchart} from "../Main";
+import {NegationBlock} from "./NegationBlock";
+import {LogicBlock} from "./LogicBlock";
 
 export class Sticker extends Block {
 
@@ -79,7 +82,11 @@ export class Sticker extends Block {
     if (this.text) {
       ctx.font = "14px Times Roman";
       ctx.strokeStyle = "black";
-      ctx.strokeText(this.text, this.x + 10, this.y + this.barHeight + 20);
+      if (this.isInputBoolean()) {
+        ctx.strokeText(parseFloat(this.text) > 0.1 ? "true" : "false", this.x + 10, this.y + this.barHeight + 20);
+      } else {
+        ctx.strokeText(this.text, this.x + 10, this.y + this.barHeight + 20);
+      }
     }
 
     // draw the port
@@ -101,6 +108,16 @@ export class Sticker extends Block {
   refreshView(): void {
     this.updateModel();
     this.ports[0].setY(this.height / 2);
+  }
+
+  private isInputBoolean(): boolean {
+    for (let c of flowchart.connectors) {
+      if (this.ports[0] == c.getInput()) {
+        let b = c.getOutput().getBlock();
+        return b instanceof NegationBlock || b instanceof LogicBlock;
+      }
+    }
+    return false;
   }
 
 }

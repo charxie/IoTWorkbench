@@ -7,9 +7,9 @@ import {Port} from "./Port";
 
 export class LogicBlock extends Block {
 
-  private portA: Port;
-  private portB: Port;
-  private portR: Port;
+  private readonly portA: Port;
+  private readonly portB: Port;
+  private readonly portR: Port;
 
   constructor(uid: string, x: number, y: number, width: number, height: number, name: string, symbol: string) {
     super(uid, x, y, width, height);
@@ -33,6 +33,26 @@ export class LogicBlock extends Block {
   }
 
   updateModel(): void {
+    let a: boolean = this.portA.getValue() > 0.1;
+    let b: boolean = this.portB.getValue() > 0.1;
+    switch (this.name) {
+      case "AND Block":
+        this.portR.setValue((a && b) ? 1 : 0);
+        break;
+      case "OR Block":
+        this.portR.setValue((a || b) ? 1 : 0);
+        break;
+      case "XOR Block":
+        this.portR.setValue(((a && !b) || (!a && b)) ? 1 : 0);
+        break;
+      case "NOR Block":
+        this.portR.setValue(a || b ? 0 : 1);
+        break;
+      case "XNOR Block":
+        this.portR.setValue(a == b ? 1 : 0);
+        break;
+    }
+    this.updateConnectors();
   }
 
 }

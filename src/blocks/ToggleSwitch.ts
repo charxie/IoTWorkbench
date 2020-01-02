@@ -21,7 +21,7 @@ export class ToggleSwitch extends Block {
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private halfHeight: number;
-  private xMargin: number = 20;
+  private xMargin: number = 10;
   private yMargin: number = 6;
 
   static State = class {
@@ -31,7 +31,7 @@ export class ToggleSwitch extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
-    readonly value: number;
+    readonly selected: boolean;
 
     constructor(toggleSwitch: ToggleSwitch) {
       this.name = toggleSwitch.name;
@@ -40,7 +40,7 @@ export class ToggleSwitch extends Block {
       this.y = toggleSwitch.y;
       this.width = toggleSwitch.width;
       this.height = toggleSwitch.height;
-      this.value = toggleSwitch.value;
+      this.selected = toggleSwitch.isSelected();
     }
   };
 
@@ -72,11 +72,12 @@ export class ToggleSwitch extends Block {
   }
 
   refreshView(): void {
+    this.xMargin = this.small ? 10 : 24;
     this.halfHeight = this.height / 2;
     this.knobRadius = this.halfHeight / 2 - this.yMargin;
     this.trackMin = this.x + this.knobRadius + this.xMargin;
     this.trackMax = this.x + this.width - this.knobRadius - this.xMargin;
-    this.knob.setCenter(this.trackMin, this.y + this.halfHeight * 3 / 2);
+    this.knob.setCenter(this.value < 0.1 ? this.trackMin : this.trackMax, this.y + this.halfHeight * 3 / 2);
     this.track.setRect(this.trackMin, this.y + this.halfHeight + this.yMargin, this.trackMax - this.trackMin, 2 * this.knobRadius);
     this.ports[0].setX(this.width);
     this.ports[0].setY(this.height / 2);
@@ -126,6 +127,14 @@ export class ToggleSwitch extends Block {
     ctx.arc(this.track.arcRight.x, this.track.arcRight.y, this.track.arcRight.radius, this.track.arcRight.startAngle, this.track.arcRight.endAngle, this.track.arcRight.anticlockwise);
     ctx.fill();
     ctx.lineWidth = 0.5;
+
+    if (!this.small) {
+      ctx.font = "8px Arial";
+      textWidth = ctx.measureText("ON").width;
+      let textCenterY = this.track.rectangle.getCenterY() + 3;
+      ctx.strokeText("ON", this.trackMin - textWidth - 12, textCenterY);
+      ctx.strokeText("OFF", this.trackMax + 11, textCenterY);
+    }
 
     // draw the knob
     ctx.save();

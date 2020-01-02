@@ -7,8 +7,8 @@ import {FunctionBlock} from "./FunctionBlock";
 
 export class UnaryFunctionBlock extends FunctionBlock {
 
-  private portX: Port;
-  private portR: Port;
+  private readonly portX: Port;
+  private readonly portR: Port;
 
   constructor(uid: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);

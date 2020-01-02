@@ -99,6 +99,7 @@ export class BlockView {
 
   private storeBlock(block: Block): void {
     this.flowchart.blocks.push(block);
+    block.refreshView();
     this.draw();
     this.flowchart.storeBlockStates();
   }
