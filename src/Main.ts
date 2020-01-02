@@ -36,13 +36,13 @@ import {LogicBlockContextMenu} from "./blocks/ui/LogicBlockContextMenu";
 import {MathBlockContextMenu} from "./blocks/ui/MathBlockContextMenu";
 import {FunctionBlockContextMenu} from "./blocks/ui/FunctionBlockContextMenu";
 import {HatBlockContextMenu} from "./blocks/ui/HatBlockContextMenu";
+import {ToggleSwitchContextMenu} from "./blocks/ui/ToggleSwitchContextMenu";
 import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
 import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 
 import {Sound} from "./Sound";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
-import {ToggleSwitchContextMenu} from "./blocks/ui/ToggleSwitchContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {

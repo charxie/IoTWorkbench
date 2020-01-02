@@ -87,7 +87,7 @@ export class BlockView {
             that.storeBlock(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));
             break;
           case "toggle-switch-block":
-            that.storeBlock(new ToggleSwitch("Switch #" + timestamp, "Boolean", x - 50, y - 30, 100, 60));
+            that.storeBlock(new ToggleSwitch("Switch #" + timestamp, "Boolean", x - 50, y - 30, 80, 60));
             break;
           case "sticker-block":
             that.storeBlock(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));

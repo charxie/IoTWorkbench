@@ -8,8 +8,11 @@ import {Util} from "../Util";
 import {Arc} from "../math/Arc";
 import {Stadium} from "../math/Stadium";
 import {flowchart} from "../Main";
+import {DataSource} from "./DataSource";
 
-export class ToggleSwitch extends Block {
+export class ToggleSwitch extends Block implements DataSource {
+
+  readonly discriminator: "DataSource";
 
   private value: number = 0;
   private knob: Arc;
@@ -21,7 +24,7 @@ export class ToggleSwitch extends Block {
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private halfHeight: number;
-  private xMargin: number = 8;
+  private xMargin: number = 20;
   private yMargin: number = 6;
 
   static State = class {

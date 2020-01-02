@@ -12,9 +12,9 @@ import {MathBlock} from "./MathBlock";
 import {RainbowHatBlock} from "./RainbowHatBlock";
 import {Port} from "./Port";
 import {PortConnector} from "./PortConnector";
+import {instanceOfDataSource} from "./DataSource";
 import {Slider} from "./Slider";
 import {Sticker} from "./Sticker";
-import {flowchart} from "../Main";
 import {ToggleSwitch} from "./ToggleSwitch";
 
 export class Flowchart {
@@ -39,7 +39,7 @@ export class Flowchart {
 
   updateResults(): void {
     for (let b of this.blocks) {
-      if (b instanceof Slider) {
+      if (instanceOfDataSource(b)) {
         this.traverse(b);
       }
     }

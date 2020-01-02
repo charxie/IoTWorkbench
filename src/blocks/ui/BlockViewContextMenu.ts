@@ -27,6 +27,7 @@ export class BlockViewContextMenu extends MyContextMenu {
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-save-button"><i class="fas fa-download"></i><span class="menu-text">Save</span></button>
               </li>
+              <li class="menu-separator"></li>
               <li class="menu-item disabled">
                 <button type="button" class="menu-btn" id="${this.id}-copy-image-button"><i class="fas fa-copy"></i><span class="menu-text">Copy Image</span></button>
               </li>
@@ -34,6 +35,9 @@ export class BlockViewContextMenu extends MyContextMenu {
                 <button type="button" class="menu-btn" id="${this.id}-save-screenshot-button"><i class="fas fa-camera"></i><span class="menu-text">Save Screenshot</span></button>
               </li>
               <li class="menu-separator"></li>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-clear-button"><i class="fas fa-cog"></i><span class="menu-text">Clear</span></button>
+              </li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-settings-button"><i class="fas fa-cog"></i><span class="menu-text">Settings</span></button>
               </li>
@@ -49,8 +53,37 @@ export class BlockViewContextMenu extends MyContextMenu {
     copyImageButton.addEventListener("click", this.copyImageButtonClick.bind(this), false);
     let screenshotButton = document.getElementById(this.id + "-save-screenshot-button");
     screenshotButton.addEventListener("click", this.screenshotButtonClick.bind(this), false);
+    let clearButton = document.getElementById(this.id + "-clear-button");
+    clearButton.addEventListener("click", this.clearButtonClick.bind(this), false);
     let settingsButton = document.getElementById(this.id + "-settings-button");
     settingsButton.addEventListener("click", this.settingsButtonClick.bind(this), false);
+  }
+
+  private clearButtonClick(e: MouseEvent): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    if (this.view.flowchart.blocks.length > 0 || this.view.flowchart.connectors.length > 0) {
+      let that = this;
+      $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to clear the scene?</div>");
+      $("#modal-dialog").dialog({
+        resizable: false,
+        modal: true,
+        title: "Clear",
+        height: 150,
+        width: 300,
+        buttons: {
+          'OK': function () {
+            that.view.flowchart.blocks = [];
+            that.view.flowchart.connectors = [];
+            that.view.flowchart.draw();
+            $(this).dialog('close');
+          },
+          'Cancel': function () {
+            $(this).dialog('close');
+          }
+        }
+      });
+    }
   }
 
   private openButtonClick(e: MouseEvent): void {

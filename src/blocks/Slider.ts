@@ -7,8 +7,11 @@ import {Block} from "./Block";
 import {flowchart} from "../Main";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
+import {DataSource} from "./DataSource";
 
-export class Slider extends Block {
+export class Slider extends Block implements DataSource {
+
+  readonly discriminator: "DataSource";
 
   private knob: Rectangle;
   private knobHalfSize: number = 4;
