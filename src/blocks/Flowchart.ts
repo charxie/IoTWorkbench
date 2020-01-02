@@ -197,6 +197,8 @@ export class Flowchart {
     for (let b of this.blocks) {
       if (b instanceof Slider) {
         blockStates.push(new Slider.State(b));
+      } else if (b instanceof ToggleSwitch) {
+        blockStates.push(new ToggleSwitch.State(b));
       } else if (b instanceof Sticker) {
         blockStates.push(new Sticker.State(b));
       } else {

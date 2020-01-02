@@ -205,7 +205,7 @@ export class BlockView {
     }
     let onKnob = false;
     for (let b of this.flowchart.blocks) {
-      if (b instanceof Slider) {
+      if (b instanceof Slider || b instanceof ToggleSwitch) {
         if (b.mouseDownOnKnob(e)) {
           onKnob = true;
           break;
@@ -239,7 +239,7 @@ export class BlockView {
     this.selectedPort = null;
     this.preventMainMouseEvent = false;
     for (let b of this.flowchart.blocks) {
-      if (b instanceof Slider) {
+      if (b instanceof Slider || b instanceof ToggleSwitch) {
         b.mouseUp(e);
       }
     }
@@ -304,7 +304,7 @@ export class BlockView {
       }
     }
     for (let b of this.flowchart.blocks) {
-      if (b instanceof Slider) {
+      if (b instanceof Slider || b instanceof ToggleSwitch) {
         b.mouseMove(e);
       }
     }
@@ -315,7 +315,7 @@ export class BlockView {
     e.preventDefault();
     this.selectedMovable = null;
     for (let b of this.flowchart.blocks) {
-      if (b instanceof Slider) {
+      if (b instanceof Slider || b instanceof ToggleSwitch) {
         b.mouseLeave(e);
       }
     }

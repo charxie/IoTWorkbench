@@ -7,6 +7,7 @@ import {Util} from "./Util";
 import {Slider} from "./blocks/Slider";
 import {Sticker} from "./blocks/Sticker";
 import {flowchart} from "./Main";
+import {ToggleSwitch} from "./blocks/ToggleSwitch";
 
 export class StateIO {
 
@@ -37,6 +38,8 @@ export class StateIO {
           block.setMaximum(state.maximum);
           block.setSteps(state.steps);
           block.setValue(state.value);
+        } else if (block instanceof ToggleSwitch) {
+          block.setName(state.name);
         } else if (block instanceof Sticker) {
           block.setName(state.name);
           block.setDecimals(state.decimals);

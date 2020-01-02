@@ -20,6 +20,11 @@ export class Arc {
     this.anticlockwise = anticlockwise;
   }
 
+  public setCenter(x: number, y: number): void {
+    this.x = x;
+    this.y = y;
+  }
+
   public contains(x: number, y: number): boolean {
     let dx = x - this.x;
     let dy = y - this.y;

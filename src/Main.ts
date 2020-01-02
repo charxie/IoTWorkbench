@@ -193,7 +193,7 @@ function setupContextMenuForBlock() {
   let toggleSwitchContextMenu = new ToggleSwitchContextMenu();
   toggleSwitchContextMenu.render("toggle-switch-context-menu-placeholder");
   toggleSwitchContextMenu.addListeners();
-  contextMenus.slider = toggleSwitchContextMenu;
+  contextMenus.toggleSwitch = toggleSwitchContextMenu;
 
   let sliderContextMenu = new SliderContextMenu();
   sliderContextMenu.render("slider-context-menu-placeholder");

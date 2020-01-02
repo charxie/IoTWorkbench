@@ -14,7 +14,7 @@ export class Slider extends Block {
   private knobHalfSize: number = 4;
   private trackLeft: number;
   private trackRight: number;
-  private readonly halfHeight: number;
+  private halfHeight: number;
   private knobGrabbed: boolean;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
@@ -98,6 +98,7 @@ export class Slider extends Block {
   }
 
   refreshView(): void {
+    this.halfHeight = this.height / 2;
     this.trackLeft = this.x + 8;
     this.trackRight = this.x + this.width - 8;
     let x = this.trackLeft + (this.value - this.minimum) / (this.maximum - this.minimum) * (this.trackRight - this.trackLeft);
@@ -124,7 +125,7 @@ export class Slider extends Block {
     ctx.fillStyle = "white";
     ctx.strokeStyle = "black";
     ctx.lineWidth = this.small ? 0.75 : 1;
-    ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
+    ctx.font = this.small ? "10px Arial" : "bold 16px Arial";
     let textWidth = ctx.measureText(this.name).width;
     ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.halfHeight / 2 + 4);
     ctx.fillText(this.name, 0, 0);

@@ -5,30 +5,56 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
-import {Rectangle} from "../math/Rectangle";
+import {Arc} from "../math/Arc";
+import {Stadium} from "../math/Stadium";
+import {flowchart} from "../Main";
 
 export class ToggleSwitch extends Block {
 
   private value: number = 0;
-  private knob: Rectangle;
-  private knobHalfSize: number = 10;
-  private trackLeft: number;
-  private trackRight: number;
+  private knob: Arc;
+  private knobRadius: number = 10;
+  private track: Stadium;
+  private trackMin: number;
+  private trackMax: number;
   private knobGrabbed: boolean;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
-  private readonly halfHeight: number;
+  private halfHeight: number;
+  private xMargin: number = 8;
+  private yMargin: number = 6;
+
+  static State = class {
+    readonly name: string;
+    readonly uid: string;
+    readonly x: number;
+    readonly y: number;
+    readonly width: number;
+    readonly height: number;
+    readonly value: number;
+
+    constructor(toggleSwitch: ToggleSwitch) {
+      this.name = toggleSwitch.name;
+      this.uid = toggleSwitch.uid;
+      this.x = toggleSwitch.x;
+      this.y = toggleSwitch.y;
+      this.width = toggleSwitch.width;
+      this.height = toggleSwitch.height;
+      this.value = toggleSwitch.value;
+    }
+  };
 
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.halfHeight = this.height / 2;
     this.name = name;
-    this.color = "#FF4500";
+    this.color = "#FF1493";
     this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
-    this.knobHalfSize = (this.width - 16) / 2;
-    this.knob = new Rectangle(this.x + this.width / 2 - this.knobHalfSize / 2, this.y + this.halfHeight + 4, this.knobHalfSize, this.halfHeight - 8);
-    this.trackLeft = this.x + 8;
-    this.trackRight = this.x + this.width - 8;
+    this.knobRadius = this.halfHeight / 2 - this.yMargin;
+    this.trackMin = this.x + this.knobRadius + this.xMargin;
+    this.trackMax = this.x + this.width - this.knobRadius - this.xMargin;
+    this.track = new Stadium(this.trackMin, this.y + this.halfHeight + this.yMargin, this.trackMax - this.trackMin, 2 * this.knobRadius);
+    this.knob = new Arc(this.trackMin, this.y + this.halfHeight * 3 / 2, this.knobRadius, 0, 2 * Math.PI, true);
   }
 
   setSelected(selected: boolean): void {
@@ -45,10 +71,12 @@ export class ToggleSwitch extends Block {
   }
 
   refreshView(): void {
-    this.trackLeft = this.x + 8;
-    this.trackRight = this.x + this.width - 8;
-    let x = this.trackLeft + (this.trackRight - this.trackLeft) / 2;
-    this.knob.setRect(x - this.knobHalfSize, this.y + this.halfHeight + 4, 2 * this.knobHalfSize, this.halfHeight - 8);
+    this.halfHeight = this.height / 2;
+    this.knobRadius = this.halfHeight / 2 - this.yMargin;
+    this.trackMin = this.x + this.knobRadius + this.xMargin;
+    this.trackMax = this.x + this.width - this.knobRadius - this.xMargin;
+    this.knob.setCenter(this.trackMin, this.y + this.halfHeight * 3 / 2);
+    this.track.setRect(this.trackMin, this.y + this.halfHeight + this.yMargin, this.trackMax - this.trackMin, 2 * this.knobRadius);
     this.ports[0].setX(this.width);
     this.ports[0].setY(this.height / 2);
   }
@@ -71,7 +99,7 @@ export class ToggleSwitch extends Block {
     ctx.fillStyle = "white";
     ctx.strokeStyle = "black";
     ctx.lineWidth = this.small ? 0.75 : 1;
-    ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
+    ctx.font = this.small ? "10px Arial" : "bold 16px Arial";
     let textWidth = ctx.measureText(this.name).width;
     ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.halfHeight / 2 + 4);
     ctx.fillText(this.name, 0, 0);
@@ -86,23 +114,27 @@ export class ToggleSwitch extends Block {
 
     // draw the track
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "dimgray";
+    ctx.fillStyle = "lightgray";
     ctx.beginPath();
-    let y0 = this.y + this.halfHeight * 3 / 2;
-    ctx.moveTo(this.trackLeft, y0);
-    ctx.lineTo(this.trackRight, y0);
-    ctx.stroke();
+    ctx.rect(this.track.rectangle.x, this.track.rectangle.y, this.track.rectangle.width, this.track.rectangle.height);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(this.track.arcLeft.x, this.track.arcLeft.y, this.track.arcLeft.radius, this.track.arcLeft.startAngle, this.track.arcLeft.endAngle, this.track.arcLeft.anticlockwise);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(this.track.arcRight.x, this.track.arcRight.y, this.track.arcRight.radius, this.track.arcRight.startAngle, this.track.arcRight.endAngle, this.track.arcRight.anticlockwise);
+    ctx.fill();
     ctx.lineWidth = 0.5;
 
     // draw the knob
     ctx.save();
-    ctx.fillStyle = "gray";
+    ctx.fillStyle = "white";
     ctx.shadowOffsetX = 2;
     ctx.shadowOffsetY = 1;
     ctx.shadowBlur = 2;
     ctx.shadowColor = "black";
     ctx.beginPath();
-    ctx.rect(this.knob.x, this.knob.y, this.knob.width, this.knob.height);
+    ctx.arc(this.knob.x, this.knob.y, this.knob.radius, 0, 2 * Math.PI);
     ctx.fill();
     ctx.restore();
     ctx.lineWidth = 0.75;
@@ -117,6 +149,56 @@ export class ToggleSwitch extends Block {
 
   onDraggableArea(x: number, y: number): boolean {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.halfHeight;
+  }
+
+  onKnob(x: number, y: number): boolean {
+    return this.knob.contains(x, y);
+  }
+
+  mouseDownOnKnob(e: MouseEvent): boolean {
+    let x = e.offsetX;
+    let y = e.offsetY;
+    if (this.onKnob(x, y)) {
+      this.mouseDownRelativeX = x - this.knob.x;
+      this.mouseDownRelativeY = y - this.knob.y;
+      this.knobGrabbed = true;
+      return true;
+    }
+    return false;
+  }
+
+  mouseUp(e: MouseEvent): void {
+    this.knob.x = this.knob.x < (this.trackMin + this.trackMax) / 2 ? this.trackMin : this.trackMax;
+    this.knobGrabbed = false;
+    flowchart.blockView.canvas.style.cursor = "default";
+  }
+
+  mouseMove(e: MouseEvent): void {
+    let x = e.offsetX;
+    let y = e.offsetY;
+    if (this.knobGrabbed) {
+      this.knob.x = x - this.mouseDownRelativeX;
+      if (this.knob.x < this.trackMin) {
+        this.knob.x = this.trackMin;
+      } else if (this.knob.x > this.trackMax) {
+        this.knob.x = this.trackMax;
+      }
+      this.value = this.knob.x > (this.trackMin + this.trackMax) / 2 ? 1 : 0;
+      this.updateModel();
+      flowchart.traverse(this);
+      flowchart.storeBlockStates();
+    } else {
+      if (this.onKnob(x, y)) {
+        if (e.target instanceof HTMLCanvasElement) {
+          e.target.style.cursor = this.knobGrabbed ? "grabbing" : "grab";
+        }
+      }
+    }
+  }
+
+  mouseLeave(e: MouseEvent): void {
+    this.knobGrabbed = false;
+    flowchart.blockView.canvas.style.cursor = "default";
   }
 
 }

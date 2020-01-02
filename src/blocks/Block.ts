@@ -16,7 +16,7 @@ export abstract class Block implements Movable {
   protected width: number;
   protected height: number;
   protected color: string = "#666666";
-  protected name: string = "Text Display";
+  protected name: string = "TBD";
   protected symbol: string;
   protected radius: number = 5;
   protected margin: number = 30; // margin for inset
