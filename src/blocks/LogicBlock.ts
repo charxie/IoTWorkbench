@@ -33,8 +33,8 @@ export class LogicBlock extends Block {
   }
 
   updateModel(): void {
-    let a: boolean = this.portA.getValue() > 0.1;
-    let b: boolean = this.portB.getValue() > 0.1;
+    let a: boolean = this.portA.getValue() != 0;
+    let b: boolean = this.portB.getValue() != 0;
     switch (this.name) {
       case "AND Block":
         this.portR.setValue((a && b) ? 1 : 0);

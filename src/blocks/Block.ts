@@ -208,31 +208,21 @@ export abstract class Block implements Movable {
     ctx.strokeStyle = "black";
     ctx.stroke();
 
-    // draw the symbol or name (if symbol is not available)
+    // draw the symbol or formula or name (if symbol or formula is not available)
     ctx.save();
     ctx.fillStyle = "gray";
     ctx.strokeStyle = "black";
     ctx.lineWidth = this.small ? 0.75 : 1;
-    if (this.symbol) {
-      let textWidth = ctx.measureText(this.symbol).width;
-      if (textWidth < this.width - 2 * this.margin - 20) {
-        ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
-        textWidth = ctx.measureText(this.symbol).width;
-        ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.height / 2 + (this.small ? 5 : 7));
-      } else {
-        ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
-        textWidth = ctx.measureText(this.symbol).width;
-        ctx.translate(this.x + this.width / 2 + 5, this.y + this.height / 2 + textWidth / 2);
-        ctx.rotate(-Math.PI / 2);
-      }
-      ctx.fillText(this.symbol, 0, 0);
+    ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
+    let s = this.symbol ? this.symbol : this.name;
+    let textWidth = ctx.measureText(s).width;
+    if (textWidth < this.width - 2 * this.margin - 10) {
+      ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.height / 2 + (this.small ? 5 : 7));
     } else {
-      ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
-      let textMetrics = ctx.measureText(this.name);
-      ctx.translate(this.x + this.width / 2 + 5, this.y + this.height / 2 + textMetrics.width / 2);
+      ctx.translate(this.x + this.width / 2 + 5, this.y + this.height / 2 + textWidth / 2);
       ctx.rotate(-Math.PI / 2);
-      ctx.fillText(this.name, 0, 0);
     }
+    ctx.fillText(s, 0, 0);
     ctx.restore();
 
     // draw the ports

@@ -103,7 +103,13 @@ export class Sticker extends Block {
   }
 
   updateModel(): void {
-    this.text = this.ports[0].getValue().toFixed(this.decimals); // text is part of the model
+    // text is part of the model
+    try {
+      this.text = this.ports[0].getValue().toFixed(this.decimals);
+    } catch (e) {
+      // value can be non-number, such as a boolean
+      this.text = "" + this.ports[0].getValue();
+    }
   }
 
   refreshView(): void {

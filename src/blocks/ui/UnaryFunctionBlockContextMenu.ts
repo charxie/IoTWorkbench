@@ -5,18 +5,22 @@
 import $ from "jquery";
 import {closeAllContextMenus, flowchart} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
+import {UnaryFunctionBlock} from "../UnaryFunctionBlock";
 
-export class NotBlockContextMenu extends BlockContextMenu {
+export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "not-block-context-menu";
+    this.id = "unary-function-block-context-menu";
   }
 
   getUi(): string {
-    return `<menu id="${this.id}" class="menu" style="width: 140px; z-index: 10000">
+    return `<menu id="${this.id}" class="menu" style="width: 120px; z-index: 10000">
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
+              </li>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-code-button"><i class="fas fa-code"></i><span class="menu-text">Code</span></button>
               </li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-properties-button"><i class="fas fa-cog"></i><span class="menu-text">Properties</span></button>
@@ -32,12 +36,16 @@ export class NotBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
+                  <td>Expression (e.g. sin(x)):</td>
+                  <td><input type="text" id="unary-function-block-expression-field"></td>
+                </tr>
+                <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="not-block-width-field"></td>
+                  <td><input type="text" id="unary-function-block-width-field"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="not-block-height-field"></td>
+                  <td><input type="text" id="unary-function-block-height-field"></td>
                 </tr>
               </table>
             </div>`;
@@ -46,30 +54,29 @@ export class NotBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block) {
+    if (this.block instanceof UnaryFunctionBlock) {
       let block = this.block;
       $("#modal-dialog").html(this.getPropertiesUI());
-      let widthInputElement = document.getElementById("not-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("not-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
+      let expressionInputElement = document.getElementById("unary-function-block-expression-field") as HTMLInputElement;
+      expressionInputElement.value = this.block.getExpression() ? this.block.getExpression().toString() : "x";
+      let widthInputElement = document.getElementById("unary-function-block-width-field") as HTMLInputElement;
+      widthInputElement.value = this.block.getWidth().toString();
+      let heightInputElement = document.getElementById("unary-function-block-height-field") as HTMLInputElement;
+      heightInputElement.value = this.block.getHeight().toString();
       $("#modal-dialog").dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),
         height: 300,
-        width: 300,
+        width: 400,
         buttons: {
           'OK': function () {
-            block.setUid(block.getName() + " #" + Date.now().toString(16));
+            block.setExpression(expressionInputElement.value);
             block.setWidth(parseInt(widthInputElement.value));
             block.setHeight(parseInt(heightInputElement.value));
             block.refreshView();
-            flowchart.draw();
             flowchart.updateResults();
-            // update the local storage since we have changed the UID of this block
-            flowchart.storeBlockStates();
-            flowchart.storeConnectorStates();
+            flowchart.draw();
             $(this).dialog('close');
           },
           'Cancel': function () {

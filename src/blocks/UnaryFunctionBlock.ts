@@ -4,6 +4,7 @@
 
 import {Port} from "./Port";
 import {FunctionBlock} from "./FunctionBlock";
+import {math} from "../Main";
 
 export class UnaryFunctionBlock extends FunctionBlock {
 
@@ -29,6 +30,17 @@ export class UnaryFunctionBlock extends FunctionBlock {
   }
 
   updateModel(): void {
+    if (this.expression) {
+      const node = math.parse(this.expression);
+      const code = node.compile();
+      let scope = {
+        x: this.portX.getValue()
+      };
+      this.portR.setValue(code.evaluate(scope));
+    } else {
+      this.portR.setValue(NaN);
+    }
+    this.updateConnectors();
   }
 
 }

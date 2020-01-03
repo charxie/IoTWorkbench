@@ -15,6 +15,7 @@ import {PortConnector} from "./PortConnector";
 import {Slider} from "./Slider";
 import {Sticker} from "./Sticker";
 import {ToggleSwitch} from "./ToggleSwitch";
+import {FunctionBlock} from "./FunctionBlock";
 
 export class Flowchart {
 
@@ -186,6 +187,16 @@ export class Flowchart {
 
   /* storage methods */
 
+  storeConnectorStates(): void {
+    let connectorStates = [];
+    for (let c of this.connectors) {
+      if (c.getOutput() != null && c.getInput() != null) {
+        connectorStates.push(new PortConnector.State(c));
+      }
+    }
+    localStorage.setItem("Connector States", JSON.stringify(connectorStates));
+  }
+
   storeBlockStates(): void {
     let blockStates = [];
     for (let b of this.blocks) {
@@ -195,21 +206,13 @@ export class Flowchart {
         blockStates.push(new ToggleSwitch.State(b));
       } else if (b instanceof Sticker) {
         blockStates.push(new Sticker.State(b));
+      } else if (b instanceof FunctionBlock) {
+        blockStates.push(new FunctionBlock.State(b));
       } else {
         blockStates.push(new Block.State(b));
       }
     }
     localStorage.setItem("Block States", JSON.stringify(blockStates));
-  }
-
-  storeConnectorStates(): void {
-    let connectorStates = [];
-    for (let c of this.connectors) {
-      if (c.getOutput() != null && c.getInput() != null) {
-        connectorStates.push(new PortConnector.State(c));
-      }
-    }
-    localStorage.setItem("Connector States", JSON.stringify(connectorStates));
   }
 
   static State = class {
@@ -224,6 +227,8 @@ export class Flowchart {
           this.blockStates.push(new ToggleSwitch.State(b));
         } else if (b instanceof Sticker) {
           this.blockStates.push(new Sticker.State(b));
+        } else if (b instanceof FunctionBlock) {
+          this.blockStates.push(new FunctionBlock.State(b));
         } else {
           this.blockStates.push(new Block.State(b));
         }

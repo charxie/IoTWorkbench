@@ -60,8 +60,8 @@ export class BlockElementsPanel {
   render(selectorId: string): void {
     let element = document.getElementById(selectorId);
     element.innerHTML = this.getUi();
-    this.drawFunctionBlock("F(X)", "unary-function-block");
-    this.drawFunctionBlock("F(X, Y)", "binary-function-block");
+    this.drawUnaryFunctionBlock("unary-function-block");
+    this.drawBinaryFunctionBlock("binary-function-block");
     this.drawLogicBlock("AND Block", "AND", "logic-and-block");
     this.drawNegationBlock("logic-not-block");
     this.drawMathBlock("Add Block", "+", "math-add-block");
@@ -126,15 +126,21 @@ export class BlockElementsPanel {
     block.draw(ctx);
   }
 
-  private drawFunctionBlock(type: string, canvasId: string): void {
+  private drawUnaryFunctionBlock(canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block: FunctionBlock = null;
-    if (type == "F(X)") {
-      block = new UnaryFunctionBlock("Unary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
-    } else if (type == "F(X, Y)") {
-      block = new BinaryFunctionBlock("Binary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    let block: FunctionBlock = new UnaryFunctionBlock("Unary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    if (block != null) {
+      block.setSmall(true);
+      block.setMargin(12);
+      block.draw(ctx);
     }
+  }
+
+  private drawBinaryFunctionBlock(canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block: FunctionBlock = new BinaryFunctionBlock("Binary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     if (block != null) {
       block.setSmall(true);
       block.setMargin(12);

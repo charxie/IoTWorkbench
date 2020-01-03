@@ -6,11 +6,11 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 
-export class FunctionBlockContextMenu extends BlockContextMenu {
+export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "function-block-context-menu";
+    this.id = "binary-function-block-context-menu";
   }
 
   getUi(): string {
@@ -36,11 +36,11 @@ export class FunctionBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="function-block-width-field"></td>
+                  <td><input type="text" id="binary-function-block-width-field"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="function-block-height-field"></td>
+                  <td><input type="text" id="binary-function-block-height-field"></td>
                 </tr>
               </table>
             </div>`;
@@ -50,23 +50,23 @@ export class FunctionBlockContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block) {
-      let that = this;
+      let block = this.block;
       $("#modal-dialog").html(this.getPropertiesUI());
-      let widthInputElement = document.getElementById("function-block-width-field") as HTMLInputElement;
-      widthInputElement.value = this.block.getWidth().toString();
-      let heightInputElement = document.getElementById("function-block-height-field") as HTMLInputElement;
-      heightInputElement.value = this.block.getHeight().toString();
+      let widthInputElement = document.getElementById("binary-function-block-width-field") as HTMLInputElement;
+      widthInputElement.value = block.getWidth().toString();
+      let heightInputElement = document.getElementById("binary-function-block-height-field") as HTMLInputElement;
+      heightInputElement.value = block.getHeight().toString();
       $("#modal-dialog").dialog({
         resizable: false,
         modal: true,
-        title: that.block.getUid(),
+        title: block.getUid(),
         height: 300,
         width: 400,
         buttons: {
           'OK': function () {
-            that.block.setWidth(parseInt(widthInputElement.value));
-            that.block.setHeight(parseInt(heightInputElement.value));
-            that.block.refreshView();
+            block.setWidth(parseInt(widthInputElement.value));
+            block.setHeight(parseInt(heightInputElement.value));
+            block.refreshView();
             flowchart.draw();
             $(this).dialog('close');
           },

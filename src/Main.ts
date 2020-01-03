@@ -8,6 +8,7 @@ window.jQuery = $;
 import "jquery-ui-bundle/jquery-ui.min.css";
 import "jquery-ui-bundle/jquery-ui";
 import "@fortawesome/fontawesome-free/css/all.css";
+import {create, all} from "mathjs";
 
 import * as Constants from "./Constants";
 import {User} from "./User";
@@ -34,7 +35,7 @@ import {BlockElementsPanel} from "./blocks/ui/BlockElementsPanel";
 import {NotBlockContextMenu} from "./blocks/ui/NotBlockContextMenu";
 import {LogicBlockContextMenu} from "./blocks/ui/LogicBlockContextMenu";
 import {MathBlockContextMenu} from "./blocks/ui/MathBlockContextMenu";
-import {FunctionBlockContextMenu} from "./blocks/ui/FunctionBlockContextMenu";
+import {UnaryFunctionBlockContextMenu} from "./blocks/ui/UnaryFunctionBlockContextMenu";
 import {HatBlockContextMenu} from "./blocks/ui/HatBlockContextMenu";
 import {ToggleSwitchContextMenu} from "./blocks/ui/ToggleSwitchContextMenu";
 import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
@@ -43,6 +44,7 @@ import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 import {Sound} from "./Sound";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
+import {BinaryFunctionBlockContextMenu} from "./blocks/ui/BinaryFunctionBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -62,11 +64,12 @@ declare global {
   }
 }
 
-export let system = new System();
-export let flowchart = new Flowchart();
-export let user = new User("Charles", null, "Xie");
-export let contextMenus: any = {};
-export let sound = new Sound();
+export const system = new System();
+export const flowchart = new Flowchart();
+export const user = new User("Charles", null, "Xie");
+export const contextMenus: any = {};
+export const sound = new Sound();
+export const math = create(all, {});
 
 export function closeAllContextMenus() {
   Object.keys(contextMenus).forEach(key => {
@@ -180,10 +183,15 @@ function setupContextMenuForBlock() {
   logicBlockContextMenu.addListeners();
   contextMenus.logicBlock = logicBlockContextMenu;
 
-  let functionBlockContextMenu = new FunctionBlockContextMenu();
-  functionBlockContextMenu.render("function-block-context-menu-placeholder");
-  functionBlockContextMenu.addListeners();
-  contextMenus.functionBlock = functionBlockContextMenu;
+  let unaryfunctionBlockContextMenu = new UnaryFunctionBlockContextMenu();
+  unaryfunctionBlockContextMenu.render("unary-function-block-context-menu-placeholder");
+  unaryfunctionBlockContextMenu.addListeners();
+  contextMenus.unaryFunctionBlock = unaryfunctionBlockContextMenu;
+
+  let binaryfunctionBlockContextMenu = new BinaryFunctionBlockContextMenu();
+  binaryfunctionBlockContextMenu.render("binary-function-block-context-menu-placeholder");
+  binaryfunctionBlockContextMenu.addListeners();
+  contextMenus.binaryFunctionBlock = binaryfunctionBlockContextMenu;
 
   let hatBlockContextMenu = new HatBlockContextMenu();
   hatBlockContextMenu.render("hat-block-context-menu-placeholder");

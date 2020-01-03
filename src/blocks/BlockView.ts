@@ -6,7 +6,6 @@ import {Flowchart} from "./Flowchart";
 import {closeAllContextMenus, contextMenus, flowchart, sound} from "../Main";
 import {Movable} from "../Movable";
 import {Block} from "./Block";
-import {FunctionBlock} from "./FunctionBlock";
 import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
 import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
 import {NegationBlock} from "./NegationBlock";
@@ -333,9 +332,12 @@ export class BlockView {
     } else if (block instanceof LogicBlock) {
       contextMenus.logicBlock.block = block;
       menu = document.getElementById("logic-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof FunctionBlock) {
-      contextMenus.functionBlock.block = block;
-      menu = document.getElementById("function-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof UnaryFunctionBlock) {
+      contextMenus.unaryFunctionBlock.block = block;
+      menu = document.getElementById("unary-function-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof BinaryFunctionBlock) {
+      contextMenus.binaryFunctionBlock.block = block;
+      menu = document.getElementById("binary-function-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof HatBlock) {
       contextMenus.hatBlock.block = block;
       menu = document.getElementById("hat-block-context-menu") as HTMLMenuElement;

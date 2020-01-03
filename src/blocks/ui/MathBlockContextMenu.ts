@@ -65,28 +65,28 @@ export class MathBlockContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block) {
-      let that = this;
+      let block = this.block;
       $("#modal-dialog").html(this.getPropertiesUI());
       let selectElement = document.getElementById("math-block-operator") as HTMLSelectElement;
-      selectElement.value = this.block.getName();
+      selectElement.value = block.getName();
       let widthInputElement = document.getElementById("math-block-width-field") as HTMLInputElement;
-      widthInputElement.value = this.block.getWidth().toString();
+      widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("math-block-height-field") as HTMLInputElement;
-      heightInputElement.value = this.block.getHeight().toString();
+      heightInputElement.value = block.getHeight().toString();
       $("#modal-dialog").dialog({
         resizable: false,
         modal: true,
-        title: that.block.getUid(),
+        title: block.getUid(),
         height: 300,
         width: 300,
         buttons: {
           'OK': function () {
-            that.block.setName(selectElement.options[selectElement.selectedIndex].value);
-            that.block.setSymbol(selectElement.options[selectElement.selectedIndex].text);
-            that.block.setUid(that.block.getName() + " #" + Date.now().toString(16));
-            that.block.setWidth(parseInt(widthInputElement.value));
-            that.block.setHeight(parseInt(heightInputElement.value));
-            that.block.refreshView();
+            block.setName(selectElement.options[selectElement.selectedIndex].value);
+            block.setSymbol(selectElement.options[selectElement.selectedIndex].text);
+            block.setUid(block.getName() + " #" + Date.now().toString(16));
+            block.setWidth(parseInt(widthInputElement.value));
+            block.setHeight(parseInt(heightInputElement.value));
+            block.refreshView();
             flowchart.updateResults();
             flowchart.draw();
             // update the local storage since we have changed the UID of this block

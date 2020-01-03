@@ -77,7 +77,7 @@ export class ToggleSwitch extends Block {
     this.knobRadius = this.halfHeight / 2 - this.yMargin;
     this.trackMin = this.x + this.knobRadius + this.xMargin;
     this.trackMax = this.x + this.width - this.knobRadius - this.xMargin;
-    this.knob.setCenter(this.value < 0.1 ? this.trackMin : this.trackMax, this.y + this.halfHeight * 3 / 2);
+    this.knob.setCenter(this.value == 0 ? this.trackMin : this.trackMax, this.y + this.halfHeight * 3 / 2);
     this.track.setRect(this.trackMin, this.y + this.halfHeight + this.yMargin, this.trackMax - this.trackMin, 2 * this.knobRadius);
     this.ports[0].setX(this.width);
     this.ports[0].setY(this.height / 2);
