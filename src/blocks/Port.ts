@@ -14,13 +14,12 @@ export class Port {
   private close: boolean; // when a connector end is close to this port
   private readonly uid: string;
   private arc: Arc;
-  private radius: number = 5;
 
   constructor(block: Block, input: boolean, uid: string, x: number, y: number, anticlockwise: boolean) {
     this.block = block;
     this.input = input;
     this.uid = uid;
-    this.arc = new Arc(x, y, this.radius, 0.5 * Math.PI, 1.5 * Math.PI, anticlockwise);
+    this.arc = new Arc(x, y, 5, 0.5 * Math.PI, 1.5 * Math.PI, anticlockwise);
   }
 
   setValue(value: number): void {
@@ -60,7 +59,7 @@ export class Port {
   }
 
   getRelativePoint(): Point {
-    return new Point(this.arc.x + (this.arc.anticlockwise ? this.radius : -this.radius), this.arc.y);
+    return new Point(this.arc.x + (this.arc.anticlockwise ? this.arc.radius : -this.arc.radius), this.arc.y);
   }
 
   getAbsolutePoint(): Point {
@@ -82,8 +81,9 @@ export class Port {
     let ax = this.arc.x + this.block.getX();
     let ay = this.arc.y + this.block.getY();
     ctx.lineWidth = small ? 1 : 2;
+    this.arc.radius = small ? 3 : 5;
     if (this.close && this.input) {
-      let shade = ctx.createRadialGradient(ax, ay, this.radius, ax, ay, 3 * this.radius);
+      let shade = ctx.createRadialGradient(ax, ay, this.arc.radius, ax, ay, 3 * this.arc.radius);
       shade.addColorStop(1, "gold");
       shade.addColorStop(0.25, "yellow");
       shade.addColorStop(0, "white");
@@ -97,15 +97,14 @@ export class Port {
     ctx.arc(ax, ay, this.arc.radius, this.arc.startAngle, this.arc.endAngle, this.arc.anticlockwise);
     ctx.fill();
     ctx.stroke();
-    if (!small) {
+    if (!small && this.block.getPorts().length > 1) {
       ctx.lineWidth = 0.75;
-      if (this.block.getPorts().length > 1) {
-        let t = this.uid;
-        if (this.arc.anticlockwise) {
-          ctx.strokeText(t, ax - ctx.measureText(t).width - (small ? 2 : 4), ay + 4);
-        } else {
-          ctx.strokeText(t, ax + (small ? 2 : 4), ay + 4)
-        }
+      ctx.fillStyle = "black";
+      let t = this.uid;
+      if (this.arc.anticlockwise) {
+        ctx.fillText(t, ax - ctx.measureText(t).width - (small ? 2 : 4), ay + 4);
+      } else {
+        ctx.fillText(t, ax + (small ? 2 : 4), ay + 4)
       }
       ctx.restore();
     }

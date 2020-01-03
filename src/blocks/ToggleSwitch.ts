@@ -21,8 +21,8 @@ export class ToggleSwitch extends Block {
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private halfHeight: number;
-  private xMargin: number = 10;
-  private yMargin: number = 6;
+  private xMargin: number = 8;
+  private yMargin: number = 4;
 
   static State = class {
     readonly name: string;
@@ -72,7 +72,8 @@ export class ToggleSwitch extends Block {
   }
 
   refreshView(): void {
-    this.xMargin = this.small ? 10 : 24;
+    this.xMargin = this.iconic ? 8 : 24;
+    this.yMargin = this.iconic ? 2 : 6;
     this.halfHeight = this.height / 2;
     this.knobRadius = this.halfHeight / 2 - this.yMargin;
     this.trackMin = this.x + this.knobRadius + this.xMargin;
@@ -88,7 +89,7 @@ export class ToggleSwitch extends Block {
     // draw the upper area with shade
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.halfHeight);
     shade.addColorStop(0, "white");
-    shade.addColorStop(this.small ? 0.4 : 0.2, Util.adjust(this.color, 100));
+    shade.addColorStop(this.iconic ? 0.4 : 0.2, Util.adjust(this.color, 100));
     shade.addColorStop(1, this.color);
     ctx.fillStyle = shade;
     ctx.fillHalfRoundedRect(this.x, this.y, this.width, this.halfHeight, this.radius, "Top");
@@ -96,16 +97,18 @@ export class ToggleSwitch extends Block {
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y, this.width, this.halfHeight, this.radius, "Top");
 
-    // draw the name in the upper area
-    ctx.save();
-    ctx.fillStyle = "white";
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = this.small ? 0.75 : 1;
-    ctx.font = this.small ? "10px Arial" : "bold 16px Arial";
-    let textWidth = ctx.measureText(this.name).width;
-    ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.halfHeight / 2 + 4);
-    ctx.fillText(this.name, 0, 0);
-    ctx.restore();
+    // draw the name in the upper area if this is not an icon
+    if (!this.iconic) {
+      ctx.save();
+      ctx.fillStyle = "white";
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = this.iconic ? 0.75 : 1;
+      ctx.font = this.iconic ? "10px Arial" : "14px Arial";
+      let textWidth = ctx.measureText(this.name).width;
+      ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.halfHeight / 2 + 4);
+      ctx.fillText(this.name, 0, 0);
+      ctx.restore();
+    }
 
     // draw the lower area
     ctx.fillStyle = "#FFFFFF";
@@ -128,10 +131,10 @@ export class ToggleSwitch extends Block {
     ctx.fill();
     ctx.lineWidth = 0.5;
 
-    if (!this.small) {
+    if (!this.iconic) {
       ctx.font = "8px Arial";
       ctx.fillStyle = "black";
-      textWidth = ctx.measureText("OFF").width;
+      let textWidth = ctx.measureText("OFF").width;
       let textCenterY = this.track.rectangle.getCenterY() + 3;
       ctx.fillText("OFF", this.trackMin - textWidth - 12, textCenterY);
       ctx.fillText("ON", this.trackMax + 13, textCenterY);
@@ -154,7 +157,7 @@ export class ToggleSwitch extends Block {
 
     // draw the port
     ctx.strokeStyle = "black";
-    this.ports[0].draw(ctx, this.small);
+    this.ports[0].draw(ctx, this.iconic);
 
   }
 

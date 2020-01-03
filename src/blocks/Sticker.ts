@@ -58,16 +58,16 @@ export class Sticker extends Block {
     this.barHeight = this.height / 3;
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
     shade.addColorStop(0, "white");
-    shade.addColorStop(this.small ? 0.2 : 0.1, Util.adjust(this.color, -20));
+    shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
     shade.addColorStop(1, Util.adjust(this.color, -100));
     ctx.fillStyle = shade;
     ctx.fillHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
-    if (!this.small) {
+    if (!this.iconic) {
       ctx.lineWidth = 0.75;
-      ctx.font = "14px Times Roman";
+      ctx.font = "14px Arial";
       ctx.fillStyle = "black";
       let titleWidth = ctx.measureText(this.name).width;
       ctx.fillText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
@@ -82,19 +82,19 @@ export class Sticker extends Block {
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
     if (this.text) {
       ctx.font = "14px Times Roman";
-      ctx.strokeStyle = "black";
+      ctx.fillStyle = "black";
       if (this.isInputBoolean()) {
-        ctx.strokeText(parseFloat(this.text) > 0.1 ? "true" : "false", this.x + 10, this.y + this.barHeight + 20);
+        ctx.fillText(parseFloat(this.text) > 0.1 ? "true" : "false", this.x + 10, this.y + this.barHeight + 20);
       } else {
-        ctx.strokeText(this.text, this.x + 10, this.y + this.barHeight + 20);
+        ctx.fillText(this.text, this.x + 10, this.y + this.barHeight + 20);
       }
     }
 
     // draw the port
-    ctx.font = this.small ? "9px Arial" : "12px Arial";
+    ctx.font = this.iconic ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
     this.ports[0].setY(this.height / 2);
-    this.ports[0].draw(ctx, this.small);
+    this.ports[0].draw(ctx, this.iconic);
 
   }
 

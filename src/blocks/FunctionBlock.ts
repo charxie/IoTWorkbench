@@ -35,7 +35,8 @@ export abstract class FunctionBlock extends Block {
   }
 
   protected drawLabel(ctx: CanvasRenderingContext2D): void {
-    this.drawText(this.small ? this.symbol : this.expression, ctx);
+    ctx.font = this.iconic ? "italic 9px Times" : "italic 16px Times";
+    this.drawText(this.iconic ? this.symbol : this.expression, ctx);
   }
 
 }

@@ -21,7 +21,7 @@ export abstract class Block implements Movable {
   protected symbol: string;
   protected radius: number = 5;
   protected margin: number = 30; // margin for inset
-  protected small: boolean; // true when used for small icons
+  protected iconic: boolean; // true when used for small icons
 
   static State = class {
     readonly uid: string;
@@ -171,7 +171,10 @@ export abstract class Block implements Movable {
   }
 
   setSmall(small: boolean): void {
-    this.small = small;
+    this.iconic = small;
+    if (small) {
+      this.margin = 6;
+    }
   }
 
   setMargin(margin: number): void {
@@ -191,7 +194,7 @@ export abstract class Block implements Movable {
     // draw the block with shade
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
     shade.addColorStop(0, "white");
-    shade.addColorStop(this.small ? 0.1 : 0.05, Util.adjust(this.color, 50));
+    shade.addColorStop(this.iconic ? 0.1 : 0.05, Util.adjust(this.color, 50));
     shade.addColorStop(1, this.color);
     ctx.fillStyle = shade;
     ctx.fillRoundedRect(this.x, this.y, this.width, this.height, this.radius);
@@ -212,29 +215,29 @@ export abstract class Block implements Movable {
     this.drawLabel(ctx);
 
     // draw the ports
-    ctx.font = this.small ? "9px Arial" : "12px Arial";
+    ctx.font = "bold 12px Times";
     ctx.strokeStyle = "black";
     for (let p of this.ports) {
-      p.draw(ctx, this.small);
+      p.draw(ctx, this.iconic);
     }
 
   }
 
   protected drawLabel(ctx: CanvasRenderingContext2D): void {
+    ctx.font = this.iconic ? "9px Times" : "16px Times";
     this.drawText(this.symbol ? this.symbol : this.name, ctx);
   }
 
   protected drawText(s: string, ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    ctx.fillStyle = "gray";
+    ctx.fillStyle = "black";
     ctx.strokeStyle = "black";
-    ctx.lineWidth = this.small ? 0.75 : 1;
-    ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
+    ctx.lineWidth = this.iconic ? 0.75 : 1;
     let textWidth = ctx.measureText(s).width;
     if (textWidth < this.width - 2 * this.margin - 10) {
-      ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.height / 2 + (this.small ? 5 : 7));
+      ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.height / 2 + (this.iconic ? 3 : 5));
     } else {
-      ctx.translate(this.x + this.width / 2 + 5, this.y + this.height / 2 + textWidth / 2);
+      ctx.translate(this.x + this.width / 2 + 3.25, this.y + this.height / 2 + textWidth / 2);
       ctx.rotate(-Math.PI / 2);
     }
     ctx.fillText(s, 0, 0);

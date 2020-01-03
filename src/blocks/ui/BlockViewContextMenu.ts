@@ -21,6 +21,13 @@ export class BlockViewContextMenu extends MyContextMenu {
 
   getUi(): string {
     return `<menu id="${this.id}" class="menu" style="width: 170px; z-index: 10000">
+              <li class="menu-item disabled">
+                <button type="button" class="menu-btn" id="${this.id}-paste-button"><i class="fas fa-paste"></i><span class="menu-text">Paste</span></button>
+              </li>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-clear-button"><i class="fas fa-eraser"></i><span class="menu-text">Clear</span></button>
+              </li>
+              <li class="menu-separator"></li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-open-button"><i class="fas fa-folder-open"></i><span class="menu-text">Open</span></button>
               </li>
@@ -35,9 +42,6 @@ export class BlockViewContextMenu extends MyContextMenu {
                 <button type="button" class="menu-btn" id="${this.id}-save-screenshot-button"><i class="fas fa-camera"></i><span class="menu-text">Save Screenshot</span></button>
               </li>
               <li class="menu-separator"></li>
-              <li class="menu-item">
-                <button type="button" class="menu-btn" id="${this.id}-clear-button"><i class="fas fa-cog"></i><span class="menu-text">Clear</span></button>
-              </li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-settings-button"><i class="fas fa-cog"></i><span class="menu-text">Settings</span></button>
               </li>
@@ -63,7 +67,7 @@ export class BlockViewContextMenu extends MyContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.view.flowchart.blocks.length > 0 || this.view.flowchart.connectors.length > 0) {
-      let that = this;
+      let view = this.view;
       $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to clear the scene?</div>");
       $("#modal-dialog").dialog({
         resizable: false,
@@ -73,9 +77,11 @@ export class BlockViewContextMenu extends MyContextMenu {
         width: 300,
         buttons: {
           'OK': function () {
-            that.view.flowchart.blocks = [];
-            that.view.flowchart.connectors = [];
-            that.view.flowchart.draw();
+            view.flowchart.blocks = [];
+            view.flowchart.connectors = [];
+            view.flowchart.storeBlockStates();
+            view.flowchart.storeConnectorStates();
+            view.flowchart.draw();
             $(this).dialog('close');
           },
           'Cancel': function () {

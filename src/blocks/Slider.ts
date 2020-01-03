@@ -113,7 +113,7 @@ export class Slider extends Block {
     // draw the upper area with shade
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.halfHeight);
     shade.addColorStop(0, "white");
-    shade.addColorStop(this.small ? 0.4 : 0.2, Util.adjust(this.color, 100));
+    shade.addColorStop(this.iconic ? 0.4 : 0.2, Util.adjust(this.color, 100));
     shade.addColorStop(1, this.color);
     ctx.fillStyle = shade;
     ctx.fillHalfRoundedRect(this.x, this.y, this.width, this.halfHeight, this.radius, "Top");
@@ -121,16 +121,18 @@ export class Slider extends Block {
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y, this.width, this.halfHeight, this.radius, "Top");
 
-    // draw the name in the upper area
-    ctx.save();
-    ctx.fillStyle = "white";
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = this.small ? 0.75 : 1;
-    ctx.font = this.small ? "10px Arial" : "bold 16px Arial";
-    let textWidth = ctx.measureText(this.name).width;
-    ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.halfHeight / 2 + 4);
-    ctx.fillText(this.name, 0, 0);
-    ctx.restore();
+    // draw the name in the upper area if this is not an icon
+    if (!this.iconic) {
+      ctx.save();
+      ctx.fillStyle = "white";
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = this.iconic ? 0.75 : 1;
+      ctx.font = this.iconic ? "10px Arial" : "14px Arial";
+      let textWidth = ctx.measureText(this.name).width;
+      ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.halfHeight / 2 + 4);
+      ctx.fillText(this.name, 0, 0);
+      ctx.restore();
+    }
 
     // draw the lower area
     ctx.fillStyle = "#FFFFFF";
@@ -173,7 +175,7 @@ export class Slider extends Block {
 
     // draw the port
     ctx.strokeStyle = "black";
-    this.ports[0].draw(ctx, this.small);
+    this.ports[0].draw(ctx, this.iconic);
 
   }
 

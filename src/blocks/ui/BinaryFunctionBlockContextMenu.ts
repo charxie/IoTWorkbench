@@ -17,6 +17,9 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
   getUi(): string {
     return `<menu id="${this.id}" class="menu" style="width: 120px; z-index: 10000">
               <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-copy-button"><i class="fas fa-copy"></i><span class="menu-text">Copy</span></button>
+              </li>
+              <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
               </li>
               <li class="menu-item">

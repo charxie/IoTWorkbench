@@ -18,6 +18,7 @@ import {PortConnector} from "./PortConnector";
 import {ToggleSwitch} from "./ToggleSwitch";
 import {Slider} from "./Slider";
 import {Sticker} from "./Sticker";
+import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
 
 export class BlockView {
 
@@ -83,6 +84,9 @@ export class BlockView {
           case "binary-function-block":
             that.storeBlock(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
             break;
+          case "conditional-statement-block":
+            that.storeBlock(new ConditionalStatementBlock("Conditional Statement Block #" + timestamp, x - 30, y - 30, 60, 60, "If-else Block", "IF"));
+            break;
           case "logic-and-block":
             that.storeBlock(new LogicBlock("AND Block #" + timestamp, x - 30, y - 40, 60, 80, "AND Block", "AND"));
             break;
@@ -90,13 +94,13 @@ export class BlockView {
             that.storeBlock(new NegationBlock("NOT Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "math-add-block":
-            that.storeBlock(new MathBlock("Add Block #" + timestamp, x - 30, y - 40, 60, 60, "Add Block", "+"));
+            that.storeBlock(new MathBlock("Add Block #" + timestamp, x - 30, y - 30, 60, 60, "Add Block", "+"));
             break;
           case "slider-block":
             that.storeBlock(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));
             break;
           case "toggle-switch-block":
-            that.storeBlock(new ToggleSwitch("Switch #" + timestamp, "Boolean", x - 50, y - 30, 80, 60));
+            that.storeBlock(new ToggleSwitch("Switch #" + timestamp, "Boolean", x - 40, y - 30, 80, 60));
             break;
           case "sticker-block":
             that.storeBlock(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));
@@ -344,6 +348,9 @@ export class BlockView {
     if (block instanceof MathBlock) {
       contextMenus.mathBlock.block = block;
       menu = document.getElementById("math-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof ConditionalStatementBlock) {
+      contextMenus.conditionalStatementBlock.block = block;
+      menu = document.getElementById("conditional-statement-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof NegationBlock) {
       contextMenus.notBlock.block = block;
       menu = document.getElementById("not-block-context-menu") as HTMLMenuElement;

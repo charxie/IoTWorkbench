@@ -16,6 +16,7 @@ import {Slider} from "./Slider";
 import {Sticker} from "./Sticker";
 import {ToggleSwitch} from "./ToggleSwitch";
 import {FunctionBlock} from "./FunctionBlock";
+import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
 
 export class Flowchart {
 
@@ -159,6 +160,9 @@ export class Flowchart {
         break;
       case "Exponentiation Block":
         block = new MathBlock(uid, x, y, 60, 60, name, "^");
+        break;
+      case "Conditional Statement Block":
+        block = new ConditionalStatementBlock(uid, x, y, 80, 80, name, "IF");
         break;
       case "Rainbow HAT Block":
         block = new RainbowHatBlock(uid, 20, 20);

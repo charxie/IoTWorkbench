@@ -32,10 +32,12 @@ import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
 import {Flowchart} from "./blocks/Flowchart";
 import {BlockViewContextMenu} from "./blocks/ui/BlockViewContextMenu";
 import {BlockElementsPanel} from "./blocks/ui/BlockElementsPanel";
+import {ConditionalStatementBlockContextMenu} from "./blocks/ui/ConditionalStatementBlockContextMenu";
 import {NotBlockContextMenu} from "./blocks/ui/NotBlockContextMenu";
 import {LogicBlockContextMenu} from "./blocks/ui/LogicBlockContextMenu";
 import {MathBlockContextMenu} from "./blocks/ui/MathBlockContextMenu";
 import {UnaryFunctionBlockContextMenu} from "./blocks/ui/UnaryFunctionBlockContextMenu";
+import {BinaryFunctionBlockContextMenu} from "./blocks/ui/BinaryFunctionBlockContextMenu";
 import {HatBlockContextMenu} from "./blocks/ui/HatBlockContextMenu";
 import {ToggleSwitchContextMenu} from "./blocks/ui/ToggleSwitchContextMenu";
 import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
@@ -44,7 +46,6 @@ import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 import {Sound} from "./Sound";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
-import {BinaryFunctionBlockContextMenu} from "./blocks/ui/BinaryFunctionBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -173,6 +174,11 @@ function setupContextMenuForBlock() {
   mathBlockContextMenu.render("math-block-context-menu-placeholder");
   mathBlockContextMenu.addListeners();
   contextMenus.mathBlock = mathBlockContextMenu;
+
+  let conditionalStatementBlockContextMenu = new ConditionalStatementBlockContextMenu();
+  conditionalStatementBlockContextMenu.render("conditional-statement-block-context-menu-placeholder");
+  conditionalStatementBlockContextMenu.addListeners();
+  contextMenus.conditionalStatementBlock = conditionalStatementBlockContextMenu;
 
   let notBlockContextMenu = new NotBlockContextMenu();
   notBlockContextMenu.render("not-block-context-menu-placeholder");
