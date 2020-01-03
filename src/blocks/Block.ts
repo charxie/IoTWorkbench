@@ -209,12 +209,27 @@ export abstract class Block implements Movable {
     ctx.stroke();
 
     // draw the symbol or formula or name (if symbol or formula is not available)
+    this.drawLabel(ctx);
+
+    // draw the ports
+    ctx.font = this.small ? "9px Arial" : "12px Arial";
+    ctx.strokeStyle = "black";
+    for (let p of this.ports) {
+      p.draw(ctx, this.small);
+    }
+
+  }
+
+  protected drawLabel(ctx: CanvasRenderingContext2D): void {
+    this.drawText(this.symbol ? this.symbol : this.name, ctx);
+  }
+
+  protected drawText(s: string, ctx: CanvasRenderingContext2D): void {
     ctx.save();
     ctx.fillStyle = "gray";
     ctx.strokeStyle = "black";
     ctx.lineWidth = this.small ? 0.75 : 1;
     ctx.font = this.small ? "12px Arial" : "bold 16px Arial";
-    let s = this.symbol ? this.symbol : this.name;
     let textWidth = ctx.measureText(s).width;
     if (textWidth < this.width - 2 * this.margin - 10) {
       ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.height / 2 + (this.small ? 5 : 7));
@@ -224,14 +239,6 @@ export abstract class Block implements Movable {
     }
     ctx.fillText(s, 0, 0);
     ctx.restore();
-
-    // draw the ports
-    ctx.font = this.small ? "9px Arial" : "12px Arial";
-    ctx.strokeStyle = "black";
-    for (let p of this.ports) {
-      p.draw(ctx, this.small);
-    }
-
   }
 
   public toString(): string {

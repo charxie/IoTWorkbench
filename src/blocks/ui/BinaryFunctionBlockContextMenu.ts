@@ -5,6 +5,7 @@
 import $ from "jquery";
 import {closeAllContextMenus, flowchart} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
+import {BinaryFunctionBlock} from "../BinaryFunctionBlock";
 
 export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
 
@@ -35,12 +36,16 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
+                  <td>Expression (e.g. sin(x*y)):</td>
+                  <td><input type="text" id="binary-function-block-expression-field" size="15"></td>
+                </tr>
+                <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="binary-function-block-width-field"></td>
+                  <td><input type="text" id="binary-function-block-width-field" size="15"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="binary-function-block-height-field"></td>
+                  <td><input type="text" id="binary-function-block-height-field" size="15"></td>
                 </tr>
               </table>
             </div>`;
@@ -49,9 +54,11 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block) {
+    if (this.block instanceof BinaryFunctionBlock) {
       let block = this.block;
       $("#modal-dialog").html(this.getPropertiesUI());
+      let expressionInputElement = document.getElementById("binary-function-block-expression-field") as HTMLInputElement;
+      expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x";
       let widthInputElement = document.getElementById("binary-function-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("binary-function-block-height-field") as HTMLInputElement;
@@ -64,9 +71,11 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
         width: 400,
         buttons: {
           'OK': function () {
+            block.setExpression(expressionInputElement.value);
             block.setWidth(parseInt(widthInputElement.value));
             block.setHeight(parseInt(heightInputElement.value));
             block.refreshView();
+            flowchart.updateResults();
             flowchart.draw();
             $(this).dialog('close');
           },

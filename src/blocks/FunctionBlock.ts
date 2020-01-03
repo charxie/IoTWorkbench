@@ -6,6 +6,8 @@ import {Block} from "./Block";
 
 export abstract class FunctionBlock extends Block {
 
+  protected expression: string = "x";
+
   static State = class {
     readonly uid: string;
     readonly expression: string;
@@ -24,16 +26,16 @@ export abstract class FunctionBlock extends Block {
     }
   };
 
-  protected expression: string = "x";
-
   setExpression(expression: string): void {
     this.expression = expression;
-    this.symbol = null;
-    this.name = expression;
   }
 
   getExpression(): string {
     return this.expression;
+  }
+
+  protected drawLabel(ctx: CanvasRenderingContext2D): void {
+    this.drawText(this.small ? this.symbol : this.expression, ctx);
   }
 
 }

@@ -58,11 +58,11 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
       let block = this.block;
       $("#modal-dialog").html(this.getPropertiesUI());
       let expressionInputElement = document.getElementById("unary-function-block-expression-field") as HTMLInputElement;
-      expressionInputElement.value = this.block.getExpression() ? this.block.getExpression().toString() : "x";
+      expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x";
       let widthInputElement = document.getElementById("unary-function-block-width-field") as HTMLInputElement;
-      widthInputElement.value = this.block.getWidth().toString();
+      widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("unary-function-block-height-field") as HTMLInputElement;
-      heightInputElement.value = this.block.getHeight().toString();
+      heightInputElement.value = block.getHeight().toString();
       $("#modal-dialog").dialog({
         resizable: false,
         modal: true,
