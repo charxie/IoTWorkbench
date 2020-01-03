@@ -115,7 +115,7 @@ export class BlockViewContextMenu extends MyContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Background Color:</td>
-                  <td>${this.view.canvas.style.backgroundColor}</td>
+                  <td><input type="text" id="block-view-background-color-field" size="15"></td>
                 </tr>
               </table>
             </div>`;
@@ -124,7 +124,10 @@ export class BlockViewContextMenu extends MyContextMenu {
   private settingsButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
+    let view = this.view;
     $("#modal-dialog").html(this.getSettingsUI());
+    let backgroundColorInputElement = document.getElementById("block-view-background-color-field") as HTMLInputElement;
+    backgroundColorInputElement.value = this.view.getBackgroundColor();
     $("#modal-dialog").dialog({
       resizable: false,
       modal: true,
@@ -133,6 +136,9 @@ export class BlockViewContextMenu extends MyContextMenu {
       width: 400,
       buttons: {
         'OK': function () {
+          view.setBackgroundColor(backgroundColorInputElement.value);
+          view.flowchart.storeViewState();
+          view.flowchart.draw();
           $(this).dialog('close');
         },
         'Cancel': function () {

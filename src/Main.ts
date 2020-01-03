@@ -130,6 +130,7 @@ window.onload = function () {
   elementsPanel.render("block-elements-panel");
 
   // read locally stored properties
+  StateIO.restoreBlockView(localStorage.getItem("Block View State"));
   StateIO.restoreBlocks(localStorage.getItem("Block States"));
   restoreWorkbench();
   restoreMcus();

@@ -215,9 +215,14 @@ export class Flowchart {
     localStorage.setItem("Block States", JSON.stringify(blockStates));
   }
 
+  storeViewState(): void {
+    localStorage.setItem("Block View State", JSON.stringify(new BlockView.State(this.blockView)));
+  }
+
   static State = class {
     readonly blockStates = [];
     readonly connectorStates = [];
+    readonly blockViewState;
 
     constructor(flowchart: Flowchart) {
       for (let b of flowchart.blocks) {
@@ -238,6 +243,7 @@ export class Flowchart {
           this.connectorStates.push(new PortConnector.State(c));
         }
       }
+      this.blockViewState = new BlockView.State(flowchart.blockView);
     }
   };
 

@@ -35,6 +35,16 @@ export class BlockView {
   private overWhat: any;
   private preventMainMouseEvent: boolean = false; // when a block is handling its own mouse events, set this flag true
 
+  static State = class {
+
+    readonly backgroundColor: string;
+
+    constructor(view: BlockView) {
+      this.backgroundColor = view.getBackgroundColor();
+    }
+
+  };
+
   constructor(canvasId: string, flowchart: Flowchart) {
     this.flowchart = flowchart;
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
@@ -106,7 +116,7 @@ export class BlockView {
   public draw(): void {
     let ctx = this.canvas.getContext('2d');
     // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    ctx.fillStyle = this.canvas.style.backgroundColor; // we have to do this otherwise its screenshot will not have a color background
+    ctx.fillStyle = this.getBackgroundColor(); // we have to do this otherwise its screenshot will not have a color background
     ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawGrid(ctx);
     ctx.lineWidth = 4;
@@ -150,6 +160,14 @@ export class BlockView {
   // detect if (x, y) is inside this view
   public contains(x: number, y: number): boolean {
     return x > this.canvas.offsetLeft && x < this.canvas.offsetLeft + this.canvas.width && y > this.canvas.offsetTop && y < this.canvas.offsetTop + this.canvas.height;
+  }
+
+  public getBackgroundColor(): string {
+    return this.canvas.style.backgroundColor;
+  }
+
+  public setBackgroundColor(s: string): void {
+    this.canvas.style.backgroundColor = s;
   }
 
   public getX(): number {

@@ -69,6 +69,15 @@ export class StateIO {
     }
   }
 
+  static restoreBlockView(s: string): void {
+    if (s == null) {
+      flowchart.blockView.setBackgroundColor("#d4d0c8");
+    } else {
+      let state = JSON.parse(s);
+      flowchart.blockView.setBackgroundColor(state.backgroundColor);
+    }
+  }
+
   static open(): void {
     let that = this;
     let fileInput = document.getElementById('state-file-dialog') as HTMLInputElement;
@@ -79,9 +88,11 @@ export class StateIO {
         reader.readAsText(target.files[0]);
         reader.onload = function (e) {
           let s = JSON.parse(reader.result.toString());
+          that.restoreBlockView(JSON.stringify(s.blockViewState));
           that.restoreBlocks(JSON.stringify(s.blockStates));
           that.restoreConnectors(JSON.stringify(s.connectorStates));
           flowchart.updateResults();
+          flowchart.storeViewState();
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
         };
