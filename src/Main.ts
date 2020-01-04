@@ -9,11 +9,16 @@ import "jquery-ui-bundle/jquery-ui.min.css";
 import "jquery-ui-bundle/jquery-ui";
 import "@fortawesome/fontawesome-free/css/all.css";
 import {create, all} from "mathjs";
+import html2canvas from "html2canvas";
+// @ts-ignore
+import clickSound from "./sound/stapler.mp3";
 
 import * as Constants from "./Constants";
+import {Sound} from "./Sound";
 import {User} from "./User";
 import {StateIO} from "./StateIO";
 import {LineChart} from "./tools/LineChart";
+import {PngSaver} from "./tools/PngSaver";
 
 import {System} from "./components/System";
 import {RainbowHat} from "./components/RainbowHat";
@@ -42,12 +47,7 @@ import {HatBlockContextMenu} from "./blocks/ui/HatBlockContextMenu";
 import {ToggleSwitchContextMenu} from "./blocks/ui/ToggleSwitchContextMenu";
 import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
 import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
-
-import {Sound} from "./Sound";
-// @ts-ignore
-import clickSound from "./sound/stapler.mp3";
-import html2canvas from "html2canvas";
-import {PngSaver} from "./tools/PngSaver";
+import {SeriesBlockContextMenu} from "./blocks/ui/SeriesBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -81,6 +81,21 @@ export function closeAllContextMenus() {
   });
 }
 
+function showUnderConstructionMessage() {
+  $("#modal-dialog").html("<div style='font-size: 90%;'>Under construction...</div>").dialog({
+    resizable: false,
+    modal: true,
+    title: "Sorry",
+    height: 150,
+    width: 200,
+    buttons: {
+      'OK': function () {
+        $(this).dialog('close');
+      }
+    }
+  });
+}
+
 let social = `<span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-facebook-square"></i></span>
               <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-weixin"></i></span>
               <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-twitter"></i></span>
@@ -89,20 +104,26 @@ let social = `<span style="font-size: 2em; vertical-align: middle; cursor: point
 
 window.onload = function () {
 
-  let signinLabel = document.getElementById("sign-in-label") as HTMLElement;
-  signinLabel.innerHTML = "Hello, " + user.firstName;
-  let nameLabel = document.getElementById("name-label") as HTMLElement;
-  nameLabel.innerHTML = Constants.Software.name;
-  let versionLabel = document.getElementById("version-label") as HTMLElement;
-  versionLabel.innerHTML = Constants.Software.version;
-  let creditLabel = document.getElementById('credit') as HTMLElement;
-  creditLabel.innerHTML = social + "<div class='horizontal-divider'></div>" + Constants.Software.name + " " + Constants.Software.version + ", created by Charles Xie , &copy; " + new Date().getFullYear();
-  let cameraButton = document.getElementById("main-page-camera-button") as HTMLElement;
-  cameraButton.onclick = function () {
+  document.getElementById("sign-in-label").innerHTML = "Hello, " + user.firstName;
+  document.getElementById("name-label").innerHTML = Constants.Software.name;
+  document.getElementById("version-label").innerHTML = Constants.Software.version;
+  document.getElementById('credit').innerHTML = social + "<div class='horizontal-divider'></div>"
+    + Constants.Software.name + " " + Constants.Software.version + ", created by Charles Xie , &copy; " + new Date().getFullYear();
+
+  document.getElementById("main-page-home-button").onclick = showUnderConstructionMessage;
+  document.getElementById("main-page-camera-button").onclick = function () {
     html2canvas(document.body).then(function (canvas) {
       PngSaver.saveAs(canvas);
     });
   };
+  document.getElementById("main-page-share-button").onclick = showUnderConstructionMessage;
+  document.getElementById("main-page-upload-button").onclick = showUnderConstructionMessage;
+  document.getElementById("main-page-download-button").onclick = function () {
+    StateIO.saveAs(JSON.stringify(new Flowchart.State(flowchart)));
+  };
+  document.getElementById("main-page-settings-button").onclick = showUnderConstructionMessage;
+  document.getElementById("main-page-help-button").onclick = showUnderConstructionMessage;
+  document.getElementById("main-page-signout-button").onclick = showUnderConstructionMessage;
 
   let modelTabButton = document.getElementById("model-tab-button") as HTMLButtonElement;
   modelTabButton.addEventListener("click", function () {
@@ -182,6 +203,11 @@ function setupContextMenuForBlock() {
   mathBlockContextMenu.render("math-block-context-menu-placeholder");
   mathBlockContextMenu.addListeners();
   contextMenus.mathBlock = mathBlockContextMenu;
+
+  let seriesBlockContextMenu = new SeriesBlockContextMenu();
+  seriesBlockContextMenu.render("series-block-context-menu-placeholder");
+  seriesBlockContextMenu.addListeners();
+  contextMenus.seriesBlock = seriesBlockContextMenu;
 
   let conditionalStatementBlockContextMenu = new ConditionalStatementBlockContextMenu();
   conditionalStatementBlockContextMenu.render("conditional-statement-block-context-menu-placeholder");

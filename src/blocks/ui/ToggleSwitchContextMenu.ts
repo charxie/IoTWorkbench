@@ -63,7 +63,7 @@ export class ToggleSwitchContextMenu extends BlockContextMenu {
     closeAllContextMenus();
     if (this.block) {
       let toggleSwitch = <ToggleSwitch>this.block;
-      $("#modal-dialog").html(this.getPropertiesUI());
+      let d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("toggle-switch-name-field") as HTMLInputElement;
       nameInputElement.value = toggleSwitch.getName();
       let valueInputElement = document.getElementById("toggle-switch-value-field") as HTMLInputElement;
@@ -72,7 +72,7 @@ export class ToggleSwitchContextMenu extends BlockContextMenu {
       widthInputElement.value = toggleSwitch.getWidth().toString();
       let heightInputElement = document.getElementById("toggle-switch-height-field") as HTMLInputElement;
       heightInputElement.value = toggleSwitch.getHeight().toString();
-      $("#modal-dialog").dialog({
+      d.dialog({
         resizable: false,
         modal: true,
         title: toggleSwitch.getUid(),

@@ -68,14 +68,14 @@ export class LogicBlockContextMenu extends BlockContextMenu {
     closeAllContextMenus();
     if (this.block) {
       let block = this.block;
-      $("#modal-dialog").html(this.getPropertiesUI());
+      let d = $("#modal-dialog").html(this.getPropertiesUI());
       let selectElement = document.getElementById("logic-block-operator") as HTMLSelectElement;
       selectElement.value = block.getName();
       let widthInputElement = document.getElementById("logic-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("logic-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
-      $("#modal-dialog").dialog({
+      d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),

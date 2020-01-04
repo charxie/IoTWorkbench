@@ -15,7 +15,7 @@ export class ConditionalStatementBlock extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.symbol = symbol;
-    this.color = "#B8860B";
+    this.color = "#696969";
     this.portA = new Port(this, true, "A", 0, this.height / 2, false);
     this.portT = new Port(this, false, "T", this.width, this.height / 3, true);
     this.portF = new Port(this, false, "F", this.width, this.height * 2 / 3, true);

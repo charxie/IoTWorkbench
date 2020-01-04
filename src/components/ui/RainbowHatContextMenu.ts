@@ -58,10 +58,10 @@ export class RainbowHatContextMenu extends HatContextMenu {
 
   settingsButtonClick(e: MouseEvent): void {
     if (this.hat) {
-      $("#modal-dialog").html(this.getSettingsUI());
+      let d = $("#modal-dialog").html(this.getSettingsUI());
       let stateIdField = document.getElementById("rainbow-hat-state-id-field") as HTMLInputElement;
       stateIdField.value = (<RainbowHat>this.hat).stateId;
-      $("#modal-dialog").dialog({
+      d.dialog({
         resizable: false,
         modal: true,
         title: "Rainbow HAT Settings",
@@ -142,8 +142,7 @@ export class RainbowHatContextMenu extends HatContextMenu {
 
   codeButtonClick(e: MouseEvent): void {
     if (this.hat) {
-      $("#modal-dialog").html(this.getCodeUI());
-      $("#modal-dialog").dialog({
+      $("#modal-dialog").html(this.getCodeUI()).dialog({
         resizable: false,
         modal: true,
         title: "Rainbow HAT Variables",

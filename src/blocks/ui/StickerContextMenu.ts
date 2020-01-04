@@ -3,7 +3,6 @@
  */
 
 import $ from "jquery";
-import {Slider} from "../Slider";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {closeAllContextMenus, flowchart} from "../../Main";
 import {Sticker} from "../Sticker";
@@ -64,7 +63,7 @@ export class StickerContextMenu extends BlockContextMenu {
     closeAllContextMenus();
     if (this.block) {
       let sticker = <Sticker>this.block;
-      $("#modal-dialog").html(this.getPropertiesUI());
+      let d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("sticker-name-field") as HTMLInputElement;
       nameInputElement.value = sticker.getName();
       let decimalsInputElement = document.getElementById("sticker-decimals-field") as HTMLInputElement;
@@ -73,7 +72,7 @@ export class StickerContextMenu extends BlockContextMenu {
       widthInputElement.value = sticker.getWidth().toString();
       let heightInputElement = document.getElementById("sticker-height-field") as HTMLInputElement;
       heightInputElement.value = sticker.getHeight().toString();
-      $("#modal-dialog").dialog({
+      d.dialog({
         resizable: false,
         modal: true,
         title: sticker.getUid(),

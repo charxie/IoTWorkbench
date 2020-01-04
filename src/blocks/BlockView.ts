@@ -19,6 +19,7 @@ import {ToggleSwitch} from "./ToggleSwitch";
 import {Slider} from "./Slider";
 import {Sticker} from "./Sticker";
 import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
+import {SeriesBlock} from "./SeriesBlock";
 
 export class BlockView {
 
@@ -83,6 +84,9 @@ export class BlockView {
             break;
           case "binary-function-block":
             that.storeBlock(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
+            break;
+          case "series-block":
+            that.storeBlock(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 30, 60, 80, "Series Block", "Series"));
             break;
           case "conditional-statement-block":
             that.storeBlock(new ConditionalStatementBlock("Conditional Statement Block #" + timestamp, x - 30, y - 30, 60, 60, "If-else Block", "IF"));
@@ -348,6 +352,9 @@ export class BlockView {
     if (block instanceof MathBlock) {
       contextMenus.mathBlock.block = block;
       menu = document.getElementById("math-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof SeriesBlock) {
+      contextMenus.seriesBlock.block = block;
+      menu = document.getElementById("series-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof ConditionalStatementBlock) {
       contextMenus.conditionalStatementBlock.block = block;
       menu = document.getElementById("conditional-statement-block-context-menu") as HTMLMenuElement;

@@ -75,7 +75,7 @@ export class SliderContextMenu extends BlockContextMenu {
     closeAllContextMenus();
     if (this.block) {
       let slider = <Slider>this.block;
-      $("#modal-dialog").html(this.getPropertiesUI());
+      let d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("slider-name-field") as HTMLInputElement;
       nameInputElement.value = slider.getName();
       let minimumInputElement = document.getElementById("slider-minimum-field") as HTMLInputElement;
@@ -90,7 +90,7 @@ export class SliderContextMenu extends BlockContextMenu {
       widthInputElement.value = slider.getWidth().toString();
       let heightInputElement = document.getElementById("slider-height-field") as HTMLInputElement;
       heightInputElement.value = slider.getHeight().toString();
-      $("#modal-dialog").dialog({
+      d.dialog({
         resizable: false,
         modal: true,
         title: slider.getUid(),

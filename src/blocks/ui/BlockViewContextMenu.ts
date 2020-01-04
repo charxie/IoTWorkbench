@@ -68,8 +68,8 @@ export class BlockViewContextMenu extends MyContextMenu {
     closeAllContextMenus();
     if (this.view.flowchart.blocks.length > 0 || this.view.flowchart.connectors.length > 0) {
       let view = this.view;
-      $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to clear the scene?</div>");
-      $("#modal-dialog").dialog({
+      let message = "<div style='font-size: 90%;'>Are you sure you want to clear the scene?</div>";
+      $("#modal-dialog").html(message).dialog({
         resizable: false,
         modal: true,
         title: "Clear",
@@ -131,10 +131,10 @@ export class BlockViewContextMenu extends MyContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     let view = this.view;
-    $("#modal-dialog").html(this.getSettingsUI());
+    let d = $("#modal-dialog").html(this.getSettingsUI());
     let backgroundColorInputElement = document.getElementById("block-view-background-color-field") as HTMLInputElement;
     backgroundColorInputElement.value = this.view.getBackgroundColor();
-    $("#modal-dialog").dialog({
+    d.dialog({
       resizable: false,
       modal: true,
       title: "Block View Settings",

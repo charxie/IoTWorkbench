@@ -51,12 +51,12 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
     closeAllContextMenus();
     if (this.block) {
       let block = this.block;
-      $("#modal-dialog").html(this.getPropertiesUI());
+      let d = $("#modal-dialog").html(this.getPropertiesUI());
       let widthInputElement = document.getElementById("conditional-statement-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("conditional-statement-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
-      $("#modal-dialog").dialog({
+      d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),

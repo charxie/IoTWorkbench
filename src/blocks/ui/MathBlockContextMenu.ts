@@ -69,14 +69,14 @@ export class MathBlockContextMenu extends BlockContextMenu {
     closeAllContextMenus();
     if (this.block) {
       let block = this.block;
-      $("#modal-dialog").html(this.getPropertiesUI());
+      let d = $("#modal-dialog").html(this.getPropertiesUI());
       let selectElement = document.getElementById("math-block-operator") as HTMLSelectElement;
       selectElement.value = block.getName();
       let widthInputElement = document.getElementById("math-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("math-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
-      $("#modal-dialog").dialog({
+      d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),

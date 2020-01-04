@@ -88,10 +88,10 @@ export class WorkbenchContextMenu extends MyContextMenu {
   }
 
   settingsButtonClick(e: MouseEvent): void {
-    $("#modal-dialog").html(this.getSettingsUI());
+    let d = $("#modal-dialog").html(this.getSettingsUI());
     let showGridCheckBox = document.getElementById("workbench-show-grid-checkbox") as HTMLInputElement;
     showGridCheckBox.checked = system.workbench.showGrid;
-    $("#modal-dialog").dialog({
+    d.dialog({
       resizable: false,
       modal: true,
       title: "Workbench Settings",

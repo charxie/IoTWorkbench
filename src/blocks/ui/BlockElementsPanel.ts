@@ -12,6 +12,7 @@ import {FunctionBlock} from "../FunctionBlock";
 import {Sticker} from "../Sticker";
 import {ToggleSwitch} from "../ToggleSwitch";
 import {ConditionalStatementBlock} from "../ConditionalStatementBlock";
+import {SeriesBlock} from "../SeriesBlock";
 
 export class BlockElementsPanel {
 
@@ -55,7 +56,8 @@ export class BlockElementsPanel {
               <div class="horizontal-scroll" style="margin-right: 10px; background-color: lightskyblue; border: 1px solid #b81900; border-radius: 4px">
                 <table style="width: 100%">
                   <tr>
-                  <td><canvas draggable="true" id="conditional-statement-block" width="45x" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="conditional-statement-block" width="45x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="series-block" width="45x" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -73,13 +75,22 @@ export class BlockElementsPanel {
     this.drawToggleSwitch("Switch", "toggle-switch-block");
     this.drawSlider("Slider", "slider-block");
     this.drawSticker("Sticker", "sticker-block");
-    this.drawConditionalStatement("Conditional Statement", "IF", "conditional-statement-block");
+    this.drawConditionalStatementBlock("Conditional Statement Block", "IF", "conditional-statement-block");
+    this.drawSeriesBlock("Series Block", "Series", "series-block");
   }
 
-  private drawConditionalStatement(name: string, symbol: string, canvasId: string): void {
+  private drawSeriesBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new ConditionalStatementBlock("Conditional Statement Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    let block = new SeriesBlock("Series Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    block.setSmall(true);
+    block.draw(ctx);
+  }
+
+  private drawConditionalStatementBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new ConditionalStatementBlock("Conditional Statement Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
     block.setSmall(true);
     block.draw(ctx);
   }

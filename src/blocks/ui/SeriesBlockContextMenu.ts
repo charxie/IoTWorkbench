@@ -5,25 +5,21 @@
 import $ from "jquery";
 import {closeAllContextMenus, flowchart} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
-import {BinaryFunctionBlock} from "../BinaryFunctionBlock";
 
-export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
+export class SeriesBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "binary-function-block-context-menu";
+    this.id = "series-block-context-menu";
   }
 
   getUi(): string {
-    return `<menu id="${this.id}" class="menu" style="width: 120px; z-index: 10000">
+    return `<menu id="${this.id}" class="menu" style="width: 140px; z-index: 10000">
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-copy-button"><i class="fas fa-copy"></i><span class="menu-text">Copy</span></button>
               </li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
-              </li>
-              <li class="menu-item">
-                <button type="button" class="menu-btn" id="${this.id}-code-button"><i class="fas fa-code"></i><span class="menu-text">Code</span></button>
               </li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-properties-button"><i class="fas fa-cog"></i><span class="menu-text">Properties</span></button>
@@ -39,16 +35,12 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Expression (e.g. sin(x*y)):</td>
-                  <td><input type="text" id="binary-function-block-expression-field" size="15"></td>
-                </tr>
-                <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="binary-function-block-width-field" size="15"></td>
+                  <td><input type="text" id="series-block-width-field"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="binary-function-block-height-field" size="15"></td>
+                  <td><input type="text" id="series-block-height-field"></td>
                 </tr>
               </table>
             </div>`;
@@ -57,29 +49,30 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof BinaryFunctionBlock) {
+    if (this.block) {
       let block = this.block;
       let d = $("#modal-dialog").html(this.getPropertiesUI());
-      let expressionInputElement = document.getElementById("binary-function-block-expression-field") as HTMLInputElement;
-      expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x";
-      let widthInputElement = document.getElementById("binary-function-block-width-field") as HTMLInputElement;
+      let widthInputElement = document.getElementById("series-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("binary-function-block-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("series-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),
         height: 300,
-        width: 400,
+        width: 300,
         buttons: {
           'OK': function () {
-            block.setExpression(expressionInputElement.value);
+            block.setUid(block.getName() + " #" + Date.now().toString(16));
             block.setWidth(parseInt(widthInputElement.value));
             block.setHeight(parseInt(heightInputElement.value));
             block.refreshView();
-            flowchart.updateResults();
             flowchart.draw();
+            flowchart.updateResults();
+            // update the local storage since we have changed the UID of this block
+            flowchart.storeBlockStates();
+            flowchart.storeConnectorStates();
             $(this).dialog('close');
           },
           'Cancel': function () {

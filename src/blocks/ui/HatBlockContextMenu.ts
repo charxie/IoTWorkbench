@@ -49,8 +49,7 @@ export class HatBlockContextMenu extends BlockContextMenu {
     closeAllContextMenus();
     if (this.block) {
       let that = this;
-      $("#modal-dialog").html(this.getPropertiesUI());
-      $("#modal-dialog").dialog({
+      $("#modal-dialog").html(this.getPropertiesUI()).dialog({
         resizable: false,
         modal: true,
         title: "HAT Block Properties",

@@ -47,8 +47,7 @@ export class RaspberryPiContextMenu extends MyContextMenu {
 
   private settingsButtonClick(e: MouseEvent): void {
     if (this.raspberryPi) {
-      $("#modal-dialog").html(this.getSettingsUI());
-      $("#modal-dialog").dialog({
+      $("#modal-dialog").html(this.getSettingsUI()).dialog({
         resizable: false,
         modal: true,
         title: "Raspberry Pi Settings",
@@ -69,8 +68,8 @@ export class RaspberryPiContextMenu extends MyContextMenu {
   private deleteButtonClick(e: MouseEvent): void {
     if (this.raspberryPi) {
       let that = this;
-      $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to delete " + this.raspberryPi.uid + "?</div>");
-      $("#modal-dialog").dialog({
+      let d = $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to delete " + this.raspberryPi.uid + "?</div>");
+      d.dialog({
         resizable: false,
         modal: true,
         title: "Delete",

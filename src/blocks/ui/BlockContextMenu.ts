@@ -22,9 +22,9 @@ export abstract class BlockContextMenu extends MyContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block) {
-      let that = this;
-      $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to delete " + this.block.getUid() + "?</div>");
-      $("#modal-dialog").dialog({
+      let block = this.block;
+      let message = "<div style='font-size: 90%;'>Are you sure you want to delete " + block.getUid() + "?</div>";
+      $("#modal-dialog").html(message).dialog({
         resizable: false,
         modal: true,
         title: "Delete",
@@ -32,7 +32,7 @@ export abstract class BlockContextMenu extends MyContextMenu {
         width: 300,
         buttons: {
           'OK': function () {
-            flowchart.removeBlock(that.block.getUid());
+            flowchart.removeBlock(block.getUid());
             flowchart.draw();
             $(this).dialog('close');
           },
