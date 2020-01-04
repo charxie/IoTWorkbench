@@ -18,9 +18,9 @@ export class BinaryFunctionBlock extends FunctionBlock {
     this.name = "Binary Function Block";
     this.expression = "x+y";
     this.color = "#FF6347";
-    this.portX = new Port(this, true, "A", 0, this.height / 3, false);
-    this.portY = new Port(this, true, "B", 0, this.height * 2 / 3, false);
-    this.portR = new Port(this, false, "R", this.width, this.height / 2, true);
+    this.portX = new Port(this, true, "X", 0, this.height / 3, false);
+    this.portY = new Port(this, true, "Y", 0, this.height * 2 / 3, false);
+    this.portR = new Port(this, false, "F", this.width, this.height / 2, true);
     this.ports.push(this.portX);
     this.ports.push(this.portY);
     this.ports.push(this.portR);

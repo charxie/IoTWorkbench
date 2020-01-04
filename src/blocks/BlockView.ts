@@ -20,6 +20,7 @@ import {Slider} from "./Slider";
 import {Sticker} from "./Sticker";
 import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
 import {SeriesBlock} from "./SeriesBlock";
+import {ItemSelector} from "./ItemSelector";
 
 export class BlockView {
 
@@ -102,6 +103,9 @@ export class BlockView {
             break;
           case "slider-block":
             that.storeBlock(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));
+            break;
+          case "item-selector-block":
+            that.storeBlock(new ItemSelector("Item Selector #" + timestamp, "Items", x - 40, y - 30, 80, 60));
             break;
           case "toggle-switch-block":
             that.storeBlock(new ToggleSwitch("Switch #" + timestamp, "Boolean", x - 40, y - 30, 80, 60));
@@ -376,6 +380,9 @@ export class BlockView {
     } else if (block instanceof Slider) {
       contextMenus.slider.block = block;
       menu = document.getElementById("slider-context-menu") as HTMLMenuElement;
+    } else if (block instanceof ItemSelector) {
+      contextMenus.itemSelector.block = block;
+      menu = document.getElementById("item-selector-context-menu") as HTMLMenuElement;
     } else if (block instanceof ToggleSwitch) {
       contextMenus.toggleSwitch.block = block;
       menu = document.getElementById("toggle-switch-context-menu") as HTMLMenuElement;

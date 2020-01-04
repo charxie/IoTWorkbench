@@ -18,6 +18,7 @@ import {ToggleSwitch} from "./ToggleSwitch";
 import {FunctionBlock} from "./FunctionBlock";
 import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
 import {SeriesBlock} from "./SeriesBlock";
+import {ItemSelector} from "./ItemSelector";
 
 export class Flowchart {
 
@@ -177,6 +178,9 @@ export class Flowchart {
       case "Slider":
         block = new Slider(uid, name, x, y, 100, 60);
         break;
+      case "Item Selector":
+        block = new ItemSelector(uid, "Items", x, y, 80, 60);
+        break;
       case "Sticker":
         block = new Sticker(uid, name, x, y, 80, 80);
         break;
@@ -210,6 +214,8 @@ export class Flowchart {
     for (let b of this.blocks) {
       if (b instanceof Slider) {
         blockStates.push(new Slider.State(b));
+      } else if (b instanceof ItemSelector) {
+        blockStates.push(new ItemSelector.State(b));
       } else if (b instanceof ToggleSwitch) {
         blockStates.push(new ToggleSwitch.State(b));
       } else if (b instanceof Sticker) {
@@ -236,6 +242,8 @@ export class Flowchart {
       for (let b of flowchart.blocks) {
         if (b instanceof Slider) {
           this.blockStates.push(new Slider.State(b));
+        } else if (b instanceof ItemSelector) {
+          this.blockStates.push(new ItemSelector.State(b));
         } else if (b instanceof ToggleSwitch) {
           this.blockStates.push(new ToggleSwitch.State(b));
         } else if (b instanceof Sticker) {

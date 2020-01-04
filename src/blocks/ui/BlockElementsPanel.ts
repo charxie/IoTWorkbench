@@ -13,6 +13,7 @@ import {Sticker} from "../Sticker";
 import {ToggleSwitch} from "../ToggleSwitch";
 import {ConditionalStatementBlock} from "../ConditionalStatementBlock";
 import {SeriesBlock} from "../SeriesBlock";
+import {ItemSelector} from "../ItemSelector";
 
 export class BlockElementsPanel {
 
@@ -46,6 +47,7 @@ export class BlockElementsPanel {
                 <table style="width: 100%">
                   <tr>
                   <td><canvas draggable="true" id="slider-block" width="60x" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="item-selector-block" width="50x" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="toggle-switch-block" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="sticker-block" width="45px" height="45px" style="cursor: pointer;"/></td>
                   </tr>
@@ -74,6 +76,7 @@ export class BlockElementsPanel {
     this.drawMathBlock("Add Block", "+", "math-add-block");
     this.drawToggleSwitch("Switch", "toggle-switch-block");
     this.drawSlider("Slider", "slider-block");
+    this.drawItemSelector("Item Selector", "item-selector-block");
     this.drawSticker("Sticker", "sticker-block");
     this.drawConditionalStatementBlock("Conditional Statement Block", "IF", "conditional-statement-block");
     this.drawSeriesBlock("Series Block", "Series", "series-block");
@@ -115,6 +118,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new Slider("Slider Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setSmall(true);
+    block.draw(ctx);
+  }
+
+  private drawItemSelector(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new ItemSelector("Item Selector Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setSmall(true);
     block.draw(ctx);
   }

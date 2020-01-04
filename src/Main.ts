@@ -48,6 +48,7 @@ import {ToggleSwitchContextMenu} from "./blocks/ui/ToggleSwitchContextMenu";
 import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
 import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 import {SeriesBlockContextMenu} from "./blocks/ui/SeriesBlockContextMenu";
+import {ItemSelectorContextMenu} from "./blocks/ui/ItemSelectorContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -248,6 +249,11 @@ function setupContextMenuForBlock() {
   sliderContextMenu.render("slider-context-menu-placeholder");
   sliderContextMenu.addListeners();
   contextMenus.slider = sliderContextMenu;
+
+  let itemSelectorContextMenu = new ItemSelectorContextMenu();
+  itemSelectorContextMenu.render("item-selector-context-menu-placeholder");
+  itemSelectorContextMenu.addListeners();
+  contextMenus.itemSelector = itemSelectorContextMenu;
 
   let stickerContextMenu = new StickerContextMenu();
   stickerContextMenu.render("sticker-context-menu-placeholder");

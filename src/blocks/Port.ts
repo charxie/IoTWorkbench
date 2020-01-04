@@ -97,7 +97,7 @@ export class Port {
     ctx.arc(ax, ay, this.arc.radius, this.arc.startAngle, this.arc.endAngle, this.arc.anticlockwise);
     ctx.fill();
     ctx.stroke();
-    if (!small && this.block.getPorts().length > 1) {
+    if (!small && this.block.getPorts().length > 2) {
       ctx.lineWidth = 0.75;
       ctx.fillStyle = "black";
       let t = this.uid;
