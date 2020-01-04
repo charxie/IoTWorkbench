@@ -46,6 +46,8 @@ import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 import {Sound} from "./Sound";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
+import html2canvas from "html2canvas";
+import {PngSaver} from "./tools/PngSaver";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -95,6 +97,12 @@ window.onload = function () {
   versionLabel.innerHTML = Constants.Software.version;
   let creditLabel = document.getElementById('credit') as HTMLElement;
   creditLabel.innerHTML = social + "<div class='horizontal-divider'></div>" + Constants.Software.name + " " + Constants.Software.version + ", created by Charles Xie , &copy; " + new Date().getFullYear();
+  let cameraButton = document.getElementById("main-page-camera-button") as HTMLElement;
+  cameraButton.onclick = function () {
+    html2canvas(document.body).then(function (canvas) {
+      PngSaver.saveAs(canvas);
+    });
+  };
 
   let modelTabButton = document.getElementById("model-tab-button") as HTMLButtonElement;
   modelTabButton.addEventListener("click", function () {

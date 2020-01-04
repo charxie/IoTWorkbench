@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "html2canvas": "^1.0.0-rc.5",
     "jquery": "^3.4.1",
     "jquery-ui-bundle": "^1.12.1-migrate",
     "mathjs": "^6.3.0",
