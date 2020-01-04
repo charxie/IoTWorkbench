@@ -179,7 +179,7 @@ export class Flowchart {
         block = new Slider(uid, name, x, y, 100, 60);
         break;
       case "Item Selector":
-        block = new ItemSelector(uid, "Items", x, y, 80, 60);
+        block = new ItemSelector(uid, name, x, y, 80, 60);
         break;
       case "Sticker":
         block = new Sticker(uid, name, x, y, 80, 80);

@@ -64,7 +64,6 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
         width: 300,
         buttons: {
           'OK': function () {
-            block.setUid(block.getName() + " #" + Date.now().toString(16));
             block.setWidth(parseInt(widthInputElement.value));
             block.setHeight(parseInt(heightInputElement.value));
             block.refreshView();

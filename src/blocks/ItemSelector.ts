@@ -9,7 +9,7 @@ import {Util} from "../Util";
 
 export class ItemSelector extends Block {
 
-  private values:number[] = [];
+  private items: any[] = [1, 2, 3];
   private halfHeight: number;
 
   static State = class {
@@ -19,7 +19,7 @@ export class ItemSelector extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
-    readonly values: number[];
+    readonly items: any[];
 
     constructor(itemSelector: ItemSelector) {
       this.name = itemSelector.name;
@@ -28,7 +28,7 @@ export class ItemSelector extends Block {
       this.y = itemSelector.y;
       this.width = itemSelector.width;
       this.height = itemSelector.height;
-      this.values = itemSelector.values;
+      this.items = itemSelector.items;
     }
   };
 
@@ -42,12 +42,12 @@ export class ItemSelector extends Block {
     this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
   }
 
-  setValues(values: number[]): void {
-    this.values = values;
+  setItems(items: any[]): void {
+    this.items = items;
   }
 
-  getValues(): number[] {
-    return this.values;
+  getItems(): any[] {
+    return this.items;
   }
 
   updateModel(): void {
@@ -94,6 +94,19 @@ export class ItemSelector extends Block {
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.halfHeight, this.width, this.halfHeight, this.radius, "Bottom");
+
+    // draw the drop down list
+    if (this.items && this.items.length > 0) {
+      ctx.strokeStyle = "gray";
+      let m = this.iconic ? 3 : 5;
+      ctx.beginPath();
+      ctx.rect(this.x + m, this.y + this.halfHeight + m, this.width - 2 * m, this.halfHeight - 2 * m);
+      ctx.stroke();
+      ctx.fillStyle = "black";
+      ctx.lineWidth = this.iconic ? 0.75 : 1;
+      ctx.font = this.iconic ? "9px Arial" : "12px Arial";
+      ctx.fillText(this.items[0], this.x + 2 * m, this.y + 3 * this.halfHeight / 2 + 4);
+    }
 
     // draw the ports
     ctx.strokeStyle = "black";

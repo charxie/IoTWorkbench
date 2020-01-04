@@ -9,6 +9,7 @@ import {Sticker} from "./blocks/Sticker";
 import {flowchart} from "./Main";
 import {ToggleSwitch} from "./blocks/ToggleSwitch";
 import {FunctionBlock} from "./blocks/FunctionBlock";
+import {ItemSelector} from "./blocks/ItemSelector";
 
 export class StateIO {
 
@@ -26,7 +27,7 @@ export class StateIO {
         let type = state.uid.substring(0, state.uid.indexOf("#") - 1);
         if (type.indexOf("HAT") != -1) continue; // Do not add HAT blocks. They are added by the model components.
         let block = flowchart.addBlock(type, state.x, state.y, state.uid);
-        // if (block == null) continue;
+        //if (block == null) continue;
         if (state.width) {
           block.setWidth(state.width);
         }
@@ -39,6 +40,8 @@ export class StateIO {
           block.setMaximum(state.maximum);
           block.setSteps(state.steps);
           block.setValue(state.value);
+        } else if (block instanceof ItemSelector) {
+          block.setName(state.name);
         } else if (block instanceof ToggleSwitch) {
           block.setName(state.name);
           block.setSelected(state.selected);
