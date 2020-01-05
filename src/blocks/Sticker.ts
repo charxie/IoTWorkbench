@@ -5,13 +5,11 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
-import {flowchart} from "../Main";
-import {NegationBlock} from "./NegationBlock";
-import {LogicBlock} from "./LogicBlock";
 
 export class Sticker extends Block {
 
   private text: string;
+  private isArray: boolean;
   private decimals: number = 3;
   private barHeight: number;
 
@@ -55,7 +53,7 @@ export class Sticker extends Block {
   draw(ctx: CanvasRenderingContext2D): void {
 
     // draw the upper bar with shade
-    this.barHeight = this.height / 3;
+    this.barHeight = Math.min(30, this.height / 3);
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
     shade.addColorStop(0, "white");
     shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
@@ -83,7 +81,25 @@ export class Sticker extends Block {
     if (this.text) {
       ctx.font = "14px Times Roman";
       ctx.fillStyle = "black";
-      ctx.fillText(this.text, this.x + 10, this.y + this.barHeight + 20);
+      if (this.isArray) {
+        let lineHeight = ctx.measureText("M").width * 1.2;
+        let lines = this.text.split(",");
+        for (let i = 0; i < lines.length; ++i) {
+          let yi = this.y + this.barHeight + 20 + i * lineHeight;
+          if (yi < this.y + this.height - lineHeight / 2) {
+            if (i % 2 == 0) {
+              ctx.fillStyle = "lightgreen";
+              ctx.beginPath();
+              ctx.rect(this.x + 1, yi - lineHeight, this.width - 2, lineHeight + 4);
+              ctx.fill();
+            }
+            ctx.fillStyle = "black";
+            ctx.fillText(lines[i].trim(), this.x + 10, yi);
+          }
+        }
+      } else {
+        ctx.fillText(this.text, this.x + 10, this.y + this.barHeight + 20);
+      }
     }
 
     // draw the port
@@ -100,11 +116,12 @@ export class Sticker extends Block {
 
   updateModel(): void {
     // text is part of the model
+    let v = this.ports[0].getValue();
     try {
-      this.text = this.ports[0].getValue().toFixed(this.decimals);
+      this.text = v.toFixed(this.decimals);
     } catch (e) {
-      // value is not a number, such as a boolean or a string
-      this.text = "" + this.ports[0].getValue();
+      this.text = "" + v; // value is a boolean or string or array
+      this.isArray = Array.isArray(v);
     }
   }
 
