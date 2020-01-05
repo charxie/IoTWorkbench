@@ -83,11 +83,7 @@ export class Sticker extends Block {
     if (this.text) {
       ctx.font = "14px Times Roman";
       ctx.fillStyle = "black";
-      if (this.isInputBoolean()) {
-        ctx.fillText(parseFloat(this.text) > 0.1 ? "true" : "false", this.x + 10, this.y + this.barHeight + 20);
-      } else {
-        ctx.fillText(this.text, this.x + 10, this.y + this.barHeight + 20);
-      }
+      ctx.fillText(this.text, this.x + 10, this.y + this.barHeight + 20);
     }
 
     // draw the port
@@ -107,7 +103,7 @@ export class Sticker extends Block {
     try {
       this.text = this.ports[0].getValue().toFixed(this.decimals);
     } catch (e) {
-      // value can be non-number, such as a boolean
+      // value is not a number, such as a boolean or a string
       this.text = "" + this.ports[0].getValue();
     }
   }
@@ -120,8 +116,7 @@ export class Sticker extends Block {
   private isInputBoolean(): boolean {
     for (let c of flowchart.connectors) {
       if (this.ports[0] == c.getInput()) {
-        let b = c.getOutput().getBlock();
-        return b instanceof NegationBlock || b instanceof LogicBlock;
+        return typeof c.getOutput().getValue() == "boolean";
       }
     }
     return false;

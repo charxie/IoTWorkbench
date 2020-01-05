@@ -9,7 +9,7 @@ import {Point} from "../math/Point";
 export class Port {
 
   private readonly block: Block;
-  private value: number = 0;
+  private value: any;
   private readonly input: boolean; // a port must be either input or output. If this is false, then this is a port for output.
   private close: boolean; // when a connector end is close to this port
   private readonly uid: string;
@@ -22,11 +22,11 @@ export class Port {
     this.arc = new Arc(x, y, 5, 0.5 * Math.PI, 1.5 * Math.PI, anticlockwise);
   }
 
-  setValue(value: number): void {
+  setValue(value: any): void {
     this.value = value;
   }
 
-  getValue(): number {
+  getValue(): any {
     return this.value;
   }
 

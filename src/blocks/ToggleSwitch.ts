@@ -11,7 +11,7 @@ import {flowchart} from "../Main";
 
 export class ToggleSwitch extends Block {
 
-  private value: number = 0;
+  private selected: boolean = false;
   private knob: Arc;
   private knobRadius: number = 10;
   private track: Stadium;
@@ -40,7 +40,7 @@ export class ToggleSwitch extends Block {
       this.y = toggleSwitch.y;
       this.width = toggleSwitch.width;
       this.height = toggleSwitch.height;
-      this.selected = toggleSwitch.isSelected();
+      this.selected = toggleSwitch.selected;
     }
   };
 
@@ -59,15 +59,15 @@ export class ToggleSwitch extends Block {
   }
 
   setSelected(selected: boolean): void {
-    this.value = selected ? 1 : 0;
+    this.selected = selected;
   }
 
   isSelected(): boolean {
-    return this.value != 0;
+    return this.selected;
   }
 
   updateModel(): void {
-    this.ports[0].setValue(this.value);
+    this.ports[0].setValue(this.selected);
     this.updateConnectors();
   }
 
@@ -78,7 +78,7 @@ export class ToggleSwitch extends Block {
     this.knobRadius = this.halfHeight / 2 - this.yMargin;
     this.trackMin = this.x + this.knobRadius + this.xMargin;
     this.trackMax = this.x + this.width - this.knobRadius - this.xMargin;
-    this.knob.setCenter(this.value == 0 ? this.trackMin : this.trackMax, this.y + this.halfHeight * 3 / 2);
+    this.knob.setCenter(this.selected ? this.trackMax : this.trackMin, this.y + this.halfHeight * 3 / 2);
     this.track.setRect(this.trackMin, this.y + this.halfHeight + this.yMargin, this.trackMax - this.trackMin, 2 * this.knobRadius);
     this.ports[0].setX(this.width);
     this.ports[0].setY(this.height / 2);
@@ -182,6 +182,9 @@ export class ToggleSwitch extends Block {
   }
 
   mouseUp(e: MouseEvent): void {
+    this.updateModel();
+    flowchart.traverse(this);
+    flowchart.storeBlockStates();
     this.knob.x = this.knob.x < (this.trackMin + this.trackMax) / 2 ? this.trackMin : this.trackMax;
     this.knobGrabbed = false;
     flowchart.blockView.canvas.style.cursor = "default";
@@ -197,10 +200,7 @@ export class ToggleSwitch extends Block {
       } else if (this.knob.x > this.trackMax) {
         this.knob.x = this.trackMax;
       }
-      this.value = this.knob.x > (this.trackMin + this.trackMax) / 2 ? 1 : 0;
-      this.updateModel();
-      flowchart.traverse(this);
-      flowchart.storeBlockStates();
+      this.selected = this.knob.x > (this.trackMin + this.trackMax) / 2;
     } else {
       if (this.onKnob(x, y)) {
         if (e.target instanceof HTMLCanvasElement) {

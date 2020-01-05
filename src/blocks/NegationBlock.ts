@@ -29,7 +29,12 @@ export class NegationBlock extends Block {
   }
 
   updateModel(): void {
-    this.portR.setValue(this.portX.getValue() > 0 ? 0 : 1);
+    let x = this.portX.getValue();
+    if (typeof x == "boolean") {
+      this.portR.setValue(!x);
+    } else {
+      this.portR.setValue(x > 0 ? 0 : 1);
+    }
     this.updateConnectors();
   }
 

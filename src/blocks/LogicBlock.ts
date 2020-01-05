@@ -33,23 +33,25 @@ export class LogicBlock extends Block {
   }
 
   updateModel(): void {
-    let a: boolean = this.portA.getValue() != 0;
-    let b: boolean = this.portB.getValue() != 0;
+    let av = this.portA.getValue();
+    let bv = this.portB.getValue();
+    let a: boolean = typeof av == "boolean" ? av : av != 0;
+    let b: boolean = typeof bv == "boolean" ? bv : bv != 0;
     switch (this.name) {
       case "AND Block":
-        this.portR.setValue((a && b) ? 1 : 0);
+        this.portR.setValue(a && b);
         break;
       case "OR Block":
-        this.portR.setValue((a || b) ? 1 : 0);
+        this.portR.setValue(a || b);
         break;
       case "XOR Block":
-        this.portR.setValue(((a && !b) || (!a && b)) ? 1 : 0);
+        this.portR.setValue((a && !b) || (!a && b));
         break;
       case "NOR Block":
-        this.portR.setValue(a || b ? 0 : 1);
+        this.portR.setValue(!(a || b));
         break;
       case "XNOR Block":
-        this.portR.setValue(a == b ? 1 : 0);
+        this.portR.setValue(a == b);
         break;
     }
     this.updateConnectors();

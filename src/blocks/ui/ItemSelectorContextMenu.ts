@@ -40,7 +40,7 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
                   <td><input type="text" id="item-selector-name-field"></td>
                 </tr>
                 <tr>
-                  <td>Items:<div style="font-size: 70%">(e.g., [1, 2, 3])</div></td>
+                  <td>Items:<div style="font-size: 70%">(e.g., [1, 2, 3]<br>or ["a", "b", "c"])</div></td>
                   <td><textarea id="item-selector-block-items-field" rows="5" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>
