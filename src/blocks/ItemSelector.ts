@@ -6,11 +6,22 @@ import {Port} from "./Port";
 import {Block} from "./Block";
 import {flowchart} from "../Main";
 import {Util} from "../Util";
+import {Triangle} from "../math/Triangle";
 
 export class ItemSelector extends Block {
 
   private items: any[] = [1, 2, 3];
+  private selectedIndex: number = 0;
   private halfHeight: number;
+  private triangle: Triangle;
+  private dropdownMenuOpen: boolean;
+  private mBox: number;
+  private xBox: number;
+  private yBox: number;
+  private wBox: number;
+  private hBox: number;
+  private mouseDownIndex: number;
+  private mouseOverIndex: number;
 
   static State = class {
     readonly name: string;
@@ -20,6 +31,7 @@ export class ItemSelector extends Block {
     readonly width: number;
     readonly height: number;
     readonly items: any[];
+    readonly selectedIndex: number;
 
     constructor(itemSelector: ItemSelector) {
       this.name = itemSelector.name;
@@ -29,6 +41,7 @@ export class ItemSelector extends Block {
       this.width = itemSelector.width;
       this.height = itemSelector.height;
       this.items = itemSelector.items;
+      this.selectedIndex = itemSelector.selectedIndex;
     }
   };
 
@@ -40,6 +53,13 @@ export class ItemSelector extends Block {
     this.color = "#A0522D";
     this.ports.push(new Port(this, false, "I", 0, this.height / 2, false));
     this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
+    let x1 = this.x + this.width - 10;
+    let y1 = this.y + this.halfHeight + 6;
+    let x2 = this.x + this.width - 4;
+    let y2 = y1;
+    let x3 = (x1 + x2) / 2;
+    let y3 = this.y + this.halfHeight + 10;
+    this.triangle = new Triangle(x1, y1, x2, y2, x3, y3);
   }
 
   setItems(items: any[]): void {
@@ -51,7 +71,7 @@ export class ItemSelector extends Block {
   }
 
   updateModel(): void {
-    //this.ports[0].setValue(this.value);
+    this.ports[1].setValue(this.items[this.selectedIndex]);
     this.updateConnectors();
   }
 
@@ -60,6 +80,13 @@ export class ItemSelector extends Block {
     this.ports[0].setY(this.height / 2);
     this.ports[1].setX(this.width);
     this.ports[1].setY(this.height / 2);
+    let x1 = this.x + this.width - 20;
+    let y1 = this.y + this.halfHeight + 12;
+    let x2 = this.x + this.width - 10;
+    let y2 = y1;
+    let x3 = (x1 + x2) / 2;
+    let y3 = this.y + this.halfHeight + 20;
+    this.triangle.setPoints(x1, y1, x2, y2, x3, y3);
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -98,14 +125,47 @@ export class ItemSelector extends Block {
     // draw the drop down list
     if (this.items && this.items.length > 0) {
       ctx.strokeStyle = "gray";
-      let m = this.iconic ? 3 : 5;
+      this.mBox = this.iconic ? 3 : 5;
+      this.xBox = this.x + this.mBox;
+      this.yBox = this.y + this.halfHeight + this.mBox;
+      this.wBox = this.width - 2 * this.mBox;
+      this.hBox = this.halfHeight - 2 * this.mBox;
       ctx.beginPath();
-      ctx.rect(this.x + m, this.y + this.halfHeight + m, this.width - 2 * m, this.halfHeight - 2 * m);
+      ctx.rect(this.xBox, this.yBox, this.wBox, this.hBox);
       ctx.stroke();
       ctx.fillStyle = "black";
       ctx.lineWidth = this.iconic ? 0.75 : 1;
       ctx.font = this.iconic ? "9px Arial" : "12px Arial";
-      ctx.fillText(this.items[0], this.x + 2 * m, this.y + 3 * this.halfHeight / 2 + 4);
+      ctx.fillText(this.items[this.selectedIndex], this.xBox + this.mBox, this.y + 3 * this.halfHeight / 2 + 4);
+      ctx.beginPath();
+      ctx.moveTo(this.triangle.p1.x, this.triangle.p1.y);
+      ctx.lineTo(this.triangle.p2.x, this.triangle.p2.y);
+      ctx.lineTo(this.triangle.p3.x, this.triangle.p3.y);
+      ctx.fill();
+      if (this.dropdownMenuOpen) {
+        ctx.save();
+        ctx.fillStyle = "white";
+        ctx.shadowColor = "black";
+        ctx.shadowBlur = 6;
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 2;
+        ctx.beginPath();
+        ctx.rect(this.xBox, this.yBox + this.hBox, this.wBox, this.hBox * this.items.length);
+        ctx.fill();
+        ctx.strokeStyle = "black";
+        ctx.stroke();
+        ctx.restore();
+        if (this.mouseOverIndex >= 0) {
+          ctx.beginPath();
+          ctx.fillStyle = "steelblue";
+          ctx.rect(this.xBox, this.yBox + this.hBox * (1 + this.mouseOverIndex), this.wBox, this.hBox);
+          ctx.fill();
+        }
+        for (let i = 0; i < this.items.length; i++) {
+          ctx.fillStyle = i == this.mouseOverIndex ? "white" : "black";
+          ctx.fillText(this.items[i], this.xBox + this.mBox, this.yBox + (i + 1) * this.hBox + this.hBox / 2 + 4);
+        }
+      }
     }
 
     // draw the ports
@@ -119,15 +179,67 @@ export class ItemSelector extends Block {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.halfHeight;
   }
 
+  onTriangle(x: number, y: number): boolean {
+    return this.triangle.contains(x, y);
+  }
+
   mouseDown(e: MouseEvent): boolean {
+    let x = e.offsetX;
+    let y = e.offsetY;
+    if (this.onTriangle(x, y)) {
+      this.dropdownMenuOpen = !this.dropdownMenuOpen;
+      flowchart.draw();
+      return true;
+    }
+    this.mouseDownIndex = -1;
+    if (this.dropdownMenuOpen) {
+      if (x > this.xBox && x < this.xBox + this.wBox) {
+        this.mouseDownIndex = Math.round((y - this.yBox - this.hBox) / (this.hBox * this.items.length) * (this.items.length - 1));
+        if (this.mouseDownIndex < 0) {
+          this.mouseDownIndex = 0;
+        } else if (this.mouseDownIndex > this.items.length - 1) {
+          this.mouseDownIndex = this.items.length - 1;
+        }
+      }
+    }
     return false;
   }
 
   mouseUp(e: MouseEvent): void {
+    if (this.dropdownMenuOpen) {
+      if (this.mouseDownIndex >= 0) {
+        this.selectedIndex = this.mouseDownIndex;
+        this.dropdownMenuOpen = false;
+        this.mouseDownIndex = -1;
+        this.updateModel();
+        flowchart.traverse(this);
+        flowchart.storeBlockStates();
+      }
+    }
     flowchart.blockView.canvas.style.cursor = "default";
   }
 
   mouseMove(e: MouseEvent): void {
+    let x = e.offsetX;
+    let y = e.offsetY;
+    if (this.onTriangle(x, y)) {
+      if (e.target instanceof HTMLCanvasElement) {
+        e.target.style.cursor = "pointer";
+      }
+    } else {
+      this.mouseOverIndex = -1;
+      if (this.dropdownMenuOpen) {
+        if (x > this.xBox && x < this.xBox + this.wBox) {
+          this.mouseOverIndex = Math.round((y - this.yBox - this.hBox) / (this.hBox * this.items.length) * (this.items.length - 1));
+          if (this.mouseOverIndex < 0) {
+            this.mouseOverIndex = 0;
+          } else if (this.mouseOverIndex > this.items.length - 1) {
+            this.mouseOverIndex = this.items.length - 1;
+          }
+          flowchart.draw();
+        }
+      }
+    }
   }
 
   mouseLeave(e: MouseEvent): void {
