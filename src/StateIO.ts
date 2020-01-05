@@ -42,6 +42,8 @@ export class StateIO {
           block.setValue(state.value);
         } else if (block instanceof ItemSelector) {
           block.setName(state.name);
+          block.setItems(state.items);
+          block.setSelectedIndex(state.selectedIndex);
         } else if (block instanceof ToggleSwitch) {
           block.setName(state.name);
           block.setSelected(state.selected);

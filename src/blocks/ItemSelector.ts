@@ -70,6 +70,14 @@ export class ItemSelector extends Block {
     return this.items;
   }
 
+  setSelectedIndex(i: number): void {
+    this.selectedIndex = i;
+  }
+
+  getSelectedIndex(): number {
+    return this.selectedIndex;
+  }
+
   updateModel(): void {
     this.ports[1].setValue(this.items[this.selectedIndex]);
     this.updateConnectors();
@@ -80,12 +88,12 @@ export class ItemSelector extends Block {
     this.ports[0].setY(this.height / 2);
     this.ports[1].setX(this.width);
     this.ports[1].setY(this.height / 2);
-    let x1 = this.x + this.width - 20;
-    let y1 = this.y + this.halfHeight + 12;
-    let x2 = this.x + this.width - 10;
+    let x1 = this.x + this.width * 0.7;
+    let y1 = this.y + this.halfHeight * 1.3;
+    let x2 = this.x + this.width * 0.9;
     let y2 = y1;
     let x3 = (x1 + x2) / 2;
-    let y3 = this.y + this.halfHeight + 20;
+    let y3 = this.y + this.halfHeight * 1.7;
     this.triangle.setPoints(x1, y1, x2, y2, x3, y3);
   }
 
@@ -137,6 +145,7 @@ export class ItemSelector extends Block {
       ctx.lineWidth = this.iconic ? 0.75 : 1;
       ctx.font = this.iconic ? "9px Arial" : "12px Arial";
       ctx.fillText(this.items[this.selectedIndex], this.xBox + this.mBox, this.y + 3 * this.halfHeight / 2 + 4);
+      ctx.fillStyle = "gray";
       ctx.beginPath();
       ctx.moveTo(this.triangle.p1.x, this.triangle.p1.y);
       ctx.lineTo(this.triangle.p2.x, this.triangle.p2.y);
@@ -152,9 +161,9 @@ export class ItemSelector extends Block {
         ctx.beginPath();
         ctx.rect(this.xBox, this.yBox + this.hBox, this.wBox, this.hBox * this.items.length);
         ctx.fill();
+        ctx.restore();
         ctx.strokeStyle = "black";
         ctx.stroke();
-        ctx.restore();
         if (this.mouseOverIndex >= 0) {
           ctx.beginPath();
           ctx.fillStyle = "steelblue";
