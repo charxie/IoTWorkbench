@@ -45,9 +45,9 @@ export class SeriesBlock extends Block {
     let x0 = this.portX.getValue();
     let dx = this.portD.getValue();
     let n = this.portN.getValue();
-    if (!x0) x0 = 0;
-    if (!dx) dx = 1;
-    if (!n) n = 10;
+    if (x0 == undefined) x0 = 0;
+    if (dx == undefined) dx = 1;
+    if (n == undefined) n = 10;
     let output = [];
     for (let i = 0; i < n; i++) {
       output.push(x0 + dx * i);

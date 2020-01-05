@@ -110,9 +110,9 @@ export class StateIO {
 
   static saveAs(data: string): void {
     let that = this;
-    $('#modal-dialog').html(`<div style="font-family: Arial; line-height: 30px; font-size: 90%;">
+    let d = $('#modal-dialog').html(`<div style="font-family: Arial; line-height: 30px; font-size: 90%;">
         Save as:<br><input type="text" id="${this.inputFieldId}" style="width: 260px;" value="${this.lastSavedFileName}">`);
-    $('#modal-dialog').dialog({
+    d.dialog({
       resizable: false,
       modal: true,
       title: "Save",

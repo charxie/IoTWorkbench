@@ -235,9 +235,11 @@ export class BlockView {
     }
     let grab = false;
     for (let b of this.flowchart.blocks) {
-      if (b.mouseDown(e)) {
-        grab = true;
-        break;
+      if (b.contains(x, y)) {
+        if (b.mouseDown(e)) {
+          grab = true;
+          break;
+        }
       }
     }
     this.preventMainMouseEvent = grab;
@@ -267,16 +269,18 @@ export class BlockView {
     this.selectedPort = null;
     this.preventMainMouseEvent = false;
     for (let b of this.flowchart.blocks) {
-      b.mouseUp(e);
+      if (b.contains(x, y)) {
+        b.mouseUp(e);
+      }
     }
     this.draw();
     closeAllContextMenus(); // close all context menus upon mouse left click
   }
 
   private mouseMove(e: MouseEvent): void {
+    let x = e.offsetX;
+    let y = e.offsetY;
     if (!this.preventMainMouseEvent) {
-      let x = e.offsetX;
-      let y = e.offsetY;
       if (this.overWhat != null) {
         if (this.overWhat instanceof Port) {
           this.overWhat.setClose(false);
@@ -332,7 +336,9 @@ export class BlockView {
       }
     }
     for (let b of this.flowchart.blocks) {
-      b.mouseMove(e);
+      if (b.contains(x, y)) {
+        b.mouseMove(e);
+      }
     }
     this.draw();
   }
