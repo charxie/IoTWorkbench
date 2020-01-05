@@ -22,6 +22,7 @@ export class Slider extends Block {
   private maximum: number = 100;
   private steps: number = 10;
   private value: number = 50;
+  private snapToTick: boolean;
 
   static State = class {
     readonly name: string;
@@ -34,6 +35,7 @@ export class Slider extends Block {
     readonly maximum: number;
     readonly steps: number;
     readonly value: number;
+    readonly snapToTick: boolean;
 
     constructor(slider: Slider) {
       this.name = slider.name;
@@ -46,6 +48,7 @@ export class Slider extends Block {
       this.maximum = slider.maximum;
       this.steps = slider.steps;
       this.value = slider.value;
+      this.snapToTick = slider.snapToTick;
     }
   };
 
@@ -67,6 +70,14 @@ export class Slider extends Block {
 
   getValue(): number {
     return this.value;
+  }
+
+  setSnapToTick(snapToTick: boolean): void {
+    this.snapToTick = snapToTick;
+  }
+
+  getSnapToTick(): boolean {
+    return this.snapToTick;
   }
 
   setMinimum(minimum: number): void {
@@ -200,6 +211,15 @@ export class Slider extends Block {
   }
 
   mouseUp(e: MouseEvent): void {
+    if (this.snapToTick) {
+      let d = (this.maximum - this.minimum) / this.steps;
+      let n = Math.round(this.value / d);
+      this.value = n * d;
+      this.refreshView();
+      this.updateModel();
+      flowchart.traverse(this);
+      flowchart.storeBlockStates();
+    }
     this.knobGrabbed = false;
     flowchart.blockView.canvas.style.cursor = "default";
   }

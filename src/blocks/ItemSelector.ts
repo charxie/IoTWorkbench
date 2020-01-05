@@ -22,6 +22,8 @@ export class ItemSelector extends Block {
   private hBox: number;
   private mouseDownIndex: number;
   private mouseOverIndex: number;
+  private readonly portI: Port;
+  private readonly portO: Port;
 
   static State = class {
     readonly name: string;
@@ -51,8 +53,10 @@ export class ItemSelector extends Block {
     this.halfHeight = this.height / 2;
     this.name = name;
     this.color = "#A0522D";
-    this.ports.push(new Port(this, false, "I", 0, this.height / 2, false));
-    this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
+    this.portI = new Port(this, true, "I", 0, this.height / 2, false);
+    this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
+    this.ports.push(this.portI);
+    this.ports.push(this.portO);
     let x1 = this.x + this.width - 10;
     let y1 = this.y + this.halfHeight + 6;
     let x2 = this.x + this.width - 4;
@@ -79,15 +83,21 @@ export class ItemSelector extends Block {
   }
 
   updateModel(): void {
-    this.ports[1].setValue(this.items[this.selectedIndex]);
-    this.updateConnectors();
+    if (this.portI.getValue()) {
+      this.items = this.portI.getValue();
+      if (this.items.length > 0) {
+        this.selectedIndex = Math.min(this.selectedIndex, this.items.length - 1);
+      }
+      this.portO.setValue(this.items[this.selectedIndex]);
+      this.updateConnectors();
+    }
   }
 
   refreshView(): void {
     this.halfHeight = this.height / 2;
-    this.ports[0].setY(this.height / 2);
-    this.ports[1].setX(this.width);
-    this.ports[1].setY(this.height / 2);
+    this.portI.setY(this.height / 2);
+    this.portO.setX(this.width);
+    this.portO.setY(this.height / 2);
     let x1 = this.x + this.width * 0.7;
     let y1 = this.y + this.halfHeight * 1.3;
     let x2 = this.x + this.width * 0.9;
@@ -164,12 +174,14 @@ export class ItemSelector extends Block {
         ctx.restore();
         ctx.strokeStyle = "black";
         ctx.stroke();
+        ctx.beginPath();
+        ctx.fillStyle = "steelblue";
         if (this.mouseOverIndex >= 0) {
-          ctx.beginPath();
-          ctx.fillStyle = "steelblue";
           ctx.rect(this.xBox, this.yBox + this.hBox * (1 + this.mouseOverIndex), this.wBox, this.hBox);
-          ctx.fill();
+        } else if (this.selectedIndex >= 0 && this.selectedIndex < this.items.length) {
+          ctx.rect(this.xBox, this.yBox + this.hBox * (1 + this.selectedIndex), this.wBox, this.hBox);
         }
+        ctx.fill();
         for (let i = 0; i < this.items.length; i++) {
           ctx.fillStyle = i == this.mouseOverIndex ? "white" : "black";
           ctx.fillText(this.items[i], this.xBox + this.mBox, this.yBox + (i + 1) * this.hBox + this.hBox / 2 + 4);
@@ -179,8 +191,8 @@ export class ItemSelector extends Block {
 
     // draw the ports
     ctx.strokeStyle = "black";
-    this.ports[0].draw(ctx, this.iconic);
-    this.ports[1].draw(ctx, this.iconic);
+    this.portI.draw(ctx, this.iconic);
+    this.portO.draw(ctx, this.iconic);
 
   }
 

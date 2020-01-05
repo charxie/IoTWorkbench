@@ -40,6 +40,7 @@ export class StateIO {
           block.setMaximum(state.maximum);
           block.setSteps(state.steps);
           block.setValue(state.value);
+          block.setSnapToTick(state.snapToTick);
         } else if (block instanceof ItemSelector) {
           block.setName(state.name);
           block.setItems(state.items);

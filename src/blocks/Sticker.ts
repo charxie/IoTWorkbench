@@ -113,13 +113,4 @@ export class Sticker extends Block {
     this.ports[0].setY(this.height / 2);
   }
 
-  private isInputBoolean(): boolean {
-    for (let c of flowchart.connectors) {
-      if (this.ports[0] == c.getInput()) {
-        return typeof c.getOutput().getValue() == "boolean";
-      }
-    }
-    return false;
-  }
-
 }
