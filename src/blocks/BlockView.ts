@@ -311,7 +311,9 @@ export class BlockView {
             this.connectorOntheFly.y1 = p.y;
             this.connectorOntheFly.x2 = e.offsetX;
             this.connectorOntheFly.y2 = e.offsetY;
+            this.selectedPortConnector.getInput().setValue(undefined);
             this.selectedPortConnector = null;
+            this.flowchart.updateResults();
           }
         } else {
           this.connectorOntheFly.x2 = e.offsetX;

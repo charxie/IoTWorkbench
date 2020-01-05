@@ -35,14 +35,20 @@ export class BinaryFunctionBlock extends FunctionBlock {
   }
 
   updateModel(): void {
-    if (this.expression) {
+    let x = this.portX.getValue();
+    let y = this.portY.getValue();
+    if (this.expression && x != undefined && y != undefined) {
       const node = math.parse(this.expression);
       const code = node.compile();
-      let scope = {
-        x: this.portX.getValue(),
-        y: this.portY.getValue()
-      };
-      this.portR.setValue(code.evaluate(scope));
+      if (Array.isArray(x) && Array.isArray(y)) {
+        let r = new Array(Math.max(x.length, y.length));
+        for (let i = 0; i < r.length; i++) {
+          r[i] = code.evaluate({x: i < x.length ? x[i] : 0, y: i < y.length ? y[i] : 0});
+        }
+        this.portR.setValue(r);
+      } else {
+        this.portR.setValue(code.evaluate({x: x, y: y}));
+      }
     } else {
       this.portR.setValue(NaN);
     }

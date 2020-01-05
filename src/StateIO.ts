@@ -14,6 +14,7 @@ import {ItemSelector} from "./blocks/ItemSelector";
 export class StateIO {
 
   private static readonly inputFieldId: string = "save-state-file-name-field";
+  private static lastSavedFileName: string = "state.json";
 
   private constructor() {
   }
@@ -109,9 +110,8 @@ export class StateIO {
 
   static saveAs(data: string): void {
     let that = this;
-    let fileName = 'state.json';
     $('#modal-dialog').html(`<div style="font-family: Arial; line-height: 30px; font-size: 90%;">
-        Save as:<br><input type="text" id="${this.inputFieldId}" style="width: 260px;" value="${fileName}">`);
+        Save as:<br><input type="text" id="${this.inputFieldId}" style="width: 260px;" value="${this.lastSavedFileName}">`);
     $('#modal-dialog').dialog({
       resizable: false,
       modal: true,
@@ -128,6 +128,7 @@ export class StateIO {
           $(this).dialog('close');
           let inputFileName = document.getElementById(that.inputFieldId) as HTMLInputElement;
           Util.saveText(data, inputFileName.value);
+          that.lastSavedFileName = inputFileName.value;
         },
         'Cancel': function () {
           $(this).dialog('close');

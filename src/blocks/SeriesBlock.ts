@@ -26,6 +26,11 @@ export class SeriesBlock extends Block {
     this.ports.push(this.portN);
     this.ports.push(this.portS);
     this.margin = 15;
+    let output = [];
+    for (let i = 0; i < 10; i++) {
+      output.push(i);
+    }
+    this.portS.setValue(output);
   }
 
   refreshView(): void {

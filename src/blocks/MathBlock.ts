@@ -35,27 +35,35 @@ export class MathBlock extends Block {
   updateModel(): void {
     let a = this.portA.getValue();
     let b = this.portB.getValue();
-    switch (this.name) {
-      case "Add Block":
-        this.portR.setValue(a + b);
-        break;
-      case "Subtract Block":
-        this.portR.setValue(a - b);
-        break;
-      case "Multiply Block":
-        this.portR.setValue(a * b);
-        break;
-      case "Divide Block":
-        this.portR.setValue(a / b);
-        break;
-      case "Modulus Block":
-        this.portR.setValue(a % b);
-        break;
-      case "Exponentiation Block":
-        this.portR.setValue(a ** b);
-        break;
+    if (Array.isArray(a) && Array.isArray(b)) {
+      let c = new Array(Math.max(a.length, b.length));
+      for (let i = 0; i < c.length; i++) {
+        c[i] = this.getResult(i < a.length ? a[i] : 0, i < b.length ? b[i] : 0);
+      }
+      this.portR.setValue(c);
+    } else {
+      this.portR.setValue(this.getResult(a, b));
     }
     this.updateConnectors();
+  }
+
+  private getResult(a, b): number {
+    switch (this.name) {
+      case "Add Block":
+        return a + b;
+      case "Subtract Block":
+        return a - b;
+      case "Multiply Block":
+        return a * b;
+      case "Divide Block":
+        return a / b;
+      case "Modulus Block":
+        return a % b;
+      case "Exponentiation Block":
+        return a ** b;
+      default:
+        return NaN;
+    }
   }
 
 }

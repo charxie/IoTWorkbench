@@ -30,13 +30,19 @@ export class UnaryFunctionBlock extends FunctionBlock {
   }
 
   updateModel(): void {
-    if (this.expression) {
+    let x = this.portX.getValue();
+    if (this.expression && x != undefined) {
       const node = math.parse(this.expression);
       const code = node.compile();
-      let scope = {
-        x: this.portX.getValue()
-      };
-      this.portR.setValue(code.evaluate(scope));
+      if (Array.isArray(x)) {
+        let r = [];
+        for (let i of x) {
+          r.push(code.evaluate({x: i}));
+        }
+        this.portR.setValue(r);
+      } else {
+        this.portR.setValue(code.evaluate({x: x}));
+      }
     } else {
       this.portR.setValue(NaN);
     }
