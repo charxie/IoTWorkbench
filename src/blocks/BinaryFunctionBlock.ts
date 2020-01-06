@@ -5,6 +5,7 @@
 import {Port} from "./Port";
 import {FunctionBlock} from "./FunctionBlock";
 import {math} from "../Main";
+import {Block} from "./Block";
 
 export class BinaryFunctionBlock extends FunctionBlock {
 
@@ -25,6 +26,12 @@ export class BinaryFunctionBlock extends FunctionBlock {
     this.ports.push(this.portY);
     this.ports.push(this.portR);
     this.margin = 15;
+  }
+
+  getCopy(): Block {
+    let block = new BinaryFunctionBlock("Binary Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    block.expression = this.expression;
+    return block;
   }
 
   refreshView(): void {

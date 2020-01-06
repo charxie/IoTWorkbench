@@ -66,6 +66,13 @@ export class ItemSelector extends Block {
     this.triangle = new Triangle(x1, y1, x2, y2, x3, y3);
   }
 
+  getCopy(): Block {
+    let copy = new ItemSelector("Item Selector #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    copy.items = this.items;
+    copy.selectedIndex = this.selectedIndex;
+    return copy;
+  }
+
   setItems(items: any[]): void {
     this.items = items;
   }

@@ -58,6 +58,12 @@ export class ToggleSwitch extends Block {
     this.knob = new Arc(this.trackMin, this.y + this.halfHeight * 3 / 2, this.knobRadius, 0, 2 * Math.PI, true);
   }
 
+  getCopy(): Block {
+    let copy = new ToggleSwitch("Switch #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    copy.selected = this.selected;
+    return copy;
+  }
+
   setSelected(selected: boolean): void {
     this.selected = selected;
   }

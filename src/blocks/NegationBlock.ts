@@ -22,6 +22,10 @@ export class NegationBlock extends Block {
     this.margin = 15;
   }
 
+  getCopy(): Block {
+    return new NegationBlock(this.name + " #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+  }
+
   refreshView(): void {
     this.portX.setY(this.height / 2);
     this.portR.setX(this.width);

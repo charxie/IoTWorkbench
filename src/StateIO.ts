@@ -28,7 +28,10 @@ export class StateIO {
         let type = state.uid.substring(0, state.uid.indexOf("#") - 1);
         if (type.indexOf("HAT") != -1) continue; // Do not add HAT blocks. They are added by the model components.
         let block = flowchart.addBlock(type, state.x, state.y, state.uid);
-        //if (block == null) continue;
+        if (block == null) {
+          console.log(type);
+          continue;
+        }
         if (state.width) {
           block.setWidth(state.width);
         }

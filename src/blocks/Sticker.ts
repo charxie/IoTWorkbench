@@ -42,6 +42,13 @@ export class Sticker extends Block {
     this.ports.push(new Port(this, true, "I", 0, this.height / 2, false));
   }
 
+  getCopy(): Block {
+    let copy = new Sticker("Sticker #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    copy.text = this.text;
+    copy.decimals = this.decimals;
+    return copy;
+  }
+
   setDecimals(decimals: number): void {
     this.decimals = decimals;
   }

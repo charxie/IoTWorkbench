@@ -47,6 +47,8 @@ export abstract class Block implements Movable {
     this.height = height;
   }
 
+  abstract getCopy() : Block;
+
   abstract refreshView(): void;
 
   abstract updateModel(): void;

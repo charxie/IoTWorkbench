@@ -33,6 +33,10 @@ export class SeriesBlock extends Block {
     this.portS.setValue(output);
   }
 
+  getCopy(): Block {
+    return new SeriesBlock("Series Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
+  }
+
   refreshView(): void {
     this.portS.setX(this.width);
     this.portS.setY(this.height / 2);

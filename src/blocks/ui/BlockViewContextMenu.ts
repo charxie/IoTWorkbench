@@ -3,7 +3,7 @@
  */
 
 import $ from "jquery";
-import {closeAllContextMenus} from "../../Main";
+import {closeAllContextMenus, flowchart} from "../../Main";
 import {StateIO} from "../../StateIO";
 import {MyContextMenu} from "../../MyContextMenu";
 import {BlockView} from "../BlockView";
@@ -21,7 +21,7 @@ export class BlockViewContextMenu extends MyContextMenu {
 
   getUi(): string {
     return `<menu id="${this.id}" class="menu" style="width: 170px; z-index: 10000">
-              <li class="menu-item disabled">
+              <li class="menu-item disabled" id="${this.id}-paste-menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-paste-button"><i class="fas fa-paste"></i><span class="menu-text">Paste</span></button>
               </li>
               <li class="menu-item">
@@ -49,6 +49,8 @@ export class BlockViewContextMenu extends MyContextMenu {
   }
 
   addListeners(): void {
+    let pasteButton = document.getElementById(this.id + "-paste-button");
+    pasteButton.addEventListener("click", this.pasteButtonClick.bind(this), false);
     let openButton = document.getElementById(this.id + "-open-button");
     openButton.addEventListener("click", this.openButtonClick.bind(this), false);
     let saveButton = document.getElementById(this.id + "-save-button");
@@ -61,6 +63,12 @@ export class BlockViewContextMenu extends MyContextMenu {
     clearButton.addEventListener("click", this.clearButtonClick.bind(this), false);
     let settingsButton = document.getElementById(this.id + "-settings-button");
     settingsButton.addEventListener("click", this.settingsButtonClick.bind(this), false);
+  }
+
+  private pasteButtonClick(e: MouseEvent): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    flowchart.blockView.paste();
   }
 
   private clearButtonClick(e: MouseEvent): void {

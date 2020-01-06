@@ -4,6 +4,7 @@
 
 import {Port} from "./Port";
 import {HatBlock} from "./HatBlock";
+import {Block} from "./Block";
 
 export class RainbowHatBlock extends HatBlock {
 
@@ -66,6 +67,10 @@ export class RainbowHatBlock extends HatBlock {
     this.ports.push(this.portRgbLed6);
     this.ports.push(this.portRgbLed7);
     this.ports.push(this.portDisplay);
+  }
+
+  getCopy(): Block {
+    return new RainbowHatBlock(name + " #" + Date.now().toString(16), this.x, this.y);
   }
 
   refreshView(): void {

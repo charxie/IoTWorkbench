@@ -64,6 +64,16 @@ export class Slider extends Block {
     this.trackRight = this.x + this.width - 8;
   }
 
+  getCopy(): Block {
+    let copy = new Slider("Slider #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    copy.minimum = this.minimum;
+    copy.maximum = this.maximum;
+    copy.steps = this.steps;
+    copy.value = this.value;
+    copy.snapToTick = this.snapToTick;
+    return copy;
+  }
+
   setValue(value: number): void {
     this.value = value;
   }

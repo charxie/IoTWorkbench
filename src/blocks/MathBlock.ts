@@ -25,6 +25,10 @@ export class MathBlock extends Block {
     this.margin = 15;
   }
 
+  getCopy(): Block {
+    return new MathBlock(this.name + " #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
+  }
+
   refreshView(): void {
     this.portA.setY(this.height / 3);
     this.portB.setY(this.height * 2 / 3);

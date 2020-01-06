@@ -25,6 +25,10 @@ export class ConditionalStatementBlock extends Block {
     this.margin = 15;
   }
 
+  getCopy(): Block {
+    return new ConditionalStatementBlock("Conditional Statement Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
+  }
+
   refreshView(): void {
     this.portA.setY(this.height / 2);
     this.portT.setX(this.width);

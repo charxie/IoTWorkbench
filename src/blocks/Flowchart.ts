@@ -25,6 +25,7 @@ export class Flowchart {
   blocks: Block[] = [];
   connectors: PortConnector[] = [];
   blockView: BlockView;
+  copiedBlock: Block;
 
   constructor() {
     this.blockView = new BlockView("block-view", this);

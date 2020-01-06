@@ -22,8 +22,8 @@ export abstract class HatContextMenu extends MyContextMenu {
   deleteButtonClick(e: MouseEvent): void {
     if (this.hat) {
       let that = this;
-      $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to delete " + this.hat.uid + "?</div>");
-      $("#modal-dialog").dialog({
+      let d = $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to delete " + this.hat.uid + "?</div>");
+      d.dialog({
         resizable: false,
         modal: true,
         title: "Delete",

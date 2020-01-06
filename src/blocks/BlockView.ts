@@ -36,6 +36,8 @@ export class BlockView {
   private connectorOntheFly: Connector;
   private gridSize: number = 100;
   private overWhat: any;
+  private contextMenuClickX: number;
+  private contextMenuClickY: number;
   private preventMainMouseEvent: boolean = false; // when a block is handling its own mouse events, set this flag true
 
   static State = class {
@@ -116,6 +118,18 @@ export class BlockView {
         }
       }
     }, false);
+  }
+
+  paste(): void {
+    if (!flowchart.copiedBlock) return;
+    let block = flowchart.copiedBlock.getCopy();
+    block.setX(this.contextMenuClickX);
+    block.setY(this.contextMenuClickY);
+    block.updateModel();
+    block.refreshView();
+    flowchart.blocks.push(block);
+    this.draw();
+    flowchart.storeBlockStates();
   }
 
   private storeBlock(block: Block): void {
@@ -353,9 +367,11 @@ export class BlockView {
 
   private openContextMenu(e: MouseEvent): void {
     e.preventDefault();
+    this.contextMenuClickX = e.offsetX;
+    this.contextMenuClickY = e.offsetY;
     let block = null;
     for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
-      if (this.flowchart.blocks[i].contains(e.offsetX, e.offsetY)) {
+      if (this.flowchart.blocks[i].contains(this.contextMenuClickX, this.contextMenuClickY)) {
         block = this.flowchart.blocks[i];
         break;
       }
@@ -400,6 +416,7 @@ export class BlockView {
     } else {
       contextMenus.blockView.view = this;
       menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;
+      document.getElementById("block-view-context-menu-paste-menu-item").className = flowchart.copiedBlock ? "menu-item" : "menu-item disabled";
     }
     if (menu != null) {
       menu.style.left = e.clientX + "px";
