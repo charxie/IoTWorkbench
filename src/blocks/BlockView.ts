@@ -249,7 +249,8 @@ export class BlockView {
     }
     let grab = false;
     for (let b of this.flowchart.blocks) {
-      if (b.contains(x, y)) {
+      // since item selectors have a pull down menu that is larger, we will always invoke their mouse handlers
+      if (b instanceof ItemSelector || b.contains(x, y)) {
         if (b.mouseDown(e)) {
           grab = true;
           break;
@@ -283,7 +284,8 @@ export class BlockView {
     this.selectedPort = null;
     this.preventMainMouseEvent = false;
     for (let b of this.flowchart.blocks) {
-      if (b.contains(x, y)) {
+      // since item selectors have a pull down menu that is larger, we will always invoke their mouse handlers
+      if (b instanceof ItemSelector || b.contains(x, y)) {
         b.mouseUp(e);
       }
     }
@@ -350,7 +352,8 @@ export class BlockView {
       }
     }
     for (let b of this.flowchart.blocks) {
-      if (b.contains(x, y)) {
+      // since item selectors have a pull down menu that is larger, we will always invoke their mouse handlers
+      if (b instanceof ItemSelector || b.contains(x, y)) {
         b.mouseMove(e);
       }
     }

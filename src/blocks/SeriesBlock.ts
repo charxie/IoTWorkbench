@@ -14,6 +14,7 @@ export class SeriesBlock extends Block {
 
   constructor(uid: string, x: number, y: number, width: number, height: number, name: string, symbol: string) {
     super(uid, x, y, width, height);
+    this.source = true;
     this.name = name;
     this.symbol = symbol;
     this.color = "#006400";
@@ -48,12 +49,13 @@ export class SeriesBlock extends Block {
   updateModel(): void {
     let x0 = this.portX.getValue();
     let dx = this.portD.getValue();
-    let n = this.portN.getValue();
+    let nx = this.portN.getValue();
+    this.source = (x0 == undefined || dx == undefined || nx == undefined);
     if (x0 == undefined) x0 = 0;
     if (dx == undefined) dx = 1;
-    if (n == undefined) n = 10;
+    if (nx == undefined) nx = 10;
     let output = [];
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < nx; i++) {
       output.push(x0 + dx * i);
     }
     this.portS.setValue(output);

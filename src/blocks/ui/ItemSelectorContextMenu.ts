@@ -3,7 +3,7 @@
  */
 
 import $ from "jquery";
-import {closeAllContextMenus, flowchart} from "../../Main";
+import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {ItemSelector} from "../ItemSelector";
 
@@ -69,6 +69,7 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
       widthInputElement.value = itemSelector.getWidth().toString();
       let heightInputElement = document.getElementById("item-selector-block-height-field") as HTMLInputElement;
       heightInputElement.value = itemSelector.getHeight().toString();
+      let that = this;
       d.dialog({
         resizable: false,
         modal: true,
@@ -78,16 +79,38 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
         buttons: {
           'OK': function () {
             itemSelector.setName(nameInputElement.value);
-            itemSelector.setWidth(parseInt(widthInputElement.value));
-            itemSelector.setHeight(parseInt(heightInputElement.value));
-            itemSelector.setItems(JSON.parse(itemsInputElement.value));
-            itemSelector.refreshView();
-            flowchart.draw();
-            flowchart.updateResults();
-            // update the local storage since we have changed the UID of this block
-            flowchart.storeBlockStates();
-            flowchart.storeConnectorStates();
-            $(this).dialog('close');
+            let success = true;
+            let message;
+            let w = parseInt(widthInputElement.value);
+            if (isNumber(w)) {
+              itemSelector.setWidth(Math.max(20, w));
+            } else {
+              success = false;
+              message = widthInputElement.value + " is not a valid number.";
+            }
+            let h = parseInt(heightInputElement.value);
+            if (isNumber(h)) {
+              itemSelector.setHeight(Math.max(20, h));
+            } else {
+              success = false;
+              message = heightInputElement.value + " is not a valid number.";
+            }
+            try {
+              itemSelector.setItems(JSON.parse(itemsInputElement.value));
+            } catch (err) {
+              success = false;
+              message = itemsInputElement.value + " is not valid.";
+            }
+            if (success) {
+              itemSelector.refreshView();
+              flowchart.draw();
+              flowchart.updateResults();
+              flowchart.storeBlockStates();
+              flowchart.storeConnectorStates();
+              $(this).dialog('close');
+            } else {
+              that.showErrorMessage(message);
+            }
           },
           'Cancel': function () {
             $(this).dialog('close');

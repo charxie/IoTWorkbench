@@ -90,14 +90,18 @@ export class ItemSelector extends Block {
   }
 
   updateModel(): void {
-    if (this.portI.getValue()) {
-      this.items = this.portI.getValue();
-      if (this.items.length > 0) {
-        this.selectedIndex = Math.min(this.selectedIndex, this.items.length - 1);
-      }
-      this.portO.setValue(this.items[this.selectedIndex]);
-      this.updateConnectors();
+    let input = this.portI.getValue();
+    if (input != undefined) {
+      this.items = Array.isArray(input) ? input : [input];
+      this.source = false;
+    } else {
+      this.source = true;
     }
+    if (this.items.length > 0) {
+      this.selectedIndex = Math.min(this.selectedIndex, this.items.length - 1);
+    }
+    this.portO.setValue(this.items[this.selectedIndex]);
+    this.updateConnectors();
   }
 
   refreshView(): void {

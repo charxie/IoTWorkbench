@@ -82,6 +82,10 @@ export function closeAllContextMenus() {
   });
 }
 
+export function isNumber(x: any) {
+  return !isNaN(parseFloat(x)) && isFinite(x);
+}
+
 function showUnderConstructionMessage() {
   $("#modal-dialog").html("<div style='font-size: 90%;'>Under construction...</div>").dialog({
     resizable: false,
