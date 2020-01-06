@@ -6,6 +6,7 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {UnaryFunctionBlock} from "../UnaryFunctionBlock";
+import {Util} from "../../Util";
 
 export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
 
@@ -58,15 +59,58 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof UnaryFunctionBlock) {
-      let block = this.block;
-      let d = $("#modal-dialog").html(this.getPropertiesUI());
+      const block = this.block;
+      const d = $("#modal-dialog").html(this.getPropertiesUI());
       let expressionInputElement = document.getElementById("unary-function-block-expression-field") as HTMLInputElement;
       expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x";
       let widthInputElement = document.getElementById("unary-function-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("unary-function-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
-      let that = this;
+      const okFunction = function () {
+        let success = true;
+        let message;
+        // set width
+        let w = parseInt(widthInputElement.value);
+        if (isNumber(w)) {
+          block.setWidth(Math.max(20, w));
+        } else {
+          success = false;
+          message = widthInputElement.value + " is not a valid width.";
+        }
+        // set height
+        let h = parseInt(heightInputElement.value);
+        if (isNumber(h)) {
+          block.setHeight(Math.max(20, h));
+        } else {
+          success = false;
+          message = heightInputElement.value + " is not a valid height.";
+        }
+        // set expression
+        block.setExpression(expressionInputElement.value);
+        try {
+          flowchart.updateResults();
+        } catch (err) {
+          success = false;
+          message = expressionInputElement.value + " is not a valid expression.";
+        }
+        // finish up
+        if (success) {
+          block.refreshView();
+          flowchart.draw();
+          d.dialog('close');
+        } else {
+          Util.showErrorMessage(message);
+        }
+      };
+      const enterKeyUp = function (e) {
+        if (e.keyCode == 13) {
+          okFunction();
+        }
+      };
+      expressionInputElement.addEventListener("keyup", enterKeyUp);
+      widthInputElement.addEventListener("keyup", enterKeyUp);
+      heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -74,44 +118,9 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
         height: 300,
         width: 400,
         buttons: {
-          'OK': function () {
-            let success = true;
-            let message;
-            // set width
-            let w = parseInt(widthInputElement.value);
-            if (isNumber(w)) {
-              block.setWidth(Math.max(20, w));
-            } else {
-              success = false;
-              message = widthInputElement.value + " is not a valid width.";
-            }
-            // set height
-            let h = parseInt(heightInputElement.value);
-            if (isNumber(h)) {
-              block.setHeight(Math.max(20, h));
-            } else {
-              success = false;
-              message = heightInputElement.value + " is not a valid height.";
-            }
-            // set expression
-            block.setExpression(expressionInputElement.value);
-            try {
-              flowchart.updateResults();
-            } catch (err) {
-              success = false;
-              message = expressionInputElement.value + " is not a valid expression.";
-            }
-            // finish up
-            if (success) {
-              block.refreshView();
-              flowchart.draw();
-              $(this).dialog('close');
-            } else {
-              that.showErrorMessage(message);
-            }
-          },
+          'OK': okFunction,
           'Cancel': function () {
-            $(this).dialog('close');
+            d.dialog('close');
           }
         }
       });

@@ -142,6 +142,18 @@ export class BlockViewContextMenu extends MyContextMenu {
     let d = $("#modal-dialog").html(this.getSettingsUI());
     let backgroundColorInputElement = document.getElementById("block-view-background-color-field") as HTMLInputElement;
     backgroundColorInputElement.value = this.view.getBackgroundColor();
+    const okFunction = function () {
+      view.setBackgroundColor(backgroundColorInputElement.value);
+      view.flowchart.storeViewState();
+      view.flowchart.draw();
+      d.dialog('close');
+    };
+    const enterKeyUp = function (e) {
+      if (e.keyCode == 13) {
+        okFunction();
+      }
+    };
+    backgroundColorInputElement.addEventListener("keyup", enterKeyUp);
     d.dialog({
       resizable: false,
       modal: true,
@@ -149,14 +161,9 @@ export class BlockViewContextMenu extends MyContextMenu {
       height: 400,
       width: 400,
       buttons: {
-        'OK': function () {
-          view.setBackgroundColor(backgroundColorInputElement.value);
-          view.flowchart.storeViewState();
-          view.flowchart.draw();
-          $(this).dialog('close');
-        },
+        'OK': okFunction,
         'Cancel': function () {
-          $(this).dialog('close');
+          d.dialog('close');
         }
       }
     });

@@ -6,6 +6,7 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {ItemSelector} from "../ItemSelector";
+import {Util} from "../../Util";
 
 export class ItemSelectorContextMenu extends BlockContextMenu {
 
@@ -59,8 +60,8 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof ItemSelector) {
-      let itemSelector = this.block;
-      let d = $("#modal-dialog").html(this.getPropertiesUI());
+      const itemSelector = this.block;
+      const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("item-selector-name-field") as HTMLInputElement;
       nameInputElement.value = itemSelector.getName();
       let itemsInputElement = document.getElementById("item-selector-block-items-field") as HTMLTextAreaElement;
@@ -69,7 +70,53 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
       widthInputElement.value = itemSelector.getWidth().toString();
       let heightInputElement = document.getElementById("item-selector-block-height-field") as HTMLInputElement;
       heightInputElement.value = itemSelector.getHeight().toString();
-      let that = this;
+      const okFunction = function () {
+        itemSelector.setName(nameInputElement.value);
+        let success = true;
+        let message;
+        // set width
+        let w = parseInt(widthInputElement.value);
+        if (isNumber(w)) {
+          itemSelector.setWidth(Math.max(20, w));
+        } else {
+          success = false;
+          message = widthInputElement.value + " is not a valid width.";
+        }
+        // set height
+        let h = parseInt(heightInputElement.value);
+        if (isNumber(h)) {
+          itemSelector.setHeight(Math.max(20, h));
+        } else {
+          success = false;
+          message = heightInputElement.value + " is not a valid height.";
+        }
+        // set items
+        try {
+          itemSelector.setItems(JSON.parse(itemsInputElement.value));
+        } catch (err) {
+          success = false;
+          message = itemsInputElement.value + " is not a valid array.";
+        }
+        // finish up
+        if (success) {
+          itemSelector.refreshView();
+          flowchart.draw();
+          flowchart.updateResults();
+          flowchart.storeBlockStates();
+          flowchart.storeConnectorStates();
+          d.dialog('close');
+        } else {
+          Util.showErrorMessage(message);
+        }
+      };
+      const enterKeyUp = function (e) {
+        if (e.keyCode == 13) {
+          okFunction();
+        }
+      };
+      nameInputElement.addEventListener("keyup", enterKeyUp);
+      widthInputElement.addEventListener("keyup", enterKeyUp);
+      heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -77,47 +124,9 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
         height: 400,
         width: 320,
         buttons: {
-          'OK': function () {
-            itemSelector.setName(nameInputElement.value);
-            let success = true;
-            let message;
-            // set width
-            let w = parseInt(widthInputElement.value);
-            if (isNumber(w)) {
-              itemSelector.setWidth(Math.max(20, w));
-            } else {
-              success = false;
-              message = widthInputElement.value + " is not a valid width.";
-            }
-            // set height
-            let h = parseInt(heightInputElement.value);
-            if (isNumber(h)) {
-              itemSelector.setHeight(Math.max(20, h));
-            } else {
-              success = false;
-              message = heightInputElement.value + " is not a valid height.";
-            }
-            // set items
-            try {
-              itemSelector.setItems(JSON.parse(itemsInputElement.value));
-            } catch (err) {
-              success = false;
-              message = itemsInputElement.value + " is not a valid array.";
-            }
-            // finish up
-            if (success) {
-              itemSelector.refreshView();
-              flowchart.draw();
-              flowchart.updateResults();
-              flowchart.storeBlockStates();
-              flowchart.storeConnectorStates();
-              $(this).dialog('close');
-            } else {
-              that.showErrorMessage(message);
-            }
-          },
+          'OK': okFunction,
           'Cancel': function () {
-            $(this).dialog('close');
+            d.dialog('close');
           }
         }
       });

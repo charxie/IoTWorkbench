@@ -17,19 +17,4 @@ export abstract class MyContextMenu {
     element.innerHTML = this.getUi();
   }
 
-  showErrorMessage(message): void {
-    $("#error-dialog").html("<div style='font-size: 90%;'>" + message + "</div>").dialog({
-      resizable: false,
-      modal: true,
-      title: "Error",
-      height: 200,
-      width: 200,
-      buttons: {
-        'OK': function () {
-          $(this).dialog('close');
-        }
-      }
-    });
-  }
-
 }

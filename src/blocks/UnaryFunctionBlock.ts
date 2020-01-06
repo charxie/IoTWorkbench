@@ -6,6 +6,7 @@ import {Port} from "./Port";
 import {FunctionBlock} from "./FunctionBlock";
 import {math} from "../Main";
 import {Block} from "./Block";
+import {Util} from "../Util";
 
 export class UnaryFunctionBlock extends FunctionBlock {
 
@@ -39,16 +40,20 @@ export class UnaryFunctionBlock extends FunctionBlock {
   updateModel(): void {
     let x = this.portX.getValue();
     if (this.expression && x != undefined) {
-      const node = math.parse(this.expression);
-      const code = node.compile();
-      if (Array.isArray(x)) {
-        let r = [];
-        for (let i of x) {
-          r.push(code.evaluate({x: i}));
+      try {
+        const node = math.parse(this.expression);
+        const code = node.compile();
+        if (Array.isArray(x)) {
+          let r = [];
+          for (let i of x) {
+            r.push(code.evaluate({x: i}));
+          }
+          this.portR.setValue(r);
+        } else {
+          this.portR.setValue(code.evaluate({x: x}));
         }
-        this.portR.setValue(r);
-      } else {
-        this.portR.setValue(code.evaluate({x: x}));
+      } catch (e) {
+        Util.showErrorMessage(e.toString());
       }
     } else {
       this.portR.setValue(NaN);

@@ -5,7 +5,8 @@
 import $ from "jquery";
 import {ToggleSwitch} from "../ToggleSwitch";
 import {BlockContextMenu} from "./BlockContextMenu";
-import {closeAllContextMenus, flowchart} from "../../Main";
+import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
+import {Util} from "../../Util";
 
 export class ToggleSwitchContextMenu extends BlockContextMenu {
 
@@ -62,8 +63,8 @@ export class ToggleSwitchContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block) {
-      let toggleSwitch = <ToggleSwitch>this.block;
-      let d = $("#modal-dialog").html(this.getPropertiesUI());
+      const toggleSwitch = <ToggleSwitch>this.block;
+      const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("toggle-switch-name-field") as HTMLInputElement;
       nameInputElement.value = toggleSwitch.getName();
       let valueInputElement = document.getElementById("toggle-switch-value-field") as HTMLInputElement;
@@ -72,6 +73,45 @@ export class ToggleSwitchContextMenu extends BlockContextMenu {
       widthInputElement.value = toggleSwitch.getWidth().toString();
       let heightInputElement = document.getElementById("toggle-switch-height-field") as HTMLInputElement;
       heightInputElement.value = toggleSwitch.getHeight().toString();
+      const okFunction = function () {
+        toggleSwitch.setName(nameInputElement.value);
+        toggleSwitch.setSelected(valueInputElement.value == "true");
+        let success = true;
+        let message;
+        // set width
+        let w = parseInt(widthInputElement.value);
+        if (isNumber(w)) {
+          toggleSwitch.setWidth(Math.max(20, w));
+        } else {
+          success = false;
+          message = widthInputElement.value + " is not a valid width.";
+        }
+        // set height
+        let h = parseInt(heightInputElement.value);
+        if (isNumber(h)) {
+          toggleSwitch.setHeight(Math.max(20, h));
+        } else {
+          success = false;
+          message = heightInputElement.value + " is not a valid height.";
+        }
+        if (success) {
+          toggleSwitch.refreshView();
+          flowchart.storeBlockStates();
+          flowchart.draw();
+          d.dialog('close');
+        } else {
+          Util.showErrorMessage(message);
+        }
+      };
+      const enterKeyUp = function (e) {
+        if (e.keyCode == 13) {
+          okFunction();
+        }
+      };
+      nameInputElement.addEventListener("keyup", enterKeyUp);
+      valueInputElement.addEventListener("keyup", enterKeyUp);
+      widthInputElement.addEventListener("keyup", enterKeyUp);
+      heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -79,18 +119,9 @@ export class ToggleSwitchContextMenu extends BlockContextMenu {
         height: 450,
         width: 300,
         buttons: {
-          'OK': function () {
-            toggleSwitch.setName(nameInputElement.value);
-            toggleSwitch.setSelected(valueInputElement.value == "true");
-            toggleSwitch.setWidth(parseInt(widthInputElement.value));
-            toggleSwitch.setHeight(parseInt(heightInputElement.value));
-            toggleSwitch.refreshView();
-            flowchart.storeBlockStates();
-            flowchart.draw();
-            $(this).dialog('close');
-          },
+          'OK': okFunction,
           'Cancel': function () {
-            $(this).dialog('close');
+            d.dialog('close');
           }
         }
       });

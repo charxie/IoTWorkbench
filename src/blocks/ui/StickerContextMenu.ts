@@ -4,8 +4,9 @@
 
 import $ from "jquery";
 import {BlockContextMenu} from "./BlockContextMenu";
-import {closeAllContextMenus, flowchart} from "../../Main";
+import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {Sticker} from "../Sticker";
+import {Util} from "../../Util";
 
 export class StickerContextMenu extends BlockContextMenu {
 
@@ -62,8 +63,8 @@ export class StickerContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block) {
-      let sticker = <Sticker>this.block;
-      let d = $("#modal-dialog").html(this.getPropertiesUI());
+      const sticker = <Sticker>this.block;
+      const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("sticker-name-field") as HTMLInputElement;
       nameInputElement.value = sticker.getName();
       let decimalsInputElement = document.getElementById("sticker-decimals-field") as HTMLInputElement;
@@ -72,6 +73,53 @@ export class StickerContextMenu extends BlockContextMenu {
       widthInputElement.value = sticker.getWidth().toString();
       let heightInputElement = document.getElementById("sticker-height-field") as HTMLInputElement;
       heightInputElement.value = sticker.getHeight().toString();
+      const okFunction = function () {
+        sticker.setName(nameInputElement.value);
+        let success = true;
+        let message;
+        // set width
+        let w = parseInt(widthInputElement.value);
+        if (isNumber(w)) {
+          sticker.setWidth(Math.max(20, w));
+        } else {
+          success = false;
+          message = widthInputElement.value + " is not a valid width.";
+        }
+        // set height
+        let h = parseInt(heightInputElement.value);
+        if (isNumber(h)) {
+          sticker.setHeight(Math.max(20, h));
+        } else {
+          success = false;
+          message = heightInputElement.value + " is not a valid height.";
+        }
+        // set decimals
+        let decimals = parseInt(decimalsInputElement.value);
+        if (isNumber(decimals)) {
+          sticker.setDecimals(Math.max(0, decimals));
+        } else {
+          success = false;
+          message = decimalsInputElement.value + " is not valid for decimals.";
+        }
+        // finish
+        if(success) {
+          sticker.refreshView();
+          flowchart.storeBlockStates();
+          flowchart.draw();
+          d.dialog('close');
+        } else {
+          Util.showErrorMessage(message);
+        }
+      };
+      const enterKeyUp = function (e) {
+        if (e.keyCode == 13) {
+          okFunction();
+        }
+      };
+      nameInputElement.addEventListener("keyup", enterKeyUp);
+      decimalsInputElement.addEventListener("keyup", enterKeyUp);
+      widthInputElement.addEventListener("keyup", enterKeyUp);
+      heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -79,18 +127,9 @@ export class StickerContextMenu extends BlockContextMenu {
         height: 400,
         width: 300,
         buttons: {
-          'OK': function () {
-            sticker.setName(nameInputElement.value);
-            sticker.setDecimals(parseInt(decimalsInputElement.value));
-            sticker.setWidth(parseInt(widthInputElement.value));
-            sticker.setHeight(parseInt(heightInputElement.value));
-            sticker.refreshView();
-            flowchart.storeBlockStates();
-            flowchart.draw();
-            $(this).dialog('close');
-          },
+          'OK': okFunction,
           'Cancel': function () {
-            $(this).dialog('close');
+            d.dialog('close');
           }
         }
       });

@@ -6,6 +6,7 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {SeriesBlock} from "../SeriesBlock";
+import {Util} from "../../Util";
 
 export class SeriesBlockContextMenu extends BlockContextMenu {
 
@@ -63,8 +64,8 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof SeriesBlock) {
-      let block = this.block;
-      let d = $("#modal-dialog").html(this.getPropertiesUI());
+      const block = this.block;
+      const d = $("#modal-dialog").html(this.getPropertiesUI());
       let startInputElement = document.getElementById("series-block-start-field") as HTMLInputElement;
       startInputElement.value = block.getStart().toString();
       let incrementInputElement = document.getElementById("series-block-increment-field") as HTMLInputElement;
@@ -75,7 +76,71 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("series-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
-      let that = this;
+      const okFunction = function () {
+        let success = true;
+        let message;
+        // set width
+        let w = parseInt(widthInputElement.value);
+        if (isNumber(w)) {
+          block.setWidth(Math.max(20, w));
+        } else {
+          success = false;
+          message = widthInputElement.value + " is not a valid width.";
+        }
+        // set height
+        let h = parseInt(heightInputElement.value);
+        if (isNumber(h)) {
+          block.setHeight(Math.max(20, h));
+        } else {
+          success = false;
+          message = heightInputElement.value + " is not a valid height.";
+        }
+        // set start
+        let start = parseInt(startInputElement.value);
+        if (isNumber(start)) {
+          block.setStart(start);
+        } else {
+          success = false;
+          message = startInputElement.value + " is not a valid number for Start.";
+        }
+        // set increment
+        let increment = parseInt(incrementInputElement.value);
+        if (isNumber(increment)) {
+          block.setIncrement(increment);
+        } else {
+          success = false;
+          message = incrementInputElement.value + " is not a valid number for Increment.";
+        }
+        // set count
+        let count = parseInt(countInputElement.value);
+        if (isNumber(count)) {
+          block.setCount(count);
+        } else {
+          success = false;
+          message = countInputElement.value + " is not a valid number for Count.";
+        }
+        // finish
+        if (success) {
+          block.refreshView();
+          flowchart.updateResults();
+          flowchart.draw();
+          flowchart.storeBlockStates();
+          flowchart.storeConnectorStates();
+          d.dialog('close');
+        } else {
+          Util.showErrorMessage(message);
+        }
+      };
+      const enterKeyUp = function (e) {
+        if (e.keyCode == 13) {
+          okFunction();
+        }
+      };
+      startInputElement.addEventListener("keyup", enterKeyUp);
+      incrementInputElement.addEventListener("keyup", enterKeyUp);
+      countInputElement.addEventListener("keyup", enterKeyUp);
+      widthInputElement.addEventListener("keyup", enterKeyUp);
+      heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -83,63 +148,9 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
         height: 350,
         width: 300,
         buttons: {
-          'OK': function () {
-            let success = true;
-            let message;
-            // set width
-            let w = parseInt(widthInputElement.value);
-            if (isNumber(w)) {
-              block.setWidth(Math.max(20, w));
-            } else {
-              success = false;
-              message = widthInputElement.value + " is not a valid width.";
-            }
-            // set height
-            let h = parseInt(heightInputElement.value);
-            if (isNumber(h)) {
-              block.setHeight(Math.max(20, h));
-            } else {
-              success = false;
-              message = heightInputElement.value + " is not a valid height.";
-            }
-            // set start
-            let start = parseInt(startInputElement.value);
-            if (isNumber(start)) {
-              block.setStart(start);
-            } else {
-              success = false;
-              message = startInputElement.value + " is not a valid number for Start.";
-            }
-            // set increment
-            let increment = parseInt(incrementInputElement.value);
-            if (isNumber(increment)) {
-              block.setIncrement(increment);
-            } else {
-              success = false;
-              message = incrementInputElement.value + " is not a valid number for Increment.";
-            }
-            // set count
-            let count = parseInt(countInputElement.value);
-            if (isNumber(count)) {
-              block.setCount(count);
-            } else {
-              success = false;
-              message = countInputElement.value + " is not a valid number for Count.";
-            }
-            // finish
-            if (success) {
-              block.refreshView();
-              flowchart.updateResults();
-              flowchart.draw();
-              flowchart.storeBlockStates();
-              flowchart.storeConnectorStates();
-              $(this).dialog('close');
-            } else {
-              that.showErrorMessage(message);
-            }
-          },
+          'OK': okFunction,
           'Cancel': function () {
-            $(this).dialog('close');
+            d.dialog('close');
           }
         }
       });

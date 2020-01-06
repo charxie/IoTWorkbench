@@ -6,6 +6,7 @@ import $ from "jquery";
 import {Slider} from "../Slider";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
+import {Util} from "../../Util";
 
 export class SliderContextMenu extends BlockContextMenu {
 
@@ -79,8 +80,8 @@ export class SliderContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block) {
-      let slider = <Slider>this.block;
-      let d = $("#modal-dialog").html(this.getPropertiesUI());
+      const slider = <Slider>this.block;
+      const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("slider-name-field") as HTMLInputElement;
       nameInputElement.value = slider.getName();
       let snapRadioButton = document.getElementById("slider-snap-to-tick-radio-button") as HTMLInputElement;
@@ -99,8 +100,7 @@ export class SliderContextMenu extends BlockContextMenu {
       widthInputElement.value = slider.getWidth().toString();
       let heightInputElement = document.getElementById("slider-height-field") as HTMLInputElement;
       heightInputElement.value = slider.getHeight().toString();
-      let that = this;
-      let okFunction = function () {
+      const okFunction = function () {
         slider.setName(nameInputElement.value);
         slider.setSnapToTick(snapRadioButton.checked);
         let success = true;
@@ -165,10 +165,10 @@ export class SliderContextMenu extends BlockContextMenu {
           flowchart.draw();
           d.dialog('close');
         } else {
-          that.showErrorMessage(message);
+          Util.showErrorMessage(message);
         }
       };
-      let enterKeyUp = function (e) {
+      const enterKeyUp = function (e) {
         if (e.keyCode == 13) {
           okFunction();
         }

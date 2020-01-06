@@ -2,7 +2,24 @@
  * @author Charles Xie
  */
 
+import $ from "jquery";
+
 export class Util {
+
+  static showErrorMessage(message): void {
+    $("#error-dialog").html("<div style='font-size: 90%;'>" + message + "</div>").dialog({
+      resizable: false,
+      modal: true,
+      title: "Error",
+      height: 200,
+      width: 200,
+      buttons: {
+        'OK': function () {
+          $(this).dialog('close');
+        }
+      }
+    });
+  }
 
   static saveText(text: string, fileName: string): void {
     let a = document.createElement('a') as HTMLAnchorElement

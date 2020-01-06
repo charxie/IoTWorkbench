@@ -3,8 +3,9 @@
  */
 
 import $ from "jquery";
-import {closeAllContextMenus, flowchart} from "../../Main";
+import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
+import {Util} from "../../Util";
 
 export class LogicBlockContextMenu extends BlockContextMenu {
 
@@ -67,14 +68,55 @@ export class LogicBlockContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block) {
-      let block = this.block;
-      let d = $("#modal-dialog").html(this.getPropertiesUI());
+      const block = this.block;
+      const d = $("#modal-dialog").html(this.getPropertiesUI());
       let selectElement = document.getElementById("logic-block-operator") as HTMLSelectElement;
       selectElement.value = block.getName();
       let widthInputElement = document.getElementById("logic-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("logic-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
+      const okFunction = function () {
+        block.setName(selectElement.options[selectElement.selectedIndex].value);
+        block.setSymbol(selectElement.options[selectElement.selectedIndex].text);
+        block.setUid(block.getName() + " #" + Date.now().toString(16));
+        let success = true;
+        let message;
+        // set width
+        let w = parseInt(widthInputElement.value);
+        if (isNumber(w)) {
+          block.setWidth(Math.max(20, w));
+        } else {
+          success = false;
+          message = widthInputElement.value + " is not a valid width.";
+        }
+        // set height
+        let h = parseInt(heightInputElement.value);
+        if (isNumber(h)) {
+          block.setHeight(Math.max(20, h));
+        } else {
+          success = false;
+          message = heightInputElement.value + " is not a valid height.";
+        }
+        // finish
+        if (success) {
+          block.refreshView();
+          flowchart.updateResults();
+          flowchart.draw();
+          flowchart.storeBlockStates();
+          flowchart.storeConnectorStates();
+          d.dialog('close');
+        } else {
+          Util.showErrorMessage(message);
+        }
+      };
+      const enterKeyUp = function (e) {
+        if (e.keyCode == 13) {
+          okFunction();
+        }
+      };
+      widthInputElement.addEventListener("keyup", enterKeyUp);
+      heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -82,22 +124,9 @@ export class LogicBlockContextMenu extends BlockContextMenu {
         height: 300,
         width: 300,
         buttons: {
-          'OK': function () {
-            block.setName(selectElement.options[selectElement.selectedIndex].value);
-            block.setSymbol(selectElement.options[selectElement.selectedIndex].text);
-            block.setUid(block.getName() + " #" + Date.now().toString(16));
-            block.setWidth(parseInt(widthInputElement.value));
-            block.setHeight(parseInt(heightInputElement.value));
-            block.refreshView();
-            flowchart.updateResults();
-            flowchart.draw();
-            // update the local storage since we have changed the UID of this block
-            flowchart.storeBlockStates();
-            flowchart.storeConnectorStates();
-            $(this).dialog('close');
-          },
+          'OK': okFunction,
           'Cancel': function () {
-            $(this).dialog('close');
+            d.dialog('close');
           }
         }
       });
