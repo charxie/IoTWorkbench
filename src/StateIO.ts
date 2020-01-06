@@ -10,6 +10,7 @@ import {flowchart} from "./Main";
 import {ToggleSwitch} from "./blocks/ToggleSwitch";
 import {FunctionBlock} from "./blocks/FunctionBlock";
 import {ItemSelector} from "./blocks/ItemSelector";
+import {SeriesBlock} from "./blocks/SeriesBlock";
 
 export class StateIO {
 
@@ -45,6 +46,11 @@ export class StateIO {
           block.setSteps(state.steps);
           block.setValue(state.value);
           block.setSnapToTick(state.snapToTick);
+        } else if (block instanceof SeriesBlock) {
+          block.setName(state.name);
+          block.setStart(state.start);
+          block.setIncrement(state.increment);
+          block.setCount(state.count);
         } else if (block instanceof ItemSelector) {
           block.setName(state.name);
           block.setItems(state.items);

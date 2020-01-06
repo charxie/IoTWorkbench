@@ -215,6 +215,8 @@ export class Flowchart {
     for (let b of this.blocks) {
       if (b instanceof Slider) {
         blockStates.push(new Slider.State(b));
+      } else if (b instanceof SeriesBlock) {
+        blockStates.push(new SeriesBlock.State(b));
       } else if (b instanceof ItemSelector) {
         blockStates.push(new ItemSelector.State(b));
       } else if (b instanceof ToggleSwitch) {
@@ -243,6 +245,8 @@ export class Flowchart {
       for (let b of flowchart.blocks) {
         if (b instanceof Slider) {
           this.blockStates.push(new Slider.State(b));
+        } else if (b instanceof SeriesBlock) {
+          this.blockStates.push(new SeriesBlock.State(b));
         } else if (b instanceof ItemSelector) {
           this.blockStates.push(new ItemSelector.State(b));
         } else if (b instanceof ToggleSwitch) {

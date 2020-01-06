@@ -3,7 +3,7 @@
  */
 
 import $ from "jquery";
-import {closeAllContextMenus, flowchart} from "../../Main";
+import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {BinaryFunctionBlock} from "../BinaryFunctionBlock";
 
@@ -66,6 +66,7 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("binary-function-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
+      let that = this;
       d.dialog({
         resizable: false,
         modal: true,
@@ -74,13 +75,40 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
         width: 400,
         buttons: {
           'OK': function () {
+            let success = true;
+            let message;
+            // set width
+            let w = parseInt(widthInputElement.value);
+            if (isNumber(w)) {
+              block.setWidth(Math.max(20, w));
+            } else {
+              success = false;
+              message = widthInputElement.value + " is not a valid width.";
+            }
+            // set height
+            let h = parseInt(heightInputElement.value);
+            if (isNumber(h)) {
+              block.setHeight(Math.max(20, h));
+            } else {
+              success = false;
+              message = heightInputElement.value + " is not a valid height.";
+            }
+            // set expression
             block.setExpression(expressionInputElement.value);
-            block.setWidth(parseInt(widthInputElement.value));
-            block.setHeight(parseInt(heightInputElement.value));
-            block.refreshView();
-            flowchart.updateResults();
-            flowchart.draw();
-            $(this).dialog('close');
+            try {
+              flowchart.updateResults();
+            } catch (err) {
+              success = false;
+              message = expressionInputElement.value + " is not a valid expression.";
+            }
+            // finish up
+            if (success) {
+              block.refreshView();
+              flowchart.draw();
+              $(this).dialog('close');
+            } else {
+              that.showErrorMessage(message);
+            }
           },
           'Cancel': function () {
             $(this).dialog('close');

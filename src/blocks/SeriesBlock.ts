@@ -11,6 +11,33 @@ export class SeriesBlock extends Block {
   private readonly portD: Port;
   private readonly portN: Port;
   private readonly portS: Port;
+  private start: number = 0;
+  private increment: number = 1;
+  private count: number = 10;
+
+  static State = class {
+    readonly name: string;
+    readonly uid: string;
+    readonly x: number;
+    readonly y: number;
+    readonly width: number;
+    readonly height: number;
+    readonly start: number;
+    readonly increment: number;
+    readonly count: number;
+
+    constructor(seriesBlock: SeriesBlock) {
+      this.name = seriesBlock.name;
+      this.uid = seriesBlock.uid;
+      this.x = seriesBlock.x;
+      this.y = seriesBlock.y;
+      this.width = seriesBlock.width;
+      this.height = seriesBlock.height;
+      this.start = seriesBlock.start;
+      this.increment = seriesBlock.increment;
+      this.count = seriesBlock.count;
+    }
+  };
 
   constructor(uid: string, x: number, y: number, width: number, height: number, name: string, symbol: string) {
     super(uid, x, y, width, height);
@@ -28,14 +55,38 @@ export class SeriesBlock extends Block {
     this.ports.push(this.portS);
     this.margin = 15;
     let output = [];
-    for (let i = 0; i < 10; i++) {
-      output.push(i);
+    for (let i = 0; i < this.count; i++) {
+      output.push(this.start + i * this.increment);
     }
     this.portS.setValue(output);
   }
 
   getCopy(): Block {
     return new SeriesBlock("Series Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
+  }
+
+  getStart(): number {
+    return this.start;
+  }
+
+  setStart(start: number): void {
+    this.start = start;
+  }
+
+  getIncrement(): number {
+    return this.increment;
+  }
+
+  setIncrement(increment: number): void {
+    this.increment = increment;
+  }
+
+  getCount(): number {
+    return this.count;
+  }
+
+  setCount(count: number): void {
+    this.count = count;
   }
 
   refreshView(): void {
@@ -51,12 +102,18 @@ export class SeriesBlock extends Block {
     let dx = this.portD.getValue();
     let nx = this.portN.getValue();
     this.source = (x0 == undefined || dx == undefined || nx == undefined);
-    if (x0 == undefined) x0 = 0;
-    if (dx == undefined) dx = 1;
-    if (nx == undefined) nx = 10;
+    if (x0 != undefined) {
+      this.start = x0;
+    }
+    if (dx != undefined) {
+      this.increment = dx;
+    }
+    if (nx != undefined) {
+      this.count = nx;
+    }
     let output = [];
-    for (let i = 0; i < nx; i++) {
-      output.push(x0 + dx * i);
+    for (let i = 0; i < this.count; i++) {
+      output.push(this.start + this.increment * i);
     }
     this.portS.setValue(output);
     this.updateConnectors();

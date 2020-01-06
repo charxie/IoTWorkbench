@@ -5,7 +5,7 @@
 import $ from "jquery";
 import {Slider} from "../Slider";
 import {BlockContextMenu} from "./BlockContextMenu";
-import {closeAllContextMenus, flowchart} from "../../Main";
+import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 
 export class SliderContextMenu extends BlockContextMenu {
 
@@ -99,6 +99,87 @@ export class SliderContextMenu extends BlockContextMenu {
       widthInputElement.value = slider.getWidth().toString();
       let heightInputElement = document.getElementById("slider-height-field") as HTMLInputElement;
       heightInputElement.value = slider.getHeight().toString();
+      let that = this;
+      let okFunction = function () {
+        slider.setName(nameInputElement.value);
+        slider.setSnapToTick(snapRadioButton.checked);
+        let success = true;
+        let message;
+        // set width
+        let w = parseInt(widthInputElement.value);
+        if (isNumber(w)) {
+          slider.setWidth(Math.max(20, w));
+        } else {
+          success = false;
+          message = widthInputElement.value + " is not a valid width.";
+        }
+        // set height
+        let h = parseInt(heightInputElement.value);
+        if (isNumber(h)) {
+          slider.setHeight(Math.max(20, h));
+        } else {
+          success = false;
+          message = heightInputElement.value + " is not a valid height.";
+        }
+        // set minimum
+        let minimum = parseInt(minimumInputElement.value);
+        if (isNumber(minimum)) {
+          slider.setMinimum(minimum);
+        } else {
+          success = false;
+          message = minimumInputElement.value + " is not a valid minimum.";
+        }
+        // set maximum
+        let maximum = parseInt(maximumInputElement.value);
+        if (isNumber(maximum)) {
+          slider.setMaximum(maximum);
+        } else {
+          success = false;
+          message = maximumInputElement.value + " is not a valid maximum.";
+        }
+        // set steps
+        let steps = parseInt(stepsInputElement.value);
+        if (isNumber(steps)) {
+          slider.setSteps(steps);
+        } else {
+          success = false;
+          message = stepsInputElement.value + " is not a valid number for steps.";
+        }
+        // set current value
+        let value = parseInt(valueInputElement.value);
+        if (isNumber(value)) {
+          if (value > maximum) {
+            value = maximum
+          } else if (value < minimum) {
+            value = minimum;
+          }
+          slider.setValue(value);
+        } else {
+          success = false;
+          message = valueInputElement.value + " is not a valid number for value.";
+        }
+        // finish
+        if (success) {
+          slider.refreshView();
+          flowchart.storeBlockStates();
+          flowchart.draw();
+          d.dialog('close');
+        } else {
+          that.showErrorMessage(message);
+        }
+      };
+      let enterKeyUp = function (e) {
+        if (e.keyCode == 13) {
+          okFunction();
+        }
+      };
+      nameInputElement.addEventListener("keyup", enterKeyUp);
+      minimumInputElement.addEventListener("keyup", enterKeyUp);
+      maximumInputElement.addEventListener("keyup", enterKeyUp);
+      stepsInputElement.addEventListener("keyup", enterKeyUp);
+      valueInputElement.addEventListener("keyup", enterKeyUp);
+      widthInputElement.addEventListener("keyup", enterKeyUp);
+      heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -106,22 +187,9 @@ export class SliderContextMenu extends BlockContextMenu {
         height: 500,
         width: 320,
         buttons: {
-          'OK': function () {
-            slider.setName(nameInputElement.value);
-            slider.setSnapToTick(snapRadioButton.checked);
-            slider.setMinimum(parseFloat(minimumInputElement.value));
-            slider.setMaximum(parseFloat(maximumInputElement.value));
-            slider.setSteps(parseInt(stepsInputElement.value));
-            slider.setValue(parseFloat(valueInputElement.value));
-            slider.setWidth(parseInt(widthInputElement.value));
-            slider.setHeight(parseInt(heightInputElement.value));
-            slider.refreshView();
-            flowchart.storeBlockStates();
-            flowchart.draw();
-            $(this).dialog('close');
-          },
+          'OK': okFunction,
           'Cancel': function () {
-            $(this).dialog('close');
+            d.dialog('close');
           }
         }
       });
