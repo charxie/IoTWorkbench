@@ -49,6 +49,7 @@ import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
 import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 import {SeriesBlockContextMenu} from "./blocks/ui/SeriesBlockContextMenu";
 import {ItemSelectorContextMenu} from "./blocks/ui/ItemSelectorContextMenu";
+import {Examples} from "./Examples";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -114,6 +115,8 @@ window.onload = function () {
   document.getElementById("version-label").innerHTML = Constants.Software.version;
   document.getElementById('credit').innerHTML = social + "<div class='horizontal-divider'></div>"
     + Constants.Software.name + " " + Constants.Software.version + ", created by Charles Xie , &copy; " + new Date().getFullYear();
+
+  let examples = new Examples();
 
   document.getElementById("main-page-home-button").onclick = showUnderConstructionMessage;
   document.getElementById("main-page-camera-button").onclick = function () {
