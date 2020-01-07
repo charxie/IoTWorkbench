@@ -19,6 +19,7 @@ import {FunctionBlock} from "./FunctionBlock";
 import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
 import {SeriesBlock} from "./SeriesBlock";
 import {ItemSelector} from "./ItemSelector";
+import {Grapher} from "./Grapher";
 
 export class Flowchart {
 
@@ -185,6 +186,9 @@ export class Flowchart {
       case "Sticker":
         block = new Sticker(uid, name, x, y, 80, 80);
         break;
+      case "Grapher":
+        block = new Grapher(uid, name, x, y, 200, 160);
+        break;
     }
     if (block != null) {
       this.blocks.push(block);
@@ -223,6 +227,8 @@ export class Flowchart {
         blockStates.push(new ToggleSwitch.State(b));
       } else if (b instanceof Sticker) {
         blockStates.push(new Sticker.State(b));
+      } else if (b instanceof Grapher) {
+        blockStates.push(new Grapher.State(b));
       } else if (b instanceof FunctionBlock) {
         blockStates.push(new FunctionBlock.State(b));
       } else {
@@ -253,6 +259,8 @@ export class Flowchart {
           this.blockStates.push(new ToggleSwitch.State(b));
         } else if (b instanceof Sticker) {
           this.blockStates.push(new Sticker.State(b));
+        } else if (b instanceof Grapher) {
+          this.blockStates.push(new Grapher.State(b));
         } else if (b instanceof FunctionBlock) {
           this.blockStates.push(new FunctionBlock.State(b));
         } else {

@@ -17,6 +17,7 @@ import * as Constants from "./Constants";
 import {Sound} from "./Sound";
 import {User} from "./User";
 import {StateIO} from "./StateIO";
+import {Examples} from "./Examples";
 import {LineChart} from "./tools/LineChart";
 import {PngSaver} from "./tools/PngSaver";
 
@@ -46,10 +47,10 @@ import {BinaryFunctionBlockContextMenu} from "./blocks/ui/BinaryFunctionBlockCon
 import {HatBlockContextMenu} from "./blocks/ui/HatBlockContextMenu";
 import {ToggleSwitchContextMenu} from "./blocks/ui/ToggleSwitchContextMenu";
 import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
-import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 import {SeriesBlockContextMenu} from "./blocks/ui/SeriesBlockContextMenu";
 import {ItemSelectorContextMenu} from "./blocks/ui/ItemSelectorContextMenu";
-import {Examples} from "./Examples";
+import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
+import {GrapherContextMenu} from "./blocks/ui/GrapherContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -266,6 +267,11 @@ function setupContextMenuForBlock() {
   stickerContextMenu.render("sticker-context-menu-placeholder");
   stickerContextMenu.addListeners();
   contextMenus.sticker = stickerContextMenu;
+
+  let grapherContextMenu = new GrapherContextMenu();
+  grapherContextMenu.render("grapher-context-menu-placeholder");
+  grapherContextMenu.addListeners();
+  contextMenus.grapher = grapherContextMenu;
 }
 
 function setupContextMenuForModel() {

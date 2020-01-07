@@ -21,6 +21,7 @@ import {Sticker} from "./Sticker";
 import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
 import {SeriesBlock} from "./SeriesBlock";
 import {ItemSelector} from "./ItemSelector";
+import {Grapher} from "./Grapher";
 
 export class BlockView {
 
@@ -114,6 +115,9 @@ export class BlockView {
             break;
           case "sticker-block":
             that.storeBlock(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));
+            break;
+          case "grapher-block":
+            that.storeBlock(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));
             break;
         }
       }
@@ -285,7 +289,8 @@ export class BlockView {
     this.preventMainMouseEvent = false;
     for (let b of this.flowchart.blocks) {
       // since item selectors have a pull down menu that is larger, we will always invoke their mouse handlers
-      if (b instanceof ItemSelector || b.contains(x, y)) {
+      // for sliders, users may drag the knob outside them, so we should always involve their mouse handlers
+      if (b instanceof ItemSelector || b instanceof Slider || b.contains(x, y)) {
         b.mouseUp(e);
       }
     }
@@ -416,6 +421,9 @@ export class BlockView {
     } else if (block instanceof Sticker) {
       contextMenus.sticker.block = block;
       menu = document.getElementById("sticker-context-menu") as HTMLMenuElement;
+    } else if (block instanceof Grapher) {
+      contextMenus.grapher.block = block;
+      menu = document.getElementById("grapher-context-menu") as HTMLMenuElement;
     } else {
       contextMenus.blockView.view = this;
       menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;

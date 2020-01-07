@@ -14,6 +14,7 @@ import {ToggleSwitch} from "../ToggleSwitch";
 import {ConditionalStatementBlock} from "../ConditionalStatementBlock";
 import {SeriesBlock} from "../SeriesBlock";
 import {ItemSelector} from "../ItemSelector";
+import {Grapher} from "../Grapher";
 
 export class BlockElementsPanel {
 
@@ -50,6 +51,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="item-selector-block" width="50x" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="toggle-switch-block" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="sticker-block" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="grapher-block" width="45px" height="45px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -78,6 +80,7 @@ export class BlockElementsPanel {
     this.drawSlider("Slider", "slider-block");
     this.drawItemSelector("Item Selector", "item-selector-block");
     this.drawSticker("Sticker", "sticker-block");
+    this.drawGrapher("Grapher", "grapher-block");
     this.drawConditionalStatementBlock("Conditional Statement Block", "IF", "conditional-statement-block");
     this.drawSeriesBlock("Series Block", "Series", "series-block");
   }
@@ -102,6 +105,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new Sticker("Sticker Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setSmall(true);
+    block.draw(ctx);
+  }
+
+  private drawGrapher(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new Grapher("Grapher Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setSmall(true);
     block.draw(ctx);
   }
