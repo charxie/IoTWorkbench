@@ -8,6 +8,8 @@ import example01 from "./examples/logic-example1.json";
 import example02 from "./examples/math-example3.json";
 // @ts-ignore
 import example03 from "./examples/series-example2.json";
+// @ts-ignore
+import example04 from "./examples/graph-example1.json";
 
 import {flowchart} from "./Main";
 import {StateIO} from "./StateIO";
@@ -21,6 +23,7 @@ export class Examples {
     this.files.push({name: "Logic Example 1", data: example01});
     this.files.push({name: "Math Example 1", data: example02});
     this.files.push({name: "Series Example 1", data: example03});
+    this.files.push({name: "Graph Example 1", data: example04});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 

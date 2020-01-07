@@ -266,6 +266,7 @@ export class BlockView {
   }
 
   private mouseUp(e: MouseEvent): void {
+    if (e.which == 3) return; // if this is a right-click event
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.selectedPort != null) {
@@ -433,6 +434,7 @@ export class BlockView {
       menu.style.left = e.clientX + "px";
       menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
       menu.classList.add("show-menu");
+      this.selectedMovable = null;
     }
   }
 

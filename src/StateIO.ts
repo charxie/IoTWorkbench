@@ -11,6 +11,7 @@ import {ToggleSwitch} from "./blocks/ToggleSwitch";
 import {FunctionBlock} from "./blocks/FunctionBlock";
 import {ItemSelector} from "./blocks/ItemSelector";
 import {SeriesBlock} from "./blocks/SeriesBlock";
+import {Grapher} from "./blocks/Grapher";
 
 export class StateIO {
 
@@ -61,6 +62,8 @@ export class StateIO {
         } else if (block instanceof Sticker) {
           block.setName(state.name);
           block.setDecimals(state.decimals ? state.decimals : 3);
+        } else if (block instanceof Grapher) {
+          block.setName(state.name);
         } else if (block instanceof FunctionBlock) {
           block.setName(state.name);
           block.setExpression(state.expression ? state.expression : "x");
