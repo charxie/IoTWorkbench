@@ -209,6 +209,7 @@ export class Slider extends Block {
   }
 
   mouseDown(e: MouseEvent): boolean {
+    if (e.which == 3) return; // if this is a right-click event
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.onKnob(x, y)) {
@@ -235,6 +236,7 @@ export class Slider extends Block {
   }
 
   mouseMove(e: MouseEvent): void {
+    if (e.which == 3) return; // if this is a right-click event
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.knobGrabbed) {

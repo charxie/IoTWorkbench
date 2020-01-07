@@ -42,15 +42,48 @@ export class GrapherContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="grapher-name-field"></td>
+                  <td><input type="text" id="grapher-name-field" style="width: 120px"></td>
+                </tr>
+                <tr>
+                  <td>Scale:</td>
+                  <td><input type="radio" name="scale" id="grapher-auto-scale-radio-button" checked> Auto
+                      <input type="radio" name="scale" id="grapher-fixed-scale-radio-button"> Fixed</td>
+                </tr>
+                <tr>
+                  <td>Minimum Value:</td>
+                  <td><input type="text" id="grapher-minimum-value-field" style="width: 120px"></td>
+                </tr>
+                <tr>
+                  <td>Maximum Value:</td>
+                  <td><input type="text" id="grapher-maximum-value-field" style="width: 120px"></td>
+                </tr>
+                <tr>
+                  <td>Symbol:</td>
+                  <td>
+                    <select id="grapher-symbol-selector" style="width: 120px">
+                      <option value="None">None</option>
+                      <option value="Circle" selected>Circle</option>
+                    </select>
+                </tr>
+                <tr>
+                  <td>X-Axis Label:</td>
+                  <td><input type="text" id="grapher-x-axis-label-field" style="width: 120px"></td>
+                </tr>
+                <tr>
+                  <td>Y-Axis Label:</td>
+                  <td><input type="text" id="grapher-y-axis-label-field" style="width: 120px"></td>
+                </tr>
+                <tr>
+                  <td>Window Color:</td>
+                  <td><input type="text" id="grapher-window-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="grapher-width-field"></td>
+                  <td><input type="text" id="grapher-width-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="grapher-height-field"></td>
+                  <td><input type="text" id="grapher-height-field" style="width: 120px"></td>
                 </tr>
               </table>
             </div>`;
@@ -64,14 +97,51 @@ export class GrapherContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("grapher-name-field") as HTMLInputElement;
       nameInputElement.value = grapher.getName();
+      let symbolSelectElement = document.getElementById("grapher-symbol-selector") as HTMLSelectElement;
+      symbolSelectElement.value = grapher.getGraphSymbol();
+      let autoScaleRadioButton = document.getElementById("grapher-auto-scale-radio-button") as HTMLInputElement;
+      autoScaleRadioButton.checked = grapher.getAutoScale();
+      let fixedScaleRadioButton = document.getElementById("grapher-fixed-scale-radio-button") as HTMLInputElement;
+      fixedScaleRadioButton.checked = !grapher.getAutoScale();
+      let minimumValueInputElement = document.getElementById("grapher-minimum-value-field") as HTMLInputElement;
+      minimumValueInputElement.value = grapher.getMinimumValue().toString();
+      let maximumValueInputElement = document.getElementById("grapher-maximum-value-field") as HTMLInputElement;
+      maximumValueInputElement.value = grapher.getMaximumValue().toString();
+      let xAxisLableInputElement = document.getElementById("grapher-x-axis-label-field") as HTMLInputElement;
+      xAxisLableInputElement.value = grapher.getXAxisLabel();
+      let yAxisLableInputElement = document.getElementById("grapher-y-axis-label-field") as HTMLInputElement;
+      yAxisLableInputElement.value = grapher.getYAxisLabel();
+      let windowColorInputElement = document.getElementById("grapher-window-color-field") as HTMLInputElement;
+      windowColorInputElement.value = grapher.getGraphWindowColor();
       let widthInputElement = document.getElementById("grapher-width-field") as HTMLInputElement;
       widthInputElement.value = grapher.getWidth().toString();
       let heightInputElement = document.getElementById("grapher-height-field") as HTMLInputElement;
       heightInputElement.value = grapher.getHeight().toString();
       const okFunction = function () {
         grapher.setName(nameInputElement.value);
+        grapher.setGraphSymbol(symbolSelectElement.value);
+        grapher.setXAxisLabel(xAxisLableInputElement.value);
+        grapher.setYAxisLabel(yAxisLableInputElement.value);
+        grapher.setGraphWindowColor(windowColorInputElement.value);
+        grapher.setAutoScale(autoScaleRadioButton.checked);
         let success = true;
         let message;
+        // set minimum value
+        let minimumValue = parseInt(minimumValueInputElement.value);
+        if (isNumber(minimumValue)) {
+          grapher.setMinimumValue(minimumValue);
+        } else {
+          success = false;
+          message = minimumValueInputElement.value + " is not a valid value for minimum.";
+        }
+        // set maximum value
+        let maximumValue = parseInt(maximumValueInputElement.value);
+        if (isNumber(maximumValue)) {
+          grapher.setMaximumValue(maximumValue);
+        } else {
+          success = false;
+          message = maximumValueInputElement.value + " is not a valid value for maximum.";
+        }
         // set width
         let w = parseInt(widthInputElement.value);
         if (isNumber(w)) {
@@ -89,7 +159,7 @@ export class GrapherContextMenu extends BlockContextMenu {
           message = heightInputElement.value + " is not a valid height.";
         }
         // finish
-        if(success) {
+        if (success) {
           grapher.refreshView();
           flowchart.storeBlockStates();
           flowchart.draw();
@@ -104,14 +174,19 @@ export class GrapherContextMenu extends BlockContextMenu {
         }
       };
       nameInputElement.addEventListener("keyup", enterKeyUp);
+      minimumValueInputElement.addEventListener("keyup", enterKeyUp);
+      maximumValueInputElement.addEventListener("keyup", enterKeyUp);
+      xAxisLableInputElement.addEventListener("keyup", enterKeyUp);
+      yAxisLableInputElement.addEventListener("keyup", enterKeyUp);
+      windowColorInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
         title: grapher.getUid(),
-        height: 400,
-        width: 300,
+        height: 550,
+        width: 320,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

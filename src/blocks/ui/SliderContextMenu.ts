@@ -41,36 +41,36 @@ export class SliderContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="slider-name-field" style="width: 100%"></td>
+                  <td><input type="text" id="slider-name-field" style="width: 130px"></td>
                 </tr>
                 <tr>
                   <td>Snap:</td>
                   <td><input type="radio" name="snap" id="slider-snap-to-tick-radio-button"> Tick
-                      <input type="radio" name="snap" id="slider-no-snap-radio-button" value="None" checked> None</td>
+                      <input type="radio" name="snap" id="slider-no-snap-radio-button" checked> None</td>
                 </tr>
                 <tr>
                   <td>Minimum:</td>
-                  <td><input type="text" id="slider-minimum-field" style="width: 100%"></td>
+                  <td><input type="text" id="slider-minimum-field" style="width: 130px"></td>
                 </tr>
                 <tr>
                   <td>Maximum:</td>
-                  <td><input type="text" id="slider-maximum-field" style="width: 100%"></td>
+                  <td><input type="text" id="slider-maximum-field" style="width: 130px"></td>
                 </tr>
                 <tr>
                   <td>Steps:</td>
-                  <td><input type="text" id="slider-steps-field" style="width: 100%"></td>
+                  <td><input type="text" id="slider-steps-field" style="width: 130px"></td>
                 </tr>
                 <tr>
-                  <td>Value:</td>
-                  <td><input type="text" id="slider-value-field" style="width: 100%"></td>
+                  <td>Current Value:</td>
+                  <td><input type="text" id="slider-value-field" style="width: 130px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="slider-width-field" style="width: 100%"></td>
+                  <td><input type="text" id="slider-width-field" style="width: 130px"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="slider-height-field" style="width: 100%"></td>
+                  <td><input type="text" id="slider-height-field" style="width: 130px"></td>
                 </tr>
               </table>
             </div>`;
@@ -185,7 +185,7 @@ export class SliderContextMenu extends BlockContextMenu {
         modal: true,
         title: slider.getUid(),
         height: 500,
-        width: 320,
+        width: 300,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

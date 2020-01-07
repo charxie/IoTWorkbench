@@ -18,7 +18,7 @@ import {Sound} from "./Sound";
 import {User} from "./User";
 import {StateIO} from "./StateIO";
 import {Examples} from "./Examples";
-import {LineChart} from "./tools/LineChart";
+import {LineChart} from "./components/LineChart";
 import {PngSaver} from "./tools/PngSaver";
 
 import {System} from "./components/System";

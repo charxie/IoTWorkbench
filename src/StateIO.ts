@@ -64,6 +64,13 @@ export class StateIO {
           block.setDecimals(state.decimals ? state.decimals : 3);
         } else if (block instanceof Grapher) {
           block.setName(state.name);
+          if (state.minimumValue != undefined) block.setMinimumValue(state.minimumValue);
+          if (state.maximumValue != undefined) block.setMaximumValue(state.maximumValue);
+          if (state.autoscale != undefined) block.setAutoScale(state.autoscale);
+          if (state.xAxisLabel != undefined) block.setXAxisLabel(state.xAxisLabel);
+          if (state.yAxisLabel != undefined) block.setYAxisLabel(state.yAxisLabel);
+          if (state.graphWindowColor != undefined) block.setGraphWindowColor(state.graphWindowColor);
+          if (state.graphSymbol != undefined) block.setGraphSymbol(state.graphSymbol);
         } else if (block instanceof FunctionBlock) {
           block.setName(state.name);
           block.setExpression(state.expression ? state.expression : "x");

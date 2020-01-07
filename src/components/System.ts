@@ -18,7 +18,7 @@ import {Movable} from "../Movable";
 import {closeAllContextMenus, flowchart} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
-import {LineChart} from "../tools/LineChart";
+import {LineChart} from "./LineChart";
 
 declare var firebase;
 

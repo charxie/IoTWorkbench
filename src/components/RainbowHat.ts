@@ -15,7 +15,7 @@ import {Util} from "../Util";
 import {contextMenus, system} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
-import {LineChart} from "../tools/LineChart";
+import {LineChart} from "./LineChart";
 
 // @ts-ignore
 import rainbowHatImage from "../img/rainbow-hat.png";

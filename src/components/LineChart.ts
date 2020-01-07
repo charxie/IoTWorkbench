@@ -4,7 +4,7 @@
  * @author Charles Xie
  */
 
-import {Sensor} from "../components/Sensor";
+import {Sensor} from "./Sensor";
 import {Movable} from "../Movable";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
@@ -114,12 +114,12 @@ export class LineChart implements Movable {
     let min = Number.MAX_VALUE;
     let max = -min;
     if (this.autoscale) {
-      for (let i = 0; i < this.sensor.data.length; i++) {
-        if (this.sensor.data[i] > max) {
-          max = this.sensor.data[i];
+      for (let d of this.sensor.data) {
+        if (d > max) {
+          max = d;
         }
-        if (this.sensor.data[i] < min) {
-          min = this.sensor.data[i];
+        if (d < min) {
+          min = d;
         }
       }
     } else {
