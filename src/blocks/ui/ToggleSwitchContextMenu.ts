@@ -68,14 +68,14 @@ export class ToggleSwitchContextMenu extends BlockContextMenu {
       let nameInputElement = document.getElementById("toggle-switch-name-field") as HTMLInputElement;
       nameInputElement.value = toggleSwitch.getName();
       let valueInputElement = document.getElementById("toggle-switch-value-field") as HTMLInputElement;
-      valueInputElement.value = toggleSwitch.isSelected() ? "true" : "false";
+      valueInputElement.value = toggleSwitch.isChecked() ? "true" : "false";
       let widthInputElement = document.getElementById("toggle-switch-width-field") as HTMLInputElement;
       widthInputElement.value = toggleSwitch.getWidth().toString();
       let heightInputElement = document.getElementById("toggle-switch-height-field") as HTMLInputElement;
       heightInputElement.value = toggleSwitch.getHeight().toString();
       const okFunction = function () {
         toggleSwitch.setName(nameInputElement.value);
-        toggleSwitch.setSelected(valueInputElement.value == "true");
+        toggleSwitch.setChecked(valueInputElement.value == "true");
         let success = true;
         let message;
         // set width

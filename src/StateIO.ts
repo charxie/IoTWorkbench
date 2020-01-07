@@ -58,7 +58,7 @@ export class StateIO {
           block.setSelectedIndex(state.selectedIndex);
         } else if (block instanceof ToggleSwitch) {
           block.setName(state.name);
-          block.setSelected(state.selected);
+          block.setChecked(state.checked);
         } else if (block instanceof Sticker) {
           block.setName(state.name);
           block.setDecimals(state.decimals ? state.decimals : 3);

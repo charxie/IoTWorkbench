@@ -43,6 +43,7 @@ export class BinaryFunctionBlock extends FunctionBlock {
   }
 
   updateModel(): void {
+    this.hasError = false;
     let x = this.portX.getValue();
     let y = this.portY.getValue();
     if (this.expression && x != undefined && y != undefined) {
@@ -60,6 +61,7 @@ export class BinaryFunctionBlock extends FunctionBlock {
         }
       } catch (e) {
         Util.showErrorMessage(e.toString());
+        this.hasError = true;
       }
     } else {
       this.portR.setValue(NaN);

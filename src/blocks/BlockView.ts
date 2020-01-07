@@ -290,8 +290,8 @@ export class BlockView {
     this.preventMainMouseEvent = false;
     for (let b of this.flowchart.blocks) {
       // since item selectors have a pull down menu that is larger, we will always invoke their mouse handlers
-      // for sliders, users may drag the knob outside them, so we should always involve their mouse handlers
-      if (b instanceof ItemSelector || b instanceof Slider || b.contains(x, y)) {
+      // for sliders and switches, users may drag the knob outside them, so we should always involve their mouse handlers
+      if (b instanceof ItemSelector || b instanceof Slider || b instanceof ToggleSwitch || b.contains(x, y)) {
         b.mouseUp(e);
       }
     }

@@ -91,9 +91,11 @@ export class Grapher extends Block {
     this.graphWindow.height = this.height - this.barHeight - this.graphMargin.top - this.graphMargin.bottom;
     ctx.rect(this.graphWindow.x, this.graphWindow.y, this.graphWindow.width, this.graphWindow.height);
     ctx.stroke();
-    this.drawAxisLabels(ctx);
-    if (this.data.length > 1) {
-      this.drawLineCharts(ctx);
+    if (!this.iconic) {
+      this.drawAxisLabels(ctx);
+      if (this.data.length > 1) {
+        this.drawLineCharts(ctx);
+      }
     }
 
     // draw the port

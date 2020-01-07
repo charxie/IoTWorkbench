@@ -22,6 +22,9 @@ export abstract class Block implements Movable {
   protected radius: number = 5;
   protected margin: number = 30; // margin for inset
   protected iconic: boolean; // true when used for small icons
+  protected selected: boolean;
+  protected hasError: boolean = false;
+  protected errorColor: string = "red";
 
   static State = class {
     readonly uid: string;
@@ -47,7 +50,15 @@ export abstract class Block implements Movable {
     this.height = height;
   }
 
-  abstract getCopy() : Block;
+  setSelected(selected: boolean): void {
+    this.selected = selected;
+  }
+
+  isSelected(): boolean {
+    return this.selected;
+  }
+
+  abstract getCopy(): Block;
 
   abstract refreshView(): void;
 
@@ -203,6 +214,20 @@ export abstract class Block implements Movable {
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawRoundedRect(this.x, this.y, this.width, this.height, this.radius);
+
+    if (this.hasError) {
+      ctx.save();
+      let offset = 10;
+      ctx.shadowColor = "yellow";
+      ctx.shadowBlur = offset / 2;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = this.errorColor;
+      ctx.setLineDash([5, 3]);
+      ctx.drawRoundedRect(this.x - offset, this.y - offset, this.width + 2 * offset, this.height + 2 * offset, this.radius);
+      ctx.restore();
+    }
 
     // draw the inset
     ctx.fillStyle = "white";

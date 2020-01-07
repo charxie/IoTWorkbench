@@ -38,6 +38,7 @@ export class UnaryFunctionBlock extends FunctionBlock {
   }
 
   updateModel(): void {
+    this.hasError = false;
     let x = this.portX.getValue();
     if (this.expression && x != undefined) {
       try {
@@ -54,6 +55,7 @@ export class UnaryFunctionBlock extends FunctionBlock {
         }
       } catch (e) {
         Util.showErrorMessage(e.toString());
+        this.hasError = true;
       }
     } else {
       this.portR.setValue(NaN);

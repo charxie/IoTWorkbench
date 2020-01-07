@@ -98,6 +98,8 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
         if (success) {
           block.refreshView();
           flowchart.draw();
+          flowchart.storeBlockStates();
+          flowchart.storeConnectorStates();
           d.dialog('close');
         } else {
           Util.showErrorMessage(message);

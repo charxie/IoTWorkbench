@@ -11,7 +11,7 @@ import {flowchart} from "../Main";
 
 export class ToggleSwitch extends Block {
 
-  private selected: boolean = false;
+  private checked: boolean = false;
   private knob: Arc;
   private knobRadius: number = 10;
   private track: Stadium;
@@ -31,7 +31,7 @@ export class ToggleSwitch extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
-    readonly selected: boolean;
+    readonly checked: boolean;
 
     constructor(toggleSwitch: ToggleSwitch) {
       this.name = toggleSwitch.name;
@@ -40,7 +40,7 @@ export class ToggleSwitch extends Block {
       this.y = toggleSwitch.y;
       this.width = toggleSwitch.width;
       this.height = toggleSwitch.height;
-      this.selected = toggleSwitch.selected;
+      this.checked = toggleSwitch.checked;
     }
   };
 
@@ -60,20 +60,20 @@ export class ToggleSwitch extends Block {
 
   getCopy(): Block {
     let copy = new ToggleSwitch("Switch #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    copy.selected = this.selected;
+    copy.checked = this.checked;
     return copy;
   }
 
-  setSelected(selected: boolean): void {
-    this.selected = selected;
+  setChecked(checked: boolean): void {
+    this.checked = checked;
   }
 
-  isSelected(): boolean {
-    return this.selected;
+  isChecked(): boolean {
+    return this.checked;
   }
 
   updateModel(): void {
-    this.ports[0].setValue(this.selected);
+    this.ports[0].setValue(this.checked);
     this.updateConnectors();
   }
 
@@ -84,7 +84,7 @@ export class ToggleSwitch extends Block {
     this.knobRadius = this.halfHeight / 2 - this.yMargin;
     this.trackMin = this.x + this.knobRadius + this.xMargin;
     this.trackMax = this.x + this.width - this.knobRadius - this.xMargin;
-    this.knob.setCenter(this.selected ? this.trackMax : this.trackMin, this.y + this.halfHeight * 3 / 2);
+    this.knob.setCenter(this.checked ? this.trackMax : this.trackMin, this.y + this.halfHeight * 3 / 2);
     this.track.setRect(this.trackMin, this.y + this.halfHeight + this.yMargin, this.trackMax - this.trackMin, 2 * this.knobRadius);
     this.ports[0].setX(this.width);
     this.ports[0].setY(this.height / 2);
@@ -206,7 +206,7 @@ export class ToggleSwitch extends Block {
       } else if (this.knob.x > this.trackMax) {
         this.knob.x = this.trackMax;
       }
-      this.selected = this.knob.x > (this.trackMin + this.trackMax) / 2;
+      this.checked = this.knob.x > (this.trackMin + this.trackMax) / 2;
     } else {
       if (this.onKnob(x, y)) {
         if (e.target instanceof HTMLCanvasElement) {
