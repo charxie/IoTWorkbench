@@ -38,7 +38,7 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="worker-block-name-field"></td>
+                  <td><input type="text" id="worker-block-name-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Interval (millisecond):</td>

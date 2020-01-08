@@ -15,7 +15,6 @@ import {PortConnector} from "./PortConnector";
 import {Slider} from "./Slider";
 import {Sticker} from "./Sticker";
 import {ToggleSwitch} from "./ToggleSwitch";
-import {FunctionBlock} from "./FunctionBlock";
 import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
 import {SeriesBlock} from "./SeriesBlock";
 import {ItemSelector} from "./ItemSelector";
@@ -241,8 +240,12 @@ export class Flowchart {
         blockStates.push(new Sticker.State(b));
       } else if (b instanceof Grapher) {
         blockStates.push(new Grapher.State(b));
-      } else if (b instanceof FunctionBlock) {
-        blockStates.push(new FunctionBlock.State(b));
+      } else if (b instanceof ConditionalStatementBlock) {
+        blockStates.push(new ConditionalStatementBlock.State(b));
+      } else if (b instanceof UnaryFunctionBlock) {
+        blockStates.push(new UnaryFunctionBlock.State(b));
+      } else if (b instanceof BinaryFunctionBlock) {
+        blockStates.push(new BinaryFunctionBlock.State(b));
       } else {
         blockStates.push(new Block.State(b));
       }

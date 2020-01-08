@@ -10,9 +10,33 @@ import {Util} from "../Util";
 
 export class BinaryFunctionBlock extends FunctionBlock {
 
+  private variable1Name: string = "x";
+  private variable2Name: string = "y";
   private readonly portX: Port;
   private readonly portY: Port;
   private readonly portR: Port;
+
+  static State = class {
+    readonly uid: string;
+    readonly variable1Name: string;
+    readonly variable2Name: string;
+    readonly expression: string;
+    readonly x: number;
+    readonly y: number;
+    readonly width: number;
+    readonly height: number;
+
+    constructor(block: BinaryFunctionBlock) {
+      this.uid = block.uid;
+      this.variable1Name = block.variable1Name;
+      this.variable2Name = block.variable2Name;
+      this.expression = block.expression;
+      this.x = block.x;
+      this.y = block.y;
+      this.width = block.width;
+      this.height = block.height;
+    }
+  };
 
   constructor(uid: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
@@ -38,6 +62,22 @@ export class BinaryFunctionBlock extends FunctionBlock {
   destroy(): void {
   }
 
+  setVariable1Name(variable1Name: string): void {
+    this.variable1Name = variable1Name;
+  }
+
+  getVariable1Name(): string {
+    return this.variable1Name;
+  }
+
+  setVariable2Name(variable2Name: string): void {
+    this.variable2Name = variable2Name;
+  }
+
+  getVariable2Name(): string {
+    return this.variable2Name;
+  }
+
   refreshView(): void {
     this.portX.setY(this.height / 3);
     this.portY.setY(this.height * 2 / 3);
@@ -56,11 +96,11 @@ export class BinaryFunctionBlock extends FunctionBlock {
         if (Array.isArray(x) && Array.isArray(y)) {
           let r = new Array(Math.max(x.length, y.length));
           for (let i = 0; i < r.length; i++) {
-            r[i] = code.evaluate({x: i < x.length ? x[i] : 0, y: i < y.length ? y[i] : 0});
+            r[i] = code.evaluate({[this.variable1Name]: i < x.length ? x[i] : 0, [this.variable2Name]: i < y.length ? y[i] : 0});
           }
           this.portR.setValue(r);
         } else {
-          this.portR.setValue(code.evaluate({x: x, y: y}));
+          this.portR.setValue(code.evaluate({[this.variable1Name]: x, [this.variable2Name]: y}));
         }
       } catch (e) {
         Util.showErrorMessage(e.toString());

@@ -40,16 +40,20 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
+                  <td>Variable Name (e.g. x):</td>
+                  <td><input type="text" id="unary-function-block-variable-name-field" style="width: 150px"></td>
+                </tr>
+                <tr>
                   <td>Expression (e.g. sin(x)):</td>
-                  <td><input type="text" id="unary-function-block-expression-field"></td>
+                  <td><input type="text" id="unary-function-block-expression-field" style="width: 150px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="unary-function-block-width-field"></td>
+                  <td><input type="text" id="unary-function-block-width-field" style="width: 150px"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="unary-function-block-height-field"></td>
+                  <td><input type="text" id="unary-function-block-height-field" style="width: 150px"></td>
                 </tr>
               </table>
             </div>`;
@@ -61,6 +65,8 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof UnaryFunctionBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let variableNameInputElement = document.getElementById("unary-function-block-variable-name-field") as HTMLInputElement;
+      variableNameInputElement.value = block.getVariableName() ? block.getVariableName() : "x";
       let expressionInputElement = document.getElementById("unary-function-block-expression-field") as HTMLInputElement;
       expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x";
       let widthInputElement = document.getElementById("unary-function-block-width-field") as HTMLInputElement;
@@ -86,6 +92,8 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
+        // set variable name
+        block.setVariableName(variableNameInputElement.value);
         // set expression
         block.setExpression(expressionInputElement.value);
         try {
@@ -110,6 +118,7 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
+      variableNameInputElement.addEventListener("keyup", enterKeyUp);
       expressionInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
@@ -117,8 +126,8 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 300,
-        width: 400,
+        height: 310,
+        width: 380,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

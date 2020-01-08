@@ -10,9 +10,30 @@ import {Util} from "../Util";
 
 export class ConditionalStatementBlock extends FunctionBlock {
 
+  private variableName: string = "x";
   private readonly portX: Port;
   private readonly portT: Port;
   private readonly portF: Port;
+
+  static State = class {
+    readonly uid: string;
+    readonly variableName: string;
+    readonly expression: string;
+    readonly x: number;
+    readonly y: number;
+    readonly width: number;
+    readonly height: number;
+
+    constructor(block: ConditionalStatementBlock) {
+      this.uid = block.uid;
+      this.variableName = block.variableName;
+      this.expression = block.expression;
+      this.x = block.x;
+      this.y = block.y;
+      this.width = block.width;
+      this.height = block.height;
+    }
+  };
 
   constructor(uid: string, x: number, y: number, width: number, height: number, name: string, symbol: string) {
     super(uid, x, y, width, height);
@@ -36,6 +57,14 @@ export class ConditionalStatementBlock extends FunctionBlock {
   destroy(): void {
   }
 
+  setVariableName(variableName: string): void {
+    this.variableName = variableName;
+  }
+
+  getVariableName(): string {
+    return this.variableName;
+  }
+
   refreshView(): void {
     this.portX.setY(this.height / 2);
     this.portT.setX(this.width);
@@ -53,7 +82,7 @@ export class ConditionalStatementBlock extends FunctionBlock {
         try {
           const node = math.parse(this.expression);
           const code = node.compile();
-          let result = code.evaluate({x: x});
+          let result = code.evaluate({[this.variableName]: x});
           this.setOutputs(result);
         } catch (e) {
           Util.showErrorMessage(e.toString());

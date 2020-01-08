@@ -40,16 +40,24 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Expression (e.g. sin(x*y)):</td>
-                  <td><input type="text" id="binary-function-block-expression-field" size="15"></td>
+                  <td>Variable 1 Name (e.g. x):</td>
+                  <td><input type="text" id="binary-function-block-variable1-name-field" style="width: 150px"></td>
+                </tr>
+                <tr>
+                  <td>Variable 2 Name (e.g. y):</td>
+                  <td><input type="text" id="binary-function-block-variable2-name-field" style="width: 150px"></td>
+                </tr>
+                <tr>
+                  <td>Expression (e.g. sin(x+y)):</td>
+                  <td><input type="text" id="binary-function-block-expression-field" style="width: 150px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="binary-function-block-width-field" size="15"></td>
+                  <td><input type="text" id="binary-function-block-width-field" style="width: 150px"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="binary-function-block-height-field" size="15"></td>
+                  <td><input type="text" id="binary-function-block-height-field" style="width: 150px"></td>
                 </tr>
               </table>
             </div>`;
@@ -61,8 +69,12 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof BinaryFunctionBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let variable1NameInputElement = document.getElementById("binary-function-block-variable1-name-field") as HTMLInputElement;
+      variable1NameInputElement.value = block.getVariable1Name() ? block.getVariable1Name() : "x";
+      let variable2NameInputElement = document.getElementById("binary-function-block-variable2-name-field") as HTMLInputElement;
+      variable2NameInputElement.value = block.getVariable2Name() ? block.getVariable2Name() : "y";
       let expressionInputElement = document.getElementById("binary-function-block-expression-field") as HTMLInputElement;
-      expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x";
+      expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x+y";
       let widthInputElement = document.getElementById("binary-function-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("binary-function-block-height-field") as HTMLInputElement;
@@ -86,6 +98,9 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
+        // set variable names
+        block.setVariable1Name(variable1NameInputElement.value);
+        block.setVariable2Name(variable2NameInputElement.value);
         // set expression
         block.setExpression(expressionInputElement.value);
         try {
@@ -110,6 +125,8 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
+      variable1NameInputElement.addEventListener("keyup", enterKeyUp);
+      variable2NameInputElement.addEventListener("keyup", enterKeyUp);
       expressionInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
@@ -117,7 +134,7 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 300,
+        height: 360,
         width: 400,
         buttons: {
           'OK': okFunction,

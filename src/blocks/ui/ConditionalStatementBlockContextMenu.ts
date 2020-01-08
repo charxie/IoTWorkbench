@@ -37,16 +37,20 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
+                  <td>Variable Name (e.g. x):</td>
+                  <td><input type="text" id="conditional-statement-block-variable-name-field" style="width: 150px"></td>
+                </tr>
+                <tr>
                   <td>Inequality or Boolean:</td>
-                  <td><input type="text" id="conditional-statement-block-expression-field" style="width: 120px"></td>
+                  <td><input type="text" id="conditional-statement-block-expression-field" style="width: 150px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="conditional-statement-block-width-field" style="width: 120px"></td>
+                  <td><input type="text" id="conditional-statement-block-width-field" style="width: 150px"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="conditional-statement-block-height-field" style="width: 120px"></td>
+                  <td><input type="text" id="conditional-statement-block-height-field" style="width: 150px"></td>
                 </tr>
               </table>
             </div>`;
@@ -58,6 +62,8 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof ConditionalStatementBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let variableNameInputElement = document.getElementById("conditional-statement-block-variable-name-field") as HTMLInputElement;
+      variableNameInputElement.value = block.getVariableName() ? block.getVariableName() : "x";
       let expressionInputElement = document.getElementById("conditional-statement-block-expression-field") as HTMLInputElement;
       expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x>0";
       let widthInputElement = document.getElementById("conditional-statement-block-width-field") as HTMLInputElement;
@@ -67,6 +73,8 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
       const okFunction = function () {
         let success = true;
         let message;
+        // set variable name
+        block.setVariableName(variableNameInputElement.value);
         // set expression
         block.setExpression(expressionInputElement.value);
         try {
@@ -108,6 +116,7 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
+      variableNameInputElement.addEventListener("keyup", enterKeyUp);
       expressionInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
@@ -115,8 +124,8 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 300,
-        width: 320,
+        height: 350,
+        width: 390,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

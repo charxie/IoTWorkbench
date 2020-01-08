@@ -8,11 +8,13 @@ import {Slider} from "./blocks/Slider";
 import {Sticker} from "./blocks/Sticker";
 import {flowchart} from "./Main";
 import {ToggleSwitch} from "./blocks/ToggleSwitch";
-import {FunctionBlock} from "./blocks/FunctionBlock";
 import {ItemSelector} from "./blocks/ItemSelector";
 import {SeriesBlock} from "./blocks/SeriesBlock";
 import {Grapher} from "./blocks/Grapher";
 import {WorkerBlock} from "./blocks/WorkerBlock";
+import {UnaryFunctionBlock} from "./blocks/UnaryFunctionBlock";
+import {BinaryFunctionBlock} from "./blocks/BinaryFunctionBlock";
+import {ConditionalStatementBlock} from "./blocks/ConditionalStatementBlock";
 
 export class StateIO {
 
@@ -75,9 +77,19 @@ export class StateIO {
           if (state.yAxisLabel != undefined) block.setYAxisLabel(state.yAxisLabel);
           if (state.graphWindowColor != undefined) block.setGraphWindowColor(state.graphWindowColor);
           if (state.graphSymbol != undefined) block.setGraphSymbol(state.graphSymbol);
-        } else if (block instanceof FunctionBlock) {
+        } else if (block instanceof ConditionalStatementBlock) {
           block.setName(state.name);
+          block.setVariableName(state.variableName ? state.variableName : "x");
           block.setExpression(state.expression ? state.expression : "x");
+        } else if (block instanceof UnaryFunctionBlock) {
+          block.setName(state.name);
+          block.setVariableName(state.variableName ? state.variableName : "x");
+          block.setExpression(state.expression ? state.expression : "x");
+        } else if (block instanceof BinaryFunctionBlock) {
+          block.setName(state.name);
+          block.setVariable1Name(state.variable1Name ? state.variable1Name : "x");
+          block.setVariable2Name(state.variable2Name ? state.variable2Name : "y");
+          block.setExpression(state.expression ? state.expression : "x+y");
         }
         block.refreshView();
       }
