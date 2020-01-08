@@ -8,7 +8,7 @@ import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
 import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
 import {NegationBlock} from "./NegationBlock";
 import {LogicBlock} from "./LogicBlock";
-import {MathBlock} from "./MathBlock";
+import {ArithmeticBlock} from "./ArithmeticBlock";
 import {RainbowHatBlock} from "./RainbowHatBlock";
 import {Port} from "./Port";
 import {PortConnector} from "./PortConnector";
@@ -148,22 +148,22 @@ export class Flowchart {
         block = new LogicBlock(uid, x, y, 60, 90, name, "XNOR");
         break;
       case "Add Block":
-        block = new MathBlock(uid, x, y, 60, 60, name, "+");
+        block = new ArithmeticBlock(uid, x, y, 60, 60, name, "+");
         break;
       case "Subtract Block":
-        block = new MathBlock(uid, x, y, 60, 60, name, "−");
+        block = new ArithmeticBlock(uid, x, y, 60, 60, name, "−");
         break;
       case "Multiply Block":
-        block = new MathBlock(uid, x, y, 60, 60, name, "×");
+        block = new ArithmeticBlock(uid, x, y, 60, 60, name, "×");
         break;
       case "Divide Block":
-        block = new MathBlock(uid, x, y, 60, 60, name, "÷");
+        block = new ArithmeticBlock(uid, x, y, 60, 60, name, "÷");
         break;
       case "Modulus Block":
-        block = new MathBlock(uid, x, y, 60, 60, name, "%");
+        block = new ArithmeticBlock(uid, x, y, 60, 60, name, "%");
         break;
       case "Exponentiation Block":
-        block = new MathBlock(uid, x, y, 60, 60, name, "^");
+        block = new ArithmeticBlock(uid, x, y, 60, 60, name, "^");
         break;
       case "Series Block":
         block = new SeriesBlock(uid, x, y, 80, 80, name, "Series");

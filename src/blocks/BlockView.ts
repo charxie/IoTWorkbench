@@ -10,7 +10,7 @@ import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
 import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
 import {NegationBlock} from "./NegationBlock";
 import {LogicBlock} from "./LogicBlock";
-import {MathBlock} from "./MathBlock";
+import {ArithmeticBlock} from "./ArithmeticBlock";
 import {HatBlock} from "./HatBlock";
 import {Port} from "./Port";
 import {Connector} from "./Connector";
@@ -101,8 +101,8 @@ export class BlockView {
           case "logic-not-block":
             that.storeBlock(new NegationBlock("NOT Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
-          case "math-add-block":
-            that.storeBlock(new MathBlock("Add Block #" + timestamp, x - 30, y - 30, 60, 60, "Add Block", "+"));
+          case "arithmetic-add-block":
+            that.storeBlock(new ArithmeticBlock("Add Block #" + timestamp, x - 30, y - 30, 60, 60, "Add Block", "+"));
             break;
           case "slider-block":
             that.storeBlock(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));
@@ -386,9 +386,9 @@ export class BlockView {
       }
     }
     let menu: HTMLMenuElement = null;
-    if (block instanceof MathBlock) {
-      contextMenus.mathBlock.block = block;
-      menu = document.getElementById("math-block-context-menu") as HTMLMenuElement;
+    if (block instanceof ArithmeticBlock) {
+      contextMenus.arithmeticBlock.block = block;
+      menu = document.getElementById("arithmetic-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof SeriesBlock) {
       contextMenus.seriesBlock.block = block;
       menu = document.getElementById("series-block-context-menu") as HTMLMenuElement;

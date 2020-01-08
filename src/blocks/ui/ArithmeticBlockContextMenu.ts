@@ -7,11 +7,11 @@ import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
 
-export class MathBlockContextMenu extends BlockContextMenu {
+export class ArithmeticBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "math-block-context-menu";
+    this.id = "arithmetic-block-context-menu";
   }
 
   getUi(): string {
@@ -42,7 +42,7 @@ export class MathBlockContextMenu extends BlockContextMenu {
                   <td>Operator:</td>
                   <td>
                     R<div class='horizontal-divider'></div>=<div class='horizontal-divider'></div>A<div class='horizontal-divider'></div>
-                    <select id="math-block-operator">
+                    <select id="arithmetic-block-operator">
                       <option value="Add Block">+</option>
                       <option value="Subtract Block">−</option>
                       <option value="Multiply Block">×</option>
@@ -55,11 +55,11 @@ export class MathBlockContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="math-block-width-field"></td>
+                  <td><input type="text" id="arithmetic-block-width-field"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="math-block-height-field"></td>
+                  <td><input type="text" id="arithmetic-block-height-field"></td>
                 </tr>
               </table>
             </div>`;
@@ -71,11 +71,11 @@ export class MathBlockContextMenu extends BlockContextMenu {
     if (this.block) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let selectElement = document.getElementById("math-block-operator") as HTMLSelectElement;
+      let selectElement = document.getElementById("arithmetic-block-operator") as HTMLSelectElement;
       selectElement.value = block.getName();
-      let widthInputElement = document.getElementById("math-block-width-field") as HTMLInputElement;
+      let widthInputElement = document.getElementById("arithmetic-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("math-block-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("arithmetic-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
         block.setName(selectElement.options[selectElement.selectedIndex].value);

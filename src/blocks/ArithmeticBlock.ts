@@ -5,7 +5,7 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 
-export class MathBlock extends Block {
+export class ArithmeticBlock extends Block {
 
   private readonly portA: Port;
   private readonly portB: Port;
@@ -26,7 +26,7 @@ export class MathBlock extends Block {
   }
 
   getCopy(): Block {
-    return new MathBlock(this.name + " #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
+    return new ArithmeticBlock(this.name + " #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
   }
 
   refreshView(): void {

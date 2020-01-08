@@ -41,7 +41,7 @@ import {BlockElementsPanel} from "./blocks/ui/BlockElementsPanel";
 import {ConditionalStatementBlockContextMenu} from "./blocks/ui/ConditionalStatementBlockContextMenu";
 import {NotBlockContextMenu} from "./blocks/ui/NotBlockContextMenu";
 import {LogicBlockContextMenu} from "./blocks/ui/LogicBlockContextMenu";
-import {MathBlockContextMenu} from "./blocks/ui/MathBlockContextMenu";
+import {ArithmeticBlockContextMenu} from "./blocks/ui/ArithmeticBlockContextMenu";
 import {UnaryFunctionBlockContextMenu} from "./blocks/ui/UnaryFunctionBlockContextMenu";
 import {BinaryFunctionBlockContextMenu} from "./blocks/ui/BinaryFunctionBlockContextMenu";
 import {HatBlockContextMenu} from "./blocks/ui/HatBlockContextMenu";
@@ -208,10 +208,10 @@ function setupContextMenuForBlock() {
   blockViewContextMenu.addListeners();
   contextMenus.blockView = blockViewContextMenu;
 
-  let mathBlockContextMenu = new MathBlockContextMenu();
-  mathBlockContextMenu.render("math-block-context-menu-placeholder");
-  mathBlockContextMenu.addListeners();
-  contextMenus.mathBlock = mathBlockContextMenu;
+  let arithmeticBlockContextMenu = new ArithmeticBlockContextMenu();
+  arithmeticBlockContextMenu.render("arithmetic-block-context-menu-placeholder");
+  arithmeticBlockContextMenu.addListeners();
+  contextMenus.arithmeticBlock = arithmeticBlockContextMenu;
 
   let seriesBlockContextMenu = new SeriesBlockContextMenu();
   seriesBlockContextMenu.render("series-block-context-menu-placeholder");
