@@ -31,6 +31,9 @@ export class UnaryFunctionBlock extends FunctionBlock {
     return block;
   }
 
+  destroy(): void {
+  }
+
   refreshView(): void {
     this.portX.setY(this.height / 2);
     this.portR.setX(this.width);

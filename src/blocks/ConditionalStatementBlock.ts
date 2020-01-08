@@ -33,6 +33,9 @@ export class ConditionalStatementBlock extends FunctionBlock {
     return new ConditionalStatementBlock("Conditional Statement Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
   }
 
+  destroy(): void {
+  }
+
   refreshView(): void {
     this.portX.setY(this.height / 2);
     this.portT.setX(this.width);
@@ -72,7 +75,7 @@ export class ConditionalStatementBlock extends FunctionBlock {
       this.portF.setValue(undefined);
     } else {
       this.portT.setValue(undefined);
-      this.portF.setValue(false);
+      this.portF.setValue(true);
     }
   }
 

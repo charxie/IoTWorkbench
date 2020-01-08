@@ -10,10 +10,11 @@ import {Util} from "../Util";
 export class WorkerBlock extends Block {
 
   private count: number = 0;
-  private interval: number = 100; // in milliseconds
+  private interval: number = 500; // in milliseconds
   private barHeight: number;
   private readonly portI: Port;
   private readonly portO: Port;
+  private worker: Worker;
 
   static State = class {
     readonly name: string;
@@ -59,22 +60,6 @@ export class WorkerBlock extends Block {
     return this.interval;
   }
 
-  updateModel(): void {
-    let input = this.portI.getValue();
-    if (input != undefined) {
-    } else {
-      // stop the worker
-    }
-    this.portO.setValue(this.count);
-    this.updateConnectors();
-  }
-
-  refreshView(): void {
-    this.portI.setY(this.height / 2);
-    this.portO.setX(this.width);
-    this.portO.setY(this.height / 2);
-  }
-
   draw(ctx: CanvasRenderingContext2D): void {
 
     // draw the upper bar with shade
@@ -112,6 +97,49 @@ export class WorkerBlock extends Block {
     this.portI.draw(ctx, this.iconic);
     this.portO.draw(ctx, this.iconic);
 
+  }
+
+  updateModel(): void {
+    let input = this.portI.getValue();
+    if (input == true) {
+      this.startWorker();
+    } else {
+      this.stopWorker();
+    }
+    this.portO.setValue(this.count);
+    this.updateConnectors();
+  }
+
+  private startWorker(): void {
+    if (this.worker == undefined && !this.iconic) {
+      this.worker = new Worker("./Counter.ts");
+    } else {
+      this.worker.postMessage({cmd: "Start", interval: this.interval});
+    }
+    let that = this;
+    this.worker.onmessage = function (event) {
+      that.count = event.data;
+      flowchart.updateResults();
+      flowchart.draw();
+    };
+  }
+
+  private stopWorker(): void {
+    if (this.worker != undefined) {
+      this.worker.postMessage({cmd: "Pause"});
+    }
+  }
+
+  destroy(): void {
+    if (this.worker != undefined) {
+      this.worker.terminate();
+    }
+  }
+
+  refreshView(): void {
+    this.portI.setY(this.height / 2);
+    this.portO.setX(this.width);
+    this.portO.setY(this.height / 2);
   }
 
   onDraggableArea(x: number, y: number): boolean {

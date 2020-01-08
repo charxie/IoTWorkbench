@@ -73,6 +73,9 @@ export class RainbowHatBlock extends HatBlock {
     return new RainbowHatBlock(name + " #" + Date.now().toString(16), this.x, this.y);
   }
 
+  destroy(): void {
+  }
+
   refreshView(): void {
   }
 

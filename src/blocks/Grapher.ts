@@ -78,6 +78,9 @@ export class Grapher extends Block {
     return copy;
   }
 
+  destroy(): void {
+  }
+
   setMinimumValue(minimumValue: number): void {
     this.minimumValue = minimumValue;
   }

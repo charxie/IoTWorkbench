@@ -109,6 +109,7 @@ export class Flowchart {
       this.blocks.splice(this.blocks.indexOf(selectedBlock), 1);
       this.updateResults();
       this.storeBlockStates();
+      selectedBlock.destroy();
     }
   }
 
@@ -250,6 +251,21 @@ export class Flowchart {
 
   storeViewState(): void {
     localStorage.setItem("Block View State", JSON.stringify(new BlockView.State(this.blockView)));
+  }
+
+  destroy(): void {
+    for (let b of this.blocks) {
+      b.destroy();
+    }
+  }
+
+  clear(): void {
+    this.destroy();
+    this.blocks = [];
+    this.connectors = [];
+    this.storeBlockStates();
+    this.storeConnectorStates();
+    this.blockView.draw();
   }
 
   static State = class {

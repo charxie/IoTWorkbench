@@ -65,6 +65,9 @@ export class SeriesBlock extends Block {
     return new SeriesBlock("Series Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
   }
 
+  destroy(): void {
+  }
+
   getStart(): number {
     return this.start;
   }

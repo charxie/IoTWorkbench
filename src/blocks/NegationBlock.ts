@@ -26,6 +26,9 @@ export class NegationBlock extends Block {
     return new NegationBlock(this.name + " #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
   }
 
+  destroy(): void {
+  }
+
   refreshView(): void {
     this.portX.setY(this.height / 2);
     this.portR.setX(this.width);

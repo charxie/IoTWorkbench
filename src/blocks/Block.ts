@@ -64,6 +64,8 @@ export abstract class Block implements Movable {
 
   abstract updateModel(): void;
 
+  abstract destroy(): void;
+
   isSource(): boolean {
     return this.source;
   }
@@ -183,9 +185,9 @@ export abstract class Block implements Movable {
     return this.color;
   }
 
-  setSmall(small: boolean): void {
-    this.iconic = small;
-    if (small) {
+  setIconic(iconic: boolean): void {
+    this.iconic = iconic;
+    if (iconic) {
       this.margin = 6;
     }
   }

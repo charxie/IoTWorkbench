@@ -73,6 +73,9 @@ export class ItemSelector extends Block {
     return copy;
   }
 
+  destroy(): void {
+  }
+
   setItems(items: any[]): void {
     this.items = items;
   }

@@ -49,6 +49,9 @@ export class Sticker extends Block {
     return copy;
   }
 
+  destroy(): void {
+  }
+
   setDecimals(decimals: number): void {
     this.decimals = decimals;
   }

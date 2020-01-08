@@ -37,16 +37,20 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Interval:</td>
-                  <td><input type="text" id="worker-block-interval-field"></td>
+                  <td>Name:</td>
+                  <td><input type="text" id="worker-block-name-field"></td>
+                </tr>
+                <tr>
+                  <td>Interval (millisecond):</td>
+                  <td><input type="text" id="worker-block-interval-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="worker-block-width-field"></td>
+                  <td><input type="text" id="worker-block-width-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="worker-block-height-field"></td>
+                  <td><input type="text" id="worker-block-height-field" style="width: 120px"></td>
                 </tr>
               </table>
             </div>`;
@@ -56,21 +60,24 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof WorkerBlock) {
-      const block = this.block;
+      const worker = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let nameInputElement = document.getElementById("worker-block-name-field") as HTMLInputElement;
+      nameInputElement.value = worker.getName();
       let intervalInputElement = document.getElementById("worker-block-interval-field") as HTMLInputElement;
-      intervalInputElement.value = block.getInterval().toString();
+      intervalInputElement.value = worker.getInterval().toString();
       let widthInputElement = document.getElementById("worker-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
+      widthInputElement.value = worker.getWidth().toString();
       let heightInputElement = document.getElementById("worker-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
+      heightInputElement.value = worker.getHeight().toString();
       const okFunction = function () {
+        worker.setName(nameInputElement.value);
         let success = true;
         let message;
         // set interval
         let interval = parseInt(intervalInputElement.value);
         if (isNumber(interval)) {
-          block.setInterval(Math.max(1, interval));
+          worker.setInterval(Math.max(1, interval));
         } else {
           success = false;
           message = intervalInputElement.value + " is not a valid interval.";
@@ -78,7 +85,7 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
         // set width
         let w = parseInt(widthInputElement.value);
         if (isNumber(w)) {
-          block.setWidth(Math.max(20, w));
+          worker.setWidth(Math.max(20, w));
         } else {
           success = false;
           message = widthInputElement.value + " is not a valid width.";
@@ -86,14 +93,14 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
         // set height
         let h = parseInt(heightInputElement.value);
         if (isNumber(h)) {
-          block.setHeight(Math.max(20, h));
+          worker.setHeight(Math.max(20, h));
         } else {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
         // finish
         if (success) {
-          block.refreshView();
+          worker.refreshView();
           flowchart.draw();
           flowchart.updateResults();
           flowchart.storeBlockStates();
@@ -104,19 +111,20 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
         }
       };
       const enterKeyUp = function (e) {
-        if (e.keyCode == 13) {
+        if (e.key == "Enter") {
           okFunction();
         }
       };
+      nameInputElement.addEventListener("keyup", enterKeyUp);
       intervalInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
-        title: block.getUid(),
-        height: 300,
-        width: 300,
+        title: worker.getUid(),
+        height: 350,
+        width: 350,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

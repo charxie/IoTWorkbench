@@ -85,11 +85,7 @@ export class BlockViewContextMenu extends MyContextMenu {
         width: 300,
         buttons: {
           'OK': function () {
-            view.flowchart.blocks = [];
-            view.flowchart.connectors = [];
-            view.flowchart.storeBlockStates();
-            view.flowchart.storeConnectorStates();
-            view.flowchart.draw();
+            flowchart.clear();
             $(this).dialog('close');
           },
           'Cancel': function () {
@@ -149,7 +145,7 @@ export class BlockViewContextMenu extends MyContextMenu {
       d.dialog('close');
     };
     const enterKeyUp = function (e) {
-      if (e.keyCode == 13) {
+      if (e.key == "Enter") {
         okFunction();
       }
     };

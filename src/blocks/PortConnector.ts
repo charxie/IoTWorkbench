@@ -31,8 +31,10 @@ export class PortConnector {
   }
 
   destroy(): void {
-    this.input.setValue(0);
-    this.output.setValue(0);
+    this.input.setValue(undefined);
+    this.output.setValue(undefined);
+    this.input.getBlock().updateModel();
+    this.output.getBlock().updateModel();
   }
 
   getUid(): string {

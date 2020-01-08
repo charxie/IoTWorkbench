@@ -104,7 +104,7 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
         }
       };
       const enterKeyUp = function (e) {
-        if (e.keyCode == 13) {
+        if (e.key == "Enter") {
           okFunction();
         }
       };

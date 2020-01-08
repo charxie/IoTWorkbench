@@ -29,6 +29,9 @@ export class LogicBlock extends Block {
     return new LogicBlock(this.name + " #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
   }
 
+  destroy(): void {
+  }
+
   refreshView(): void {
     this.portA.setY(this.height / 3);
     this.portB.setY(this.height * 2 / 3);

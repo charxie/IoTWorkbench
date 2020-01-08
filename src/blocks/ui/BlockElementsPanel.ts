@@ -92,7 +92,7 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new WorkerBlock("Worker Block Icon", "Worker", 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setSmall(true);
+    block.setIconic(true);
     block.draw(ctx);
   }
 
@@ -100,7 +100,7 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new SeriesBlock("Series Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
-    block.setSmall(true);
+    block.setIconic(true);
     block.draw(ctx);
   }
 
@@ -108,7 +108,7 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new ConditionalStatementBlock("Conditional Statement Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
-    block.setSmall(true);
+    block.setIconic(true);
     block.draw(ctx);
   }
 
@@ -116,7 +116,7 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new Sticker("Sticker Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setSmall(true);
+    block.setIconic(true);
     block.draw(ctx);
   }
 
@@ -124,7 +124,7 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new Grapher("Grapher Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setSmall(true);
+    block.setIconic(true);
     block.draw(ctx);
   }
 
@@ -132,7 +132,7 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new ToggleSwitch("Toggle Switch Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setSmall(true);
+    block.setIconic(true);
     block.draw(ctx);
   }
 
@@ -140,7 +140,7 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new Slider("Slider Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setSmall(true);
+    block.setIconic(true);
     block.draw(ctx);
   }
 
@@ -148,7 +148,7 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new ItemSelector("Item Selector Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setSmall(true);
+    block.setIconic(true);
     block.draw(ctx);
   }
 
@@ -157,7 +157,7 @@ export class BlockElementsPanel {
     let ctx = canvas.getContext('2d');
     let block = new ArithmeticBlock("Arithmetic Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
     block.setName(name);
-    block.setSmall(true);
+    block.setIconic(true);
     block.draw(ctx);
   }
 
@@ -166,7 +166,7 @@ export class BlockElementsPanel {
     let ctx = canvas.getContext('2d');
     let block = new LogicBlock("Logic Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
     block.setName(name);
-    block.setSmall(true);
+    block.setIconic(true);
     block.draw(ctx);
   }
 
@@ -174,7 +174,7 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new NegationBlock("Negation Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setSmall(true);
+    block.setIconic(true);
     block.draw(ctx);
   }
 
@@ -183,7 +183,7 @@ export class BlockElementsPanel {
     let ctx = canvas.getContext('2d');
     let block: FunctionBlock = new UnaryFunctionBlock("Unary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     if (block != null) {
-      block.setSmall(true);
+      block.setIconic(true);
       block.draw(ctx);
     }
   }
@@ -193,7 +193,7 @@ export class BlockElementsPanel {
     let ctx = canvas.getContext('2d');
     let block: FunctionBlock = new BinaryFunctionBlock("Binary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     if (block != null) {
-      block.setSmall(true);
+      block.setIconic(true);
       block.draw(ctx);
     }
   }

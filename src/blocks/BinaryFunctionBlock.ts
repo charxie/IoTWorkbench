@@ -35,6 +35,9 @@ export class BinaryFunctionBlock extends FunctionBlock {
     return block;
   }
 
+  destroy(): void {
+  }
+
   refreshView(): void {
     this.portX.setY(this.height / 3);
     this.portY.setY(this.height * 2 / 3);

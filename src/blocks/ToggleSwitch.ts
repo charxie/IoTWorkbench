@@ -64,6 +64,9 @@ export class ToggleSwitch extends Block {
     return copy;
   }
 
+  destroy(): void {
+  }
+
   setChecked(checked: boolean): void {
     this.checked = checked;
   }

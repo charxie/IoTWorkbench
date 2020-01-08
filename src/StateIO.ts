@@ -110,6 +110,7 @@ export class StateIO {
 
   static open(): void {
     let that = this;
+    flowchart.destroy();
     let fileInput = document.getElementById('state-file-dialog') as HTMLInputElement;
     fileInput.onchange = function (event: Event) {
       let target = <HTMLInputElement>event.target;
@@ -135,6 +136,17 @@ export class StateIO {
     let that = this;
     let d = $('#modal-dialog').html(`<div style="font-family: Arial; line-height: 30px; font-size: 90%;">
         Save as:<br><input type="text" id="${this.inputFieldId}" style="width: 260px;" value="${this.lastSavedFileName}">`);
+    let inputFileName = document.getElementById(that.inputFieldId) as HTMLInputElement;
+    let okFunction = function () {
+      Util.saveText(data, inputFileName.value);
+      that.lastSavedFileName = inputFileName.value;
+      d.dialog('close');
+    };
+    inputFileName.addEventListener("keyup", function (e) {
+      if (e.key == "Enter") {
+        okFunction();
+      }
+    });
     d.dialog({
       resizable: false,
       modal: true,
@@ -147,14 +159,9 @@ export class StateIO {
         of: window
       },
       buttons: {
-        'OK': function () {
-          $(this).dialog('close');
-          let inputFileName = document.getElementById(that.inputFieldId) as HTMLInputElement;
-          Util.saveText(data, inputFileName.value);
-          that.lastSavedFileName = inputFileName.value;
-        },
+        'OK': okFunction,
         'Cancel': function () {
-          $(this).dialog('close');
+          d.dialog('close');
         }
       }
     });

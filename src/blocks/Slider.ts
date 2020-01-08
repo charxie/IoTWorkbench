@@ -74,6 +74,9 @@ export class Slider extends Block {
     return copy;
   }
 
+  destroy(): void {
+  }
+
   setValue(value: number): void {
     this.value = value;
   }
