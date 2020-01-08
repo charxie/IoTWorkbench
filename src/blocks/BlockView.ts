@@ -93,7 +93,7 @@ export class BlockView {
             that.storeBlock(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 30, 60, 80, "Series Block", "Series"));
             break;
           case "conditional-statement-block":
-            that.storeBlock(new ConditionalStatementBlock("Conditional Statement Block #" + timestamp, x - 30, y - 30, 60, 60, "If-else Block", "IF"));
+            that.storeBlock(new ConditionalStatementBlock("Conditional Statement Block #" + timestamp, x - 30, y - 50, 60, 100, "If-else Block", "IF"));
             break;
           case "logic-and-block":
             that.storeBlock(new LogicBlock("AND Block #" + timestamp, x - 30, y - 40, 60, 80, "AND Block", "AND"));
@@ -376,6 +376,7 @@ export class BlockView {
 
   private openContextMenu(e: MouseEvent): void {
     e.preventDefault();
+    closeAllContextMenus(); // close any open context menu
     this.contextMenuClickX = e.offsetX;
     this.contextMenuClickY = e.offsetY;
     let block = null;

@@ -6,6 +6,7 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
+import {ConditionalStatementBlock} from "../ConditionalStatementBlock";
 
 export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
 
@@ -36,12 +37,16 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
+                  <td>Inequality or Boolean:</td>
+                  <td><input type="text" id="conditional-statement-block-expression-field" style="width: 120px"></td>
+                </tr>
+                <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="conditional-statement-block-width-field"></td>
+                  <td><input type="text" id="conditional-statement-block-width-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="conditional-statement-block-height-field"></td>
+                  <td><input type="text" id="conditional-statement-block-height-field" style="width: 120px"></td>
                 </tr>
               </table>
             </div>`;
@@ -50,9 +55,11 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block) {
+    if (this.block instanceof ConditionalStatementBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let expressionInputElement = document.getElementById("conditional-statement-block-expression-field") as HTMLInputElement;
+      expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x>0";
       let widthInputElement = document.getElementById("conditional-statement-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("conditional-statement-block-height-field") as HTMLInputElement;
@@ -60,6 +67,14 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
       const okFunction = function () {
         let success = true;
         let message;
+        // set expression
+        block.setExpression(expressionInputElement.value);
+        try {
+          flowchart.updateResults();
+        } catch (err) {
+          success = false;
+          message = expressionInputElement.value + " is not a valid expression.";
+        }
         // set width
         let w = parseInt(widthInputElement.value);
         if (isNumber(w)) {
@@ -76,6 +91,7 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
+        // finish
         if (success) {
           block.refreshView();
           flowchart.draw();
@@ -92,6 +108,7 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
+      expressionInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
@@ -99,7 +116,7 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 300,
-        width: 300,
+        width: 320,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {
