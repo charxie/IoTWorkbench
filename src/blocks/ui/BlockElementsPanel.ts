@@ -15,6 +15,7 @@ import {ConditionalStatementBlock} from "../ConditionalStatementBlock";
 import {SeriesBlock} from "../SeriesBlock";
 import {ItemSelector} from "../ItemSelector";
 import {Grapher} from "../Grapher";
+import {WorkerBlock} from "../WorkerBlock";
 
 export class BlockElementsPanel {
 
@@ -62,6 +63,7 @@ export class BlockElementsPanel {
                 <table style="width: 100%">
                   <tr>
                   <td><canvas draggable="true" id="conditional-statement-block" title="If-else" width="45x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="worker-block" title="Worker" width="45x" height="45px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -81,8 +83,17 @@ export class BlockElementsPanel {
     this.drawItemSelector("Item Selector", "item-selector-block");
     this.drawSticker("Sticker", "sticker-block");
     this.drawGrapher("Grapher", "grapher-block");
-    this.drawConditionalStatementBlock("Conditional Statement Block", "IF", "conditional-statement-block");
     this.drawSeriesBlock("Series Block", "Series", "series-block");
+    this.drawConditionalStatementBlock("Conditional Statement Block", "IF", "conditional-statement-block");
+    this.drawWorkerBlock("Worker Block", "Worker", "worker-block");
+  }
+
+  private drawWorkerBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new WorkerBlock("Worker Block Icon", "Worker", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setSmall(true);
+    block.draw(ctx);
   }
 
   private drawSeriesBlock(name: string, symbol: string, canvasId: string): void {

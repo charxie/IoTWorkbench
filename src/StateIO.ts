@@ -12,6 +12,7 @@ import {FunctionBlock} from "./blocks/FunctionBlock";
 import {ItemSelector} from "./blocks/ItemSelector";
 import {SeriesBlock} from "./blocks/SeriesBlock";
 import {Grapher} from "./blocks/Grapher";
+import {WorkerBlock} from "./blocks/WorkerBlock";
 
 export class StateIO {
 
@@ -52,6 +53,9 @@ export class StateIO {
           block.setStart(state.start);
           block.setIncrement(state.increment);
           block.setCount(state.count);
+        } else if (block instanceof WorkerBlock) {
+          block.setName(state.name);
+          block.setInterval(state.interval);
         } else if (block instanceof ItemSelector) {
           block.setName(state.name);
           block.setItems(state.items);

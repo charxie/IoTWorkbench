@@ -22,6 +22,7 @@ import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
 import {SeriesBlock} from "./SeriesBlock";
 import {ItemSelector} from "./ItemSelector";
 import {Grapher} from "./Grapher";
+import {WorkerBlock} from "./WorkerBlock";
 
 export class BlockView {
 
@@ -90,7 +91,10 @@ export class BlockView {
             that.storeBlock(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
             break;
           case "series-block":
-            that.storeBlock(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 30, 60, 80, "Series Block", "Series"));
+            that.storeBlock(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
+            break;
+          case "worker-block":
+            that.storeBlock(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 30, y - 30, 60, 60));
             break;
           case "conditional-statement-block":
             that.storeBlock(new ConditionalStatementBlock("Conditional Statement Block #" + timestamp, x - 30, y - 50, 60, 100, "If-else Block", "IF"));
@@ -393,6 +397,9 @@ export class BlockView {
     } else if (block instanceof SeriesBlock) {
       contextMenus.seriesBlock.block = block;
       menu = document.getElementById("series-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof WorkerBlock) {
+      contextMenus.workerBlock.block = block;
+      menu = document.getElementById("worker-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof ConditionalStatementBlock) {
       contextMenus.conditionalStatementBlock.block = block;
       menu = document.getElementById("conditional-statement-block-context-menu") as HTMLMenuElement;

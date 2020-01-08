@@ -51,6 +51,7 @@ import {SeriesBlockContextMenu} from "./blocks/ui/SeriesBlockContextMenu";
 import {ItemSelectorContextMenu} from "./blocks/ui/ItemSelectorContextMenu";
 import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 import {GrapherContextMenu} from "./blocks/ui/GrapherContextMenu";
+import {WorkerBlockContextMenu} from "./blocks/ui/WorkerBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -217,6 +218,11 @@ function setupContextMenuForBlock() {
   seriesBlockContextMenu.render("series-block-context-menu-placeholder");
   seriesBlockContextMenu.addListeners();
   contextMenus.seriesBlock = seriesBlockContextMenu;
+
+  let workerBlockContextMenu = new WorkerBlockContextMenu();
+  workerBlockContextMenu.render("worker-block-context-menu-placeholder");
+  workerBlockContextMenu.addListeners();
+  contextMenus.workerBlock = workerBlockContextMenu;
 
   let conditionalStatementBlockContextMenu = new ConditionalStatementBlockContextMenu();
   conditionalStatementBlockContextMenu.render("conditional-statement-block-context-menu-placeholder");

@@ -20,6 +20,7 @@ import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
 import {SeriesBlock} from "./SeriesBlock";
 import {ItemSelector} from "./ItemSelector";
 import {Grapher} from "./Grapher";
+import {WorkerBlock} from "./WorkerBlock";
 
 export class Flowchart {
 
@@ -168,6 +169,9 @@ export class Flowchart {
       case "Series Block":
         block = new SeriesBlock(uid, x, y, 80, 80, name, "Series");
         break;
+      case "Worker Block":
+        block = new WorkerBlock(uid, name, x, y, 60, 60);
+        break;
       case "Conditional Statement Block":
         block = new ConditionalStatementBlock(uid, x, y, 80, 80, name, "IF");
         break;
@@ -216,11 +220,18 @@ export class Flowchart {
 
   storeBlockStates(): void {
     let blockStates = [];
+    this.saveBlockStatesTo(blockStates);
+    localStorage.setItem("Block States", JSON.stringify(blockStates));
+  }
+
+  private saveBlockStatesTo(blockStates): void {
     for (let b of this.blocks) {
       if (b instanceof Slider) {
         blockStates.push(new Slider.State(b));
       } else if (b instanceof SeriesBlock) {
         blockStates.push(new SeriesBlock.State(b));
+      } else if (b instanceof WorkerBlock) {
+        blockStates.push(new WorkerBlock.State(b));
       } else if (b instanceof ItemSelector) {
         blockStates.push(new ItemSelector.State(b));
       } else if (b instanceof ToggleSwitch) {
@@ -235,7 +246,6 @@ export class Flowchart {
         blockStates.push(new Block.State(b));
       }
     }
-    localStorage.setItem("Block States", JSON.stringify(blockStates));
   }
 
   storeViewState(): void {
@@ -248,25 +258,7 @@ export class Flowchart {
     readonly blockViewState;
 
     constructor(flowchart: Flowchart) {
-      for (let b of flowchart.blocks) {
-        if (b instanceof Slider) {
-          this.blockStates.push(new Slider.State(b));
-        } else if (b instanceof SeriesBlock) {
-          this.blockStates.push(new SeriesBlock.State(b));
-        } else if (b instanceof ItemSelector) {
-          this.blockStates.push(new ItemSelector.State(b));
-        } else if (b instanceof ToggleSwitch) {
-          this.blockStates.push(new ToggleSwitch.State(b));
-        } else if (b instanceof Sticker) {
-          this.blockStates.push(new Sticker.State(b));
-        } else if (b instanceof Grapher) {
-          this.blockStates.push(new Grapher.State(b));
-        } else if (b instanceof FunctionBlock) {
-          this.blockStates.push(new FunctionBlock.State(b));
-        } else {
-          this.blockStates.push(new Block.State(b));
-        }
-      }
+      flowchart.saveBlockStatesTo(this.blockStates);
       for (let c of flowchart.connectors) {
         if (c.getOutput() != null && c.getInput() != null) {
           this.connectorStates.push(new PortConnector.State(c));
