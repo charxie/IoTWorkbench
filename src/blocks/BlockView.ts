@@ -243,9 +243,9 @@ export class BlockView {
               this.selectedPort = p;
               if (this.selectedPort.isInput()) {
                 // if the selected port is an input, select one of its connectors
-                this.selectedPortConnector = this.flowchart.getConnector(this.selectedPort);
+                this.selectedPortConnector = this.flowchart.getConnectorWithInput(this.selectedPort);
               } else {
-                // if the seleted port is an output, clicking on it starts a new connector
+                // if the selected port is an output, clicking on it starts a new connector
                 let p = this.selectedPort.getAbsolutePoint();
                 this.connectorOntheFly.x1 = p.x;
                 this.connectorOntheFly.y1 = p.y;

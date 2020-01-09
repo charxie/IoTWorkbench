@@ -94,12 +94,18 @@ export class ConditionalStatementBlock extends FunctionBlock {
         this.portT.setValue(undefined);
         this.portF.setValue(undefined);
         // special treatment of conditional statement block that might output to a worker (need to stop it in that case)
-        let inputT = flowchart.getConnector(this.portT).getInput();
-        inputT.setValue(undefined);
-        inputT.getBlock().updateModel();
-        let inputF = flowchart.getConnector(this.portF).getInput();
-        inputF.setValue(undefined);
-        inputF.getBlock().updateModel();
+        let c = flowchart.getConnectorWithOutput(this.portT);
+        if (c != null) {
+          let inputT = c.getInput();
+          inputT.setValue(undefined);
+          inputT.getBlock().updateModel();
+        }
+        c = flowchart.getConnectorWithOutput(this.portF);
+        if (c != null) {
+          let inputF = c.getInput();
+          inputF.setValue(undefined);
+          inputF.getBlock().updateModel();
+        }
       }
     }
     this.updateConnectors();

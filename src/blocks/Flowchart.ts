@@ -62,6 +62,24 @@ export class Flowchart {
     return null;
   }
 
+  getConnectorWithInput(input: Port): PortConnector {
+    for (let connector of this.connectors) {
+      if (connector.getInput() == input) {
+        return connector;
+      }
+    }
+    return null;
+  }
+
+  getConnectorWithOutput(output: Port): PortConnector {
+    for (let connector of this.connectors) {
+      if (connector.getOutput() == output) {
+        return connector;
+      }
+    }
+    return null;
+  }
+
   addPortConnector(output: Port, input: Port, uid: string): boolean {
     for (let c of this.connectors) {
       if (c.getInput() == input) { // this input port is already taken
