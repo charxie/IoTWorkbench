@@ -7,15 +7,16 @@ import $ from "jquery";
 export class Util {
 
   static showErrorMessage(message): void {
-    $("#error-dialog").html("<div style='font-size: 90%;'>" + message + "</div>").dialog({
+    let d = $("#error-dialog").html("<div style='font-size: 90%;'>" + message + ".<br>Please fix the highlighted blocks.</div>");
+    d.dialog({
       resizable: false,
-      modal: true,
+      modal: false,
       title: "Error",
       height: 200,
-      width: 200,
+      width: 250,
       buttons: {
-        'OK': function () {
-          $(this).dialog('close');
+        "OK": function () {
+          d.dialog('close');
         }
       }
     });
