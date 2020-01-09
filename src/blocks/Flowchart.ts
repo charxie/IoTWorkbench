@@ -188,7 +188,7 @@ export class Flowchart {
         block = new SeriesBlock(uid, x, y, 80, 80, name, "Series");
         break;
       case "Worker Block":
-        block = new WorkerBlock(uid, name, x, y, 60, 60);
+        block = new WorkerBlock(uid, name, x, y, 80, 60);
         break;
       case "Conditional Statement Block":
         block = new ConditionalStatementBlock(uid, x, y, 80, 80, name, "IF");

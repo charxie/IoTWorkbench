@@ -41,6 +41,14 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="worker-block-name-field" style="width: 120px"></td>
                 </tr>
                 <tr>
+                  <td>Output:</td>
+                  <td>
+                    <select id="worker-output-type-selector" style="width: 120px">
+                      <option value="Natural Number" selected>Natural Number</option>
+                      <option value="Random Number">Random Number</option>
+                    </select>
+                </tr>
+                <tr>
                   <td>Interval (millisecond):</td>
                   <td><input type="text" id="worker-block-interval-field" style="width: 120px"></td>
                 </tr>
@@ -64,6 +72,8 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("worker-block-name-field") as HTMLInputElement;
       nameInputElement.value = worker.getName();
+      let outputTypeSelectElement = document.getElementById("worker-output-type-selector") as HTMLSelectElement;
+      outputTypeSelectElement.value = worker.getOutputType();
       let intervalInputElement = document.getElementById("worker-block-interval-field") as HTMLInputElement;
       intervalInputElement.value = worker.getInterval().toString();
       let widthInputElement = document.getElementById("worker-block-width-field") as HTMLInputElement;
@@ -72,6 +82,7 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
       heightInputElement.value = worker.getHeight().toString();
       const okFunction = function () {
         worker.setName(nameInputElement.value);
+        worker.setOutputType(outputTypeSelectElement.value);
         let success = true;
         let message;
         // set interval

@@ -122,7 +122,7 @@ export class SliderContextMenu extends BlockContextMenu {
           message = heightInputElement.value + " is not a valid height.";
         }
         // set minimum
-        let minimum = parseInt(minimumInputElement.value);
+        let minimum = parseFloat(minimumInputElement.value);
         if (isNumber(minimum)) {
           slider.setMinimum(minimum);
         } else {
@@ -130,7 +130,7 @@ export class SliderContextMenu extends BlockContextMenu {
           message = minimumInputElement.value + " is not a valid minimum.";
         }
         // set maximum
-        let maximum = parseInt(maximumInputElement.value);
+        let maximum = parseFloat(maximumInputElement.value);
         if (isNumber(maximum)) {
           slider.setMaximum(maximum);
         } else {
@@ -138,7 +138,7 @@ export class SliderContextMenu extends BlockContextMenu {
           message = maximumInputElement.value + " is not a valid maximum.";
         }
         // set steps
-        let steps = parseInt(stepsInputElement.value);
+        let steps = parseFloat(stepsInputElement.value);
         if (isNumber(steps)) {
           slider.setSteps(steps);
         } else {
@@ -146,7 +146,7 @@ export class SliderContextMenu extends BlockContextMenu {
           message = stepsInputElement.value + " is not a valid number for steps.";
         }
         // set current value
-        let value = parseInt(valueInputElement.value);
+        let value = parseFloat(valueInputElement.value);
         if (isNumber(value)) {
           if (value > maximum) {
             value = maximum

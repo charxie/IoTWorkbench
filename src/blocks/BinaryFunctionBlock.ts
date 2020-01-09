@@ -78,6 +78,17 @@ export class BinaryFunctionBlock extends FunctionBlock {
     return this.variable2Name;
   }
 
+  getPortName(uid: string): string {
+    switch (uid) {
+      case "X":
+        return this.variable1Name.substring(0, 1);
+      case "Y":
+        return this.variable2Name.substring(0, 1);
+      default:
+        return uid;
+    }
+  }
+
   refreshView(): void {
     this.portX.setY(this.height / 3);
     this.portY.setY(this.height * 2 / 3);
@@ -96,7 +107,10 @@ export class BinaryFunctionBlock extends FunctionBlock {
         if (Array.isArray(x) && Array.isArray(y)) {
           let r = new Array(Math.max(x.length, y.length));
           for (let i = 0; i < r.length; i++) {
-            r[i] = code.evaluate({[this.variable1Name]: i < x.length ? x[i] : 0, [this.variable2Name]: i < y.length ? y[i] : 0});
+            r[i] = code.evaluate({
+              [this.variable1Name]: i < x.length ? x[i] : 0,
+              [this.variable2Name]: i < y.length ? y[i] : 0
+            });
           }
           this.portR.setValue(r);
         } else {

@@ -94,7 +94,7 @@ export class BlockView {
             that.storeBlock(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
             break;
           case "worker-block":
-            that.storeBlock(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 30, y - 30, 60, 60));
+            that.storeBlock(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
             break;
           case "conditional-statement-block":
             that.storeBlock(new ConditionalStatementBlock("Conditional Statement Block #" + timestamp, x - 30, y - 50, 60, 100, "If-else Block", "IF"));

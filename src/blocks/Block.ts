@@ -66,6 +66,10 @@ export abstract class Block implements Movable {
 
   abstract destroy(): void;
 
+  getPortName(uid: string): string {
+    return uid;
+  }
+
   isSource(): boolean {
     return this.source;
   }

@@ -9,7 +9,8 @@ import {Util} from "../Util";
 
 export class WorkerBlock extends Block {
 
-  private count: number = 0;
+  private outputType: string = "Natural Number";
+  private value: number = 0;
   private interval: number = 500; // in milliseconds
   private barHeight: number;
   private readonly portI: Port;
@@ -23,6 +24,7 @@ export class WorkerBlock extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly outputType: string;
     readonly interval: number;
 
     constructor(worker: WorkerBlock) {
@@ -32,6 +34,7 @@ export class WorkerBlock extends Block {
       this.y = worker.y;
       this.width = worker.width;
       this.height = worker.height;
+      this.outputType = worker.outputType;
       this.interval = worker.interval;
     }
   };
@@ -49,7 +52,16 @@ export class WorkerBlock extends Block {
   getCopy(): Block {
     let copy = new WorkerBlock("Worker Block #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.interval = this.interval;
+    copy.outputType = this.outputType;
     return copy;
+  }
+
+  setOutputType(output: string): void {
+    this.outputType = output;
+  }
+
+  getOutputType(): string {
+    return this.outputType;
   }
 
   setInterval(interval: number): void {
@@ -87,7 +99,14 @@ export class WorkerBlock extends Block {
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
-    let counter = this.count.toString();
+    let display;
+    switch (this.outputType) {
+      case "Random Number":
+        display = this.value.toFixed(2);
+        break;
+      default:
+        display = this.value.toString();
+    }
     ctx.font = "bold 20px Courier New";
     ctx.beginPath();
     let m = this.iconic ? 4 : 8;
@@ -100,15 +119,15 @@ export class WorkerBlock extends Block {
     shade.addColorStop(1, "gray");
     ctx.fillStyle = shade;
     ctx.fill();
-    ctx.strokeStyle="black";
+    ctx.strokeStyle = "black";
     ctx.stroke();
     if (!this.iconic) {
       ctx.fillStyle = "white";
-      let counterWidth = ctx.measureText(counter).width;
+      let counterWidth = ctx.measureText(display).width;
       let counterHeight = ctx.measureText("M").width;
       x = this.x + this.width - m - counterWidth - 2;
       y = this.y + this.barHeight + (this.height - this.barHeight + counterHeight) / 2;
-      ctx.fillText(counter, x, y);
+      ctx.fillText(display, x, y);
     }
 
     // draw the ports
@@ -125,7 +144,7 @@ export class WorkerBlock extends Block {
     } else {
       this.stopWorker();
     }
-    this.portO.setValue(this.count);
+    this.portO.setValue(this.value);
     this.updateConnectors();
   }
 
@@ -137,7 +156,14 @@ export class WorkerBlock extends Block {
     }
     let that = this;
     this.worker.onmessage = function (event) {
-      that.count = event.data;
+      switch (that.outputType) {
+        case "Natural Number":
+          that.value = event.data;
+          break;
+        case "Random Number":
+          that.value = Math.random();
+          break;
+      }
       flowchart.updateResults();
       flowchart.draw();
     };

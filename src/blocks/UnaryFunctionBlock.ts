@@ -55,6 +55,15 @@ export class UnaryFunctionBlock extends FunctionBlock {
   destroy(): void {
   }
 
+  getPortName(uid: string): string {
+    switch (uid) {
+      case "X":
+        return this.variableName.substring(0, 1);
+      default:
+        return uid;
+    }
+  }
+
   setVariableName(variableName: string): void {
     this.variableName = variableName;
   }

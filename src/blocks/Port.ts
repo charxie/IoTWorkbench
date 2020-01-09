@@ -5,6 +5,7 @@
 import {Block} from "./Block";
 import {Arc} from "../math/Arc";
 import {Point} from "../math/Point";
+import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
 
 export class Port {
 
@@ -76,12 +77,12 @@ export class Port {
     return this.arc.near(x, y);
   }
 
-  draw(ctx: CanvasRenderingContext2D, small: boolean): void {
+  draw(ctx: CanvasRenderingContext2D, iconic: boolean): void {
     ctx.save();
     let ax = this.arc.x + this.block.getX();
     let ay = this.arc.y + this.block.getY();
-    ctx.lineWidth = small ? 1 : 2;
-    this.arc.radius = small ? 3 : 5;
+    ctx.lineWidth = iconic ? 1 : 2;
+    this.arc.radius = iconic ? 3 : 5;
     if (this.close && this.input) {
       let shade = ctx.createRadialGradient(ax, ay, this.arc.radius, ax, ay, 3 * this.arc.radius);
       shade.addColorStop(1, "gold");
@@ -97,14 +98,14 @@ export class Port {
     ctx.arc(ax, ay, this.arc.radius, this.arc.startAngle, this.arc.endAngle, this.arc.anticlockwise);
     ctx.fill();
     ctx.stroke();
-    if (!small && this.block.getPorts().length > 2) {
+    if (!iconic && this.block.getPorts().length > 2) {
       ctx.lineWidth = 0.75;
       ctx.fillStyle = "black";
-      let t = this.uid;
+      let t = this.block.getPortName(this.uid);
       if (this.arc.anticlockwise) {
-        ctx.fillText(t, ax - ctx.measureText(t).width - (small ? 2 : 4), ay + 4);
+        ctx.fillText(t, ax - ctx.measureText(t).width - (iconic ? 2 : 4), ay + 4);
       } else {
-        ctx.fillText(t, ax + (small ? 2 : 4), ay + 4)
+        ctx.fillText(t, ax + (iconic ? 2 : 4), ay + 4)
       }
       ctx.restore();
     }

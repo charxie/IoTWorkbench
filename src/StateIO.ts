@@ -57,6 +57,7 @@ export class StateIO {
           block.setCount(state.count);
         } else if (block instanceof WorkerBlock) {
           block.setName(state.name);
+          block.setOutputType(state.outputType ? state.outputType : "Natural Number");
           block.setInterval(state.interval);
         } else if (block instanceof ItemSelector) {
           block.setName(state.name);

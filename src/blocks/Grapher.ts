@@ -256,7 +256,8 @@ export class Grapher extends Block {
         ctx.moveTo(tmpX, horizontalAxisY);
         ctx.lineTo(tmpX, horizontalAxisY - 4);
         ctx.stroke();
-        ctx.fillText(i.toString(), tmpX - 4, horizontalAxisY + 10);
+        let iString = i.toString();
+        ctx.fillText(iString, tmpX - 4 - ctx.measureText(iString).width / 2, horizontalAxisY + 10);
       }
     }
 
