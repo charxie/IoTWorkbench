@@ -5,7 +5,7 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {FunctionBlock} from "./FunctionBlock";
-import {math} from "../Main";
+import {flowchart, math} from "../Main";
 import {Util} from "../Util";
 
 export class ConditionalStatementBlock extends FunctionBlock {
@@ -93,6 +93,13 @@ export class ConditionalStatementBlock extends FunctionBlock {
       } else {
         this.portT.setValue(undefined);
         this.portF.setValue(undefined);
+        // special treatment of conditional statement block that might output to a worker (need to stop it in that case)
+        let inputT = flowchart.getConnector(this.portT).getInput();
+        inputT.setValue(undefined);
+        inputT.getBlock().updateModel();
+        let inputF = flowchart.getConnector(this.portF).getInput();
+        inputF.setValue(undefined);
+        inputF.getBlock().updateModel();
       }
     }
     this.updateConnectors();

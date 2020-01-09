@@ -87,10 +87,29 @@ export class WorkerBlock extends Block {
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
-    ctx.fillStyle = "black";
     let counter = this.count.toString();
-    ctx.font = this.iconic ? "10px Arial" : "14px Arial";
-    ctx.fillText(counter, this.x + (this.width - ctx.measureText(counter).width) / 2, this.y + this.barHeight + (this.height - this.barHeight + ctx.measureText("M").width) / 2);
+    ctx.font = "bold 20px Courier New";
+    ctx.beginPath();
+    let m = this.iconic ? 4 : 8;
+    let x = this.x + m;
+    let y = this.y + this.barHeight + m;
+    ctx.rect(x, y, this.width - 2 * m, this.height - this.barHeight - 2 * m);
+    shade = ctx.createLinearGradient(x, y, x, y + this.height);
+    shade.addColorStop(0, "lightgray");
+    shade.addColorStop(0.5, "black");
+    shade.addColorStop(1, "gray");
+    ctx.fillStyle = shade;
+    ctx.fill();
+    ctx.strokeStyle="black";
+    ctx.stroke();
+    if (!this.iconic) {
+      ctx.fillStyle = "white";
+      let counterWidth = ctx.measureText(counter).width;
+      let counterHeight = ctx.measureText("M").width;
+      x = this.x + this.width - m - counterWidth - 2;
+      y = this.y + this.barHeight + (this.height - this.barHeight + counterHeight) / 2;
+      ctx.fillText(counter, x, y);
+    }
 
     // draw the ports
     ctx.strokeStyle = "black";

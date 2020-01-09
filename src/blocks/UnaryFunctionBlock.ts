@@ -77,9 +77,9 @@ export class UnaryFunctionBlock extends FunctionBlock {
         const node = math.parse(this.expression);
         const code = node.compile();
         if (Array.isArray(x)) {
-          let r = [];
-          for (let i of x) {
-            r.push(code.evaluate({[this.variableName]: i}));
+          let r = new Array(x.length);
+          for (let i = 0; i < r.length; i++) {
+            r[i] = code.evaluate({[this.variableName]: x[i]});
           }
           this.portR.setValue(r);
         } else {
