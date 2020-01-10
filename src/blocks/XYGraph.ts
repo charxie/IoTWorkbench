@@ -7,16 +7,21 @@ import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 
-export class Grapher extends Block {
+export class XYGraph extends Block {
 
-  private data: number[] = [];
-  private minimumValue: number = 0;
-  private maximumValue: number = 1;
+  private portX: Port;
+  private portY: Port;
+  private xPoints: number[] = [];
+  private yPoints: number[] = [];
+  private minimumXValue: number = 0;
+  private maximumXValue: number = 1;
+  private minimumYValue: number = 0;
+  private maximumYValue: number = 1;
   private autoscale: boolean = true;
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private graphWindowColor: string = "white";
-  private graphSymbol: string = "Circle";
+  private graphSymbol: string = "None";
   private graphWindow: Rectangle;
   private barHeight: number;
   private readonly graphMargin = {
@@ -36,25 +41,29 @@ export class Grapher extends Block {
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly graphWindowColor: string;
-    readonly autoscale: boolean;
-    readonly minimumValue: number;
-    readonly maximumValue: number;
     readonly graphSymbol: string;
+    readonly autoscale: boolean;
+    readonly minimumXValue: number;
+    readonly maximumXValue: number;
+    readonly minimumYValue: number;
+    readonly maximumYValue: number;
 
-    constructor(grapher: Grapher) {
-      this.name = grapher.name;
-      this.uid = grapher.uid;
-      this.x = grapher.x;
-      this.y = grapher.y;
-      this.width = grapher.width;
-      this.height = grapher.height;
-      this.xAxisLabel = grapher.xAxisLabel;
-      this.yAxisLabel = grapher.yAxisLabel;
-      this.graphWindowColor = grapher.graphWindowColor;
-      this.autoscale = grapher.autoscale;
-      this.minimumValue = grapher.minimumValue;
-      this.maximumValue = grapher.maximumValue;
-      this.graphSymbol = grapher.graphSymbol;
+    constructor(g: XYGraph) {
+      this.name = g.name;
+      this.uid = g.uid;
+      this.x = g.x;
+      this.y = g.y;
+      this.width = g.width;
+      this.height = g.height;
+      this.xAxisLabel = g.xAxisLabel;
+      this.yAxisLabel = g.yAxisLabel;
+      this.graphWindowColor = g.graphWindowColor;
+      this.graphSymbol = g.graphSymbol;
+      this.autoscale = g.autoscale;
+      this.minimumXValue = g.minimumXValue;
+      this.maximumXValue = g.maximumXValue;
+      this.minimumYValue = g.minimumYValue;
+      this.maximumYValue = g.maximumYValue;
     }
   };
 
@@ -62,14 +71,19 @@ export class Grapher extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.color = "#F0FFFF";
-    this.ports.push(new Port(this, true, "I", 0, this.height / 2, false));
+    this.portX = new Port(this, true, "X", 0, this.height / 3, false)
+    this.portY = new Port(this, true, "Y", 0, this.height * 2 / 3, false)
+    this.ports.push(this.portX);
+    this.ports.push(this.portY);
     this.graphWindow = new Rectangle(0, 0, 1, 1);
   }
 
   getCopy(): Block {
-    let copy = new Grapher("Grapher #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    copy.minimumValue = this.minimumValue;
-    copy.maximumValue = this.maximumValue;
+    let copy = new XYGraph("X-Y Graph #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    copy.minimumXValue = this.minimumXValue;
+    copy.maximumXValue = this.maximumXValue;
+    copy.minimumYValue = this.minimumYValue;
+    copy.maximumYValue = this.maximumYValue;
     copy.autoscale = this.autoscale;
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
@@ -81,20 +95,36 @@ export class Grapher extends Block {
   destroy(): void {
   }
 
-  setMinimumValue(minimumValue: number): void {
-    this.minimumValue = minimumValue;
+  setMinimumXValue(minimumXValue: number): void {
+    this.minimumXValue = minimumXValue;
   }
 
-  getMinimumValue(): number {
-    return this.minimumValue;
+  getMinimumXValue(): number {
+    return this.minimumXValue;
   }
 
-  setMaximumValue(maximumValue: number): void {
-    this.maximumValue = maximumValue;
+  setMaximumXValue(maximumXValue: number): void {
+    this.maximumXValue = maximumXValue;
   }
 
-  getMaximumValue(): number {
-    return this.maximumValue;
+  getMaximumXValue(): number {
+    return this.maximumXValue;
+  }
+
+  setMinimumYValue(minimumYValue: number): void {
+    this.minimumYValue = minimumYValue;
+  }
+
+  getMinimumYValue(): number {
+    return this.minimumYValue;
+  }
+
+  setMaximumYValue(maximumYValue: number): void {
+    this.maximumYValue = maximumYValue;
+  }
+
+  getMaximumYValue(): number {
+    return this.maximumYValue;
   }
 
   setAutoScale(autoscale: boolean): void {
@@ -176,106 +206,64 @@ export class Grapher extends Block {
     ctx.stroke();
     if (!this.iconic) {
       this.drawAxisLabels(ctx);
-      if (this.data.length > 1) {
-        this.drawLineCharts(ctx);
+    }
+
+    // draw X-Y plot
+    if (this.xPoints && this.yPoints) {
+      let length = Math.min(this.xPoints.length, this.yPoints.length);
+      if (length > 0) {
+        // detect minimum and maximum of x and y values
+        let xmin = Number.MAX_VALUE;
+        let xmax = -xmin;
+        if (this.autoscale) {
+          for (let d of this.xPoints) {
+            if (d > xmax) {
+              xmax = d;
+            }
+            if (d < xmin) {
+              xmin = d;
+            }
+          }
+        } else {
+          xmin = this.minimumXValue;
+          xmax = this.maximumXValue;
+        }
+        let ymin = Number.MAX_VALUE;
+        let ymax = -xmin;
+        if (this.autoscale) {
+          for (let d of this.yPoints) {
+            if (d > ymax) {
+              ymax = d;
+            }
+            if (d < ymin) {
+              ymin = d;
+            }
+          }
+        } else {
+          ymin = this.minimumYValue;
+          ymax = this.maximumYValue;
+        }
+        let offset = 0.1 * Math.min(this.graphWindow.width, this.graphWindow.height);
+        let dx = (this.graphWindow.width - 2 * offset) / (xmax - xmin);
+        let dy = (this.graphWindow.height - 2 * offset) / (ymax - ymin);
+        ctx.save();
+        ctx.translate(this.graphWindow.x + this.graphWindow.width / 2, this.graphWindow.y + this.graphWindow.height / 2);
+        ctx.beginPath();
+        ctx.moveTo(this.xPoints[0] * dx, -this.yPoints[0] * dy);
+        for (let i = 0; i < length; i++) {
+          ctx.lineTo(this.xPoints[i] * dx, -this.yPoints[i] * dy);
+        }
+        //ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
       }
     }
 
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
-    this.ports[0].draw(ctx, this.iconic);
-
-  }
-
-  private drawLineCharts(ctx: CanvasRenderingContext2D): void {
-
-    // detect minimum and maximum of y values
-    let min = Number.MAX_VALUE;
-    let max = -min;
-    if (this.autoscale) {
-      for (let d of this.data) {
-        if (d > max) {
-          max = d;
-        }
-        if (d < min) {
-          min = d;
-        }
-      }
-    } else {
-      min = this.minimumValue;
-      max = this.maximumValue;
-    }
-
-    // determine the graph window
-
-    let dx = this.graphWindow.width / (this.data.length - 1);
-    let yOffset = 0.1 * this.graphWindow.height;
-    let dy = (this.graphWindow.height - 2 * yOffset) / (max - min);
-
-    // draw the data line
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "black";
-    ctx.font = "10px Arial";
-    ctx.fillStyle = "black";
-    ctx.beginPath();
-    let horizontalAxisY = this.y + this.height - this.graphMargin.bottom;
-    let tmpX = this.graphWindow.x;
-    let tmpY = yOffset + (this.data[0] - min) * dy;
-    ctx.moveTo(tmpX, horizontalAxisY - tmpY);
-    ctx.fillText("0", tmpX - 4, horizontalAxisY + 10);
-    for (let i = 1; i < this.data.length; i++) {
-      tmpX = this.graphWindow.x + dx * i;
-      tmpY = yOffset + (this.data[i] - min) * dy;
-      ctx.lineTo(tmpX, horizontalAxisY - tmpY);
-    }
-    ctx.stroke();
-
-    // draw symbols on top of the line
-    if (this.graphSymbol != "None") {
-      for (let i = 0; i < this.data.length; i++) {
-        tmpX = this.graphWindow.x + dx * i;
-        tmpY = yOffset + (this.data[i] - min) * dy;
-        ctx.beginPath();
-        ctx.arc(tmpX, horizontalAxisY - tmpY, 3, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.fillStyle = "white";
-        ctx.fill();
-        ctx.fillStyle = "black";
-        ctx.stroke();
-      }
-    }
-
-    // draw x-axis tick marks
-    let spacing = Math.pow(10, Util.countDigits(this.data.length) - 1);
-    for (let i = 0; i < this.data.length; i++) {
-      if (i % spacing == 0) {
-        tmpX = this.graphWindow.x + dx * i;
-        ctx.beginPath();
-        ctx.moveTo(tmpX, horizontalAxisY);
-        ctx.lineTo(tmpX, horizontalAxisY - 4);
-        ctx.stroke();
-        let iString = i.toString();
-        ctx.fillText(iString, tmpX - 4 - ctx.measureText(iString).width / 2, horizontalAxisY + 10);
-      }
-    }
-
-    // draw y-axis tick marks
-    tmpY = yOffset;
-    let minString = min.toPrecision(1);
-    ctx.beginPath();
-    ctx.moveTo(this.graphWindow.x, horizontalAxisY - tmpY);
-    ctx.lineTo(this.graphWindow.x + 4, horizontalAxisY - tmpY);
-    ctx.stroke();
-    ctx.fillText(minString, this.graphWindow.x - ctx.measureText(minString).width - 5, horizontalAxisY - tmpY);
-
-    tmpY = yOffset + (max - min) * dy;
-    let maxString = max.toPrecision(1);
-    ctx.beginPath();
-    ctx.moveTo(this.graphWindow.x, horizontalAxisY - tmpY);
-    ctx.lineTo(this.graphWindow.x + 4, horizontalAxisY - tmpY);
-    ctx.stroke();
-    ctx.fillText(maxString, this.graphWindow.x - ctx.measureText(maxString).width - 5, horizontalAxisY - tmpY);
+    this.portX.draw(ctx, this.iconic);
+    this.portY.draw(ctx, this.iconic);
 
   }
 
@@ -296,8 +284,10 @@ export class Grapher extends Block {
   }
 
   updateModel(): void {
-    let v = this.ports[0].getValue();
-    this.data = Array.isArray(v) ? v : [v];
+    let v = this.portX.getValue();
+    this.xPoints = Array.isArray(v) ? v : [v];
+    v = this.portY.getValue();
+    this.yPoints = Array.isArray(v) ? v : [v];
   }
 
   refreshView(): void {
@@ -305,7 +295,8 @@ export class Grapher extends Block {
     this.graphMargin.bottom = 30;
     this.graphMargin.left = 30;
     this.graphMargin.right = 10;
-    this.ports[0].setY(this.height / 2);
+    this.portX.setY(this.height / 3);
+    this.portY.setY(this.height * 2 / 3);
     this.updateModel();
   }
 

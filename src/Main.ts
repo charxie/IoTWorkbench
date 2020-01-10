@@ -53,6 +53,7 @@ import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 import {GrapherContextMenu} from "./blocks/ui/GrapherContextMenu";
 import {WorkerBlockContextMenu} from "./blocks/ui/WorkerBlockContextMenu";
 import {ParametricEquationBlockContextMenu} from "./blocks/ui/ParametricEquationBlockContextMenu";
+import {XYGraphContextMenu} from "./blocks/ui/XYGraphContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -284,6 +285,11 @@ function setupContextMenuForBlock() {
   grapherContextMenu.render("grapher-context-menu-placeholder");
   grapherContextMenu.addListeners();
   contextMenus.grapher = grapherContextMenu;
+
+  let xygraphContextMenu = new XYGraphContextMenu();
+  xygraphContextMenu.render("xygraph-context-menu-placeholder");
+  xygraphContextMenu.addListeners();
+  contextMenus.xygraph = xygraphContextMenu;
 }
 
 function setupContextMenuForModel() {

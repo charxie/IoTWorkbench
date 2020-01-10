@@ -5,15 +5,14 @@
 import $ from "jquery";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
-import {Sticker} from "../Sticker";
 import {Util} from "../../Util";
-import {Grapher} from "../Grapher";
+import {XYGraph} from "../XYGraph";
 
-export class GrapherContextMenu extends BlockContextMenu {
+export class XYGraphContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "grapher-context-menu";
+    this.id = "xygraph-context-menu";
   }
 
   getUi(): string {
@@ -42,48 +41,56 @@ export class GrapherContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="grapher-name-field" style="width: 120px"></td>
+                  <td><input type="text" id="xygraph-name-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Scale:</td>
-                  <td><input type="radio" name="scale" id="grapher-auto-scale-radio-button" checked> Auto
-                      <input type="radio" name="scale" id="grapher-fixed-scale-radio-button"> Fixed</td>
+                  <td><input type="radio" name="scale" id="xygraph-auto-scale-radio-button" checked> Auto
+                      <input type="radio" name="scale" id="xygraph-fixed-scale-radio-button"> Fixed</td>
                 </tr>
                 <tr>
-                  <td>Minimum Value:</td>
-                  <td><input type="text" id="grapher-minimum-value-field" style="width: 120px"></td>
+                  <td>Minimum X Value:</td>
+                  <td><input type="text" id="xygraph-minimum-x-value-field" style="width: 120px"></td>
                 </tr>
                 <tr>
-                  <td>Maximum Value:</td>
-                  <td><input type="text" id="grapher-maximum-value-field" style="width: 120px"></td>
+                  <td>Maximum X Value:</td>
+                  <td><input type="text" id="xygraph-maximum-x-value-field" style="width: 120px"></td>
+                </tr>
+                <tr>
+                  <td>Minimum Y Value:</td>
+                  <td><input type="text" id="xygraph-minimum-y-value-field" style="width: 120px"></td>
+                </tr>
+                <tr>
+                  <td>Maximum Y Value:</td>
+                  <td><input type="text" id="xygraph-maximum-y-value-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Symbol:</td>
                   <td>
-                    <select id="grapher-symbol-selector" style="width: 120px">
+                    <select id="xygraph-symbol-selector" style="width: 120px">
                       <option value="None">None</option>
                       <option value="Circle" selected>Circle</option>
                     </select>
                 </tr>
                 <tr>
                   <td>X-Axis Label:</td>
-                  <td><input type="text" id="grapher-x-axis-label-field" style="width: 120px"></td>
+                  <td><input type="text" id="xygraph-x-axis-label-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Y-Axis Label:</td>
-                  <td><input type="text" id="grapher-y-axis-label-field" style="width: 120px"></td>
+                  <td><input type="text" id="xygraph-y-axis-label-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Window Color:</td>
-                  <td><input type="text" id="grapher-window-color-field" style="width: 120px"></td>
+                  <td><input type="text" id="xygraph-window-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="grapher-width-field" style="width: 120px"></td>
+                  <td><input type="text" id="xygraph-width-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="grapher-height-field" style="width: 120px"></td>
+                  <td><input type="text" id="xygraph-height-field" style="width: 120px"></td>
                 </tr>
               </table>
             </div>`;
@@ -92,30 +99,34 @@ export class GrapherContextMenu extends BlockContextMenu {
   protected propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof Grapher) {
+    if (this.block instanceof XYGraph) {
       const g = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("grapher-name-field") as HTMLInputElement;
+      let nameInputElement = document.getElementById("xygraph-name-field") as HTMLInputElement;
       nameInputElement.value = g.getName();
-      let symbolSelectElement = document.getElementById("grapher-symbol-selector") as HTMLSelectElement;
+      let symbolSelectElement = document.getElementById("xygraph-symbol-selector") as HTMLSelectElement;
       symbolSelectElement.value = g.getGraphSymbol();
-      let autoScaleRadioButton = document.getElementById("grapher-auto-scale-radio-button") as HTMLInputElement;
+      let autoScaleRadioButton = document.getElementById("xygraph-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
-      let fixedScaleRadioButton = document.getElementById("grapher-fixed-scale-radio-button") as HTMLInputElement;
+      let fixedScaleRadioButton = document.getElementById("xygraph-fixed-scale-radio-button") as HTMLInputElement;
       fixedScaleRadioButton.checked = !g.getAutoScale();
-      let minimumValueInputElement = document.getElementById("grapher-minimum-value-field") as HTMLInputElement;
-      minimumValueInputElement.value = g.getMinimumValue().toString();
-      let maximumValueInputElement = document.getElementById("grapher-maximum-value-field") as HTMLInputElement;
-      maximumValueInputElement.value = g.getMaximumValue().toString();
-      let xAxisLableInputElement = document.getElementById("grapher-x-axis-label-field") as HTMLInputElement;
+      let minimumXValueInputElement = document.getElementById("xygraph-minimum-x-value-field") as HTMLInputElement;
+      minimumXValueInputElement.value = g.getMinimumXValue().toString();
+      let maximumXValueInputElement = document.getElementById("xygraph-maximum-x-value-field") as HTMLInputElement;
+      maximumXValueInputElement.value = g.getMaximumXValue().toString();
+      let minimumYValueInputElement = document.getElementById("xygraph-minimum-y-value-field") as HTMLInputElement;
+      minimumYValueInputElement.value = g.getMinimumXValue().toString();
+      let maximumYValueInputElement = document.getElementById("xygraph-maximum-y-value-field") as HTMLInputElement;
+      maximumYValueInputElement.value = g.getMaximumXValue().toString();
+      let xAxisLableInputElement = document.getElementById("xygraph-x-axis-label-field") as HTMLInputElement;
       xAxisLableInputElement.value = g.getXAxisLabel();
-      let yAxisLableInputElement = document.getElementById("grapher-y-axis-label-field") as HTMLInputElement;
+      let yAxisLableInputElement = document.getElementById("xygraph-y-axis-label-field") as HTMLInputElement;
       yAxisLableInputElement.value = g.getYAxisLabel();
-      let windowColorInputElement = document.getElementById("grapher-window-color-field") as HTMLInputElement;
+      let windowColorInputElement = document.getElementById("xygraph-window-color-field") as HTMLInputElement;
       windowColorInputElement.value = g.getGraphWindowColor();
-      let widthInputElement = document.getElementById("grapher-width-field") as HTMLInputElement;
+      let widthInputElement = document.getElementById("xygraph-width-field") as HTMLInputElement;
       widthInputElement.value = g.getWidth().toString();
-      let heightInputElement = document.getElementById("grapher-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("xygraph-height-field") as HTMLInputElement;
       heightInputElement.value = g.getHeight().toString();
       const okFunction = function () {
         g.setName(nameInputElement.value);
@@ -126,21 +137,37 @@ export class GrapherContextMenu extends BlockContextMenu {
         g.setAutoScale(autoScaleRadioButton.checked);
         let success = true;
         let message;
-        // set minimum value
-        let minimumValue = parseFloat(minimumValueInputElement.value);
-        if (isNumber(minimumValue)) {
-          g.setMinimumValue(minimumValue);
+        // set minimum X value
+        let minimumXValue = parseFloat(minimumXValueInputElement.value);
+        if (isNumber(minimumXValue)) {
+          g.setMinimumXValue(minimumXValue);
         } else {
           success = false;
-          message = minimumValueInputElement.value + " is not a valid value for minimum.";
+          message = minimumXValueInputElement.value + " is not a valid value for minimum X.";
         }
-        // set maximum value
-        let maximumValue = parseFloat(maximumValueInputElement.value);
-        if (isNumber(maximumValue)) {
-          g.setMaximumValue(maximumValue);
+        // set maximum X value
+        let maximumXValue = parseFloat(maximumXValueInputElement.value);
+        if (isNumber(maximumXValue)) {
+          g.setMaximumXValue(maximumXValue);
         } else {
           success = false;
-          message = maximumValueInputElement.value + " is not a valid value for maximum.";
+          message = maximumXValueInputElement.value + " is not a valid value for maximum X.";
+        }
+        // set minimum Y value
+        let minimumYValue = parseFloat(minimumYValueInputElement.value);
+        if (isNumber(minimumYValue)) {
+          g.setMinimumYValue(minimumYValue);
+        } else {
+          success = false;
+          message = minimumYValueInputElement.value + " is not a valid value for minimum Y.";
+        }
+        // set maximum Y value
+        let maximumYValue = parseFloat(maximumYValueInputElement.value);
+        if (isNumber(maximumYValue)) {
+          g.setMaximumYValue(maximumYValue);
+        } else {
+          success = false;
+          message = maximumYValueInputElement.value + " is not a valid value for maximum Y.";
         }
         // set width
         let w = parseInt(widthInputElement.value);
@@ -174,8 +201,10 @@ export class GrapherContextMenu extends BlockContextMenu {
         }
       };
       nameInputElement.addEventListener("keyup", enterKeyUp);
-      minimumValueInputElement.addEventListener("keyup", enterKeyUp);
-      maximumValueInputElement.addEventListener("keyup", enterKeyUp);
+      minimumXValueInputElement.addEventListener("keyup", enterKeyUp);
+      maximumXValueInputElement.addEventListener("keyup", enterKeyUp);
+      minimumYValueInputElement.addEventListener("keyup", enterKeyUp);
+      maximumYValueInputElement.addEventListener("keyup", enterKeyUp);
       xAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       yAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       windowColorInputElement.addEventListener("keyup", enterKeyUp);
@@ -186,7 +215,7 @@ export class GrapherContextMenu extends BlockContextMenu {
         modal: true,
         title: g.getUid(),
         height: 550,
-        width: 320,
+        width: 340,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

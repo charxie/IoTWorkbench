@@ -6,6 +6,7 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
+import {ArithmeticBlock} from "../ArithmeticBlock";
 
 export class ArithmeticBlockContextMenu extends BlockContextMenu {
 
@@ -68,7 +69,7 @@ export class ArithmeticBlockContextMenu extends BlockContextMenu {
   protected propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block) {
+    if (this.block instanceof ArithmeticBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let selectElement = document.getElementById("arithmetic-block-operator") as HTMLSelectElement;

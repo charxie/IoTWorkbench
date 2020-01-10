@@ -21,6 +21,7 @@ import {ItemSelector} from "./ItemSelector";
 import {Grapher} from "./Grapher";
 import {WorkerBlock} from "./WorkerBlock";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
+import {XYGraph} from "./XYGraph";
 
 export class Flowchart {
 
@@ -215,6 +216,9 @@ export class Flowchart {
       case "Grapher":
         block = new Grapher(uid, name, x, y, 200, 160);
         break;
+      case "X-Y Graph":
+        block = new XYGraph(uid, name, x, y, 200, 220);
+        break;
     }
     if (block != null) {
       this.blocks.push(block);
@@ -262,6 +266,8 @@ export class Flowchart {
         blockStates.push(new Sticker.State(b));
       } else if (b instanceof Grapher) {
         blockStates.push(new Grapher.State(b));
+      } else if (b instanceof XYGraph) {
+        blockStates.push(new XYGraph.State(b));
       } else if (b instanceof ConditionalStatementBlock) {
         blockStates.push(new ConditionalStatementBlock.State(b));
       } else if (b instanceof UnaryFunctionBlock) {

@@ -24,6 +24,7 @@ import {ItemSelector} from "./ItemSelector";
 import {Grapher} from "./Grapher";
 import {WorkerBlock} from "./WorkerBlock";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
+import {XYGraph} from "./XYGraph";
 
 export class BlockView {
 
@@ -126,6 +127,9 @@ export class BlockView {
             break;
           case "grapher-block":
             that.storeBlock(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));
+            break;
+          case "xygraph-block":
+            that.storeBlock(new XYGraph("X-Y Graph #" + timestamp, "X-Y Graph", x - 100, y - 110, 200, 220));
             break;
         }
       }
@@ -440,6 +444,9 @@ export class BlockView {
     } else if (block instanceof Grapher) {
       contextMenus.grapher.block = block;
       menu = document.getElementById("grapher-context-menu") as HTMLMenuElement;
+    } else if (block instanceof XYGraph) {
+      contextMenus.xygraph.block = block;
+      menu = document.getElementById("xygraph-context-menu") as HTMLMenuElement;
     } else {
       contextMenus.blockView.view = this;
       menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;

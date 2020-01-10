@@ -79,8 +79,8 @@ export class SliderContextMenu extends BlockContextMenu {
   protected propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block) {
-      const slider = <Slider>this.block;
+    if (this.block instanceof Slider) {
+      const slider = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("slider-name-field") as HTMLInputElement;
       nameInputElement.value = slider.getName();

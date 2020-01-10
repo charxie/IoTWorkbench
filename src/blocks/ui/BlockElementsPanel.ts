@@ -17,6 +17,7 @@ import {ItemSelector} from "../ItemSelector";
 import {Grapher} from "../Grapher";
 import {WorkerBlock} from "../WorkerBlock";
 import {ParametricEquationBlock} from "../ParametricEquationBlock";
+import {XYGraph} from "../XYGraph";
 
 export class BlockElementsPanel {
 
@@ -47,6 +48,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="toggle-switch-block" title="Toggle Switch" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="sticker-block" title="Text Display" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="grapher-block" title="Grapher" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="xygraph-block" title="X-Y Graph" width="45px" height="45px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -86,6 +88,7 @@ export class BlockElementsPanel {
     this.drawItemSelector("Item Selector", "item-selector-block");
     this.drawSticker("Sticker", "sticker-block");
     this.drawGrapher("Grapher", "grapher-block");
+    this.drawXYGraph("XYGraph", "xygraph-block");
     this.drawSeriesBlock("Series Block", "Series", "series-block");
     this.drawConditionalStatementBlock("Conditional Statement Block", "IF", "conditional-statement-block");
     this.drawWorkerBlock("Worker Block", "Worker", "worker-block");
@@ -127,6 +130,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new Grapher("Grapher Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawXYGraph(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new XYGraph("X-Y Graph Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

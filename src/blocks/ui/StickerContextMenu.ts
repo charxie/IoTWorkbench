@@ -62,8 +62,8 @@ export class StickerContextMenu extends BlockContextMenu {
   protected propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block) {
-      const sticker = <Sticker>this.block;
+    if (this.block instanceof Sticker) {
+      const sticker = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("sticker-name-field") as HTMLInputElement;
       nameInputElement.value = sticker.getName();

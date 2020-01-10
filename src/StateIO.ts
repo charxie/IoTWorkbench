@@ -16,6 +16,7 @@ import {UnaryFunctionBlock} from "./blocks/UnaryFunctionBlock";
 import {BinaryFunctionBlock} from "./blocks/BinaryFunctionBlock";
 import {ConditionalStatementBlock} from "./blocks/ConditionalStatementBlock";
 import {ParametricEquationBlock} from "./blocks/ParametricEquationBlock";
+import {XYGraph} from "./blocks/XYGraph";
 
 export class StateIO {
 
@@ -79,6 +80,17 @@ export class StateIO {
           if (state.yAxisLabel != undefined) block.setYAxisLabel(state.yAxisLabel);
           if (state.graphWindowColor != undefined) block.setGraphWindowColor(state.graphWindowColor);
           if (state.graphSymbol != undefined) block.setGraphSymbol(state.graphSymbol);
+        } else if (block instanceof XYGraph) {
+          block.setName(state.name);
+          block.setMinimumXValue(state.minimumXValue);
+          block.setMaximumXValue(state.maximumXValue);
+          block.setMinimumYValue(state.minimumYValue);
+          block.setMaximumYValue(state.maximumYValue);
+          block.setAutoScale(state.autoscale);
+          block.setXAxisLabel(state.xAxisLabel);
+          block.setYAxisLabel(state.yAxisLabel);
+          block.setGraphWindowColor(state.graphWindowColor);
+          block.setGraphSymbol(state.graphSymbol);
         } else if (block instanceof ConditionalStatementBlock) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");
