@@ -115,9 +115,9 @@ export class XYGraphContextMenu extends BlockContextMenu {
       let maximumXValueInputElement = document.getElementById("xygraph-maximum-x-value-field") as HTMLInputElement;
       maximumXValueInputElement.value = g.getMaximumXValue().toString();
       let minimumYValueInputElement = document.getElementById("xygraph-minimum-y-value-field") as HTMLInputElement;
-      minimumYValueInputElement.value = g.getMinimumXValue().toString();
+      minimumYValueInputElement.value = g.getMinimumYValue().toString();
       let maximumYValueInputElement = document.getElementById("xygraph-maximum-y-value-field") as HTMLInputElement;
-      maximumYValueInputElement.value = g.getMaximumXValue().toString();
+      maximumYValueInputElement.value = g.getMaximumYValue().toString();
       let xAxisLableInputElement = document.getElementById("xygraph-x-axis-label-field") as HTMLInputElement;
       xAxisLableInputElement.value = g.getXAxisLabel();
       let yAxisLableInputElement = document.getElementById("xygraph-y-axis-label-field") as HTMLInputElement;

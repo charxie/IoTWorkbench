@@ -243,18 +243,41 @@ export class XYGraph extends Block {
           ymin = this.minimumYValue;
           ymax = this.maximumYValue;
         }
-        let offset = 0.1 * Math.min(this.graphWindow.width, this.graphWindow.height);
-        let dx = (this.graphWindow.width - 2 * offset) / (xmax - xmin);
-        let dy = (this.graphWindow.height - 2 * offset) / (ymax - ymin);
+        let dx = this.graphWindow.width / (xmax - xmin);
+        let dy = this.graphWindow.height / (ymax - ymin);
         ctx.save();
-        ctx.translate(this.graphWindow.x + this.graphWindow.width / 2, this.graphWindow.y + this.graphWindow.height / 2);
+        ctx.translate(this.graphWindow.x, this.graphWindow.y + this.graphWindow.height);
         ctx.beginPath();
-        ctx.moveTo(this.xPoints[0] * dx, -this.yPoints[0] * dy);
+        ctx.moveTo((this.xPoints[0] - xmin) * dx, -(this.yPoints[0] - ymin) * dy);
         for (let i = 0; i < length; i++) {
-          ctx.lineTo(this.xPoints[i] * dx, -this.yPoints[i] * dy);
+          ctx.lineTo((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy);
         }
         //ctx.closePath();
         ctx.stroke();
+        ctx.font = "10px Arial";
+        ctx.fillStyle = "black";
+        let inx = (xmax - xmin) / 10;
+        dx = this.graphWindow.width / 10;
+        for (let i = 0; i < 11; i++) {
+          let tmpX = dx * i;
+          ctx.beginPath();
+          ctx.moveTo(tmpX, 0);
+          ctx.lineTo(tmpX, -4);
+          ctx.stroke();
+          let iString = (xmin + i * inx).toFixed(1);
+          ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
+        }
+        let iny = (ymax - ymin) / 10;
+        dy = this.graphWindow.height / 10;
+        for (let i = 0; i < 11; i++) {
+          let tmpY = -dy * i;
+          ctx.beginPath();
+          ctx.moveTo(0, tmpY);
+          ctx.lineTo(4, tmpY);
+          ctx.stroke();
+          let iString = (ymin + i * iny).toFixed(1);
+          ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
+        }
         ctx.restore();
       }
     }
@@ -271,9 +294,9 @@ export class XYGraph extends Block {
     ctx.font = "15px Arial";
     ctx.fillStyle = "black";
     let horizontalAxisY = this.height - this.graphMargin.bottom;
-    ctx.fillText(this.xAxisLabel, this.graphWindow.x + (this.graphWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 20);
+    ctx.fillText(this.xAxisLabel, this.graphWindow.x + (this.graphWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 30);
     ctx.save();
-    ctx.translate(this.x + 20, this.graphWindow.y + (this.graphWindow.height + ctx.measureText(this.yAxisLabel).width) / 2);
+    ctx.translate(this.x + 15, this.graphWindow.y + (this.graphWindow.height + ctx.measureText(this.yAxisLabel).width) / 2 + 10);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(this.yAxisLabel, 0, 0);
     ctx.restore();
@@ -292,8 +315,8 @@ export class XYGraph extends Block {
 
   refreshView(): void {
     this.graphMargin.top = 10;
-    this.graphMargin.bottom = 30;
-    this.graphMargin.left = 30;
+    this.graphMargin.bottom = 40;
+    this.graphMargin.left = 40;
     this.graphMargin.right = 10;
     this.portX.setY(this.height / 3);
     this.portY.setY(this.height * 2 / 3);
