@@ -15,6 +15,7 @@ import {WorkerBlock} from "./blocks/WorkerBlock";
 import {UnaryFunctionBlock} from "./blocks/UnaryFunctionBlock";
 import {BinaryFunctionBlock} from "./blocks/BinaryFunctionBlock";
 import {ConditionalStatementBlock} from "./blocks/ConditionalStatementBlock";
+import {ParametricEquationBlock} from "./blocks/ParametricEquationBlock";
 
 export class StateIO {
 
@@ -91,6 +92,10 @@ export class StateIO {
           block.setVariable1Name(state.variable1Name ? state.variable1Name : "x");
           block.setVariable2Name(state.variable2Name ? state.variable2Name : "y");
           block.setExpression(state.expression ? state.expression : "x+y");
+        } else if (block instanceof ParametricEquationBlock) {
+          block.setName(state.name);
+          block.setExpressionX(state.expressionX ? state.expressionX : "cos(t)");
+          block.setExpressionY(state.expressionY ? state.expressionY : "sin(t)");
         }
         block.refreshView();
       }

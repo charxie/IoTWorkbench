@@ -52,6 +52,7 @@ import {ItemSelectorContextMenu} from "./blocks/ui/ItemSelectorContextMenu";
 import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 import {GrapherContextMenu} from "./blocks/ui/GrapherContextMenu";
 import {WorkerBlockContextMenu} from "./blocks/ui/WorkerBlockContextMenu";
+import {ParametricEquationBlockContextMenu} from "./blocks/ui/ParametricEquationBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -248,6 +249,11 @@ function setupContextMenuForBlock() {
   binaryfunctionBlockContextMenu.render("binary-function-block-context-menu-placeholder");
   binaryfunctionBlockContextMenu.addListeners();
   contextMenus.binaryFunctionBlock = binaryfunctionBlockContextMenu;
+
+  let parametricEquationBlockContextMenu = new ParametricEquationBlockContextMenu();
+  parametricEquationBlockContextMenu.render("parametric-equation-block-context-menu-placeholder");
+  parametricEquationBlockContextMenu.addListeners();
+  contextMenus.parametricEquationBlock = parametricEquationBlockContextMenu;
 
   let hatBlockContextMenu = new HatBlockContextMenu();
   hatBlockContextMenu.render("hat-block-context-menu-placeholder");

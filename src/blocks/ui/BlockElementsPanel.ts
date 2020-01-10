@@ -16,6 +16,7 @@ import {SeriesBlock} from "../SeriesBlock";
 import {ItemSelector} from "../ItemSelector";
 import {Grapher} from "../Grapher";
 import {WorkerBlock} from "../WorkerBlock";
+import {ParametricEquationBlock} from "../ParametricEquationBlock";
 
 export class BlockElementsPanel {
 
@@ -24,7 +25,7 @@ export class BlockElementsPanel {
                 <span style="font-size: 1.2em; color: teal; vertical-align: middle;"><i class="fas fa-cubes"></i></span> Elements</h2>
             <div id="elements-scroller" class="vertical-scroll" style="height: 380px; margin-top: 0; border-bottom: 2px solid lightgray; border-top: 2px solid lightgray">
               <h3 style="text-align: left; font-size: 12px;"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Operators & Functions</h3>
-              <div class="horizontal-scroll" style="margin-right: 10px; background-color: lightgoldenrodyellow; border: 1px solid #b81900; border-radius: 4px">
+              <div class="horizontal-scroll" style="margin-right: 10px; background-color: aquamarine; border: 1px solid #b81900; border-radius: 4px">
                 <table style="width: 100%">
                   <tr>
                   <td><canvas draggable="true" id="arithmetic-add-block" title="Arithmetic Operator" width="45px" height="45px" style="cursor: pointer;"/></td>
@@ -32,12 +33,13 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="logic-not-block" title="Not Operator" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="unary-function-block" title="f(x)" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="binary-function-block" title="f(x, y)" width="45px" height="70px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="parametric-equation-block" title="x(t), y(t)" width="45px" height="80px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
               <div class="vertical-divider"></div>
               <h3 style="text-align: left; font-size: 12px;"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> I/O</h3>
-              <div class="horizontal-scroll" style="margin-right: 10px; background-color: lightcyan; border: 1px solid #b81900; border-radius: 4px">
+              <div class="horizontal-scroll" style="margin-right: 10px; background-color: moccasin; border: 1px solid #b81900; border-radius: 4px">
                 <table style="width: 100%">
                   <tr>
                   <td><canvas draggable="true" id="slider-block" title="Slider" width="60x" height="45px" style="cursor: pointer;"/></td>
@@ -50,7 +52,7 @@ export class BlockElementsPanel {
               </div>
               <div class="vertical-divider"></div>
               <h3 style="text-align: left; font-size: 12px;"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Data Structures</h3>
-              <div class="horizontal-scroll" style="margin-right: 10px; background-color: lightgoldenrodyellow; border: 1px solid #b81900; border-radius: 4px">
+              <div class="horizontal-scroll" style="margin-right: 10px; background-color: aqua; border: 1px solid #b81900; border-radius: 4px">
                 <table style="width: 100%">
                   <tr>
                   <td><canvas draggable="true" id="series-block" title="Series" width="45x" height="60px" style="cursor: pointer;"/></td>
@@ -59,7 +61,7 @@ export class BlockElementsPanel {
               </div>
               <div class="vertical-divider"></div>
               <h3 style="text-align: left; font-size: 12px;"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Flow Controllers</h3>
-              <div class="horizontal-scroll" style="margin-right: 10px; background-color: lightskyblue; border: 1px solid #b81900; border-radius: 4px">
+              <div class="horizontal-scroll" style="margin-right: 10px; background-color: lavender; border: 1px solid #b81900; border-radius: 4px">
                 <table style="width: 100%">
                   <tr>
                   <td><canvas draggable="true" id="conditional-statement-block" title="If-else" width="45x" height="60px" style="cursor: pointer;"/></td>
@@ -75,6 +77,7 @@ export class BlockElementsPanel {
     element.innerHTML = this.getUi();
     this.drawUnaryFunctionBlock("unary-function-block");
     this.drawBinaryFunctionBlock("binary-function-block");
+    this.drawParametricEquationBlock("parametric-equation-block");
     this.drawLogicBlock("AND Block", "AND", "logic-and-block");
     this.drawNegationBlock("logic-not-block");
     this.drawArithmeticBlock("Add Block", "+", "arithmetic-add-block");
@@ -181,7 +184,7 @@ export class BlockElementsPanel {
   private drawUnaryFunctionBlock(canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block: FunctionBlock = new UnaryFunctionBlock("Unary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    let block = new UnaryFunctionBlock("Unary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     if (block != null) {
       block.setIconic(true);
       block.draw(ctx);
@@ -191,7 +194,17 @@ export class BlockElementsPanel {
   private drawBinaryFunctionBlock(canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block: FunctionBlock = new BinaryFunctionBlock("Binary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    let block = new BinaryFunctionBlock("Binary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    if (block != null) {
+      block.setIconic(true);
+      block.draw(ctx);
+    }
+  }
+
+  private drawParametricEquationBlock(canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new ParametricEquationBlock("Parametric Equation Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     if (block != null) {
       block.setIconic(true);
       block.draw(ctx);

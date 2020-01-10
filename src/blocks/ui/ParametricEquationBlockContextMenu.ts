@@ -5,23 +5,26 @@
 import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
-import {SeriesBlock} from "../SeriesBlock";
 import {Util} from "../../Util";
+import {ParametricEquationBlock} from "../ParametricEquationBlock";
 
-export class SeriesBlockContextMenu extends BlockContextMenu {
+export class ParametricEquationBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "series-block-context-menu";
+    this.id = "parametric-equation-block-context-menu";
   }
 
   getUi(): string {
-    return `<menu id="${this.id}" class="menu" style="width: 140px; z-index: 10000">
+    return `<menu id="${this.id}" class="menu" style="width: 120px; z-index: 10000">
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-copy-button"><i class="fas fa-copy"></i><span class="menu-text">Copy</span></button>
               </li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
+              </li>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-code-button"><i class="fas fa-code"></i><span class="menu-text">Code</span></button>
               </li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-properties-button"><i class="fas fa-cog"></i><span class="menu-text">Properties</span></button>
@@ -37,24 +40,20 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Start:</td>
-                  <td><input type="text" id="series-block-start-field" style="width: 100%"></td>
+                  <td>Expression for X (e.g., cos(t)):</td>
+                  <td><input type="text" id="parametric-equation-block-expression-x-field" style="width: 150px"></td>
                 </tr>
                 <tr>
-                  <td>Increment:</td>
-                  <td><input type="text" id="series-block-increment-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Count:</td>
-                  <td><input type="text" id="series-block-count-field" style="width: 100%"></td>
+                  <td>Expression for Y (e.g. sin(t)):</td>
+                  <td><input type="text" id="parametric-equation-block-expression-y-field" style="width: 150px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="series-block-width-field" style="width: 100%"></td>
+                  <td><input type="text" id="parametric-equation-block-width-field" style="width: 150px"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="series-block-height-field" style="width: 100%"></td>
+                  <td><input type="text" id="parametric-equation-block-height-field" style="width: 150px"></td>
                 </tr>
               </table>
             </div>`;
@@ -63,18 +62,16 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof SeriesBlock) {
+    if (this.block instanceof ParametricEquationBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let startInputElement = document.getElementById("series-block-start-field") as HTMLInputElement;
-      startInputElement.value = block.getStart().toString();
-      let incrementInputElement = document.getElementById("series-block-increment-field") as HTMLInputElement;
-      incrementInputElement.value = block.getIncrement().toString();
-      let countInputElement = document.getElementById("series-block-count-field") as HTMLInputElement;
-      countInputElement.value = block.getCount().toString();
-      let widthInputElement = document.getElementById("series-block-width-field") as HTMLInputElement;
+      let expressionXInputElement = document.getElementById("parametric-equation-block-expression-x-field") as HTMLInputElement;
+      expressionXInputElement.value = block.getExpressionX() ? block.getExpressionX().toString() : "cos(t)";
+      let expressionYInputElement = document.getElementById("parametric-equation-block-expression-y-field") as HTMLInputElement;
+      expressionYInputElement.value = block.getExpressionY() ? block.getExpressionY().toString() : "sin(t)";
+      let widthInputElement = document.getElementById("parametric-equation-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("series-block-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("parametric-equation-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
         let success = true;
@@ -95,34 +92,18 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
-        // set start
-        let start = parseFloat(startInputElement.value);
-        if (isNumber(start)) {
-          block.setStart(start);
-        } else {
+        // set expressions
+        block.setExpressionX(expressionXInputElement.value);
+        block.setExpressionY(expressionYInputElement.value);
+        try {
+          flowchart.updateResults();
+        } catch (err) {
           success = false;
-          message = startInputElement.value + " is not a valid number for Start.";
+          message = expressionXInputElement.value + ", " + expressionYInputElement.value + " are not valid expressions.";
         }
-        // set increment
-        let increment = parseFloat(incrementInputElement.value);
-        if (isNumber(increment)) {
-          block.setIncrement(increment);
-        } else {
-          success = false;
-          message = incrementInputElement.value + " is not a valid number for Increment.";
-        }
-        // set count
-        let count = parseInt(countInputElement.value);
-        if (isNumber(count)) {
-          block.setCount(count);
-        } else {
-          success = false;
-          message = countInputElement.value + " is not a valid number for Count.";
-        }
-        // finish
+        // finish up
         if (success) {
           block.refreshView();
-          flowchart.updateResults();
           flowchart.draw();
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
@@ -136,17 +117,16 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
-      startInputElement.addEventListener("keyup", enterKeyUp);
-      incrementInputElement.addEventListener("keyup", enterKeyUp);
-      countInputElement.addEventListener("keyup", enterKeyUp);
+      expressionXInputElement.addEventListener("keyup", enterKeyUp);
+      expressionYInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 350,
-        width: 300,
+        height: 360,
+        width: 440,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

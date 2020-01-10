@@ -261,7 +261,7 @@ export abstract class Block implements Movable {
     this.drawText(this.symbol ? this.symbol : this.name, ctx);
   }
 
-  protected drawText(s: string, ctx: CanvasRenderingContext2D): void {
+  protected drawTextAt(s: string, relativeX: number, relativeY: number, ctx: CanvasRenderingContext2D): void {
     ctx.save();
     ctx.fillStyle = "black";
     ctx.strokeStyle = "black";
@@ -273,8 +273,12 @@ export abstract class Block implements Movable {
       ctx.translate(this.x + this.width / 2 + 3.25, this.y + this.height / 2 + textWidth / 2);
       ctx.rotate(-Math.PI / 2);
     }
-    ctx.fillText(s, 0, 0);
+    ctx.fillText(s, relativeX, relativeY);
     ctx.restore();
+  }
+
+  protected drawText(s: string, ctx: CanvasRenderingContext2D): void {
+    this.drawTextAt(s, 0, 0, ctx);
   }
 
   public toString(): string {

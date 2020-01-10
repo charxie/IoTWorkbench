@@ -23,6 +23,7 @@ import {SeriesBlock} from "./SeriesBlock";
 import {ItemSelector} from "./ItemSelector";
 import {Grapher} from "./Grapher";
 import {WorkerBlock} from "./WorkerBlock";
+import {ParametricEquationBlock} from "./ParametricEquationBlock";
 
 export class BlockView {
 
@@ -89,6 +90,9 @@ export class BlockView {
             break;
           case "binary-function-block":
             that.storeBlock(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
+            break;
+          case "parametric-equation-block":
+            that.storeBlock(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 40, y - 50, 80, 100));
             break;
           case "series-block":
             that.storeBlock(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
@@ -415,6 +419,9 @@ export class BlockView {
     } else if (block instanceof BinaryFunctionBlock) {
       contextMenus.binaryFunctionBlock.block = block;
       menu = document.getElementById("binary-function-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof ParametricEquationBlock) {
+      contextMenus.parametricEquationBlock.block = block;
+      menu = document.getElementById("parametric-equation-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof HatBlock) {
       contextMenus.hatBlock.block = block;
       menu = document.getElementById("hat-block-context-menu") as HTMLMenuElement;

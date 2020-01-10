@@ -99,7 +99,7 @@ export class UnaryFunctionBlock extends FunctionBlock {
         this.hasError = true;
       }
     } else {
-      this.portR.setValue(NaN);
+      this.portR.setValue(undefined);
     }
     this.updateConnectors();
   }

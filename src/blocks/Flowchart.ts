@@ -20,6 +20,7 @@ import {SeriesBlock} from "./SeriesBlock";
 import {ItemSelector} from "./ItemSelector";
 import {Grapher} from "./Grapher";
 import {WorkerBlock} from "./WorkerBlock";
+import {ParametricEquationBlock} from "./ParametricEquationBlock";
 
 export class Flowchart {
 
@@ -148,6 +149,9 @@ export class Flowchart {
       case "Binary Function Block":
         block = new BinaryFunctionBlock(uid, x, y, 60, 100);
         break;
+      case "Parametric Equation Block":
+        block = new ParametricEquationBlock(uid, x, y, 60, 100);
+        break;
       case "NOT Block":
         block = new NegationBlock(uid, x, y, 60, 80);
         break;
@@ -264,6 +268,8 @@ export class Flowchart {
         blockStates.push(new UnaryFunctionBlock.State(b));
       } else if (b instanceof BinaryFunctionBlock) {
         blockStates.push(new BinaryFunctionBlock.State(b));
+      } else if (b instanceof ParametricEquationBlock) {
+        blockStates.push(new ParametricEquationBlock.State(b));
       } else {
         blockStates.push(new Block.State(b));
       }
