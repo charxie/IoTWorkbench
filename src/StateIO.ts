@@ -53,7 +53,7 @@ export class StateIO {
           block.setSteps(state.steps);
           block.setValue(state.value);
           block.setSnapToTick(state.snapToTick);
-         } else if (block instanceof GlobalVariableBlock) {
+        } else if (block instanceof GlobalVariableBlock) {
           block.setName(state.name);
           block.setKey(state.key);
           block.setValue(state.value);
@@ -75,7 +75,7 @@ export class StateIO {
           block.setChecked(state.checked);
         } else if (block instanceof Sticker) {
           block.setName(state.name);
-          block.setDecimals(state.decimals ? state.decimals : 3);
+          block.setDecimals(state.decimals != undefined ? state.decimals : 3);
         } else if (block instanceof Grapher) {
           block.setName(state.name);
           if (state.minimumValue != undefined) block.setMinimumValue(state.minimumValue);
@@ -129,7 +129,7 @@ export class StateIO {
         let inputBlock = flowchart.getBlock(state.inputBlockId);
         let outputBlock = flowchart.getBlock(state.outputBlockId);
         if (inputBlock && outputBlock) {
-          if(inputBlock instanceof GlobalVariableBlock){
+          if (inputBlock instanceof GlobalVariableBlock) {
             outputBlock.setSource(false);
           }
           flowchart.addPortConnector(outputBlock.getPort(state.outputPortId), inputBlock.getPort(state.inputPortId), "Port Connector #" + flowchart.connectors.length);
