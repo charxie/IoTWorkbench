@@ -196,9 +196,12 @@ window.onload = function () {
           selectTab(codeTabButton, startTab);
           break;
       }
-      resize();
-      draw();
+    } else {
+      selectTab(blockTabButton, "block-playground");
+      flowchart.draw();
     }
+    resize();
+    draw();
   }, 1000);
 
   sound.setSource(clickSound);

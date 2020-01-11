@@ -92,8 +92,8 @@ export class ParametricEquationBlock extends Block {
       this.drawTextAt(this.symbol, 0, 0, ctx);
     } else {
       ctx.font = "italic 16px Times";
-      this.drawTextAt(this.expressionX, 0, -10, ctx);
-      this.drawTextAt(this.expressionY, 0, 10, ctx);
+      this.drawTextAt("x=" + this.expressionX, 0, -10, ctx);
+      this.drawTextAt("y=" + this.expressionY, 0, 10, ctx);
     }
   }
 

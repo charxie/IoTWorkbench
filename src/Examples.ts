@@ -7,15 +7,15 @@ import example01 from "./examples/logic-example1.json";
 // @ts-ignore
 import example02 from "./examples/math-example3.json";
 // @ts-ignore
-import example03 from "./examples/series-example2.json";
+import example03 from "./examples/series-example1.json";
 // @ts-ignore
 import example04 from "./examples/graph-example1.json";
 // @ts-ignore
 import example05 from "./examples/graph-example2.json";
 // @ts-ignore
-import example06 from "./examples/graph-example3.json";
-// @ts-ignore
 import example08 from "./examples/control-example1.json";
+// @ts-ignore
+import example09 from "./examples/parametric-equation-example1.json";
 
 import {flowchart} from "./Main";
 import {StateIO} from "./StateIO";
@@ -26,13 +26,13 @@ export class Examples {
 
   constructor() {
 
-    this.files.push({name: "Logic Example 1", data: example01});
-    this.files.push({name: "Math Example 1", data: example02});
-    this.files.push({name: "Series Example 1", data: example03});
-    this.files.push({name: "Graph Example 1", data: example04});
-    this.files.push({name: "Graph Example 2", data: example05});
-    this.files.push({name: "Graph Example 3", data: example06});
-    this.files.push({name: "Control Example 1", data: example08});
+    this.files.push({name: "Logic #1", data: example01});
+    this.files.push({name: "Arithmetic #1", data: example02});
+    this.files.push({name: "Series #1", data: example03});
+    this.files.push({name: "Graph #1", data: example04});
+    this.files.push({name: "Graph #2", data: example05});
+    this.files.push({name: "Control #1", data: example08});
+    this.files.push({name: "Parametric Equation #1", data: example09});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 

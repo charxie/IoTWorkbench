@@ -168,7 +168,6 @@ export class XYGraph extends Block {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
-
     // draw the title bar with shade
     this.barHeight = Math.min(30, this.height / 3);
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
@@ -254,6 +253,21 @@ export class XYGraph extends Block {
         }
         //ctx.closePath();
         ctx.stroke();
+
+        // draw symbols on top of the line
+        if (this.graphSymbol != "None") {
+          for (let i = 0; i < length; i++) {
+            ctx.beginPath();
+            ctx.arc((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy, 3, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.fillStyle = "white";
+            ctx.fill();
+            ctx.fillStyle = "black";
+            ctx.stroke();
+          }
+        }
+
+        // draw axis tick marks and labels
         ctx.font = "10px Arial";
         ctx.fillStyle = "black";
         let inx = (xmax - xmin) / 10;
@@ -281,6 +295,7 @@ export class XYGraph extends Block {
         ctx.restore();
       }
     }
+
 
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
