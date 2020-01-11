@@ -7,6 +7,7 @@ import {Block} from "./Block";
 import {flowchart} from "../Main";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
+import {GlobalVariableBlock} from "./GlobalVariableBlock";
 
 export class Slider extends Block {
 
@@ -252,6 +253,9 @@ export class Slider extends Block {
       this.value = this.minimum + (this.maximum - this.minimum) / (this.trackRight - this.trackLeft) * (this.knob.x + this.knobHalfSize - this.trackLeft);
       this.updateModel();
       flowchart.traverse(this);
+      if (this.isExportedToGlobalVariable()) {
+        flowchart.updateResults();
+      }
       flowchart.storeBlockStates();
     } else {
       if (this.onKnob(x, y)) {
@@ -265,6 +269,13 @@ export class Slider extends Block {
   mouseLeave(e: MouseEvent): void {
     this.knobGrabbed = false;
     flowchart.blockView.canvas.style.cursor = "default";
+  }
+
+  isExportedToGlobalVariable(): boolean {
+    let connector = flowchart.getConnectorWithOutput(this.ports[0]);
+    if (connector != null)
+      return connector.getInput().getBlock() instanceof GlobalVariableBlock;
+    return false;
   }
 
 }

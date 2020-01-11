@@ -117,6 +117,7 @@ export class BinaryFunctionBlock extends FunctionBlock {
           this.portR.setValue(code.evaluate({[this.variable1Name]: x, [this.variable2Name]: y}));
         }
       } catch (e) {
+        console.log(e.stack);
         Util.showErrorMessage(e.toString());
         this.hasError = true;
       }

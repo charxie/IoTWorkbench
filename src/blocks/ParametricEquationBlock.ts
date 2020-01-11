@@ -131,9 +131,11 @@ export class ParametricEquationBlock extends Block {
           let x = new Array(t.length);
           let y = new Array(t.length);
           let input = {};
-          for (let sv of this.secondaryVariables) {
-            input[sv] = flowchart.globalVariables[sv];
-            //console.log(sv + "," + flowchart.globalVariables[sv]);
+          if (this.secondaryVariables) {
+            for (let sv of this.secondaryVariables) {
+              input[sv] = flowchart.globalVariables[sv];
+              //console.log(sv + "," + flowchart.globalVariables[sv]);
+            }
           }
           for (let i = 0; i < t.length; i++) {
             input["t"] = t[i];
@@ -148,6 +150,7 @@ export class ParametricEquationBlock extends Block {
           this.portY.setValue(codeY.evaluate(input));
         }
       } catch (e) {
+        console.log(e.stack);
         Util.showErrorMessage(e.toString());
         this.hasError = true;
       }

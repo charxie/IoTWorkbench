@@ -45,7 +45,10 @@ export class GlobalVariableBlock extends Block {
   }
 
   getCopy(): Block {
-    return new GlobalVariableBlock("Global Variable Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
+    let copy = new GlobalVariableBlock("Global Variable Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
+    copy.key = this.key;
+    copy.value = this.value;
+    return copy;
   }
 
   destroy(): void {
@@ -78,7 +81,6 @@ export class GlobalVariableBlock extends Block {
     if (x != undefined) {
       this.value = x;
       flowchart.updateGlobalVariable(this.key, this.value);
-      //flowchart.updateResults();
     }
   }
 

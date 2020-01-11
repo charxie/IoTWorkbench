@@ -68,7 +68,7 @@ export class StickerContextMenu extends BlockContextMenu {
       let nameInputElement = document.getElementById("sticker-name-field") as HTMLInputElement;
       nameInputElement.value = sticker.getName();
       let decimalsInputElement = document.getElementById("sticker-decimals-field") as HTMLInputElement;
-      decimalsInputElement.value = sticker.getDecimals() ? sticker.getDecimals().toString() : "3";
+      decimalsInputElement.value = sticker.getDecimals() != undefined ? sticker.getDecimals().toString() : "3";
       let widthInputElement = document.getElementById("sticker-width-field") as HTMLInputElement;
       widthInputElement.value = sticker.getWidth().toString();
       let heightInputElement = document.getElementById("sticker-height-field") as HTMLInputElement;
@@ -102,7 +102,7 @@ export class StickerContextMenu extends BlockContextMenu {
           message = decimalsInputElement.value + " is not valid for decimals.";
         }
         // finish
-        if(success) {
+        if (success) {
           sticker.refreshView();
           flowchart.storeBlockStates();
           flowchart.draw();

@@ -95,6 +95,7 @@ export class UnaryFunctionBlock extends FunctionBlock {
           this.portR.setValue(code.evaluate({[this.variableName]: x}));
         }
       } catch (e) {
+        console.log(e.stack);
         Util.showErrorMessage(e.toString());
         this.hasError = true;
       }

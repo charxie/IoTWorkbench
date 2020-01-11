@@ -164,7 +164,7 @@ export class WorkerBlock extends Block {
           that.value = Math.random();
           break;
       }
-      flowchart.updateResults();
+      flowchart.updateResults(); // FIXME: potential deadlock
       flowchart.draw();
     };
   }

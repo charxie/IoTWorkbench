@@ -8,6 +8,7 @@ import {Util} from "../Util";
 import {Arc} from "../math/Arc";
 import {Stadium} from "../math/Stadium";
 import {flowchart} from "../Main";
+import {GlobalVariableBlock} from "./GlobalVariableBlock";
 
 export class ToggleSwitch extends Block {
 
@@ -194,6 +195,9 @@ export class ToggleSwitch extends Block {
   mouseUp(e: MouseEvent): void {
     this.updateModel();
     flowchart.traverse(this);
+    if (this.isExportedToGlobalVariable()) {
+      flowchart.updateResults();
+    }
     flowchart.storeBlockStates();
     this.knob.x = this.knob.x < (this.trackMin + this.trackMax) / 2 ? this.trackMin : this.trackMax;
     this.knobGrabbed = false;
@@ -224,6 +228,13 @@ export class ToggleSwitch extends Block {
   mouseLeave(e: MouseEvent): void {
     this.knobGrabbed = false;
     flowchart.blockView.canvas.style.cursor = "default";
+  }
+
+  isExportedToGlobalVariable(): boolean {
+    let connector = flowchart.getConnectorWithOutput(this.ports[0]);
+    if (connector != null)
+      return connector.getInput().getBlock() instanceof GlobalVariableBlock;
+    return false;
   }
 
 }

@@ -94,6 +94,7 @@ export class ConditionalStatementBlock extends FunctionBlock {
           let result = code.evaluate({[this.variableName]: x});
           this.setOutputs(result);
         } catch (e) {
+          console.log(e.stack);
           Util.showErrorMessage(e.toString());
           this.portT.setValue(undefined);
           this.portF.setValue(undefined);

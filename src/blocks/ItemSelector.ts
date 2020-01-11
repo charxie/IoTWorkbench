@@ -7,6 +7,7 @@ import {Block} from "./Block";
 import {flowchart} from "../Main";
 import {Util} from "../Util";
 import {Triangle} from "../math/Triangle";
+import {GlobalVariableBlock} from "./GlobalVariableBlock";
 
 export class ItemSelector extends Block {
 
@@ -248,6 +249,9 @@ export class ItemSelector extends Block {
         this.mouseDownIndex = -1;
         this.updateModel();
         flowchart.traverse(this);
+        if (this.isExportedToGlobalVariable()) {
+          flowchart.updateResults();
+        }
         flowchart.storeBlockStates();
       }
     }
@@ -279,6 +283,13 @@ export class ItemSelector extends Block {
 
   mouseLeave(e: MouseEvent): void {
     flowchart.blockView.canvas.style.cursor = "default";
+  }
+
+  isExportedToGlobalVariable(): boolean {
+    let connector = flowchart.getConnectorWithOutput(this.portO);
+    if (connector != null)
+      return connector.getInput().getBlock() instanceof GlobalVariableBlock;
+    return false;
   }
 
 }

@@ -179,7 +179,7 @@ window.onload = function () {
   restoreWorkbench();
   restoreMcus();
   restoreHats();
-  StateIO.restoreConnectors(localStorage.getItem("Connector States"));
+  StateIO.restoreConnectors(localStorage.getItem("Connector States")); // connectors must be restored after loading HATs
   flowchart.updateResults();
 
   setTimeout(function () { // call this to refresh after inserting canvases

@@ -16,6 +16,8 @@ import example05 from "./examples/graph-example2.json";
 import example08 from "./examples/control-example1.json";
 // @ts-ignore
 import example09 from "./examples/parametric-equation-example1.json";
+// @ts-ignore
+import example10 from "./examples/parametric-equation-example2.json";
 
 import {flowchart} from "./Main";
 import {StateIO} from "./StateIO";
@@ -33,6 +35,7 @@ export class Examples {
     this.files.push({name: "Graph #2", data: example05});
     this.files.push({name: "Control #1", data: example08});
     this.files.push({name: "Parametric Equation #1", data: example09});
+    this.files.push({name: "Parametric Equation #2", data: example10});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 
