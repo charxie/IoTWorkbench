@@ -3,7 +3,7 @@
  */
 
 import {Port} from "./Port";
-import {math} from "../Main";
+import {flowchart, math} from "../Main";
 import {Block} from "./Block";
 import {Util} from "../Util";
 
@@ -11,6 +11,7 @@ export class ParametricEquationBlock extends Block {
 
   private expressionX: string = "cos(t)";
   private expressionY: string = "sin(t)";
+  private secondaryVariables: string[];
 
   private readonly portT: Port;
   private readonly portX: Port;
@@ -20,6 +21,7 @@ export class ParametricEquationBlock extends Block {
     readonly uid: string;
     readonly expressionX: string;
     readonly expressionY: string;
+    readonly secondaryVariables: string[];
     readonly x: number;
     readonly y: number;
     readonly width: number;
@@ -29,6 +31,9 @@ export class ParametricEquationBlock extends Block {
       this.uid = block.uid;
       this.expressionX = block.expressionX;
       this.expressionY = block.expressionY;
+      if (block.secondaryVariables) {
+        this.secondaryVariables = JSON.parse(JSON.stringify(block.secondaryVariables));
+      }
       this.x = block.x;
       this.y = block.y;
       this.width = block.width;
@@ -56,6 +61,7 @@ export class ParametricEquationBlock extends Block {
     let block = new ParametricEquationBlock("Parametric Equation Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.expressionX = this.expressionX;
     block.expressionY = this.expressionY;
+    block.secondaryVariables = JSON.parse(JSON.stringify(this.secondaryVariables));
     return block;
   }
 
@@ -76,6 +82,21 @@ export class ParametricEquationBlock extends Block {
 
   getExpressionY(): string {
     return this.expressionY;
+  }
+
+  addSecondaryVariable(v: string): void {
+    if (this.secondaryVariables == undefined) {
+      this.secondaryVariables = [];
+    }
+    this.secondaryVariables.push(v);
+  }
+
+  getSecondaryVariables(): string[] {
+    return this.secondaryVariables;
+  }
+
+  setSecondaryVariables(v: string[]): void {
+    this.secondaryVariables = v;
   }
 
   refreshView(): void {
@@ -109,15 +130,22 @@ export class ParametricEquationBlock extends Block {
         if (Array.isArray(t)) {
           let x = new Array(t.length);
           let y = new Array(t.length);
+          let input = {};
+          for (let sv of this.secondaryVariables) {
+            input[sv] = flowchart.globalVariables[sv];
+            //console.log(sv + "," + flowchart.globalVariables[sv]);
+          }
           for (let i = 0; i < t.length; i++) {
-            x[i] = codeX.evaluate({t: t[i]});
-            y[i] = codeY.evaluate({t: t[i]});
+            input["t"] = t[i];
+            x[i] = codeX.evaluate(input);
+            y[i] = codeY.evaluate(input);
           }
           this.portX.setValue(x);
           this.portY.setValue(y);
         } else {
-          this.portX.setValue(codeX.evaluate({t: t}));
-          this.portY.setValue(codeY.evaluate({t: t}));
+          let input = {t: t};
+          this.portX.setValue(codeX.evaluate(input));
+          this.portY.setValue(codeY.evaluate(input));
         }
       } catch (e) {
         Util.showErrorMessage(e.toString());

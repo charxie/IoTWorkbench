@@ -57,13 +57,12 @@ export class Examples {
   }
 
   load(s): void {
+    StateIO.restoreGlobalVariables(JSON.stringify(s.globalVariables));
     StateIO.restoreBlockView(JSON.stringify(s.blockViewState));
     StateIO.restoreBlocks(JSON.stringify(s.blockStates));
     StateIO.restoreConnectors(JSON.stringify(s.connectorStates));
     flowchart.updateResults();
-    flowchart.storeViewState();
-    flowchart.storeBlockStates();
-    flowchart.storeConnectorStates();
+    flowchart.updateLocalStorage();
   }
 
 }

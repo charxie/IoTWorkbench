@@ -18,6 +18,7 @@ import {Grapher} from "../Grapher";
 import {WorkerBlock} from "../WorkerBlock";
 import {ParametricEquationBlock} from "../ParametricEquationBlock";
 import {XYGraph} from "../XYGraph";
+import {GlobalVariableBlock} from "../GlobalVariableBlock";
 
 export class BlockElementsPanel {
 
@@ -57,6 +58,7 @@ export class BlockElementsPanel {
               <div class="horizontal-scroll" style="margin-right: 10px; background-color: aqua; border: 1px solid #b81900; border-radius: 4px">
                 <table style="width: 100%">
                   <tr>
+                  <td><canvas draggable="true" id="global-variable-block" title="Global Variable" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="series-block" title="Series" width="45x" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
@@ -89,6 +91,7 @@ export class BlockElementsPanel {
     this.drawSticker("Sticker", "sticker-block");
     this.drawGrapher("Grapher", "grapher-block");
     this.drawXYGraph("XYGraph", "xygraph-block");
+    this.drawGlobalVariableBlock("Global Variable Block", "var", "global-variable-block");
     this.drawSeriesBlock("Series Block", "Series", "series-block");
     this.drawConditionalStatementBlock("Conditional Statement Block", "IF", "conditional-statement-block");
     this.drawWorkerBlock("Worker Block", "Worker", "worker-block");
@@ -98,6 +101,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new WorkerBlock("Worker Block Icon", "Worker", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawGlobalVariableBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new GlobalVariableBlock("Global Variable Block Icon", name, symbol,8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

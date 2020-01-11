@@ -1,0 +1,85 @@
+/*
+ * @author Charles Xie
+ */
+
+import {Block} from "./Block";
+import {Port} from "./Port";
+import {flowchart} from "../Main";
+
+export class GlobalVariableBlock extends Block {
+
+  private readonly portX: Port;
+  private key: string = "x";
+  private value: any;
+
+  static State = class {
+    readonly name: string;
+    readonly key: string;
+    readonly value: number;
+    readonly uid: string;
+    readonly x: number;
+    readonly y: number;
+    readonly width: number;
+    readonly height: number;
+
+    constructor(block: GlobalVariableBlock) {
+      this.name = block.name;
+      this.key = block.key;
+      this.value = block.value;
+      this.uid = block.uid;
+      this.x = block.x;
+      this.y = block.y;
+      this.width = block.width;
+      this.height = block.height;
+    }
+  };
+
+  constructor(uid: string, name: string, symbol: string, x: number, y: number, width: number, height: number) {
+    super(uid, x, y, width, height);
+    this.name = name;
+    this.symbol = symbol;
+    this.color = "#808000";
+    this.portX = new Port(this, true, "X", 0, this.height / 2, false);
+    this.ports.push(this.portX);
+    this.margin = 15;
+  }
+
+  getCopy(): Block {
+    return new GlobalVariableBlock("Global Variable Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
+  }
+
+  destroy(): void {
+    flowchart.removeGlobalVariable(this.key);
+  }
+
+  getKey(): any {
+    return this.key;
+  }
+
+  setKey(key: any): void {
+    this.key = key;
+    this.symbol = key;
+  }
+
+  getValue(): any {
+    return this.value;
+  }
+
+  setValue(value: any): void {
+    this.value = value;
+  }
+
+  refreshView(): void {
+    this.portX.setY(this.height / 2);
+  }
+
+  updateModel(): void {
+    let x = this.portX.getValue();
+    if (x != undefined) {
+      this.value = x;
+      flowchart.updateGlobalVariable(this.key, this.value);
+      //flowchart.updateResults();
+    }
+  }
+
+}

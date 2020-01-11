@@ -54,6 +54,7 @@ import {GrapherContextMenu} from "./blocks/ui/GrapherContextMenu";
 import {WorkerBlockContextMenu} from "./blocks/ui/WorkerBlockContextMenu";
 import {ParametricEquationBlockContextMenu} from "./blocks/ui/ParametricEquationBlockContextMenu";
 import {XYGraphContextMenu} from "./blocks/ui/XYGraphContextMenu";
+import {GlobalVariableBlockContextMenu} from "./blocks/ui/GlobalVariableBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -172,6 +173,7 @@ window.onload = function () {
   elementsPanel.render("block-elements-panel");
 
   // read locally stored properties
+  StateIO.restoreGlobalVariables(localStorage.getItem("Global Variables"));
   StateIO.restoreBlockView(localStorage.getItem("Block View State"));
   StateIO.restoreBlocks(localStorage.getItem("Block States"));
   restoreWorkbench();
@@ -218,6 +220,11 @@ function setupContextMenuForBlock() {
   arithmeticBlockContextMenu.render("arithmetic-block-context-menu-placeholder");
   arithmeticBlockContextMenu.addListeners();
   contextMenus.arithmeticBlock = arithmeticBlockContextMenu;
+
+  let globalVariableBlockContextMenu = new GlobalVariableBlockContextMenu();
+  globalVariableBlockContextMenu.render("global-variable-block-context-menu-placeholder");
+  globalVariableBlockContextMenu.addListeners();
+  contextMenus.globalVariableBlock = globalVariableBlockContextMenu;
 
   let seriesBlockContextMenu = new SeriesBlockContextMenu();
   seriesBlockContextMenu.render("series-block-context-menu-placeholder");

@@ -17,6 +17,7 @@ import {BinaryFunctionBlock} from "./blocks/BinaryFunctionBlock";
 import {ConditionalStatementBlock} from "./blocks/ConditionalStatementBlock";
 import {ParametricEquationBlock} from "./blocks/ParametricEquationBlock";
 import {XYGraph} from "./blocks/XYGraph";
+import {GlobalVariableBlock} from "./blocks/GlobalVariableBlock";
 
 export class StateIO {
 
@@ -52,6 +53,10 @@ export class StateIO {
           block.setSteps(state.steps);
           block.setValue(state.value);
           block.setSnapToTick(state.snapToTick);
+         } else if (block instanceof GlobalVariableBlock) {
+          block.setName(state.name);
+          block.setKey(state.key);
+          block.setValue(state.value);
         } else if (block instanceof SeriesBlock) {
           block.setName(state.name);
           block.setStart(state.start);
@@ -108,6 +113,7 @@ export class StateIO {
           block.setName(state.name);
           block.setExpressionX(state.expressionX ? state.expressionX : "cos(t)");
           block.setExpressionY(state.expressionY ? state.expressionY : "sin(t)");
+          block.setSecondaryVariables(state.secondaryVariables ? state.secondaryVariables : undefined);
         }
         block.refreshView();
       }
@@ -123,9 +129,18 @@ export class StateIO {
         let inputBlock = flowchart.getBlock(state.inputBlockId);
         let outputBlock = flowchart.getBlock(state.outputBlockId);
         if (inputBlock && outputBlock) {
+          if(inputBlock instanceof GlobalVariableBlock){
+            outputBlock.setSource(false);
+          }
           flowchart.addPortConnector(outputBlock.getPort(state.outputPortId), inputBlock.getPort(state.inputPortId), "Port Connector #" + flowchart.connectors.length);
         }
       }
+    }
+  }
+
+  static restoreGlobalVariables(s: string): void {
+    if (s != undefined && s != null) {
+      flowchart.globalVariables = JSON.parse(s);
     }
   }
 
@@ -149,13 +164,12 @@ export class StateIO {
         reader.readAsText(target.files[0]);
         reader.onload = function (e) {
           let s = JSON.parse(reader.result.toString());
+          that.restoreGlobalVariables(JSON.stringify(s.globalVariables));
           that.restoreBlockView(JSON.stringify(s.blockViewState));
           that.restoreBlocks(JSON.stringify(s.blockStates));
           that.restoreConnectors(JSON.stringify(s.connectorStates));
           flowchart.updateResults();
-          flowchart.storeViewState();
-          flowchart.storeBlockStates();
-          flowchart.storeConnectorStates();
+          flowchart.updateLocalStorage();
         };
       }
     };

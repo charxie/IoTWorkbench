@@ -22,13 +22,16 @@ import {Grapher} from "./Grapher";
 import {WorkerBlock} from "./WorkerBlock";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {XYGraph} from "./XYGraph";
+import {flowchart} from "../Main";
+import {GlobalVariableBlock} from "./GlobalVariableBlock";
 
 export class Flowchart {
 
+  globalVariables = {};
   blocks: Block[] = [];
   connectors: PortConnector[] = [];
-  blockView: BlockView;
   copiedBlock: Block;
+  readonly blockView: BlockView;
 
   constructor() {
     this.blockView = new BlockView("block-view", this);
@@ -51,6 +54,18 @@ export class Flowchart {
       }
     }
     this.draw();
+  }
+
+  /* global variables */
+
+  updateGlobalVariable(name: string, value: any): void {
+    this.globalVariables[name] = value;
+    this.storeGlobalVariables();
+  }
+
+  removeGlobalVariable(name: string): void {
+    delete this.globalVariables[name];
+    this.storeGlobalVariables();
   }
 
   /* connector methods */
@@ -189,6 +204,9 @@ export class Flowchart {
       case "Exponentiation Block":
         block = new ArithmeticBlock(uid, x, y, 60, 60, name, "^");
         break;
+      case "Global Variable Block":
+        block = new GlobalVariableBlock(uid, name, "var", x, y, 80, 80);
+        break;
       case "Series Block":
         block = new SeriesBlock(uid, x, y, 80, 80, name, "Series");
         break;
@@ -234,6 +252,17 @@ export class Flowchart {
 
   /* storage methods */
 
+  updateLocalStorage(): void {
+    this.storeGlobalVariables();
+    this.storeViewState();
+    this.storeBlockStates();
+    this.storeConnectorStates();
+  }
+
+  storeGlobalVariables(): void {
+    localStorage.setItem("Global Variables", JSON.stringify(this.globalVariables));
+  }
+
   storeConnectorStates(): void {
     let connectorStates = [];
     for (let c of this.connectors) {
@@ -254,6 +283,8 @@ export class Flowchart {
     for (let b of this.blocks) {
       if (b instanceof Slider) {
         blockStates.push(new Slider.State(b));
+      } else if (b instanceof GlobalVariableBlock) {
+        blockStates.push(new GlobalVariableBlock.State(b));
       } else if (b instanceof SeriesBlock) {
         blockStates.push(new SeriesBlock.State(b));
       } else if (b instanceof WorkerBlock) {
@@ -294,10 +325,10 @@ export class Flowchart {
 
   clear(): void {
     this.destroy();
+    this.globalVariables = {};
     this.blocks = [];
     this.connectors = [];
-    this.storeBlockStates();
-    this.storeConnectorStates();
+    this.updateLocalStorage();
     this.blockView.draw();
   }
 
@@ -305,8 +336,10 @@ export class Flowchart {
     readonly blockStates = [];
     readonly connectorStates = [];
     readonly blockViewState;
+    readonly globalVariables = {};
 
     constructor(flowchart: Flowchart) {
+      this.globalVariables = JSON.parse(JSON.stringify(flowchart.globalVariables));
       flowchart.saveBlockStatesTo(this.blockStates);
       for (let c of flowchart.connectors) {
         if (c.getOutput() != null && c.getInput() != null) {

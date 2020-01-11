@@ -70,6 +70,10 @@ export abstract class Block implements Movable {
     return uid;
   }
 
+  setSource(source: boolean) {
+    this.source = source;
+  }
+
   isSource(): boolean {
     return this.source;
   }

@@ -25,6 +25,7 @@ import {Grapher} from "./Grapher";
 import {WorkerBlock} from "./WorkerBlock";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {XYGraph} from "./XYGraph";
+import {GlobalVariableBlock} from "./GlobalVariableBlock";
 
 export class BlockView {
 
@@ -94,6 +95,9 @@ export class BlockView {
             break;
           case "parametric-equation-block":
             that.storeBlock(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 40, y - 50, 80, 100));
+            break;
+          case "global-variable-block":
+            that.storeBlock(new GlobalVariableBlock("Global Variable Block #" + timestamp, "Global Variable Block", "var", x - 30, y - 40, 60, 80));
             break;
           case "series-block":
             that.storeBlock(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
@@ -447,6 +451,9 @@ export class BlockView {
     } else if (block instanceof XYGraph) {
       contextMenus.xygraph.block = block;
       menu = document.getElementById("xygraph-context-menu") as HTMLMenuElement;
+    } else if (block instanceof GlobalVariableBlock) {
+      contextMenus.globalVariableBlock.block = block;
+      menu = document.getElementById("global-variable-block-context-menu") as HTMLMenuElement;
     } else {
       contextMenus.blockView.view = this;
       menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;
