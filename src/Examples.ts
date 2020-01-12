@@ -5,7 +5,7 @@
 // @ts-ignore
 import example01 from "./examples/logic-example1.json";
 // @ts-ignore
-import example02 from "./examples/math-example3.json";
+import example02 from "./examples/arithmetic-example.json";
 // @ts-ignore
 import example03 from "./examples/array-example1.json";
 // @ts-ignore
@@ -21,7 +21,9 @@ import example31 from "./examples/parametric-equation-example1.json";
 // @ts-ignore
 import example32 from "./examples/parametric-equation-example2.json";
 // @ts-ignore
-import example33 from "./examples/parametric-equation-example9.json";
+import example41 from "./examples/parametric-equation-example7.json";
+// @ts-ignore
+import example42 from "./examples/parametric-equation-example8.json";
 
 import {flowchart} from "./Main";
 import {StateIO} from "./StateIO";
@@ -41,7 +43,8 @@ export class Examples {
     this.files.push({name: "Control #1", data: example11});
     this.files.push({name: "Parametric Equation #1", data: example31});
     this.files.push({name: "Parametric Equation #2", data: example32});
-    this.files.push({name: "Parametric Generator #1", data: example33});
+    this.files.push({name: "Parametric Generator #1", data: example41});
+    this.files.push({name: "Parametric Generator #2", data: example42});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 
@@ -66,6 +69,7 @@ export class Examples {
   }
 
   load(s): void {
+    flowchart.destroy();
     StateIO.restoreGlobalVariables(JSON.stringify(s.globalVariables));
     StateIO.restoreBlockView(JSON.stringify(s.blockViewState));
     StateIO.restoreBlocks(JSON.stringify(s.blockStates));

@@ -286,9 +286,12 @@ export class ItemSelector extends Block {
   }
 
   isExportedToGlobalVariable(): boolean {
-    let connector = flowchart.getConnectorWithOutput(this.portO);
-    if (connector != null)
-      return connector.getInput().getBlock() instanceof GlobalVariableBlock;
+    let connectors = flowchart.getConnectorsWithOutput(this.portO);
+    if (connectors.length > 0) {
+      for (let c of connectors) {
+        if (c.getInput().getBlock() instanceof GlobalVariableBlock) return true;
+      }
+    }
     return false;
   }
 

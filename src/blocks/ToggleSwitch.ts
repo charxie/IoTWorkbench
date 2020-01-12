@@ -231,9 +231,12 @@ export class ToggleSwitch extends Block {
   }
 
   isExportedToGlobalVariable(): boolean {
-    let connector = flowchart.getConnectorWithOutput(this.ports[0]);
-    if (connector != null)
-      return connector.getInput().getBlock() instanceof GlobalVariableBlock;
+    let connectors = flowchart.getConnectorsWithOutput(this.ports[0]);
+    if (connectors.length > 0) {
+      for (let c of connectors) {
+        if (c.getInput().getBlock() instanceof GlobalVariableBlock) return true;
+      }
+    }
     return false;
   }
 

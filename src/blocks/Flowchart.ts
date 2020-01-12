@@ -88,13 +88,14 @@ export class Flowchart {
     return null;
   }
 
-  getConnectorWithOutput(output: Port): PortConnector {
-    for (let connector of this.connectors) {
-      if (connector.getOutput() == output) {
-        return connector;
+  getConnectorsWithOutput(output: Port): PortConnector[] {
+    let connectors = [];
+    for (let c of this.connectors) {
+      if (c.getOutput() == output) {
+        connectors.push(c);
       }
     }
-    return null;
+    return connectors;
   }
 
   addPortConnector(output: Port, input: Port, uid: string): boolean {

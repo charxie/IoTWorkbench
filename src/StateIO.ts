@@ -53,6 +53,7 @@ export class StateIO {
           block.setSteps(state.steps);
           block.setValue(state.value);
           block.setSnapToTick(state.snapToTick);
+          if (state.valuePrecision != undefined) block.setValuePrecision(state.valuePrecision);
         } else if (block instanceof GlobalVariableBlock) {
           block.setName(state.name);
           block.setKey(state.key);

@@ -282,7 +282,7 @@ export class BlockView {
   }
 
   private mouseUp(e: MouseEvent): void {
-    if (e.which == 3) return; // if this is a right-click event
+    if (e.which == 3 || e.button == 2) return; // if this is a right-click event
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.selectedPort != null) {

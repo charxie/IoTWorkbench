@@ -65,6 +65,10 @@ export class SliderContextMenu extends BlockContextMenu {
                   <td><input type="text" id="slider-value-field" style="width: 130px"></td>
                 </tr>
                 <tr>
+                  <td>Value Precision:</td>
+                  <td><input type="text" id="slider-value-precision-field" style="width: 130px"></td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="slider-width-field" style="width: 130px"></td>
                 </tr>
@@ -96,6 +100,8 @@ export class SliderContextMenu extends BlockContextMenu {
       stepsInputElement.value = slider.getSteps().toString();
       let valueInputElement = document.getElementById("slider-value-field") as HTMLInputElement;
       valueInputElement.value = slider.getValue().toFixed(3);
+      let precisionInputElement = document.getElementById("slider-value-precision-field") as HTMLInputElement;
+      precisionInputElement.value = slider.getValuePrecision() != undefined ? slider.getValuePrecision().toString() : "2";
       let widthInputElement = document.getElementById("slider-width-field") as HTMLInputElement;
       widthInputElement.value = slider.getWidth().toString();
       let heightInputElement = document.getElementById("slider-height-field") as HTMLInputElement;
@@ -158,6 +164,14 @@ export class SliderContextMenu extends BlockContextMenu {
           success = false;
           message = valueInputElement.value + " is not a valid number for value.";
         }
+        // set value precision
+        let valuePrecision = parseInt(precisionInputElement.value);
+        if (isNumber(valuePrecision)) {
+          slider.setValuePrecision(Math.max(1, valuePrecision));
+        } else {
+          success = false;
+          message = valueInputElement.value + " is not a valid number for value precision.";
+        }
         // finish
         if (success) {
           slider.refreshView();
@@ -178,6 +192,7 @@ export class SliderContextMenu extends BlockContextMenu {
       maximumInputElement.addEventListener("keyup", enterKeyUp);
       stepsInputElement.addEventListener("keyup", enterKeyUp);
       valueInputElement.addEventListener("keyup", enterKeyUp);
+      precisionInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
@@ -185,7 +200,7 @@ export class SliderContextMenu extends BlockContextMenu {
         modal: true,
         title: slider.getUid(),
         height: 500,
-        width: 300,
+        width: 360,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

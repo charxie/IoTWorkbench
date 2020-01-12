@@ -24,6 +24,7 @@ export class Slider extends Block {
   private steps: number = 10;
   private value: number = 50;
   private snapToTick: boolean;
+  private valuePrecision: number = 2;
 
   static State = class {
     readonly name: string;
@@ -37,6 +38,7 @@ export class Slider extends Block {
     readonly steps: number;
     readonly value: number;
     readonly snapToTick: boolean;
+    readonly valuePrecision: number;
 
     constructor(slider: Slider) {
       this.name = slider.name;
@@ -50,6 +52,7 @@ export class Slider extends Block {
       this.steps = slider.steps;
       this.value = slider.value;
       this.snapToTick = slider.snapToTick;
+      this.valuePrecision = slider.valuePrecision;
     }
   };
 
@@ -72,6 +75,7 @@ export class Slider extends Block {
     copy.steps = this.steps;
     copy.value = this.value;
     copy.snapToTick = this.snapToTick;
+    copy.valuePrecision = this.valuePrecision;
     return copy;
   }
 
@@ -84,6 +88,14 @@ export class Slider extends Block {
 
   getValue(): number {
     return this.value;
+  }
+
+  setValuePrecision(valuePrecision: number): void {
+    this.valuePrecision = valuePrecision;
+  }
+
+  getValuePrecision(): number {
+    return this.valuePrecision;
   }
 
   setSnapToTick(snapToTick: boolean): void {
@@ -152,10 +164,11 @@ export class Slider extends Block {
       ctx.fillStyle = "white";
       ctx.strokeStyle = "black";
       ctx.lineWidth = this.iconic ? 0.75 : 1;
-      ctx.font = this.iconic ? "10px Arial" : "14px Arial";
-      let textWidth = ctx.measureText(this.name).width;
+      ctx.font = this.iconic ? "10px Arial" : "11px Arial";
+      let t = this.name + "=" + this.value.toPrecision(this.valuePrecision);
+      let textWidth = ctx.measureText(t).width;
       ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.halfHeight / 2 + 4);
-      ctx.fillText(this.name, 0, 0);
+      ctx.fillText(t, 0, 0);
       ctx.restore();
     }
 
@@ -213,7 +226,7 @@ export class Slider extends Block {
   }
 
   mouseDown(e: MouseEvent): boolean {
-    if (e.which == 3) return; // if this is a right-click event
+    if (e.which == 3 || e.button == 2) return; // if this is a right-click event
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.onKnob(x, y)) {
@@ -272,9 +285,12 @@ export class Slider extends Block {
   }
 
   isExportedToGlobalVariable(): boolean {
-    let connector = flowchart.getConnectorWithOutput(this.ports[0]);
-    if (connector != null)
-      return connector.getInput().getBlock() instanceof GlobalVariableBlock;
+    let connectors = flowchart.getConnectorsWithOutput(this.ports[0]);
+    if (connectors.length > 0) {
+      for (let c of connectors) {
+        if (c.getInput().getBlock() instanceof GlobalVariableBlock) return true;
+      }
+    }
     return false;
   }
 
