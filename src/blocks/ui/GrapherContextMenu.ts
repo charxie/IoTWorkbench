@@ -78,6 +78,10 @@ export class GrapherContextMenu extends BlockContextMenu {
                   <td><input type="text" id="grapher-window-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
+                  <td>Line Color:</td>
+                  <td><input type="text" id="grapher-line-color-field" style="width: 120px"></td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="grapher-width-field" style="width: 120px"></td>
                 </tr>
@@ -113,6 +117,8 @@ export class GrapherContextMenu extends BlockContextMenu {
       yAxisLableInputElement.value = g.getYAxisLabel();
       let windowColorInputElement = document.getElementById("grapher-window-color-field") as HTMLInputElement;
       windowColorInputElement.value = g.getGraphWindowColor();
+      let lineColorInputElement = document.getElementById("grapher-line-color-field") as HTMLInputElement;
+      lineColorInputElement.value = g.getLineColor();
       let widthInputElement = document.getElementById("grapher-width-field") as HTMLInputElement;
       widthInputElement.value = g.getWidth().toString();
       let heightInputElement = document.getElementById("grapher-height-field") as HTMLInputElement;
@@ -123,6 +129,7 @@ export class GrapherContextMenu extends BlockContextMenu {
         g.setXAxisLabel(xAxisLableInputElement.value);
         g.setYAxisLabel(yAxisLableInputElement.value);
         g.setGraphWindowColor(windowColorInputElement.value);
+        g.setLineColor(lineColorInputElement.value);
         g.setAutoScale(autoScaleRadioButton.checked);
         let success = true;
         let message;
@@ -179,6 +186,7 @@ export class GrapherContextMenu extends BlockContextMenu {
       xAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       yAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       windowColorInputElement.addEventListener("keyup", enterKeyUp);
+      lineColorInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({

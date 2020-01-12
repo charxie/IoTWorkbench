@@ -21,6 +21,7 @@ export class XYGraph extends Block {
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private graphWindowColor: string = "white";
+  private lineColor: string = "black";
   private graphSymbol: string = "None";
   private graphWindow: Rectangle;
   private barHeight: number;
@@ -41,6 +42,7 @@ export class XYGraph extends Block {
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly graphWindowColor: string;
+    readonly lineColor: string;
     readonly graphSymbol: string;
     readonly autoscale: boolean;
     readonly minimumXValue: number;
@@ -58,6 +60,7 @@ export class XYGraph extends Block {
       this.xAxisLabel = g.xAxisLabel;
       this.yAxisLabel = g.yAxisLabel;
       this.graphWindowColor = g.graphWindowColor;
+      this.lineColor = g.lineColor;
       this.graphSymbol = g.graphSymbol;
       this.autoscale = g.autoscale;
       this.minimumXValue = g.minimumXValue;
@@ -88,6 +91,7 @@ export class XYGraph extends Block {
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.graphWindowColor = this.graphWindowColor;
+    copy.lineColor = this.lineColor;
     copy.graphSymbol = this.graphSymbol;
     return copy;
   }
@@ -159,6 +163,14 @@ export class XYGraph extends Block {
     return this.graphWindowColor;
   }
 
+  setLineColor(lineColor: string): void {
+    this.lineColor = lineColor;
+  }
+
+  getLineColor(): string {
+    return this.lineColor;
+  }
+
   setGraphSymbol(graphSymbol: string): void {
     this.graphSymbol = graphSymbol;
   }
@@ -211,6 +223,7 @@ export class XYGraph extends Block {
     if (this.xPoints && this.yPoints) {
       let length = Math.min(this.xPoints.length, this.yPoints.length);
       if (length > 1) {
+        ctx.strokeStyle = this.lineColor;
         // detect minimum and maximum of x and y values
         let xmin = Number.MAX_VALUE;
         let xmax = -xmin;

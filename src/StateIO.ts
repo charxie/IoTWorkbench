@@ -85,6 +85,7 @@ export class StateIO {
           if (state.yAxisLabel != undefined) block.setYAxisLabel(state.yAxisLabel);
           if (state.graphWindowColor != undefined) block.setGraphWindowColor(state.graphWindowColor);
           if (state.graphSymbol != undefined) block.setGraphSymbol(state.graphSymbol);
+          if (state.lineColor != undefined) block.setLineColor(state.lineColor);
         } else if (block instanceof XYGraph) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);
@@ -96,6 +97,7 @@ export class StateIO {
           block.setYAxisLabel(state.yAxisLabel);
           block.setGraphWindowColor(state.graphWindowColor);
           block.setGraphSymbol(state.graphSymbol);
+          if (state.lineColor != undefined) block.setLineColor(state.lineColor);
         } else if (block instanceof ConditionalStatementBlock) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");

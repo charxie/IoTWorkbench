@@ -21,6 +21,7 @@ export class Grapher extends Block {
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private graphWindowColor: string = "white";
+  private lineColor: string = "black";
   private graphSymbol: string = "Circle";
   private graphWindow: Rectangle;
   private barHeight: number;
@@ -41,6 +42,7 @@ export class Grapher extends Block {
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly graphWindowColor: string;
+    readonly lineColor: string;
     readonly autoscale: boolean;
     readonly minimumValue: number;
     readonly maximumValue: number;
@@ -56,6 +58,7 @@ export class Grapher extends Block {
       this.xAxisLabel = grapher.xAxisLabel;
       this.yAxisLabel = grapher.yAxisLabel;
       this.graphWindowColor = grapher.graphWindowColor;
+      this.lineColor = grapher.lineColor;
       this.autoscale = grapher.autoscale;
       this.minimumValue = grapher.minimumValue;
       this.maximumValue = grapher.maximumValue;
@@ -85,6 +88,7 @@ export class Grapher extends Block {
     copy.yAxisLabel = this.yAxisLabel;
     copy.graphWindowColor = this.graphWindowColor;
     copy.graphSymbol = this.graphSymbol;
+    copy.lineColor = this.lineColor;
     return copy;
   }
 
@@ -137,6 +141,14 @@ export class Grapher extends Block {
 
   getGraphWindowColor(): string {
     return this.graphWindowColor;
+  }
+
+  setLineColor(lineColor: string): void {
+    this.lineColor = lineColor;
+  }
+
+  getLineColor(): string {
+    return this.lineColor;
   }
 
   setGraphSymbol(graphSymbol: string): void {
@@ -227,7 +239,7 @@ export class Grapher extends Block {
 
     // draw the data line
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = this.lineColor;
     ctx.font = "10px Arial";
     ctx.fillStyle = "black";
     ctx.beginPath();
