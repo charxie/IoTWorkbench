@@ -210,7 +210,7 @@ export class XYGraph extends Block {
     // draw X-Y plot
     if (this.xPoints && this.yPoints) {
       let length = Math.min(this.xPoints.length, this.yPoints.length);
-      if (length > 0) {
+      if (length > 1) {
         // detect minimum and maximum of x and y values
         let xmin = Number.MAX_VALUE;
         let xmax = -xmin;
@@ -242,8 +242,8 @@ export class XYGraph extends Block {
           ymin = this.minimumYValue;
           ymax = this.maximumYValue;
         }
-        let dx = this.graphWindow.width / (xmax - xmin);
-        let dy = this.graphWindow.height / (ymax - ymin);
+        let dx = xmax == xmin ? 1 : this.graphWindow.width / (xmax - xmin);
+        let dy = ymax == ymin ? 1 : this.graphWindow.height / (ymax - ymin);
         ctx.save();
         ctx.translate(this.graphWindow.x, this.graphWindow.y + this.graphWindow.height);
         ctx.beginPath();

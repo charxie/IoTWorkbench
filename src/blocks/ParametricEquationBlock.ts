@@ -61,7 +61,9 @@ export class ParametricEquationBlock extends Block {
     let block = new ParametricEquationBlock("Parametric Equation Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.expressionX = this.expressionX;
     block.expressionY = this.expressionY;
-    block.secondaryVariables = JSON.parse(JSON.stringify(this.secondaryVariables));
+    if (this.secondaryVariables) {
+      block.secondaryVariables = JSON.parse(JSON.stringify(this.secondaryVariables));
+    }
     return block;
   }
 

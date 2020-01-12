@@ -78,7 +78,7 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
       let heightInputElement = document.getElementById("parametric-equation-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       let secondaryVariablesInputElement = document.getElementById("parametric-equation-block-secondary-variables-field") as HTMLInputElement;
-      secondaryVariablesInputElement.value = block.getSecondaryVariables() ? JSON.stringify(block.getSecondaryVariables()) : undefined;
+      secondaryVariablesInputElement.value = block.getSecondaryVariables() ? JSON.stringify(block.getSecondaryVariables()) : "";
       const okFunction = function () {
         let success = true;
         let message;

@@ -7,17 +7,21 @@ import example01 from "./examples/logic-example1.json";
 // @ts-ignore
 import example02 from "./examples/math-example3.json";
 // @ts-ignore
-import example03 from "./examples/series-example1.json";
+import example03 from "./examples/array-example1.json";
 // @ts-ignore
-import example04 from "./examples/graph-example1.json";
+import example04 from "./examples/function-example1.json";
 // @ts-ignore
-import example05 from "./examples/graph-example2.json";
+import example05 from "./examples/function-example2.json";
 // @ts-ignore
-import example08 from "./examples/control-example1.json";
+import example06 from "./examples/function-example3.json";
 // @ts-ignore
-import example09 from "./examples/parametric-equation-example1.json";
+import example11 from "./examples/control-example1.json";
 // @ts-ignore
-import example10 from "./examples/parametric-equation-example2.json";
+import example31 from "./examples/parametric-equation-example1.json";
+// @ts-ignore
+import example32 from "./examples/parametric-equation-example2.json";
+// @ts-ignore
+import example33 from "./examples/parametric-equation-example9.json";
 
 import {flowchart} from "./Main";
 import {StateIO} from "./StateIO";
@@ -30,12 +34,14 @@ export class Examples {
 
     this.files.push({name: "Logic #1", data: example01});
     this.files.push({name: "Arithmetic #1", data: example02});
-    this.files.push({name: "Series #1", data: example03});
-    this.files.push({name: "Graph #1", data: example04});
-    this.files.push({name: "Graph #2", data: example05});
-    this.files.push({name: "Control #1", data: example08});
-    this.files.push({name: "Parametric Equation #1", data: example09});
-    this.files.push({name: "Parametric Equation #2", data: example10});
+    this.files.push({name: "Arrays #1", data: example03});
+    this.files.push({name: "Function #1", data: example04});
+    this.files.push({name: "Function #2", data: example05});
+    this.files.push({name: "Function #3", data: example06});
+    this.files.push({name: "Control #1", data: example11});
+    this.files.push({name: "Parametric Equation #1", data: example31});
+    this.files.push({name: "Parametric Equation #2", data: example32});
+    this.files.push({name: "Parametric Generator #1", data: example33});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 

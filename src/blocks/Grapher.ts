@@ -9,6 +9,11 @@ import {Rectangle} from "../math/Rectangle";
 
 export class Grapher extends Block {
 
+  private portI: Port;
+  private portX: Port;
+  private portD: Port;
+  private x0: number;
+  private dx: number;
   private data: number[] = [];
   private minimumValue: number = 0;
   private maximumValue: number = 1;
@@ -62,7 +67,12 @@ export class Grapher extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.color = "#F0FFFF";
-    this.ports.push(new Port(this, true, "I", 0, this.height / 2, false));
+    this.portI = new Port(this, true, "I", 0, this.height / 4, false);
+    this.portX = new Port(this, true, "X", 0, this.height / 2, false);
+    this.portD = new Port(this, true, "D", 0, this.height * 3 / 4, false);
+    this.ports.push(this.portI);
+    this.ports.push(this.portX);
+    this.ports.push(this.portD);
     this.graphWindow = new Rectangle(0, 0, 1, 1);
   }
 
@@ -184,7 +194,9 @@ export class Grapher extends Block {
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
-    this.ports[0].draw(ctx, this.iconic);
+    this.portI.draw(ctx, this.iconic);
+    this.portX.draw(ctx, this.iconic);
+    this.portD.draw(ctx, this.iconic);
 
   }
 
@@ -223,7 +235,6 @@ export class Grapher extends Block {
     let tmpX = this.graphWindow.x;
     let tmpY = yOffset + (this.data[0] - min) * dy;
     ctx.moveTo(tmpX, horizontalAxisY - tmpY);
-    ctx.fillText("0", tmpX - 4, horizontalAxisY + 10);
     for (let i = 1; i < this.data.length; i++) {
       tmpX = this.graphWindow.x + dx * i;
       tmpY = yOffset + (this.data[i] - min) * dy;
@@ -255,8 +266,12 @@ export class Grapher extends Block {
         ctx.moveTo(tmpX, horizontalAxisY);
         ctx.lineTo(tmpX, horizontalAxisY - 4);
         ctx.stroke();
-        let iString = i.toString();
-        ctx.fillText(iString, tmpX - 4 - ctx.measureText(iString).width / 2, horizontalAxisY + 10);
+        let x = i;
+        if (this.x0 != undefined && this.dx != undefined) {
+          x = this.x0 + i * this.dx;
+        }
+        let xString = x.toPrecision(2);
+        ctx.fillText(xString, tmpX - 4 - ctx.measureText(xString).width / 2, horizontalAxisY + 10);
       }
     }
 
@@ -285,7 +300,7 @@ export class Grapher extends Block {
     let horizontalAxisY = this.height - this.graphMargin.bottom;
     ctx.fillText(this.xAxisLabel, this.graphWindow.x + (this.graphWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 20);
     ctx.save();
-    ctx.translate(this.x + 20, this.graphWindow.y + (this.graphWindow.height + ctx.measureText(this.yAxisLabel).width) / 2);
+    ctx.translate(this.x + 30, this.graphWindow.y + (this.graphWindow.height + ctx.measureText(this.yAxisLabel).width) / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(this.yAxisLabel, 0, 0);
     ctx.restore();
@@ -296,16 +311,26 @@ export class Grapher extends Block {
   }
 
   updateModel(): void {
-    let v = this.ports[0].getValue();
+    let v = this.portI.getValue();
     this.data = Array.isArray(v) ? v : [v];
+    let x0 = this.portX.getValue();
+    if (x0 != undefined) {
+      this.x0 = x0;
+    }
+    let dx = this.portD.getValue();
+    if (dx != undefined) {
+      this.dx = dx;
+    }
   }
 
   refreshView(): void {
     this.graphMargin.top = 10;
     this.graphMargin.bottom = 30;
-    this.graphMargin.left = 30;
+    this.graphMargin.left = 40;
     this.graphMargin.right = 10;
-    this.ports[0].setY(this.height / 2);
+    this.portI.setY(this.height / 4);
+    this.portX.setY(this.height / 2);
+    this.portD.setY(this.height * 3 / 4);
     this.updateModel();
   }
 

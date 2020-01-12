@@ -56,6 +56,8 @@ export class BinaryFunctionBlock extends FunctionBlock {
   getCopy(): Block {
     let block = new BinaryFunctionBlock("Binary Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.expression = this.expression;
+    block.variable1Name = this.variable1Name;
+    block.variable2Name = this.variable2Name;
     return block;
   }
 

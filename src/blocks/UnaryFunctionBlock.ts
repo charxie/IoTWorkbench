@@ -49,6 +49,7 @@ export class UnaryFunctionBlock extends FunctionBlock {
   getCopy(): Block {
     let block = new UnaryFunctionBlock("Unary Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.expression = this.expression;
+    block.variableName = this.variableName;
     return block;
   }
 
