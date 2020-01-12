@@ -129,9 +129,9 @@ body {
 
 #model-playground-components-panel {
   position: fixed;
-  right: 20px;
-  top: 130px;
-  bottom: 60px;
+  left: 5px;
+  top: 120px;
+  bottom: 48px;
   width: 200px;
   margin: auto;
   z-index: 100;
@@ -148,9 +148,9 @@ body {
 
 #block-elements-panel {
   position: fixed;
-  right: 20px;
-  top: 130px;
-  bottom: 60px;
+  left: 5px;
+  top: 120px;
+  bottom: 48px;
   width: 200px;
   margin: auto;
   z-index: 100;

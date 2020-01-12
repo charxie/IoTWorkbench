@@ -84,38 +84,38 @@ export class System {
       switch (that.draggedElementId) {
         case "raspberry-pi-image":
           if (id == "workbench") {
-            that.addRaspberryPi("Raspberry Pi", e.offsetX, e.offsetY, true);
+            that.addRaspberryPi("Raspberry Pi", e.clientX, e.offsetY, true);
             that.storeMcuStates();
           }
           break;
         case "rainbow-hat-image":
           if (id == "workbench" || id.startsWith("raspberry-pi")) {
-            that.addHatByAction("Rainbow HAT", e.offsetX, e.offsetY);
+            that.addHatByAction("Rainbow HAT", e.clientX, e.offsetY);
           }
           break;
         case "sense-hat-image":
           if (id == "workbench" || id.startsWith("raspberry-pi")) {
-            that.addHatByAction("Sense HAT", e.offsetX, e.offsetY);
+            that.addHatByAction("Sense HAT", e.clientX, e.offsetY);
           }
           break;
         case "capacitive-touch-hat-image":
           if (id == "workbench" || id.startsWith("raspberry-pi")) {
-            that.addHatByAction("Capacitive Touch HAT", e.offsetX, e.offsetY);
+            that.addHatByAction("Capacitive Touch HAT", e.clientX, e.offsetY);
           }
           break;
         case "unicorn-hat-image":
           if (id == "workbench" || id.startsWith("raspberry-pi")) {
-            that.addHatByAction("Unicorn HAT", e.offsetX, e.offsetY);
+            that.addHatByAction("Unicorn HAT", e.clientX, e.offsetY);
           }
           break;
         case "crickit-hat-image":
           if (id == "workbench" || id.startsWith("raspberry-pi")) {
-            that.addHatByAction("Crickit HAT", e.offsetX, e.offsetY);
+            that.addHatByAction("Crickit HAT", e.clientX, e.offsetY);
           }
           break;
         case "pan-tilt-hat-image":
           if (id == "workbench" || id.startsWith("raspberry-pi")) {
-            that.addHatByAction("Pan-Tilt HAT", e.offsetX, e.offsetY);
+            that.addHatByAction("Pan-Tilt HAT", e.clientX, e.offsetY);
           }
           break;
       }

@@ -60,7 +60,7 @@ export class Workbench {
   }
 
   public getX(): number {
-    return 10;
+    return 210;
   }
 
   public getY(): number {

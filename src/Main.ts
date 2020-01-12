@@ -461,18 +461,23 @@ window.onresize = function () {
 
 function resize() {
   if (document.getElementById("model-playground").style.display == "block") {
+    let componentsPanelRect = document.getElementById("model-playground-components-panel").getBoundingClientRect() as DOMRect;
     let workbenchRect = system.workbench.canvas.getBoundingClientRect() as DOMRect;
-    system.workbench.canvas.width = window.innerWidth - 2 * workbenchRect.left - 4;
+    system.workbench.canvas.width = window.innerWidth - componentsPanelRect.right - 16;
     system.workbench.canvas.height = window.innerHeight - workbenchRect.top - 50;
     let componentsScroller = document.getElementById("components-scroller") as HTMLDivElement;
     componentsScroller.style.height = system.workbench.canvas.height * 0.85 + "px";
   }
   if (document.getElementById("block-playground").style.display == "block") {
-    let blockViewRect = flowchart.blockView.canvas.getBoundingClientRect() as DOMRect;
-    flowchart.blockView.canvas.width = window.innerWidth - 2 * blockViewRect.left - 4;
-    flowchart.blockView.canvas.height = window.innerHeight - blockViewRect.top - 50;
+    let blockViewWrapper = document.getElementById("block-view-wrapper");
+    let blockElementsPanelRect = document.getElementById("block-elements-panel").getBoundingClientRect() as DOMRect;
+    let blockViewWrapperRect = blockViewWrapper.getBoundingClientRect() as DOMRect;
+    let w = window.innerWidth - blockElementsPanelRect.right - 15;
+    let h = window.innerHeight - blockViewWrapperRect.top - 45;
+    blockViewWrapper.style.width = w + "px";
+    blockViewWrapper.style.height = h + "px";
     let elementsScroller = document.getElementById("elements-scroller") as HTMLDivElement;
-    elementsScroller.style.height = flowchart.blockView.canvas.height * 0.85 + "px";
+    elementsScroller.style.height = h * 0.85 + "px";
   }
 }
 
