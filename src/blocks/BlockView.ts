@@ -470,6 +470,7 @@ export class BlockView {
         break;
       }
     }
+    this.selectedBlock = block;
     let menu: HTMLMenuElement = null;
     if (block instanceof ArithmeticBlock) {
       contextMenus.arithmeticBlock.block = block;
@@ -532,6 +533,9 @@ export class BlockView {
       menu.style.top = (e.clientY - document.getElementById("tabs").getBoundingClientRect().bottom) + "px";
       menu.classList.add("show-menu");
       this.selectedMovable = null;
+    }
+    if (this.selectedBlock != null) {
+      this.draw();
     }
   }
 

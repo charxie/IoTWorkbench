@@ -33,6 +33,16 @@ export class Util {
     return x.toString().length;
   }
 
+  static getHexColor(colorName: string): string | false {
+    let a = document.createElement('div');
+    a.style.color = colorName;
+    var colors = window.getComputedStyle(document.body.appendChild(a)).color.match(/\d+/g).map(function (a) {
+      return parseInt(a, 10);
+    });
+    document.body.removeChild(a);
+    return colors.length >= 3 ? '#' + (((1 << 24) + (colors[0] << 16) + (colors[1] << 8) + colors[2]).toString(16).substr(1)) : false;
+  }
+
   static adjust(color: string, amount: number): string {
     return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
   }

@@ -125,7 +125,15 @@ export class BlockViewContextMenu extends MyContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Background Color:</td>
-                  <td><input type="text" id="block-view-background-color-field" size="15"></td>
+                  <td><input type="text" id="block-view-background-color-field" style="width: 120px"></td>
+                </tr>
+                <tr>
+                  <td>Canvas Width:</td>
+                  <td><input type="text" id="block-view-width-field" style="width: 120px"></td>
+                </tr>
+                <tr>
+                  <td>Canvas Height:</td>
+                  <td><input type="text" id="block-view-height-field" style="width: 120px"></td>
                 </tr>
               </table>
             </div>`;
@@ -138,6 +146,10 @@ export class BlockViewContextMenu extends MyContextMenu {
     let d = $("#modal-dialog").html(this.getSettingsUI());
     let backgroundColorInputElement = document.getElementById("block-view-background-color-field") as HTMLInputElement;
     backgroundColorInputElement.value = this.view.getBackgroundColor();
+    let widthInputElement = document.getElementById("block-view-width-field") as HTMLInputElement;
+    widthInputElement.value = this.view.canvas.width.toString();
+    let heightInputElement = document.getElementById("block-view-height-field") as HTMLInputElement;
+    heightInputElement.value = this.view.canvas.height.toString();
     const okFunction = function () {
       view.setBackgroundColor(backgroundColorInputElement.value);
       view.flowchart.storeViewState();
@@ -154,8 +166,8 @@ export class BlockViewContextMenu extends MyContextMenu {
       resizable: false,
       modal: true,
       title: "Block View Settings",
-      height: 400,
-      width: 400,
+      height: 300,
+      width: 320,
       buttons: {
         'OK': okFunction,
         'Cancel': function () {

@@ -77,6 +77,9 @@ export class StateIO {
         } else if (block instanceof Sticker) {
           block.setName(state.name);
           block.setDecimals(state.decimals != undefined ? state.decimals : 3);
+          block.setUserText(state.userText);
+          if (state.color != undefined) block.setColor(state.color);
+          if (state.textColor != undefined) block.setTextColor(state.textColor);
         } else if (block instanceof Grapher) {
           block.setName(state.name);
           if (state.minimumValue != undefined) block.setMinimumValue(state.minimumValue);

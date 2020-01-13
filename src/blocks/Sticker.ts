@@ -9,6 +9,8 @@ import {Util} from "../Util";
 export class Sticker extends Block {
 
   private text: string;
+  private userText: string;
+  protected textColor: string = "black";
   private isArray: boolean;
   private decimals: number = 3;
   private barHeight: number;
@@ -21,7 +23,10 @@ export class Sticker extends Block {
     readonly width: number;
     readonly height: number;
     readonly text: string;
+    readonly userText: string;
     readonly decimals: number;
+    readonly color: string;
+    protected textColor: string;
 
     constructor(sticker: Sticker) {
       this.name = sticker.name;
@@ -31,7 +36,10 @@ export class Sticker extends Block {
       this.width = sticker.width;
       this.height = sticker.height;
       this.text = sticker.text;
+      this.userText = sticker.userText;
       this.decimals = sticker.decimals;
+      this.color = sticker.color;
+      this.textColor = sticker.textColor;
     }
   };
 
@@ -46,10 +54,29 @@ export class Sticker extends Block {
     let copy = new Sticker("Sticker #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.text = this.text;
     copy.decimals = this.decimals;
+    copy.color = this.color;
+    copy.textColor = this.textColor;
+    copy.userText = this.userText;
     return copy;
   }
 
   destroy(): void {
+  }
+
+  setUserText(userText: string): void {
+    this.userText = userText;
+  }
+
+  getUserText(): string {
+    return this.userText;
+  }
+
+  setTextColor(textColor: string): void {
+    this.textColor = textColor;
+  }
+
+  getTextColor(): string {
+    return this.textColor;
   }
 
   setDecimals(decimals: number): void {
@@ -76,7 +103,7 @@ export class Sticker extends Block {
     if (!this.iconic) {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
-      ctx.fillStyle = "black";
+      ctx.fillStyle = this.textColor;
       let titleWidth = ctx.measureText(this.name).width;
       ctx.fillText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
@@ -88,9 +115,9 @@ export class Sticker extends Block {
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
+    ctx.font = "14px Times Roman";
+    ctx.fillStyle = this.textColor;
     if (this.text) {
-      ctx.font = "14px Times Roman";
-      ctx.fillStyle = "black";
       if (this.isArray) {
         let lineHeight = ctx.measureText("M").width * 1.2;
         let lines = this.text.split(",");
@@ -110,13 +137,25 @@ export class Sticker extends Block {
       } else {
         ctx.fillText(this.text, this.x + 10, this.y + this.barHeight + 20);
       }
+    } else if (this.userText) {
+      let lineHeight = ctx.measureText("M").width * 1.2;
+      let lines = this.userText.split("\n");
+      ctx.fillStyle = this.textColor;
+      for (let i = 0; i < lines.length; ++i) {
+        let yi = this.y + this.barHeight + 20 + i * lineHeight;
+        if (yi < this.y + this.height - lineHeight / 2) {
+          ctx.fillText(lines[i].trim(), this.x + 10, yi);
+        }
+      }
     }
 
     // draw the port
-    ctx.font = this.iconic ? "9px Arial" : "12px Arial";
-    ctx.strokeStyle = "black";
-    this.ports[0].setY(this.height / 2);
-    this.ports[0].draw(ctx, this.iconic);
+    if (this.userText == undefined) {
+      ctx.font = this.iconic ? "9px Arial" : "12px Arial";
+      ctx.strokeStyle = "black";
+      this.ports[0].setY(this.height / 2);
+      this.ports[0].draw(ctx, this.iconic);
+    }
 
     if (this.selected) {
       this.highlightSelection(ctx);
@@ -131,11 +170,13 @@ export class Sticker extends Block {
   updateModel(): void {
     // text is part of the model
     let v = this.ports[0].getValue();
-    try {
-      this.text = v.toFixed(this.decimals);
-    } catch (e) {
-      this.text = "" + v; // value is a boolean or string or array
-      this.isArray = Array.isArray(v);
+    if (v) {
+      try {
+        this.text = v.toFixed(this.decimals);
+      } catch (e) {
+        this.text = "" + v; // value is a boolean or string or array
+        this.isArray = Array.isArray(v);
+      }
     }
   }
 
