@@ -24,6 +24,7 @@ import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {XYGraph} from "./XYGraph";
 import {flowchart} from "../Main";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
+import $ from "jquery";
 
 export class Flowchart {
 
@@ -146,6 +147,28 @@ export class Flowchart {
       this.storeBlockStates();
       selectedBlock.destroy();
     }
+  }
+
+  askToDeleteBlock(block: Block): void {
+    let message = "<div style='font-size: 90%;'>Are you sure you want to delete " + block.getUid() + "?</div>";
+    let that = this;
+    $("#modal-dialog").html(message).dialog({
+      resizable: false,
+      modal: true,
+      title: "Delete",
+      height: 200,
+      width: 300,
+      buttons: {
+        'OK': function () {
+          that.removeBlock(block.getUid());
+          that.draw();
+          $(this).dialog('close');
+        },
+        'Cancel': function () {
+          $(this).dialog('close');
+        }
+      }
+    });
   }
 
   getBlock(uid: string): Block {

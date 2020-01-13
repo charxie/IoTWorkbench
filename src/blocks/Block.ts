@@ -169,6 +169,11 @@ export abstract class Block implements Movable {
     this.y = y;
   }
 
+  translateBy(dx: number, dy: number): void {
+    this.x += dx;
+    this.y += dy;
+  }
+
   getWidth(): number {
     return this.width;
   }
@@ -258,6 +263,24 @@ export abstract class Block implements Movable {
       p.draw(ctx, this.iconic);
     }
 
+    if (this.selected) {
+      this.highlightSelection(ctx);
+    }
+
+  }
+
+  protected highlightSelection(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    let offset = 10;
+    ctx.shadowColor = "dimgray";
+    ctx.shadowBlur = offset / 2;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "black";
+    ctx.setLineDash([2, 2]);
+    ctx.drawRoundedRect(this.x - offset, this.y - offset, this.width + 2 * offset, this.height + 2 * offset, this.radius);
+    ctx.restore();
   }
 
   protected drawLabel(ctx: CanvasRenderingContext2D): void {

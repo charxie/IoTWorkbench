@@ -209,6 +209,10 @@ export class ItemSelector extends Block {
     this.portI.draw(ctx, this.iconic);
     this.portO.draw(ctx, this.iconic);
 
+    if (this.selected) {
+      this.highlightSelection(ctx);
+    }
+
   }
 
   onDraggableArea(x: number, y: number): boolean {

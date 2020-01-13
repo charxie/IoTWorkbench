@@ -118,6 +118,10 @@ export class Sticker extends Block {
     this.ports[0].setY(this.height / 2);
     this.ports[0].draw(ctx, this.iconic);
 
+    if (this.selected) {
+      this.highlightSelection(ctx);
+    }
+
   }
 
   onDraggableArea(x: number, y: number): boolean {

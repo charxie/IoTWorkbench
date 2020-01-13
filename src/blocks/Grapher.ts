@@ -210,6 +210,10 @@ export class Grapher extends Block {
     this.portX.draw(ctx, this.iconic);
     this.portD.draw(ctx, this.iconic);
 
+    if (this.selected) {
+      this.highlightSelection(ctx);
+    }
+
   }
 
   private drawLineCharts(ctx: CanvasRenderingContext2D): void {

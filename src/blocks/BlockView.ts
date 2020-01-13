@@ -33,6 +33,7 @@ export class BlockView {
 
   flowchart: Flowchart;
   private selectedMovable: Movable;
+  private selectedBlock: Block;
   private selectedPort: Port;
   private selectedPortConnector: PortConnector;
   private mouseDownRelativeX: number;
@@ -61,6 +62,8 @@ export class BlockView {
     this.canvas.addEventListener("mousedown", this.mouseDown.bind(this), false);
     this.canvas.addEventListener("mouseup", this.mouseUp.bind(this), false);
     this.canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
+    this.canvas.addEventListener("keydown", this.keyDown.bind(this), false);
+    this.canvas.addEventListener("keyup", this.keyUp.bind(this), false);
     this.canvas.addEventListener('contextmenu', this.openContextMenu.bind(this), false);
     document.addEventListener("mouseleave", this.mouseLeave.bind(this), false);
 
@@ -232,14 +235,79 @@ export class BlockView {
     return this.canvas.height;
   }
 
+  private keyUp(e: KeyboardEvent): void {
+    e.preventDefault();
+    switch (e.key) {
+      case "Delete":
+        if (this.selectedBlock != null) {
+          flowchart.askToDeleteBlock(this.selectedBlock);
+        }
+        break;
+    }
+    this.moveByArrowKey(e.key, true);
+    e.stopPropagation();
+  }
+
+  private keyDown(e: KeyboardEvent): void {
+    e.preventDefault();
+    this.moveByArrowKey(e.key, false);
+    e.stopPropagation();
+  }
+
+  private moveByArrowKey(key: string, storeState: boolean) {
+    switch (key) {
+      case "ArrowUp":
+        if (this.selectedBlock != null) {
+          this.selectedBlock.translateBy(0, -5);
+          this.selectedBlock.refreshView();
+          this.draw();
+          if (storeState) this.flowchart.storeBlockStates();
+        }
+        break;
+      case "ArrowDown":
+        if (this.selectedBlock != null) {
+          this.selectedBlock.translateBy(0, 5);
+          this.selectedBlock.refreshView();
+          this.draw();
+          if (storeState) this.flowchart.storeBlockStates();
+        }
+        break;
+      case "ArrowLeft":
+        if (this.selectedBlock != null) {
+          this.selectedBlock.translateBy(-5, 0);
+          this.selectedBlock.refreshView();
+          this.draw();
+          if (storeState) this.flowchart.storeBlockStates();
+        }
+        break;
+      case "ArrowRight":
+        if (this.selectedBlock != null) {
+          this.selectedBlock.translateBy(5, 0);
+          this.selectedBlock.refreshView();
+          this.draw();
+          if (storeState) this.flowchart.storeBlockStates();
+        }
+        break;
+    }
+  }
+
   private mouseDown(e: MouseEvent): void {
     this.selectedMovable = null;
     this.selectedPort = null;
     let x = e.offsetX;
     let y = e.offsetY;
+    if (this.selectedBlock != null) {
+      this.selectedBlock.setSelected(false);
+    }
     for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
       if (this.flowchart.blocks[i].onDraggableArea(x, y)) {
-        this.selectedMovable = this.flowchart.blocks[i];
+        this.selectedBlock = this.flowchart.blocks[i];
+        this.selectedMovable = this.selectedBlock;
+        this.selectedBlock.setSelected(true);
+        break;
+      } else if (this.flowchart.blocks[i].contains(x, y)) {
+        this.selectedBlock = this.flowchart.blocks[i];
+        this.selectedBlock.setSelected(true);
         break;
       }
     }

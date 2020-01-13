@@ -353,6 +353,11 @@ export class LineChart implements Movable {
     this.canvas.style.top = y + "px";
   }
 
+  public translateBy(dx: number, dy: number): void {
+    this.setX(this.getX() + dx);
+    this.setY(this.getY() + dy);
+  }
+
   public getWidth(): number {
     return this.canvas.width;
   }

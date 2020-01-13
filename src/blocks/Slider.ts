@@ -215,6 +215,10 @@ export class Slider extends Block {
     ctx.strokeStyle = "black";
     this.ports[0].draw(ctx, this.iconic);
 
+    if (this.selected) {
+      this.highlightSelection(ctx);
+    }
+
   }
 
   onDraggableArea(x: number, y: number): boolean {

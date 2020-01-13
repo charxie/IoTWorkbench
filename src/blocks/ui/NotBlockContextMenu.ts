@@ -24,6 +24,9 @@ export class NotBlockContextMenu extends BlockContextMenu {
                 <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
               </li>
               <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-rotate-button"><i class="fas fa-sync"></i><span class="menu-text">Rotate 90°</span></button>
+              </li>
+              <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-properties-button"><i class="fas fa-cog"></i><span class="menu-text">Properties</span></button>
               </li>
             </menu>`;

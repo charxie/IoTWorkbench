@@ -14,12 +14,14 @@ export interface Movable {
 
   setY(y: number): void;
 
+  translateBy(dx: number, dy: number): void;
+
   getWidth(): number;
 
   getHeight(): number;
 
   contains(x: number, y: number): boolean;
 
-  refreshView() : void;
+  refreshView(): void;
 
 }

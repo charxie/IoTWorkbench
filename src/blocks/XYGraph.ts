@@ -316,6 +316,10 @@ export class XYGraph extends Block {
     this.portX.draw(ctx, this.iconic);
     this.portY.draw(ctx, this.iconic);
 
+    if (this.selected) {
+      this.highlightSelection(ctx);
+    }
+
   }
 
   private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
