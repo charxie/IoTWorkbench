@@ -18,6 +18,10 @@ export abstract class BlockContextMenu extends MyContextMenu {
     deleteButton.addEventListener("click", this.deleteButtonClick.bind(this), false);
     let propertiesButton = document.getElementById(this.id + "-properties-button");
     propertiesButton.addEventListener("click", this.propertiesButtonClick.bind(this), false);
+    let rotateButton = document.getElementById(this.id + "-rotate-button");
+    if (rotateButton) {
+      rotateButton.addEventListener("click", this.rotateButtonClick.bind(this), false);
+    }
   }
 
   protected copyButtonClick(e: MouseEvent): void {
@@ -49,6 +53,20 @@ export abstract class BlockContextMenu extends MyContextMenu {
           }
         }
       });
+    }
+  }
+
+  protected rotateButtonClick(e: MouseEvent): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    if (this.block) {
+      let block = this.block;
+      let oldW = block.getWidth();
+      let oldH = block.getHeight();
+      block.setWidth(oldH);
+      block.setHeight(oldW);
+      block.refreshView();
+      flowchart.draw();
     }
   }
 

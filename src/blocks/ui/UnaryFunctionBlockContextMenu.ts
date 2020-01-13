@@ -16,12 +16,15 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
   }
 
   getUi(): string {
-    return `<menu id="${this.id}" class="menu" style="width: 120px; z-index: 10000">
+    return `<menu id="${this.id}" class="menu" style="width: 140px; z-index: 10000">
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-copy-button"><i class="fas fa-copy"></i><span class="menu-text">Copy</span></button>
               </li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
+              </li>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-rotate-button"><i class="fas fa-sync"></i><span class="menu-text">Rotate 90°</span></button>
               </li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-code-button"><i class="fas fa-code"></i><span class="menu-text">Code</span></button>
