@@ -159,7 +159,7 @@ export class StickerContextMenu extends BlockContextMenu {
         modal: true,
         title: sticker.getUid(),
         height: 550,
-        width: 350,
+        width: 400,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

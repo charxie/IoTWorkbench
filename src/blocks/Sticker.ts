@@ -117,7 +117,7 @@ export class Sticker extends Block {
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
     ctx.font = "14px Times Roman";
     ctx.fillStyle = this.textColor;
-    if (this.text) {
+    if (this.text != undefined) {
       if (this.isArray) {
         let lineHeight = ctx.measureText("M").width * 1.2;
         let lines = this.text.split(",");
@@ -137,7 +137,7 @@ export class Sticker extends Block {
       } else {
         ctx.fillText(this.text, this.x + 10, this.y + this.barHeight + 20);
       }
-    } else if (this.userText) {
+    } else if (this.userText != undefined) {
       let lineHeight = ctx.measureText("M").width * 1.2;
       let lines = this.userText.split("\n");
       ctx.fillStyle = this.textColor;
@@ -170,7 +170,7 @@ export class Sticker extends Block {
   updateModel(): void {
     // text is part of the model
     let v = this.ports[0].getValue();
-    if (v) {
+    if (v != undefined) {
       try {
         this.text = v.toFixed(this.decimals);
       } catch (e) {
