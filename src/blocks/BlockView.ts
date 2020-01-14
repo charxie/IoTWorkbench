@@ -381,6 +381,7 @@ export class BlockView {
     }
     this.preventMainMouseEvent = grab;
     this.canvas.style.cursor = grab ? "grabbing" : "default";
+    this.draw();
   }
 
   private mouseUp(e: MouseEvent): void {
@@ -480,9 +481,16 @@ export class BlockView {
       }
     }
     for (let b of this.flowchart.blocks) {
-      // since item selectors have a pull down menu that is larger, we will always invoke their mouse handlers
-      if (b instanceof ItemSelector || b.contains(x, y)) {
-        b.mouseMove(e);
+      if (b instanceof MomentarySwitch) { // special treatment for momentary switch
+        if (b.isPressed() && !b.contains(x, y)) {
+          b.setPressed(false);
+          b.updateImmediately();
+        }
+      } else {
+        // since item selectors have a pull down menu that is larger, we will always invoke their mouse handlers
+        if (b instanceof ItemSelector || b.contains(x, y)) {
+          b.mouseMove(e);
+        }
       }
     }
     this.draw();

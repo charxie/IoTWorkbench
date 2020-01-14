@@ -11,14 +11,12 @@ import {GlobalVariableBlock} from "./GlobalVariableBlock";
 
 export class MomentarySwitch extends Block {
 
-  private checked: boolean = false;
-  private knob: Arc;
-  private knobRadius: number = 10;
-  private knobGrabbed: boolean;
+  private pressed: boolean = false;
+  private button: Arc;
+  private buttonRadius: number = 10;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private halfHeight: number;
-  private xMargin: number = 8;
   private yMargin: number = 4;
 
   static State = class {
@@ -46,37 +44,35 @@ export class MomentarySwitch extends Block {
     this.name = name;
     this.color = "#B22222";
     this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
-    this.knobRadius = this.halfHeight / 2 - this.yMargin;
-    this.knob = new Arc(this.x + this.knobRadius + this.xMargin, this.y + this.halfHeight * 3 / 2, this.knobRadius, 0, 2 * Math.PI, true);
+    this.buttonRadius = this.halfHeight / 2 - this.yMargin;
+    this.button = new Arc(this.x + this.width / 2, this.y + this.halfHeight * 3 / 2, this.buttonRadius, 0, 2 * Math.PI, true);
   }
 
   getCopy(): Block {
-    let copy = new MomentarySwitch("Momentary Switch #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    return copy;
+    return new MomentarySwitch("Momentary Switch #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
   }
 
   destroy(): void {
   }
 
-  setChecked(checked: boolean): void {
-    this.checked = checked;
+  setPressed(pressed: boolean): void {
+    this.pressed = pressed;
   }
 
-  isChecked(): boolean {
-    return this.checked;
+  isPressed(): boolean {
+    return this.pressed;
   }
 
   updateModel(): void {
-    this.ports[0].setValue(this.checked);
+    this.ports[0].setValue(this.pressed);
     this.updateConnectors();
   }
 
   refreshView(): void {
-    this.xMargin = this.iconic ? 8 : 24;
     this.yMargin = this.iconic ? 2 : 6;
     this.halfHeight = this.height / 2;
-    this.knobRadius = this.halfHeight / 2 - this.yMargin;
-    this.knob.setCenter(this.x + this.knobRadius + this.xMargin, this.y + this.halfHeight * 3 / 2);
+    this.buttonRadius = this.halfHeight / 2 - this.yMargin;
+    this.button.setCenter(this.x + this.width / 2, this.y + this.halfHeight * 3 / 2);
     this.ports[0].setX(this.width);
     this.ports[0].setY(this.height / 2);
   }
@@ -108,33 +104,42 @@ export class MomentarySwitch extends Block {
     }
 
     // draw the lower area
-    ctx.fillStyle = "#FFFFFF";
+    ctx.fillStyle = "white";
     ctx.fillHalfRoundedRect(this.x, this.y + this.halfHeight, this.width, this.halfHeight, this.radius, "Bottom");
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.halfHeight, this.width, this.halfHeight, this.radius, "Bottom");
 
-    if (!this.iconic) {
-      ctx.font = "8px Arial";
-      ctx.fillStyle = "black";
-      let textWidth = ctx.measureText("OFF").width;
-      //ctx.fillText("OFF", this.knob.x - textWidth - 12, textCenterY);
+    // draw the button
+    ctx.fillStyle = "crimson";
+    if (this.pressed) {
+      ctx.beginPath();
+      ctx.arc(this.button.x, this.button.y, this.button.radius, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = "black";
+      ctx.stroke();
+    } else {
+      ctx.save();
+      ctx.shadowOffsetX = 2;
+      ctx.shadowOffsetY = 1;
+      ctx.shadowBlur = 2;
+      ctx.shadowColor = "black";
+      ctx.beginPath();
+      ctx.arc(this.button.x, this.button.y, this.button.radius, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.restore();
+      ctx.lineWidth = 0.75;
     }
 
-    // draw the knob
-    ctx.save();
-    ctx.fillStyle = "white";
-    ctx.shadowOffsetX = 2;
-    ctx.shadowOffsetY = 1;
-    ctx.shadowBlur = 2;
-    ctx.shadowColor = "black";
-    ctx.beginPath();
-    ctx.arc(this.knob.x, this.knob.y, this.knob.radius, 0, 2 * Math.PI);
-    ctx.fill();
-    ctx.restore();
-    ctx.lineWidth = 0.75;
-    ctx.strokeStyle = "black";
-    ctx.stroke();
+    if (!this.iconic) {
+      ctx.font = "8px Arial";
+      ctx.fillStyle = "white";
+      let text = this.pressed ? "ON" : "OFF";
+      let textWidth = ctx.measureText(text).width;
+      let textHeight = ctx.measureText("M").width;
+      ctx.fillText(text, this.button.x - textWidth / 2, this.button.y + textHeight / 2);
+    }
 
     // draw the port
     ctx.strokeStyle = "black";
@@ -150,50 +155,46 @@ export class MomentarySwitch extends Block {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.halfHeight;
   }
 
-  onKnob(x: number, y: number): boolean {
-    return this.knob.contains(x, y);
+  onButton(x: number, y: number): boolean {
+    return this.button.contains(x, y);
+  }
+
+  updateImmediately() : void {
+    this.updateModel();
+    flowchart.traverse(this);
+    if (this.isExportedToGlobalVariable()) {
+      flowchart.updateResults();
+    }
   }
 
   mouseDown(e: MouseEvent): boolean {
     if (e.which == 3) return; // if this is a right-click event
     let x = e.offsetX;
     let y = e.offsetY;
-    if (this.onKnob(x, y)) {
-      this.mouseDownRelativeX = x - this.knob.x;
-      this.mouseDownRelativeY = y - this.knob.y;
-      this.knobGrabbed = true;
+    if (this.onButton(x, y)) {
+      this.mouseDownRelativeX = x - this.button.x;
+      this.mouseDownRelativeY = y - this.button.y;
+      this.pressed = true;
+      this.updateImmediately();
       return true;
     }
     return false;
   }
 
   mouseUp(e: MouseEvent): void {
-    this.updateModel();
-    flowchart.traverse(this);
-    if (this.isExportedToGlobalVariable()) {
-      flowchart.updateResults();
+    if (this.pressed) {
+      this.pressed = false;
+      this.updateImmediately();
     }
     flowchart.storeBlockStates();
-    this.knobGrabbed = false;
     flowchart.blockView.canvas.style.cursor = "default";
   }
 
   mouseMove(e: MouseEvent): void {
-    if (e.which == 3) return; // if this is a right-click event
-    let x = e.offsetX;
-    let y = e.offsetY;
-    if (this.knobGrabbed) {
-    } else {
-      if (this.onKnob(x, y)) {
-        if (e.target instanceof HTMLCanvasElement) {
-          e.target.style.cursor = this.knobGrabbed ? "grabbing" : "grab";
-        }
-      }
-    }
   }
 
   mouseLeave(e: MouseEvent): void {
-    this.knobGrabbed = false;
+    this.pressed = false;
     flowchart.blockView.canvas.style.cursor = "default";
   }
 
