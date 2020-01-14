@@ -26,6 +26,7 @@ import {WorkerBlock} from "./WorkerBlock";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {XYGraph} from "./XYGraph";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
+import {MomentarySwitch} from "./MomentarySwitch";
 
 export class BlockView {
 
@@ -45,6 +46,8 @@ export class BlockView {
   private contextMenuClickX: number;
   private contextMenuClickY: number;
   private preventMainMouseEvent: boolean = false; // when a block is handling its own mouse events, set this flag true
+  private touchStartTime: number;
+  private static readonly longPressTime: number = 2000;
 
   static State = class {
 
@@ -62,6 +65,9 @@ export class BlockView {
     this.canvas.addEventListener("mousedown", this.mouseDown.bind(this), false);
     this.canvas.addEventListener("mouseup", this.mouseUp.bind(this), false);
     this.canvas.addEventListener("mousemove", this.mouseMove.bind(this), false);
+    this.canvas.addEventListener("touchstart", this.touchStart.bind(this), false);
+    this.canvas.addEventListener("touchend", this.touchEnd.bind(this), false);
+    this.canvas.addEventListener("touchmove", this.touchMove.bind(this), false);
     this.canvas.addEventListener("keydown", this.keyDown.bind(this), false);
     this.canvas.addEventListener("keyup", this.keyUp.bind(this), false);
     this.canvas.addEventListener('contextmenu', this.openContextMenu.bind(this), false);
@@ -128,6 +134,9 @@ export class BlockView {
             break;
           case "toggle-switch-block":
             that.storeBlock(new ToggleSwitch("Switch #" + timestamp, "Boolean", x - 40, y - 30, 80, 60));
+            break;
+          case "momentary-switch-block":
+            that.storeBlock(new MomentarySwitch("Momentary Switch #" + timestamp, "Boolean", x - 30, y - 30, 60, 60));
             break;
           case "sticker-block":
             that.storeBlock(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));
@@ -291,11 +300,36 @@ export class BlockView {
     }
   }
 
+  private touchStart(e: TouchEvent): void {
+    e.preventDefault();
+    let touch = e.touches[0];
+    this.canvas.dispatchEvent(new MouseEvent("mousedown", {clientX: touch.clientX, clientY: touch.clientY}));
+    this.touchStartTime = Date.now();
+  }
+
+  private touchMove(e: TouchEvent): void {
+    e.preventDefault();
+    let touch = e.touches[0];
+    this.canvas.dispatchEvent(new MouseEvent("mousemove", {clientX: touch.clientX, clientY: touch.clientY}));
+  }
+
+  private touchEnd(e: TouchEvent): void {
+    e.preventDefault();
+    let touch = e.changedTouches[0];
+    if (Date.now() - this.touchStartTime > BlockView.longPressTime) {
+      this.canvas.dispatchEvent(new MouseEvent("contextmenu", {clientX: touch.clientX, clientY: touch.clientY}));
+    } else {
+      this.canvas.dispatchEvent(new MouseEvent("mouseup", {}));
+    }
+  }
+
   private mouseDown(e: MouseEvent): void {
     this.selectedMovable = null;
     this.selectedPort = null;
-    let x = e.offsetX;
-    let y = e.offsetY;
+    // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+    let rect = this.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
     if (this.selectedBlock != null) {
       this.selectedBlock.setSelected(false);
     }
@@ -351,8 +385,10 @@ export class BlockView {
 
   private mouseUp(e: MouseEvent): void {
     if (e.which == 3 || e.button == 2) return; // if this is a right-click event
-    let x = e.offsetX;
-    let y = e.offsetY;
+    // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+    let rect = this.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
     if (this.selectedPort != null) {
       outerloop:
         for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
@@ -384,8 +420,10 @@ export class BlockView {
   }
 
   private mouseMove(e: MouseEvent): void {
-    let x = e.offsetX;
-    let y = e.offsetY;
+    // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+    let rect = this.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
     if (!this.preventMainMouseEvent) {
       if (this.overWhat != null) {
         if (this.overWhat instanceof Port) {
@@ -461,8 +499,10 @@ export class BlockView {
   private openContextMenu(e: MouseEvent): void {
     e.preventDefault();
     closeAllContextMenus(); // close any open context menu
-    this.contextMenuClickX = e.offsetX;
-    this.contextMenuClickY = e.offsetY;
+    // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+    let rect = this.canvas.getBoundingClientRect();
+    this.contextMenuClickX = e.clientX - rect.left;
+    this.contextMenuClickY = e.clientY - rect.top;
     let block = null;
     for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
       if (this.flowchart.blocks[i].contains(this.contextMenuClickX, this.contextMenuClickY)) {
@@ -511,6 +551,9 @@ export class BlockView {
     } else if (block instanceof ToggleSwitch) {
       contextMenus.toggleSwitch.block = block;
       menu = document.getElementById("toggle-switch-context-menu") as HTMLMenuElement;
+    } else if (block instanceof MomentarySwitch) {
+      contextMenus.momentarySwitch.block = block;
+      menu = document.getElementById("momentary-switch-context-menu") as HTMLMenuElement;
     } else if (block instanceof Sticker) {
       contextMenus.sticker.block = block;
       menu = document.getElementById("sticker-context-menu") as HTMLMenuElement;

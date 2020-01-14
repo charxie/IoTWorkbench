@@ -25,6 +25,7 @@ import {XYGraph} from "./XYGraph";
 import {flowchart} from "../Main";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import $ from "jquery";
+import {MomentarySwitch} from "./MomentarySwitch";
 
 export class Flowchart {
 
@@ -246,6 +247,9 @@ export class Flowchart {
       case "Switch":
         block = new ToggleSwitch(uid, name, x, y, 60, 60);
         break;
+      case "Momentary Switch":
+        block = new MomentarySwitch(uid, name, x, y, 60, 60);
+        break;
       case "Slider":
         block = new Slider(uid, name, x, y, 100, 60);
         break;
@@ -317,6 +321,8 @@ export class Flowchart {
         blockStates.push(new ItemSelector.State(b));
       } else if (b instanceof ToggleSwitch) {
         blockStates.push(new ToggleSwitch.State(b));
+      } else if (b instanceof MomentarySwitch) {
+        blockStates.push(new MomentarySwitch.State(b));
       } else if (b instanceof Sticker) {
         blockStates.push(new Sticker.State(b));
       } else if (b instanceof Grapher) {

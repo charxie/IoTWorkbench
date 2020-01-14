@@ -55,6 +55,7 @@ import {WorkerBlockContextMenu} from "./blocks/ui/WorkerBlockContextMenu";
 import {ParametricEquationBlockContextMenu} from "./blocks/ui/ParametricEquationBlockContextMenu";
 import {XYGraphContextMenu} from "./blocks/ui/XYGraphContextMenu";
 import {GlobalVariableBlockContextMenu} from "./blocks/ui/GlobalVariableBlockContextMenu";
+import {MomentarySwitchContextMenu} from "./blocks/ui/MomentarySwitchContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -275,6 +276,11 @@ function setupContextMenuForBlock() {
   toggleSwitchContextMenu.render("toggle-switch-context-menu-placeholder");
   toggleSwitchContextMenu.addListeners();
   contextMenus.toggleSwitch = toggleSwitchContextMenu;
+
+  let momentarySwitchContextMenu = new MomentarySwitchContextMenu();
+  momentarySwitchContextMenu.render("momentary-switch-context-menu-placeholder");
+  momentarySwitchContextMenu.addListeners();
+  contextMenus.momentarySwitch = momentarySwitchContextMenu;
 
   let sliderContextMenu = new SliderContextMenu();
   sliderContextMenu.render("slider-context-menu-placeholder");

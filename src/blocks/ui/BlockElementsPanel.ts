@@ -19,6 +19,7 @@ import {WorkerBlock} from "../WorkerBlock";
 import {ParametricEquationBlock} from "../ParametricEquationBlock";
 import {XYGraph} from "../XYGraph";
 import {GlobalVariableBlock} from "../GlobalVariableBlock";
+import {MomentarySwitch} from "../MomentarySwitch";
 
 export class BlockElementsPanel {
 
@@ -47,6 +48,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="slider-block" title="Slider" width="60x" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="item-selector-block" title="Item Selector" width="50x" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="toggle-switch-block" title="Toggle Switch" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="momentary-switch-block" title="Momentary Switch" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="sticker-block" title="Text Display" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="grapher-block" title="Grapher" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="xygraph-block" title="X-Y Graph" width="45px" height="45px" style="cursor: pointer;"/></td>
@@ -86,6 +88,7 @@ export class BlockElementsPanel {
     this.drawNegationBlock("logic-not-block");
     this.drawArithmeticBlock("Add Block", "+", "arithmetic-add-block");
     this.drawToggleSwitch("Switch", "toggle-switch-block");
+    this.drawMomentarySwitch("Momentary Switch", "momentary-switch-block");
     this.drawSlider("Slider", "slider-block");
     this.drawItemSelector("Item Selector", "item-selector-block");
     this.drawSticker("Sticker", "sticker-block");
@@ -108,7 +111,7 @@ export class BlockElementsPanel {
   private drawGlobalVariableBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new GlobalVariableBlock("Global Variable Block Icon", name, symbol,8, 8, canvas.width - 16, canvas.height - 16);
+    let block = new GlobalVariableBlock("Global Variable Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }
@@ -157,6 +160,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new ToggleSwitch("Toggle Switch Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawMomentarySwitch(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new MomentarySwitch("Momentary Switch Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

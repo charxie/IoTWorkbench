@@ -18,6 +18,7 @@ import {ConditionalStatementBlock} from "./blocks/ConditionalStatementBlock";
 import {ParametricEquationBlock} from "./blocks/ParametricEquationBlock";
 import {XYGraph} from "./blocks/XYGraph";
 import {GlobalVariableBlock} from "./blocks/GlobalVariableBlock";
+import {MomentarySwitch} from "./blocks/MomentarySwitch";
 
 export class StateIO {
 
@@ -74,6 +75,8 @@ export class StateIO {
         } else if (block instanceof ToggleSwitch) {
           block.setName(state.name);
           block.setChecked(state.checked);
+        } else if (block instanceof MomentarySwitch) {
+          block.setName(state.name);
         } else if (block instanceof Sticker) {
           block.setName(state.name);
           block.setDecimals(state.decimals != undefined ? state.decimals : 3);
