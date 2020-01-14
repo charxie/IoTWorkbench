@@ -27,6 +27,7 @@ import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {XYGraph} from "./XYGraph";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {MomentarySwitch} from "./MomentarySwitch";
+import {Beeper} from "./Beeper";
 
 export class BlockView {
 
@@ -140,6 +141,9 @@ export class BlockView {
             break;
           case "sticker-block":
             that.storeBlock(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));
+            break;
+          case "beeper-block":
+            that.storeBlock(new Beeper("Beeper #" + timestamp, "Beeper", x - 30, y - 30, 60, 60));
             break;
           case "grapher-block":
             that.storeBlock(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));
@@ -565,6 +569,9 @@ export class BlockView {
     } else if (block instanceof Sticker) {
       contextMenus.sticker.block = block;
       menu = document.getElementById("sticker-context-menu") as HTMLMenuElement;
+    } else if (block instanceof Beeper) {
+      contextMenus.beeper.block = block;
+      menu = document.getElementById("beeper-context-menu") as HTMLMenuElement;
     } else if (block instanceof Grapher) {
       contextMenus.grapher.block = block;
       menu = document.getElementById("grapher-context-menu") as HTMLMenuElement;

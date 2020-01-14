@@ -56,6 +56,7 @@ import {ParametricEquationBlockContextMenu} from "./blocks/ui/ParametricEquation
 import {XYGraphContextMenu} from "./blocks/ui/XYGraphContextMenu";
 import {GlobalVariableBlockContextMenu} from "./blocks/ui/GlobalVariableBlockContextMenu";
 import {MomentarySwitchContextMenu} from "./blocks/ui/MomentarySwitchContextMenu";
+import {BeeperContextMenu} from "./blocks/ui/BeeperContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -296,6 +297,11 @@ function setupContextMenuForBlock() {
   stickerContextMenu.render("sticker-context-menu-placeholder");
   stickerContextMenu.addListeners();
   contextMenus.sticker = stickerContextMenu;
+
+  let beeperContextMenu = new BeeperContextMenu();
+  beeperContextMenu.render("beeper-context-menu-placeholder");
+  beeperContextMenu.addListeners();
+  contextMenus.beeper = beeperContextMenu;
 
   let grapherContextMenu = new GrapherContextMenu();
   grapherContextMenu.render("grapher-context-menu-placeholder");

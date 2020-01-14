@@ -6,13 +6,13 @@ import $ from "jquery";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {Util} from "../../Util";
-import {MomentarySwitch} from "../MomentarySwitch";
+import {Beeper} from "../Beeper";
 
-export class MomentarySwitchContextMenu extends BlockContextMenu {
+export class BeeperContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "momentary-switch-context-menu";
+    this.id = "beeper-context-menu";
   }
 
   getUi(): string {
@@ -38,15 +38,15 @@ export class MomentarySwitchContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="momentary-switch-name-field"></td>
+                  <td><input type="text" id="beeper-name-field"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="momentary-switch-width-field"></td>
+                  <td><input type="text" id="beeper-width-field"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="momentary-switch-height-field"></td>
+                  <td><input type="text" id="beeper-height-field"></td>
                 </tr>
               </table>
             </div>`;
@@ -55,14 +55,14 @@ export class MomentarySwitchContextMenu extends BlockContextMenu {
   protected propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof MomentarySwitch) {
+    if (this.block instanceof Beeper) {
       const s = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("momentary-switch-name-field") as HTMLInputElement;
+      let nameInputElement = document.getElementById("beeper-name-field") as HTMLInputElement;
       nameInputElement.value = s.getName();
-      let widthInputElement = document.getElementById("momentary-switch-width-field") as HTMLInputElement;
+      let widthInputElement = document.getElementById("beeper-width-field") as HTMLInputElement;
       widthInputElement.value = s.getWidth().toString();
-      let heightInputElement = document.getElementById("momentary-switch-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("beeper-height-field") as HTMLInputElement;
       heightInputElement.value = s.getHeight().toString();
       const okFunction = function () {
         s.setName(nameInputElement.value);

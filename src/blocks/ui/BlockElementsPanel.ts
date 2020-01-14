@@ -20,6 +20,7 @@ import {ParametricEquationBlock} from "../ParametricEquationBlock";
 import {XYGraph} from "../XYGraph";
 import {GlobalVariableBlock} from "../GlobalVariableBlock";
 import {MomentarySwitch} from "../MomentarySwitch";
+import {Beeper} from "../Beeper";
 
 export class BlockElementsPanel {
 
@@ -50,6 +51,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="toggle-switch-block" title="Toggle Switch" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="momentary-switch-block" title="Momentary Switch" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="sticker-block" title="Text Display" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="beeper-block" title="Beeper" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="grapher-block" title="Grapher" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="xygraph-block" title="X-Y Graph" width="45px" height="45px" style="cursor: pointer;"/></td>
                   </tr>
@@ -92,6 +94,7 @@ export class BlockElementsPanel {
     this.drawSlider("Slider", "slider-block");
     this.drawItemSelector("Item Selector", "item-selector-block");
     this.drawSticker("Sticker", "sticker-block");
+    this.drawBeeper("Beeper", "beeper-block");
     this.drawGrapher("Grapher", "grapher-block");
     this.drawXYGraph("XYGraph", "xygraph-block");
     this.drawGlobalVariableBlock("Global Variable Block", "var", "global-variable-block");
@@ -136,6 +139,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new Sticker("Sticker Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawBeeper(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new Beeper("Beeper Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

@@ -2,6 +2,7 @@
  * @author Charles Xie
  */
 
+import $ from "jquery";
 import {BlockView} from "./BlockView";
 import {Block} from "./Block";
 import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
@@ -12,20 +13,19 @@ import {ArithmeticBlock} from "./ArithmeticBlock";
 import {RainbowHatBlock} from "./RainbowHatBlock";
 import {Port} from "./Port";
 import {PortConnector} from "./PortConnector";
-import {Slider} from "./Slider";
 import {Sticker} from "./Sticker";
+import {Beeper} from "./Beeper";
+import {Slider} from "./Slider";
 import {ToggleSwitch} from "./ToggleSwitch";
+import {MomentarySwitch} from "./MomentarySwitch";
 import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
 import {SeriesBlock} from "./SeriesBlock";
 import {ItemSelector} from "./ItemSelector";
 import {Grapher} from "./Grapher";
-import {WorkerBlock} from "./WorkerBlock";
-import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {XYGraph} from "./XYGraph";
-import {flowchart} from "../Main";
+import {ParametricEquationBlock} from "./ParametricEquationBlock";
+import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
-import $ from "jquery";
-import {MomentarySwitch} from "./MomentarySwitch";
 
 export class Flowchart {
 
@@ -259,6 +259,9 @@ export class Flowchart {
       case "Sticker":
         block = new Sticker(uid, name, x, y, 80, 80);
         break;
+      case "Beeper":
+        block = new Beeper(uid, name, x, y, 60, 60);
+        break;
       case "Grapher":
         block = new Grapher(uid, name, x, y, 200, 160);
         break;
@@ -325,6 +328,8 @@ export class Flowchart {
         blockStates.push(new MomentarySwitch.State(b));
       } else if (b instanceof Sticker) {
         blockStates.push(new Sticker.State(b));
+      } else if (b instanceof Beeper) {
+        blockStates.push(new Beeper.State(b));
       } else if (b instanceof Grapher) {
         blockStates.push(new Grapher.State(b));
       } else if (b instanceof XYGraph) {

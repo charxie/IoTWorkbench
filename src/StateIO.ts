@@ -19,6 +19,7 @@ import {ParametricEquationBlock} from "./blocks/ParametricEquationBlock";
 import {XYGraph} from "./blocks/XYGraph";
 import {GlobalVariableBlock} from "./blocks/GlobalVariableBlock";
 import {MomentarySwitch} from "./blocks/MomentarySwitch";
+import {Beeper} from "./blocks/Beeper";
 
 export class StateIO {
 
@@ -76,6 +77,8 @@ export class StateIO {
           block.setName(state.name);
           block.setChecked(state.checked);
         } else if (block instanceof MomentarySwitch) {
+          block.setName(state.name);
+        } else if (block instanceof Beeper) {
           block.setName(state.name);
         } else if (block instanceof Sticker) {
           block.setName(state.name);

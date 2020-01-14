@@ -153,7 +153,6 @@ export class Sticker extends Block {
     if (this.userText == undefined) {
       ctx.font = this.iconic ? "9px Arial" : "12px Arial";
       ctx.strokeStyle = "black";
-      this.ports[0].setY(this.height / 2);
       this.ports[0].draw(ctx, this.iconic);
     }
 
