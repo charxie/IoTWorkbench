@@ -55,7 +55,6 @@ export class Beeper extends Block {
     this.ports.push(this.portI);
     this.ports.push(this.portV);
     this.ports.push(this.portF);
-    this.audioContext = new AudioContext();
   }
 
   getCopy(): Block {
@@ -67,7 +66,7 @@ export class Beeper extends Block {
   }
 
   destroy(): void {
-    this.audioContext.close();
+    if (this.audioContext) this.audioContext.close();
   }
 
   setOscillatorType(oscillatorType: string): void {
@@ -170,8 +169,16 @@ export class Beeper extends Block {
   }
 
   updateModel(): void {
-    let v = this.portI.getValue();
-    if (v == true) {
+    let volume = this.portV.getValue();
+    if (volume) {
+      this.volume = volume;
+    }
+    let frequency = this.portF.getValue();
+    if (frequency) {
+      this.frequency = frequency;
+    }
+    let on = this.portI.getValue();
+    if (on == true) {
       this.startBeep();
     } else {
       this.stopBeep();
@@ -187,8 +194,18 @@ export class Beeper extends Block {
   }
 
   startBeep(): void {
-    this.audioContext.resume();
+    if (this.audioContext == null) {
+      this.audioContext = new AudioContext();
+    } else {
+      this.audioContext.resume();
+    }
+    if (this.oscillator) {
+      this.oscillator.disconnect();
+    }
     this.oscillator = this.audioContext.createOscillator();
+    if (this.gain) {
+      this.gain.disconnect();
+    }
     this.gain = this.audioContext.createGain();
     this.oscillator.connect(this.gain);
     this.gain.connect(this.audioContext.destination);
@@ -203,14 +220,16 @@ export class Beeper extends Block {
   }
 
   stopBeep(): void {
-    if (this.oscillator) {
-      this.oscillator.stop();
-      this.oscillator.disconnect();
+    if (this.audioContext != null) {
+      if (this.oscillator) {
+        this.oscillator.stop();
+        this.oscillator.disconnect();
+      }
+      if (this.gain) {
+        this.gain.disconnect();
+      }
+      this.audioContext.suspend();
     }
-    if (this.gain) {
-      this.gain.disconnect();
-    }
-    this.audioContext.suspend();
   }
 
 }

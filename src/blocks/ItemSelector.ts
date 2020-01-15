@@ -43,7 +43,7 @@ export class ItemSelector extends Block {
       this.y = itemSelector.y;
       this.width = itemSelector.width;
       this.height = itemSelector.height;
-      this.items = itemSelector.items;
+      this.items = JSON.parse(JSON.stringify(itemSelector.items));
       this.selectedIndex = itemSelector.selectedIndex;
     }
   };
@@ -69,7 +69,7 @@ export class ItemSelector extends Block {
 
   getCopy(): Block {
     let copy = new ItemSelector("Item Selector #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    copy.items = this.items;
+    copy.items = Array.isArray(this.items) ? JSON.parse(JSON.stringify(this.items)) : this.items;
     copy.selectedIndex = this.selectedIndex;
     return copy;
   }
@@ -78,11 +78,11 @@ export class ItemSelector extends Block {
   }
 
   setItems(items: any[]): void {
-    this.items = items;
+    this.items = JSON.parse(JSON.stringify(items));
   }
 
   getItems(): any[] {
-    return this.items;
+    return JSON.parse(JSON.stringify(this.items));
   }
 
   setSelectedIndex(i: number): void {
@@ -96,7 +96,7 @@ export class ItemSelector extends Block {
   updateModel(): void {
     let input = this.portI.getValue();
     if (input != undefined) {
-      this.items = Array.isArray(input) ? input : [input];
+      this.items = Array.isArray(input) ? JSON.parse(JSON.stringify(input)) : [input];
       this.source = false;
     } else {
       this.source = true;

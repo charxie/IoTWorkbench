@@ -129,18 +129,23 @@ export class Flowchart {
       }
     }
     if (selectedBlock != null) {
+      let indicesOfConnectorsToRemove = [];
       let connectorsToRemove = [];
       for (let c of this.connectors) {
         let block1 = c.getInput().getBlock();
         let block2 = c.getOutput().getBlock();
         if (block1 == selectedBlock || block2 == selectedBlock) {
-          connectorsToRemove.push(this.connectors.indexOf(c));
-          c.destroy();
+          indicesOfConnectorsToRemove.push(this.connectors.indexOf(c));
+          connectorsToRemove.push(c);
         }
       }
-      if (connectorsToRemove.length > 0) {
-        for (let i = connectorsToRemove.length - 1; i >= 0; i--) {
-          this.connectors.splice(connectorsToRemove[i], 1);
+      if (indicesOfConnectorsToRemove.length > 0) {
+        for (let i = indicesOfConnectorsToRemove.length - 1; i >= 0; i--) {
+          this.connectors.splice(indicesOfConnectorsToRemove[i], 1);
+        }
+        // must destroy after connectors are updated, otherwise some updates of block triggered by the destruction may still propagate
+        for (let c of connectorsToRemove) {
+          c.destroy();
         }
       }
       this.blocks.splice(this.blocks.indexOf(selectedBlock), 1);

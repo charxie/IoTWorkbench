@@ -99,6 +99,7 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
         }
         // finish up
         if (success) {
+          itemSelector.updateModel();
           itemSelector.refreshView();
           flowchart.draw();
           flowchart.updateResults();
