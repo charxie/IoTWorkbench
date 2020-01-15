@@ -19,6 +19,8 @@ import example11 from "./examples/control-example1.json";
 // @ts-ignore
 import example12 from "./examples/toggle-vs-momentary-switch.json";
 // @ts-ignore
+import example21 from "./examples/sound-example1.json";
+// @ts-ignore
 import example31 from "./examples/parametric-equation-example1.json";
 // @ts-ignore
 import example32 from "./examples/parametric-equation-example2.json";
@@ -44,6 +46,7 @@ export class Examples {
     this.files.push({name: "Function #3", data: example06});
     this.files.push({name: "Control #1", data: example11});
     this.files.push({name: "Control #2", data: example12});
+    this.files.push({name: "Sound #1", data: example21});
     this.files.push({name: "Parametric Equation #1", data: example31});
     this.files.push({name: "Parametric Equation #2", data: example32});
     this.files.push({name: "Parametric Generator #1", data: example41});
