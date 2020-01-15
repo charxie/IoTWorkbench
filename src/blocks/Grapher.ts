@@ -70,9 +70,11 @@ export class Grapher extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.color = "#F0FFFF";
-    this.portI = new Port(this, true, "I", 0, this.height / 4, false);
-    this.portX = new Port(this, true, "X", 0, this.height / 2, false);
-    this.portD = new Port(this, true, "D", 0, this.height * 3 / 4, false);
+    this.barHeight = Math.min(30, this.height / 3);
+    let dh = (this.height - this.barHeight) / 4;
+    this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false);
+    this.portX = new Port(this, true, "X", 0, this.barHeight + 2 * dh, false);
+    this.portD = new Port(this, true, "D", 0, this.barHeight + 3 * dh, false);
     this.ports.push(this.portI);
     this.ports.push(this.portX);
     this.ports.push(this.portD);
@@ -162,7 +164,6 @@ export class Grapher extends Block {
   draw(ctx: CanvasRenderingContext2D): void {
 
     // draw the title bar with shade
-    this.barHeight = Math.min(30, this.height / 3);
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
     shade.addColorStop(0, "white");
     shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
@@ -344,9 +345,10 @@ export class Grapher extends Block {
     this.graphMargin.bottom = 30;
     this.graphMargin.left = 40;
     this.graphMargin.right = 10;
-    this.portI.setY(this.height / 4);
-    this.portX.setY(this.height / 2);
-    this.portD.setY(this.height * 3 / 4);
+    let dh = (this.height - this.barHeight) / 4;
+    this.portI.setY(this.barHeight + dh);
+    this.portX.setY(this.barHeight + 2 * dh);
+    this.portD.setY(this.barHeight + 3 * dh);
     this.updateModel();
   }
 

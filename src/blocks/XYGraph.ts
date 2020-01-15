@@ -74,8 +74,10 @@ export class XYGraph extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.color = "#F0FFFF";
-    this.portX = new Port(this, true, "X", 0, this.height / 3, false)
-    this.portY = new Port(this, true, "Y", 0, this.height * 2 / 3, false)
+    this.barHeight = Math.min(30, this.height / 3);
+    let dh = (this.height - this.barHeight) / 3;
+    this.portX = new Port(this, true, "X", 0, this.barHeight + dh, false)
+    this.portY = new Port(this, true, "Y", 0, this.barHeight + 2 * dh, false)
     this.ports.push(this.portX);
     this.ports.push(this.portY);
     this.graphWindow = new Rectangle(0, 0, 1, 1);
@@ -181,7 +183,6 @@ export class XYGraph extends Block {
 
   draw(ctx: CanvasRenderingContext2D): void {
     // draw the title bar with shade
-    this.barHeight = Math.min(30, this.height / 3);
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
     shade.addColorStop(0, "white");
     shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
@@ -350,8 +351,9 @@ export class XYGraph extends Block {
     this.graphMargin.bottom = 40;
     this.graphMargin.left = 40;
     this.graphMargin.right = 10;
-    this.portX.setY(this.height / 3);
-    this.portY.setY(this.height * 2 / 3);
+    let dh = (this.height - this.barHeight) / 3;
+    this.portX.setY(this.barHeight + dh);
+    this.portY.setY(this.barHeight + 2 * dh);
     this.updateModel();
   }
 

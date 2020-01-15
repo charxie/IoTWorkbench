@@ -260,7 +260,7 @@ export class Flowchart {
         block = new Sticker(uid, name, x, y, 80, 80);
         break;
       case "Beeper":
-        block = new Beeper(uid, name, x, y, 60, 60);
+        block = new Beeper(uid, name, x, y, 100, 100);
         break;
       case "Grapher":
         block = new Grapher(uid, name, x, y, 200, 160);

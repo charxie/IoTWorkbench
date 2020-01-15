@@ -10,7 +10,10 @@ export class Beeper extends Block {
 
   private frequency: number = 800;
   private volume: number = 0.01;
+  private oscillatorType: string = "sine"; // square, sine, triangle, sawtooth
   private portI: Port;
+  private portV: Port;
+  private portF: Port;
   private barHeight: number;
   private audioContext: AudioContext;
   private oscillator: OscillatorNode;
@@ -23,6 +26,9 @@ export class Beeper extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly oscillatorType: string;
+    readonly volume: number;
+    readonly frequency: number;
 
     constructor(beeper: Beeper) {
       this.name = beeper.name;
@@ -31,6 +37,9 @@ export class Beeper extends Block {
       this.y = beeper.y;
       this.width = beeper.width;
       this.height = beeper.height;
+      this.oscillatorType = beeper.oscillatorType;
+      this.volume = beeper.volume;
+      this.frequency = beeper.frequency;
     }
   };
 
@@ -38,22 +47,62 @@ export class Beeper extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.color = "#C0C0C0";
-    this.portI = new Port(this, true, "I", 0, this.height / 2, false);
+    this.barHeight = Math.min(30, this.height / 3);
+    let dh = (this.height - this.barHeight) / 4;
+    this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false);
+    this.portV = new Port(this, true, "V", 0, this.barHeight + 2 * dh, false);
+    this.portF = new Port(this, true, "F", 0, this.barHeight + 3 * dh, false);
     this.ports.push(this.portI);
+    this.ports.push(this.portV);
+    this.ports.push(this.portF);
     this.audioContext = new AudioContext();
   }
 
   getCopy(): Block {
-    return new Beeper("Beeper #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    let beeper = new Beeper("Beeper #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    beeper.oscillatorType = this.oscillatorType;
+    beeper.volume = this.volume;
+    beeper.frequency = this.frequency;
+    return beeper;
   }
 
   destroy(): void {
+    this.audioContext.close();
+  }
+
+  setOscillatorType(oscillatorType: string): void {
+    this.oscillatorType = oscillatorType;
+  }
+
+  getOscillatorType(): string {
+    return this.oscillatorType;
+  }
+
+  setVolume(volume: number): void {
+    this.volume = volume;
+    if (this.gain) {
+      this.gain.gain.value = this.volume;
+    }
+  }
+
+  getVolume(): number {
+    return this.volume;
+  }
+
+  setFrequency(frequency: number): void {
+    this.frequency = frequency;
+    if (this.oscillator) {
+      this.oscillator.frequency.value = this.frequency;
+    }
+  }
+
+  getFrequency(): number {
+    return this.frequency;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
 
     // draw the upper bar with shade
-    this.barHeight = Math.min(30, this.height / 3);
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
     shade.addColorStop(0, "white");
     shade.addColorStop(this.iconic ? 0.4 : 0.2, Util.adjust(this.color, 100));
@@ -79,14 +128,21 @@ export class Beeper extends Block {
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
 
-    if (this.ports[0].getValue()) {
+    let centerX = this.x + this.width / 2;
+    let centerY = this.y + (this.height + this.barHeight) / 2;
+    let radius = this.iconic ? 2 : 8;
+    ctx.fillStyle = "gray";
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = "black";
+    ctx.stroke();
+    if (this.portI.getValue()) {
       ctx.lineWidth = 3;
       ctx.strokeStyle = "gray";
-      let centerX = this.x + this.width / 2;
-      let centerY = this.y + this.height / 2 + this.barHeight / 2;
       let angle = 0.25 * Math.PI;
       for (let i = 0; i < 4; i++) {
-        let r = 5 + i * 5;
+        let r = radius + i * 5;
         ctx.beginPath();
         ctx.arc(centerX, centerY, r, -angle, angle);
         ctx.stroke();
@@ -100,6 +156,8 @@ export class Beeper extends Block {
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
     this.portI.draw(ctx, this.iconic);
+    this.portV.draw(ctx, this.iconic);
+    this.portF.draw(ctx, this.iconic);
 
     if (this.selected) {
       this.highlightSelection(ctx);
@@ -114,7 +172,7 @@ export class Beeper extends Block {
   updateModel(): void {
     let v = this.portI.getValue();
     if (v == true) {
-      this.startBeep(1, 800);
+      this.startBeep();
     } else {
       this.stopBeep();
     }
@@ -122,16 +180,23 @@ export class Beeper extends Block {
 
   refreshView(): void {
     this.updateModel();
-    this.portI.setY(this.height / 2);
+    let dh = (this.height - this.barHeight) / 4;
+    this.portI.setY(this.barHeight + dh);
+    this.portV.setY(this.barHeight + 2 * dh);
+    this.portF.setY(this.barHeight + 3 * dh);
   }
 
-  startBeep(volume: number, frequency: number): void {
+  startBeep(): void {
     this.audioContext.resume();
     this.oscillator = this.audioContext.createOscillator();
     this.gain = this.audioContext.createGain();
     this.oscillator.connect(this.gain);
     this.gain.connect(this.audioContext.destination);
-    this.oscillator.type = "square";
+    if (this.oscillatorType == "sine" || this.oscillatorType == "square" || this.oscillatorType == "triangle" || this.oscillatorType == "sawtooth") {
+      this.oscillator.type = this.oscillatorType;
+    } else {
+      this.oscillatorType = "sine";
+    }
     this.oscillator.frequency.value = this.frequency;
     this.gain.gain.value = this.volume;
     this.oscillator.start();

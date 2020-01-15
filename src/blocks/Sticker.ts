@@ -47,6 +47,7 @@ export class Sticker extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.color = "#FFF86B";
+    this.barHeight = Math.min(30, this.height / 3);
     this.ports.push(new Port(this, true, "I", 0, this.height / 2, false));
   }
 
@@ -90,7 +91,6 @@ export class Sticker extends Block {
   draw(ctx: CanvasRenderingContext2D): void {
 
     // draw the upper bar with shade
-    this.barHeight = Math.min(30, this.height / 3);
     let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
     shade.addColorStop(0, "white");
     shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));

@@ -16,18 +16,18 @@ import {Port} from "./Port";
 import {Connector} from "./Connector";
 import {PortConnector} from "./PortConnector";
 import {ToggleSwitch} from "./ToggleSwitch";
+import {MomentarySwitch} from "./MomentarySwitch";
 import {Slider} from "./Slider";
+import {ItemSelector} from "./ItemSelector";
 import {Sticker} from "./Sticker";
+import {Beeper} from "./Beeper";
 import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
 import {SeriesBlock} from "./SeriesBlock";
-import {ItemSelector} from "./ItemSelector";
-import {Grapher} from "./Grapher";
-import {WorkerBlock} from "./WorkerBlock";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
+import {Grapher} from "./Grapher";
 import {XYGraph} from "./XYGraph";
+import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
-import {MomentarySwitch} from "./MomentarySwitch";
-import {Beeper} from "./Beeper";
 
 export class BlockView {
 
@@ -143,7 +143,7 @@ export class BlockView {
             that.storeBlock(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));
             break;
           case "beeper-block":
-            that.storeBlock(new Beeper("Beeper #" + timestamp, "Beeper", x - 30, y - 30, 60, 60));
+            that.storeBlock(new Beeper("Beeper #" + timestamp, "Beeper", x - 50, y - 50, 100, 100));
             break;
           case "grapher-block":
             that.storeBlock(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));

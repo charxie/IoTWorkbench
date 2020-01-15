@@ -80,6 +80,9 @@ export class StateIO {
           block.setName(state.name);
         } else if (block instanceof Beeper) {
           block.setName(state.name);
+          block.setOscillatorType(state.oscillatorType);
+          block.setFrequency(state.frequency);
+          block.setVolume(state.volume);
         } else if (block instanceof Sticker) {
           block.setName(state.name);
           block.setDecimals(state.decimals != undefined ? state.decimals : 3);
