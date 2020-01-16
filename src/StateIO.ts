@@ -20,6 +20,7 @@ import {XYGraph} from "./blocks/XYGraph";
 import {GlobalVariableBlock} from "./blocks/GlobalVariableBlock";
 import {MomentarySwitch} from "./blocks/MomentarySwitch";
 import {Beeper} from "./blocks/Beeper";
+import {SwitchStatementBlock} from "./blocks/SwitchStatementBlock";
 
 export class StateIO {
 
@@ -115,6 +116,9 @@ export class StateIO {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");
           block.setExpression(state.expression ? state.expression : "x");
+        } else if (block instanceof SwitchStatementBlock) {
+          block.setName(state.name);
+          block.setCases(state.cases);
         } else if (block instanceof UnaryFunctionBlock) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");

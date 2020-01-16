@@ -26,6 +26,7 @@ import {XYGraph} from "./XYGraph";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
+import {SwitchStatementBlock} from "./SwitchStatementBlock";
 
 export class Flowchart {
 
@@ -244,7 +245,10 @@ export class Flowchart {
         block = new WorkerBlock(uid, name, x, y, 80, 60);
         break;
       case "Turnout Switch":
-        block = new TurnoutSwitch(uid, x, y, 80, 80, name, "IF");
+        block = new TurnoutSwitch(uid, name, "Turnout", x, y, 60, 100);
+        break;
+      case "Switch Statement Block":
+        block = new SwitchStatementBlock(uid, name, "Switch", x, y, 60, 100);
         break;
       case "Rainbow HAT Block":
         block = new RainbowHatBlock(uid, 20, 20);
@@ -341,6 +345,8 @@ export class Flowchart {
         blockStates.push(new XYGraph.State(b));
       } else if (b instanceof TurnoutSwitch) {
         blockStates.push(new TurnoutSwitch.State(b));
+      } else if (b instanceof SwitchStatementBlock) {
+        blockStates.push(new SwitchStatementBlock.State(b));
       } else if (b instanceof UnaryFunctionBlock) {
         blockStates.push(new UnaryFunctionBlock.State(b));
       } else if (b instanceof BinaryFunctionBlock) {

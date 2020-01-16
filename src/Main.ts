@@ -57,6 +57,7 @@ import {XYGraphContextMenu} from "./blocks/ui/XYGraphContextMenu";
 import {GlobalVariableBlockContextMenu} from "./blocks/ui/GlobalVariableBlockContextMenu";
 import {MomentarySwitchContextMenu} from "./blocks/ui/MomentarySwitchContextMenu";
 import {BeeperContextMenu} from "./blocks/ui/BeeperContextMenu";
+import {SwitchStatementBlockContextMenu} from "./blocks/ui/SwitchStatementBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -242,6 +243,11 @@ function setupContextMenuForBlock() {
   turnoutSwitchContextMenu.render("turnout-switch-context-menu-placeholder");
   turnoutSwitchContextMenu.addListeners();
   contextMenus.turnoutSwitch = turnoutSwitchContextMenu;
+
+  let switchStatementBlockContextMenu = new SwitchStatementBlockContextMenu();
+  switchStatementBlockContextMenu.render("switch-statement-block-context-menu-placeholder");
+  switchStatementBlockContextMenu.addListeners();
+  contextMenus.switchStatementBlock = switchStatementBlockContextMenu;
 
   let notBlockContextMenu = new NotBlockContextMenu();
   notBlockContextMenu.render("not-block-context-menu-placeholder");

@@ -35,7 +35,7 @@ export class TurnoutSwitch extends FunctionBlock {
     }
   };
 
-  constructor(uid: string, x: number, y: number, width: number, height: number, name: string, symbol: string) {
+  constructor(uid: string, name: string, symbol: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = name;
     this.expression = "x>0";
@@ -51,7 +51,7 @@ export class TurnoutSwitch extends FunctionBlock {
   }
 
   getCopy(): Block {
-    let turnoutSwitch = new TurnoutSwitch("Turnout Switch #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
+    let turnoutSwitch = new TurnoutSwitch("Turnout Switch #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
     turnoutSwitch.variableName = this.variableName;
     turnoutSwitch.expression = this.expression;
     return turnoutSwitch;

@@ -21,6 +21,7 @@ import {XYGraph} from "../XYGraph";
 import {GlobalVariableBlock} from "../GlobalVariableBlock";
 import {MomentarySwitch} from "../MomentarySwitch";
 import {Beeper} from "../Beeper";
+import {SwitchStatementBlock} from "../SwitchStatementBlock";
 
 export class BlockElementsPanel {
 
@@ -73,6 +74,7 @@ export class BlockElementsPanel {
                 <table style="width: 100%">
                   <tr>
                   <td><canvas draggable="true" id="turnout-switch-block" title="Turnout Switch" width="45x" height="70px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="switch-statement-block" title="Switch Statement" width="45x" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="worker-block" title="Worker" width="45x" height="45px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
@@ -100,6 +102,7 @@ export class BlockElementsPanel {
     this.drawGlobalVariableBlock("Global Variable Block", "var", "global-variable-block");
     this.drawSeriesBlock("Series Block", "Series", "series-block");
     this.drawTurnoutSwitch("Turnout Switch", "Turnout", "turnout-switch-block");
+    this.drawSwitchStatementBlock("Switch Statement Block", "Switch", "switch-statement-block");
     this.drawWorkerBlock("Worker Block", "Worker", "worker-block");
   }
 
@@ -127,10 +130,18 @@ export class BlockElementsPanel {
     block.draw(ctx);
   }
 
+  private drawSwitchStatementBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new SwitchStatementBlock("Switch Statement Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
   private drawTurnoutSwitch(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new TurnoutSwitch("Turnout Switch Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    let block = new TurnoutSwitch("Turnout Switch Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

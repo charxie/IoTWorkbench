@@ -28,6 +28,7 @@ import {Grapher} from "./Grapher";
 import {XYGraph} from "./XYGraph";
 import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
+import {SwitchStatementBlock} from "./SwitchStatementBlock";
 
 export class BlockView {
 
@@ -116,7 +117,10 @@ export class BlockView {
             that.storeBlock(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
             break;
           case "turnout-switch-block":
-            that.storeBlock(new TurnoutSwitch("Turnout Switch #" + timestamp, x - 30, y - 50, 60, 100, "Turnout Switch", "Turnout"));
+            that.storeBlock(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 30, y - 50, 60, 100));
+            break;
+          case "switch-statement-block":
+            that.storeBlock(new SwitchStatementBlock("Switch Statement Block #" + timestamp, "Switch Statement Block", "Switch", x - 30, y - 50, 60, 100));
             break;
           case "logic-and-block":
             that.storeBlock(new LogicBlock("AND Block #" + timestamp, x - 30, y - 40, 60, 80, "AND Block", "AND"));
@@ -536,6 +540,9 @@ export class BlockView {
     } else if (block instanceof TurnoutSwitch) {
       contextMenus.turnoutSwitch.block = block;
       menu = document.getElementById("turnout-switch-context-menu") as HTMLMenuElement;
+    } else if (block instanceof SwitchStatementBlock) {
+      contextMenus.switchStatementBlock.block = block;
+      menu = document.getElementById("switch-statement-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof NegationBlock) {
       contextMenus.notBlock.block = block;
       menu = document.getElementById("not-block-context-menu") as HTMLMenuElement;
