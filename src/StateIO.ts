@@ -14,7 +14,7 @@ import {Grapher} from "./blocks/Grapher";
 import {WorkerBlock} from "./blocks/WorkerBlock";
 import {UnaryFunctionBlock} from "./blocks/UnaryFunctionBlock";
 import {BinaryFunctionBlock} from "./blocks/BinaryFunctionBlock";
-import {ConditionalStatementBlock} from "./blocks/ConditionalStatementBlock";
+import {TurnoutSwitch} from "./blocks/TurnoutSwitch";
 import {ParametricEquationBlock} from "./blocks/ParametricEquationBlock";
 import {XYGraph} from "./blocks/XYGraph";
 import {GlobalVariableBlock} from "./blocks/GlobalVariableBlock";
@@ -111,7 +111,7 @@ export class StateIO {
           block.setGraphWindowColor(state.graphWindowColor);
           block.setGraphSymbol(state.graphSymbol);
           if (state.lineColor != undefined) block.setLineColor(state.lineColor);
-        } else if (block instanceof ConditionalStatementBlock) {
+        } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");
           block.setExpression(state.expression ? state.expression : "x");

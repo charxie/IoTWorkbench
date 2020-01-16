@@ -18,7 +18,7 @@ import {Beeper} from "./Beeper";
 import {Slider} from "./Slider";
 import {ToggleSwitch} from "./ToggleSwitch";
 import {MomentarySwitch} from "./MomentarySwitch";
-import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
+import {TurnoutSwitch} from "./TurnoutSwitch";
 import {SeriesBlock} from "./SeriesBlock";
 import {ItemSelector} from "./ItemSelector";
 import {Grapher} from "./Grapher";
@@ -243,8 +243,8 @@ export class Flowchart {
       case "Worker Block":
         block = new WorkerBlock(uid, name, x, y, 80, 60);
         break;
-      case "Conditional Statement Block":
-        block = new ConditionalStatementBlock(uid, x, y, 80, 80, name, "IF");
+      case "Turnout Switch":
+        block = new TurnoutSwitch(uid, x, y, 80, 80, name, "IF");
         break;
       case "Rainbow HAT Block":
         block = new RainbowHatBlock(uid, 20, 20);
@@ -339,8 +339,8 @@ export class Flowchart {
         blockStates.push(new Grapher.State(b));
       } else if (b instanceof XYGraph) {
         blockStates.push(new XYGraph.State(b));
-      } else if (b instanceof ConditionalStatementBlock) {
-        blockStates.push(new ConditionalStatementBlock.State(b));
+      } else if (b instanceof TurnoutSwitch) {
+        blockStates.push(new TurnoutSwitch.State(b));
       } else if (b instanceof UnaryFunctionBlock) {
         blockStates.push(new UnaryFunctionBlock.State(b));
       } else if (b instanceof BinaryFunctionBlock) {

@@ -6,13 +6,13 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
-import {ConditionalStatementBlock} from "../ConditionalStatementBlock";
+import {TurnoutSwitch} from "../TurnoutSwitch";
 
-export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
+export class TurnoutSwitchContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "conditional-statement-block-context-menu";
+    this.id = "turnout-switch-context-menu";
   }
 
   getUi(): string {
@@ -41,19 +41,19 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Variable Name (e.g. x):</td>
-                  <td><input type="text" id="conditional-statement-block-variable-name-field" style="width: 150px"></td>
+                  <td><input type="text" id="turnout-switch-variable-name-field" style="width: 150px"></td>
                 </tr>
                 <tr>
                   <td>Inequality or Boolean:</td>
-                  <td><input type="text" id="conditional-statement-block-expression-field" style="width: 150px"></td>
+                  <td><input type="text" id="turnout-switch-expression-field" style="width: 150px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="conditional-statement-block-width-field" style="width: 150px"></td>
+                  <td><input type="text" id="turnout-switch-width-field" style="width: 150px"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="conditional-statement-block-height-field" style="width: 150px"></td>
+                  <td><input type="text" id="turnout-switch-height-field" style="width: 150px"></td>
                 </tr>
               </table>
             </div>`;
@@ -62,16 +62,16 @@ export class ConditionalStatementBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof ConditionalStatementBlock) {
+    if (this.block instanceof TurnoutSwitch) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let variableNameInputElement = document.getElementById("conditional-statement-block-variable-name-field") as HTMLInputElement;
+      let variableNameInputElement = document.getElementById("turnout-switch-variable-name-field") as HTMLInputElement;
       variableNameInputElement.value = block.getVariableName() ? block.getVariableName() : "x";
-      let expressionInputElement = document.getElementById("conditional-statement-block-expression-field") as HTMLInputElement;
+      let expressionInputElement = document.getElementById("turnout-switch-expression-field") as HTMLInputElement;
       expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x>0";
-      let widthInputElement = document.getElementById("conditional-statement-block-width-field") as HTMLInputElement;
+      let widthInputElement = document.getElementById("turnout-switch-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("conditional-statement-block-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("turnout-switch-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
         let success = true;

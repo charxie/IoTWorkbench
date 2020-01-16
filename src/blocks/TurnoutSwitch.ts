@@ -7,9 +7,8 @@ import {Port} from "./Port";
 import {FunctionBlock} from "./FunctionBlock";
 import {flowchart, math} from "../Main";
 import {Util} from "../Util";
-import {PortConnector} from "./PortConnector";
 
-export class ConditionalStatementBlock extends FunctionBlock {
+export class TurnoutSwitch extends FunctionBlock {
 
   private variableName: string = "x";
   private readonly portX: Port;
@@ -25,7 +24,7 @@ export class ConditionalStatementBlock extends FunctionBlock {
     readonly width: number;
     readonly height: number;
 
-    constructor(block: ConditionalStatementBlock) {
+    constructor(block: TurnoutSwitch) {
       this.uid = block.uid;
       this.variableName = block.variableName;
       this.expression = block.expression;
@@ -52,7 +51,10 @@ export class ConditionalStatementBlock extends FunctionBlock {
   }
 
   getCopy(): Block {
-    return new ConditionalStatementBlock("Conditional Statement Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
+    let turnoutSwitch = new TurnoutSwitch("Turnout Switch #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
+    turnoutSwitch.variableName = this.variableName;
+    turnoutSwitch.expression = this.expression;
+    return turnoutSwitch;
   }
 
   destroy(): void {
@@ -104,7 +106,7 @@ export class ConditionalStatementBlock extends FunctionBlock {
       } else {
         this.portT.setValue(undefined);
         this.portF.setValue(undefined);
-        // special treatment of conditional statement block that might output to a worker (need to stop it in that case)
+        // special treatment of a turnout switch that might output to a worker (need to stop it in that case)
         let connectors = flowchart.getConnectorsWithOutput(this.portT);
         if (connectors.length > 0) {
           for (let c of connectors) {

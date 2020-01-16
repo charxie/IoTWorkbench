@@ -21,7 +21,7 @@ import {Slider} from "./Slider";
 import {ItemSelector} from "./ItemSelector";
 import {Sticker} from "./Sticker";
 import {Beeper} from "./Beeper";
-import {ConditionalStatementBlock} from "./ConditionalStatementBlock";
+import {TurnoutSwitch} from "./TurnoutSwitch";
 import {SeriesBlock} from "./SeriesBlock";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {Grapher} from "./Grapher";
@@ -115,8 +115,8 @@ export class BlockView {
           case "worker-block":
             that.storeBlock(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
             break;
-          case "conditional-statement-block":
-            that.storeBlock(new ConditionalStatementBlock("Conditional Statement Block #" + timestamp, x - 30, y - 50, 60, 100, "If-else Block", "IF"));
+          case "turnout-switch-block":
+            that.storeBlock(new TurnoutSwitch("Turnout Switch #" + timestamp, x - 30, y - 50, 60, 100, "Turnout Switch", "Turnout"));
             break;
           case "logic-and-block":
             that.storeBlock(new LogicBlock("AND Block #" + timestamp, x - 30, y - 40, 60, 80, "AND Block", "AND"));
@@ -533,9 +533,9 @@ export class BlockView {
     } else if (block instanceof WorkerBlock) {
       contextMenus.workerBlock.block = block;
       menu = document.getElementById("worker-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof ConditionalStatementBlock) {
-      contextMenus.conditionalStatementBlock.block = block;
-      menu = document.getElementById("conditional-statement-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof TurnoutSwitch) {
+      contextMenus.turnoutSwitch.block = block;
+      menu = document.getElementById("turnout-switch-context-menu") as HTMLMenuElement;
     } else if (block instanceof NegationBlock) {
       contextMenus.notBlock.block = block;
       menu = document.getElementById("not-block-context-menu") as HTMLMenuElement;

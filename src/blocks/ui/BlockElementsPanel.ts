@@ -11,7 +11,7 @@ import {Slider} from "../Slider";
 import {FunctionBlock} from "../FunctionBlock";
 import {Sticker} from "../Sticker";
 import {ToggleSwitch} from "../ToggleSwitch";
-import {ConditionalStatementBlock} from "../ConditionalStatementBlock";
+import {TurnoutSwitch} from "../TurnoutSwitch";
 import {SeriesBlock} from "../SeriesBlock";
 import {ItemSelector} from "../ItemSelector";
 import {Grapher} from "../Grapher";
@@ -72,7 +72,7 @@ export class BlockElementsPanel {
               <div class="horizontal-scroll" style="margin-right: 10px; background-color: lavender; border: 1px solid #b81900; border-radius: 4px">
                 <table style="width: 100%">
                   <tr>
-                  <td><canvas draggable="true" id="conditional-statement-block" title="If-else" width="45x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="turnout-switch-block" title="Turnout Switch" width="45x" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="worker-block" title="Worker" width="45x" height="45px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
@@ -99,7 +99,7 @@ export class BlockElementsPanel {
     this.drawXYGraph("XYGraph", "xygraph-block");
     this.drawGlobalVariableBlock("Global Variable Block", "var", "global-variable-block");
     this.drawSeriesBlock("Series Block", "Series", "series-block");
-    this.drawConditionalStatementBlock("Conditional Statement Block", "IF", "conditional-statement-block");
+    this.drawTurnoutSwitch("Turnout Switch", "Turnout", "turnout-switch-block");
     this.drawWorkerBlock("Worker Block", "Worker", "worker-block");
   }
 
@@ -127,10 +127,10 @@ export class BlockElementsPanel {
     block.draw(ctx);
   }
 
-  private drawConditionalStatementBlock(name: string, symbol: string, canvasId: string): void {
+  private drawTurnoutSwitch(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new ConditionalStatementBlock("Conditional Statement Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    let block = new TurnoutSwitch("Turnout Switch Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
     block.setIconic(true);
     block.draw(ctx);
   }

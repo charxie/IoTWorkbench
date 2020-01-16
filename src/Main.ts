@@ -38,7 +38,7 @@ import {PanTiltHatContextMenu} from "./components/ui/PanTiltHatContextMenu";
 import {Flowchart} from "./blocks/Flowchart";
 import {BlockViewContextMenu} from "./blocks/ui/BlockViewContextMenu";
 import {BlockElementsPanel} from "./blocks/ui/BlockElementsPanel";
-import {ConditionalStatementBlockContextMenu} from "./blocks/ui/ConditionalStatementBlockContextMenu";
+import {TurnoutSwitchContextMenu} from "./blocks/ui/TurnoutSwitchContextMenu";
 import {NotBlockContextMenu} from "./blocks/ui/NotBlockContextMenu";
 import {LogicBlockContextMenu} from "./blocks/ui/LogicBlockContextMenu";
 import {ArithmeticBlockContextMenu} from "./blocks/ui/ArithmeticBlockContextMenu";
@@ -238,10 +238,10 @@ function setupContextMenuForBlock() {
   workerBlockContextMenu.addListeners();
   contextMenus.workerBlock = workerBlockContextMenu;
 
-  let conditionalStatementBlockContextMenu = new ConditionalStatementBlockContextMenu();
-  conditionalStatementBlockContextMenu.render("conditional-statement-block-context-menu-placeholder");
-  conditionalStatementBlockContextMenu.addListeners();
-  contextMenus.conditionalStatementBlock = conditionalStatementBlockContextMenu;
+  let turnoutSwitchContextMenu = new TurnoutSwitchContextMenu();
+  turnoutSwitchContextMenu.render("turnout-switch-context-menu-placeholder");
+  turnoutSwitchContextMenu.addListeners();
+  contextMenus.turnoutSwitch = turnoutSwitchContextMenu;
 
   let notBlockContextMenu = new NotBlockContextMenu();
   notBlockContextMenu.render("not-block-context-menu-placeholder");
