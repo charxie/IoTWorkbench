@@ -223,6 +223,14 @@ export class ItemSelector extends Block {
     return this.triangle.contains(x, y);
   }
 
+  contains(x: number, y: number): boolean {
+    if (this.dropdownMenuOpen) {
+      return (x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height) ||
+        (x > this.xBox && y > this.yBox + this.hBox && x < this.xBox + this.wBox && y < this.yBox + this.hBox * (1 + this.items.length));
+    }
+    return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height;
+  }
+
   mouseDown(e: MouseEvent): boolean {
     let x = e.offsetX;
     let y = e.offsetY;

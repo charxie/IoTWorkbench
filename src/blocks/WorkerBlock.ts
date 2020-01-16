@@ -17,6 +17,9 @@ export class WorkerBlock extends Block {
   private readonly portI: Port;
   private readonly portO: Port;
   private worker: Worker;
+  private count: number;
+  private completed: boolean = false;
+  private paused: boolean = false;
 
   static State = class {
     readonly name: string;
@@ -70,6 +73,9 @@ export class WorkerBlock extends Block {
 
   setInterval(interval: number): void {
     this.interval = interval;
+    if (this.worker != null) {
+      this.worker.postMessage({interval: this.interval});
+    }
   }
 
   getInterval(): number {
@@ -78,6 +84,9 @@ export class WorkerBlock extends Block {
 
   setRepeatTimes(repeatTimes: number): void {
     this.repeatTimes = repeatTimes;
+    if (this.worker != null) {
+      this.worker.postMessage({repeat: this.repeatTimes});
+    }
   }
 
   getRepeatTimes(): number {
@@ -167,11 +176,15 @@ export class WorkerBlock extends Block {
   private startWorker(): void {
     if (this.worker == undefined && !this.iconic) {
       this.worker = new Worker("./Counter.ts");
-    } else {
-      this.worker.postMessage({cmd: "Start", interval: this.interval, repeat: this.repeatTimes});
+      this.worker.postMessage({interval: this.interval, repeat: this.repeatTimes});
     }
+    if (this.completed) {
+      this.worker.postMessage({count: 0});
+    }
+    this.worker.postMessage({cmd: "Start"});
     let that = this;
     this.worker.onmessage = function (event) {
+      that.count = event.data;
       switch (that.outputType) {
         case "Natural Number":
           that.value = event.data;
@@ -183,11 +196,14 @@ export class WorkerBlock extends Block {
       flowchart.updateResults(); // FIXME: potential deadlock
       flowchart.draw();
     };
+    this.paused = false;
+    this.completed = this.count == this.repeatTimes;
   }
 
   private stopWorker(): void {
     if (this.worker != undefined) {
       this.worker.postMessage({cmd: "Pause"});
+      this.paused = true;
     }
   }
 

@@ -66,7 +66,13 @@ export class Beeper extends Block {
   }
 
   destroy(): void {
-    if (this.audioContext) this.audioContext.close();
+    if (this.audioContext) {
+      try {
+        this.audioContext.close();
+      } catch (e) {
+        console.log(e.stack);
+      }
+    }
   }
 
   setOscillatorType(oscillatorType: string): void {

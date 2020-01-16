@@ -17,16 +17,19 @@ function timedCount() {
 }
 
 self.addEventListener('message', function (e) {
-  switch (e.data.cmd) {
-    case "Start":
-      workerPaused = false;
-      break;
-    case "Pause":
-      workerPaused = true;
-      break;
+  if (e.data.cmd != undefined) {
+    switch (e.data.cmd) {
+      case "Start":
+        workerPaused = false;
+        break;
+      case "Pause":
+        workerPaused = true;
+        break;
+    }
   }
-  workerInterval = e.data.interval;
-  workerRepeat = e.data.repeat;
+  if (e.data.interval != undefined) workerInterval = e.data.interval;
+  if (e.data.repeat != undefined) workerRepeat = e.data.repeat;
+  if (e.data.count != undefined) workerCount = e.data.count;
 }, false);
 
 timedCount();
