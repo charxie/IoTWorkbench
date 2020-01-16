@@ -176,6 +176,8 @@ export class Sticker extends Block {
         this.text = "" + v; // value is a boolean or string or array
         this.isArray = Array.isArray(v);
       }
+    } else {
+      this.text = undefined;
     }
   }
 

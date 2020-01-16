@@ -155,6 +155,10 @@ export class ItemSelector extends Block {
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.halfHeight, this.width, this.halfHeight, this.radius, "Bottom");
 
+    if (this.selected) {
+      this.highlightSelection(ctx);
+    }
+
     // draw the drop down list
     if (this.items && this.items.length > 0) {
       ctx.strokeStyle = "gray";
@@ -208,10 +212,6 @@ export class ItemSelector extends Block {
     ctx.strokeStyle = "black";
     this.portI.draw(ctx, this.iconic);
     this.portO.draw(ctx, this.iconic);
-
-    if (this.selected) {
-      this.highlightSelection(ctx);
-    }
 
   }
 
