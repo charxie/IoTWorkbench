@@ -12,6 +12,7 @@ export class WorkerBlock extends Block {
   private outputType: string = "Natural Number";
   private value: number = 0;
   private interval: number = 500; // in milliseconds
+  private repeatTimes: number = 1000000;
   private barHeight: number;
   private readonly portI: Port;
   private readonly portO: Port;
@@ -26,6 +27,7 @@ export class WorkerBlock extends Block {
     readonly height: number;
     readonly outputType: string;
     readonly interval: number;
+    readonly repeatTimes: number;
 
     constructor(worker: WorkerBlock) {
       this.name = worker.name;
@@ -36,6 +38,7 @@ export class WorkerBlock extends Block {
       this.height = worker.height;
       this.outputType = worker.outputType;
       this.interval = worker.interval;
+      this.repeatTimes = worker.repeatTimes;
     }
   };
 
@@ -53,6 +56,7 @@ export class WorkerBlock extends Block {
     let copy = new WorkerBlock("Worker Block #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.interval = this.interval;
     copy.outputType = this.outputType;
+    copy.repeatTimes = this.repeatTimes;
     return copy;
   }
 
@@ -70,6 +74,14 @@ export class WorkerBlock extends Block {
 
   getInterval(): number {
     return this.interval;
+  }
+
+  setRepeatTimes(repeatTimes: number): void {
+    this.repeatTimes = repeatTimes;
+  }
+
+  getRepeatTimes(): number {
+    return this.repeatTimes;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -156,7 +168,7 @@ export class WorkerBlock extends Block {
     if (this.worker == undefined && !this.iconic) {
       this.worker = new Worker("./Counter.ts");
     } else {
-      this.worker.postMessage({cmd: "Start", interval: this.interval});
+      this.worker.postMessage({cmd: "Start", interval: this.interval, repeat: this.repeatTimes});
     }
     let that = this;
     this.worker.onmessage = function (event) {

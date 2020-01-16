@@ -5,9 +5,10 @@
 let workerCount = 0;
 let workerPaused = false;
 let workerInterval = 500;
+let workerRepeat = 1000000;
 
 function timedCount() {
-  if (!workerPaused) {
+  if (!workerPaused && workerCount < workerRepeat) {
     workerCount++;
     // @ts-ignore: If I add the targetOrigin, then the browser doesn't recognize the signature
     postMessage(workerCount);
@@ -25,6 +26,7 @@ self.addEventListener('message', function (e) {
       break;
   }
   workerInterval = e.data.interval;
+  workerRepeat = e.data.repeat;
 }, false);
 
 timedCount();

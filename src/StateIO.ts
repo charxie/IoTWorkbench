@@ -70,6 +70,7 @@ export class StateIO {
           block.setName(state.name);
           block.setOutputType(state.outputType ? state.outputType : "Natural Number");
           block.setInterval(state.interval);
+          if (state.repeatTimes) block.setRepeatTimes(state.repeatTimes);
         } else if (block instanceof ItemSelector) {
           block.setName(state.name);
           block.setItems(state.items);

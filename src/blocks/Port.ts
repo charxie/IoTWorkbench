@@ -35,8 +35,16 @@ export class Port {
     this.arc.x = x;
   }
 
+  getX(): number {
+    return this.arc.x;
+  }
+
   setY(y: number): void {
     this.arc.y = y;
+  }
+
+  getY(): number {
+    return this.arc.y;
   }
 
   getBlock(): Block {
