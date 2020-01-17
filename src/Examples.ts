@@ -3,31 +3,35 @@
  */
 
 // @ts-ignore
-import example01 from "./examples/logic-example1.json";
+import logical_operators from "./examples/logical-operators.json";
 // @ts-ignore
-import example02 from "./examples/arithmetic-example.json";
+import arithmetic_operators from "./examples/arithmetic-operators.json";
 // @ts-ignore
-import example03 from "./examples/array-example1.json";
+import series_and_arrays from "./examples/series-and-arrays.json";
 // @ts-ignore
-import example04 from "./examples/function-example1.json";
+import unary_functions from "./examples/unary-functions.json";
 // @ts-ignore
-import example05 from "./examples/function-example2.json";
+import interesting_unary_functions from "./examples/interesting-unary-functions.json";
 // @ts-ignore
-import example06 from "./examples/function-example3.json";
+import binary_functions from "./examples/binary-functions.json";
 // @ts-ignore
-import example11 from "./examples/control-example1.json";
+import toggle_vs_momentary_switch from "./examples/toggle-vs-momentary-switch.json";
 // @ts-ignore
-import example12 from "./examples/toggle-vs-momentary-switch.json";
+import turnout_switch from "./examples/turnout-switch.json";
 // @ts-ignore
-import example21 from "./examples/sound-example1.json";
+import switch_statements from "./examples/switch-statements.json";
 // @ts-ignore
-import example31 from "./examples/parametric-equation-example1.json";
+import workers from "./examples/workers.json";
 // @ts-ignore
-import example32 from "./examples/parametric-equation-example2.json";
+import make_sound_with_beepers from "./examples/make-sound-with-beepers.json";
 // @ts-ignore
-import example41 from "./examples/parametric-equation-example7.json";
+import parametric_equations_1 from "./examples/parametric-equations-1.json";
 // @ts-ignore
-import example42 from "./examples/parametric-equation-example8.json";
+import parametric_equations_2 from "./examples/parametric-equations-2.json";
+// @ts-ignore
+import parametric_generator_1 from "./examples/parametric-generator-1.json";
+// @ts-ignore
+import parametric_generator_2 from "./examples/parametric-generator-2.json";
 
 import {flowchart} from "./Main";
 import {StateIO} from "./StateIO";
@@ -38,19 +42,21 @@ export class Examples {
 
   constructor() {
 
-    this.files.push({name: "Logic #1", data: example01});
-    this.files.push({name: "Arithmetic #1", data: example02});
-    this.files.push({name: "Arrays #1", data: example03});
-    this.files.push({name: "Function #1", data: example04});
-    this.files.push({name: "Function #2", data: example05});
-    this.files.push({name: "Function #3", data: example06});
-    this.files.push({name: "Control #1", data: example11});
-    this.files.push({name: "Control #2", data: example12});
-    this.files.push({name: "Sound #1", data: example21});
-    this.files.push({name: "Parametric Equation #1", data: example31});
-    this.files.push({name: "Parametric Equation #2", data: example32});
-    this.files.push({name: "Parametric Generator #1", data: example41});
-    this.files.push({name: "Parametric Generator #2", data: example42});
+    this.files.push({name: "Logical Operators", data: logical_operators});
+    this.files.push({name: "Arithmetic Operators", data: arithmetic_operators});
+    this.files.push({name: "Series and Arrays", data: series_and_arrays});
+    this.files.push({name: "Unary Functions", data: unary_functions});
+    this.files.push({name: "Interesting Unary Functions", data: interesting_unary_functions});
+    this.files.push({name: "Binary Functions", data: binary_functions});
+    this.files.push({name: "Toggle Switch vs. Momentary Switch", data: toggle_vs_momentary_switch});
+    this.files.push({name: "Turnout Switch", data: turnout_switch});
+    this.files.push({name: "Switch Statements", data: switch_statements});
+    this.files.push({name: "Workers", data: workers});
+    this.files.push({name: "Parametric Equations 1", data: parametric_equations_1});
+    this.files.push({name: "Parametric Equations 2", data: parametric_equations_2});
+    this.files.push({name: "Parametric Generator 1", data: parametric_generator_1});
+    this.files.push({name: "Parametric Generator 2", data: parametric_generator_2});
+    this.files.push({name: "Make Sound with Beepers", data: make_sound_with_beepers});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 

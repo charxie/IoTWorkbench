@@ -392,7 +392,7 @@ export class BlockView {
     }
     let grab = false;
     for (let b of this.flowchart.blocks) {
-      if (b.isSelected() && b.contains(x, y)) {
+      if (b.isSelected()) {
         if (b.mouseDown(e)) {
           grab = true;
           break;
@@ -430,7 +430,7 @@ export class BlockView {
     this.selectedPort = null;
     this.preventMainMouseEvent = false;
     for (let b of this.flowchart.blocks) {
-      if (b.isSelected() && b.contains(x, y)) {
+      if (b.isSelected()) {
         b.mouseUp(e);
       }
     }
