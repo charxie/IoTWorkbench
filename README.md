@@ -1,7 +1,7 @@
-# [IoT Workbench](https://charxie.github.io/)
+# [IoT Workbench](https://charxie.github.io/iot/workbench)
 
 
-The IoT Workbench is a cyber-physical system for creating IoT apps based on the digital twin technology.
+The IoT Workbench is a cyber-physical system for creating IoT apps based on the digital twinning and visual programming technology.
 
 
 ## Quick start
@@ -11,8 +11,8 @@ TODO
 
 ## Features
 
-* TODO
-* TODO
+* Digital twins
+* Visual programming
 
 
 ## Documentation
