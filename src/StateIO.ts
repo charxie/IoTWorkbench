@@ -25,7 +25,7 @@ import {SwitchStatementBlock} from "./blocks/SwitchStatementBlock";
 export class StateIO {
 
   private static readonly inputFieldId: string = "save-state-file-name-field";
-  private static lastSavedFileName: string = "state.json";
+  private static lastFileName: string = "state.json";
 
   private constructor() {
   }
@@ -40,7 +40,7 @@ export class StateIO {
         if (type.indexOf("HAT") != -1) continue; // Do not add HAT blocks. They are added by the model components.
         let block = flowchart.addBlock(type, state.x, state.y, state.uid);
         if (block == null) {
-          console.log(type);
+          console.log("ERROR: " + type + " not recognized");
           continue;
         }
         if (state.width) {
@@ -182,6 +182,7 @@ export class StateIO {
       if (target.files.length) {
         let reader: FileReader = new FileReader();
         reader.readAsText(target.files[0]);
+        that.lastFileName = target.files[0].name;
         reader.onload = function (e) {
           let s = JSON.parse(reader.result.toString());
           that.restoreGlobalVariables(JSON.stringify(s.globalVariables));
@@ -199,11 +200,12 @@ export class StateIO {
   static saveAs(data: string): void {
     let that = this;
     let d = $('#modal-dialog').html(`<div style="font-family: Arial; line-height: 30px; font-size: 90%;">
-        Save as:<br><input type="text" id="${this.inputFieldId}" style="width: 260px;" value="${this.lastSavedFileName}">`);
+        Save as:<br><input type="text" id="${this.inputFieldId}" style="width: 260px;" value="${this.lastFileName}">`);
     let inputFileName = document.getElementById(that.inputFieldId) as HTMLInputElement;
+    Util.selectField(inputFileName, 0, inputFileName.value.indexOf("."));
     let okFunction = function () {
       Util.saveText(data, inputFileName.value);
-      that.lastSavedFileName = inputFileName.value;
+      that.lastFileName = inputFileName.value;
       d.dialog('close');
     };
     inputFileName.addEventListener("keyup", function (e) {

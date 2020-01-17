@@ -5,9 +5,9 @@
 import $ from "jquery";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
-import {Sticker} from "../Sticker";
 import {Util} from "../../Util";
 import {Grapher} from "../Grapher";
+import {PngSaver} from "../../tools/PngSaver";
 
 export class GrapherContextMenu extends BlockContextMenu {
 
@@ -25,6 +25,9 @@ export class GrapherContextMenu extends BlockContextMenu {
                 <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
               </li>
               <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-save-image-button"><i class="fas fa-camera"></i><span class="menu-text">Save Image</span></button>
+              </li>
+              <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-properties-button"><i class="fas fa-cog"></i><span class="menu-text">Properties</span></button>
               </li>
             </menu>`;
@@ -32,6 +35,14 @@ export class GrapherContextMenu extends BlockContextMenu {
 
   addListeners(): void {
     super.addListeners();
+    let saveImageButton = document.getElementById(this.id + "-save-image-button");
+    saveImageButton.addEventListener("click", this.saveImageButtonClick.bind(this), false);
+  }
+
+  private saveImageButtonClick(e: MouseEvent): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    PngSaver.saveAs((<Grapher>this.block).toCanvas());
   }
 
   protected getPropertiesUI(): string {

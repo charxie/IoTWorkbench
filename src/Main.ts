@@ -122,7 +122,7 @@ window.onload = function () {
   document.getElementById("name-label").innerHTML = Constants.Software.name;
   document.getElementById("version-label").innerHTML = Constants.Software.version;
   document.getElementById('credit').innerHTML = social + "<div class='horizontal-divider'></div>"
-    + Constants.Software.name + " " + Constants.Software.version + ", created by Charles Xie , &copy; " + new Date().getFullYear();
+    + Constants.Software.name + " " + Constants.Software.version + ", created by Dr. Charles Xie , &copy; " + new Date().getFullYear();
 
   let examples = new Examples();
 
@@ -133,7 +133,9 @@ window.onload = function () {
     });
   };
   document.getElementById("main-page-share-button").onclick = showUnderConstructionMessage;
-  document.getElementById("main-page-upload-button").onclick = showUnderConstructionMessage;
+  document.getElementById("main-page-open-file-button").onclick = function () {
+    StateIO.open();
+  };
   document.getElementById("main-page-download-button").onclick = function () {
     StateIO.saveAs(JSON.stringify(new Flowchart.State(flowchart)));
   };

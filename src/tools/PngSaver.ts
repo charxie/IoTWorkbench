@@ -3,6 +3,7 @@
  */
 
 import $ from "jquery";
+import {Util} from "../Util";
 
 export class PngSaver {
 
@@ -24,6 +25,7 @@ export class PngSaver {
     let d = $('#modal-dialog').html(`<div style="font-family: Arial; line-height: 30px; font-size: 90%;">
         Save screenshot as:<br><input type="text" id="${this.inputFieldId}" style="width: 260px;" value="${fileName}"></div>`);
     let inputElement = document.getElementById(that.inputFieldId) as HTMLInputElement;
+    Util.selectField(inputElement, 0, inputElement.value.indexOf("."));
     let okFunction = function () {
       d.dialog('close');
       let filename = inputElement.value;

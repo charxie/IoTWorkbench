@@ -22,6 +22,16 @@ export class Util {
     });
   }
 
+  static selectField(field: HTMLInputElement, start: number, end: number) {
+    if (field.setSelectionRange) {
+      field.setSelectionRange(start, end);
+    } else if (field.selectionStart) {
+      field.selectionStart = start;
+      field.selectionEnd = end;
+    }
+    field.focus();
+  }
+
   static saveText(text: string, fileName: string): void {
     let a = document.createElement('a') as HTMLAnchorElement
     a.href = 'data:text/plain;charset=utf-u,' + encodeURIComponent(text);

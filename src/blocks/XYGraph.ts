@@ -6,6 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
+import {flowchart} from "../Main";
 
 export class XYGraph extends Block {
 
@@ -355,6 +356,15 @@ export class XYGraph extends Block {
     this.portX.setY(this.barHeight + dh);
     this.portY.setY(this.barHeight + 2 * dh);
     this.updateModel();
+  }
+
+  toCanvas(): HTMLCanvasElement {
+    let c = document.createElement('canvas');
+    c.width = this.width;
+    c.height = this.height;
+    let newContext = c.getContext('2d');
+    newContext.drawImage(flowchart.blockView.canvas, this.x, this.y, this.width, this.height, 0, 0, c.width, c.height);
+    return c;
   }
 
 }
