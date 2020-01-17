@@ -17,6 +17,7 @@ export class Slider extends Block {
   private trackRight: number;
   private halfHeight: number;
   private knobGrabbed: boolean;
+  private knobSelected: boolean;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private minimum: number = 0;
@@ -130,6 +131,10 @@ export class Slider extends Block {
     return this.steps;
   }
 
+  isKnobSelected(): boolean {
+    return this.knobSelected;
+  }
+
   updateModel(): void {
     this.ports[0].setValue(this.value);
     this.updateConnectors();
@@ -229,14 +234,54 @@ export class Slider extends Block {
     return this.knob.contains(x, y);
   }
 
+  private updateAll(): void {
+    flowchart.traverse(this);
+    if (this.isExportedToGlobalVariable()) {
+      flowchart.updateResults();
+    }
+    flowchart.storeBlockStates();
+  }
+
+  keyUp(e: KeyboardEvent): void {
+    let update = false;
+    switch (e.key) {
+      case "ArrowLeft":
+        update = true;
+        break;
+      case "ArrowRight":
+        update = true;
+        break;
+    }
+    if (update) {
+      this.updateAll();
+      flowchart.draw();
+    }
+  }
+
+  keyDown(e: KeyboardEvent): void {
+    let dv = (this.maximum - this.minimum) / this.steps;
+    switch (e.key) {
+      case "ArrowLeft":
+        this.setValue(Math.max(this.value - dv, this.minimum));
+        this.refreshView();
+        break;
+      case "ArrowRight":
+        this.setValue(Math.min(this.value + dv, this.maximum));
+        this.refreshView();
+        break;
+    }
+  }
+
   mouseDown(e: MouseEvent): boolean {
     if (e.which == 3 || e.button == 2) return; // if this is a right-click event
     let x = e.offsetX;
     let y = e.offsetY;
+    this.knobSelected = false;
     if (this.onKnob(x, y)) {
       this.mouseDownRelativeX = x - this.knob.getCenterX();
       this.mouseDownRelativeY = y - this.knob.getCenterY();
       this.knobGrabbed = true;
+      this.knobSelected = true;
       return true;
     }
     return false;
@@ -248,9 +293,7 @@ export class Slider extends Block {
       let n = Math.round(this.value / d);
       this.value = n * d;
       this.refreshView();
-      this.updateModel();
-      flowchart.traverse(this);
-      flowchart.storeBlockStates();
+      this.updateAll();
     }
     this.knobGrabbed = false;
     flowchart.blockView.canvas.style.cursor = "default";
@@ -268,12 +311,7 @@ export class Slider extends Block {
         this.knob.x = this.trackRight - this.knobHalfSize;
       }
       this.value = this.minimum + (this.maximum - this.minimum) / (this.trackRight - this.trackLeft) * (this.knob.x + this.knobHalfSize - this.trackLeft);
-      this.updateModel();
-      flowchart.traverse(this);
-      if (this.isExportedToGlobalVariable()) {
-        flowchart.updateResults();
-      }
-      flowchart.storeBlockStates();
+      this.updateAll();
     } else {
       if (this.onKnob(x, y)) {
         if (e.target instanceof HTMLCanvasElement) {

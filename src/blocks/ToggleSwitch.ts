@@ -19,6 +19,7 @@ export class ToggleSwitch extends Block {
   private trackMin: number;
   private trackMax: number;
   private knobGrabbed: boolean;
+  private knobSelected: boolean;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private halfHeight: number;
@@ -183,26 +184,64 @@ export class ToggleSwitch extends Block {
     return this.knob.contains(x, y);
   }
 
+  isKnobSelected(): boolean {
+    return this.knobSelected;
+  }
+
+  private updateAll(): void {
+    flowchart.traverse(this);
+    if (this.isExportedToGlobalVariable()) {
+      flowchart.updateResults();
+    }
+    flowchart.storeBlockStates();
+  }
+
+  keyUp(e: KeyboardEvent): void {
+    let update = false;
+    switch (e.key) {
+      case "ArrowLeft":
+        update = true;
+        break;
+      case "ArrowRight":
+        update = true;
+        break;
+    }
+    if (update) {
+      this.updateAll();
+      flowchart.draw();
+    }
+  }
+
+  keyDown(e: KeyboardEvent): void {
+    switch (e.key) {
+      case "ArrowLeft":
+        this.checked = false;
+        this.refreshView();
+        break;
+      case "ArrowRight":
+        this.checked = true;
+        this.refreshView();
+        break;
+    }
+  }
+
   mouseDown(e: MouseEvent): boolean {
     if (e.which == 3) return; // if this is a right-click event
     let x = e.offsetX;
     let y = e.offsetY;
+    this.knobSelected = false;
     if (this.onKnob(x, y)) {
       this.mouseDownRelativeX = x - this.knob.x;
       this.mouseDownRelativeY = y - this.knob.y;
       this.knobGrabbed = true;
+      this.knobSelected = true;
       return true;
     }
     return false;
   }
 
   mouseUp(e: MouseEvent): void {
-    this.updateModel();
-    flowchart.traverse(this);
-    if (this.isExportedToGlobalVariable()) {
-      flowchart.updateResults();
-    }
-    flowchart.storeBlockStates();
+    this.updateAll();
     this.knob.x = this.knob.x < (this.trackMin + this.trackMax) / 2 ? this.trackMin : this.trackMax;
     this.knobGrabbed = false;
     flowchart.blockView.canvas.style.cursor = "default";

@@ -223,12 +223,65 @@ export class ItemSelector extends Block {
     return this.triangle.contains(x, y);
   }
 
+  isDropdownMenuOpen(): boolean {
+    return this.dropdownMenuOpen;
+  }
+
   contains(x: number, y: number): boolean {
     if (this.dropdownMenuOpen) {
       return (x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height) ||
         (x > this.xBox && y > this.yBox + this.hBox && x < this.xBox + this.wBox && y < this.yBox + this.hBox * (1 + this.items.length));
     }
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height;
+  }
+
+  private updateAll(): void {
+    flowchart.traverse(this);
+    if (this.isExportedToGlobalVariable()) {
+      flowchart.updateResults();
+    }
+    flowchart.storeBlockStates();
+  }
+
+  keyUp(e: KeyboardEvent): void {
+    if (this.dropdownMenuOpen) {
+      let update = false;
+      switch (e.key) {
+        case "ArrowUp":
+          update = true;
+          break;
+        case "ArrowDown":
+          update = true;
+          break;
+      }
+      if (update) {
+        this.updateAll();
+        flowchart.draw();
+      }
+    }
+  }
+
+  keyDown(e: KeyboardEvent): void {
+    if (this.dropdownMenuOpen) {
+      this.mouseOverIndex = -1;
+      this.mouseDownIndex = -1;
+      switch (e.key) {
+        case "ArrowUp":
+          this.selectedIndex--;
+          if (this.selectedIndex < 0) {
+            this.selectedIndex = 0;
+          }
+          this.refreshView();
+          break;
+        case "ArrowDown":
+          this.selectedIndex++;
+          if (this.selectedIndex >= this.items.length) {
+            this.selectedIndex = this.items.length - 1;
+          }
+          this.refreshView();
+          break;
+      }
+    }
   }
 
   mouseDown(e: MouseEvent): boolean {
@@ -259,12 +312,7 @@ export class ItemSelector extends Block {
         this.selectedIndex = this.mouseDownIndex;
         this.dropdownMenuOpen = false;
         this.mouseDownIndex = -1;
-        this.updateModel();
-        flowchart.traverse(this);
-        if (this.isExportedToGlobalVariable()) {
-          flowchart.updateResults();
-        }
-        flowchart.storeBlockStates();
+        this.updateAll();
       }
     }
     flowchart.blockView.canvas.style.cursor = "default";

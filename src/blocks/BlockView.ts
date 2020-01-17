@@ -253,22 +253,39 @@ export class BlockView {
   }
 
   private keyUp(e: KeyboardEvent): void {
-    e.preventDefault();
-    switch (e.key) {
-      case "Delete":
-        if (this.selectedBlock != null) {
-          flowchart.askToDeleteBlock(this.selectedBlock);
+    if (this.selectedBlock != null) {
+      e.preventDefault();
+      if ((this.selectedBlock instanceof Slider || this.selectedBlock instanceof ToggleSwitch) && this.selectedBlock.isKnobSelected()) {
+        this.selectedBlock.keyUp(e);
+      } else if (this.selectedBlock instanceof ItemSelector && this.selectedBlock.isDropdownMenuOpen()) {
+        this.selectedBlock.keyUp(e);
+      } else {
+        switch (e.key) {
+          case "Delete":
+            if (this.selectedBlock != null) {
+              flowchart.askToDeleteBlock(this.selectedBlock);
+            }
+            break;
         }
-        break;
+        this.moveByArrowKey(e.key, true);
+      }
+      e.stopPropagation();
     }
-    this.moveByArrowKey(e.key, true);
-    e.stopPropagation();
   }
 
   private keyDown(e: KeyboardEvent): void {
-    e.preventDefault();
-    this.moveByArrowKey(e.key, false);
-    e.stopPropagation();
+    if (this.selectedBlock != null) {
+      e.preventDefault();
+      if ((this.selectedBlock instanceof Slider || this.selectedBlock instanceof ToggleSwitch) && this.selectedBlock.isKnobSelected()) {
+        this.selectedBlock.keyDown(e);
+      } else if (this.selectedBlock instanceof ItemSelector && this.selectedBlock.isDropdownMenuOpen()) {
+        this.selectedBlock.keyDown(e);
+      } else {
+        this.moveByArrowKey(e.key, false);
+      }
+      this.draw();
+      e.stopPropagation();
+    }
   }
 
   private moveByArrowKey(key: string, storeState: boolean) {
@@ -277,7 +294,6 @@ export class BlockView {
         if (this.selectedBlock != null) {
           this.selectedBlock.translateBy(0, -5);
           this.selectedBlock.refreshView();
-          this.draw();
           if (storeState) this.flowchart.storeBlockStates();
         }
         break;
@@ -285,7 +301,6 @@ export class BlockView {
         if (this.selectedBlock != null) {
           this.selectedBlock.translateBy(0, 5);
           this.selectedBlock.refreshView();
-          this.draw();
           if (storeState) this.flowchart.storeBlockStates();
         }
         break;
@@ -293,7 +308,6 @@ export class BlockView {
         if (this.selectedBlock != null) {
           this.selectedBlock.translateBy(-5, 0);
           this.selectedBlock.refreshView();
-          this.draw();
           if (storeState) this.flowchart.storeBlockStates();
         }
         break;
@@ -301,7 +315,6 @@ export class BlockView {
         if (this.selectedBlock != null) {
           this.selectedBlock.translateBy(5, 0);
           this.selectedBlock.refreshView();
-          this.draw();
           if (storeState) this.flowchart.storeBlockStates();
         }
         break;
