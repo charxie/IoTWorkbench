@@ -68,7 +68,7 @@ export class TurnoutSwitchContextMenu extends BlockContextMenu {
       let variableNameInputElement = document.getElementById("turnout-switch-variable-name-field") as HTMLInputElement;
       variableNameInputElement.value = block.getVariableName() ? block.getVariableName() : "x";
       let expressionInputElement = document.getElementById("turnout-switch-expression-field") as HTMLInputElement;
-      expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x>0";
+      expressionInputElement.value = block.getExpression() != undefined ? block.getExpression().toString() : "x>0";
       let widthInputElement = document.getElementById("turnout-switch-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("turnout-switch-height-field") as HTMLInputElement;

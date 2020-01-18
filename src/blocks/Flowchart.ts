@@ -28,6 +28,7 @@ import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
+import {closeAllContextMenus} from "../Main";
 
 export class Flowchart {
 
@@ -373,6 +374,7 @@ export class Flowchart {
     for (let b of this.blocks) {
       b.destroy();
     }
+    closeAllContextMenus();
   }
 
   clear(): void {

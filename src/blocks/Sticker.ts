@@ -131,7 +131,7 @@ export class Sticker extends Block {
               ctx.fill();
             }
             ctx.fillStyle = "black";
-            ctx.fillText(lines[i].trim(), this.x + 10, yi);
+            ctx.fillText(lines[i], this.x + 10, yi);
           }
         }
       } else {
@@ -144,7 +144,7 @@ export class Sticker extends Block {
       for (let i = 0; i < lines.length; ++i) {
         let yi = this.y + this.barHeight + 20 + i * lineHeight;
         if (yi < this.y + this.height - lineHeight / 2) {
-          ctx.fillText(lines[i].trim(), this.x + 10, yi);
+          ctx.fillText(lines[i], this.x + 10, yi);
         }
       }
     }

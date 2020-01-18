@@ -85,25 +85,38 @@ export class TurnoutSwitch extends FunctionBlock {
     this.portF.setY(this.height * 2 / 3);
   }
 
+  private evaluate(x: any): void {
+    try {
+      if (this.code == null) this.createParser();
+      let param = {...flowchart.globalVariables};
+      param[this.variableName] = x;
+      let result = this.code.evaluate(param);
+      this.setOutputs(result);
+    } catch (e) {
+      console.log(e.stack);
+      Util.showErrorMessage(e.toString());
+      this.portT.setValue(undefined);
+      this.portF.setValue(undefined);
+      this.hasError = true;
+    }
+  }
+
   updateModel(): void {
     let x = this.portX.getValue();
     if (typeof x == "boolean") {
-      this.setOutputs(x);
-    } else {
-      if (this.expression && x != undefined) {
-        try {
-          if (this.code == null) this.createParser();
-          let param = {...flowchart.globalVariables};
-          param[this.variableName] = x;
-          let result = this.code.evaluate(param);
-          this.setOutputs(result);
-        } catch (e) {
-          console.log(e.stack);
-          Util.showErrorMessage(e.toString());
-          this.portT.setValue(undefined);
-          this.portF.setValue(undefined);
-          this.hasError = true;
+      if (x) { // evaluate the expression only when the input is true
+        if (this.expression && this.expression.length > 0) {
+          this.evaluate(x);
+        } else {
+          this.setOutputs(true);
         }
+      } else {
+        this.setOutputs(false);
+      }
+    } else {
+      // evaluate the expression when the input is not boolean
+      if (this.expression && x != undefined) {
+        this.evaluate(x);
       } else {
         this.portT.setValue(undefined);
         this.portF.setValue(undefined);

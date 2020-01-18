@@ -25,6 +25,8 @@ import turnout_switch from "./examples/turnout-switch.json";
 // @ts-ignore
 import switch_statements from "./examples/switch-statements.json";
 // @ts-ignore
+import if_else_statements from "./examples/if-else-statements.json";
+// @ts-ignore
 import workers from "./examples/workers.json";
 // @ts-ignore
 import make_sound_with_beepers from "./examples/make-sound-with-beepers.json";
@@ -56,6 +58,7 @@ export class Examples {
     this.files.push({name: "Multivariable Functions", data: multivariable_functions});
     this.files.push({name: "Toggle Switch vs. Momentary Switch", data: toggle_vs_momentary_switch});
     this.files.push({name: "Turnout Switch", data: turnout_switch});
+    this.files.push({name: "If-Else Statements", data: if_else_statements});
     this.files.push({name: "Switch Statements", data: switch_statements});
     this.files.push({name: "Workers", data: workers});
     this.files.push({name: "Parametric Equations 1", data: parametric_equations_1});

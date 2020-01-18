@@ -117,7 +117,7 @@ export class StateIO {
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");
-          block.setExpression(state.expression ? state.expression : "x");
+          block.setExpression(state.expression);
         } else if (block instanceof SwitchStatementBlock) {
           block.setName(state.name);
           block.setCases(state.cases);
@@ -163,7 +163,7 @@ export class StateIO {
   }
 
   static restoreGlobalVariables(s: string): void {
-    if (s != undefined && s != null) {
+    if (s != undefined) {
       flowchart.globalVariables = JSON.parse(s);
     } else {
       flowchart.globalVariables = {};
