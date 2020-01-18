@@ -41,23 +41,19 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Expression for X (e.g., cos(t)):</td>
-                  <td><input type="text" id="parametric-equation-block-expression-x-field" style="width: 150px"></td>
+                  <td><input type="text" id="parametric-equation-block-expression-x-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Expression for Y (e.g. sin(t)):</td>
-                  <td><input type="text" id="parametric-equation-block-expression-y-field" style="width: 150px"></td>
-                </tr>
-                <tr>
-                  <td>Secondary Variables (e.g., ["a", "b"]):</td>
-                  <td><input type="text" id="parametric-equation-block-secondary-variables-field" style="width: 150px"></td>
+                  <td><input type="text" id="parametric-equation-block-expression-y-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="parametric-equation-block-width-field" style="width: 150px"></td>
+                  <td><input type="text" id="parametric-equation-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="parametric-equation-block-height-field" style="width: 150px"></td>
+                  <td><input type="text" id="parametric-equation-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -77,8 +73,6 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("parametric-equation-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
-      let secondaryVariablesInputElement = document.getElementById("parametric-equation-block-secondary-variables-field") as HTMLInputElement;
-      secondaryVariablesInputElement.value = block.getSecondaryVariables() ? JSON.stringify(block.getSecondaryVariables()) : "";
       const okFunction = function () {
         let success = true;
         let message;
@@ -99,11 +93,6 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
           message = heightInputElement.value + " is not a valid height.";
         }
         // set expressions
-        if (secondaryVariablesInputElement.value) {
-          block.setSecondaryVariables(JSON.parse(secondaryVariablesInputElement.value));
-        } else {
-          block.setSecondaryVariables(undefined);
-        }
         block.setExpressionX(expressionXInputElement.value);
         block.setExpressionY(expressionYInputElement.value);
         try {
@@ -130,14 +119,13 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
       };
       expressionXInputElement.addEventListener("keyup", enterKeyUp);
       expressionYInputElement.addEventListener("keyup", enterKeyUp);
-      secondaryVariablesInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 360,
+        height: 320,
         width: 500,
         buttons: {
           'OK': okFunction,

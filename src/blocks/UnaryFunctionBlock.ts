@@ -6,6 +6,7 @@ import {Port} from "./Port";
 import {FunctionBlock} from "./FunctionBlock";
 import {Block} from "./Block";
 import {Util} from "../Util";
+import {flowchart} from "../Main";
 
 export class UnaryFunctionBlock extends FunctionBlock {
 
@@ -84,14 +85,17 @@ export class UnaryFunctionBlock extends FunctionBlock {
     if (this.expression && x != undefined) {
       try {
         if (this.code == undefined) this.createParser();
+        let param = {...flowchart.globalVariables};
         if (Array.isArray(x)) {
           let r = new Array(x.length);
           for (let i = 0; i < r.length; i++) {
-            r[i] = this.code.evaluate({[this.variableName]: x[i]});
+            param[this.variableName] = x[i];
+            r[i] = this.code.evaluate(param);
           }
           this.portR.setValue(r);
         } else {
-          this.portR.setValue(this.code.evaluate({[this.variableName]: x}));
+          param[this.variableName] = x;
+          this.portR.setValue(this.code.evaluate(param));
         }
       } catch (e) {
         console.log(e.stack);

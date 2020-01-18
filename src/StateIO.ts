@@ -138,7 +138,6 @@ export class StateIO {
           block.setName(state.name);
           block.setExpressionX(state.expressionX ? state.expressionX : "cos(t)");
           block.setExpressionY(state.expressionY ? state.expressionY : "sin(t)");
-          block.setSecondaryVariables(state.secondaryVariables ? state.secondaryVariables : undefined);
         }
         block.refreshView();
       }
@@ -166,6 +165,8 @@ export class StateIO {
   static restoreGlobalVariables(s: string): void {
     if (s != undefined && s != null) {
       flowchart.globalVariables = JSON.parse(s);
+    } else {
+      flowchart.globalVariables = {};
     }
   }
 

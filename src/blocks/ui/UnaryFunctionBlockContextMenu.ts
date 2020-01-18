@@ -41,19 +41,19 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Variable Name (e.g. x):</td>
-                  <td><input type="text" id="unary-function-block-variable-name-field" style="width: 150px"></td>
+                  <td><input type="text" id="unary-function-block-variable-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Expression (e.g. sin(x)):</td>
-                  <td><input type="text" id="unary-function-block-expression-field" style="width: 150px"></td>
+                  <td><input type="text" id="unary-function-block-expression-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="unary-function-block-width-field" style="width: 150px"></td>
+                  <td><input type="text" id="unary-function-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="unary-function-block-height-field" style="width: 150px"></td>
+                  <td><input type="text" id="unary-function-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -126,8 +126,8 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 310,
-        width: 380,
+        height: 300,
+        width: 450,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

@@ -4,9 +4,9 @@
 
 import {Port} from "./Port";
 import {FunctionBlock} from "./FunctionBlock";
-import {math} from "../Main";
 import {Block} from "./Block";
 import {Util} from "../Util";
+import {flowchart} from "../Main";
 
 export class MultivariableFunctionBlock extends FunctionBlock {
 
@@ -16,7 +16,7 @@ export class MultivariableFunctionBlock extends FunctionBlock {
 
   static State = class {
     readonly uid: string;
-    readonly variables: string;
+    readonly variables: string[];
     readonly expression: string;
     readonly x: number;
     readonly y: number;
@@ -114,6 +114,7 @@ export class MultivariableFunctionBlock extends FunctionBlock {
     if (this.expression && allSet) {
       try {
         if (this.code == null) this.createParser();
+        let param = {...flowchart.globalVariables};
         let allArray = true;
         for (let i = 0; i < x.length; i++) {
           if (!Array.isArray(x[i])) {
@@ -130,19 +131,17 @@ export class MultivariableFunctionBlock extends FunctionBlock {
           }
           let r = new Array(maxLength);
           for (let i = 0; i < r.length; i++) {
-            let cn = {};
             for (let k = 0; k < x.length; k++) {
-              cn[this.variables[k]] = i < x[k].length ? x[k].length : 0;
+              param[this.variables[k]] = i < x[k].length ? x[k].length : 0;
             }
-            r[i] = this.code.evaluate(cn);
+            r[i] = this.code.evaluate(param);
           }
           this.portR.setValue(r);
         } else {
-          let cn = {};
           for (let i = 0; i < x.length; i++) {
-            cn[this.variables[i]] = x[i];
+            param[this.variables[i]] = x[i];
           }
-          this.portR.setValue(this.code.evaluate(cn));
+          this.portR.setValue(this.code.evaluate(param));
         }
       } catch (e) {
         console.log(e.stack);

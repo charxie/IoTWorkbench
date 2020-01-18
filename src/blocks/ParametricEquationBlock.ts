@@ -11,7 +11,6 @@ export class ParametricEquationBlock extends Block {
 
   private expressionX: string = "cos(t)";
   private expressionY: string = "sin(t)";
-  private secondaryVariables: string[];
   private nodeX;
   private codeX;
   private nodeY;
@@ -25,7 +24,6 @@ export class ParametricEquationBlock extends Block {
     readonly uid: string;
     readonly expressionX: string;
     readonly expressionY: string;
-    readonly secondaryVariables: string[];
     readonly x: number;
     readonly y: number;
     readonly width: number;
@@ -35,9 +33,6 @@ export class ParametricEquationBlock extends Block {
       this.uid = block.uid;
       this.expressionX = block.expressionX;
       this.expressionY = block.expressionY;
-      if (block.secondaryVariables) {
-        this.secondaryVariables = JSON.parse(JSON.stringify(block.secondaryVariables));
-      }
       this.x = block.x;
       this.y = block.y;
       this.width = block.width;
@@ -65,9 +60,6 @@ export class ParametricEquationBlock extends Block {
     let block = new ParametricEquationBlock("Parametric Equation Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.expressionX = this.expressionX;
     block.expressionY = this.expressionY;
-    if (this.secondaryVariables) {
-      block.secondaryVariables = JSON.parse(JSON.stringify(this.secondaryVariables));
-    }
     return block;
   }
 
@@ -102,21 +94,6 @@ export class ParametricEquationBlock extends Block {
     this.codeY = this.nodeY.compile();
   }
 
-  addSecondaryVariable(v: string): void {
-    if (this.secondaryVariables == undefined) {
-      this.secondaryVariables = [];
-    }
-    this.secondaryVariables.push(v);
-  }
-
-  getSecondaryVariables(): string[] {
-    return this.secondaryVariables;
-  }
-
-  setSecondaryVariables(v: string[]): void {
-    this.secondaryVariables = v;
-  }
-
   refreshView(): void {
     this.portT.setY(this.height / 2);
     this.portX.setX(this.width);
@@ -143,26 +120,21 @@ export class ParametricEquationBlock extends Block {
       try {
         if (this.codeX == undefined) this.createParserX();
         if (this.codeY == undefined) this.createParserY();
+        let param = {...flowchart.globalVariables};
         if (Array.isArray(t)) {
           let x = new Array(t.length);
           let y = new Array(t.length);
-          let input = {};
-          if (this.secondaryVariables) {
-            for (let sv of this.secondaryVariables) {
-              input[sv] = flowchart.globalVariables[sv];
-            }
-          }
           for (let i = 0; i < t.length; i++) {
-            input["t"] = t[i];
-            x[i] = this.codeX.evaluate(input);
-            y[i] = this.codeY.evaluate(input);
+            param["t"] = t[i];
+            x[i] = this.codeX.evaluate(param);
+            y[i] = this.codeY.evaluate(param);
           }
           this.portX.setValue(x);
           this.portY.setValue(y);
         } else {
-          let input = {t: t};
-          this.portX.setValue(this.codeX.evaluate(input));
-          this.portY.setValue(this.codeY.evaluate(input));
+          param["t"] = t;
+          this.portX.setValue(this.codeX.evaluate(param));
+          this.portY.setValue(this.codeY.evaluate(param));
         }
       } catch (e) {
         console.log(e.stack);

@@ -42,7 +42,7 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Cases:<div style="font-size: 70%">(e.g., ["x", "y", "z"])</div></td>
+                  <td>Variables:<div style="font-size: 70%">(e.g., ["x", "y", "z"])</div></td>
                   <td><textarea id="multivariable-function-block-cases-field" rows="5" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>
@@ -136,7 +136,7 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 400,
-        width: 300,
+        width: 450,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

@@ -41,23 +41,23 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Variable 1 Name (e.g. x):</td>
-                  <td><input type="text" id="binary-function-block-variable1-name-field" style="width: 150px"></td>
+                  <td><input type="text" id="binary-function-block-variable1-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Variable 2 Name (e.g. y):</td>
-                  <td><input type="text" id="binary-function-block-variable2-name-field" style="width: 150px"></td>
+                  <td><input type="text" id="binary-function-block-variable2-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Expression (e.g. sin(x+y)):</td>
-                  <td><input type="text" id="binary-function-block-expression-field" style="width: 150px"></td>
+                  <td><input type="text" id="binary-function-block-expression-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="binary-function-block-width-field" style="width: 150px"></td>
+                  <td><input type="text" id="binary-function-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="binary-function-block-height-field" style="width: 150px"></td>
+                  <td><input type="text" id="binary-function-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -135,7 +135,7 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 360,
-        width: 400,
+        width: 450,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

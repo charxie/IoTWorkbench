@@ -92,9 +92,10 @@ export class TurnoutSwitch extends FunctionBlock {
     } else {
       if (this.expression && x != undefined) {
         try {
-          const node = math.parse(this.expression);
-          const code = node.compile();
-          let result = code.evaluate({[this.variableName]: x});
+          if (this.code == null) this.createParser();
+          let param = {...flowchart.globalVariables};
+          param[this.variableName] = x;
+          let result = this.code.evaluate(param);
           this.setOutputs(result);
         } catch (e) {
           console.log(e.stack);
