@@ -58,6 +58,7 @@ import {GlobalVariableBlockContextMenu} from "./blocks/ui/GlobalVariableBlockCon
 import {MomentarySwitchContextMenu} from "./blocks/ui/MomentarySwitchContextMenu";
 import {BeeperContextMenu} from "./blocks/ui/BeeperContextMenu";
 import {SwitchStatementBlockContextMenu} from "./blocks/ui/SwitchStatementBlockContextMenu";
+import {MultivariableFunctionBlockContextMenu} from "./blocks/ui/MultivariableFunctionBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -261,15 +262,20 @@ function setupContextMenuForBlock() {
   logicBlockContextMenu.addListeners();
   contextMenus.logicBlock = logicBlockContextMenu;
 
-  let unaryfunctionBlockContextMenu = new UnaryFunctionBlockContextMenu();
-  unaryfunctionBlockContextMenu.render("unary-function-block-context-menu-placeholder");
-  unaryfunctionBlockContextMenu.addListeners();
-  contextMenus.unaryFunctionBlock = unaryfunctionBlockContextMenu;
+  let unaryFunctionBlockContextMenu = new UnaryFunctionBlockContextMenu();
+  unaryFunctionBlockContextMenu.render("unary-function-block-context-menu-placeholder");
+  unaryFunctionBlockContextMenu.addListeners();
+  contextMenus.unaryFunctionBlock = unaryFunctionBlockContextMenu;
 
-  let binaryfunctionBlockContextMenu = new BinaryFunctionBlockContextMenu();
-  binaryfunctionBlockContextMenu.render("binary-function-block-context-menu-placeholder");
-  binaryfunctionBlockContextMenu.addListeners();
-  contextMenus.binaryFunctionBlock = binaryfunctionBlockContextMenu;
+  let binaryFunctionBlockContextMenu = new BinaryFunctionBlockContextMenu();
+  binaryFunctionBlockContextMenu.render("binary-function-block-context-menu-placeholder");
+  binaryFunctionBlockContextMenu.addListeners();
+  contextMenus.binaryFunctionBlock = binaryFunctionBlockContextMenu;
+
+  let multivariableFunctionBlockContextMenu = new MultivariableFunctionBlockContextMenu();
+  multivariableFunctionBlockContextMenu.render("multivariable-function-block-context-menu-placeholder");
+  multivariableFunctionBlockContextMenu.addListeners();
+  contextMenus.multivariableFunctionBlock = multivariableFunctionBlockContextMenu;
 
   let parametricEquationBlockContextMenu = new ParametricEquationBlockContextMenu();
   parametricEquationBlockContextMenu.render("parametric-equation-block-context-menu-placeholder");

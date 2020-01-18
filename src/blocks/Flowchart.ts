@@ -27,6 +27,7 @@ import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
+import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
 
 export class Flowchart {
 
@@ -196,6 +197,9 @@ export class Flowchart {
       case "Binary Function Block":
         block = new BinaryFunctionBlock(uid, x, y, 60, 100);
         break;
+      case "Multivariable Function Block":
+        block = new MultivariableFunctionBlock(uid, x, y, 60, 120);
+        break;
       case "Parametric Equation Block":
         block = new ParametricEquationBlock(uid, x, y, 60, 100);
         break;
@@ -351,6 +355,8 @@ export class Flowchart {
         blockStates.push(new UnaryFunctionBlock.State(b));
       } else if (b instanceof BinaryFunctionBlock) {
         blockStates.push(new BinaryFunctionBlock.State(b));
+      } else if (b instanceof MultivariableFunctionBlock) {
+        blockStates.push(new MultivariableFunctionBlock.State(b));
       } else if (b instanceof ParametricEquationBlock) {
         blockStates.push(new ParametricEquationBlock.State(b));
       } else {

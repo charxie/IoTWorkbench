@@ -21,6 +21,7 @@ import {GlobalVariableBlock} from "./blocks/GlobalVariableBlock";
 import {MomentarySwitch} from "./blocks/MomentarySwitch";
 import {Beeper} from "./blocks/Beeper";
 import {SwitchStatementBlock} from "./blocks/SwitchStatementBlock";
+import {MultivariableFunctionBlock} from "./blocks/MultivariableFunctionBlock";
 
 export class StateIO {
 
@@ -129,6 +130,10 @@ export class StateIO {
           block.setVariable1Name(state.variable1Name ? state.variable1Name : "x");
           block.setVariable2Name(state.variable2Name ? state.variable2Name : "y");
           block.setExpression(state.expression ? state.expression : "x+y");
+        } else if (block instanceof MultivariableFunctionBlock) {
+          block.setName(state.name);
+          block.setVariables(state.variables ? state.variables : "['x', 'y', 'z']");
+          block.setExpression(state.expression ? state.expression : "x+y+z");
         } else if (block instanceof ParametricEquationBlock) {
           block.setName(state.name);
           block.setExpressionX(state.expressionX ? state.expressionX : "cos(t)");

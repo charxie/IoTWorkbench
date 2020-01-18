@@ -29,6 +29,7 @@ import {XYGraph} from "./XYGraph";
 import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
+import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
 
 export class BlockView {
 
@@ -103,6 +104,9 @@ export class BlockView {
             break;
           case "binary-function-block":
             that.storeBlock(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
+            break;
+          case "multivariable-function-block":
+            that.storeBlock(new MultivariableFunctionBlock("Multivariable Function Block #" + timestamp, x - 30, y - 60, 60, 120));
             break;
           case "parametric-equation-block":
             that.storeBlock(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 40, y - 50, 80, 100));
@@ -568,6 +572,9 @@ export class BlockView {
     } else if (block instanceof BinaryFunctionBlock) {
       contextMenus.binaryFunctionBlock.block = block;
       menu = document.getElementById("binary-function-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof MultivariableFunctionBlock) {
+      contextMenus.multivariableFunctionBlock.block = block;
+      menu = document.getElementById("multivariable-function-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof ParametricEquationBlock) {
       contextMenus.parametricEquationBlock.block = block;
       menu = document.getElementById("parametric-equation-block-context-menu") as HTMLMenuElement;

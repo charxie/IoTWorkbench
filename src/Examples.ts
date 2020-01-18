@@ -15,6 +15,8 @@ import interesting_unary_functions from "./examples/interesting-unary-functions.
 // @ts-ignore
 import binary_functions from "./examples/binary-functions.json";
 // @ts-ignore
+import multivariable_functions from "./examples/multivariable-functions.json";
+// @ts-ignore
 import toggle_vs_momentary_switch from "./examples/toggle-vs-momentary-switch.json";
 // @ts-ignore
 import turnout_switch from "./examples/turnout-switch.json";
@@ -48,6 +50,7 @@ export class Examples {
     this.files.push({name: "Unary Functions", data: unary_functions});
     this.files.push({name: "Interesting Unary Functions", data: interesting_unary_functions});
     this.files.push({name: "Binary Functions", data: binary_functions});
+    this.files.push({name: "Multivariable Functions", data: multivariable_functions});
     this.files.push({name: "Toggle Switch vs. Momentary Switch", data: toggle_vs_momentary_switch});
     this.files.push({name: "Turnout Switch", data: turnout_switch});
     this.files.push({name: "Switch Statements", data: switch_statements});

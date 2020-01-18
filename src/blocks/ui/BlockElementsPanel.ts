@@ -22,6 +22,7 @@ import {GlobalVariableBlock} from "../GlobalVariableBlock";
 import {MomentarySwitch} from "../MomentarySwitch";
 import {Beeper} from "../Beeper";
 import {SwitchStatementBlock} from "../SwitchStatementBlock";
+import {MultivariableFunctionBlock} from "../MultivariableFunctionBlock";
 
 export class BlockElementsPanel {
 
@@ -38,6 +39,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="logic-not-block" title="Not Operator" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="unary-function-block" title="f(x)" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="binary-function-block" title="f(x, y)" width="45px" height="70px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="multivariable-function-block" title="f(x, y, z)" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="parametric-equation-block" title="x(t), y(t)" width="45px" height="80px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
@@ -87,6 +89,7 @@ export class BlockElementsPanel {
     element.innerHTML = this.getUi();
     this.drawUnaryFunctionBlock("unary-function-block");
     this.drawBinaryFunctionBlock("binary-function-block");
+    this.drawMultivariableFunctionBlock("multivariable-function-block");
     this.drawParametricEquationBlock("parametric-equation-block");
     this.drawLogicBlock("AND Block", "AND", "logic-and-block");
     this.drawNegationBlock("logic-not-block");
@@ -250,6 +253,16 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new BinaryFunctionBlock("Binary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    if (block != null) {
+      block.setIconic(true);
+      block.draw(ctx);
+    }
+  }
+
+  private drawMultivariableFunctionBlock(canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new MultivariableFunctionBlock("Multivariable Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     if (block != null) {
       block.setIconic(true);
       block.draw(ctx);

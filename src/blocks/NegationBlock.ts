@@ -14,7 +14,7 @@ export class NegationBlock extends Block {
     super(uid, x, y, width, height);
     this.name = "NOT Block";
     this.symbol = "NOT";
-    this.color = "#B8860B";
+    this.color = "#87CEFA";
     this.portX = new Port(this, true, "X", 0, this.height / 2, false);
     this.portR = new Port(this, false, "R", this.width, this.height / 2, true);
     this.ports.push(this.portX);

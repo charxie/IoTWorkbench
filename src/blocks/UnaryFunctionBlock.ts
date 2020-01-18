@@ -4,7 +4,6 @@
 
 import {Port} from "./Port";
 import {FunctionBlock} from "./FunctionBlock";
-import {math} from "../Main";
 import {Block} from "./Block";
 import {Util} from "../Util";
 
@@ -38,7 +37,7 @@ export class UnaryFunctionBlock extends FunctionBlock {
     super(uid, x, y, width, height);
     this.symbol = "F(X)";
     this.name = "Unary Function Block";
-    this.color = "#FF6347";
+    this.color = "#7B68EE";
     this.portX = new Port(this, true, "X", 0, this.height / 2, false);
     this.portR = new Port(this, false, "R", this.width, this.height / 2, true);
     this.ports.push(this.portX);
@@ -84,16 +83,15 @@ export class UnaryFunctionBlock extends FunctionBlock {
     let x = this.portX.getValue();
     if (this.expression && x != undefined) {
       try {
-        const node = math.parse(this.expression);
-        const code = node.compile();
+        if (this.code == undefined) this.createParser();
         if (Array.isArray(x)) {
           let r = new Array(x.length);
           for (let i = 0; i < r.length; i++) {
-            r[i] = code.evaluate({[this.variableName]: x[i]});
+            r[i] = this.code.evaluate({[this.variableName]: x[i]});
           }
           this.portR.setValue(r);
         } else {
-          this.portR.setValue(code.evaluate({[this.variableName]: x}));
+          this.portR.setValue(this.code.evaluate({[this.variableName]: x}));
         }
       } catch (e) {
         console.log(e.stack);

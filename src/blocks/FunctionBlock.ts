@@ -3,17 +3,26 @@
  */
 
 import {Block} from "./Block";
+import {math} from "../Main";
 
 export abstract class FunctionBlock extends Block {
 
   protected expression: string = "x";
+  protected node;
+  protected code;
 
   setExpression(expression: string): void {
     this.expression = expression;
+    this.createParser();
   }
 
   getExpression(): string {
     return this.expression;
+  }
+
+  protected createParser(): void {
+    this.node = math.parse(this.expression);
+    this.code = this.node.compile();
   }
 
   protected drawLabel(ctx: CanvasRenderingContext2D): void {

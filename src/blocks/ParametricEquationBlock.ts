@@ -12,6 +12,10 @@ export class ParametricEquationBlock extends Block {
   private expressionX: string = "cos(t)";
   private expressionY: string = "sin(t)";
   private secondaryVariables: string[];
+  private nodeX;
+  private codeX;
+  private nodeY;
+  private codeY;
 
   private readonly portT: Port;
   private readonly portX: Port;
@@ -72,6 +76,7 @@ export class ParametricEquationBlock extends Block {
 
   setExpressionX(expressionX: string): void {
     this.expressionX = expressionX;
+    this.createParserX();
   }
 
   getExpressionX(): string {
@@ -80,10 +85,21 @@ export class ParametricEquationBlock extends Block {
 
   setExpressionY(expressionY: string): void {
     this.expressionY = expressionY;
+    this.createParserY();
   }
 
   getExpressionY(): string {
     return this.expressionY;
+  }
+
+  private createParserX(): void {
+    this.nodeX = math.parse(this.expressionX);
+    this.codeX = this.nodeX.compile();
+  }
+
+  private createParserY(): void {
+    this.nodeY = math.parse(this.expressionY);
+    this.codeY = this.nodeY.compile();
   }
 
   addSecondaryVariable(v: string): void {
@@ -125,10 +141,8 @@ export class ParametricEquationBlock extends Block {
     let t = this.portT.getValue();
     if (this.expressionX && this.expressionY && t != undefined) {
       try {
-        const nodeX = math.parse(this.expressionX);
-        const codeX = nodeX.compile();
-        const nodeY = math.parse(this.expressionY);
-        const codeY = nodeY.compile();
+        if (this.codeX == undefined) this.createParserX();
+        if (this.codeY == undefined) this.createParserY();
         if (Array.isArray(t)) {
           let x = new Array(t.length);
           let y = new Array(t.length);
@@ -136,20 +150,19 @@ export class ParametricEquationBlock extends Block {
           if (this.secondaryVariables) {
             for (let sv of this.secondaryVariables) {
               input[sv] = flowchart.globalVariables[sv];
-              //console.log(sv + "," + flowchart.globalVariables[sv]);
             }
           }
           for (let i = 0; i < t.length; i++) {
             input["t"] = t[i];
-            x[i] = codeX.evaluate(input);
-            y[i] = codeY.evaluate(input);
+            x[i] = this.codeX.evaluate(input);
+            y[i] = this.codeY.evaluate(input);
           }
           this.portX.setValue(x);
           this.portY.setValue(y);
         } else {
           let input = {t: t};
-          this.portX.setValue(codeX.evaluate(input));
-          this.portY.setValue(codeY.evaluate(input));
+          this.portX.setValue(this.codeX.evaluate(input));
+          this.portY.setValue(this.codeY.evaluate(input));
         }
       } catch (e) {
         console.log(e.stack);
