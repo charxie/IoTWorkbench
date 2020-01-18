@@ -115,7 +115,7 @@ export class Sticker extends Block {
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
-    ctx.font = "14px Times Roman";
+    ctx.font = Util.getOS() == "Android" ? "13px Noto Serif" : "14px Times New Roman";
     ctx.fillStyle = this.textColor;
     if (this.text != undefined) {
       if (this.isArray) {

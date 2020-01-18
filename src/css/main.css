@@ -24,6 +24,15 @@ body {
   background-color: white;
 }
 
+::-webkit-scrollbar {
+  width: 16px; /* if not set, scrollbar will not show on Android */
+  height: 16px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, .3); /* set background color to make the scroller visible */
+}
+
 @font-face {
   font-family: 'digital-clock-font';
   src: url('./font/radioland.ttf');

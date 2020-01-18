@@ -104,10 +104,10 @@ export class ParametricEquationBlock extends Block {
 
   protected drawLabel(ctx: CanvasRenderingContext2D): void {
     if (this.iconic) {
-      ctx.font = "italic 9px Times";
+      ctx.font = Util.getOS() == "Android" ? "italic 9px Noto Serif" : "italic 9px Times New Roman";
       this.drawTextAt(this.symbol, 0, 0, ctx);
     } else {
-      ctx.font = "italic 16px Times";
+      ctx.font = Util.getOS() == "Android" ? "italic 16px Noto Serif" : "italic 16px Times New Roman";
       this.drawTextAt("x=" + this.expressionX, 0, -10, ctx);
       this.drawTextAt("y=" + this.expressionY, 0, 10, ctx);
     }
