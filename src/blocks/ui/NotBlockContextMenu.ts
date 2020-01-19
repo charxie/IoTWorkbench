@@ -85,7 +85,7 @@ export class NotBlockContextMenu extends BlockContextMenu {
         if (success) {
           block.refreshView();
           flowchart.draw();
-          flowchart.updateResults();
+          flowchart.updateResultsForBlock(block);
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');

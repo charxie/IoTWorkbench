@@ -101,7 +101,7 @@ export class SwitchStatementBlockContextMenu extends BlockContextMenu {
         if (success) {
           block.refreshView();
           flowchart.draw();
-          flowchart.updateResults();
+          flowchart.updateResultsForBlock(block);
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');
@@ -121,7 +121,7 @@ export class SwitchStatementBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 350,
-        width: 300,
+        width: 400,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

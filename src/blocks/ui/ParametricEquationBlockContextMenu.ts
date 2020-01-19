@@ -96,7 +96,7 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
         block.setExpressionX(expressionXInputElement.value);
         block.setExpressionY(expressionYInputElement.value);
         try {
-          flowchart.updateResults();
+          flowchart.updateResultsForBlock(block);
         } catch (err) {
           success = false;
           message = expressionXInputElement.value + ", " + expressionYInputElement.value + " are not valid expressions.";

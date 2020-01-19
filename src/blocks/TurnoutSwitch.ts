@@ -77,6 +77,19 @@ export class TurnoutSwitch extends FunctionBlock {
     return this.variableName;
   }
 
+  protected drawLabel(ctx: CanvasRenderingContext2D): void {
+    if (Util.getOS() == "Android") {
+      ctx.font = this.iconic ? "italic 9px Noto Serif" : "italic 16px Noto Serif";
+    } else {
+      ctx.font = this.iconic ? "italic 9px Times" : "italic 16px Times New Roman";
+    }
+    if (this.expression == undefined || this.expression.trim().length == 0) {
+      this.drawText(this.iconic ? this.symbol : this.portX.getValue(), ctx);
+    } else {
+      this.drawText(this.iconic ? this.symbol : this.expression, ctx);
+    }
+  }
+
   refreshView(): void {
     this.portX.setY(this.height / 2);
     this.portT.setX(this.width);

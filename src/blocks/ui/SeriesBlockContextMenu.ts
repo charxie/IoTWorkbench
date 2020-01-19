@@ -125,7 +125,7 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           block.refreshView();
-          flowchart.updateResults();
+          flowchart.updateResultsForBlock(block);
           flowchart.draw();
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();

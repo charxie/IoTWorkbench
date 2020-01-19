@@ -127,7 +127,7 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
         if (success) {
           worker.refreshView();
           flowchart.draw();
-          flowchart.updateResults();
+          flowchart.updateResultsForBlock(worker);
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');

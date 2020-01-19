@@ -104,7 +104,7 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
         // set expression
         block.setExpression(expressionInputElement.value);
         try {
-          flowchart.updateResults();
+          flowchart.updateResultsForBlock(block);
         } catch (err) {
           success = false;
           message = expressionInputElement.value + " is not a valid expression.";

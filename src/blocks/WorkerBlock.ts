@@ -20,6 +20,7 @@ export class WorkerBlock extends Block {
   private count: number;
   private completed: boolean = false;
   private paused: boolean = false;
+  private connectedToGlobalVariable: boolean = false;
 
   static State = class {
     readonly name: string;
@@ -165,6 +166,7 @@ export class WorkerBlock extends Block {
   updateModel(): void {
     let input = this.portI.getValue();
     if (input == true) {
+      this.connectedToGlobalVariable = flowchart.isConnectedToGlobalVariable(this);
       this.startWorker();
     } else {
       this.stopWorker();
@@ -193,7 +195,12 @@ export class WorkerBlock extends Block {
           that.value = Math.random();
           break;
       }
-      flowchart.updateResults(); // FIXME: potential deadlock
+      // FIXME: potential deadlock
+      if (that.connectedToGlobalVariable) {
+        flowchart.updateResults();
+      } else {
+        flowchart.updateResultsForBlock(that);
+      }
       flowchart.draw();
     };
     this.paused = false;

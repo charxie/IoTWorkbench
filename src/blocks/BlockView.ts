@@ -475,7 +475,8 @@ export class BlockView {
       } else if (this.selectedPort != null) {
         if (this.selectedPort.isInput()) {
           if (this.selectedPortConnector) { // if the clicked port is an input and there is a connector to it
-            this.flowchart.removePortConnector(this.selectedPortConnector);
+            let disconnectedBlock = this.selectedPort.getBlock();
+            flowchart.removePortConnector(this.selectedPortConnector);
             this.selectedPort = this.selectedPortConnector.getOutput(); // switch the selected port to the output end of the selected connector
             let p = this.selectedPort.getAbsolutePoint(); // this activates the connector on the fly that originates from the output end
             this.connectorOntheFly.x1 = p.x;
@@ -484,7 +485,7 @@ export class BlockView {
             this.connectorOntheFly.y2 = e.offsetY;
             this.selectedPortConnector.getInput().setValue(undefined);
             this.selectedPortConnector = null;
-            this.flowchart.updateResults();
+            flowchart.updateResultsForBlock(disconnectedBlock);
           }
         } else {
           this.connectorOntheFly.x2 = e.offsetX;

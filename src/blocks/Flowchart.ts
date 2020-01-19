@@ -38,20 +38,23 @@ export class Flowchart {
   copiedBlock: Block;
   readonly blockView: BlockView;
 
+  private connectedSources: Block[]; // temporary storage
+  private blockConnectionFlag: boolean; // temporary flag
+  private globalBlockFlag: boolean; // temporary flag
+
   constructor() {
     this.blockView = new BlockView("block-view", this);
   }
 
   traverse(current: Block): void {
     current.updateModel();
-    let outputTo = current.outputTo(); // visit children of current
-    for (let next in outputTo) {
-      if (outputTo.hasOwnProperty(next)) {
-        this.traverse(outputTo[next]);
-      }
+    let outputTo = current.outputTo();
+    for (let next of outputTo) {
+      this.traverse(next);
     }
   }
 
+  // less efficient: this updates all the sources
   updateResults(): void {
     for (let b of this.blocks) {
       if (b.isSource()) {
@@ -59,6 +62,53 @@ export class Flowchart {
       }
     }
     this.draw();
+  }
+
+  // more efficient: this updates only the sources that are connected to the specified block
+  updateResultsForBlock(block: Block): void {
+    this.findConnectedSources(block);
+    this.updateResultsForConnectedSources();
+  }
+
+  private updateResultsForConnectedSources(): void {
+    if (this.connectedSources == undefined || this.connectedSources.length == 0) return;
+    for (let b of this.connectedSources) {
+      this.traverse(b);
+    }
+    this.draw();
+  }
+
+  private findConnectedSources(block: Block): void {
+    this.connectedSources = [];
+    for (let b of this.blocks) {
+      if (b.isSource()) {
+        this.blockConnectionFlag = false;
+        this.findConnection(b, block);
+        if (this.blockConnectionFlag) {
+          this.connectedSources.push(b);
+        }
+      }
+    }
+  }
+
+  // we cannot use a return function in this recursion as there is an array iteration inside
+  // (add return will cause only the first case of the array to be executed)
+  private findConnection(start: Block, end: Block): void {
+    let outputTo = start.outputTo();
+    for (let next of outputTo) {
+      if (next == end) {
+        this.blockConnectionFlag = true;
+        return;
+      }
+      this.findConnection(next, end);
+    }
+  }
+
+  // check whether the start and end blocks are directly or indirectly connected
+  areBlocksConnected(start: Block, end: Block): boolean {
+    this.blockConnectionFlag = false;
+    this.findConnection(start, end);
+    return this.blockConnectionFlag;
   }
 
   /* global variables */
@@ -71,6 +121,25 @@ export class Flowchart {
   removeGlobalVariable(name: string): void {
     delete this.globalVariables[name];
     this.storeGlobalVariables();
+  }
+
+  isConnectedToGlobalVariable(block: Block): boolean {
+    this.globalBlockFlag = false;
+    this.findGlobalVariable(block);
+    return this.globalBlockFlag;
+  }
+
+  // we cannot use a return function in this recursion as there is an array iteration inside
+  // (add return will cause only the first case of the array to be executed)
+  private findGlobalVariable(block: Block): void {
+    let outputTo = block.outputTo();
+    for (let next of outputTo) {
+      if (next instanceof GlobalVariableBlock) {
+        this.globalBlockFlag = true;
+        return;
+      }
+      this.findGlobalVariable(next);
+    }
   }
 
   /* connector methods */
@@ -117,7 +186,6 @@ export class Flowchart {
   removePortConnector(connector: PortConnector): void {
     this.connectors.splice(this.connectors.indexOf(connector), 1);
     connector.destroy();
-    this.updateResults();
     this.storeConnectorStates();
   }
 
@@ -142,6 +210,7 @@ export class Flowchart {
           connectorsToRemove.push(c);
         }
       }
+      this.findConnectedSources(selectedBlock);
       if (indicesOfConnectorsToRemove.length > 0) {
         for (let i = indicesOfConnectorsToRemove.length - 1; i >= 0; i--) {
           this.connectors.splice(indicesOfConnectorsToRemove[i], 1);
@@ -152,7 +221,9 @@ export class Flowchart {
         }
       }
       this.blocks.splice(this.blocks.indexOf(selectedBlock), 1);
-      this.updateResults();
+      if (connectorsToRemove.length > 0 && this.connectedSources.length > 0) { // no need to update results if the deleted block is not connected to a source
+        this.updateResultsForConnectedSources();
+      }
       this.storeBlockStates();
       selectedBlock.destroy();
     }
