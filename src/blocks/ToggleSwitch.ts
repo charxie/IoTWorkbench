@@ -208,7 +208,7 @@ export class ToggleSwitch extends Block {
     }
     if (update) {
       this.updateAll();
-      flowchart.draw();
+      flowchart.blockView.requestDraw();
     }
   }
 

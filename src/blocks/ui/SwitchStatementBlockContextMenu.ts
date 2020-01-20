@@ -100,7 +100,7 @@ export class SwitchStatementBlockContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           block.refreshView();
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(block);
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();

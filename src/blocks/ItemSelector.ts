@@ -256,7 +256,7 @@ export class ItemSelector extends Block {
       }
       if (update) {
         this.updateAll();
-        flowchart.draw();
+        flowchart.blockView.requestDraw();
       }
     }
   }
@@ -285,11 +285,12 @@ export class ItemSelector extends Block {
   }
 
   mouseDown(e: MouseEvent): boolean {
+    if (e.which == 3 || e.button == 2) return; // if this is a right-click event
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.onTriangle(x, y)) {
       this.dropdownMenuOpen = !this.dropdownMenuOpen;
-      flowchart.draw();
+      flowchart.blockView.requestDraw();
       return true;
     }
     this.mouseDownIndex = -1;
@@ -307,6 +308,7 @@ export class ItemSelector extends Block {
   }
 
   mouseUp(e: MouseEvent): void {
+    if (e.which == 3 || e.button == 2) return; // if this is a right-click event
     if (this.dropdownMenuOpen) {
       if (this.mouseDownIndex >= 0) {
         this.selectedIndex = this.mouseDownIndex;
@@ -319,6 +321,7 @@ export class ItemSelector extends Block {
   }
 
   mouseMove(e: MouseEvent): void {
+    if (e.which == 3 || e.button == 2) return; // if this is a right-click event
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.onTriangle(x, y)) {
@@ -335,7 +338,7 @@ export class ItemSelector extends Block {
           } else if (this.mouseOverIndex > this.items.length - 1) {
             this.mouseOverIndex = this.items.length - 1;
           }
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
         }
       }
     }

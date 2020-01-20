@@ -254,7 +254,7 @@ export class Slider extends Block {
     }
     if (update) {
       this.updateAll();
-      flowchart.draw();
+      flowchart.blockView.requestDraw();
     }
   }
 
@@ -288,6 +288,7 @@ export class Slider extends Block {
   }
 
   mouseUp(e: MouseEvent): void {
+    if (e.which == 3 || e.button == 2) return; // if this is a right-click event
     if (this.snapToTick) {
       let d = (this.maximum - this.minimum) / this.steps;
       let n = Math.round(this.value / d);
@@ -300,7 +301,7 @@ export class Slider extends Block {
   }
 
   mouseMove(e: MouseEvent): void {
-    if (e.which == 3) return; // if this is a right-click event
+    if (e.which == 3 || e.button == 2) return; // if this is a right-click event
     let x = e.offsetX;
     let y = e.offsetY;
     if (this.knobGrabbed) {

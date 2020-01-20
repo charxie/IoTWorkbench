@@ -104,7 +104,7 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
         // finish up
         if (success) {
           block.refreshView();
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');

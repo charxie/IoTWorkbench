@@ -105,7 +105,7 @@ export class TurnoutSwitchContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           block.refreshView();
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');

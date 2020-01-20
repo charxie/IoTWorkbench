@@ -101,7 +101,7 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
         if (success) {
           itemSelector.updateModel();
           itemSelector.refreshView();
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(itemSelector);
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();

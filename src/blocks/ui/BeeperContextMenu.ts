@@ -129,7 +129,7 @@ export class BeeperContextMenu extends BlockContextMenu {
         if (success) {
           beeper.refreshView();
           flowchart.storeBlockStates();
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
           d.dialog('close');
         } else {
           Util.showErrorMessage(message);

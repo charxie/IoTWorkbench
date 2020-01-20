@@ -205,7 +205,7 @@ export class XYGraphContextMenu extends BlockContextMenu {
         if (success) {
           g.refreshView();
           flowchart.storeBlockStates();
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
           d.dialog('close');
         } else {
           Util.showErrorMessage(message);

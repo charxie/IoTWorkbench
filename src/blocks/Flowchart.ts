@@ -61,7 +61,7 @@ export class Flowchart {
         this.traverse(b);
       }
     }
-    this.draw();
+    this.blockView.requestDraw();
   }
 
   // more efficient: this updates only the sources that are connected to the specified block
@@ -75,7 +75,7 @@ export class Flowchart {
     for (let b of this.connectedSources) {
       this.traverse(b);
     }
-    this.draw();
+    this.blockView.requestDraw();
   }
 
   private findConnectedSources(block: Block): void {
@@ -241,7 +241,7 @@ export class Flowchart {
       buttons: {
         'OK': function () {
           that.removeBlock(block.getUid());
-          that.draw();
+          that.blockView.requestDraw();
           $(this).dialog('close');
         },
         'Cancel': function () {
@@ -360,12 +360,6 @@ export class Flowchart {
     return block;
   }
 
-  /* rendering methods */
-
-  draw(): void {
-    this.blockView.draw();
-  }
-
   /* storage methods */
 
   updateLocalStorage(): void {
@@ -454,7 +448,7 @@ export class Flowchart {
     this.blocks = [];
     this.connectors = [];
     this.updateLocalStorage();
-    this.blockView.draw();
+    this.blockView.requestDraw();
   }
 
   static State = class {

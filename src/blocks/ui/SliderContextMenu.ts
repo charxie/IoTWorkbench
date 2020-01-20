@@ -173,7 +173,7 @@ export class SliderContextMenu extends BlockContextMenu {
         if (success) {
           slider.refreshView();
           flowchart.storeBlockStates();
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
           d.dialog('close');
         } else {
           Util.showErrorMessage(message);

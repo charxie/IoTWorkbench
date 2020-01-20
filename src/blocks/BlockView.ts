@@ -100,64 +100,64 @@ export class BlockView {
         let timestamp = Date.now().toString(16);
         switch (that.draggedElementId) {
           case "unary-function-block":
-            that.storeBlock(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x - 30, y - 40, 60, 80));
+            that.addBlock(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "binary-function-block":
-            that.storeBlock(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
+            that.addBlock(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
             break;
           case "multivariable-function-block":
-            that.storeBlock(new MultivariableFunctionBlock("Multivariable Function Block #" + timestamp, x - 30, y - 60, 60, 120));
+            that.addBlock(new MultivariableFunctionBlock("Multivariable Function Block #" + timestamp, x - 30, y - 60, 60, 120));
             break;
           case "parametric-equation-block":
-            that.storeBlock(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 40, y - 50, 80, 100));
+            that.addBlock(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 40, y - 50, 80, 100));
             break;
           case "global-variable-block":
-            that.storeBlock(new GlobalVariableBlock("Global Variable Block #" + timestamp, "Global Variable Block", "var", x - 30, y - 40, 60, 80));
+            that.addBlock(new GlobalVariableBlock("Global Variable Block #" + timestamp, "Global Variable Block", "var", x - 30, y - 40, 60, 80));
             break;
           case "series-block":
-            that.storeBlock(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
+            that.addBlock(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
             break;
           case "worker-block":
-            that.storeBlock(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
+            that.addBlock(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
             break;
           case "turnout-switch-block":
-            that.storeBlock(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 30, y - 50, 60, 100));
+            that.addBlock(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 30, y - 50, 60, 100));
             break;
           case "switch-statement-block":
-            that.storeBlock(new SwitchStatementBlock("Switch Statement Block #" + timestamp, "Switch Statement Block", "Switch", x - 30, y - 50, 60, 100));
+            that.addBlock(new SwitchStatementBlock("Switch Statement Block #" + timestamp, "Switch Statement Block", "Switch", x - 30, y - 50, 60, 100));
             break;
           case "logic-and-block":
-            that.storeBlock(new LogicBlock("AND Block #" + timestamp, x - 30, y - 40, 60, 80, "AND Block", "AND"));
+            that.addBlock(new LogicBlock("AND Block #" + timestamp, x - 30, y - 40, 60, 80, "AND Block", "AND"));
             break;
           case "logic-not-block":
-            that.storeBlock(new NegationBlock("NOT Block #" + timestamp, x - 30, y - 40, 60, 80));
+            that.addBlock(new NegationBlock("NOT Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "arithmetic-add-block":
-            that.storeBlock(new ArithmeticBlock("Add Block #" + timestamp, x - 30, y - 30, 60, 60, "Add Block", "+"));
+            that.addBlock(new ArithmeticBlock("Add Block #" + timestamp, x - 30, y - 30, 60, 60, "Add Block", "+"));
             break;
           case "slider-block":
-            that.storeBlock(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));
+            that.addBlock(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));
             break;
           case "item-selector-block":
-            that.storeBlock(new ItemSelector("Item Selector #" + timestamp, "Items", x - 40, y - 30, 80, 60));
+            that.addBlock(new ItemSelector("Item Selector #" + timestamp, "Items", x - 40, y - 30, 80, 60));
             break;
           case "toggle-switch-block":
-            that.storeBlock(new ToggleSwitch("Switch #" + timestamp, "Boolean", x - 40, y - 30, 80, 60));
+            that.addBlock(new ToggleSwitch("Switch #" + timestamp, "Boolean", x - 40, y - 30, 80, 60));
             break;
           case "momentary-switch-block":
-            that.storeBlock(new MomentarySwitch("Momentary Switch #" + timestamp, "Boolean", x - 30, y - 30, 60, 60));
+            that.addBlock(new MomentarySwitch("Momentary Switch #" + timestamp, "Boolean", x - 30, y - 30, 60, 60));
             break;
           case "sticker-block":
-            that.storeBlock(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));
+            that.addBlock(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));
             break;
           case "beeper-block":
-            that.storeBlock(new Beeper("Beeper #" + timestamp, "Beeper", x - 50, y - 50, 100, 100));
+            that.addBlock(new Beeper("Beeper #" + timestamp, "Beeper", x - 50, y - 50, 100, 100));
             break;
           case "grapher-block":
-            that.storeBlock(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));
+            that.addBlock(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));
             break;
           case "xygraph-block":
-            that.storeBlock(new XYGraph("X-Y Graph #" + timestamp, "X-Y Graph", x - 100, y - 110, 200, 220));
+            that.addBlock(new XYGraph("X-Y Graph #" + timestamp, "X-Y Graph", x - 100, y - 110, 200, 220));
             break;
         }
       }
@@ -172,18 +172,25 @@ export class BlockView {
     block.updateModel();
     block.refreshView();
     flowchart.blocks.push(block);
-    this.draw();
     flowchart.storeBlockStates();
+    this.requestDraw();
   }
 
-  private storeBlock(block: Block): void {
+  private addBlock(block: Block): void {
     this.flowchart.blocks.push(block);
     block.refreshView();
-    this.draw();
     this.flowchart.storeBlockStates();
+    this.requestDraw();
   }
 
-  public draw(): void {
+  requestDraw(): void {
+    let that = this;
+    requestAnimationFrame(function () {
+      that.draw();
+    });
+  }
+
+  private draw(): void {
     let ctx = this.canvas.getContext('2d');
     // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     ctx.fillStyle = this.getBackgroundColor(); // we have to do this otherwise its screenshot will not have a color background
@@ -271,7 +278,6 @@ export class BlockView {
             }
             break;
         }
-        this.moveByArrowKey(e.key, true);
       }
       e.stopPropagation();
     }
@@ -287,7 +293,7 @@ export class BlockView {
       } else {
         this.moveByArrowKey(e.key, false);
       }
-      this.draw();
+      this.requestDraw();
       e.stopPropagation();
     }
   }
@@ -405,7 +411,7 @@ export class BlockView {
     }
     this.preventMainMouseEvent = grab;
     this.canvas.style.cursor = grab ? "grabbing" : "default";
-    this.draw();
+    this.requestDraw();
   }
 
   private mouseUp(e: MouseEvent): void {
@@ -438,7 +444,7 @@ export class BlockView {
         b.mouseUp(e);
       }
     }
-    this.draw();
+    this.requestDraw();
     closeAllContextMenus(); // close all context menus upon mouse left click
   }
 
@@ -517,7 +523,7 @@ export class BlockView {
         }
       }
     }
-    this.draw();
+    this.requestDraw();
   }
 
   private mouseLeave = (e: MouseEvent): void => {
@@ -621,7 +627,7 @@ export class BlockView {
       this.selectedMovable = null;
     }
     if (this.selectedBlock != null) {
-      this.draw();
+      this.requestDraw();
     }
   }
 

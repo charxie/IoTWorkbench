@@ -48,7 +48,7 @@ export abstract class BlockContextMenu extends MyContextMenu {
       block.setWidth(oldH);
       block.setHeight(oldW);
       block.refreshView();
-      flowchart.draw();
+      flowchart.blockView.requestDraw();
     }
   }
 

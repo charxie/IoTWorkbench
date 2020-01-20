@@ -137,7 +137,7 @@ export class StickerContextMenu extends BlockContextMenu {
         if (success) {
           sticker.refreshView();
           flowchart.storeBlockStates();
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
           d.dialog('close');
         } else {
           Util.showErrorMessage(message);

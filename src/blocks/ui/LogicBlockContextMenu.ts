@@ -103,7 +103,7 @@ export class LogicBlockContextMenu extends BlockContextMenu {
         if (success) {
           block.refreshView();
           flowchart.updateResultsForBlock(block);
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');

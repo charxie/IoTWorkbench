@@ -94,7 +94,7 @@ export class ToggleSwitchContextMenu extends BlockContextMenu {
         if (success) {
           toggle.refreshView();
           flowchart.storeBlockStates();
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
           d.dialog('close');
         } else {
           Util.showErrorMessage(message);

@@ -154,7 +154,7 @@ window.onload = function () {
   blockTabButton.addEventListener("click", function () {
     selectTab(blockTabButton, "block-playground");
     resize();
-    flowchart.draw();
+    flowchart.blockView.requestDraw();
   });
   let codeTabButton = document.getElementById("code-tab-button") as HTMLButtonElement;
   codeTabButton.addEventListener("click", function () {
@@ -198,7 +198,7 @@ window.onload = function () {
           break;
         case "block-playground":
           selectTab(blockTabButton, startTab);
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
           break;
         case "code-playground":
           selectTab(codeTabButton, startTab);
@@ -206,7 +206,7 @@ window.onload = function () {
       }
     } else {
       selectTab(blockTabButton, "block-playground");
-      flowchart.draw();
+      flowchart.blockView.requestDraw();
     }
     resize();
     draw();
@@ -509,5 +509,5 @@ function resize() {
 
 function draw() {
   system.draw();
-  flowchart.draw();
+  flowchart.blockView.requestDraw();
 }

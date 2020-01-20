@@ -87,7 +87,7 @@ export class MomentarySwitchContextMenu extends BlockContextMenu {
         if (success) {
           s.refreshView();
           flowchart.storeBlockStates();
-          flowchart.draw();
+          flowchart.blockView.requestDraw();
           d.dialog('close');
         } else {
           Util.showErrorMessage(message);

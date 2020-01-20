@@ -201,7 +201,7 @@ export class WorkerBlock extends Block {
       } else {
         flowchart.updateResultsForBlock(that);
       }
-      flowchart.draw();
+      flowchart.blockView.requestDraw();
     };
     this.paused = false;
     this.completed = this.count == this.repeatTimes;
