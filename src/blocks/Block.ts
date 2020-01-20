@@ -27,15 +27,8 @@ export abstract class Block implements Movable {
   protected hasError: boolean = false;
   protected errorColor: string = "red";
   private handleOffset: number = 10;
-  private handleSize: number = 8;
-  protected upperLeftRect: Rectangle; // rectangular handles for resizing
-  protected upperRightRect: Rectangle;
-  protected lowerLeftRect: Rectangle;
-  protected lowerRightRect: Rectangle;
-  protected upperMidRect: Rectangle;
-  protected lowerMidRect: Rectangle;
-  protected leftMidRect: Rectangle;
-  protected rightMidRect: Rectangle;
+  private handleSize: number = 6;
+  private resizeRects;
 
   static State = class {
     readonly uid: string;
@@ -59,14 +52,16 @@ export abstract class Block implements Movable {
     this.y = y;
     this.width = width;
     this.height = height;
-    this.upperLeftRect = new Rectangle(x - this.handleSize / 2, y - this.handleSize / 2, this.handleSize, this.handleSize);
-    this.upperRightRect = new Rectangle(x + width - this.handleSize / 2, y - this.handleSize / 2, this.handleSize, this.handleSize);
-    this.lowerLeftRect = new Rectangle(x - this.handleSize / 2, y + height - this.handleSize / 2, this.handleSize, this.handleSize);
-    this.lowerRightRect = new Rectangle(x + width - this.handleSize / 2, y + height - this.handleSize / 2, this.handleSize, this.handleSize);
-    this.upperMidRect = new Rectangle(x + width / 2 - this.handleSize / 2, y - this.handleSize / 2, this.handleSize, this.handleSize);
-    this.lowerMidRect = new Rectangle(x + width / 2 - this.handleSize / 2, y + height - this.handleSize / 2, this.handleSize, this.handleSize);
-    this.leftMidRect = new Rectangle(x - this.handleSize / 2, y + height / 2 - this.handleSize / 2, this.handleSize, this.handleSize);
-    this.rightMidRect = new Rectangle(x + width - this.handleSize / 2, y + height / 2 - this.handleSize / 2, this.handleSize, this.handleSize);
+    this.resizeRects = {
+      upperLeft: new Rectangle(x - this.handleSize / 2, y - this.handleSize / 2, this.handleSize, this.handleSize),
+      upperRight: new Rectangle(x + width - this.handleSize / 2, y - this.handleSize / 2, this.handleSize, this.handleSize),
+      lowerLeft: new Rectangle(x - this.handleSize / 2, y + height - this.handleSize / 2, this.handleSize, this.handleSize),
+      lowerRight: new Rectangle(x + width - this.handleSize / 2, y + height - this.handleSize / 2, this.handleSize, this.handleSize),
+      upperMid: new Rectangle(x + width / 2 - this.handleSize / 2, y - this.handleSize / 2, this.handleSize, this.handleSize),
+      lowerMid: new Rectangle(x + width / 2 - this.handleSize / 2, y + height - this.handleSize / 2, this.handleSize, this.handleSize),
+      leftMid: new Rectangle(x - this.handleSize / 2, y + height / 2 - this.handleSize / 2, this.handleSize, this.handleSize),
+      rightMid: new Rectangle(x + width - this.handleSize / 2, y + height / 2 - this.handleSize / 2, this.handleSize, this.handleSize)
+    };
   }
 
   setSelected(selected: boolean): void {
@@ -80,22 +75,22 @@ export abstract class Block implements Movable {
   abstract getCopy(): Block;
 
   refreshView(): void {
-    this.upperLeftRect.x = this.x - this.handleOffset - this.handleSize / 2;
-    this.upperLeftRect.y = this.y - this.handleOffset - this.handleSize / 2;
-    this.upperRightRect.x = this.x + this.width + this.handleOffset - this.handleSize / 2;
-    this.upperRightRect.y = this.y - this.handleOffset - this.handleSize / 2;
-    this.lowerLeftRect.x = this.x - this.handleOffset - this.handleSize / 2;
-    this.lowerLeftRect.y = this.y + this.height + this.handleOffset - this.handleSize / 2;
-    this.lowerRightRect.x = this.x + this.width + this.handleOffset - this.handleSize / 2;
-    this.lowerRightRect.y = this.y + this.height + this.handleOffset - this.handleSize / 2;
-    this.upperMidRect.x = this.x + this.width / 2 - this.handleSize / 2;
-    this.upperMidRect.y = this.y - this.handleOffset - this.handleSize / 2;
-    this.lowerMidRect.x = this.x + this.width / 2 - this.handleSize / 2;
-    this.lowerMidRect.y = this.y + this.height + this.handleOffset - this.handleSize / 2;
-    this.leftMidRect.x = this.x - this.handleOffset - this.handleSize / 2;
-    this.leftMidRect.y = this.y + this.height / 2 - this.handleSize / 2;
-    this.rightMidRect.x = this.x + this.width + this.handleOffset - this.handleSize / 2;
-    this.rightMidRect.y = this.y + this.height / 2 - this.handleSize / 2;
+    this.resizeRects.upperLeft.x = this.x - this.handleOffset - this.handleSize / 2;
+    this.resizeRects.upperLeft.y = this.y - this.handleOffset - this.handleSize / 2;
+    this.resizeRects.upperRight.x = this.x + this.width + this.handleOffset - this.handleSize / 2;
+    this.resizeRects.upperRight.y = this.y - this.handleOffset - this.handleSize / 2;
+    this.resizeRects.lowerLeft.x = this.x - this.handleOffset - this.handleSize / 2;
+    this.resizeRects.lowerLeft.y = this.y + this.height + this.handleOffset - this.handleSize / 2;
+    this.resizeRects.lowerRight.x = this.x + this.width + this.handleOffset - this.handleSize / 2;
+    this.resizeRects.lowerRight.y = this.y + this.height + this.handleOffset - this.handleSize / 2;
+    this.resizeRects.upperMid.x = this.x + this.width / 2 - this.handleSize / 2;
+    this.resizeRects.upperMid.y = this.y - this.handleOffset - this.handleSize / 2;
+    this.resizeRects.lowerMid.x = this.x + this.width / 2 - this.handleSize / 2;
+    this.resizeRects.lowerMid.y = this.y + this.height + this.handleOffset - this.handleSize / 2;
+    this.resizeRects.leftMid.x = this.x - this.handleOffset - this.handleSize / 2;
+    this.resizeRects.leftMid.y = this.y + this.height / 2 - this.handleSize / 2;
+    this.resizeRects.rightMid.x = this.x + this.width + this.handleOffset - this.handleSize / 2;
+    this.resizeRects.rightMid.y = this.y + this.height / 2 - this.handleSize / 2;
   }
 
   abstract updateModel(): void;
@@ -253,36 +248,8 @@ export abstract class Block implements Movable {
     return this.contains(x, y);
   }
 
-  onUpperLeftRect(x: number, y: number): boolean {
-    return this.upperLeftRect.contains(x, y);
-  }
-
-  onUpperRightRect(x: number, y: number): boolean {
-    return this.upperRightRect.contains(x, y);
-  }
-
-  onLowerLeftRect(x: number, y: number): boolean {
-    return this.lowerLeftRect.contains(x, y);
-  }
-
-  onLowerRightRect(x: number, y: number): boolean {
-    return this.lowerRightRect.contains(x, y);
-  }
-
-  onUpperMidRect(x: number, y: number): boolean {
-    return this.upperMidRect.contains(x, y);
-  }
-
-  onLowerMidRect(x: number, y: number): boolean {
-    return this.lowerMidRect.contains(x, y);
-  }
-
-  onLeftMidRect(x: number, y: number): boolean {
-    return this.leftMidRect.contains(x, y);
-  }
-
-  onRightMidRect(x: number, y: number): boolean {
-    return this.rightMidRect.contains(x, y);
+  onResizeRect(which: string, x: number, y: number): boolean {
+    return this.resizeRects[which].contains(x, y);
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -349,40 +316,17 @@ export abstract class Block implements Movable {
     ctx.drawRoundedRect(this.x - this.handleOffset, this.y - this.handleOffset, this.width + 2 * this.handleOffset, this.height + 2 * this.handleOffset, this.radius);
     ctx.restore();
     // also draw resize rectangles
-    ctx.fillStyle = "white";
-    ctx.strokeStyle = "black";
-    ctx.beginPath();
-    ctx.rect(this.upperLeftRect.x, this.upperLeftRect.y, this.upperLeftRect.width, this.upperLeftRect.height);
-    ctx.fill();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.rect(this.upperRightRect.x, this.upperRightRect.y, this.upperRightRect.width, this.upperRightRect.height);
-    ctx.fill();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.rect(this.lowerLeftRect.x, this.lowerLeftRect.y, this.lowerLeftRect.width, this.lowerLeftRect.height);
-    ctx.fill();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.rect(this.lowerRightRect.x, this.lowerRightRect.y, this.lowerRightRect.width, this.lowerRightRect.height);
-    ctx.fill();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.rect(this.upperMidRect.x, this.upperMidRect.y, this.upperMidRect.width, this.upperMidRect.height);
-    ctx.fill();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.rect(this.lowerMidRect.x, this.lowerMidRect.y, this.lowerMidRect.width, this.lowerMidRect.height);
-    ctx.fill();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.rect(this.leftMidRect.x, this.leftMidRect.y, this.leftMidRect.width, this.leftMidRect.height);
-    ctx.fill();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.rect(this.rightMidRect.x, this.rightMidRect.y, this.rightMidRect.width, this.rightMidRect.height);
-    ctx.fill();
-    ctx.stroke();
+    for (let key in this.resizeRects) {
+      if (this.resizeRects.hasOwnProperty(key)) {
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "black";
+        ctx.beginPath();
+        let rect = this.resizeRects[key];
+        ctx.rect(rect.x, rect.y, rect.width, rect.height);
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
   }
 
   protected drawLabel(ctx: CanvasRenderingContext2D): void {

@@ -91,7 +91,7 @@ export class Port {
     let ay = this.arc.y + this.block.getY();
     ctx.lineWidth = iconic ? 1 : 2;
     this.arc.radius = iconic ? 2 : 5;
-    if (this.close && this.input) {
+    if (this.close && this.input && this.value == undefined) {
       let shade = ctx.createRadialGradient(ax, ay, this.arc.radius, ax, ay, 3 * this.arc.radius);
       shade.addColorStop(1, "gold");
       shade.addColorStop(0.25, "yellow");

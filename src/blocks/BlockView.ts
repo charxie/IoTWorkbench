@@ -37,6 +37,7 @@ export class BlockView {
 
   flowchart: Flowchart;
   private selectedMovable: Movable;
+  private selectedResizeName: string;
   private selectedBlock: Block;
   private selectedPort: Port;
   private selectedPortConnector: PortConnector;
@@ -48,9 +49,10 @@ export class BlockView {
   private overWhat: any;
   private contextMenuClickX: number;
   private contextMenuClickY: number;
-  private preventMainMouseEvent: boolean = false; // when a block is handling its own mouse events, set this flag true
+  private preventMainMouseEvent: boolean = false; // when a block is handling its own mouse events such as dragging a knob, set this flag true
   private touchStartTime: number;
   private static readonly longPressTime: number = 2000;
+  private static readonly resizeNames: string[] = ["upperLeft", "upperRight", "lowerLeft", "lowerRight", "upperMid", "lowerMid", "leftMid", "rightMid"];
 
   static State = class {
 
@@ -356,6 +358,7 @@ export class BlockView {
 
   private mouseDown(e: MouseEvent): void {
     this.selectedMovable = null;
+    this.selectedResizeName = null;
     this.selectedPort = null;
     // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
     let rect = this.canvas.getBoundingClientRect();
@@ -364,23 +367,34 @@ export class BlockView {
     if (this.selectedBlock != null) {
       this.selectedBlock.setSelected(false);
     }
-    for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
-      if (this.flowchart.blocks[i].onDraggableArea(x, y)) {
-        this.selectedBlock = this.flowchart.blocks[i];
-        this.selectedMovable = this.selectedBlock;
-        this.selectedBlock.setSelected(true);
-        break;
-      } else if (this.flowchart.blocks[i].contains(x, y)) {
-        this.selectedBlock = this.flowchart.blocks[i];
-        this.selectedBlock.setSelected(true);
-        break;
+    outerLoop1:
+      for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
+        let block = this.flowchart.blocks[i];
+        if (block.onDraggableArea(x, y)) {
+          this.selectedBlock = block;
+          this.selectedMovable = block;
+          this.selectedBlock.setSelected(true);
+          break;
+        } else if (block.contains(x, y)) {
+          this.selectedBlock = block;
+          this.selectedBlock.setSelected(true);
+          break;
+        } else {
+          for (let n of BlockView.resizeNames) {
+            if (block.onResizeRect(n, x, y)) {
+              this.selectedBlock = block;
+              this.selectedBlock.setSelected(true);
+              this.selectedResizeName = n;
+              break outerLoop1;
+            }
+          }
+        }
       }
-    }
     if (this.selectedMovable != null) {
       this.mouseDownRelativeX = x - this.selectedMovable.getX();
       this.mouseDownRelativeY = y - this.selectedMovable.getY();
     } else {
-      outerloop:
+      outerLoop2:
         for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
           let block = this.flowchart.blocks[n];
           for (let p of block.getPorts()) {
@@ -395,7 +409,7 @@ export class BlockView {
                 this.connectorOntheFly.x1 = p.x;
                 this.connectorOntheFly.y1 = p.y;
               }
-              break outerloop;
+              break outerLoop2;
             }
           }
         }
@@ -421,7 +435,7 @@ export class BlockView {
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
     if (this.selectedPort != null) {
-      outerloop:
+      outerLoop:
         for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
           let block = this.flowchart.blocks[n];
           for (let p of block.getPorts()) {
@@ -431,7 +445,7 @@ export class BlockView {
                 this.flowchart.traverse(this.selectedPort.getBlock());
                 this.flowchart.storeConnectorStates();
               }
-              break outerloop;
+              break outerLoop;
             }
           }
         }
@@ -454,43 +468,53 @@ export class BlockView {
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
     if (!this.preventMainMouseEvent) {
-      if (this.overWhat != null) {
-        if (this.overWhat instanceof Port) {
-          this.overWhat.setClose(false);
+      if (this.selectedMovable == null) { // if not moving an object, set the mouse cursor
+        if (this.overWhat != null) {
+          if (this.overWhat instanceof Port) {
+            this.overWhat.setClose(false);
+          }
+          this.overWhat = null;
         }
-        this.overWhat = null;
-      }
-      outerloop:
-        for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
-          let block = this.flowchart.blocks[n];
-          if (block.onLowerLeftRect(x, y)) {
-            this.overWhat = "Lower Left Resize";
-          } else if (block.onLowerRightRect(x, y)) {
-            this.overWhat = "Lower Right Resize";
-          } else if (block.onUpperLeftRect(x, y)) {
-            this.overWhat = "Upper Left Resize";
-          } else if (block.onUpperRightRect(x, y)) {
-            this.overWhat = "Upper Right Resize";
-          } else if (block.onUpperMidRect(x, y)) {
-            this.overWhat = "Upper Mid Resize";
-          } else if (block.onLowerMidRect(x, y)) {
-            this.overWhat = "Lower Mid Resize";
-          } else if (block.onLeftMidRect(x, y)) {
-            this.overWhat = "Left Mid Resize";
-          } else if (block.onRightMidRect(x, y)) {
-            this.overWhat = "Right Mid Resize";
-          } else if (block.onDraggableArea(x, y)) {
-            this.overWhat = block;
-            break;
-          } else {
-            for (let p of block.getPorts()) {
-              if (p.near(x - block.getX(), y - block.getY())) {
-                this.overWhat = p;
-                break outerloop;
+        outerloop:
+          for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
+            let block = this.flowchart.blocks[n];
+            if (block.onResizeRect("lowerLeft", x, y)) {
+              this.overWhat = "lowerLeft";
+              break;
+            } else if (block.onResizeRect("lowerRight", x, y)) {
+              this.overWhat = "lowerRight";
+              break;
+            } else if (block.onResizeRect("upperLeft", x, y)) {
+              this.overWhat = "upperLeft";
+              break;
+            } else if (block.onResizeRect("upperRight", x, y)) {
+              this.overWhat = "upperRight";
+              break;
+            } else if (block.onResizeRect("upperMid", x, y)) {
+              this.overWhat = "upperMid";
+              break;
+            } else if (block.onResizeRect("lowerMid", x, y)) {
+              this.overWhat = "lowerMid";
+              break;
+            } else if (block.onResizeRect("leftMid", x, y)) {
+              this.overWhat = "leftMid";
+              break;
+            } else if (block.onResizeRect("rightMid", x, y)) {
+              this.overWhat = "rightMid";
+              break;
+            } else if (block.onDraggableArea(x, y)) {
+              this.overWhat = block;
+              break;
+            } else {
+              for (let p of block.getPorts()) {
+                if (p.near(x - block.getX(), y - block.getY())) {
+                  this.overWhat = p;
+                  break outerloop;
+                }
               }
             }
           }
-        }
+      }
 
       if (this.selectedMovable != null) {
         this.moveTo(x, y, this.selectedMovable);
@@ -516,31 +540,35 @@ export class BlockView {
             this.overWhat.setClose(true);
           }
         }
-      }
-      if (this.overWhat == "Upper Left Resize") {
-        this.canvas.style.cursor = "nw-resize";
-      } else if (this.overWhat == "Upper Right Resize") {
-        this.canvas.style.cursor = "ne-resize";
-      } else if (this.overWhat == "Lower Left Resize") {
-        this.canvas.style.cursor = "sw-resize";
-      } else if (this.overWhat == "Lower Right Resize") {
-        this.canvas.style.cursor = "se-resize";
-      } else if (this.overWhat == "Upper Mid Resize") {
-        this.canvas.style.cursor = "n-resize";
-      } else if (this.overWhat == "Lower Mid Resize") {
-        this.canvas.style.cursor = "s-resize";
-      } else if (this.overWhat == "Left Mid Resize") {
-        this.canvas.style.cursor = "w-resize";
-      } else if (this.overWhat == "Right Mid Resize") {
-        this.canvas.style.cursor = "e-resize";
-      } else if (this.overWhat instanceof Port) {
-        this.canvas.style.cursor = this.overWhat.isInput() ? "default" : "grab";
-      } else if (this.overWhat instanceof Block) {
-        this.canvas.style.cursor = "move";
       } else {
-        this.canvas.style.cursor = this.selectedPort != null ? "grabbing" : "default";
+        if (this.selectedMovable == null) {  // if not moving an object, set cursor for mouse over
+          if (this.overWhat == "upperLeft") {
+            this.canvas.style.cursor = "nw-resize";
+          } else if (this.overWhat == "upperRight") {
+            this.canvas.style.cursor = "ne-resize";
+          } else if (this.overWhat == "lowerLeft") {
+            this.canvas.style.cursor = "sw-resize";
+          } else if (this.overWhat == "lowerRight") {
+            this.canvas.style.cursor = "se-resize";
+          } else if (this.overWhat == "upperMid") {
+            this.canvas.style.cursor = "n-resize";
+          } else if (this.overWhat == "lowerMid") {
+            this.canvas.style.cursor = "s-resize";
+          } else if (this.overWhat == "leftMid") {
+            this.canvas.style.cursor = "w-resize";
+          } else if (this.overWhat == "rightMid") {
+            this.canvas.style.cursor = "e-resize";
+          } else if (this.overWhat instanceof Port) {
+            this.canvas.style.cursor = this.overWhat.isInput() ? "default" : "grab";
+          } else if (this.overWhat instanceof Block) {
+            this.canvas.style.cursor = "move";
+          } else {
+            this.canvas.style.cursor = this.selectedPort != null ? "grabbing" : "default";
+          }
+        }
       }
     }
+
     for (let b of this.flowchart.blocks) {
       if (b.isSelected()) {
         if (b instanceof MomentarySwitch) { // special treatment for momentary switch
