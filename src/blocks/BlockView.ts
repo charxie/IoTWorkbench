@@ -46,7 +46,7 @@ export class BlockView {
   private draggedElementId: string;
   private connectorOntheFly: Connector;
   private gridSize: number = 100;
-  private overWhat: any;
+  private mouseOverPort: Port;
   private contextMenuClickX: number;
   private contextMenuClickY: number;
   private preventMainMouseEvent: boolean = false; // when a block is handling its own mouse events such as dragging a knob, set this flag true
@@ -467,55 +467,24 @@ export class BlockView {
     let rect = this.canvas.getBoundingClientRect();
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
-    if (!this.preventMainMouseEvent) {
-      if (this.selectedMovable == null) { // if not moving an object, set the mouse cursor
-        if (this.overWhat != null) {
-          if (this.overWhat instanceof Port) {
-            this.overWhat.setClose(false);
-          }
-          this.overWhat = null;
-        }
-        outerloop:
-          for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
-            let block = this.flowchart.blocks[n];
-            if (block.onResizeRect("lowerLeft", x, y)) {
-              this.overWhat = "lowerLeft";
-              break;
-            } else if (block.onResizeRect("lowerRight", x, y)) {
-              this.overWhat = "lowerRight";
-              break;
-            } else if (block.onResizeRect("upperLeft", x, y)) {
-              this.overWhat = "upperLeft";
-              break;
-            } else if (block.onResizeRect("upperRight", x, y)) {
-              this.overWhat = "upperRight";
-              break;
-            } else if (block.onResizeRect("upperMid", x, y)) {
-              this.overWhat = "upperMid";
-              break;
-            } else if (block.onResizeRect("lowerMid", x, y)) {
-              this.overWhat = "lowerMid";
-              break;
-            } else if (block.onResizeRect("leftMid", x, y)) {
-              this.overWhat = "leftMid";
-              break;
-            } else if (block.onResizeRect("rightMid", x, y)) {
-              this.overWhat = "rightMid";
-              break;
-            } else if (block.onDraggableArea(x, y)) {
-              this.overWhat = block;
-              break;
-            } else {
-              for (let p of block.getPorts()) {
-                if (p.near(x - block.getX(), y - block.getY())) {
-                  this.overWhat = p;
-                  break outerloop;
-                }
-              }
+    if (this.selectedMovable == null) {
+      if (this.mouseOverPort != null) { // clear the closeness flag for the previous mouse over port
+        this.mouseOverPort.setClose(false);
+        this.mouseOverPort = null;
+      }
+      outerloop: // find the current mouse over port
+        for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
+          let block = this.flowchart.blocks[n];
+          for (let p of block.getPorts()) {
+            if (p.near(x - block.getX(), y - block.getY())) {
+              this.mouseOverPort = p;
+              break outerloop;
             }
           }
-      }
+        }
+    }
 
+    if (!this.preventMainMouseEvent) {
       if (this.selectedMovable != null) {
         this.moveTo(x, y, this.selectedMovable);
       } else if (this.selectedPort != null) {
@@ -536,34 +505,51 @@ export class BlockView {
         } else {
           this.connectorOntheFly.x2 = e.offsetX;
           this.connectorOntheFly.y2 = e.offsetY;
-          if (this.overWhat instanceof Port) {
-            this.overWhat.setClose(true);
+          if (this.mouseOverPort != null) {
+            this.mouseOverPort.setClose(true);
           }
         }
       } else {
         if (this.selectedMovable == null) {  // if not moving an object, set cursor for mouse over
-          if (this.overWhat == "upperLeft") {
-            this.canvas.style.cursor = "nw-resize";
-          } else if (this.overWhat == "upperRight") {
-            this.canvas.style.cursor = "ne-resize";
-          } else if (this.overWhat == "lowerLeft") {
-            this.canvas.style.cursor = "sw-resize";
-          } else if (this.overWhat == "lowerRight") {
-            this.canvas.style.cursor = "se-resize";
-          } else if (this.overWhat == "upperMid") {
-            this.canvas.style.cursor = "n-resize";
-          } else if (this.overWhat == "lowerMid") {
-            this.canvas.style.cursor = "s-resize";
-          } else if (this.overWhat == "leftMid") {
-            this.canvas.style.cursor = "w-resize";
-          } else if (this.overWhat == "rightMid") {
-            this.canvas.style.cursor = "e-resize";
-          } else if (this.overWhat instanceof Port) {
-            this.canvas.style.cursor = this.overWhat.isInput() ? "default" : "grab";
-          } else if (this.overWhat instanceof Block) {
-            this.canvas.style.cursor = "move";
-          } else {
-            this.canvas.style.cursor = this.selectedPort != null ? "grabbing" : "default";
+          let cursorSet: boolean = false;
+          for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
+            let block = this.flowchart.blocks[n];
+            if (block.onResizeRect("lowerLeft", x, y)) {
+              this.canvas.style.cursor = "sw-resize";
+              cursorSet = true;
+            } else if (block.onResizeRect("lowerRight", x, y)) {
+              this.canvas.style.cursor = "se-resize";
+              cursorSet = true;
+            } else if (block.onResizeRect("upperLeft", x, y)) {
+              this.canvas.style.cursor = "nw-resize";
+              cursorSet = true;
+            } else if (block.onResizeRect("upperRight", x, y)) {
+              this.canvas.style.cursor = "ne-resize";
+              cursorSet = true;
+            } else if (block.onResizeRect("upperMid", x, y)) {
+              this.canvas.style.cursor = "n-resize";
+              cursorSet = true;
+            } else if (block.onResizeRect("lowerMid", x, y)) {
+              this.canvas.style.cursor = "s-resize";
+              cursorSet = true;
+            } else if (block.onResizeRect("leftMid", x, y)) {
+              this.canvas.style.cursor = "w-resize";
+              cursorSet = true;
+            } else if (block.onResizeRect("rightMid", x, y)) {
+              this.canvas.style.cursor = "e-resize";
+              cursorSet = true;
+            } else if (block.onDraggableArea(x, y)) {
+              this.canvas.style.cursor = "move";
+              cursorSet = true;
+            }
+            if (cursorSet) break;
+          }
+          if (!cursorSet) {
+            if (this.mouseOverPort != null) {
+              this.canvas.style.cursor = this.mouseOverPort.isInput() ? "default" : "grab";
+            } else {
+              this.canvas.style.cursor = this.selectedPort != null ? "grabbing" : "default";
+            }
           }
         }
       }
