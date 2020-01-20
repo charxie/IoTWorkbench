@@ -342,6 +342,7 @@ export class Grapher extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.graphMargin.top = 10;
     this.graphMargin.bottom = 30;
     this.graphMargin.left = 40;

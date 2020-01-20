@@ -109,6 +109,7 @@ export class ItemSelector extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.halfHeight = this.height / 2;
     this.portI.setY(this.height / 2);
     this.portO.setX(this.width);

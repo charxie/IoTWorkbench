@@ -91,6 +91,7 @@ export class TurnoutSwitch extends FunctionBlock {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.portX.setY(this.height / 2);
     this.portT.setX(this.width);
     this.portT.setY(this.height / 3);

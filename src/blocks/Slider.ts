@@ -141,6 +141,7 @@ export class Slider extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.halfHeight = this.height / 2;
     this.trackLeft = this.x + 8;
     this.trackRight = this.x + this.width - 8;

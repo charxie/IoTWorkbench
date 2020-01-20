@@ -83,6 +83,7 @@ export class ToggleSwitch extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.xMargin = this.iconic ? 8 : 24;
     this.yMargin = this.iconic ? 2 : 6;
     this.halfHeight = this.height / 2;

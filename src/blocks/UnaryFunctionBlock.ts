@@ -74,6 +74,7 @@ export class UnaryFunctionBlock extends FunctionBlock {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.portX.setY(this.height / 2);
     this.portR.setX(this.width);
     this.portR.setY(this.height / 2);

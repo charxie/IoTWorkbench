@@ -221,6 +221,7 @@ export class WorkerBlock extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.portI.setY(this.height / 2);
     this.portO.setX(this.width);
     this.portO.setY(this.height / 2);

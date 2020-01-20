@@ -192,6 +192,7 @@ export class Beeper extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.updateModel();
     let dh = (this.height - this.barHeight) / 4;
     this.portI.setY(this.barHeight + dh);

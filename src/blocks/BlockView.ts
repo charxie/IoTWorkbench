@@ -463,7 +463,23 @@ export class BlockView {
       outerloop:
         for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
           let block = this.flowchart.blocks[n];
-          if (block.onDraggableArea(x, y)) {
+          if (block.onLowerLeftRect(x, y)) {
+            this.overWhat = "Lower Left Resize";
+          } else if (block.onLowerRightRect(x, y)) {
+            this.overWhat = "Lower Right Resize";
+          } else if (block.onUpperLeftRect(x, y)) {
+            this.overWhat = "Upper Left Resize";
+          } else if (block.onUpperRightRect(x, y)) {
+            this.overWhat = "Upper Right Resize";
+          } else if (block.onUpperMidRect(x, y)) {
+            this.overWhat = "Upper Mid Resize";
+          } else if (block.onLowerMidRect(x, y)) {
+            this.overWhat = "Lower Mid Resize";
+          } else if (block.onLeftMidRect(x, y)) {
+            this.overWhat = "Left Mid Resize";
+          } else if (block.onRightMidRect(x, y)) {
+            this.overWhat = "Right Mid Resize";
+          } else if (block.onDraggableArea(x, y)) {
             this.overWhat = block;
             break;
           } else {
@@ -501,7 +517,23 @@ export class BlockView {
           }
         }
       }
-      if (this.overWhat instanceof Port) {
+      if (this.overWhat == "Upper Left Resize") {
+        this.canvas.style.cursor = "nw-resize";
+      } else if (this.overWhat == "Upper Right Resize") {
+        this.canvas.style.cursor = "ne-resize";
+      } else if (this.overWhat == "Lower Left Resize") {
+        this.canvas.style.cursor = "sw-resize";
+      } else if (this.overWhat == "Lower Right Resize") {
+        this.canvas.style.cursor = "se-resize";
+      } else if (this.overWhat == "Upper Mid Resize") {
+        this.canvas.style.cursor = "n-resize";
+      } else if (this.overWhat == "Lower Mid Resize") {
+        this.canvas.style.cursor = "s-resize";
+      } else if (this.overWhat == "Left Mid Resize") {
+        this.canvas.style.cursor = "w-resize";
+      } else if (this.overWhat == "Right Mid Resize") {
+        this.canvas.style.cursor = "e-resize";
+      } else if (this.overWhat instanceof Port) {
         this.canvas.style.cursor = this.overWhat.isInput() ? "default" : "grab";
       } else if (this.overWhat instanceof Block) {
         this.canvas.style.cursor = "move";

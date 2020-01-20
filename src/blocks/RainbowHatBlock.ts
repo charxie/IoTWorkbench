@@ -77,6 +77,7 @@ export class RainbowHatBlock extends HatBlock {
   }
 
   refreshView(): void {
+    super.refreshView();
   }
 
   updateModel(): void {

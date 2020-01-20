@@ -93,6 +93,7 @@ export class SeriesBlock extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.portS.setX(this.width);
     this.portS.setY(this.height / 2);
     this.portX.setY(this.height / 4);

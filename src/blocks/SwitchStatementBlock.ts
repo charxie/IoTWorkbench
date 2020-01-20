@@ -81,6 +81,7 @@ export class SwitchStatementBlock extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.portI.setY(this.height / 2);
     let dh = this.height / (this.cases.length + 1);
     for (let i = 0; i < this.cases.length; i++) {

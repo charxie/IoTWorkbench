@@ -33,6 +33,7 @@ export class LogicBlock extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.portA.setY(this.height / 3);
     this.portB.setY(this.height * 2 / 3);
     this.portR.setX(this.width);

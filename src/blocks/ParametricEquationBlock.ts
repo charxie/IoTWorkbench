@@ -95,6 +95,7 @@ export class ParametricEquationBlock extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.portT.setY(this.height / 2);
     this.portX.setX(this.width);
     this.portX.setY(this.height / 3);

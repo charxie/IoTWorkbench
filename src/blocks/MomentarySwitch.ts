@@ -69,6 +69,7 @@ export class MomentarySwitch extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.yMargin = this.iconic ? 2 : 6;
     this.halfHeight = this.height / 2;
     this.buttonRadius = this.halfHeight / 2 - this.yMargin;

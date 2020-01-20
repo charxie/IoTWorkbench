@@ -182,6 +182,7 @@ export class Sticker extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.updateModel();
     this.ports[0].setY(this.height / 2);
   }

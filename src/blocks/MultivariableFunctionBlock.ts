@@ -92,6 +92,7 @@ export class MultivariableFunctionBlock extends FunctionBlock {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.portR.setX(this.width);
     this.portR.setY(this.height / 2);
     let dh = this.height / (this.variables.length + 1);

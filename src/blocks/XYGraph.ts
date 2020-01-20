@@ -348,6 +348,7 @@ export class XYGraph extends Block {
   }
 
   refreshView(): void {
+    super.refreshView();
     this.graphMargin.top = 10;
     this.graphMargin.bottom = 40;
     this.graphMargin.left = 40;
