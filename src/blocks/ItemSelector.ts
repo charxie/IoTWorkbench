@@ -238,7 +238,7 @@ export class ItemSelector extends Block {
 
   private updateAll(): void {
     flowchart.traverse(this);
-    if (this.isExportedToGlobalVariable()) {
+    if (flowchart.isConnectedToGlobalVariable(this)) {
       flowchart.updateResults();
     }
     flowchart.storeBlockStates();
@@ -347,16 +347,6 @@ export class ItemSelector extends Block {
 
   mouseLeave(e: MouseEvent): void {
     flowchart.blockView.canvas.style.cursor = "default";
-  }
-
-  isExportedToGlobalVariable(): boolean {
-    let connectors = flowchart.getConnectorsWithOutput(this.portO);
-    if (connectors.length > 0) {
-      for (let c of connectors) {
-        if (c.getInput().getBlock() instanceof GlobalVariableBlock) return true;
-      }
-    }
-    return false;
   }
 
 }

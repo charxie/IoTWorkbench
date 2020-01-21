@@ -23,6 +23,7 @@ export class XYGraph extends Block {
   private yAxisLabel: string = "y";
   private graphWindowColor: string = "white";
   private lineColor: string = "black";
+  private lineType: string = "Solid";
   private graphSymbol: string = "None";
   private graphWindow: Rectangle;
   private barHeight: number;
@@ -44,6 +45,7 @@ export class XYGraph extends Block {
     readonly yAxisLabel: string;
     readonly graphWindowColor: string;
     readonly lineColor: string;
+    readonly lineType: string;
     readonly graphSymbol: string;
     readonly autoscale: boolean;
     readonly minimumXValue: number;
@@ -62,6 +64,7 @@ export class XYGraph extends Block {
       this.yAxisLabel = g.yAxisLabel;
       this.graphWindowColor = g.graphWindowColor;
       this.lineColor = g.lineColor;
+      this.lineType = g.lineType;
       this.graphSymbol = g.graphSymbol;
       this.autoscale = g.autoscale;
       this.minimumXValue = g.minimumXValue;
@@ -95,6 +98,7 @@ export class XYGraph extends Block {
     copy.yAxisLabel = this.yAxisLabel;
     copy.graphWindowColor = this.graphWindowColor;
     copy.lineColor = this.lineColor;
+    copy.lineType = this.lineType;
     copy.graphSymbol = this.graphSymbol;
     return copy;
   }
@@ -172,6 +176,14 @@ export class XYGraph extends Block {
 
   getLineColor(): string {
     return this.lineColor;
+  }
+
+  setLineType(lineType: string): void {
+    this.lineType = lineType;
+  }
+
+  getLineType(): string {
+    return this.lineType;
   }
 
   setGraphSymbol(graphSymbol: string): void {
@@ -261,25 +273,38 @@ export class XYGraph extends Block {
         let dy = ymax == ymin ? 1 : this.graphWindow.height / (ymax - ymin);
         ctx.save();
         ctx.translate(this.graphWindow.x, this.graphWindow.y + this.graphWindow.height);
-        ctx.beginPath();
-        ctx.moveTo((this.xPoints[0] - xmin) * dx, -(this.yPoints[0] - ymin) * dy);
-        for (let i = 0; i < length; i++) {
-          ctx.lineTo((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy);
+        if (this.lineType == "Solid") {
+          ctx.beginPath();
+          ctx.moveTo((this.xPoints[0] - xmin) * dx, -(this.yPoints[0] - ymin) * dy);
+          for (let i = 0; i < length; i++) {
+            ctx.lineTo((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy);
+          }
+          //ctx.closePath();
+          ctx.stroke();
         }
-        //ctx.closePath();
-        ctx.stroke();
 
         // draw symbols on top of the line
-        if (this.graphSymbol != "None") {
-          for (let i = 0; i < length; i++) {
-            ctx.beginPath();
-            ctx.arc((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy, 3, 0, 2 * Math.PI);
-            ctx.closePath();
-            ctx.fillStyle = "white";
-            ctx.fill();
-            ctx.fillStyle = "black";
-            ctx.stroke();
-          }
+        switch (this.graphSymbol) {
+          case "Circle":
+            for (let i = 0; i < length; i++) {
+              ctx.beginPath();
+              ctx.arc((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy, 3, 0, 2 * Math.PI);
+              ctx.closePath();
+              ctx.fillStyle = "white";
+              ctx.fill();
+              ctx.strokeStyle = "black";
+              ctx.stroke();
+            }
+            break;
+          case "Dot":
+            for (let i = 0; i < length; i++) {
+              ctx.beginPath();
+              ctx.arc((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy, 1.5, 0, 2 * Math.PI);
+              ctx.closePath();
+              ctx.fillStyle = "black";
+              ctx.fill();
+            }
+            break;
         }
 
         // draw axis tick marks and labels
@@ -342,9 +367,21 @@ export class XYGraph extends Block {
 
   updateModel(): void {
     let v = this.portX.getValue();
-    this.xPoints = Array.isArray(v) ? v : [v];
+    if (Array.isArray(v)) {
+      this.xPoints = v;
+    } else {
+      if (v != this.xPoints[this.xPoints.length - 1]) {
+        this.xPoints.push(v);
+      }
+    }
     v = this.portY.getValue();
-    this.yPoints = Array.isArray(v) ? v : [v];
+    if (Array.isArray(v)) {
+      this.yPoints = v;
+    } else {
+      if (v != this.yPoints[this.yPoints.length - 1]) {
+        this.yPoints.push(v);
+      }
+    }
   }
 
   refreshView(): void {

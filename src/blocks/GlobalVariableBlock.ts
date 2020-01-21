@@ -9,6 +9,7 @@ import {flowchart} from "../Main";
 export class GlobalVariableBlock extends Block {
 
   private readonly portX: Port;
+  private readonly portO: Port;
   private key: string = "x";
   private value: any;
 
@@ -41,6 +42,8 @@ export class GlobalVariableBlock extends Block {
     this.color = "#808000";
     this.portX = new Port(this, true, "X", 0, this.height / 2, false);
     this.ports.push(this.portX);
+    this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
+    this.ports.push(this.portO);
     this.margin = 15;
   }
 
@@ -75,6 +78,8 @@ export class GlobalVariableBlock extends Block {
   refreshView(): void {
     super.refreshView();
     this.portX.setY(this.height / 2);
+    this.portO.setX(this.width);
+    this.portO.setY(this.height / 2);
   }
 
   updateModel(): void {
@@ -83,6 +88,8 @@ export class GlobalVariableBlock extends Block {
       this.value = x;
       flowchart.updateGlobalVariable(this.key, this.value);
     }
+    this.portO.setValue(x);
+    this.updateConnectors();
   }
 
 }

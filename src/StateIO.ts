@@ -113,6 +113,7 @@ export class StateIO {
           block.setYAxisLabel(state.yAxisLabel);
           block.setGraphWindowColor(state.graphWindowColor);
           block.setGraphSymbol(state.graphSymbol);
+          if (state.lineType != undefined) block.setLineType(state.lineType);
           if (state.lineColor != undefined) block.setLineColor(state.lineColor);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);

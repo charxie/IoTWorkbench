@@ -237,7 +237,7 @@ export class Slider extends Block {
 
   private updateAll(): void {
     flowchart.traverse(this);
-    if (this.isExportedToGlobalVariable()) {
+    if (flowchart.isConnectedToGlobalVariable(this)) {
       flowchart.updateResults();
     }
     flowchart.storeBlockStates();
@@ -326,16 +326,6 @@ export class Slider extends Block {
   mouseLeave(e: MouseEvent): void {
     this.knobGrabbed = false;
     flowchart.blockView.canvas.style.cursor = "default";
-  }
-
-  isExportedToGlobalVariable(): boolean {
-    let connectors = flowchart.getConnectorsWithOutput(this.ports[0]);
-    if (connectors.length > 0) {
-      for (let c of connectors) {
-        if (c.getInput().getBlock() instanceof GlobalVariableBlock) return true;
-      }
-    }
-    return false;
   }
 
 }

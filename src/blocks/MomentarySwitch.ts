@@ -160,10 +160,10 @@ export class MomentarySwitch extends Block {
     return this.button.contains(x, y);
   }
 
-  updateImmediately() : void {
+  updateImmediately(): void {
     this.updateModel();
     flowchart.traverse(this);
-    if (this.isExportedToGlobalVariable()) {
+    if (flowchart.isConnectedToGlobalVariable(this)) {
       flowchart.updateResults();
     }
   }
@@ -197,16 +197,6 @@ export class MomentarySwitch extends Block {
   mouseLeave(e: MouseEvent): void {
     this.pressed = false;
     flowchart.blockView.canvas.style.cursor = "default";
-  }
-
-  isExportedToGlobalVariable(): boolean {
-    let connectors = flowchart.getConnectorsWithOutput(this.ports[0]);
-    if (connectors.length > 0) {
-      for (let c of connectors) {
-        if (c.getInput().getBlock() instanceof GlobalVariableBlock) return true;
-      }
-    }
-    return false;
   }
 
 }

@@ -165,7 +165,7 @@ export class BlockViewContextMenu extends MyContextMenu {
     d.dialog({
       resizable: false,
       modal: true,
-      title: "Block View Settings",
+      title: "Flow View Settings",
       height: 300,
       width: 320,
       buttons: {

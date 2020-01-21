@@ -74,11 +74,20 @@ export class XYGraphContextMenu extends BlockContextMenu {
                   <td><input type="text" id="xygraph-maximum-y-value-field" style="width: 120px"></td>
                 </tr>
                 <tr>
+                  <td>Line Type:</td>
+                  <td>
+                    <select id="xygraph-line-type-selector" style="width: 120px">
+                      <option value="None">None</option>
+                      <option value="Solid" selected>Solid</option>
+                    </select>
+                </tr>
+                <tr>
                   <td>Symbol:</td>
                   <td>
                     <select id="xygraph-symbol-selector" style="width: 120px">
                       <option value="None">None</option>
                       <option value="Circle" selected>Circle</option>
+                      <option value="Dot" selected>Dot</option>
                     </select>
                 </tr>
                 <tr>
@@ -117,6 +126,8 @@ export class XYGraphContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("xygraph-name-field") as HTMLInputElement;
       nameInputElement.value = g.getName();
+      let lineTypeSelectElement = document.getElementById("xygraph-line-type-selector") as HTMLSelectElement;
+      lineTypeSelectElement.value = g.getLineType();
       let symbolSelectElement = document.getElementById("xygraph-symbol-selector") as HTMLSelectElement;
       symbolSelectElement.value = g.getGraphSymbol();
       let autoScaleRadioButton = document.getElementById("xygraph-auto-scale-radio-button") as HTMLInputElement;
@@ -146,6 +157,7 @@ export class XYGraphContextMenu extends BlockContextMenu {
       const okFunction = function () {
         g.setName(nameInputElement.value);
         g.setGraphSymbol(symbolSelectElement.value);
+        g.setLineType(lineTypeSelectElement.value);
         g.setXAxisLabel(xAxisLableInputElement.value);
         g.setYAxisLabel(yAxisLableInputElement.value);
         g.setGraphWindowColor(windowColorInputElement.value);
