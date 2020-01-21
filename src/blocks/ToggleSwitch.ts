@@ -242,9 +242,11 @@ export class ToggleSwitch extends Block {
   }
 
   mouseUp(e: MouseEvent): void {
-    this.updateAll();
+    if (this.knobGrabbed) {
+      this.updateAll();
+      this.knobGrabbed = false;
+    }
     this.knob.x = this.knob.x < (this.trackMin + this.trackMax) / 2 ? this.trackMin : this.trackMax;
-    this.knobGrabbed = false;
     flowchart.blockView.canvas.style.cursor = "default";
   }
 

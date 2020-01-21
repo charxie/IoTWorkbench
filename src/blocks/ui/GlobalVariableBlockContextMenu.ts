@@ -98,8 +98,8 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
         if (success) {
           block.refreshView();
           flowchart.blockView.requestDraw();
-          flowchart.updateResults(); // global variable must update the results globally
           flowchart.updateGlobalVariable(block.getKey(), block.getValue());
+          flowchart.updateResults(); // global variable must update the results globally
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');
