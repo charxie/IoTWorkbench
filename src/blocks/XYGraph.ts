@@ -25,6 +25,7 @@ export class XYGraph extends Block {
   private lineColor: string = "black";
   private lineType: string = "Solid";
   private graphSymbol: string = "None";
+  private graphSymbolColor: string = "lightgray";
   private graphWindow: Rectangle;
   private barHeight: number;
   private readonly graphMargin = {
@@ -47,6 +48,7 @@ export class XYGraph extends Block {
     readonly lineColor: string;
     readonly lineType: string;
     readonly graphSymbol: string;
+    readonly graphSymbolColor: string;
     readonly autoscale: boolean;
     readonly minimumXValue: number;
     readonly maximumXValue: number;
@@ -66,6 +68,7 @@ export class XYGraph extends Block {
       this.lineColor = g.lineColor;
       this.lineType = g.lineType;
       this.graphSymbol = g.graphSymbol;
+      this.graphSymbolColor = g.graphSymbolColor;
       this.autoscale = g.autoscale;
       this.minimumXValue = g.minimumXValue;
       this.maximumXValue = g.maximumXValue;
@@ -100,6 +103,7 @@ export class XYGraph extends Block {
     copy.lineColor = this.lineColor;
     copy.lineType = this.lineType;
     copy.graphSymbol = this.graphSymbol;
+    copy.graphSymbolColor = this.graphSymbolColor;
     return copy;
   }
 
@@ -192,6 +196,14 @@ export class XYGraph extends Block {
 
   getGraphSymbol(): string {
     return this.graphSymbol;
+  }
+
+  setGraphSymbolColor(graphSymbolColor: string): void {
+    this.graphSymbolColor = graphSymbolColor;
+  }
+
+  getGraphSymbolColor(): string {
+    return this.graphSymbolColor;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -290,9 +302,9 @@ export class XYGraph extends Block {
               ctx.beginPath();
               ctx.arc((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy, 3, 0, 2 * Math.PI);
               ctx.closePath();
-              ctx.fillStyle = "white";
+              ctx.fillStyle = this.graphSymbolColor;
               ctx.fill();
-              ctx.strokeStyle = "black";
+              ctx.strokeStyle = this.lineColor;
               ctx.stroke();
             }
             break;
@@ -301,7 +313,7 @@ export class XYGraph extends Block {
               ctx.beginPath();
               ctx.arc((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy, 1.5, 0, 2 * Math.PI);
               ctx.closePath();
-              ctx.fillStyle = "black";
+              ctx.fillStyle = this.graphSymbolColor;
               ctx.fill();
             }
             break;

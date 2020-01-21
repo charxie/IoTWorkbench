@@ -115,6 +115,7 @@ export class StateIO {
           block.setGraphSymbol(state.graphSymbol);
           if (state.lineType != undefined) block.setLineType(state.lineType);
           if (state.lineColor != undefined) block.setLineColor(state.lineColor);
+          if (state.graphSymbolColor != undefined) block.setGraphSymbolColor(state.graphSymbolColor);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");

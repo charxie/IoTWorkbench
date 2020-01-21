@@ -82,6 +82,10 @@ export class XYGraphContextMenu extends BlockContextMenu {
                     </select>
                 </tr>
                 <tr>
+                  <td>Line Color:</td>
+                  <td><input type="text" id="xygraph-line-color-field" style="width: 120px"></td>
+                </tr>
+                <tr>
                   <td>Symbol:</td>
                   <td>
                     <select id="xygraph-symbol-selector" style="width: 120px">
@@ -89,6 +93,10 @@ export class XYGraphContextMenu extends BlockContextMenu {
                       <option value="Circle" selected>Circle</option>
                       <option value="Dot" selected>Dot</option>
                     </select>
+                </tr>
+                <tr>
+                  <td>Symbol Color:</td>
+                  <td><input type="text" id="xygraph-symbol-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>X-Axis Label:</td>
@@ -101,10 +109,6 @@ export class XYGraphContextMenu extends BlockContextMenu {
                 <tr>
                   <td>Window Color:</td>
                   <td><input type="text" id="xygraph-window-color-field" style="width: 120px"></td>
-                </tr>
-                <tr>
-                  <td>Line Color:</td>
-                  <td><input type="text" id="xygraph-line-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
@@ -128,8 +132,12 @@ export class XYGraphContextMenu extends BlockContextMenu {
       nameInputElement.value = g.getName();
       let lineTypeSelectElement = document.getElementById("xygraph-line-type-selector") as HTMLSelectElement;
       lineTypeSelectElement.value = g.getLineType();
+      let lineColorInputElement = document.getElementById("xygraph-line-color-field") as HTMLInputElement;
+      lineColorInputElement.value = g.getLineColor();
       let symbolSelectElement = document.getElementById("xygraph-symbol-selector") as HTMLSelectElement;
       symbolSelectElement.value = g.getGraphSymbol();
+      let symbolColorInputElement = document.getElementById("xygraph-symbol-color-field") as HTMLInputElement;
+      symbolColorInputElement.value = g.getGraphSymbolColor();
       let autoScaleRadioButton = document.getElementById("xygraph-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("xygraph-fixed-scale-radio-button") as HTMLInputElement;
@@ -148,8 +156,6 @@ export class XYGraphContextMenu extends BlockContextMenu {
       yAxisLableInputElement.value = g.getYAxisLabel();
       let windowColorInputElement = document.getElementById("xygraph-window-color-field") as HTMLInputElement;
       windowColorInputElement.value = g.getGraphWindowColor();
-      let lineColorInputElement = document.getElementById("xygraph-line-color-field") as HTMLInputElement;
-      lineColorInputElement.value = g.getLineColor();
       let widthInputElement = document.getElementById("xygraph-width-field") as HTMLInputElement;
       widthInputElement.value = g.getWidth().toString();
       let heightInputElement = document.getElementById("xygraph-height-field") as HTMLInputElement;
@@ -162,6 +168,7 @@ export class XYGraphContextMenu extends BlockContextMenu {
         g.setYAxisLabel(yAxisLableInputElement.value);
         g.setGraphWindowColor(windowColorInputElement.value);
         g.setLineColor(lineColorInputElement.value);
+        g.setGraphSymbolColor(symbolColorInputElement.value);
         g.setAutoScale(autoScaleRadioButton.checked);
         let success = true;
         let message;
@@ -237,6 +244,7 @@ export class XYGraphContextMenu extends BlockContextMenu {
       yAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       windowColorInputElement.addEventListener("keyup", enterKeyUp);
       lineColorInputElement.addEventListener("keyup", enterKeyUp);
+      symbolColorInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
