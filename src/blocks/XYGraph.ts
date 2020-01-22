@@ -309,6 +309,16 @@ export class XYGraph extends Block {
               ctx.stroke();
             }
             break;
+          case "Square":
+            for (let i = 0; i < length; i++) {
+              ctx.beginPath();
+              ctx.rect((this.xPoints[i] - xmin) * dx - 2, -(this.yPoints[i] - ymin) * dy - 2, 4, 4);
+              ctx.fillStyle = this.graphSymbolColor;
+              ctx.fill();
+              ctx.strokeStyle = this.lineColor;
+              ctx.stroke();
+            }
+            break;
           case "Dot":
             for (let i = 0; i < length; i++) {
               ctx.beginPath();

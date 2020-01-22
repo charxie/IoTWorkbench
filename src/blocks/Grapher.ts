@@ -22,8 +22,10 @@ export class Grapher extends Block {
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private graphWindowColor: string = "white";
+  private lineType: string = "Solid";
   private lineColor: string = "black";
   private graphSymbol: string = "Circle";
+  private graphSymbolColor: string = "white";
   private graphWindow: Rectangle;
   private barHeight: number;
   private readonly graphMargin = {
@@ -43,11 +45,13 @@ export class Grapher extends Block {
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly graphWindowColor: string;
+    readonly lineType: string;
     readonly lineColor: string;
     readonly autoscale: boolean;
     readonly minimumValue: number;
     readonly maximumValue: number;
     readonly graphSymbol: string;
+    readonly graphSymbolColor: string;
 
     constructor(grapher: Grapher) {
       this.name = grapher.name;
@@ -59,11 +63,13 @@ export class Grapher extends Block {
       this.xAxisLabel = grapher.xAxisLabel;
       this.yAxisLabel = grapher.yAxisLabel;
       this.graphWindowColor = grapher.graphWindowColor;
+      this.lineType = grapher.lineType;
       this.lineColor = grapher.lineColor;
       this.autoscale = grapher.autoscale;
       this.minimumValue = grapher.minimumValue;
       this.maximumValue = grapher.maximumValue;
       this.graphSymbol = grapher.graphSymbol;
+      this.graphSymbolColor = grapher.graphSymbolColor;
     }
   };
 
@@ -91,6 +97,8 @@ export class Grapher extends Block {
     copy.yAxisLabel = this.yAxisLabel;
     copy.graphWindowColor = this.graphWindowColor;
     copy.graphSymbol = this.graphSymbol;
+    copy.graphSymbolColor = this.graphSymbolColor;
+    copy.lineType = this.lineType;
     copy.lineColor = this.lineColor;
     return copy;
   }
@@ -154,12 +162,28 @@ export class Grapher extends Block {
     return this.lineColor;
   }
 
+  setLineType(lineType: string): void {
+    this.lineType = lineType;
+  }
+
+  getLineType(): string {
+    return this.lineType;
+  }
+
   setGraphSymbol(graphSymbol: string): void {
     this.graphSymbol = graphSymbol;
   }
 
   getGraphSymbol(): string {
     return this.graphSymbol;
+  }
+
+  setGraphSymbolColor(graphSymbolColor: string): void {
+    this.graphSymbolColor = graphSymbolColor;
+  }
+
+  getGraphSymbolColor(): string {
+    return this.graphSymbolColor;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -242,37 +266,58 @@ export class Grapher extends Block {
     let dx = this.graphWindow.width / (this.data.length - 1);
     let yOffset = 0.1 * this.graphWindow.height;
     let dy = (this.graphWindow.height - 2 * yOffset) / (max - min);
+    let tmpX;
+    let tmpY;
+    let horizontalAxisY = this.y + this.height - this.graphMargin.bottom;
 
     // draw the data line
     ctx.lineWidth = 1;
-    ctx.strokeStyle = this.lineColor;
-    ctx.font = "10px Arial";
-    ctx.fillStyle = "black";
-    ctx.beginPath();
-    let horizontalAxisY = this.y + this.height - this.graphMargin.bottom;
-    let tmpX = this.graphWindow.x;
-    let tmpY = yOffset + (this.data[0] - min) * dy;
-    ctx.moveTo(tmpX, horizontalAxisY - tmpY);
-    for (let i = 1; i < this.data.length; i++) {
-      tmpX = this.graphWindow.x + dx * i;
-      tmpY = yOffset + (this.data[i] - min) * dy;
-      ctx.lineTo(tmpX, horizontalAxisY - tmpY);
-    }
-    ctx.stroke();
-
-    // draw symbols on top of the line
-    if (this.graphSymbol != "None") {
-      for (let i = 0; i < this.data.length; i++) {
-        tmpX = this.graphWindow.x + dx * i;
-        tmpY = yOffset + (this.data[i] - min) * dy;
-        ctx.beginPath();
-        ctx.arc(tmpX, horizontalAxisY - tmpY, 3, 0, 2 * Math.PI);
-        ctx.closePath();
-        ctx.fillStyle = "white";
-        ctx.fill();
+    switch (this.lineType) {
+      case "Solid":
+        ctx.strokeStyle = this.lineColor;
+        ctx.font = "10px Arial";
         ctx.fillStyle = "black";
+        ctx.beginPath();
+        tmpX = this.graphWindow.x;
+        tmpY = yOffset + (this.data[0] - min) * dy;
+        ctx.moveTo(tmpX, horizontalAxisY - tmpY);
+        for (let i = 1; i < this.data.length; i++) {
+          tmpX = this.graphWindow.x + dx * i;
+          tmpY = yOffset + (this.data[i] - min) * dy;
+          ctx.lineTo(tmpX, horizontalAxisY - tmpY);
+        }
         ctx.stroke();
-      }
+        break;
+    }
+
+    ctx.lineWidth = 1;
+    // draw symbols on top of the line
+    switch (this.graphSymbol) { // put switch outside, though the code is longer, the performance is better
+      case "Circle":
+        for (let i = 0; i < this.data.length; i++) {
+          tmpX = this.graphWindow.x + dx * i;
+          tmpY = yOffset + (this.data[i] - min) * dy;
+          ctx.beginPath();
+          ctx.arc(tmpX, horizontalAxisY - tmpY, 3, 0, 2 * Math.PI);
+          ctx.closePath();
+          ctx.fillStyle = this.graphSymbolColor;
+          ctx.fill();
+          ctx.strokeStyle = this.lineColor;
+          ctx.stroke();
+        }
+        break;
+      case "Square":
+        for (let i = 0; i < this.data.length; i++) {
+          tmpX = this.graphWindow.x + dx * i;
+          tmpY = yOffset + (this.data[i] - min) * dy;
+          ctx.beginPath();
+          ctx.rect(tmpX - 2, horizontalAxisY - tmpY - 2, 4, 4);
+          ctx.fillStyle = this.graphSymbolColor;
+          ctx.fill();
+          ctx.strokeStyle = this.lineColor;
+          ctx.stroke();
+        }
+        break;
     }
 
     // draw x-axis tick marks

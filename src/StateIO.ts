@@ -101,7 +101,9 @@ export class StateIO {
           if (state.yAxisLabel != undefined) block.setYAxisLabel(state.yAxisLabel);
           if (state.graphWindowColor != undefined) block.setGraphWindowColor(state.graphWindowColor);
           if (state.graphSymbol != undefined) block.setGraphSymbol(state.graphSymbol);
+          if (state.lineType != undefined) block.setLineType(state.lineType);
           if (state.lineColor != undefined) block.setLineColor(state.lineColor);
+          if (state.graphSymbolColor != undefined) block.setGraphSymbolColor(state.graphSymbolColor);
         } else if (block instanceof XYGraph) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);

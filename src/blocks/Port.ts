@@ -108,7 +108,7 @@ export class Port {
         multiInputCase = false;
       }
     }
-    if (this.close && this.input && (flowchart.getConnectorWithInput(this) == null || multiInputCase)) {
+    if (this.close && this.input && (multiInputCase || flowchart.getConnectorWithInput(this) == null)) {
       let shade = ctx.createRadialGradient(ax, ay, this.arc.radius, ax, ay, 3 * this.arc.radius);
       shade.addColorStop(1, "gold");
       shade.addColorStop(0.25, "yellow");

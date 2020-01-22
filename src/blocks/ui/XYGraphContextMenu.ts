@@ -86,12 +86,13 @@ export class XYGraphContextMenu extends BlockContextMenu {
                   <td><input type="text" id="xygraph-line-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
-                  <td>Symbol:</td>
+                  <td>Symbol Type:</td>
                   <td>
                     <select id="xygraph-symbol-selector" style="width: 120px">
                       <option value="None">None</option>
                       <option value="Circle" selected>Circle</option>
-                      <option value="Dot" selected>Dot</option>
+                      <option value="Square">Square</option>
+                      <option value="Dot">Dot</option>
                     </select>
                 </tr>
                 <tr>
@@ -162,13 +163,13 @@ export class XYGraphContextMenu extends BlockContextMenu {
       heightInputElement.value = g.getHeight().toString();
       const okFunction = function () {
         g.setName(nameInputElement.value);
-        g.setGraphSymbol(symbolSelectElement.value);
         g.setLineType(lineTypeSelectElement.value);
+        g.setLineColor(lineColorInputElement.value);
+        g.setGraphSymbol(symbolSelectElement.value);
+        g.setGraphSymbolColor(symbolColorInputElement.value);
         g.setXAxisLabel(xAxisLableInputElement.value);
         g.setYAxisLabel(yAxisLableInputElement.value);
         g.setGraphWindowColor(windowColorInputElement.value);
-        g.setLineColor(lineColorInputElement.value);
-        g.setGraphSymbolColor(symbolColorInputElement.value);
         g.setAutoScale(autoScaleRadioButton.checked);
         let success = true;
         let message;

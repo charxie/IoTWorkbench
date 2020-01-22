@@ -66,12 +66,30 @@ export class GrapherContextMenu extends BlockContextMenu {
                   <td><input type="text" id="grapher-maximum-value-field" style="width: 120px"></td>
                 </tr>
                 <tr>
-                  <td>Symbol:</td>
+                  <td>Line Type:</td>
+                  <td>
+                    <select id="grapher-line-type-selector" style="width: 120px">
+                      <option value="None">None</option>
+                      <option value="Solid" selected>Solid</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Line Color:</td>
+                  <td><input type="text" id="grapher-line-color-field" style="width: 120px"></td>
+                </tr>
+                <tr>
+                  <td>Symbol Type:</td>
                   <td>
                     <select id="grapher-symbol-selector" style="width: 120px">
                       <option value="None">None</option>
                       <option value="Circle" selected>Circle</option>
+                      <option value="Square">Square</option>
                     </select>
+                </tr>
+                <tr>
+                  <td>Symbol Color:</td>
+                  <td><input type="text" id="grapher-symbol-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>X-Axis Label:</td>
@@ -84,10 +102,6 @@ export class GrapherContextMenu extends BlockContextMenu {
                 <tr>
                   <td>Window Color:</td>
                   <td><input type="text" id="grapher-window-color-field" style="width: 120px"></td>
-                </tr>
-                <tr>
-                  <td>Line Color:</td>
-                  <td><input type="text" id="grapher-line-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
@@ -109,6 +123,8 @@ export class GrapherContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("grapher-name-field") as HTMLInputElement;
       nameInputElement.value = g.getName();
+      let lineTypeSelectElement = document.getElementById("grapher-line-type-selector") as HTMLSelectElement;
+      lineTypeSelectElement.value = g.getLineType();
       let symbolSelectElement = document.getElementById("grapher-symbol-selector") as HTMLSelectElement;
       symbolSelectElement.value = g.getGraphSymbol();
       let autoScaleRadioButton = document.getElementById("grapher-auto-scale-radio-button") as HTMLInputElement;
@@ -127,17 +143,21 @@ export class GrapherContextMenu extends BlockContextMenu {
       windowColorInputElement.value = g.getGraphWindowColor();
       let lineColorInputElement = document.getElementById("grapher-line-color-field") as HTMLInputElement;
       lineColorInputElement.value = g.getLineColor();
+      let symbolColorInputElement = document.getElementById("grapher-symbol-color-field") as HTMLInputElement;
+      symbolColorInputElement.value = g.getGraphSymbolColor();
       let widthInputElement = document.getElementById("grapher-width-field") as HTMLInputElement;
       widthInputElement.value = g.getWidth().toString();
       let heightInputElement = document.getElementById("grapher-height-field") as HTMLInputElement;
       heightInputElement.value = g.getHeight().toString();
       const okFunction = function () {
         g.setName(nameInputElement.value);
-        g.setGraphSymbol(symbolSelectElement.value);
         g.setXAxisLabel(xAxisLableInputElement.value);
         g.setYAxisLabel(yAxisLableInputElement.value);
-        g.setGraphWindowColor(windowColorInputElement.value);
+        g.setLineType(lineTypeSelectElement.value);
         g.setLineColor(lineColorInputElement.value);
+        g.setGraphSymbol(symbolSelectElement.value);
+        g.setGraphSymbolColor(symbolColorInputElement.value);
+        g.setGraphWindowColor(windowColorInputElement.value);
         g.setAutoScale(autoScaleRadioButton.checked);
         let success = true;
         let message;
@@ -195,6 +215,7 @@ export class GrapherContextMenu extends BlockContextMenu {
       yAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       windowColorInputElement.addEventListener("keyup", enterKeyUp);
       lineColorInputElement.addEventListener("keyup", enterKeyUp);
+      symbolColorInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
