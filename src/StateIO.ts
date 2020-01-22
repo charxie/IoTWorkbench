@@ -72,6 +72,7 @@ export class StateIO {
           block.setOutputType(state.outputType ? state.outputType : "Natural Number");
           block.setInterval(state.interval);
           if (state.repeatTimes) block.setRepeatTimes(state.repeatTimes);
+          if (state.drawImmediately) block.setDrawImmediately(state.drawImmediately);
         } else if (block instanceof ItemSelector) {
           block.setName(state.name);
           block.setItems(state.items);

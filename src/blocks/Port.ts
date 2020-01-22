@@ -103,7 +103,7 @@ export class Port {
       ctx.arc(ax, ay, 3 * this.arc.radius, this.arc.startAngle, this.arc.endAngle, this.arc.anticlockwise);
       ctx.fill();
     }
-    ctx.fillStyle = this.input ? "white" : "darkgray";
+    ctx.fillStyle = this.value == undefined ? ("darkgray") : (this.input ? "white" : "lightgreen");
     ctx.beginPath();
     ctx.arc(ax, ay, this.arc.radius, this.arc.startAngle, this.arc.endAngle, this.arc.anticlockwise);
     ctx.fill();

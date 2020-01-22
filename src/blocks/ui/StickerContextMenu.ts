@@ -76,8 +76,7 @@ export class StickerContextMenu extends BlockContextMenu {
     closeAllContextMenus();
     if (this.block instanceof Sticker) {
       const sticker = this.block;
-      const dialog = $("#modal-dialog");
-      const d = dialog.html(this.getPropertiesUI());
+      const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("sticker-name-field") as HTMLInputElement;
       nameInputElement.value = sticker.getName();
       let decimalsInputElement = document.getElementById("sticker-decimals-field") as HTMLInputElement;

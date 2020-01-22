@@ -21,6 +21,7 @@ export class WorkerBlock extends Block {
   private completed: boolean = false;
   private paused: boolean = false;
   private connectedToGlobalVariable: boolean = false;
+  private drawImmediately: boolean = false;
 
   static State = class {
     readonly name: string;
@@ -32,6 +33,7 @@ export class WorkerBlock extends Block {
     readonly outputType: string;
     readonly interval: number;
     readonly repeatTimes: number;
+    readonly drawImmediately: boolean;
 
     constructor(worker: WorkerBlock) {
       this.name = worker.name;
@@ -43,6 +45,7 @@ export class WorkerBlock extends Block {
       this.outputType = worker.outputType;
       this.interval = worker.interval;
       this.repeatTimes = worker.repeatTimes;
+      this.drawImmediately = worker.drawImmediately;
     }
   };
 
@@ -61,6 +64,7 @@ export class WorkerBlock extends Block {
     copy.interval = this.interval;
     copy.outputType = this.outputType;
     copy.repeatTimes = this.repeatTimes;
+    copy.drawImmediately = this.drawImmediately;
     return copy;
   }
 
@@ -92,6 +96,14 @@ export class WorkerBlock extends Block {
 
   getRepeatTimes(): number {
     return this.repeatTimes;
+  }
+
+  setDrawImmediately(drawImmediately: boolean): void {
+    this.drawImmediately = drawImmediately;
+  }
+
+  getDrawImmediately(): boolean {
+    return this.drawImmediately;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -201,7 +213,11 @@ export class WorkerBlock extends Block {
       } else {
         flowchart.updateResultsForBlock(that);
       }
-      flowchart.blockView.requestDraw();
+      if (that.drawImmediately) {
+        flowchart.blockView.draw();
+      } else {
+        flowchart.blockView.requestDraw();
+      }
     };
     this.paused = false;
     this.completed = this.count == this.repeatTimes;

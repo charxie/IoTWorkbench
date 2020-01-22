@@ -195,7 +195,7 @@ export class BlockView {
     });
   }
 
-  private draw(): void {
+  draw(): void {
     let ctx = this.canvas.getContext('2d');
     // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     ctx.fillStyle = this.getBackgroundColor(); // we have to do this otherwise its screenshot will not have a color background

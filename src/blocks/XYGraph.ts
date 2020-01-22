@@ -378,20 +378,20 @@ export class XYGraph extends Block {
   }
 
   updateModel(): void {
-    let v = this.portX.getValue();
-    if (Array.isArray(v)) {
-      this.xPoints = v;
+    let vx = this.portX.getValue();
+    if (Array.isArray(vx)) {
+      this.xPoints = vx;
     } else {
-      if (v != this.xPoints[this.xPoints.length - 1]) {
-        this.xPoints.push(v);
+      if (vx != this.xPoints[this.xPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
+        this.xPoints.push(vx);
       }
     }
-    v = this.portY.getValue();
-    if (Array.isArray(v)) {
-      this.yPoints = v;
+    let vy = this.portY.getValue();
+    if (Array.isArray(vy)) {
+      this.yPoints = vy;
     } else {
-      if (v != this.yPoints[this.yPoints.length - 1]) {
-        this.yPoints.push(v);
+      if (vy != this.yPoints[this.yPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
+        this.yPoints.push(vy);
       }
     }
   }

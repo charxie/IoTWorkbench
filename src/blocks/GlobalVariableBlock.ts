@@ -87,8 +87,8 @@ export class GlobalVariableBlock extends Block {
     if (x != undefined) {
       this.value = x;
       flowchart.updateGlobalVariable(this.key, this.value);
+      this.portO.setValue(x);
     }
-    this.portO.setValue(x);
     this.updateConnectors();
   }
 
