@@ -174,7 +174,8 @@ export class Flowchart {
 
   addPortConnector(output: Port, input: Port, uid: string): boolean {
     for (let c of this.connectors) {
-      if (c.getInput() == input) { // this input port is already taken
+      // this input port is already taken (except for a global variable block that can take multiple inputs)
+      if (c.getInput() == input && !(c.getInput().getBlock() instanceof GlobalVariableBlock)) {
         return false;
       }
     }

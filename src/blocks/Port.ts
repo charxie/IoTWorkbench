@@ -6,6 +6,8 @@ import {Block} from "./Block";
 import {Arc} from "../math/Arc";
 import {Point} from "../math/Point";
 import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
+import {flowchart} from "../Main";
+import {GlobalVariableBlock} from "./GlobalVariableBlock";
 
 export class Port {
 
@@ -91,7 +93,7 @@ export class Port {
     let ay = this.arc.y + this.block.getY();
     ctx.lineWidth = iconic ? 1 : 2;
     this.arc.radius = iconic ? 2 : 5;
-    if (this.close && this.input && this.value == undefined) {
+    if (this.close && this.input && (this.block instanceof GlobalVariableBlock || flowchart.getConnectorWithInput(this) == null)) {
       let shade = ctx.createRadialGradient(ax, ay, this.arc.radius, ax, ay, 3 * this.arc.radius);
       shade.addColorStop(1, "gold");
       shade.addColorStop(0.25, "yellow");

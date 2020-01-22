@@ -10,6 +10,9 @@ import {Util} from "../../Util";
 
 export class StickerContextMenu extends BlockContextMenu {
 
+  private dialogWidth: number = 400;
+  private dialogHeight: number = 550;
+
   constructor() {
     super();
     this.id = "sticker-context-menu";
@@ -73,7 +76,8 @@ export class StickerContextMenu extends BlockContextMenu {
     closeAllContextMenus();
     if (this.block instanceof Sticker) {
       const sticker = this.block;
-      const d = $("#modal-dialog").html(this.getPropertiesUI());
+      const dialog = $("#modal-dialog");
+      const d = dialog.html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("sticker-name-field") as HTMLInputElement;
       nameInputElement.value = sticker.getName();
       let decimalsInputElement = document.getElementById("sticker-decimals-field") as HTMLInputElement;
@@ -88,6 +92,7 @@ export class StickerContextMenu extends BlockContextMenu {
       widthInputElement.value = sticker.getWidth().toString();
       let heightInputElement = document.getElementById("sticker-height-field") as HTMLInputElement;
       heightInputElement.value = sticker.getHeight().toString();
+      let that = this;
       const okFunction = function () {
         sticker.setName(nameInputElement.value);
         sticker.setUserText(userTextInputElement.value.trim() == "" ? undefined : userTextInputElement.value);
@@ -155,11 +160,17 @@ export class StickerContextMenu extends BlockContextMenu {
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
-        resizable: false,
+        resizable: true,
         modal: true,
         title: sticker.getUid(),
-        height: 550,
-        width: 400,
+        height: that.dialogHeight,
+        width: that.dialogWidth,
+        resize: function (e, ui) {
+          // @ts-ignore
+          that.dialogWidth = ui.size.width;
+          // @ts-ignore
+          that.dialogHeight = ui.size.height;
+        },
         buttons: {
           'OK': okFunction,
           'Cancel': function () {
