@@ -41,6 +41,7 @@ export class GlobalVariableBlock extends Block {
     this.symbol = symbol;
     this.color = "#808000";
     this.portX = new Port(this, true, "X", 0, this.height / 2, false);
+    this.portX.setMultiInput(true);
     this.ports.push(this.portX);
     this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
     this.ports.push(this.portO);
@@ -87,8 +88,8 @@ export class GlobalVariableBlock extends Block {
     if (x != undefined) {
       this.value = x;
       flowchart.updateGlobalVariable(this.key, this.value);
-      this.portO.setValue(x);
     }
+    this.portO.setValue(x); // must set even when x is undefined
     this.updateConnectors();
   }
 

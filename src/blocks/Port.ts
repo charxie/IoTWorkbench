@@ -14,6 +14,7 @@ export class Port {
   private readonly block: Block;
   private value: any;
   private readonly input: boolean; // a port must be either input or output. If this is false, then this is a port for output.
+  private multiInput: boolean = false; // most ports allow only one input, but an input port of a global variable block allows multiple inputs
   private close: boolean; // when a connector end is close to this port
   private readonly uid: string;
   private arc: Arc;
@@ -65,6 +66,14 @@ export class Port {
     return this.close;
   }
 
+  setMultiInput(multiInput: boolean): void {
+    this.multiInput = multiInput;
+  }
+
+  hasMultiInput(): boolean {
+    return this.multiInput;
+  }
+
   setClose(close: boolean): void {
     this.close = close;
   }
@@ -93,7 +102,13 @@ export class Port {
     let ay = this.arc.y + this.block.getY();
     ctx.lineWidth = iconic ? 1 : 2;
     this.arc.radius = iconic ? 2 : 5;
-    if (this.close && this.input && (this.block instanceof GlobalVariableBlock || flowchart.getConnectorWithInput(this) == null)) {
+    let multiInputCase = this.hasMultiInput();
+    if (flowchart.blockView.getSelectedPort() != null) {
+      if (flowchart.getConnectorBetweenPorts(this, flowchart.blockView.getSelectedPort()) != null) {
+        multiInputCase = false;
+      }
+    }
+    if (this.close && this.input && (flowchart.getConnectorWithInput(this) == null || multiInputCase)) {
       let shade = ctx.createRadialGradient(ax, ay, this.arc.radius, ax, ay, 3 * this.arc.radius);
       shade.addColorStop(1, "gold");
       shade.addColorStop(0.25, "yellow");

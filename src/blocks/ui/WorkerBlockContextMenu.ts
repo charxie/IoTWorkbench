@@ -57,11 +57,6 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="worker-block-repeat-times-field" style="width: 120px"></td>
                 </tr>
                 <tr>
-                  <td>Draw:</td>
-                  <td><input type="radio" name="draw" id="worker-request-draw-radio-button" checked> Request
-                      <input type="radio" name="draw" id="worker-force-draw-radio-button"> Force</td>
-                </tr>
-                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="worker-block-width-field" style="width: 120px"></td>
                 </tr>
@@ -87,10 +82,6 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
       intervalInputElement.value = worker.getInterval().toString();
       let repeatTimesInputElement = document.getElementById("worker-block-repeat-times-field") as HTMLInputElement;
       repeatTimesInputElement.value = worker.getRepeatTimes().toString();
-      let requestDrawRadioButton = document.getElementById("worker-request-draw-radio-button") as HTMLInputElement;
-      requestDrawRadioButton.checked = !worker.getDrawImmediately();
-      let forceDrawRadioButton = document.getElementById("worker-force-draw-radio-button") as HTMLInputElement;
-      forceDrawRadioButton.checked = worker.getDrawImmediately();
       let widthInputElement = document.getElementById("worker-block-width-field") as HTMLInputElement;
       widthInputElement.value = worker.getWidth().toString();
       let heightInputElement = document.getElementById("worker-block-height-field") as HTMLInputElement;
@@ -98,7 +89,6 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
       const okFunction = function () {
         worker.setName(nameInputElement.value);
         worker.setOutputType(outputTypeSelectElement.value);
-        worker.setDrawImmediately(forceDrawRadioButton.checked);
         let success = true;
         let message;
         // set interval
@@ -159,7 +149,7 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: worker.getUid(),
-        height: 420,
+        height: 400,
         width: 350,
         buttons: {
           'OK': okFunction,

@@ -144,6 +144,15 @@ export class Flowchart {
 
   /* connector methods */
 
+  getConnectorBetweenPorts(input: Port, output: Port): PortConnector {
+    for (let connector of this.connectors) {
+      if (connector.getInput() == input && connector.getOutput() == output) {
+        return connector;
+      }
+    }
+    return null;
+  }
+
   getConnector(port: Port): PortConnector {
     for (let connector of this.connectors) {
       if (connector.getInput() == port || connector.getOutput() == port) {
@@ -174,8 +183,12 @@ export class Flowchart {
 
   addPortConnector(output: Port, input: Port, uid: string): boolean {
     for (let c of this.connectors) {
-      // this input port is already taken (except for a global variable block that can take multiple inputs)
-      if (c.getInput() == input && !(c.getInput().getBlock() instanceof GlobalVariableBlock)) {
+      // if this input port is already taken (except for one that can take multiple inputs)
+      if (c.getInput() == input && !c.getInput().hasMultiInput()) {
+        return false;
+      }
+      // if there is already a connector between the ports
+      if (c.getInput() == input && c.getOutput() == output) {
         return false;
       }
     }

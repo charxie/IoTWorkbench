@@ -34,6 +34,8 @@ export class XYGraph extends Block {
     top: <number>4,
     bottom: <number>4
   };
+  private tempX: number; // temporarily store x and y before pushing them into the points arrays
+  private tempY: number;
 
   static State = class {
     readonly name: string;
@@ -221,8 +223,9 @@ export class XYGraph extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "black";
-      let titleWidth = ctx.measureText(this.name).width;
-      ctx.fillText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
+      let title = this.name + " (" + this.xPoints.length + " points)";
+      let titleWidth = ctx.measureText(title).width;
+      ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
 
     // draw the graph area
@@ -291,7 +294,6 @@ export class XYGraph extends Block {
           for (let i = 0; i < length; i++) {
             ctx.lineTo((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy);
           }
-          //ctx.closePath();
           ctx.stroke();
         }
 
@@ -301,7 +303,6 @@ export class XYGraph extends Block {
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
               ctx.arc((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy, 3, 0, 2 * Math.PI);
-              ctx.closePath();
               ctx.fillStyle = this.graphSymbolColor;
               ctx.fill();
               ctx.strokeStyle = this.lineColor;
@@ -311,8 +312,7 @@ export class XYGraph extends Block {
           case "Dot":
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
-              ctx.arc((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy, 1.5, 0, 2 * Math.PI);
-              ctx.closePath();
+              ctx.rect((this.xPoints[i] - xmin) * dx - 1.5, -(this.yPoints[i] - ymin) * dy - 1.5, 3, 3);
               ctx.fillStyle = this.graphSymbolColor;
               ctx.fill();
             }
@@ -383,7 +383,7 @@ export class XYGraph extends Block {
       this.xPoints = vx;
     } else {
       if (vx != this.xPoints[this.xPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
-        this.xPoints.push(vx);
+        this.tempX = vx;
       }
     }
     let vy = this.portY.getValue();
@@ -391,8 +391,15 @@ export class XYGraph extends Block {
       this.yPoints = vy;
     } else {
       if (vy != this.yPoints[this.yPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
-        this.yPoints.push(vy);
+        this.tempY = vy;
       }
+    }
+    // console.log(this.xPoints.length+"="+this.yPoints.length);
+    if (this.tempX != undefined && this.tempY != undefined) {
+      this.xPoints.push(this.tempX);
+      this.yPoints.push(this.tempY);
+      this.tempX = undefined;
+      this.tempY = undefined;
     }
   }
 

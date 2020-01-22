@@ -181,6 +181,10 @@ export class BlockView {
     this.requestDraw();
   }
 
+  getSelectedPort(): Port {
+    return this.selectedPort;
+  }
+
   private addBlock(block: Block): void {
     this.flowchart.blocks.push(block);
     block.refreshView();
@@ -195,7 +199,7 @@ export class BlockView {
     });
   }
 
-  draw(): void {
+  private draw(): void {
     let ctx = this.canvas.getContext('2d');
     // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     ctx.fillStyle = this.getBackgroundColor(); // we have to do this otherwise its screenshot will not have a color background
