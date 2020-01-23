@@ -42,6 +42,7 @@ export class BlockView {
   private selectedBlock: Block;
   private selectedPort: Port;
   private selectedPortConnector: PortConnector;
+  private highlightedPortConnectors: PortConnector[];
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private originalRectangle: Rectangle;
@@ -55,6 +56,8 @@ export class BlockView {
   private touchStartTime: number;
   private static readonly longPressTime: number = 2000;
   private static readonly resizeNames: string[] = ["upperLeft", "upperRight", "lowerLeft", "lowerRight", "upperMid", "lowerMid", "leftMid", "rightMid"];
+  private static readonly dashedLine = [5, 5];
+  private static readonly solidLine = [];
 
   static State = class {
 
@@ -211,8 +214,12 @@ export class BlockView {
       c.draw(ctx);
     }
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "white";
     for (let c of this.flowchart.connectors) {
+      if (this.highlightedPortConnectors == null) {
+        ctx.strokeStyle = c.getOutput().getValue() == undefined ? "lightgray" : "white";
+      } else {
+        ctx.strokeStyle = this.highlightedPortConnectors.indexOf(c) != -1 ? "yellow" : "white";
+      }
       c.draw(ctx);
     }
     for (let b of this.flowchart.blocks) {
@@ -367,6 +374,7 @@ export class BlockView {
     this.selectedMovable = null;
     this.selectedResizeName = null;
     this.selectedPort = null;
+    this.highlightedPortConnectors = null;
     // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
     let rect = this.canvas.getBoundingClientRect();
     let x = e.clientX - rect.left;
@@ -443,7 +451,7 @@ export class BlockView {
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
     if (this.selectedPort != null) {
-      outerLoop:
+      outerLoop1:
         for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
           let block = this.flowchart.blocks[n];
           for (let p of block.getPorts()) {
@@ -453,11 +461,21 @@ export class BlockView {
                 this.flowchart.traverse(this.selectedPort.getBlock());
                 this.flowchart.storeConnectorStates();
               }
-              break outerLoop;
+              break outerLoop1;
             }
           }
         }
     }
+    outerLoop2:
+      for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
+        let block = this.flowchart.blocks[n];
+        for (let p of block.getPorts()) {
+          if (p.near(x - block.getX(), y - block.getY())) {
+            this.highlightedPortConnectors = flowchart.getConnectors(p);
+            break outerLoop2;
+          }
+        }
+      }
     this.selectedMovable = null;
     this.selectedPort = null;
     this.selectedResizeName = null;

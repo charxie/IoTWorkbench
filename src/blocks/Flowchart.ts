@@ -153,13 +153,14 @@ export class Flowchart {
     return null;
   }
 
-  getConnector(port: Port): PortConnector {
-    for (let connector of this.connectors) {
-      if (connector.getInput() == port || connector.getOutput() == port) {
-        return connector;
+  getConnectors(port: Port): PortConnector[] {
+    let connectors: PortConnector[] = [];
+    for (let c of this.connectors) {
+      if (c.getInput() == port || c.getOutput() == port) {
+        connectors.push(c);
       }
     }
-    return null;
+    return connectors;
   }
 
   getConnectorWithInput(input: Port): PortConnector {

@@ -321,6 +321,7 @@ export class Grapher extends Block {
     }
 
     // draw x-axis tick marks
+    ctx.fillStyle = "black";
     let spacing = Math.pow(10, Util.countDigits(this.data.length) - 1);
     for (let i = 0; i < this.data.length; i++) {
       if (i % spacing == 0) {
