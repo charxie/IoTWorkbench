@@ -120,6 +120,7 @@ export class BinaryFunctionBlock extends FunctionBlock {
           param[this.variable2Name] = y;
           this.portR.setValue(this.code.evaluate(param));
         }
+        this.updateConnectors();
       } catch (e) {
         console.log(e.stack);
         Util.showErrorMessage(e.toString());
@@ -128,7 +129,6 @@ export class BinaryFunctionBlock extends FunctionBlock {
     } else {
       this.portR.setValue(undefined);
     }
-    this.updateConnectors();
   }
 
 }

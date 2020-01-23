@@ -222,14 +222,14 @@ export class Space2D extends Block {
     if (!this.iconic) {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
-      ctx.fillStyle = "black";
+      ctx.fillStyle = "white";
       let title = this.name + " (" + this.xPoints.length + " points)";
       let titleWidth = ctx.measureText(title).width;
       ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
 
     // draw the space
-    ctx.fillStyle = "#EEEFFF";
+    ctx.fillStyle = "#EEFFFF";
     ctx.beginPath();
     ctx.fillHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
     ctx.lineWidth = 1;
