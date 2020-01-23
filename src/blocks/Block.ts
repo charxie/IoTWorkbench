@@ -316,6 +316,7 @@ export abstract class Block implements Movable {
     ctx.drawRoundedRect(this.x - this.handleOffset, this.y - this.handleOffset, this.width + 2 * this.handleOffset, this.height + 2 * this.handleOffset, this.radius);
     ctx.restore();
     // also draw resize rectangles
+    ctx.lineWidth = 0.5;
     for (let key in this.resizeRects) {
       if (this.resizeRects.hasOwnProperty(key)) {
         ctx.fillStyle = "white";

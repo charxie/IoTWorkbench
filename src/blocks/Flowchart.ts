@@ -22,7 +22,7 @@ import {TurnoutSwitch} from "./TurnoutSwitch";
 import {SeriesBlock} from "./SeriesBlock";
 import {ItemSelector} from "./ItemSelector";
 import {Grapher} from "./Grapher";
-import {XYGraph} from "./XYGraph";
+import {Space2D} from "./Space2D";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
@@ -145,9 +145,9 @@ export class Flowchart {
   /* connector methods */
 
   getConnectorBetweenPorts(input: Port, output: Port): PortConnector {
-    for (let connector of this.connectors) {
-      if (connector.getInput() == input && connector.getOutput() == output) {
-        return connector;
+    for (let c of this.connectors) {
+      if (c.getInput() == input && c.getOutput() == output) {
+        return c;
       }
     }
     return null;
@@ -164,9 +164,10 @@ export class Flowchart {
   }
 
   getConnectorWithInput(input: Port): PortConnector {
-    for (let connector of this.connectors) {
-      if (connector.getInput() == input) {
-        return connector;
+    for (let i = this.connectors.length - 1; i >= 0; i--) { // last come, first serve
+      let c = this.connectors[i];
+      if (c.getInput() == input) {
+        return c;
       }
     }
     return null;
@@ -365,8 +366,8 @@ export class Flowchart {
       case "Grapher":
         block = new Grapher(uid, name, x, y, 200, 160);
         break;
-      case "X-Y Graph":
-        block = new XYGraph(uid, name, x, y, 200, 220);
+      case "Space2D":
+        block = new Space2D(uid, name, x, y, 200, 220);
         break;
     }
     if (block != null) {
@@ -426,8 +427,8 @@ export class Flowchart {
         blockStates.push(new Beeper.State(b));
       } else if (b instanceof Grapher) {
         blockStates.push(new Grapher.State(b));
-      } else if (b instanceof XYGraph) {
-        blockStates.push(new XYGraph.State(b));
+      } else if (b instanceof Space2D) {
+        blockStates.push(new Space2D.State(b));
       } else if (b instanceof TurnoutSwitch) {
         blockStates.push(new TurnoutSwitch.State(b));
       } else if (b instanceof SwitchStatementBlock) {

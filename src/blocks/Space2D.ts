@@ -8,7 +8,7 @@ import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
 
-export class XYGraph extends Block {
+export class Space2D extends Block {
 
   private portX: Port;
   private portY: Port;
@@ -21,14 +21,14 @@ export class XYGraph extends Block {
   private autoscale: boolean = true;
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
-  private graphWindowColor: string = "white";
+  private spaceWindowColor: string = "white";
   private lineColor: string = "black";
   private lineType: string = "Solid";
-  private graphSymbol: string = "None";
-  private graphSymbolColor: string = "lightgray";
-  private graphWindow: Rectangle;
+  private dataSymbol: string = "None";
+  private dataSymbolColor: string = "lightgray";
+  private spaceWindow: Rectangle;
   private barHeight: number;
-  private readonly graphMargin = {
+  private readonly spaceMargin = {
     left: <number>4,
     right: <number>3,
     top: <number>4,
@@ -46,18 +46,18 @@ export class XYGraph extends Block {
     readonly height: number;
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
-    readonly graphWindowColor: string;
+    readonly spaceWindowColor: string;
     readonly lineColor: string;
     readonly lineType: string;
-    readonly graphSymbol: string;
-    readonly graphSymbolColor: string;
+    readonly dataSymbol: string;
+    readonly dataSymbolColor: string;
     readonly autoscale: boolean;
     readonly minimumXValue: number;
     readonly maximumXValue: number;
     readonly minimumYValue: number;
     readonly maximumYValue: number;
 
-    constructor(g: XYGraph) {
+    constructor(g: Space2D) {
       this.name = g.name;
       this.uid = g.uid;
       this.x = g.x;
@@ -66,11 +66,11 @@ export class XYGraph extends Block {
       this.height = g.height;
       this.xAxisLabel = g.xAxisLabel;
       this.yAxisLabel = g.yAxisLabel;
-      this.graphWindowColor = g.graphWindowColor;
+      this.spaceWindowColor = g.spaceWindowColor;
       this.lineColor = g.lineColor;
       this.lineType = g.lineType;
-      this.graphSymbol = g.graphSymbol;
-      this.graphSymbolColor = g.graphSymbolColor;
+      this.dataSymbol = g.dataSymbol;
+      this.dataSymbolColor = g.dataSymbolColor;
       this.autoscale = g.autoscale;
       this.minimumXValue = g.minimumXValue;
       this.maximumXValue = g.maximumXValue;
@@ -82,18 +82,18 @@ export class XYGraph extends Block {
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = name;
-    this.color = "#F0FFFF";
+    this.color = "#87CEFA";
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 3;
     this.portX = new Port(this, true, "X", 0, this.barHeight + dh, false)
     this.portY = new Port(this, true, "Y", 0, this.barHeight + 2 * dh, false)
     this.ports.push(this.portX);
     this.ports.push(this.portY);
-    this.graphWindow = new Rectangle(0, 0, 1, 1);
+    this.spaceWindow = new Rectangle(0, 0, 1, 1);
   }
 
   getCopy(): Block {
-    let copy = new XYGraph("X-Y Graph #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    let copy = new Space2D("Space2D #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.minimumXValue = this.minimumXValue;
     copy.maximumXValue = this.maximumXValue;
     copy.minimumYValue = this.minimumYValue;
@@ -101,11 +101,11 @@ export class XYGraph extends Block {
     copy.autoscale = this.autoscale;
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
-    copy.graphWindowColor = this.graphWindowColor;
+    copy.spaceWindowColor = this.spaceWindowColor;
     copy.lineColor = this.lineColor;
     copy.lineType = this.lineType;
-    copy.graphSymbol = this.graphSymbol;
-    copy.graphSymbolColor = this.graphSymbolColor;
+    copy.dataSymbol = this.dataSymbol;
+    copy.dataSymbolColor = this.dataSymbolColor;
     return copy;
   }
 
@@ -168,12 +168,12 @@ export class XYGraph extends Block {
     return this.yAxisLabel;
   }
 
-  setGraphWindowColor(graphWindowColor: string): void {
-    this.graphWindowColor = graphWindowColor;
+  setSpaceWindowColor(spaceWindowColor: string): void {
+    this.spaceWindowColor = spaceWindowColor;
   }
 
-  getGraphWindowColor(): string {
-    return this.graphWindowColor;
+  getSpaceWindowColor(): string {
+    return this.spaceWindowColor;
   }
 
   setLineColor(lineColor: string): void {
@@ -192,20 +192,20 @@ export class XYGraph extends Block {
     return this.lineType;
   }
 
-  setGraphSymbol(graphSymbol: string): void {
-    this.graphSymbol = graphSymbol;
+  setDataSymbol(dataSymbol: string): void {
+    this.dataSymbol = dataSymbol;
   }
 
-  getGraphSymbol(): string {
-    return this.graphSymbol;
+  getDataSymbol(): string {
+    return this.dataSymbol;
   }
 
-  setGraphSymbolColor(graphSymbolColor: string): void {
-    this.graphSymbolColor = graphSymbolColor;
+  setDataSymbolColor(dataSymbolColor: string): void {
+    this.dataSymbolColor = dataSymbolColor;
   }
 
-  getGraphSymbolColor(): string {
-    return this.graphSymbolColor;
+  getDataSymbolColor(): string {
+    return this.dataSymbolColor;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -228,19 +228,19 @@ export class XYGraph extends Block {
       ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
 
-    // draw the graph area
-    ctx.fillStyle = this.color;
+    // draw the space
+    ctx.fillStyle = "#EEEFFF";
     ctx.beginPath();
     ctx.fillHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
     ctx.lineWidth = 1;
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
     ctx.beginPath();
-    this.graphWindow.x = this.x + this.graphMargin.left;
-    this.graphWindow.y = this.y + this.barHeight + this.graphMargin.top;
-    this.graphWindow.width = this.width - this.graphMargin.left - this.graphMargin.right;
-    this.graphWindow.height = this.height - this.barHeight - this.graphMargin.top - this.graphMargin.bottom;
-    ctx.rect(this.graphWindow.x, this.graphWindow.y, this.graphWindow.width, this.graphWindow.height);
-    ctx.fillStyle = this.graphWindowColor;
+    this.spaceWindow.x = this.x + this.spaceMargin.left;
+    this.spaceWindow.y = this.y + this.barHeight + this.spaceMargin.top;
+    this.spaceWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
+    this.spaceWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
+    ctx.rect(this.spaceWindow.x, this.spaceWindow.y, this.spaceWindow.width, this.spaceWindow.height);
+    ctx.fillStyle = this.spaceWindowColor;
     ctx.fill();
     ctx.strokeStyle = "black";
     ctx.stroke();
@@ -284,10 +284,10 @@ export class XYGraph extends Block {
           ymin = this.minimumYValue;
           ymax = this.maximumYValue;
         }
-        let dx = xmax == xmin ? 1 : this.graphWindow.width / (xmax - xmin);
-        let dy = ymax == ymin ? 1 : this.graphWindow.height / (ymax - ymin);
+        let dx = xmax == xmin ? 1 : this.spaceWindow.width / (xmax - xmin);
+        let dy = ymax == ymin ? 1 : this.spaceWindow.height / (ymax - ymin);
         ctx.save();
-        ctx.translate(this.graphWindow.x, this.graphWindow.y + this.graphWindow.height);
+        ctx.translate(this.spaceWindow.x, this.spaceWindow.y + this.spaceWindow.height);
         if (this.lineType == "Solid") {
           ctx.beginPath();
           ctx.moveTo((this.xPoints[0] - xmin) * dx, -(this.yPoints[0] - ymin) * dy);
@@ -298,12 +298,12 @@ export class XYGraph extends Block {
         }
 
         // draw symbols on top of the line
-        switch (this.graphSymbol) {
+        switch (this.dataSymbol) {
           case "Circle":
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
               ctx.arc((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy, 3, 0, 2 * Math.PI);
-              ctx.fillStyle = this.graphSymbolColor;
+              ctx.fillStyle = this.dataSymbolColor;
               ctx.fill();
               ctx.strokeStyle = this.lineColor;
               ctx.stroke();
@@ -313,7 +313,7 @@ export class XYGraph extends Block {
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
               ctx.rect((this.xPoints[i] - xmin) * dx - 2, -(this.yPoints[i] - ymin) * dy - 2, 4, 4);
-              ctx.fillStyle = this.graphSymbolColor;
+              ctx.fillStyle = this.dataSymbolColor;
               ctx.fill();
               ctx.strokeStyle = this.lineColor;
               ctx.stroke();
@@ -323,7 +323,7 @@ export class XYGraph extends Block {
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
               ctx.rect((this.xPoints[i] - xmin) * dx - 1.5, -(this.yPoints[i] - ymin) * dy - 1.5, 3, 3);
-              ctx.fillStyle = this.graphSymbolColor;
+              ctx.fillStyle = this.dataSymbolColor;
               ctx.fill();
             }
             break;
@@ -333,7 +333,7 @@ export class XYGraph extends Block {
         ctx.font = "10px Arial";
         ctx.fillStyle = "black";
         let inx = (xmax - xmin) / 10;
-        dx = this.graphWindow.width / 10;
+        dx = this.spaceWindow.width / 10;
         for (let i = 0; i < 11; i++) {
           let tmpX = dx * i;
           ctx.beginPath();
@@ -344,7 +344,7 @@ export class XYGraph extends Block {
           ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
         }
         let iny = (ymax - ymin) / 10;
-        dy = this.graphWindow.height / 10;
+        dy = this.spaceWindow.height / 10;
         for (let i = 0; i < 11; i++) {
           let tmpY = -dy * i;
           ctx.beginPath();
@@ -374,10 +374,10 @@ export class XYGraph extends Block {
   private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
     ctx.font = "15px Arial";
     ctx.fillStyle = "black";
-    let horizontalAxisY = this.height - this.graphMargin.bottom;
-    ctx.fillText(this.xAxisLabel, this.graphWindow.x + (this.graphWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 30);
+    let horizontalAxisY = this.height - this.spaceMargin.bottom;
+    ctx.fillText(this.xAxisLabel, this.spaceWindow.x + (this.spaceWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 30);
     ctx.save();
-    ctx.translate(this.x + 15, this.graphWindow.y + (this.graphWindow.height + ctx.measureText(this.yAxisLabel).width) / 2 + 10);
+    ctx.translate(this.x + 15, this.spaceWindow.y + (this.spaceWindow.height + ctx.measureText(this.yAxisLabel).width) / 2 + 10);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(this.yAxisLabel, 0, 0);
     ctx.restore();
@@ -404,8 +404,8 @@ export class XYGraph extends Block {
         this.tempY = vy;
       }
     }
-    // console.log(this.xPoints.length+"="+this.yPoints.length);
     if (this.tempX != undefined && this.tempY != undefined) {
+      //console.log(this.xPoints.length + "=" + this.yPoints.length + ":" + this.tempX + "," + this.tempY);
       this.xPoints.push(this.tempX);
       this.yPoints.push(this.tempY);
       this.tempX = undefined;
@@ -415,10 +415,10 @@ export class XYGraph extends Block {
 
   refreshView(): void {
     super.refreshView();
-    this.graphMargin.top = 10;
-    this.graphMargin.bottom = 40;
-    this.graphMargin.left = 40;
-    this.graphMargin.right = 10;
+    this.spaceMargin.top = 10;
+    this.spaceMargin.bottom = 40;
+    this.spaceMargin.left = 40;
+    this.spaceMargin.right = 10;
     let dh = (this.height - this.barHeight) / 3;
     this.portX.setY(this.barHeight + dh);
     this.portY.setY(this.barHeight + 2 * dh);

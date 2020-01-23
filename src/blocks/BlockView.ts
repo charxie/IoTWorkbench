@@ -25,7 +25,7 @@ import {TurnoutSwitch} from "./TurnoutSwitch";
 import {SeriesBlock} from "./SeriesBlock";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {Grapher} from "./Grapher";
-import {XYGraph} from "./XYGraph";
+import {Space2D} from "./Space2D";
 import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
@@ -164,8 +164,8 @@ export class BlockView {
           case "grapher-block":
             that.addBlock(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));
             break;
-          case "xygraph-block":
-            that.addBlock(new XYGraph("X-Y Graph #" + timestamp, "X-Y Graph", x - 100, y - 110, 200, 220));
+          case "space2d-block":
+            that.addBlock(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));
             break;
         }
       }
@@ -780,9 +780,9 @@ export class BlockView {
     } else if (block instanceof Grapher) {
       contextMenus.grapher.block = block;
       menu = document.getElementById("grapher-context-menu") as HTMLMenuElement;
-    } else if (block instanceof XYGraph) {
-      contextMenus.xygraph.block = block;
-      menu = document.getElementById("xygraph-context-menu") as HTMLMenuElement;
+    } else if (block instanceof Space2D) {
+      contextMenus.space2d.block = block;
+      menu = document.getElementById("space2d-context-menu") as HTMLMenuElement;
     } else if (block instanceof GlobalVariableBlock) {
       contextMenus.globalVariableBlock.block = block;
       menu = document.getElementById("global-variable-block-context-menu") as HTMLMenuElement;

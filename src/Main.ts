@@ -53,7 +53,7 @@ import {StickerContextMenu} from "./blocks/ui/StickerContextMenu";
 import {GrapherContextMenu} from "./blocks/ui/GrapherContextMenu";
 import {WorkerBlockContextMenu} from "./blocks/ui/WorkerBlockContextMenu";
 import {ParametricEquationBlockContextMenu} from "./blocks/ui/ParametricEquationBlockContextMenu";
-import {XYGraphContextMenu} from "./blocks/ui/XYGraphContextMenu";
+import {Space2DContextMenu} from "./blocks/ui/Space2DContextMenu";
 import {GlobalVariableBlockContextMenu} from "./blocks/ui/GlobalVariableBlockContextMenu";
 import {MomentarySwitchContextMenu} from "./blocks/ui/MomentarySwitchContextMenu";
 import {BeeperContextMenu} from "./blocks/ui/BeeperContextMenu";
@@ -322,10 +322,10 @@ function setupContextMenuForBlock() {
   grapherContextMenu.addListeners();
   contextMenus.grapher = grapherContextMenu;
 
-  let xygraphContextMenu = new XYGraphContextMenu();
-  xygraphContextMenu.render("xygraph-context-menu-placeholder");
-  xygraphContextMenu.addListeners();
-  contextMenus.xygraph = xygraphContextMenu;
+  let space2dContextMenu = new Space2DContextMenu();
+  space2dContextMenu.render("space2d-context-menu-placeholder");
+  space2dContextMenu.addListeners();
+  contextMenus.space2d = space2dContextMenu;
 }
 
 function setupContextMenuForModel() {

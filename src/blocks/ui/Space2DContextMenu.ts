@@ -6,14 +6,14 @@ import $ from "jquery";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {Util} from "../../Util";
-import {XYGraph} from "../XYGraph";
+import {Space2D} from "../Space2D";
 import {PngSaver} from "../../tools/PngSaver";
 
-export class XYGraphContextMenu extends BlockContextMenu {
+export class Space2DContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "xygraph-context-menu";
+    this.id = "space2d-context-menu";
   }
 
   getUi(): string {
@@ -42,7 +42,7 @@ export class XYGraphContextMenu extends BlockContextMenu {
   private saveImageButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    PngSaver.saveAs((<XYGraph>this.block).toCanvas());
+    PngSaver.saveAs((<Space2D>this.block).toCanvas());
   }
 
   protected getPropertiesUI(): string {
@@ -50,45 +50,45 @@ export class XYGraphContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="xygraph-name-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-name-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Scale:</td>
-                  <td><input type="radio" name="scale" id="xygraph-auto-scale-radio-button" checked> Auto
-                      <input type="radio" name="scale" id="xygraph-fixed-scale-radio-button"> Fixed</td>
+                  <td><input type="radio" name="scale" id="space2d-auto-scale-radio-button" checked> Auto
+                      <input type="radio" name="scale" id="space2d-fixed-scale-radio-button"> Fixed</td>
                 </tr>
                 <tr>
                   <td>Minimum X Value:</td>
-                  <td><input type="text" id="xygraph-minimum-x-value-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-minimum-x-value-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Maximum X Value:</td>
-                  <td><input type="text" id="xygraph-maximum-x-value-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-maximum-x-value-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Minimum Y Value:</td>
-                  <td><input type="text" id="xygraph-minimum-y-value-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-minimum-y-value-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Maximum Y Value:</td>
-                  <td><input type="text" id="xygraph-maximum-y-value-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-maximum-y-value-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Line Type:</td>
                   <td>
-                    <select id="xygraph-line-type-selector" style="width: 120px">
+                    <select id="space2d-line-type-selector" style="width: 120px">
                       <option value="None">None</option>
                       <option value="Solid" selected>Solid</option>
                     </select>
                 </tr>
                 <tr>
                   <td>Line Color:</td>
-                  <td><input type="text" id="xygraph-line-color-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-line-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Symbol Type:</td>
                   <td>
-                    <select id="xygraph-symbol-selector" style="width: 120px">
+                    <select id="space2d-symbol-selector" style="width: 120px">
                       <option value="None">None</option>
                       <option value="Circle" selected>Circle</option>
                       <option value="Square">Square</option>
@@ -97,27 +97,27 @@ export class XYGraphContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Symbol Color:</td>
-                  <td><input type="text" id="xygraph-symbol-color-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-symbol-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>X-Axis Label:</td>
-                  <td><input type="text" id="xygraph-x-axis-label-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-x-axis-label-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Y-Axis Label:</td>
-                  <td><input type="text" id="xygraph-y-axis-label-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-y-axis-label-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Window Color:</td>
-                  <td><input type="text" id="xygraph-window-color-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-window-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="xygraph-width-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-width-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="xygraph-height-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-height-field" style="width: 120px"></td>
                 </tr>
               </table>
             </div>`;
@@ -126,50 +126,50 @@ export class XYGraphContextMenu extends BlockContextMenu {
   protected propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof XYGraph) {
+    if (this.block instanceof Space2D) {
       const g = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("xygraph-name-field") as HTMLInputElement;
+      let nameInputElement = document.getElementById("space2d-name-field") as HTMLInputElement;
       nameInputElement.value = g.getName();
-      let lineTypeSelectElement = document.getElementById("xygraph-line-type-selector") as HTMLSelectElement;
+      let lineTypeSelectElement = document.getElementById("space2d-line-type-selector") as HTMLSelectElement;
       lineTypeSelectElement.value = g.getLineType();
-      let lineColorInputElement = document.getElementById("xygraph-line-color-field") as HTMLInputElement;
+      let lineColorInputElement = document.getElementById("space2d-line-color-field") as HTMLInputElement;
       lineColorInputElement.value = g.getLineColor();
-      let symbolSelectElement = document.getElementById("xygraph-symbol-selector") as HTMLSelectElement;
-      symbolSelectElement.value = g.getGraphSymbol();
-      let symbolColorInputElement = document.getElementById("xygraph-symbol-color-field") as HTMLInputElement;
-      symbolColorInputElement.value = g.getGraphSymbolColor();
-      let autoScaleRadioButton = document.getElementById("xygraph-auto-scale-radio-button") as HTMLInputElement;
+      let symbolSelectElement = document.getElementById("space2d-symbol-selector") as HTMLSelectElement;
+      symbolSelectElement.value = g.getDataSymbol();
+      let symbolColorInputElement = document.getElementById("space2d-symbol-color-field") as HTMLInputElement;
+      symbolColorInputElement.value = g.getDataSymbolColor();
+      let autoScaleRadioButton = document.getElementById("space2d-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
-      let fixedScaleRadioButton = document.getElementById("xygraph-fixed-scale-radio-button") as HTMLInputElement;
+      let fixedScaleRadioButton = document.getElementById("space2d-fixed-scale-radio-button") as HTMLInputElement;
       fixedScaleRadioButton.checked = !g.getAutoScale();
-      let minimumXValueInputElement = document.getElementById("xygraph-minimum-x-value-field") as HTMLInputElement;
+      let minimumXValueInputElement = document.getElementById("space2d-minimum-x-value-field") as HTMLInputElement;
       minimumXValueInputElement.value = g.getMinimumXValue().toString();
-      let maximumXValueInputElement = document.getElementById("xygraph-maximum-x-value-field") as HTMLInputElement;
+      let maximumXValueInputElement = document.getElementById("space2d-maximum-x-value-field") as HTMLInputElement;
       maximumXValueInputElement.value = g.getMaximumXValue().toString();
-      let minimumYValueInputElement = document.getElementById("xygraph-minimum-y-value-field") as HTMLInputElement;
+      let minimumYValueInputElement = document.getElementById("space2d-minimum-y-value-field") as HTMLInputElement;
       minimumYValueInputElement.value = g.getMinimumYValue().toString();
-      let maximumYValueInputElement = document.getElementById("xygraph-maximum-y-value-field") as HTMLInputElement;
+      let maximumYValueInputElement = document.getElementById("space2d-maximum-y-value-field") as HTMLInputElement;
       maximumYValueInputElement.value = g.getMaximumYValue().toString();
-      let xAxisLableInputElement = document.getElementById("xygraph-x-axis-label-field") as HTMLInputElement;
+      let xAxisLableInputElement = document.getElementById("space2d-x-axis-label-field") as HTMLInputElement;
       xAxisLableInputElement.value = g.getXAxisLabel();
-      let yAxisLableInputElement = document.getElementById("xygraph-y-axis-label-field") as HTMLInputElement;
+      let yAxisLableInputElement = document.getElementById("space2d-y-axis-label-field") as HTMLInputElement;
       yAxisLableInputElement.value = g.getYAxisLabel();
-      let windowColorInputElement = document.getElementById("xygraph-window-color-field") as HTMLInputElement;
-      windowColorInputElement.value = g.getGraphWindowColor();
-      let widthInputElement = document.getElementById("xygraph-width-field") as HTMLInputElement;
+      let windowColorInputElement = document.getElementById("space2d-window-color-field") as HTMLInputElement;
+      windowColorInputElement.value = g.getSpaceWindowColor();
+      let widthInputElement = document.getElementById("space2d-width-field") as HTMLInputElement;
       widthInputElement.value = g.getWidth().toString();
-      let heightInputElement = document.getElementById("xygraph-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("space2d-height-field") as HTMLInputElement;
       heightInputElement.value = g.getHeight().toString();
       const okFunction = function () {
         g.setName(nameInputElement.value);
         g.setLineType(lineTypeSelectElement.value);
         g.setLineColor(lineColorInputElement.value);
-        g.setGraphSymbol(symbolSelectElement.value);
-        g.setGraphSymbolColor(symbolColorInputElement.value);
+        g.setDataSymbol(symbolSelectElement.value);
+        g.setDataSymbolColor(symbolColorInputElement.value);
         g.setXAxisLabel(xAxisLableInputElement.value);
         g.setYAxisLabel(yAxisLableInputElement.value);
-        g.setGraphWindowColor(windowColorInputElement.value);
+        g.setSpaceWindowColor(windowColorInputElement.value);
         g.setAutoScale(autoScaleRadioButton.checked);
         let success = true;
         let message;

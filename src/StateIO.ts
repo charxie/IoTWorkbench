@@ -16,7 +16,7 @@ import {UnaryFunctionBlock} from "./blocks/UnaryFunctionBlock";
 import {BinaryFunctionBlock} from "./blocks/BinaryFunctionBlock";
 import {TurnoutSwitch} from "./blocks/TurnoutSwitch";
 import {ParametricEquationBlock} from "./blocks/ParametricEquationBlock";
-import {XYGraph} from "./blocks/XYGraph";
+import {Space2D} from "./blocks/Space2D";
 import {GlobalVariableBlock} from "./blocks/GlobalVariableBlock";
 import {MomentarySwitch} from "./blocks/MomentarySwitch";
 import {Beeper} from "./blocks/Beeper";
@@ -104,7 +104,7 @@ export class StateIO {
           if (state.lineType != undefined) block.setLineType(state.lineType);
           if (state.lineColor != undefined) block.setLineColor(state.lineColor);
           if (state.graphSymbolColor != undefined) block.setGraphSymbolColor(state.graphSymbolColor);
-        } else if (block instanceof XYGraph) {
+        } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);
           block.setMaximumXValue(state.maximumXValue);
@@ -113,11 +113,11 @@ export class StateIO {
           block.setAutoScale(state.autoscale);
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
-          block.setGraphWindowColor(state.graphWindowColor);
-          block.setGraphSymbol(state.graphSymbol);
-          if (state.lineType != undefined) block.setLineType(state.lineType);
-          if (state.lineColor != undefined) block.setLineColor(state.lineColor);
-          if (state.graphSymbolColor != undefined) block.setGraphSymbolColor(state.graphSymbolColor);
+          block.setSpaceWindowColor(state.spaceWindowColor);
+          block.setDataSymbol(state.dataSymbol);
+          block.setDataSymbolColor(state.dataSymbolColor);
+          block.setLineType(state.lineType);
+          block.setLineColor(state.lineColor);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");

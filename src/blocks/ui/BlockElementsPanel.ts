@@ -17,7 +17,7 @@ import {ItemSelector} from "../ItemSelector";
 import {Grapher} from "../Grapher";
 import {WorkerBlock} from "../WorkerBlock";
 import {ParametricEquationBlock} from "../ParametricEquationBlock";
-import {XYGraph} from "../XYGraph";
+import {Space2D} from "../Space2D";
 import {GlobalVariableBlock} from "../GlobalVariableBlock";
 import {MomentarySwitch} from "../MomentarySwitch";
 import {Beeper} from "../Beeper";
@@ -56,7 +56,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="sticker-block" title="Text Display" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="beeper-block" title="Beeper" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="grapher-block" title="Grapher" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="xygraph-block" title="X-Y Graph" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="space2d-block" title="Space2D" width="45px" height="45px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -101,7 +101,7 @@ export class BlockElementsPanel {
     this.drawSticker("Sticker", "sticker-block");
     this.drawBeeper("Beeper", "beeper-block");
     this.drawGrapher("Grapher", "grapher-block");
-    this.drawXYGraph("XYGraph", "xygraph-block");
+    this.drawSpace2D("Space2D", "space2d-block");
     this.drawGlobalVariableBlock("Global Variable Block", "var", "global-variable-block");
     this.drawSeriesBlock("Series Block", "Series", "series-block");
     this.drawTurnoutSwitch("Turnout Switch", "Turnout", "turnout-switch-block");
@@ -173,10 +173,10 @@ export class BlockElementsPanel {
     block.draw(ctx);
   }
 
-  private drawXYGraph(name: string, canvasId: string): void {
+  private drawSpace2D(name: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new XYGraph("X-Y Graph Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    let block = new Space2D("Space2D Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }
