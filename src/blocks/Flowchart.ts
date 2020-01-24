@@ -28,7 +28,8 @@ import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
-import {closeAllContextMenus} from "../Main";
+import {closeAllContextMenus, flowchart} from "../Main";
+import {GlobalObjectBlock} from "./GlobalObjectBlock";
 
 export class Flowchart {
 
@@ -183,6 +184,15 @@ export class Flowchart {
     return connectors;
   }
 
+  removeAllConnectors(port: Port): void {
+    let connectors = this.getConnectors(port);
+    if (connectors != null) {
+      for (let c of connectors) {
+        flowchart.removePortConnector(c);
+      }
+    }
+  }
+
   addPortConnector(output: Port, input: Port, uid: string): boolean {
     for (let c of this.connectors) {
       // if this input port is already taken (except for one that can take multiple inputs)
@@ -330,6 +340,9 @@ export class Flowchart {
       case "Global Variable Block":
         block = new GlobalVariableBlock(uid, name, "var", x, y, 80, 80);
         break;
+      case "Global Object Block":
+        block = new GlobalObjectBlock(uid, name, "obj", x, y, 80, 120);
+        break;
       case "Series Block":
         block = new SeriesBlock(uid, x, y, 80, 80, name, "Series");
         break;
@@ -411,6 +424,8 @@ export class Flowchart {
         blockStates.push(new Slider.State(b));
       } else if (b instanceof GlobalVariableBlock) {
         blockStates.push(new GlobalVariableBlock.State(b));
+      } else if (b instanceof GlobalObjectBlock) {
+        blockStates.push(new GlobalObjectBlock.State(b));
       } else if (b instanceof SeriesBlock) {
         blockStates.push(new SeriesBlock.State(b));
       } else if (b instanceof WorkerBlock) {

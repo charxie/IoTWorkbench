@@ -16,7 +16,7 @@ export class GlobalVariableBlock extends Block {
   static State = class {
     readonly name: string;
     readonly key: string;
-    readonly value: number;
+    readonly value: any;
     readonly uid: string;
     readonly x: number;
     readonly y: number;
@@ -59,7 +59,7 @@ export class GlobalVariableBlock extends Block {
     flowchart.removeGlobalVariable(this.key);
   }
 
-  getKey(): any {
+  getKey(): string {
     return this.key;
   }
 

@@ -28,6 +28,7 @@ import {Grapher} from "./Grapher";
 import {Space2D} from "./Space2D";
 import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
+import {GlobalObjectBlock} from "./GlobalObjectBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
 import {Rectangle} from "../math/Rectangle";
@@ -121,6 +122,9 @@ export class BlockView {
             break;
           case "global-variable-block":
             that.addBlock(new GlobalVariableBlock("Global Variable Block #" + timestamp, "Global Variable Block", "var", x - 30, y - 40, 60, 80));
+            break;
+          case "global-object-block":
+            that.addBlock(new GlobalObjectBlock("Global Object Block #" + timestamp, "Global Object Block", "obj", x - 30, y - 60, 60, 120));
             break;
           case "series-block":
             that.addBlock(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
@@ -788,6 +792,9 @@ export class BlockView {
     } else if (block instanceof GlobalVariableBlock) {
       contextMenus.globalVariableBlock.block = block;
       menu = document.getElementById("global-variable-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof GlobalObjectBlock) {
+      contextMenus.globalObjectBlock.block = block;
+      menu = document.getElementById("global-object-block-context-menu") as HTMLMenuElement;
     } else {
       contextMenus.blockView.view = this;
       menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;

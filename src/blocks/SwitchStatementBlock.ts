@@ -47,6 +47,9 @@ export class SwitchStatementBlock extends Block {
   private setOutputPorts(): void {
     if (this.portO == undefined || this.portO.length != this.cases.length) {
       if (this.portO) {
+        for (let p of this.portO) { // disconnect all the port connectors as the ports will be recreated
+          flowchart.removeAllConnectors(p);
+        }
         for (let p of this.portO) {
           this.ports.pop();
         }

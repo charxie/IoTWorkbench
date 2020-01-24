@@ -8,7 +8,6 @@ import {NegationBlock} from "../NegationBlock";
 import {LogicBlock} from "../LogicBlock";
 import {ArithmeticBlock} from "../ArithmeticBlock";
 import {Slider} from "../Slider";
-import {FunctionBlock} from "../FunctionBlock";
 import {Sticker} from "../Sticker";
 import {ToggleSwitch} from "../ToggleSwitch";
 import {TurnoutSwitch} from "../TurnoutSwitch";
@@ -23,6 +22,7 @@ import {MomentarySwitch} from "../MomentarySwitch";
 import {Beeper} from "../Beeper";
 import {SwitchStatementBlock} from "../SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "../MultivariableFunctionBlock";
+import {GlobalObjectBlock} from "../GlobalObjectBlock";
 
 export class BlockElementsPanel {
 
@@ -66,6 +66,7 @@ export class BlockElementsPanel {
                 <table style="width: 100%">
                   <tr>
                   <td><canvas draggable="true" id="global-variable-block" title="Global Variable" width="45x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="global-object-block" title="Global Object" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="series-block" title="Series" width="45x" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
@@ -103,6 +104,7 @@ export class BlockElementsPanel {
     this.drawGrapher("Grapher", "grapher-block");
     this.drawSpace2D("Space2D", "space2d-block");
     this.drawGlobalVariableBlock("Global Variable Block", "var", "global-variable-block");
+    this.drawGlobalObjectBlock("Global Object Block", "obj", "global-object-block");
     this.drawSeriesBlock("Series Block", "Series", "series-block");
     this.drawTurnoutSwitch("Turnout Switch", "Turnout", "turnout-switch-block");
     this.drawSwitchStatementBlock("Switch Statement Block", "Switch", "switch-statement-block");
@@ -121,6 +123,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new GlobalVariableBlock("Global Variable Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawGlobalObjectBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new GlobalObjectBlock("Global Object Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

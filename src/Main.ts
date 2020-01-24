@@ -59,6 +59,7 @@ import {MomentarySwitchContextMenu} from "./blocks/ui/MomentarySwitchContextMenu
 import {BeeperContextMenu} from "./blocks/ui/BeeperContextMenu";
 import {SwitchStatementBlockContextMenu} from "./blocks/ui/SwitchStatementBlockContextMenu";
 import {MultivariableFunctionBlockContextMenu} from "./blocks/ui/MultivariableFunctionBlockContextMenu";
+import {GlobalObjectBlockContextMenu} from "./blocks/ui/GlobalObjectBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -231,6 +232,11 @@ function setupContextMenuForBlock() {
   globalVariableBlockContextMenu.render("global-variable-block-context-menu-placeholder");
   globalVariableBlockContextMenu.addListeners();
   contextMenus.globalVariableBlock = globalVariableBlockContextMenu;
+
+  let globalObjectBlockContextMenu = new GlobalObjectBlockContextMenu();
+  globalObjectBlockContextMenu.render("global-object-block-context-menu-placeholder");
+  globalObjectBlockContextMenu.addListeners();
+  contextMenus.globalObjectBlock = globalObjectBlockContextMenu;
 
   let seriesBlockContextMenu = new SeriesBlockContextMenu();
   seriesBlockContextMenu.render("series-block-context-menu-placeholder");

@@ -58,6 +58,9 @@ export class MultivariableFunctionBlock extends FunctionBlock {
     }
     if (this.portI == undefined || this.portI.length != this.variables.length || nameChanged) {
       if (this.portI) {
+        for (let p of this.portI) { // disconnect all the port connectors as the ports will be recreated
+          flowchart.removeAllConnectors(p);
+        }
         for (let p of this.portI) {
           this.ports.pop();
         }

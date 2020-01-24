@@ -22,6 +22,7 @@ import {MomentarySwitch} from "./blocks/MomentarySwitch";
 import {Beeper} from "./blocks/Beeper";
 import {SwitchStatementBlock} from "./blocks/SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./blocks/MultivariableFunctionBlock";
+import {GlobalObjectBlock} from "./blocks/GlobalObjectBlock";
 
 export class StateIO {
 
@@ -62,6 +63,10 @@ export class StateIO {
           block.setName(state.name);
           block.setKey(state.key);
           block.setValue(state.value);
+        } else if (block instanceof GlobalObjectBlock) {
+          block.setName(state.name);
+          block.setKeys(state.keys);
+          block.setValues(state.values);
         } else if (block instanceof SeriesBlock) {
           block.setName(state.name);
           block.setStart(state.start);
