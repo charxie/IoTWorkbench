@@ -412,8 +412,10 @@ export class Space2D extends Block {
       let vx = this.portX.getValue();
       if (vx != undefined) {
         if (Array.isArray(vx) && vx.length > 1) {
-          this.tempX = vx[0];
-          this.tempY = vx[1];
+          if (vx[0] != this.xPoints[this.xPoints.length - 1] || vx[1] != this.yPoints[this.yPoints.length - 1]) {
+            this.tempX = vx[0];
+            this.tempY = vx[1];
+          }
         }
       }
     } else { // dual input mode
