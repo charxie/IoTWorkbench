@@ -102,13 +102,28 @@ export class Port {
     let ay = this.arc.y + this.block.getY();
     ctx.lineWidth = iconic ? 1 : 2;
     this.arc.radius = iconic ? 2 : 5;
-    let multiInputCase = this.hasMultiInput();
-    if (flowchart.blockView.getSelectedPort() != null) {
-      if (flowchart.getConnectorBetweenPorts(this, flowchart.blockView.getSelectedPort()) != null) {
-        multiInputCase = false;
+    let allow = true;
+    let selectedPort = flowchart.blockView.getSelectedPort();
+    if (selectedPort != null) {
+      if (selectedPort.getBlock() === this.getBlock()) { // no connector between ports of the same block
+        allow = false;
       }
     }
-    if (this.close && this.input && (multiInputCase || flowchart.getConnectorWithInput(this) == null)) {
+    // check other conditions
+    if (true) {
+      if (this.hasMultiInput()) {
+        if (selectedPort != null) {
+          if (flowchart.getConnectorBetweenPorts(this, selectedPort) != null) {
+            allow = false;
+          }
+        }
+      } else {
+        if (flowchart.getConnectorWithInput(this) != null) {
+          allow = false;
+        }
+      }
+    }
+    if (this.close && this.input && allow) {
       let shade = ctx.createRadialGradient(ax, ay, this.arc.radius, ax, ay, 3 * this.arc.radius);
       shade.addColorStop(1, "gold");
       shade.addColorStop(0.25, "yellow");

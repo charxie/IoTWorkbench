@@ -455,7 +455,7 @@ export class BlockView {
         for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
           let block = this.flowchart.blocks[n];
           for (let p of block.getPorts()) {
-            if (p.isInput() && p.near(x - block.getX(), y - block.getY())) {
+            if (p !== this.selectedPort && p.getBlock() !== this.selectedPort.getBlock() && p.isInput() && p.near(x - block.getX(), y - block.getY())) {
               if (this.flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
                 sound.play();
                 this.flowchart.traverse(this.selectedPort.getBlock());
@@ -518,16 +518,18 @@ export class BlockView {
         if (this.selectedPort.isInput()) {
           if (this.selectedPortConnector) { // if the clicked port is an input and there is a connector to it
             let disconnectedBlock = this.selectedPort.getBlock();
-            flowchart.removePortConnector(this.selectedPortConnector);
-            this.selectedPort = this.selectedPortConnector.getOutput(); // switch the selected port to the output end of the selected connector
-            let p = this.selectedPort.getAbsolutePoint(); // this activates the connector on the fly that originates from the output end
-            this.connectorOntheFly.x1 = p.x;
-            this.connectorOntheFly.y1 = p.y;
-            this.connectorOntheFly.x2 = e.offsetX;
-            this.connectorOntheFly.y2 = e.offsetY;
-            this.selectedPortConnector.getInput().setValue(undefined);
-            this.selectedPortConnector = null;
-            flowchart.updateResultsForBlock(disconnectedBlock);
+            if (!this.selectedPort.near(x - disconnectedBlock.getX(), y - disconnectedBlock.getY())) { // if the mouse moves away from the port, detach the connector
+              flowchart.removePortConnector(this.selectedPortConnector);
+              this.selectedPort = this.selectedPortConnector.getOutput(); // switch the selected port to the output end of the selected connector
+              let p = this.selectedPort.getAbsolutePoint(); // this activates the connector on the fly that originates from the output end
+              this.connectorOntheFly.x1 = p.x;
+              this.connectorOntheFly.y1 = p.y;
+              this.connectorOntheFly.x2 = e.offsetX;
+              this.connectorOntheFly.y2 = e.offsetY;
+              this.selectedPortConnector.getInput().setValue(undefined);
+              this.selectedPortConnector = null;
+              flowchart.updateResultsForBlock(disconnectedBlock);
+            }
           }
         } else {
           this.connectorOntheFly.x2 = e.offsetX;
