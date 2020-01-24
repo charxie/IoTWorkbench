@@ -429,7 +429,7 @@ function restoreHats() {
             i = blockState.uid.indexOf("#") - 1;
             let blockName = blockState.uid.substring(0, i);
             let blockId = blockState.uid.substring(i);
-            if (blockName.startsWith(hatName) && blockId == hatId) { // find out the stored state of the HAT block
+            if (blockName.startsWith(hatName) && blockId === hatId) { // find out the stored state of the HAT block
               // restore the HAT block state after adding it here
               block.setX(blockState.x);
               block.setY(blockState.y);
@@ -460,9 +460,9 @@ function restoreHats() {
       if (lcs != null) {
         let lineChartStates = JSON.parse(lcs);
         for (let lineChartState of lineChartStates) {
-          if (lineChartState.uid == h.temperatureGraph.uid) {
+          if (lineChartState.uid === h.temperatureGraph.uid) {
             setLineChartState(h.temperatureGraph, lineChartState);
-          } else if (lineChartState.uid == h.pressureGraph.uid) {
+          } else if (lineChartState.uid === h.pressureGraph.uid) {
             setLineChartState(h.pressureGraph, lineChartState);
           }
         }

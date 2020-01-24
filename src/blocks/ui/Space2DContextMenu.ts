@@ -25,6 +25,9 @@ export class Space2DContextMenu extends BlockContextMenu {
                 <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
               </li>
               <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-erase-button"><i class="fas fa-eraser"></i><span class="menu-text">Erase</span></button>
+              </li>
+              <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-save-image-button"><i class="fas fa-camera"></i><span class="menu-text">Save Image</span></button>
               </li>
               <li class="menu-item">
@@ -35,8 +38,16 @@ export class Space2DContextMenu extends BlockContextMenu {
 
   addListeners(): void {
     super.addListeners();
+    let eraseButton = document.getElementById(this.id + "-erase-button");
+    eraseButton.addEventListener("click", this.eraseButtonClick.bind(this), false);
     let saveImageButton = document.getElementById(this.id + "-save-image-button");
     saveImageButton.addEventListener("click", this.saveImageButtonClick.bind(this), false);
+  }
+
+  private eraseButtonClick(e: MouseEvent): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    (<Space2D>this.block).erase();
   }
 
   private saveImageButtonClick(e: MouseEvent): void {

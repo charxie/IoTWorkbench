@@ -125,7 +125,7 @@ export abstract class Block implements Movable {
     for (let p of this.ports) {
       if (p.isInput()) continue;
       for (let c of flowchart.connectors) {
-        if (c.getOutput() == p) {
+        if (c.getOutput() === p) {
           blocks.push(c.getInput().getBlock());
         }
       }
@@ -139,7 +139,7 @@ export abstract class Block implements Movable {
     for (let p of this.ports) {
       if (!p.isInput()) continue;
       for (let c of flowchart.connectors) {
-        if (c.getInput() == p) {
+        if (c.getInput() === p) {
           blocks.push(c.getOutput().getBlock());
         }
       }
@@ -153,7 +153,7 @@ export abstract class Block implements Movable {
 
   getPort(uid: string): Port {
     for (let p of this.ports) {
-      if (p.getUid() == uid) {
+      if (p.getUid() === uid) {
         return p;
       }
     }

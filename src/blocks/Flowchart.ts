@@ -96,7 +96,7 @@ export class Flowchart {
   private findConnection(start: Block, end: Block): void {
     let outputTo = start.outputTo();
     for (let next of outputTo) {
-      if (next == end) {
+      if (next === end) {
         this.blockConnectionFlag = true;
         return;
       }
@@ -146,7 +146,7 @@ export class Flowchart {
 
   getConnectorBetweenPorts(input: Port, output: Port): PortConnector {
     for (let c of this.connectors) {
-      if (c.getInput() == input && c.getOutput() == output) {
+      if (c.getInput() === input && c.getOutput() === output) {
         return c;
       }
     }
@@ -156,7 +156,7 @@ export class Flowchart {
   getConnectors(port: Port): PortConnector[] {
     let connectors: PortConnector[] = [];
     for (let c of this.connectors) {
-      if (c.getInput() == port || c.getOutput() == port) {
+      if (c.getInput() === port || c.getOutput() === port) {
         connectors.push(c);
       }
     }
@@ -166,7 +166,7 @@ export class Flowchart {
   getConnectorWithInput(input: Port): PortConnector {
     for (let i = this.connectors.length - 1; i >= 0; i--) { // last come, first serve
       let c = this.connectors[i];
-      if (c.getInput() == input) {
+      if (c.getInput() === input) {
         return c;
       }
     }
@@ -176,7 +176,7 @@ export class Flowchart {
   getConnectorsWithOutput(output: Port): PortConnector[] {
     let connectors = [];
     for (let c of this.connectors) {
-      if (c.getOutput() == output) {
+      if (c.getOutput() === output) {
         connectors.push(c);
       }
     }
@@ -186,11 +186,11 @@ export class Flowchart {
   addPortConnector(output: Port, input: Port, uid: string): boolean {
     for (let c of this.connectors) {
       // if this input port is already taken (except for one that can take multiple inputs)
-      if (c.getInput() == input && !c.getInput().hasMultiInput()) {
+      if (c.getInput() === input && !c.getInput().hasMultiInput()) {
         return false;
       }
       // if there is already a connector between the ports
-      if (c.getInput() == input && c.getOutput() == output) {
+      if (c.getInput() === input && c.getOutput() === output) {
         return false;
       }
     }
@@ -210,7 +210,7 @@ export class Flowchart {
   removeBlock(uid: string) {
     let selectedBlock: Block = null;
     for (let b of this.blocks) {
-      if (uid == b.getUid()) {
+      if (uid === b.getUid()) {
         selectedBlock = b;
         break;
       }
@@ -221,7 +221,7 @@ export class Flowchart {
       for (let c of this.connectors) {
         let block1 = c.getInput().getBlock();
         let block2 = c.getOutput().getBlock();
-        if (block1 == selectedBlock || block2 == selectedBlock) {
+        if (block1 === selectedBlock || block2 === selectedBlock) {
           indicesOfConnectorsToRemove.push(this.connectors.indexOf(c));
           connectorsToRemove.push(c);
         }
@@ -269,7 +269,7 @@ export class Flowchart {
 
   getBlock(uid: string): Block {
     for (let b of this.blocks) {
-      if (b.getUid() == uid) {
+      if (b.getUid() === uid) {
         return b;
       }
     }

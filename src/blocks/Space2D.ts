@@ -112,6 +112,12 @@ export class Space2D extends Block {
   destroy(): void {
   }
 
+  erase(): void {
+    this.xPoints = [];
+    this.yPoints = [];
+    flowchart.blockView.requestDraw();
+  }
+
   setMinimumXValue(minimumXValue: number): void {
     this.minimumXValue = minimumXValue;
   }
@@ -284,11 +290,11 @@ export class Space2D extends Block {
           ymin = this.minimumYValue;
           ymax = this.maximumYValue;
         }
-        let dx = xmax == xmin ? 1 : this.spaceWindow.width / (xmax - xmin);
-        let dy = ymax == ymin ? 1 : this.spaceWindow.height / (ymax - ymin);
+        let dx = xmax === xmin ? 1 : this.spaceWindow.width / (xmax - xmin);
+        let dy = ymax === ymin ? 1 : this.spaceWindow.height / (ymax - ymin);
         ctx.save();
         ctx.translate(this.spaceWindow.x, this.spaceWindow.y + this.spaceWindow.height);
-        if (this.lineType == "Solid") {
+        if (this.lineType === "Solid") {
           ctx.beginPath();
           ctx.moveTo((this.xPoints[0] - xmin) * dx, -(this.yPoints[0] - ymin) * dy);
           for (let i = 0; i < length; i++) {
@@ -389,23 +395,27 @@ export class Space2D extends Block {
 
   updateModel(): void {
     let vx = this.portX.getValue();
-    if (Array.isArray(vx)) {
-      this.xPoints = vx;
-    } else {
-      if (vx != this.xPoints[this.xPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
-        this.tempX = vx;
+    if (vx != undefined) {
+      if (Array.isArray(vx)) {
+        this.xPoints = vx;
+      } else {
+        if (vx != this.xPoints[this.xPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
+          this.tempX = vx;
+        }
       }
     }
     let vy = this.portY.getValue();
-    if (Array.isArray(vy)) {
-      this.yPoints = vy;
-    } else {
-      if (vy != this.yPoints[this.yPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
-        this.tempY = vy;
+    if (vx != undefined) {
+      if (Array.isArray(vy)) {
+        this.yPoints = vy;
+      } else {
+        if (vy != this.yPoints[this.yPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
+          this.tempY = vy;
+        }
       }
     }
+    // console.log(this.xPoints.length + "=" + this.yPoints.length + ":" + this.tempX + "," + this.tempY);
     if (this.tempX != undefined && this.tempY != undefined) {
-      //console.log(this.xPoints.length + "=" + this.yPoints.length + ":" + this.tempX + "," + this.tempY);
       this.xPoints.push(this.tempX);
       this.yPoints.push(this.tempY);
       this.tempX = undefined;
@@ -422,7 +432,7 @@ export class Space2D extends Block {
     let dh = (this.height - this.barHeight) / 3;
     this.portX.setY(this.barHeight + dh);
     this.portY.setY(this.barHeight + 2 * dh);
-    this.updateModel();
+    //this.updateModel();
   }
 
   toCanvas(): HTMLCanvasElement {

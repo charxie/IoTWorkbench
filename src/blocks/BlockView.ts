@@ -102,7 +102,7 @@ export class BlockView {
     playground.addEventListener("drop", function (e) {
       e.preventDefault();
       let id = (<HTMLElement>e.target).id;
-      if (id == "block-view") {
+      if (id === "block-view") {
         let x = e.offsetX;
         let y = e.offsetY;
         let timestamp = Date.now().toString(16);
@@ -445,7 +445,7 @@ export class BlockView {
   }
 
   private mouseUp(e: MouseEvent): void {
-    if (e.which == 3 || e.button == 2) return; // if this is a right-click event
+    if (e.which === 3 || e.button === 2) return; // if this is a right-click event
     // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
     let rect = this.canvas.getBoundingClientRect();
     let x = e.clientX - rect.left;
