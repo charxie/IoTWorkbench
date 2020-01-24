@@ -41,7 +41,11 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Names:</td>
+                  <td>Name:</td>
+                  <td><input type="text" id="global-object-name-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Keys:</td>
                   <td><input type="text" id="global-object-keys-field" style="width: 100%"></td>
                 </tr>
                 <tr>
@@ -66,6 +70,8 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof GlobalObjectBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let nameInputElement = document.getElementById("global-object-name-field") as HTMLInputElement;
+      nameInputElement.value = block.getSymbol();
       let keysInputElement = document.getElementById("global-object-keys-field") as HTMLInputElement;
       keysInputElement.value = JSON.stringify(block.getKeys());
       let valuesInputElement = document.getElementById("global-object-values-field") as HTMLInputElement;
@@ -75,6 +81,7 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
       let heightInputElement = document.getElementById("global-object-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
+        block.setSymbol(nameInputElement.value);
         block.setKeys(JSON.parse(keysInputElement.value));
         block.setValues(JSON.parse(valuesInputElement.value));
         let success = true;
@@ -115,6 +122,7 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
+      nameInputElement.addEventListener("keyup", enterKeyUp);
       keysInputElement.addEventListener("keyup", enterKeyUp);
       valuesInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
@@ -123,7 +131,7 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 300,
+        height: 320,
         width: 300,
         buttons: {
           'OK': okFunction,

@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import random_walk from "./examples/random-walk.json";
+// @ts-ignore
 import fern_generator from "./examples/fern-generator.json";
 // @ts-ignore
 import logical_operators from "./examples/logical-operators.json";
@@ -63,12 +65,13 @@ export class Examples {
     this.files.push({name: "If-Else Statements", data: if_else_statements});
     this.files.push({name: "Switch Statements", data: switch_statements});
     this.files.push({name: "Workers", data: workers});
-    this.files.push({name: "Fern Generator", data: fern_generator});
     this.files.push({name: "Parametric Equations 1", data: parametric_equations_1});
     this.files.push({name: "Parametric Equations 2", data: parametric_equations_2});
     this.files.push({name: "Parametric Generator 1", data: parametric_generator_1});
     this.files.push({name: "Parametric Generator 2", data: parametric_generator_2});
     this.files.push({name: "Make Sound with Beepers", data: make_sound_with_beepers});
+    this.files.push({name: "Random Walk", data: random_walk});
+    this.files.push({name: "Fern Generator", data: fern_generator});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 

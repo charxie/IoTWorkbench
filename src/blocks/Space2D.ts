@@ -12,6 +12,7 @@ export class Space2D extends Block {
 
   private portX: Port;
   private portY: Port;
+  private pointInput: boolean = false;
   private xPoints: number[] = [];
   private yPoints: number[] = [];
   private minimumXValue: number = 0;
@@ -56,6 +57,7 @@ export class Space2D extends Block {
     readonly maximumXValue: number;
     readonly minimumYValue: number;
     readonly maximumYValue: number;
+    readonly pointInput: boolean;
 
     constructor(g: Space2D) {
       this.name = g.name;
@@ -76,6 +78,7 @@ export class Space2D extends Block {
       this.maximumXValue = g.maximumXValue;
       this.minimumYValue = g.minimumYValue;
       this.maximumYValue = g.maximumYValue;
+      this.pointInput = g.pointInput;
     }
   };
 
@@ -106,6 +109,7 @@ export class Space2D extends Block {
     copy.lineType = this.lineType;
     copy.dataSymbol = this.dataSymbol;
     copy.dataSymbolColor = this.dataSymbolColor;
+    copy.pointInput = this.pointInput;
     return copy;
   }
 
@@ -116,6 +120,14 @@ export class Space2D extends Block {
     this.xPoints = [];
     this.yPoints = [];
     flowchart.blockView.requestDraw();
+  }
+
+  setPointInput(pointInput: boolean): void {
+    this.pointInput = pointInput;
+  }
+
+  getPointInput(): boolean {
+    return this.pointInput;
   }
 
   setMinimumXValue(minimumXValue: number): void {
@@ -369,7 +381,9 @@ export class Space2D extends Block {
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
     this.portX.draw(ctx, this.iconic);
-    this.portY.draw(ctx, this.iconic);
+    if (!this.pointInput) {
+      this.portY.draw(ctx, this.iconic);
+    }
 
     if (this.selected) {
       this.highlightSelection(ctx);
@@ -394,23 +408,33 @@ export class Space2D extends Block {
   }
 
   updateModel(): void {
-    let vx = this.portX.getValue();
-    if (vx != undefined) {
-      if (Array.isArray(vx)) {
-        this.xPoints = vx;
-      } else {
-        if (vx != this.xPoints[this.xPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
-          this.tempX = vx;
+    if (this.pointInput) { // point input mode
+      let vx = this.portX.getValue();
+      if (vx != undefined) {
+        if (Array.isArray(vx) && vx.length > 1) {
+          this.tempX = vx[0];
+          this.tempY = vx[1];
         }
       }
-    }
-    let vy = this.portY.getValue();
-    if (vx != undefined) {
-      if (Array.isArray(vy)) {
-        this.yPoints = vy;
-      } else {
-        if (vy != this.yPoints[this.yPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
-          this.tempY = vy;
+    } else { // dual input mode
+      let vx = this.portX.getValue();
+      if (vx != undefined) {
+        if (Array.isArray(vx)) {
+          this.xPoints = vx;
+        } else {
+          if (vx != this.xPoints[this.xPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
+            this.tempX = vx;
+          }
+        }
+      }
+      let vy = this.portY.getValue();
+      if (vy != undefined) {
+        if (Array.isArray(vy)) {
+          this.yPoints = vy;
+        } else {
+          if (vy != this.yPoints[this.yPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
+            this.tempY = vy;
+          }
         }
       }
     }
@@ -429,9 +453,15 @@ export class Space2D extends Block {
     this.spaceMargin.bottom = 40;
     this.spaceMargin.left = 40;
     this.spaceMargin.right = 10;
-    let dh = (this.height - this.barHeight) / 3;
-    this.portX.setY(this.barHeight + dh);
-    this.portY.setY(this.barHeight + 2 * dh);
+    if (this.pointInput) {
+      let dh = (this.height - this.barHeight) / 2;
+      this.portX.setY(this.barHeight + dh);
+      this.portY.setY(-1000000); // just move it out of scope so that we don't accidentally click on it
+    } else {
+      let dh = (this.height - this.barHeight) / 3;
+      this.portX.setY(this.barHeight + dh);
+      this.portY.setY(this.barHeight + 2 * dh);
+    }
     //this.updateModel();
   }
 

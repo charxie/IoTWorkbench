@@ -15,6 +15,7 @@ export class GlobalObjectBlock extends Block {
 
   static State = class {
     readonly name: string;
+    readonly symbol: string;
     readonly keys: string[];
     readonly values: number[];
     readonly uid: string;
@@ -25,6 +26,7 @@ export class GlobalObjectBlock extends Block {
 
     constructor(block: GlobalObjectBlock) {
       this.name = block.name;
+      this.symbol = block.symbol;
       this.keys = block.keys;
       this.values = block.values;
       this.uid = block.uid;
@@ -39,7 +41,7 @@ export class GlobalObjectBlock extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.symbol = symbol;
-    this.color = "#808000";
+    this.color = "#20B2AA";
     this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
     this.ports.push(this.portO);
     this.setInputPorts();

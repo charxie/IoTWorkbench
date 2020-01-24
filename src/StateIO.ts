@@ -65,6 +65,7 @@ export class StateIO {
           block.setValue(state.value);
         } else if (block instanceof GlobalObjectBlock) {
           block.setName(state.name);
+          block.setSymbol(state.symbol);
           block.setKeys(state.keys);
           block.setValues(state.values);
         } else if (block instanceof SeriesBlock) {
@@ -123,6 +124,7 @@ export class StateIO {
           block.setDataSymbolColor(state.dataSymbolColor);
           block.setLineType(state.lineType);
           block.setLineColor(state.lineColor);
+          block.setPointInput(state.pointInput);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");

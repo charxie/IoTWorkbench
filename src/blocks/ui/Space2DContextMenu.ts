@@ -61,7 +61,12 @@ export class Space2DContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="space2d-name-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-name-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Input Type:</td>
+                  <td><input type="radio" name="input" id="space2d-dual-input-radio-button" checked> Dual
+                      <input type="radio" name="input" id="space2d-point-input-radio-button"> Point</td>
                 </tr>
                 <tr>
                   <td>Scale:</td>
@@ -70,36 +75,36 @@ export class Space2DContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Minimum X Value:</td>
-                  <td><input type="text" id="space2d-minimum-x-value-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-minimum-x-value-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Maximum X Value:</td>
-                  <td><input type="text" id="space2d-maximum-x-value-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-maximum-x-value-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Minimum Y Value:</td>
-                  <td><input type="text" id="space2d-minimum-y-value-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-minimum-y-value-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Maximum Y Value:</td>
-                  <td><input type="text" id="space2d-maximum-y-value-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-maximum-y-value-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Line Type:</td>
                   <td>
-                    <select id="space2d-line-type-selector" style="width: 120px">
+                    <select id="space2d-line-type-selector" style="width: 100%">
                       <option value="None">None</option>
                       <option value="Solid" selected>Solid</option>
                     </select>
                 </tr>
                 <tr>
                   <td>Line Color:</td>
-                  <td><input type="text" id="space2d-line-color-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-line-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Symbol Type:</td>
                   <td>
-                    <select id="space2d-symbol-selector" style="width: 120px">
+                    <select id="space2d-symbol-selector" style="width: 100%">
                       <option value="None">None</option>
                       <option value="Circle" selected>Circle</option>
                       <option value="Square">Square</option>
@@ -108,27 +113,27 @@ export class Space2DContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Symbol Color:</td>
-                  <td><input type="text" id="space2d-symbol-color-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-symbol-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>X-Axis Label:</td>
-                  <td><input type="text" id="space2d-x-axis-label-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-x-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Y-Axis Label:</td>
-                  <td><input type="text" id="space2d-y-axis-label-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-y-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Window Color:</td>
-                  <td><input type="text" id="space2d-window-color-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-window-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="space2d-width-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="space2d-height-field" style="width: 120px"></td>
+                  <td><input type="text" id="space2d-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -142,6 +147,10 @@ export class Space2DContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("space2d-name-field") as HTMLInputElement;
       nameInputElement.value = g.getName();
+      let dualInputRadioButton = document.getElementById("space2d-dual-input-radio-button") as HTMLInputElement;
+      dualInputRadioButton.checked = !g.getPointInput();
+      let pointInputRadioButton = document.getElementById("space2d-point-input-radio-button") as HTMLInputElement;
+      pointInputRadioButton.checked = g.getPointInput();
       let lineTypeSelectElement = document.getElementById("space2d-line-type-selector") as HTMLSelectElement;
       lineTypeSelectElement.value = g.getLineType();
       let lineColorInputElement = document.getElementById("space2d-line-color-field") as HTMLInputElement;
@@ -182,6 +191,7 @@ export class Space2DContextMenu extends BlockContextMenu {
         g.setYAxisLabel(yAxisLableInputElement.value);
         g.setSpaceWindowColor(windowColorInputElement.value);
         g.setAutoScale(autoScaleRadioButton.checked);
+        g.setPointInput(pointInputRadioButton.checked);
         let success = true;
         let message;
         // set minimum X value
@@ -264,7 +274,7 @@ export class Space2DContextMenu extends BlockContextMenu {
         modal: true,
         title: g.getUid(),
         height: 550,
-        width: 340,
+        width: 400,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {
