@@ -21,6 +21,7 @@ export class WorkerBlock extends Block {
   private completed: boolean = false;
   private paused: boolean = false;
   private connectedToGlobalVariable: boolean = false;
+  private previousInput: boolean;
 
   static State = class {
     readonly name: string;
@@ -165,14 +166,17 @@ export class WorkerBlock extends Block {
 
   updateModel(): void {
     let input = this.portI.getValue();
-    if (input == true) {
-      this.connectedToGlobalVariable = flowchart.isConnectedToGlobalVariable(this);
-      this.startWorker();
+    if (input === true) {
+      if (!this.completed || this.previousInput === false) {
+        this.connectedToGlobalVariable = flowchart.isConnectedToGlobalVariable(this);
+        this.startWorker();
+      }
     } else {
       this.stopWorker();
     }
     this.portO.setValue(this.value);
     this.updateConnectors();
+    this.previousInput = input;
   }
 
   private startWorker(): void {
