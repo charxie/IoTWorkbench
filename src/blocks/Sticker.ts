@@ -5,6 +5,7 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
+import {flowchart} from "../Main";
 
 export class Sticker extends Block {
 
@@ -90,12 +91,18 @@ export class Sticker extends Block {
 
   draw(ctx: CanvasRenderingContext2D): void {
 
-    // draw the upper bar with shade
-    let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
-    shade.addColorStop(0, "white");
-    shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
-    shade.addColorStop(1, Util.adjust(this.color, -100));
-    ctx.fillStyle = shade;
+    switch (flowchart.blockView.getBlockStyle()) {
+      case "Shade":
+        let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
+        shade.addColorStop(0, "white");
+        shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
+        shade.addColorStop(1, Util.adjust(this.color, -100));
+        ctx.fillStyle = shade;
+        break;
+      case "Plain":
+        ctx.fillStyle = this.color;
+        break;
+    }
     ctx.fillHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";

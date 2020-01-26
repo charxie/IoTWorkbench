@@ -115,12 +115,18 @@ export class SwitchStatementBlock extends Block {
 
   draw(ctx: CanvasRenderingContext2D): void {
 
-    // draw the block with shade
-    let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
-    shade.addColorStop(0, "white");
-    shade.addColorStop(this.iconic ? 0.1 : 0.05, Util.adjust(this.color, 50));
-    shade.addColorStop(1, this.color);
-    ctx.fillStyle = shade;
+    switch (flowchart.blockView.getBlockStyle()) {
+      case "Shade":
+        let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
+        shade.addColorStop(0, "white");
+        shade.addColorStop(this.iconic ? 0.1 : 0.05, Util.adjust(this.color, 50));
+        shade.addColorStop(1, this.color);
+        ctx.fillStyle = shade;
+        break;
+      case "Plain":
+        ctx.fillStyle = this.color;
+        break;
+    }
     ctx.fillRoundedRect(this.x, this.y, this.width, this.height, this.radius);
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";

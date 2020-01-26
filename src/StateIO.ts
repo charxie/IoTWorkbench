@@ -184,9 +184,11 @@ export class StateIO {
   static restoreBlockView(s: string): void {
     if (s == null) {
       flowchart.blockView.setBackgroundColor("#d4d0c8");
+      flowchart.blockView.setBlockStyle("Shade");
     } else {
       let state = JSON.parse(s);
       flowchart.blockView.setBackgroundColor(state.backgroundColor);
+      flowchart.blockView.setBlockStyle(state.blockStyle ? state.blockStyle : "Shade");
     }
   }
 

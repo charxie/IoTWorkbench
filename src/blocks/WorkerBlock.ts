@@ -97,13 +97,19 @@ export class WorkerBlock extends Block {
 
   draw(ctx: CanvasRenderingContext2D): void {
 
-    // draw the upper bar with shade
     this.barHeight = Math.min(30, this.height / 3);
-    let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
-    shade.addColorStop(0, "white");
-    shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
-    shade.addColorStop(1, Util.adjust(this.color, -100));
-    ctx.fillStyle = shade;
+    switch (flowchart.blockView.getBlockStyle()) {
+      case "Shade":
+        let gradient = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
+        gradient.addColorStop(0, "white");
+        gradient.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
+        gradient.addColorStop(1, Util.adjust(this.color, -100));
+        ctx.fillStyle = gradient;
+        break;
+      case "Plain":
+        ctx.fillStyle = this.color;
+        break;
+    }
     ctx.fillHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
@@ -136,7 +142,7 @@ export class WorkerBlock extends Block {
     let x = this.x + m;
     let y = this.y + this.barHeight + m;
     ctx.rect(x, y, this.width - 2 * m, this.height - this.barHeight - 2 * m);
-    shade = ctx.createLinearGradient(x, y, x, y + this.height);
+    let shade = ctx.createLinearGradient(x, y, x, y + this.height);
     shade.addColorStop(0, "lightgray");
     shade.addColorStop(0.5, "black");
     shade.addColorStop(1, "gray");

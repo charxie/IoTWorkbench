@@ -50,6 +50,7 @@ export class BlockView {
   private draggedElementId: string;
   private connectorOntheFly: Connector;
   private gridSize: number = 100;
+  private blockStyle: string = "Shade";
   private mouseOverPort: Port;
   private contextMenuClickX: number;
   private contextMenuClickY: number;
@@ -63,9 +64,11 @@ export class BlockView {
   static State = class {
 
     readonly backgroundColor: string;
+    readonly blockStyle: string;
 
     constructor(view: BlockView) {
       this.backgroundColor = view.getBackgroundColor();
+      this.blockStyle = view.getBlockStyle();
     }
 
   };
@@ -265,6 +268,14 @@ export class BlockView {
 
   public setBackgroundColor(s: string): void {
     this.canvas.style.backgroundColor = s;
+  }
+
+  public getBlockStyle(): string {
+    return this.blockStyle;
+  }
+
+  public setBlockStyle(blockStyle: string): void {
+    this.blockStyle = blockStyle;
   }
 
   public getX(): number {

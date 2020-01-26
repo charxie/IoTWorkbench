@@ -128,6 +128,14 @@ export class BlockViewContextMenu extends MyContextMenu {
                   <td><input type="text" id="block-view-background-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
+                  <td>Block Style:</td>
+                  <td>
+                    <select id="block-view-block-style-selector" style="width: 120px">
+                      <option value="Plain">Plain</option>
+                      <option value="Shade" selected>Shade</option>
+                    </select>
+                </tr>
+                <tr>
                   <td>Canvas Width:</td>
                   <td><input type="text" id="block-view-width-field" style="width: 120px"></td>
                 </tr>
@@ -145,13 +153,16 @@ export class BlockViewContextMenu extends MyContextMenu {
     let view = this.view;
     let d = $("#modal-dialog").html(this.getSettingsUI());
     let backgroundColorInputElement = document.getElementById("block-view-background-color-field") as HTMLInputElement;
-    backgroundColorInputElement.value = this.view.getBackgroundColor();
+    backgroundColorInputElement.value = view.getBackgroundColor();
+    let blockStyleSelectElement = document.getElementById("block-view-block-style-selector") as HTMLSelectElement;
+    blockStyleSelectElement.value = view.getBlockStyle();
     let widthInputElement = document.getElementById("block-view-width-field") as HTMLInputElement;
-    widthInputElement.value = this.view.canvas.width.toString();
+    widthInputElement.value = view.canvas.width.toString();
     let heightInputElement = document.getElementById("block-view-height-field") as HTMLInputElement;
-    heightInputElement.value = this.view.canvas.height.toString();
+    heightInputElement.value = view.canvas.height.toString();
     const okFunction = function () {
       view.setBackgroundColor(backgroundColorInputElement.value);
+      view.setBlockStyle(blockStyleSelectElement.value);
       view.flowchart.storeViewState();
       view.flowchart.blockView.requestDraw();
       d.dialog('close');
