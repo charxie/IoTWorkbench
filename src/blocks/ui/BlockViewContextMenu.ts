@@ -7,7 +7,6 @@ import {closeAllContextMenus, flowchart} from "../../Main";
 import {StateIO} from "../../StateIO";
 import {MyContextMenu} from "../../MyContextMenu";
 import {BlockView} from "../BlockView";
-import {Flowchart} from "../Flowchart";
 import {PngSaver} from "../../tools/PngSaver";
 import {State} from "../../State";
 

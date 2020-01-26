@@ -28,7 +28,7 @@ import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
-import {closeAllContextMenus, flowchart} from "../Main";
+import {closeAllContextMenus, flowchart, system} from "../Main";
 import {GlobalObjectBlock} from "./GlobalObjectBlock";
 
 export class Flowchart {
@@ -355,9 +355,6 @@ export class Flowchart {
       case "Switch Statement Block":
         block = new SwitchStatementBlock(uid, name, "Switch", x, y, 60, 100);
         break;
-      case "Rainbow HAT Block":
-        block = new RainbowHatBlock(uid, x, y);
-        break;
       case "Switch":
         block = new ToggleSwitch(uid, name, x, y, 60, 60);
         break;
@@ -382,11 +379,25 @@ export class Flowchart {
       case "Space2D":
         block = new Space2D(uid, name, x, y, 200, 220);
         break;
+      case "Rainbow HAT Block":
+        block = new RainbowHatBlock(uid, x, y);
+        break;
     }
     if (block != null) {
       this.blocks.push(block);
     }
     return block;
+  }
+
+  addModelBlockIfMissing(): void {
+    for (let m of system.hats) {
+      let modelName = m.uid.substring(0, m.uid.indexOf("#") - 1);
+      let blockName = modelName + " Block";
+      let blockId = m.uid.replace(modelName, blockName);
+      if (this.getBlock(blockId) == null) {
+        this.addBlock(blockName, 10, 10, blockId);
+      }
+    }
   }
 
   /* storage methods */

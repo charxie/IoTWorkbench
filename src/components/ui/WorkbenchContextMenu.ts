@@ -3,8 +3,12 @@
  */
 
 import $ from "jquery";
-import {system} from "../../Main";
+import {closeAllContextMenus, system} from "../../Main";
 import {MyContextMenu} from "../../MyContextMenu";
+import {StateIO} from "../../StateIO";
+import {State} from "../../State";
+import {PngSaver} from "../../tools/PngSaver";
+import html2canvas from "html2canvas";
 
 export class WorkbenchContextMenu extends MyContextMenu {
 
@@ -14,66 +18,53 @@ export class WorkbenchContextMenu extends MyContextMenu {
   }
 
   getUi(): string {
-    return `<menu id="${this.id}" class="menu" style="width: 120px; z-index: 10000">
+    return `<menu id="${this.id}" class="menu" style="width: 200px; z-index: 10000">
               <li class="menu-item">
-                <button type="button" class="menu-btn"><i class="fas fa-folder-open"></i><span class="menu-text">Open</span></button>
+                <button type="button" class="menu-btn" id="${this.id}-open-button"><i class="fas fa-folder-open"></i><span class="menu-text">Open</span></button>
               </li>
-              <li class="menu-item disabled">
-                <button type="button" class="menu-btn"><i class="fas fa-download"></i><span class="menu-text">Save</span></button>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-save-button"><i class="fas fa-download"></i><span class="menu-text">Save</span></button>
+              </li>
+              <li class="menu-separator"></li>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-save-screenshot-button"><i class="fas fa-camera"></i><span class="menu-text">Save Screenshot</span></button>
               </li>
               <li class="menu-separator"></li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-settings-button"><i class="fas fa-cog"></i><span class="menu-text">Settings</span></button>
               </li>
-              <li class="menu-item submenu">
-                <button type="button" class="menu-btn"><i class="fas fa-file-import"></i><span class="menu-text">Import</span></button>
-
-                <menu class="menu" style="width: 160px;">
-                  <li class="menu-item">
-                    <button type="button" class="menu-btn"><span class="menu-text">Breadboard</span></button>
-                  </li>
-
-                  <li class="menu-item submenu">
-                    <button type="button" class="menu-btn"><span class="menu-text">Sensors</span></button>
-                    <menu class="menu" style="width: 120px;">
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">BME280</span></button>
-                      </li>
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">TSL2561</span></button>
-                      </li>
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">HCSR04</span></button>
-                      </li>
-                    </menu>
-                  </li>
-
-                  <li class="menu-item submenu">
-                    <button type="button" class="menu-btn"><span class="menu-text">Actuators</span></button>
-                    <menu class="menu" style="width: 180px;">
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">Buzzer</span></button>
-                      </li>
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">Servo Motor</span></button>
-                      </li>
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">LED Light</span></button>
-                      </li>
-                      <li class="menu-item">
-                        <button type="button" class="menu-btn"><span class="menu-text">Multicolor LED Light</span></button>
-                      </li>
-                    </menu>
-                  </li>
-
-                </menu>
-              </li>
             </menu>`;
   }
 
   addListeners(): void {
+    let openButton = document.getElementById(this.id + "-open-button");
+    openButton.addEventListener("click", this.openButtonClick.bind(this), false);
+    let saveButton = document.getElementById(this.id + "-save-button");
+    saveButton.addEventListener("click", this.saveButtonClick.bind(this), false);
+    let screenshotButton = document.getElementById(this.id + "-save-screenshot-button");
+    screenshotButton.addEventListener("click", this.screenshotButtonClick.bind(this), false);
     let settingsButton = document.getElementById(this.id + "-settings-button");
     settingsButton.addEventListener("click", this.settingsButtonClick.bind(this), false);
+  }
+
+  private screenshotButtonClick(e: MouseEvent): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    html2canvas(document.getElementById("workbench")).then(function (canvas) {
+      PngSaver.saveAs(canvas);
+    });
+  }
+
+  private openButtonClick(e: MouseEvent): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    StateIO.open();
+  }
+
+  private saveButtonClick(e: MouseEvent): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    StateIO.saveAs(JSON.stringify(new State()));
   }
 
   private getSettingsUI(): string {

@@ -25,7 +25,9 @@ export abstract class Board implements Movable {
   }
 
   public getX(): number {
-    return this.canvas.offsetLeft;
+    let s = this.canvas.style.left;
+    s = s.substring(0, s.length - 2);
+    return parseInt(s);
   }
 
   public setX(x: number): void {
@@ -33,7 +35,9 @@ export abstract class Board implements Movable {
   }
 
   public getY(): number {
-    return this.canvas.offsetTop;
+    let s = this.canvas.style.top;
+    s = s.substring(0, s.length - 2);
+    return parseInt(s);
   }
 
   public setY(y: number): void {

@@ -156,6 +156,7 @@ window.onload = function () {
   blockTabButton.addEventListener("click", function () {
     selectTab(blockTabButton, "block-playground");
     resize();
+    flowchart.addModelBlockIfMissing();
     flowchart.blockView.requestDraw();
   });
   let codeTabButton = document.getElementById("code-tab-button") as HTMLButtonElement;
@@ -187,6 +188,7 @@ window.onload = function () {
   StateIO.restoreWorkbench(localStorage.getItem("Workbench State"));
   StateIO.restoreMcus(localStorage.getItem("MCU States"));
   StateIO.restoreHats(localStorage.getItem("HAT States"));
+  StateIO.restoreAttachments(localStorage.getItem("Attachments"));
   StateIO.restoreConnectors(localStorage.getItem("Connector States")); // connectors must be restored after loading HATs
   flowchart.updateResults();
 

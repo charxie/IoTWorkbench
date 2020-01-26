@@ -443,6 +443,12 @@ export class System {
 
   // storage methods
 
+  updateLocalStorage(): void {
+    this.storeMcuStates();
+    this.storeHatStates();
+    this.storeAttachments();
+  }
+
   saveMcuStatesTo(mcuStates): void {
     for (let m of this.mcus) {
       mcuStates.push(new Mcu.State(m));
@@ -467,14 +473,18 @@ export class System {
     localStorage.setItem("HAT States", JSON.stringify(hatStates));
   }
 
-  storeAttachments(): void {
-    let states = [];
+  saveAttachments(attachmentStates): void {
     for (let h of this.hats) {
       if (h.raspberryPi != null) {
-        states.push(new Attachment(h.raspberryPi, h));
+        attachmentStates.push(new Attachment(h.raspberryPi, h));
       }
     }
-    localStorage.setItem("Attachments", JSON.stringify(states));
+  }
+
+  storeAttachments(): void {
+    let attachmentStates = [];
+    this.saveAttachments(attachmentStates);
+    localStorage.setItem("Attachments", JSON.stringify(attachmentStates));
   }
 
   storeLineChartStates(): void {

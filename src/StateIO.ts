@@ -232,17 +232,6 @@ export class StateIO {
         }
       }
     }
-    s = localStorage.getItem("Attachments");
-    if (s != null) {
-      let states = JSON.parse(s);
-      for (let state of states) {
-        let pi = system.getRaspberryPiById(state.raspberryPiId);
-        let hat = system.getHatById(state.hatId);
-        if (hat != null && pi != null) {
-          hat.attach(pi);
-        }
-      }
-    }
     for (let h of system.hats) {
       if (h instanceof RainbowHat) {
         h.temperatureGraph = system.addLineChart(h.temperatureSensor, h.getX(), h.getY(), h.temperatureSensor.name + " @" + h.temperatureSensor.board.getUid());
@@ -259,6 +248,19 @@ export class StateIO {
               this.setLineChartState(h.pressureGraph, lineChartState);
             }
           }
+        }
+      }
+    }
+  }
+
+  static restoreAttachments(s: string): void {
+    if (s != null) {
+      let states = JSON.parse(s);
+      for (let state of states) {
+        let pi = system.getRaspberryPiById(state.raspberryPiId);
+        let hat = system.getHatById(state.hatId);
+        if (hat != null && pi != null) {
+          hat.attach(pi);
         }
       }
     }
@@ -283,7 +285,6 @@ export class StateIO {
         let reader: FileReader = new FileReader();
         reader.readAsText(target.files[0]);
         that.lastFileName = target.files[0].name;
-        // console.log("Open File: " + that.lastFileName);
         reader.onload = function (e) {
           let s = JSON.parse(reader.result.toString());
           that.restoreGlobalVariables(JSON.stringify(s.globalVariables));
@@ -291,9 +292,11 @@ export class StateIO {
           that.restoreBlocks(JSON.stringify(s.blockStates));
           that.restoreMcus(JSON.stringify(s.mcuStates));
           that.restoreHats(JSON.stringify(s.hatStates));
+          that.restoreAttachments(JSON.stringify(s.attachmentStates));
           that.restoreConnectors(JSON.stringify(s.connectorStates));
           flowchart.updateResults();
           flowchart.updateLocalStorage();
+          system.updateLocalStorage();
           target.value = "";
         };
       }
