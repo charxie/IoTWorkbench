@@ -356,7 +356,7 @@ export class Flowchart {
         block = new SwitchStatementBlock(uid, name, "Switch", x, y, 60, 100);
         break;
       case "Rainbow HAT Block":
-        block = new RainbowHatBlock(uid, 20, 20);
+        block = new RainbowHatBlock(uid, x, y);
         break;
       case "Switch":
         block = new ToggleSwitch(uid, name, x, y, 60, 60);
@@ -418,7 +418,7 @@ export class Flowchart {
     localStorage.setItem("Block States", JSON.stringify(blockStates));
   }
 
-  private saveBlockStatesTo(blockStates): void {
+  saveBlockStatesTo(blockStates): void {
     for (let b of this.blocks) {
       if (b instanceof Slider) {
         blockStates.push(new Slider.State(b));
@@ -481,23 +481,5 @@ export class Flowchart {
     this.updateLocalStorage();
     this.blockView.requestDraw();
   }
-
-  static State = class {
-    readonly blockStates = [];
-    readonly connectorStates = [];
-    readonly blockViewState;
-    readonly globalVariables = {};
-
-    constructor(flowchart: Flowchart) {
-      this.globalVariables = JSON.parse(JSON.stringify(flowchart.globalVariables));
-      flowchart.saveBlockStatesTo(this.blockStates);
-      for (let c of flowchart.connectors) {
-        if (c.getOutput() != null && c.getInput() != null) {
-          this.connectorStates.push(new PortConnector.State(c));
-        }
-      }
-      this.blockViewState = new BlockView.State(flowchart.blockView);
-    }
-  };
 
 }

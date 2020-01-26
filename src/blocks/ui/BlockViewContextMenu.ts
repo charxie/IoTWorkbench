@@ -9,6 +9,7 @@ import {MyContextMenu} from "../../MyContextMenu";
 import {BlockView} from "../BlockView";
 import {Flowchart} from "../Flowchart";
 import {PngSaver} from "../../tools/PngSaver";
+import {State} from "../../State";
 
 export class BlockViewContextMenu extends MyContextMenu {
 
@@ -105,7 +106,7 @@ export class BlockViewContextMenu extends MyContextMenu {
   private saveButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    StateIO.saveAs(JSON.stringify(new Flowchart.State(this.view.flowchart)));
+    StateIO.saveAs(JSON.stringify(new State()));
   }
 
   private copyImageButtonClick(e: MouseEvent): void {

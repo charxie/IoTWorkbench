@@ -443,19 +443,27 @@ export class System {
 
   // storage methods
 
-  storeMcuStates(): void {
-    let mcuStates = [];
+  saveMcuStatesTo(mcuStates): void {
     for (let m of this.mcus) {
       mcuStates.push(new Mcu.State(m));
     }
+  }
+
+  storeMcuStates(): void {
+    let mcuStates = [];
+    this.saveMcuStatesTo(mcuStates);
     localStorage.setItem("MCU States", JSON.stringify(mcuStates));
+  }
+
+  saveHatStatesTo(hatStates): void {
+    for (let h of this.hats) {
+      hatStates.push(new Hat.State(h));
+    }
   }
 
   storeHatStates(): void {
     let hatStates = [];
-    for (let h of this.hats) {
-      hatStates.push(new Hat.State(h));
-    }
+    this.saveHatStatesTo(hatStates);
     localStorage.setItem("HAT States", JSON.stringify(hatStates));
   }
 

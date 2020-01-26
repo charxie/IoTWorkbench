@@ -60,6 +60,7 @@ import {BeeperContextMenu} from "./blocks/ui/BeeperContextMenu";
 import {SwitchStatementBlockContextMenu} from "./blocks/ui/SwitchStatementBlockContextMenu";
 import {MultivariableFunctionBlockContextMenu} from "./blocks/ui/MultivariableFunctionBlockContextMenu";
 import {GlobalObjectBlockContextMenu} from "./blocks/ui/GlobalObjectBlockContextMenu";
+import {State} from "./State";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -139,7 +140,7 @@ window.onload = function () {
     StateIO.open();
   };
   document.getElementById("main-page-download-button").onclick = function () {
-    StateIO.saveAs(JSON.stringify(new Flowchart.State(flowchart)));
+    StateIO.saveAs(JSON.stringify(new State()));
   };
   document.getElementById("main-page-settings-button").onclick = showUnderConstructionMessage;
   document.getElementById("main-page-help-button").onclick = showUnderConstructionMessage;
@@ -183,9 +184,9 @@ window.onload = function () {
   StateIO.restoreGlobalVariables(localStorage.getItem("Global Variables"));
   StateIO.restoreBlockView(localStorage.getItem("Block View State"));
   StateIO.restoreBlocks(localStorage.getItem("Block States"));
-  restoreWorkbench();
-  restoreMcus();
-  restoreHats();
+  StateIO.restoreWorkbench(localStorage.getItem("Workbench State"));
+  StateIO.restoreMcus(localStorage.getItem("MCU States"));
+  StateIO.restoreHats(localStorage.getItem("HAT States"));
   StateIO.restoreConnectors(localStorage.getItem("Connector States")); // connectors must be restored after loading HATs
   flowchart.updateResults();
 
@@ -391,99 +392,6 @@ function selectTab(button: HTMLButtonElement, tabId: string) {
   document.getElementById(tabId).style.display = "block";
   button.className += " active";
   localStorage.setItem("Start Tab", tabId);
-}
-
-function restoreWorkbench() {
-  let s = localStorage.getItem("Workbench State");
-  if (s != null) {
-    let state = JSON.parse(s);
-    system.workbench.showGrid = state.showGrid;
-  }
-}
-
-function restoreMcus() {
-  system.mcus = [];
-  let s: string = localStorage.getItem("MCU States");
-  if (s != null) {
-    let states = JSON.parse(s);
-    for (let state of states) {
-      if (state.uid.startsWith("Raspberry Pi")) {
-        system.addRaspberryPi(state.uid, state.x, state.y, false);
-      }
-    }
-  }
-}
-
-function restoreHats() {
-  system.hats = [];
-  let s: string = localStorage.getItem("HAT States");
-  if (s != null) {
-    let hatStates = JSON.parse(s);
-    for (let hatState of hatStates) {
-      let name = hatState.uid.substring(0, hatState.uid.indexOf("#") - 1);
-      let hat = system.addHat(name, hatState.x, hatState.y, hatState.uid, false);
-      let blockName = name + " Block";
-      let block = flowchart.addBlock(blockName, 10, 10, hat.uid.replace(name, blockName));
-      let bs: string = localStorage.getItem("Block States");
-      if (bs != null) {
-        let blockStates = JSON.parse(bs);
-        if (blockStates.length > 0) {
-          for (let blockState of blockStates) {
-            let i = hatState.uid.indexOf("#") - 1;
-            let hatName = hatState.uid.substring(0, i);
-            let hatId = hatState.uid.substring(i);
-            i = blockState.uid.indexOf("#") - 1;
-            let blockName = blockState.uid.substring(0, i);
-            let blockId = blockState.uid.substring(i);
-            if (blockName.startsWith(hatName) && blockId === hatId) { // find out the stored state of the HAT block
-              // restore the HAT block state after adding it here
-              block.setX(blockState.x);
-              block.setY(blockState.y);
-            }
-          }
-        }
-      }
-    }
-  }
-  s = localStorage.getItem("Attachments");
-  if (s != null) {
-    let states = JSON.parse(s);
-    for (let state of states) {
-      let pi = system.getRaspberryPiById(state.raspberryPiId);
-      let hat = system.getHatById(state.hatId);
-      if (hat != null && pi != null) {
-        hat.attach(pi);
-      }
-    }
-  }
-  for (let h of system.hats) {
-    if (h instanceof RainbowHat) {
-      h.temperatureGraph = system.addLineChart(h.temperatureSensor, h.getX(), h.getY(), h.temperatureSensor.name + " @" + h.temperatureSensor.board.getUid());
-      h.pressureGraph = system.addLineChart(h.barometricPressureSensor, h.getX(), h.getY(), h.barometricPressureSensor.name + " @" + h.barometricPressureSensor.board.getUid());
-      h.temperatureGraph.setVisible(false);
-      h.pressureGraph.setVisible(false);
-      let lcs = localStorage.getItem("Line Chart States");
-      if (lcs != null) {
-        let lineChartStates = JSON.parse(lcs);
-        for (let lineChartState of lineChartStates) {
-          if (lineChartState.uid === h.temperatureGraph.uid) {
-            setLineChartState(h.temperatureGraph, lineChartState);
-          } else if (lineChartState.uid === h.pressureGraph.uid) {
-            setLineChartState(h.pressureGraph, lineChartState);
-          }
-        }
-      }
-    }
-  }
-}
-
-function setLineChartState(graph: LineChart, state: any) {
-  graph.setVisible(state.visible);
-  graph.setX(state.x);
-  graph.setY(state.y);
-  if (graph.isVisible()) {
-    graph.draw();
-  }
 }
 
 window.onresize = function () {

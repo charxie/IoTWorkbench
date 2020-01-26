@@ -6,7 +6,7 @@ import $ from "jquery";
 import {Util} from "./Util";
 import {Slider} from "./blocks/Slider";
 import {Sticker} from "./blocks/Sticker";
-import {flowchart} from "./Main";
+import {flowchart, system} from "./Main";
 import {ToggleSwitch} from "./blocks/ToggleSwitch";
 import {ItemSelector} from "./blocks/ItemSelector";
 import {SeriesBlock} from "./blocks/SeriesBlock";
@@ -23,6 +23,9 @@ import {Beeper} from "./blocks/Beeper";
 import {SwitchStatementBlock} from "./blocks/SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./blocks/MultivariableFunctionBlock";
 import {GlobalObjectBlock} from "./blocks/GlobalObjectBlock";
+import {RainbowHat} from "./components/RainbowHat";
+import {LineChart} from "./components/LineChart";
+import {RainbowHatBlock} from "./blocks/RainbowHatBlock";
 
 export class StateIO {
 
@@ -39,7 +42,7 @@ export class StateIO {
     if (states.length > 0) {
       for (let state of states) {
         let type = state.uid.substring(0, state.uid.indexOf("#") - 1);
-        if (type.indexOf("HAT") != -1) continue; // Do not add HAT blocks. They are added by the model components.
+        //if (type.indexOf("HAT") != -1) continue; // Do not add HAT blocks. They are added by the model components.
         let block = flowchart.addBlock(type, state.x, state.y, state.uid);
         if (block == null) {
           console.log("ERROR: " + type + " not recognized");
@@ -149,6 +152,8 @@ export class StateIO {
           block.setName(state.name);
           block.setExpressionX(state.expressionX ? state.expressionX : "cos(t)");
           block.setExpressionY(state.expressionY ? state.expressionY : "sin(t)");
+        } else if (block instanceof RainbowHatBlock) {
+          //TODO
         }
         block.refreshView();
       }
@@ -192,6 +197,82 @@ export class StateIO {
     }
   }
 
+  static restoreWorkbench(s: string): void {
+    if (s == null) {
+      system.workbench.showGrid = true;
+    } else {
+      let state = JSON.parse(s);
+      system.workbench.showGrid = state.showGrid;
+    }
+  }
+
+  static restoreMcus(s: string): void {
+    system.mcus = [];
+    if (s != null) {
+      let states = JSON.parse(s);
+      for (let state of states) {
+        if (state.uid.startsWith("Raspberry Pi")) {
+          system.addRaspberryPi(state.uid, state.x, state.y, false);
+        }
+      }
+    }
+  }
+
+  static restoreHats(s: string): void {
+    system.hats = [];
+    if (s != null) {
+      let hatStates = JSON.parse(s);
+      for (let hatState of hatStates) {
+        let name = hatState.uid.substring(0, hatState.uid.indexOf("#") - 1);
+        let hat = system.addHat(name, hatState.x, hatState.y, hatState.uid, false);
+        let blockName = name + " Block";
+        let blockId = hat.uid.replace(name, blockName);
+        if (flowchart.getBlock(blockId) == null) {
+          flowchart.addBlock(blockName, 10, 10, blockId);
+        }
+      }
+    }
+    s = localStorage.getItem("Attachments");
+    if (s != null) {
+      let states = JSON.parse(s);
+      for (let state of states) {
+        let pi = system.getRaspberryPiById(state.raspberryPiId);
+        let hat = system.getHatById(state.hatId);
+        if (hat != null && pi != null) {
+          hat.attach(pi);
+        }
+      }
+    }
+    for (let h of system.hats) {
+      if (h instanceof RainbowHat) {
+        h.temperatureGraph = system.addLineChart(h.temperatureSensor, h.getX(), h.getY(), h.temperatureSensor.name + " @" + h.temperatureSensor.board.getUid());
+        h.pressureGraph = system.addLineChart(h.barometricPressureSensor, h.getX(), h.getY(), h.barometricPressureSensor.name + " @" + h.barometricPressureSensor.board.getUid());
+        h.temperatureGraph.setVisible(false);
+        h.pressureGraph.setVisible(false);
+        let lcs = localStorage.getItem("Line Chart States");
+        if (lcs != null) {
+          let lineChartStates = JSON.parse(lcs);
+          for (let lineChartState of lineChartStates) {
+            if (lineChartState.uid === h.temperatureGraph.uid) {
+              this.setLineChartState(h.temperatureGraph, lineChartState);
+            } else if (lineChartState.uid === h.pressureGraph.uid) {
+              this.setLineChartState(h.pressureGraph, lineChartState);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  static setLineChartState(graph: LineChart, state: any) {
+    graph.setVisible(state.visible);
+    graph.setX(state.x);
+    graph.setY(state.y);
+    if (graph.isVisible()) {
+      graph.draw();
+    }
+  }
+
   static open(): void {
     let that = this;
     flowchart.destroy();
@@ -208,6 +289,8 @@ export class StateIO {
           that.restoreGlobalVariables(JSON.stringify(s.globalVariables));
           that.restoreBlockView(JSON.stringify(s.blockViewState));
           that.restoreBlocks(JSON.stringify(s.blockStates));
+          that.restoreMcus(JSON.stringify(s.mcuStates));
+          that.restoreHats(JSON.stringify(s.hatStates));
           that.restoreConnectors(JSON.stringify(s.connectorStates));
           flowchart.updateResults();
           flowchart.updateLocalStorage();
