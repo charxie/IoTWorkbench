@@ -7,7 +7,9 @@ import brownian_motion from "./examples/brownian-motion.json";
 // @ts-ignore
 import random_walk from "./examples/random-walk.json";
 // @ts-ignore
-import fern_generator from "./examples/fern-generator.json";
+import fern_generator_1 from "./examples/fern-generator-1.json";
+// @ts-ignore
+import fern_generator_2 from "./examples/fern-generator-2.json";
 // @ts-ignore
 import logical_operators from "./examples/logical-operators.json";
 // @ts-ignore
@@ -74,7 +76,8 @@ export class Examples {
     this.files.push({name: "Make Sound with Beepers", data: make_sound_with_beepers});
     this.files.push({name: "Random Walk", data: random_walk});
     this.files.push({name: "Brownian Motion", data: brownian_motion});
-    this.files.push({name: "Fern Generator", data: fern_generator});
+    this.files.push({name: "Fern Generator: Implementation 1", data: fern_generator_1});
+    this.files.push({name: "Fern Generator: Implementation 2", data: fern_generator_2});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 

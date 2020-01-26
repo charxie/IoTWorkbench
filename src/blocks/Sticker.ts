@@ -170,11 +170,23 @@ export class Sticker extends Block {
     // text is part of the model
     let v = this.ports[0].getValue();
     if (v != undefined) {
-      try {
-        this.text = v.toFixed(this.decimals);
-      } catch (e) {
-        this.text = "" + v; // value is a boolean or string or array
-        this.isArray = Array.isArray(v);
+      this.isArray = Array.isArray(v);
+      if (this.isArray) {
+        this.text = "";
+        for (let i of v) {
+          try {
+            this.text += i.toFixed(this.decimals) + ",";
+          } catch (e) {
+            this.text = i + ","; // value is a boolean or string
+          }
+        }
+        this.text = this.text.substring(0, this.text.length - 1);
+      } else {
+        try {
+          this.text = v.toFixed(this.decimals);
+        } catch (e) {
+          this.text = "" + v; // value is a boolean or string
+        }
       }
     } else {
       this.text = undefined;
