@@ -60,6 +60,7 @@ export class BlockView {
   private static readonly resizeNames: string[] = ["upperLeft", "upperRight", "lowerLeft", "lowerRight", "upperMid", "lowerMid", "leftMid", "rightMid"];
   private static readonly dashedLine = [5, 5];
   private static readonly solidLine = [];
+  private drawFunc;
 
   static State = class {
 
@@ -203,15 +204,18 @@ export class BlockView {
   }
 
   requestDraw(): void {
-    let that = this;
-    requestAnimationFrame(function () {
-      that.draw();
-    });
+    if (this.drawFunc == undefined) {
+      let that = this;
+      this.drawFunc = function () {
+        that.draw();
+      }
+    }
+    requestAnimationFrame(this.drawFunc);
   }
 
   private draw(): void {
     let ctx = this.canvas.getContext('2d');
-    // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     ctx.fillStyle = this.getBackgroundColor(); // we have to do this otherwise its screenshot will not have a color background
     ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.drawGrid(ctx);

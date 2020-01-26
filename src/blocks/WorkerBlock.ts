@@ -97,6 +97,7 @@ export class WorkerBlock extends Block {
 
   draw(ctx: CanvasRenderingContext2D): void {
 
+    ctx.clearRect(this.x, this.y, this.width, this.height);
     this.barHeight = Math.min(30, this.height / 3);
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
@@ -186,35 +187,36 @@ export class WorkerBlock extends Block {
   }
 
   private startWorker(): void {
-    if (this.worker == undefined && !this.iconic) {
+    if(this.iconic) return;
+    if (this.worker == undefined) {
       this.worker = new Worker("./Counter.ts");
-      this.worker.postMessage({interval: this.interval, repeat: this.repeatTimes});
+      this.worker.postMessage({interval: this.interval, repeat: this.repeatTimes, name: this.uid});
+      let that = this;
+      this.worker.onmessage = function (event) {
+        that.count = event.data;
+        switch (that.outputType) {
+          case "Natural Number":
+            that.value = event.data;
+            break;
+          case "Random Number":
+            that.value = Math.random();
+            break;
+        }
+        // FIXME: potential deadlock
+        if (that.connectedToGlobalVariable) {
+          flowchart.updateResults();
+        } else {
+          flowchart.updateResultsForBlock(that);
+        }
+        flowchart.blockView.requestDraw();
+      };
     }
     if (this.completed) {
       this.worker.postMessage({count: 0});
     }
     this.worker.postMessage({cmd: "Start"});
-    let that = this;
-    this.worker.onmessage = function (event) {
-      that.count = event.data;
-      switch (that.outputType) {
-        case "Natural Number":
-          that.value = event.data;
-          break;
-        case "Random Number":
-          that.value = Math.random();
-          break;
-      }
-      // FIXME: potential deadlock
-      if (that.connectedToGlobalVariable) {
-        flowchart.updateResults();
-      } else {
-        flowchart.updateResultsForBlock(that);
-      }
-      flowchart.blockView.requestDraw();
-    };
     this.paused = false;
-    this.completed = this.count == this.repeatTimes;
+    this.completed = (this.count === this.repeatTimes);
   }
 
   private stopWorker(): void {
