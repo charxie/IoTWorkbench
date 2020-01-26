@@ -200,6 +200,7 @@ export class StateIO {
         let reader: FileReader = new FileReader();
         reader.readAsText(target.files[0]);
         that.lastFileName = target.files[0].name;
+        // console.log("Open File: " + that.lastFileName);
         reader.onload = function (e) {
           let s = JSON.parse(reader.result.toString());
           that.restoreGlobalVariables(JSON.stringify(s.globalVariables));
@@ -208,6 +209,7 @@ export class StateIO {
           that.restoreConnectors(JSON.stringify(s.connectorStates));
           flowchart.updateResults();
           flowchart.updateLocalStorage();
+          target.value = "";
         };
       }
     };
