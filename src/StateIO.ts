@@ -26,6 +26,7 @@ import {GlobalObjectBlock} from "./blocks/GlobalObjectBlock";
 import {RainbowHat} from "./components/RainbowHat";
 import {SensorLineChart} from "./components/SensorLineChart";
 import {RainbowHatBlock} from "./blocks/RainbowHatBlock";
+import {RaspberryPi} from "./components/RaspberryPi";
 
 export class StateIO {
 
@@ -206,6 +207,14 @@ export class StateIO {
   }
 
   static restoreMcus(s: string): void {
+    if (system.mcus) {
+      for (let m of system.mcus) {
+        if (m instanceof RaspberryPi) {
+          m.hat = null;
+          system.removeRaspberryPi(m);
+        }
+      }
+    }
     system.mcus = [];
     if (s != null) {
       let states = JSON.parse(s);
@@ -218,6 +227,12 @@ export class StateIO {
   }
 
   static restoreHats(s: string): void {
+    if (system.hats) {
+      for (let h of system.hats) {
+        h.attach(null);
+        system.removeHat(h);
+      }
+    }
     system.hats = [];
     if (s != null) {
       let hatStates = JSON.parse(s);
