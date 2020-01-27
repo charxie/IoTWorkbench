@@ -6,12 +6,13 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {RainbowHatBlock} from "../RainbowHatBlock";
+import {RainbowHat} from "../../components/RainbowHat";
 
-export class HatBlockContextMenu extends BlockContextMenu {
+export class RainbowHatBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "hat-block-context-menu";
+    this.id = "rainbow-hat-block-context-menu";
   }
 
   getUi(): string {
@@ -39,38 +40,29 @@ export class HatBlockContextMenu extends BlockContextMenu {
     flowchart.blockView.requestDraw();
   }
 
-  getPropertiesUI(): string {
-    return `<div style="font-size: 90%;">
-              <table class="w3-table-all w3-left w3-hoverable">
-                <tr>
-                  <td>Type:</td>
-                  <td>${this.block.getUid().substring(0, this.block.getUid().indexOf("HAT") + 3)}</td>
-                </tr>
-                <tr>
-                  <td>ID:</td>
-                  <td>${this.block.getUid().substring(this.block.getUid().indexOf("#"))}</td>
-                </tr>
-              </table>
-            </div>`;
+  protected getPropertiesUI(): string {
+    if (this.block instanceof RainbowHatBlock) {
+      let hat = this.block.getPhysicalTwin() as RainbowHat;
+      return hat.getProperties();
+    }
+    return null;
   }
 
   propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block) {
-      let that = this;
-      $("#modal-dialog").html(this.getPropertiesUI()).dialog({
+    if (this.block instanceof RainbowHatBlock) {
+      const block = this.block;
+      const d = $("#modal-dialog").html(this.getPropertiesUI());
+      d.dialog({
         resizable: false,
         modal: true,
-        title: "HAT Block Properties",
-        height: 300,
+        title: block.getUid(),
+        height: 500,
         width: 400,
         buttons: {
-          'OK': function () {
-            $(this).dialog('close');
-          },
-          'Cancel': function () {
-            $(this).dialog('close');
+          'Close': function () {
+            d.dialog('close');
           }
         }
       });

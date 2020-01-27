@@ -43,7 +43,7 @@ import {LogicBlockContextMenu} from "./blocks/ui/LogicBlockContextMenu";
 import {ArithmeticBlockContextMenu} from "./blocks/ui/ArithmeticBlockContextMenu";
 import {UnaryFunctionBlockContextMenu} from "./blocks/ui/UnaryFunctionBlockContextMenu";
 import {BinaryFunctionBlockContextMenu} from "./blocks/ui/BinaryFunctionBlockContextMenu";
-import {HatBlockContextMenu} from "./blocks/ui/HatBlockContextMenu";
+import {RainbowHatBlockContextMenu} from "./blocks/ui/RainbowHatBlockContextMenu";
 import {ToggleSwitchContextMenu} from "./blocks/ui/ToggleSwitchContextMenu";
 import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
 import {SeriesBlockContextMenu} from "./blocks/ui/SeriesBlockContextMenu";
@@ -289,10 +289,10 @@ function setupContextMenuForBlock() {
   parametricEquationBlockContextMenu.addListeners();
   contextMenus.parametricEquationBlock = parametricEquationBlockContextMenu;
 
-  let hatBlockContextMenu = new HatBlockContextMenu();
-  hatBlockContextMenu.render("hat-block-context-menu-placeholder");
-  hatBlockContextMenu.addListeners();
-  contextMenus.hatBlock = hatBlockContextMenu;
+  let rainbowHatBlockContextMenu = new RainbowHatBlockContextMenu();
+  rainbowHatBlockContextMenu.render("rainbow-hat-block-context-menu-placeholder");
+  rainbowHatBlockContextMenu.addListeners();
+  contextMenus.rainbowHatBlock = rainbowHatBlockContextMenu;
 
   let toggleSwitchContextMenu = new ToggleSwitchContextMenu();
   toggleSwitchContextMenu.render("toggle-switch-context-menu-placeholder");

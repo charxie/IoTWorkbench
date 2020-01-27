@@ -49,7 +49,7 @@ import parametric_generator_2 from "./examples/parametric-generator-2.json";
 // @ts-ignore
 import rainbow_hat_1 from "./examples/rainbow-hat-1.json";
 
-import {flowchart} from "./Main";
+import {flowchart, system} from "./Main";
 import {StateIO} from "./StateIO";
 
 export class Examples {
@@ -109,9 +109,13 @@ export class Examples {
     StateIO.restoreGlobalVariables(JSON.stringify(s.globalVariables));
     StateIO.restoreBlockView(JSON.stringify(s.blockViewState));
     StateIO.restoreBlocks(JSON.stringify(s.blockStates));
+    StateIO.restoreMcus(JSON.stringify(s.mcuStates));
+    StateIO.restoreHats(JSON.stringify(s.hatStates));
+    StateIO.restoreAttachments(JSON.stringify(s.attachmentStates));
     StateIO.restoreConnectors(JSON.stringify(s.connectorStates));
     flowchart.updateResults();
     flowchart.updateLocalStorage();
+    system.updateLocalStorage();
   }
 
 }

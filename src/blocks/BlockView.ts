@@ -32,6 +32,7 @@ import {GlobalObjectBlock} from "./GlobalObjectBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
 import {Rectangle} from "../math/Rectangle";
+import {RainbowHatBlock} from "./RainbowHatBlock";
 
 export class BlockView {
 
@@ -777,9 +778,9 @@ export class BlockView {
     } else if (block instanceof ParametricEquationBlock) {
       contextMenus.parametricEquationBlock.block = block;
       menu = document.getElementById("parametric-equation-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof HatBlock) {
-      contextMenus.hatBlock.block = block;
-      menu = document.getElementById("hat-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof RainbowHatBlock) {
+      contextMenus.rainbowHatBlock.block = block;
+      menu = document.getElementById("rainbow-hat-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof Slider) {
       contextMenus.slider.block = block;
       menu = document.getElementById("slider-context-menu") as HTMLMenuElement;

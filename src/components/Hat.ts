@@ -4,11 +4,12 @@
  * @author Charles Xie
  */
 
+import $ from "jquery";
 import {Board} from "./Board";
 import {RaspberryPi} from "./RaspberryPi";
 import {Rectangle} from "../math/Rectangle";
-import {system} from "../Main";
-import $ from "jquery";
+import {flowchart, system} from "../Main";
+import {Block} from "../blocks/Block";
 
 export abstract class Hat extends Board {
 
@@ -83,6 +84,13 @@ export abstract class Hat extends Board {
       }
     }
     return -1;
+  }
+
+  public getCyberTwin(): Block {
+    let name = this.uid.substring(0, this.uid.indexOf("#") - 1);
+    let blockName = name + " Block";
+    let blockId = this.uid.replace(name, blockName);
+    return flowchart.getBlock(blockId);
   }
 
 }

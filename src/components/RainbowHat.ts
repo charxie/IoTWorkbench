@@ -54,30 +54,30 @@ export class RainbowHat extends Hat {
     this.canvas.addEventListener("mousemove", this.mouseMove, false);
     this.canvas.addEventListener('contextmenu', this.openContextMenu, false);
 
-    this.redLedLight = new LedLight(this, "LED Light", "red", 4, 8, 10, 65, 233, 18, 8);
-    this.greenLedLight = new LedLight(this, "LED Light", "green", 4, 8, 10, 147, 233, 18, 8);
-    this.blueLedLight = new LedLight(this, "LED Light", "blue", 4, 8, 10, 230, 233, 18, 8);
-    this.buttonA = new Button(this, "Button A", 38, 245, 72, 24);
-    this.buttonB = new Button(this, "Button B", 120, 245, 72, 24);
-    this.buttonC = new Button(this, "Button C", 203, 245, 72, 24);
+    this.redLedLight = new LedLight(this, "RL", "red", 4, 8, 10, 65, 233, 18, 8);
+    this.greenLedLight = new LedLight(this, "GL", "green", 4, 8, 10, 147, 233, 18, 8);
+    this.blueLedLight = new LedLight(this, "BL", "blue", 4, 8, 10, 230, 233, 18, 8);
+    this.buttonA = new Button(this, "BA", 38, 245, 72, 24);
+    this.buttonB = new Button(this, "BB", 120, 245, 72, 24);
+    this.buttonC = new Button(this, "BC", 203, 245, 72, 24);
     this.buzzer = new Buzzer(this, "Piezo Buzzer", 35, 170, 20, 20);
-    this.temperatureSensor = new Sensor(this, "Temperature", "°C", 152, 108, 12, 12);
-    this.barometricPressureSensor = new Sensor(this, "Pressure", "hPa", 187, 115, 20, 10);
-    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 251, 78, 20, 20));
-    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 218, 62, 20, 20));
-    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 183, 53, 20, 20));
-    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 147, 50, 20, 20));
-    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 111, 53, 20, 20));
-    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 76, 62, 20, 20));
-    this.rgbLedLights.push(new LedLight(this, "RGB LED Light", "black", 16, 12, 2, 44, 78, 20, 20));
-    this.alphanumericDisplays.push(new LedDisplay(this, "LED Display", 34, 214, 33, 65));
-    this.alphanumericDisplays.push(new LedDisplay(this, "LED Display", 95, 214, 33, 65));
-    this.alphanumericDisplays.push(new LedDisplay(this, "LED Display", 156, 214, 33, 65));
-    this.alphanumericDisplays.push(new LedDisplay(this, "LED Display", 218, 214, 33, 65));
-    this.decimalPointDisplays.push(new LedDisplay(this, "LED Display", 78, 214, 33, 65));
-    this.decimalPointDisplays.push(new LedDisplay(this, "LED Display", 139, 214, 33, 65));
-    this.decimalPointDisplays.push(new LedDisplay(this, "LED Display", 200, 214, 33, 65));
-    this.decimalPointDisplays.push(new LedDisplay(this, "LED Display", 261, 214, 33, 65));
+    this.temperatureSensor = new Sensor(this, "TS", "°C", 152, 108, 12, 12);
+    this.barometricPressureSensor = new Sensor(this, "PS", "hPa", 187, 115, 20, 10);
+    this.rgbLedLights.push(new LedLight(this, "L1", "black", 16, 12, 2, 251, 78, 20, 20));
+    this.rgbLedLights.push(new LedLight(this, "L2", "black", 16, 12, 2, 218, 62, 20, 20));
+    this.rgbLedLights.push(new LedLight(this, "L3", "black", 16, 12, 2, 183, 53, 20, 20));
+    this.rgbLedLights.push(new LedLight(this, "L4", "black", 16, 12, 2, 147, 50, 20, 20));
+    this.rgbLedLights.push(new LedLight(this, "L5", "black", 16, 12, 2, 111, 53, 20, 20));
+    this.rgbLedLights.push(new LedLight(this, "L6", "black", 16, 12, 2, 76, 62, 20, 20));
+    this.rgbLedLights.push(new LedLight(this, "L7", "black", 16, 12, 2, 44, 78, 20, 20));
+    this.alphanumericDisplays.push(new LedDisplay(this, "D1", 34, 214, 33, 65));
+    this.alphanumericDisplays.push(new LedDisplay(this, "D2", 95, 214, 33, 65));
+    this.alphanumericDisplays.push(new LedDisplay(this, "D3", 156, 214, 33, 65));
+    this.alphanumericDisplays.push(new LedDisplay(this, "D4", 218, 214, 33, 65));
+    this.decimalPointDisplays.push(new LedDisplay(this, "D5", 78, 214, 33, 65));
+    this.decimalPointDisplays.push(new LedDisplay(this, "D6", 139, 214, 33, 65));
+    this.decimalPointDisplays.push(new LedDisplay(this, "D7", 200, 214, 33, 65));
+    this.decimalPointDisplays.push(new LedDisplay(this, "D8", 261, 214, 33, 65));
     for (let display of this.decimalPointDisplays) {
       display.fontSize = "40px";
     }
@@ -547,6 +547,66 @@ export class RainbowHat extends Hat {
         });
       }
     });
+  }
+
+  public getProperties(): string {
+    let rgbLedHtml: string = "";
+    for (let i = 0; i < this.rgbLedLights.length; i++) {
+      rgbLedHtml += "<tr><td>RGB LED Light</td><td>" + this.rgbLedLights[i].name + "</td><td>" + this.rgbLedLights[i].color + "</td></tr>";
+    }
+    return `<div style="font-size: 90%; overflow-y: auto;">
+              <table class="w3-table-all w3-left w3-hoverable">
+                <thead>
+                  <tr class="w3-gray">
+                  <th>Component</th>
+                  <th>Name</th>
+                  <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Momentary Button A</td>
+                    <td>${this.buttonA.name}</td>
+                    <td>${this.buttonA.on}</td>
+                  </tr>
+                  <tr>
+                    <td>Momentary Button B</td>
+                    <td>${this.buttonB.name}</td>
+                    <td>${this.buttonB.on}</td>
+                  </tr>
+                  <tr>
+                    <td>Momentary Button C</td>
+                    <td>${this.buttonC.name}</td>
+                    <td>${this.buttonC.on}</td>
+                  </tr>
+                  <tr>
+                    <td>Red LED Light</td>
+                    <td>${this.redLedLight.name}</td>
+                    <td>${this.redLedLight.on}</td>
+                  </tr>
+                  <tr>
+                    <td>Green LED Light</td>
+                    <td>${this.greenLedLight.name}</td>
+                    <td>${this.greenLedLight.on}</td>
+                  </tr>
+                  <tr>
+                    <td>Blue LED Light</td>
+                    <td>${this.blueLedLight.name}</td>
+                    <td>${this.blueLedLight.on}</td>
+                  </tr>
+                  <tr>
+                    <td>Temperature Sensor</td>
+                    <td>${this.temperatureSensor.name}</td>
+                    <td>${this.temperatureSensor.data.length > 0 ? this.temperatureSensor.data[this.temperatureSensor.data.length - 1].toFixed(2) : "NA"}</td>
+                  </tr>
+                  <tr>
+                    <td>Barometric Pressure Sensor</td>
+                    <td>${this.barometricPressureSensor.name}</td>
+                    <td>${this.barometricPressureSensor.data.length > 0 ? this.barometricPressureSensor.data[this.barometricPressureSensor.data.length - 1].toFixed(2) : "NA"}</td>
+                  </tr>` + rgbLedHtml + `
+                </tbody>
+              </table>
+            </div>`;
   }
 
 }

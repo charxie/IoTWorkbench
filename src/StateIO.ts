@@ -42,7 +42,6 @@ export class StateIO {
     if (states.length > 0) {
       for (let state of states) {
         let type = state.uid.substring(0, state.uid.indexOf("#") - 1);
-        //if (type.indexOf("HAT") != -1) continue; // Do not add HAT blocks. They are added by the model components.
         let block = flowchart.addBlock(type, state.x, state.y, state.uid);
         if (block == null) {
           console.log("ERROR: " + type + " not recognized");
