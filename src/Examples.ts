@@ -3,6 +3,10 @@
  */
 
 // @ts-ignore
+import rainbow_hat_blinking_led_lights from "./examples/rainbow-hat-blinking-led-lights.json";
+// @ts-ignore
+import rainbow_hat_sensor_data from "./examples/rainbow-hat-sensor-data.json";
+// @ts-ignore
 import brownian_motion from "./examples/brownian-motion.json";
 // @ts-ignore
 import random_walk from "./examples/random-walk.json";
@@ -46,8 +50,6 @@ import parametric_equations_2 from "./examples/parametric-equations-2.json";
 import parametric_generator_1 from "./examples/parametric-generator-1.json";
 // @ts-ignore
 import parametric_generator_2 from "./examples/parametric-generator-2.json";
-// @ts-ignore
-import rainbow_hat_1 from "./examples/rainbow-hat-1.json";
 
 import {flowchart, system} from "./Main";
 import {StateIO} from "./StateIO";
@@ -80,7 +82,8 @@ export class Examples {
     this.files.push({name: "Brownian Motion", data: brownian_motion});
     this.files.push({name: "Fern Generator: Implementation 1", data: fern_generator_1});
     this.files.push({name: "Fern Generator: Implementation 2", data: fern_generator_2});
-    this.files.push({name: "Rainbow HAT: Application 1", data: rainbow_hat_1});
+    this.files.push({name: "Rainbow HAT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
+    this.files.push({name: "Rainbow HAT: Sensor Data", data: rainbow_hat_sensor_data});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 
@@ -106,12 +109,12 @@ export class Examples {
 
   load(s): void {
     flowchart.destroy();
-    StateIO.restoreGlobalVariables(JSON.stringify(s.globalVariables));
-    StateIO.restoreBlockView(JSON.stringify(s.blockViewState));
-    StateIO.restoreBlocks(JSON.stringify(s.blockStates));
     StateIO.restoreMcus(JSON.stringify(s.mcuStates));
     StateIO.restoreHats(JSON.stringify(s.hatStates));
     StateIO.restoreAttachments(JSON.stringify(s.attachmentStates));
+    StateIO.restoreGlobalVariables(JSON.stringify(s.globalVariables));
+    StateIO.restoreBlockView(JSON.stringify(s.blockViewState));
+    StateIO.restoreBlocks(JSON.stringify(s.blockStates));
     StateIO.restoreConnectors(JSON.stringify(s.connectorStates));
     flowchart.updateResults();
     flowchart.updateLocalStorage();

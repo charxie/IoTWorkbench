@@ -10,11 +10,12 @@ import {Util} from "../Util";
 export class WorkerBlock extends Block {
 
   private outputType: string = "Natural Number";
-  private value: number = 0;
+  private value: any = 0;
   private interval: number = 500; // in milliseconds
   private repeatTimes: number = 1000000;
   private barHeight: number;
   private readonly portI: Port;
+  private readonly portN: Port;
   private readonly portO: Port;
   private worker: Worker;
   private count: number;
@@ -51,9 +52,13 @@ export class WorkerBlock extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.color = "#00CED1";
-    this.portI = new Port(this, true, "I", 0, this.height / 2, false);
+    this.barHeight = Math.min(30, this.height / 3);
+    let dh = (this.height - this.barHeight) / 3;
+    this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false);
+    this.portN = new Port(this, true, "N", 0, this.barHeight + 2 * dh, false);
     this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
     this.ports.push(this.portI);
+    this.ports.push(this.portN);
     this.ports.push(this.portO);
   }
 
@@ -98,7 +103,6 @@ export class WorkerBlock extends Block {
   draw(ctx: CanvasRenderingContext2D): void {
 
     ctx.clearRect(this.x, this.y, this.width, this.height);
-    this.barHeight = Math.min(30, this.height / 3);
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
         let gradient = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
@@ -118,7 +122,7 @@ export class WorkerBlock extends Block {
     if (!this.iconic) {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
-      ctx.fillStyle = "black";
+      ctx.fillStyle = "white";
       let titleWidth = ctx.measureText(this.name).width;
       ctx.fillText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
@@ -134,15 +138,18 @@ export class WorkerBlock extends Block {
       case "Random Number":
         display = this.value.toFixed(2);
         break;
+      case "Alternating Bit":
+        display = this.value ? 1 : 0;
+        break;
       default:
         display = this.value.toString();
     }
-    ctx.font = "bold 20px Courier New";
+    ctx.font = "bold 18px Courier New";
     ctx.beginPath();
     let m = this.iconic ? 4 : 8;
-    let x = this.x + m;
+    let x = this.x + 2 * m;
     let y = this.y + this.barHeight + m;
-    ctx.rect(x, y, this.width - 2 * m, this.height - this.barHeight - 2 * m);
+    ctx.rect(x, y, this.width - 4 * m, this.height - this.barHeight - 2 * m);
     let shade = ctx.createLinearGradient(x, y, x, y + this.height);
     shade.addColorStop(0, "lightgray");
     shade.addColorStop(0.5, "black");
@@ -155,14 +162,16 @@ export class WorkerBlock extends Block {
       ctx.fillStyle = "white";
       let counterWidth = ctx.measureText(display).width;
       let counterHeight = ctx.measureText("M").width;
-      x = this.x + this.width - m - counterWidth - 2;
+      x = this.x + this.width - 2 * m - counterWidth - 2;
       y = this.y + this.barHeight + (this.height - this.barHeight + counterHeight) / 2;
       ctx.fillText(display, x, y);
     }
 
     // draw the ports
     ctx.strokeStyle = "black";
+    ctx.font = "bold 12px Times";
     this.portI.draw(ctx, this.iconic);
+    this.portN.draw(ctx, this.iconic);
     this.portO.draw(ctx, this.iconic);
 
     if (this.selected) {
@@ -172,8 +181,8 @@ export class WorkerBlock extends Block {
   }
 
   updateModel(): void {
-    let input = this.portI.getValue();
-    if (input === true) {
+    let invokeInput = this.portI.getValue();
+    if (invokeInput === true) {
       if (!this.completed || this.previousInput === false) {
         this.connectedToGlobalVariable = flowchart.isConnectedToGlobalVariable(this);
         this.startWorker();
@@ -181,13 +190,17 @@ export class WorkerBlock extends Block {
     } else {
       this.stopWorker();
     }
+    let intervalInput = this.portN.getValue();
+    if (intervalInput) {
+      this.interval = intervalInput;
+    }
     this.portO.setValue(this.value);
     this.updateConnectors();
-    this.previousInput = input;
+    this.previousInput = invokeInput;
   }
 
   private startWorker(): void {
-    if(this.iconic) return;
+    if (this.iconic) return;
     if (this.worker == undefined) {
       this.worker = new Worker("./Counter.ts");
       this.worker.postMessage({interval: this.interval, repeat: this.repeatTimes, name: this.uid});
@@ -200,6 +213,9 @@ export class WorkerBlock extends Block {
             break;
           case "Random Number":
             that.value = Math.random();
+            break;
+          case "Alternating Bit":
+            that.value = that.value ? false : true;
             break;
         }
         // FIXME: potential deadlock
@@ -214,7 +230,7 @@ export class WorkerBlock extends Block {
     if (this.completed) {
       this.worker.postMessage({count: 0});
     }
-    this.worker.postMessage({cmd: "Start"});
+    this.worker.postMessage({cmd: "Start", interval: this.interval});
     this.paused = false;
     this.completed = (this.count === this.repeatTimes);
   }
@@ -234,9 +250,12 @@ export class WorkerBlock extends Block {
 
   refreshView(): void {
     super.refreshView();
-    this.portI.setY(this.height / 2);
+    let dh = (this.height - this.barHeight) / 3;
+    this.portI.setY(this.barHeight + dh);
+    this.portN.setY(this.barHeight + 2 * dh);
     this.portO.setX(this.width);
-    this.portO.setY(this.height / 2);
+    dh = (this.height - this.barHeight) / 2;
+    this.portO.setY(this.barHeight + dh);
   }
 
   onDraggableArea(x: number, y: number): boolean {

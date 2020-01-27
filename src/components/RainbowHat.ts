@@ -535,10 +535,7 @@ export class RainbowHat extends Hat {
               }
             }
           }
-          let name = that.uid.substring(0, that.uid.indexOf("#") - 1);
-          let blockName = name + " Block";
-          let blockId = that.uid.replace(name, blockName);
-          let block = flowchart.getBlock(blockId) as RainbowHatBlock;
+          let block = that.getCyberTwin();
           if (block != null) {
             flowchart.traverse(block);
             flowchart.updateResults();

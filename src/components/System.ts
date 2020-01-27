@@ -84,7 +84,7 @@ export class System {
       switch (that.draggedElementId) {
         case "raspberry-pi-image":
           if (id == "workbench") {
-            that.addRaspberryPi("Raspberry Pi", e.clientX, e.offsetY, true);
+            that.addRaspberryPi("Raspberry Pi #" + Date.now().toString(16), e.clientX, e.offsetY, true);
             that.storeMcuStates();
           }
           break;

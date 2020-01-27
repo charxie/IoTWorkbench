@@ -180,13 +180,13 @@ window.onload = function () {
   elementsPanel.render("block-elements-panel");
 
   // read locally stored properties
+  StateIO.restoreMcus(localStorage.getItem("MCU States"));
+  StateIO.restoreHats(localStorage.getItem("HAT States"));
+  StateIO.restoreAttachments(localStorage.getItem("Attachments"));
   StateIO.restoreGlobalVariables(localStorage.getItem("Global Variables"));
   StateIO.restoreBlockView(localStorage.getItem("Block View State"));
   StateIO.restoreBlocks(localStorage.getItem("Block States"));
   StateIO.restoreWorkbench(localStorage.getItem("Workbench State"));
-  StateIO.restoreMcus(localStorage.getItem("MCU States"));
-  StateIO.restoreHats(localStorage.getItem("HAT States"));
-  StateIO.restoreAttachments(localStorage.getItem("Attachments"));
   StateIO.restoreConnectors(localStorage.getItem("Connector States")); // connectors must be restored after loading HATs
   flowchart.updateResults();
 

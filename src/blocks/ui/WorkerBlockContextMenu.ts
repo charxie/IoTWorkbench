@@ -46,6 +46,7 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
                     <select id="worker-output-type-selector" style="width: 120px">
                       <option value="Natural Number" selected>Natural Number</option>
                       <option value="Random Number">Random Number</option>
+                      <option value="Alternating Bit">Alternating Bit</option>
                     </select>
                 </tr>
                 <tr>
