@@ -24,7 +24,7 @@ import {SwitchStatementBlock} from "./blocks/SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./blocks/MultivariableFunctionBlock";
 import {GlobalObjectBlock} from "./blocks/GlobalObjectBlock";
 import {RainbowHat} from "./components/RainbowHat";
-import {LineChart} from "./components/LineChart";
+import {SensorLineChart} from "./components/SensorLineChart";
 import {RainbowHatBlock} from "./blocks/RainbowHatBlock";
 
 export class StateIO {
@@ -266,7 +266,7 @@ export class StateIO {
     }
   }
 
-  static setLineChartState(graph: LineChart, state: any) {
+  static setLineChartState(graph: SensorLineChart, state: any) {
     graph.setVisible(state.visible);
     graph.setX(state.x);
     graph.setY(state.y);

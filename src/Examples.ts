@@ -46,6 +46,8 @@ import parametric_equations_2 from "./examples/parametric-equations-2.json";
 import parametric_generator_1 from "./examples/parametric-generator-1.json";
 // @ts-ignore
 import parametric_generator_2 from "./examples/parametric-generator-2.json";
+// @ts-ignore
+import rainbow_hat_1 from "./examples/rainbow-hat-1.json";
 
 import {flowchart} from "./Main";
 import {StateIO} from "./StateIO";
@@ -78,6 +80,7 @@ export class Examples {
     this.files.push({name: "Brownian Motion", data: brownian_motion});
     this.files.push({name: "Fern Generator: Implementation 1", data: fern_generator_1});
     this.files.push({name: "Fern Generator: Implementation 2", data: fern_generator_2});
+    this.files.push({name: "Rainbow HAT: Application 1", data: rainbow_hat_1});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 

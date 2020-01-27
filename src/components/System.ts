@@ -18,7 +18,7 @@ import {Movable} from "../Movable";
 import {closeAllContextMenus, flowchart} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
-import {LineChart} from "./LineChart";
+import {SensorLineChart} from "./SensorLineChart";
 
 declare var firebase;
 
@@ -29,7 +29,7 @@ export class System {
   workbench: Workbench;
   mcus: Mcu[] = [];
   hats: Hat[] = [];
-  lineCharts: LineChart[] = [];
+  lineCharts: SensorLineChart[] = [];
   playground: HTMLElement;
   colorPicker: ColorPicker;
 
@@ -290,7 +290,7 @@ export class System {
 
   /* line chart methods */
 
-  getLineChartById(uid: string): LineChart {
+  getLineChartById(uid: string): SensorLineChart {
     for (let c of this.lineCharts) {
       if (c.uid == uid) {
         return c;
@@ -305,11 +305,11 @@ export class System {
     this.lineCharts.splice(selectedIndex, 1);
   }
 
-  removeLineChart(lineChart: LineChart): void {
+  removeLineChart(lineChart: SensorLineChart): void {
     this.removeLineChartByIndex(this.lineCharts.indexOf(lineChart));
   }
 
-  addLineChart(s: Sensor, x: number, y: number, uid: string): LineChart {
+  addLineChart(s: Sensor, x: number, y: number, uid: string): SensorLineChart {
     let canvas = document.createElement("canvas");
     canvas.style.margin = "auto";
     canvas.style.position = "absolute";
@@ -323,7 +323,7 @@ export class System {
     canvas.height = 300;
     canvas.id = "line-chart-" + this.lineCharts.length;
     this.playground.appendChild(canvas);
-    let lineChart: LineChart = new LineChart(canvas.id, uid, s);
+    let lineChart: SensorLineChart = new SensorLineChart(canvas.id, uid, s);
     this.lineCharts.push(lineChart);
     lineChart.setX(x);
     lineChart.setY(y);
@@ -332,7 +332,7 @@ export class System {
     return lineChart;
   }
 
-  whichLineChart(x: number, y: number): LineChart {
+  whichLineChart(x: number, y: number): SensorLineChart {
     for (let c of this.lineCharts) {
       let r = new Rectangle(c.getX(), c.getY(), c.getWidth(), c.getHeight());
       if (r.contains(x, y)) {
@@ -436,7 +436,7 @@ export class System {
         m.hat.setY(m.getY());
         this.storeHatStates();
       }
-    } else if (m instanceof LineChart) {
+    } else if (m instanceof SensorLineChart) {
       this.storeLineChartStates();
     }
   }
@@ -491,8 +491,8 @@ export class System {
     let states = [];
     for (let h of this.hats) {
       if (h instanceof RainbowHat) {
-        states.push(new LineChart.State(h.temperatureGraph));
-        states.push(new LineChart.State(h.pressureGraph));
+        states.push(new SensorLineChart.State(h.temperatureGraph));
+        states.push(new SensorLineChart.State(h.pressureGraph));
       }
     }
     localStorage.setItem("Line Chart States", JSON.stringify(states));

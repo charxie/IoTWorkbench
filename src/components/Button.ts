@@ -26,6 +26,10 @@ export class Button implements ElectronicComponent {
     this.height = height;
   }
 
+  public isSelected(): boolean {
+    return this.on;
+  }
+
   public draw(ctx: CanvasRenderingContext2D) {
     if (this.on) {
       ctx.fillStyle = this.pressedColor;

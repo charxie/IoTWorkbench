@@ -12,13 +12,14 @@ import {Button} from "./Button";
 import {Sensor} from "./Sensor";
 import {System} from "./System";
 import {Util} from "../Util";
-import {contextMenus, system} from "../Main";
+import {contextMenus, flowchart, system} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
-import {LineChart} from "./LineChart";
+import {SensorLineChart} from "./SensorLineChart";
 
 // @ts-ignore
 import rainbowHatImage from "../img/rainbow-hat.png";
+import {RainbowHatBlock} from "../blocks/RainbowHatBlock";
 
 export class RainbowHat extends Hat {
 
@@ -35,8 +36,8 @@ export class RainbowHat extends Hat {
   public alphanumericDisplays: LedDisplay[] = [];
   public decimalPointDisplays: LedDisplay[] = [];
 
-  public temperatureGraph: LineChart;
-  public pressureGraph: LineChart;
+  public temperatureGraph: SensorLineChart;
+  public pressureGraph: SensorLineChart;
 
   selectedRgbLedLight: LedLight;
   stateId: string = "rainbow_hat_default";
@@ -442,6 +443,11 @@ export class RainbowHat extends Hat {
     }
   }
 
+  clearSensorData(): void {
+    this.temperatureSensor.clear();
+    this.barometricPressureSensor.clear();
+  }
+
   turnoff(): void {
     this.redLedLight.on = false;
     this.greenLedLight.on = false;
@@ -466,6 +472,9 @@ export class RainbowHat extends Hat {
           that.redLedLight.on = childData.redLed;
           that.greenLedLight.on = childData.greenLed;
           that.blueLedLight.on = childData.blueLed;
+          that.buttonA.on = childData.redLed;
+          that.buttonB.on = childData.greenLed;
+          that.buttonC.on = childData.blueLed;
           if (that.redLedLight.on) {
             that.buzzer.beepButton("A");
           }
@@ -486,41 +495,53 @@ export class RainbowHat extends Hat {
           }
           if (childData.allowTemperatureTransmission) {
             that.temperatureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
-            that.temperatureSensor.data.push(<number>childData.temperature);
-            if (that.temperatureGraph) {
-              that.temperatureGraph.draw();
-            }
-            let t: number = childData.temperature;
-            let s: string = t.toString();
-            let i: number = s.indexOf(".");
-            if (i > 0 && i < 4) {
-              that.decimalPointDisplays[i - 1].setCharacter(".");
-            }
-            let integerPart: string = s.substring(0, i);
-            let decimalPart: string = s.substring(i + 1);
-            s = (integerPart + decimalPart).substr(0, 4);
-            for (i = 0; i < 4; i++) {
-              that.alphanumericDisplays[i].setCharacter(s[i]);
+            if (childData.temperature !== that.temperatureSensor.data[that.temperatureSensor.data.length - 1]) {
+              that.temperatureSensor.data.push(<number>childData.temperature);
+              if (that.temperatureGraph) {
+                that.temperatureGraph.draw();
+              }
+              let t: number = childData.temperature;
+              let s: string = t.toString();
+              let i: number = s.indexOf(".");
+              if (i > 0 && i < 4) {
+                that.decimalPointDisplays[i - 1].setCharacter(".");
+              }
+              let integerPart: string = s.substring(0, i);
+              let decimalPart: string = s.substring(i + 1);
+              s = (integerPart + decimalPart).substr(0, 4);
+              for (i = 0; i < 4; i++) {
+                that.alphanumericDisplays[i].setCharacter(s[i]);
+              }
             }
           }
           if (childData.allowBarometricPressureTransmission) {
             that.barometricPressureSensor.collectionInterval = childData.sensorDataCollectionInterval ? childData.sensorDataCollectionInterval * 0.001 : 1;
-            that.barometricPressureSensor.data.push(<number>childData.barometricPressure);
-            if (that.pressureGraph) {
-              that.pressureGraph.draw();
+            if (childData.barometricPressure !== that.barometricPressureSensor.data[that.barometricPressureSensor.data.length - 1]) {
+              that.barometricPressureSensor.data.push(<number>childData.barometricPressure);
+              if (that.pressureGraph) {
+                that.pressureGraph.draw();
+              }
+              let t: number = childData.barometricPressure;
+              let s: string = t.toString();
+              let i: number = s.indexOf(".");
+              if (i > 0 && i < 4) {
+                that.decimalPointDisplays[i - 1].setCharacter(".");
+              }
+              let integerPart: string = s.substring(0, i);
+              let decimalPart: string = s.substring(i + 1);
+              s = (integerPart + decimalPart).substr(0, 4);
+              for (i = 0; i < 4; i++) {
+                that.alphanumericDisplays[i].setCharacter(s[i]);
+              }
             }
-            let t: number = childData.barometricPressure;
-            let s: string = t.toString();
-            let i: number = s.indexOf(".");
-            if (i > 0 && i < 4) {
-              that.decimalPointDisplays[i - 1].setCharacter(".");
-            }
-            let integerPart: string = s.substring(0, i);
-            let decimalPart: string = s.substring(i + 1);
-            s = (integerPart + decimalPart).substr(0, 4);
-            for (i = 0; i < 4; i++) {
-              that.alphanumericDisplays[i].setCharacter(s[i]);
-            }
+          }
+          let name = that.uid.substring(0, that.uid.indexOf("#") - 1);
+          let blockName = name + " Block";
+          let blockId = that.uid.replace(name, blockName);
+          let block = flowchart.getBlock(blockId) as RainbowHatBlock;
+          if (block != null) {
+            flowchart.traverse(block);
+            flowchart.updateResults();
           }
           that.draw();
         });

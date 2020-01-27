@@ -10,7 +10,7 @@ import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {system} from "../Main";
 
-export class LineChart implements Movable {
+export class SensorLineChart implements Movable {
 
   name: string;
   minimumValue: number = 0;
@@ -43,7 +43,7 @@ export class LineChart implements Movable {
     readonly x: number;
     readonly y: number;
 
-    constructor(lineChart: LineChart) {
+    constructor(lineChart: SensorLineChart) {
       this.uid = lineChart.sensor.name + " @" + lineChart.sensor.board.getUid();
       this.visible = lineChart.visible;
       this.x = lineChart.getX();

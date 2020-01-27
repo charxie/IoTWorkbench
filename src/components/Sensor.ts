@@ -29,6 +29,10 @@ export class Sensor {
     this.height = height;
   }
 
+  public clear(): void {
+    this.data.length = 0;
+  }
+
   public draw(ctx: CanvasRenderingContext2D) {
     if (this.on) {
       ctx.fillStyle = this.pressedColor;

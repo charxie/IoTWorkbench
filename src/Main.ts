@@ -16,13 +16,12 @@ import clickSound from "./sound/stapler.mp3";
 import * as Constants from "./Constants";
 import {Sound} from "./Sound";
 import {User} from "./User";
+import {State} from "./State";
 import {StateIO} from "./StateIO";
 import {Examples} from "./Examples";
-import {LineChart} from "./components/LineChart";
 import {PngSaver} from "./tools/PngSaver";
 
 import {System} from "./components/System";
-import {RainbowHat} from "./components/RainbowHat";
 import {ComponentsPanel} from "./components/ui/ComponentsPanel";
 import {RainbowHatContextMenu} from "./components/ui/RainbowHatContextMenu";
 import {WorkbenchContextMenu} from "./components/ui/WorkbenchContextMenu";
@@ -60,7 +59,6 @@ import {BeeperContextMenu} from "./blocks/ui/BeeperContextMenu";
 import {SwitchStatementBlockContextMenu} from "./blocks/ui/SwitchStatementBlockContextMenu";
 import {MultivariableFunctionBlockContextMenu} from "./blocks/ui/MultivariableFunctionBlockContextMenu";
 import {GlobalObjectBlockContextMenu} from "./blocks/ui/GlobalObjectBlockContextMenu";
-import {State} from "./State";
 
 declare global {
   interface CanvasRenderingContext2D {

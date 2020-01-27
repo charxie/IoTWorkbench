@@ -6,6 +6,7 @@ import {Port} from "./Port";
 import {HatBlock} from "./HatBlock";
 import {Block} from "./Block";
 import {system} from "../Main";
+import {RainbowHat} from "../components/RainbowHat";
 
 export class RainbowHatBlock extends HatBlock {
 
@@ -80,6 +81,14 @@ export class RainbowHatBlock extends HatBlock {
   destroy(): void {
   }
 
+  clearSensorData(): void {
+    let id = "Rainbow HAT " + this.uid.substring(this.uid.indexOf("Block") + 5).trim();
+    let hat = system.getHatById(id) as RainbowHat;
+    if (hat != null) {
+      hat.clearSensorData();
+    }
+  }
+
   refreshView(): void {
     super.refreshView();
     let dy = this.height / 13;
@@ -110,8 +119,14 @@ export class RainbowHatBlock extends HatBlock {
 
   updateModel(): void {
     let id = "Rainbow HAT " + this.uid.substring(this.uid.indexOf("Block") + 5).trim();
-    let hat = system.getHatById(id);
+    let hat = system.getHatById(id) as RainbowHat;
     if (hat != null) {
+      this.portTemperatureSensor.setValue(hat.temperatureSensor.data);
+      this.portPressureSensor.setValue(hat.barometricPressureSensor.data);
+      this.portButtonA.setValue(hat.buttonA.isSelected());
+      this.portButtonB.setValue(hat.buttonB.isSelected());
+      this.portButtonC.setValue(hat.buttonC.isSelected());
+      this.updateConnectors();
       let inputRedLed = this.portRedLed.getValue();
       let inputGreenLed = this.portGreenLed.getValue();
       let inputBlueLed = this.portBlueLed.getValue();
