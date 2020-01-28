@@ -4,7 +4,6 @@
 
 import {Board} from "./Board";
 import {ElectronicComponent} from "./ElectronicComponent";
-import {Util} from "../Util";
 
 export class LedLight implements ElectronicComponent {
 
@@ -35,6 +34,7 @@ export class LedLight implements ElectronicComponent {
   }
 
   public draw(ctx: CanvasRenderingContext2D): void {
+    if (this.color.startsWith("#000000") || this.color.toLowerCase() == "black") return;
     ctx.save();
     if (this.on) {
       ctx.beginPath();
@@ -63,12 +63,11 @@ export class LedLight implements ElectronicComponent {
       } else {
         let gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, this.radius);
         gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
-        gradient.addColorStop(0.5, Util.adjust(this.color, 100));
-        gradient.addColorStop(0.8, this.color);
-        gradient.addColorStop(1, Util.adjust(this.color, -20));
+        gradient.addColorStop(0.5, this.color);
+        gradient.addColorStop(1, "rgba(255, 255, 255, 0.5)");
         ctx.fillStyle = gradient;
       }
-      ctx.arc(centerX, centerY, this.radius, 0, Math.PI * 2);
+      ctx.arc(centerX, centerY, this.radius * 1.25, 0, Math.PI * 2);
       ctx.closePath();
       ctx.fill();
     } else {

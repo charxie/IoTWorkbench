@@ -122,19 +122,11 @@ export class RgbaColorBlock extends Block {
     let g = this.portG.getValue();
     let b = this.portB.getValue();
     let a = this.portA.getValue();
-    if (r != undefined) {
-      this.red = r;
-    }
-    if (g != undefined) {
-      this.green = g;
-    }
-    if (b != undefined) {
-      this.blue = b;
-    }
-    if (a != undefined) {
-      this.alpha = a;
-    }
-    this.portC.setValue([r, g, b, a]);
+    this.red = r != undefined ? Math.round(r) : 128;
+    this.green = g != undefined ? Math.round(g) : 128;
+    this.blue = b != undefined ? Math.round(b) : 128;
+    this.alpha = a != undefined ? a : 1;
+    this.portC.setValue([this.red, this.green, this.blue, this.alpha]);
     this.updateConnectors();
   }
 

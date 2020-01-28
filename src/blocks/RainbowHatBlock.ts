@@ -7,6 +7,7 @@ import {HatBlock} from "./HatBlock";
 import {Block} from "./Block";
 import {system} from "../Main";
 import {RainbowHat} from "../components/RainbowHat";
+import {Util} from "../Util";
 
 export class RainbowHatBlock extends HatBlock {
 
@@ -121,12 +122,24 @@ export class RainbowHatBlock extends HatBlock {
     let id = "Rainbow HAT " + this.uid.substring(this.uid.indexOf("Block") + 5).trim();
     let hat = system.getHatById(id) as RainbowHat;
     if (hat != null) {
+      // sensors
       this.portTemperatureSensor.setValue(hat.temperatureSensor.data);
       this.portPressureSensor.setValue(hat.barometricPressureSensor.data);
+
+      // buttons
       this.portButtonA.setValue(hat.buttonA.isSelected());
       this.portButtonB.setValue(hat.buttonB.isSelected());
       this.portButtonC.setValue(hat.buttonC.isSelected());
+
+      // rgb LED lights
+      let rgbaLed1 = this.portRgbLed1.getValue();
+      if (rgbaLed1 !== undefined) hat.rgbLedLights[0].color = Util.rgbaToHex(rgbaLed1[0], rgbaLed1[1], rgbaLed1[2], rgbaLed1[3]);
+      let rgbaLed2 = this.portRgbLed2.getValue();
+      if (rgbaLed2 !== undefined) hat.rgbLedLights[1].color = Util.rgbaToHex(rgbaLed2[0], rgbaLed2[1], rgbaLed2[2], rgbaLed2[3]);
+
       this.updateConnectors();
+
+      // update the cyber twin
       let inputRedLed = this.portRedLed.getValue();
       let inputGreenLed = this.portGreenLed.getValue();
       let inputBlueLed = this.portBlueLed.getValue();
@@ -134,6 +147,8 @@ export class RainbowHatBlock extends HatBlock {
       hat.greenLedLight.on = inputGreenLed;
       hat.blueLedLight.on = inputBlueLed;
       hat.draw();
+
+      // update the physical twin
       hat.updateFirebase({
         fromBlock: true,
         redLed: inputRedLed ? inputRedLed : false,
