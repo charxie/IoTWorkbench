@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import rainbow_hat_rgb_led_array from "./examples/rainbow-hat-rgb-led-array.json";
+// @ts-ignore
 import rainbow_hat_blinking_led_lights from "./examples/rainbow-hat-blinking-led-lights.json";
 // @ts-ignore
 import rainbow_hat_sensor_data from "./examples/rainbow-hat-sensor-data.json";
@@ -83,6 +85,7 @@ export class Examples {
     this.files.push({name: "Fern Generator: Implementation 1", data: fern_generator_1});
     this.files.push({name: "Fern Generator: Implementation 2", data: fern_generator_2});
     this.files.push({name: "Rainbow HAT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
+    this.files.push({name: "Rainbow HAT: RGB LED Array", data: rainbow_hat_rgb_led_array});
     this.files.push({name: "Rainbow HAT: Sensor Data", data: rainbow_hat_sensor_data});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;

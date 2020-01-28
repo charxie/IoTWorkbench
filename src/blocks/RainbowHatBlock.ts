@@ -20,13 +20,7 @@ export class RainbowHatBlock extends HatBlock {
   private readonly portBlueLed: Port;
   private readonly portTemperatureSensor: Port;
   private readonly portPressureSensor: Port;
-  private readonly portRgbLed1: Port;
-  private readonly portRgbLed2: Port;
-  private readonly portRgbLed3: Port;
-  private readonly portRgbLed4: Port;
-  private readonly portRgbLed5: Port;
-  private readonly portRgbLed6: Port;
-  private readonly portRgbLed7: Port;
+  private readonly portRgbLeds: Port[];
   private readonly portDisplay: Port;
 
   constructor(uid: string, x: number, y: number) {
@@ -39,26 +33,17 @@ export class RainbowHatBlock extends HatBlock {
     this.portGreenLed = new Port(this, true, "GL", 0, 2 * dy, false);
     this.portBlueLed = new Port(this, true, "BL", 0, 3 * dy, false);
     this.portPiezoBuzzer = new Port(this, true, "PB", 0, 4 * dy, false);
-    this.portRgbLed1 = new Port(this, true, "L1", 0, 5 * dy, false);
-    this.portRgbLed2 = new Port(this, true, "L2", 0, 6 * dy, false);
-    this.portRgbLed3 = new Port(this, true, "L3", 0, 7 * dy, false);
-    this.portRgbLed4 = new Port(this, true, "L4", 0, 8 * dy, false);
-    this.portRgbLed5 = new Port(this, true, "L5", 0, 9 * dy, false);
-    this.portRgbLed6 = new Port(this, true, "L6", 0, 10 * dy, false);
-    this.portRgbLed7 = new Port(this, true, "L7", 0, 11 * dy, false);
+    this.portRgbLeds = [];
+    for (let i = 0; i < 7; i++) {
+      let p = new Port(this, true, "L" + (i + 1), 0, (i + 5) * dy, false);
+      this.portRgbLeds.push(p);
+      this.ports.push(p);
+    }
     this.portDisplay = new Port(this, true, "DP", 0, 12 * dy, false);
-
     this.ports.push(this.portRedLed);
     this.ports.push(this.portGreenLed);
     this.ports.push(this.portBlueLed);
     this.ports.push(this.portPiezoBuzzer);
-    this.ports.push(this.portRgbLed1);
-    this.ports.push(this.portRgbLed2);
-    this.ports.push(this.portRgbLed3);
-    this.ports.push(this.portRgbLed4);
-    this.ports.push(this.portRgbLed5);
-    this.ports.push(this.portRgbLed6);
-    this.ports.push(this.portRgbLed7);
     this.ports.push(this.portDisplay);
 
     dy = this.height / 6;
@@ -97,13 +82,9 @@ export class RainbowHatBlock extends HatBlock {
     this.portGreenLed.setY(2 * dy);
     this.portBlueLed.setY(3 * dy);
     this.portPiezoBuzzer.setY(4 * dy);
-    this.portRgbLed1.setY(5 * dy);
-    this.portRgbLed2.setY(6 * dy);
-    this.portRgbLed3.setY(7 * dy);
-    this.portRgbLed4.setY(8 * dy);
-    this.portRgbLed5.setY(9 * dy);
-    this.portRgbLed6.setY(10 * dy);
-    this.portRgbLed7.setY(11 * dy);
+    for (let i = 0; i < 7; i++) {
+      this.portRgbLeds[i].setY((i + 5) * dy);
+    }
     this.portDisplay.setY(12 * dy);
     dy = this.height / 6;
     this.portTemperatureSensor.setX(this.width);
@@ -132,10 +113,12 @@ export class RainbowHatBlock extends HatBlock {
       this.portButtonC.setValue(hat.buttonC.isSelected());
 
       // rgb LED lights
-      let rgbaLed1 = this.portRgbLed1.getValue();
-      if (rgbaLed1 !== undefined) hat.rgbLedLights[0].color = Util.rgbaToHex(rgbaLed1[0], rgbaLed1[1], rgbaLed1[2], rgbaLed1[3]);
-      let rgbaLed2 = this.portRgbLed2.getValue();
-      if (rgbaLed2 !== undefined) hat.rgbLedLights[1].color = Util.rgbaToHex(rgbaLed2[0], rgbaLed2[1], rgbaLed2[2], rgbaLed2[3]);
+      let rgbaLeds = [];
+      for (let i = 0; i < 7; i++) {
+        let v = this.portRgbLeds[i].getValue();
+        rgbaLeds.push(v);
+        hat.rgbLedLights[i].color = v !== undefined ? Util.rgbaToHex(v[0], v[1], v[2], v[3]) : "#000000";
+      }
 
       this.updateConnectors();
 
@@ -149,8 +132,17 @@ export class RainbowHatBlock extends HatBlock {
       hat.draw();
 
       // update the physical twin
+      let rgbArray = []; // TODO: alpha not supported yet, so we can't use rgbaLeds directly
+      for (let rgba of rgbaLeds) {
+        if (rgba === undefined) {
+          rgbArray.push([0, 0, 0]);
+        } else {
+          rgbArray.push([rgba[0], rgba[1], rgba[2]]);
+        }
+      }
       hat.updateFirebase({
         fromBlock: true,
+        rainbowRgb: rgbArray,
         redLed: inputRedLed ? inputRedLed : false,
         greenLed: inputGreenLed ? inputGreenLed : false,
         blueLed: inputBlueLed ? inputBlueLed : false
