@@ -50,6 +50,8 @@ export class ArithmeticBlock extends Block {
       }
       this.portR.setValue(c);
     } else {
+      if (a === undefined) a = 0;
+      if (b === undefined) b = 0;
       this.portR.setValue(this.getResult(a, b));
     }
     this.updateConnectors();

@@ -2,10 +2,11 @@
  * @author Charles Xie
  */
 
-import {system} from "../../Main";
+import $ from "jquery";
+import {isNumber, system} from "../../Main";
 import {RaspberryPi} from "../RaspberryPi";
 import {MyContextMenu} from "../../MyContextMenu";
-import $ from "jquery";
+import {Util} from "../../Util";
 
 export class RaspberryPiContextMenu extends MyContextMenu {
 
@@ -38,8 +39,12 @@ export class RaspberryPiContextMenu extends MyContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-hoverable">
                 <tr>
-                  <td>ID:</td>
-                  <td>${this.raspberryPi.uid.substring(this.raspberryPi.uid.indexOf("#"))}</td>
+                  <td>Upper-Left Point X:</td>
+                  <td><input type="text" id="raspberry-pi-x-field" style="width: 120px"></td>
+                </tr>
+                <tr>
+                  <td>Upper-Left Point Y:</td>
+                  <td><input type="text" id="raspberry-pi-y-field" style="width: 120px"></td>
                 </tr>
               </table>
             </div>`;
@@ -47,18 +52,62 @@ export class RaspberryPiContextMenu extends MyContextMenu {
 
   private settingsButtonClick(e: MouseEvent): void {
     if (this.raspberryPi) {
-      $("#modal-dialog").html(this.getSettingsUI()).dialog({
+      const rpi = this.raspberryPi;
+      const d = $("#modal-dialog").html(this.getSettingsUI());
+      let xInputElement = document.getElementById("raspberry-pi-x-field") as HTMLInputElement;
+      xInputElement.value = rpi.getX().toString();
+      let yInputElement = document.getElementById("raspberry-pi-y-field") as HTMLInputElement;
+      yInputElement.value = rpi.getY().toString();
+      const okFunction = function () {
+        let success = true;
+        let message;
+        // set x
+        let x = parseInt(xInputElement.value);
+        if (isNumber(x)) {
+          rpi.setX(Math.max(20, x));
+        } else {
+          success = false;
+          message = xInputElement.value + " is not a valid x.";
+        }
+        // set y
+        let y = parseInt(yInputElement.value);
+        if (isNumber(y)) {
+          rpi.setY(Math.max(20, y));
+        } else {
+          success = false;
+          message = yInputElement.value + " is not a valid y.";
+        }
+        // finish
+        if (success) {
+          rpi.draw();
+          if (rpi.hat != null) {
+            rpi.hat.setX(rpi.getX());
+            rpi.hat.setY(rpi.getY());
+            system.storeHatStates();
+          }
+          system.storeMcuStates();
+          d.dialog('close');
+        } else {
+          Util.showErrorMessage(message);
+        }
+      };
+      const enterKeyUp = function (e) {
+        if (e.key == "Enter") {
+          okFunction();
+        }
+      };
+      xInputElement.addEventListener("keyup", enterKeyUp);
+      yInputElement.addEventListener("keyup", enterKeyUp);
+      d.dialog({
         resizable: false,
         modal: true,
-        title: "Raspberry Pi Settings",
-        height: 400,
-        width: 400,
+        title: "Settings: " + rpi.getUid(),
+        height: 300,
+        width: 360,
         buttons: {
-          'OK': function () {
-            $(this).dialog('close');
-          },
+          'OK': okFunction,
           'Cancel': function () {
-            $(this).dialog('close');
+            d.dialog('close');
           }
         }
       });

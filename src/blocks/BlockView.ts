@@ -458,6 +458,9 @@ export class BlockView {
       if (b.isSelected()) {
         if (b.mouseDown(e)) {
           grab = true;
+          if (b.isSource()) {
+            this.highlightedPortConnectors = flowchart.getConnectors(b.getPorts()[0]);
+          }
           break;
         }
       }
@@ -506,6 +509,9 @@ export class BlockView {
     for (let b of this.flowchart.blocks) {
       if (b.isSelected()) {
         b.mouseUp(e);
+        if (b.isSource()) {
+          this.highlightedPortConnectors = null;
+        }
       }
     }
     this.requestDraw();

@@ -40,7 +40,7 @@ export class RainbowHat extends Hat {
   public pressureGraph: SensorLineChart;
 
   selectedRgbLedLight: LedLight;
-  stateId: string = "rainbow_hat_default";
+  stateKey: string = "rainbow_hat_default";
 
   private mouseOverObject: any;
   private boardImage: HTMLImageElement;
@@ -439,7 +439,7 @@ export class RainbowHat extends Hat {
 
   updateFirebase(value): void {
     if (this.raspberryPi != null) {
-      System.database.ref(this.stateId).update(value);
+      System.database.ref(this.stateKey).update(value);
     }
   }
 

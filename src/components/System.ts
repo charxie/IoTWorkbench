@@ -122,15 +122,9 @@ export class System {
     }, false);
   }
 
-  addHatByAction(name: string, x: number, y: number): Hat {
-    let hat = this.addHat(name, x, y, name + " #" + Date.now().toString(16), true);
-    this.storeHatStates();
-    if (this.whichRaspberryPi(x, y) >= 0) {
-      hat.tryAttach();
-    }
-    let blockName = name + " Block";
-    flowchart.addBlock(blockName, 10, 10, hat.uid.replace(name, blockName));
-    return hat;
+  clear(): void {
+    this.removeAllHats();
+    this.removeAllRaspberryPis();
   }
 
   /* Raspberry Pi methods */
@@ -155,6 +149,17 @@ export class System {
 
   removeRaspberryPi(raspberryPi: RaspberryPi): void {
     this.removeRaspberryPiByIndex(this.mcus.indexOf(raspberryPi));
+  }
+
+  removeAllRaspberryPis(): void {
+    for (let m of this.mcus) {
+      this.playground.removeChild(m.canvas);
+      if (m instanceof RaspberryPi) {
+        m.hat = null;
+      }
+    }
+    this.mcus.length = 0;
+    this.storeMcuStates();
   }
 
   addRaspberryPi(uid: string, x: number, y: number, shiftToCenter: boolean): RaspberryPi {
@@ -193,6 +198,17 @@ export class System {
 
   /* HAT methods */
 
+  addHatByAction(name: string, x: number, y: number): Hat {
+    let hat = this.addHat(name, x, y, name + " #" + Date.now().toString(16), true);
+    this.storeHatStates();
+    if (this.whichRaspberryPi(x, y) >= 0) {
+      hat.tryAttach();
+    }
+    let blockName = name + " Block";
+    flowchart.addBlock(blockName, 10, 10, hat.uid.replace(name, blockName));
+    return hat;
+  }
+
   getHatById(uid: string): Hat {
     for (let h of this.hats) {
       if (h.uid == uid) {
@@ -214,6 +230,18 @@ export class System {
     let s = hat.uid.substring(0, hat.uid.indexOf("#") - 1);
     let blockId = hat.uid.replace(s, s + " Block");
     flowchart.removeBlock(blockId);
+  }
+
+  removeAllHats(): void {
+    for (let h of this.hats) {
+      this.playground.removeChild(h.canvas);
+      h.raspberryPi = null;
+      let s = h.uid.substring(0, h.uid.indexOf("#") - 1);
+      let blockId = h.uid.replace(s, s + " Block");
+      flowchart.removeBlock(blockId);
+    }
+    this.hats.length = 0;
+    this.storeHatStates();
   }
 
   addHat(type: string, x: number, y: number, uid: string, shiftToCenter: boolean): Hat {

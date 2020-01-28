@@ -25,11 +25,14 @@ export class WorkbenchContextMenu extends MyContextMenu {
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-save-button"><i class="fas fa-download"></i><span class="menu-text">Save</span></button>
               </li>
-              <li class="menu-separator"></li>
-              <li class="menu-item">
+               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-save-screenshot-button"><i class="fas fa-camera"></i><span class="menu-text">Save Screenshot</span></button>
               </li>
-              <li class="menu-separator"></li>
+             <li class="menu-separator"></li>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-clear-button"><i class="fas fa-eraser"></i><span class="menu-text">Clear</span></button>
+              </li>
+             <li class="menu-separator"></li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-settings-button"><i class="fas fa-cog"></i><span class="menu-text">Settings</span></button>
               </li>
@@ -43,8 +46,34 @@ export class WorkbenchContextMenu extends MyContextMenu {
     saveButton.addEventListener("click", this.saveButtonClick.bind(this), false);
     let screenshotButton = document.getElementById(this.id + "-save-screenshot-button");
     screenshotButton.addEventListener("click", this.screenshotButtonClick.bind(this), false);
+    let clearButton = document.getElementById(this.id + "-clear-button");
+    clearButton.addEventListener("click", this.clearButtonClick.bind(this), false);
     let settingsButton = document.getElementById(this.id + "-settings-button");
     settingsButton.addEventListener("click", this.settingsButtonClick.bind(this), false);
+  }
+
+  private clearButtonClick(e: MouseEvent): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    if (system.mcus.length > 0 || system.hats.length > 0) {
+      let message = "<div style='font-size: 90%;'>Are you sure you want to clear the model scene?</div>";
+      $("#modal-dialog").html(message).dialog({
+        resizable: false,
+        modal: true,
+        title: "Clear",
+        height: 150,
+        width: 300,
+        buttons: {
+          'OK': function () {
+            system.clear();
+            $(this).dialog('close');
+          },
+          'Cancel': function () {
+            $(this).dialog('close');
+          }
+        }
+      });
+    }
   }
 
   private screenshotButtonClick(e: MouseEvent): void {

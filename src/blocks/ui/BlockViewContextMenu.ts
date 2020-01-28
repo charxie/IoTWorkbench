@@ -74,9 +74,8 @@ export class BlockViewContextMenu extends MyContextMenu {
   private clearButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.view.flowchart.blocks.length > 0 || this.view.flowchart.connectors.length > 0) {
-      let view = this.view;
-      let message = "<div style='font-size: 90%;'>Are you sure you want to clear the scene?</div>";
+    if (flowchart.blocks.length > 0 || flowchart.connectors.length > 0) {
+      let message = "<div style='font-size: 90%;'>Are you sure you want to clear the flow scene?</div>";
       $("#modal-dialog").html(message).dialog({
         resizable: false,
         modal: true,
