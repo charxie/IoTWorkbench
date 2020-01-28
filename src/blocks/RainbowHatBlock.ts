@@ -130,7 +130,12 @@ export class RainbowHatBlock extends HatBlock {
       let inputRedLed = this.portRedLed.getValue();
       let inputGreenLed = this.portGreenLed.getValue();
       let inputBlueLed = this.portBlueLed.getValue();
+      hat.redLedLight.on = inputRedLed;
+      hat.greenLedLight.on = inputGreenLed;
+      hat.blueLedLight.on = inputBlueLed;
+      hat.draw();
       hat.updateFirebase({
+        fromBlock: true,
         redLed: inputRedLed ? inputRedLed : false,
         greenLed: inputGreenLed ? inputGreenLed : false,
         blueLed: inputBlueLed ? inputBlueLed : false

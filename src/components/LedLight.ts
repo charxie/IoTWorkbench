@@ -3,8 +3,8 @@
  */
 
 import {Board} from "./Board";
-import {Util} from "../Util";
 import {ElectronicComponent} from "./ElectronicComponent";
+import {Util} from "../Util";
 
 export class LedLight implements ElectronicComponent {
 
@@ -62,9 +62,10 @@ export class LedLight implements ElectronicComponent {
         ctx.fillStyle = this.color;
       } else {
         let gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, this.radius);
-        gradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-        gradient.addColorStop(0.5, Util.adjust(this.color, -100));
-        gradient.addColorStop(0, Util.adjust(this.color, 100));
+        gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
+        gradient.addColorStop(0.5, Util.adjust(this.color, 100));
+        gradient.addColorStop(0.8, this.color);
+        gradient.addColorStop(1, Util.adjust(this.color, -20));
         ctx.fillStyle = gradient;
       }
       ctx.arc(centerX, centerY, this.radius, 0, Math.PI * 2);

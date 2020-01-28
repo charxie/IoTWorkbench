@@ -107,7 +107,7 @@ export class RainbowHat extends Hat {
         a.push(c.b);
         list.push(a);
       }
-      this.updateFirebase({rainbowRgb: list});
+      this.updateFirebase({rainbowRgb: list, fromBlock: false});
     }
   }
 
@@ -198,19 +198,19 @@ export class RainbowHat extends Hat {
     let context = this.canvas.getContext("2d");
 
     if (this.redLedLight.toggle(dx, dy)) {
-      this.updateFirebase({redLed: this.redLedLight.on});
+      this.updateFirebase({redLed: this.redLedLight.on, fromBlock: false});
       this.redLedLight.draw(context);
       return;
     }
 
     if (this.greenLedLight.toggle(dx, dy)) {
-      this.updateFirebase({greenLed: this.greenLedLight.on});
+      this.updateFirebase({greenLed: this.greenLedLight.on, fromBlock: false});
       this.greenLedLight.draw(context);
       return;
     }
 
     if (this.blueLedLight.toggle(dx, dy)) {
-      this.updateFirebase({blueLed: this.blueLedLight.on});
+      this.updateFirebase({blueLed: this.blueLedLight.on, fromBlock: false});
       this.blueLedLight.draw(context);
       return;
     }
@@ -220,7 +220,7 @@ export class RainbowHat extends Hat {
       this.buttonA.draw(context);
       this.redLedLight.on = true;
       this.redLedLight.draw(context);
-      this.updateFirebase({redLed: true});
+      this.updateFirebase({redLed: true, fromBlock: false});
       this.buzzer.beepButton("A");
       return;
     }
@@ -230,7 +230,7 @@ export class RainbowHat extends Hat {
       this.buttonB.draw(context);
       this.greenLedLight.on = true;
       this.greenLedLight.draw(context);
-      this.updateFirebase({greenLed: true});
+      this.updateFirebase({greenLed: true, fromBlock: false});
       this.buzzer.beepButton("B");
       return;
     }
@@ -240,7 +240,7 @@ export class RainbowHat extends Hat {
       this.buttonC.draw(context);
       this.blueLedLight.on = true;
       this.blueLedLight.draw(context);
-      this.updateFirebase({blueLed: true});
+      this.updateFirebase({blueLed: true, fromBlock: false});
       this.buzzer.beepButton("C");
       return;
     }
@@ -261,7 +261,7 @@ export class RainbowHat extends Hat {
       this.buttonA.draw(context);
       this.redLedLight.on = false;
       this.redLedLight.draw(context);
-      this.updateFirebase({redLed: false});
+      this.updateFirebase({redLed: false, fromBlock: false});
       return;
     }
 
@@ -270,7 +270,7 @@ export class RainbowHat extends Hat {
       this.buttonB.draw(context);
       this.greenLedLight.on = false;
       this.greenLedLight.draw(context);
-      this.updateFirebase({greenLed: false});
+      this.updateFirebase({greenLed: false, fromBlock: false});
       return;
     }
 
@@ -279,7 +279,7 @@ export class RainbowHat extends Hat {
       this.buttonC.draw(context);
       this.blueLedLight.on = false;
       this.blueLedLight.draw(context);
-      this.updateFirebase({blueLed: false});
+      this.updateFirebase({blueLed: false, fromBlock: false});
       return;
     }
 
@@ -469,6 +469,9 @@ export class RainbowHat extends Hat {
       if (that.raspberryPi != null) { // TODO: We should stop the incoming update instead of shortcircuiting here
         snapshot.forEach(function (child) {
           let childData = child.val();
+          if (childData.fromBlock) {
+            return;
+          }
           that.redLedLight.on = childData.redLed;
           that.greenLedLight.on = childData.greenLed;
           that.blueLedLight.on = childData.blueLed;
