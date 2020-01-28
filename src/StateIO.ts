@@ -27,6 +27,7 @@ import {RainbowHat} from "./components/RainbowHat";
 import {SensorLineChart} from "./components/SensorLineChart";
 import {RainbowHatBlock} from "./blocks/RainbowHatBlock";
 import {RaspberryPi} from "./components/RaspberryPi";
+import {RgbaColorBlock} from "./blocks/RgbaColorBlock";
 
 export class StateIO {
 
@@ -76,6 +77,12 @@ export class StateIO {
           block.setStart(state.start);
           block.setIncrement(state.increment);
           block.setCount(state.count);
+        } else if (block instanceof RgbaColorBlock) {
+          block.setName(state.name);
+          block.setRed(state.red);
+          block.setGreen(state.green);
+          block.setBlue(state.blue);
+          block.setAlpha(state.alpha);
         } else if (block instanceof WorkerBlock) {
           block.setName(state.name);
           block.setOutputType(state.outputType ? state.outputType : "Natural Number");

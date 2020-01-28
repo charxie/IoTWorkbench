@@ -59,6 +59,7 @@ import {BeeperContextMenu} from "./blocks/ui/BeeperContextMenu";
 import {SwitchStatementBlockContextMenu} from "./blocks/ui/SwitchStatementBlockContextMenu";
 import {MultivariableFunctionBlockContextMenu} from "./blocks/ui/MultivariableFunctionBlockContextMenu";
 import {GlobalObjectBlockContextMenu} from "./blocks/ui/GlobalObjectBlockContextMenu";
+import {RgbaColorBlockContextMenu} from "./blocks/ui/RgbaColorBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -244,6 +245,11 @@ function setupContextMenuForBlock() {
   seriesBlockContextMenu.addListeners();
   contextMenus.seriesBlock = seriesBlockContextMenu;
 
+  let rgbaColorBlockContextMenu = new RgbaColorBlockContextMenu();
+  rgbaColorBlockContextMenu.render("rgba-color-block-context-menu-placeholder");
+  rgbaColorBlockContextMenu.addListeners();
+  contextMenus.rgbaColorBlock = rgbaColorBlockContextMenu;
+
   let workerBlockContextMenu = new WorkerBlockContextMenu();
   workerBlockContextMenu.render("worker-block-context-menu-placeholder");
   workerBlockContextMenu.addListeners();
@@ -289,11 +295,6 @@ function setupContextMenuForBlock() {
   parametricEquationBlockContextMenu.addListeners();
   contextMenus.parametricEquationBlock = parametricEquationBlockContextMenu;
 
-  let rainbowHatBlockContextMenu = new RainbowHatBlockContextMenu();
-  rainbowHatBlockContextMenu.render("rainbow-hat-block-context-menu-placeholder");
-  rainbowHatBlockContextMenu.addListeners();
-  contextMenus.rainbowHatBlock = rainbowHatBlockContextMenu;
-
   let toggleSwitchContextMenu = new ToggleSwitchContextMenu();
   toggleSwitchContextMenu.render("toggle-switch-context-menu-placeholder");
   toggleSwitchContextMenu.addListeners();
@@ -333,6 +334,12 @@ function setupContextMenuForBlock() {
   space2dContextMenu.render("space2d-context-menu-placeholder");
   space2dContextMenu.addListeners();
   contextMenus.space2d = space2dContextMenu;
+
+  let rainbowHatBlockContextMenu = new RainbowHatBlockContextMenu();
+  rainbowHatBlockContextMenu.render("rainbow-hat-block-context-menu-placeholder");
+  rainbowHatBlockContextMenu.addListeners();
+  contextMenus.rainbowHatBlock = rainbowHatBlockContextMenu;
+
 }
 
 function setupContextMenuForModel() {

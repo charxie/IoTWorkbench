@@ -30,6 +30,7 @@ import {SwitchStatementBlock} from "./SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
 import {closeAllContextMenus, flowchart, system} from "../Main";
 import {GlobalObjectBlock} from "./GlobalObjectBlock";
+import {RgbaColorBlock} from "./RgbaColorBlock";
 
 export class Flowchart {
 
@@ -346,6 +347,9 @@ export class Flowchart {
       case "Series Block":
         block = new SeriesBlock(uid, x, y, 80, 80, name, "Series");
         break;
+      case "Rgba Color Block":
+        block = new RgbaColorBlock(uid, x, y, 80, 80, name, "RGBA");
+        break;
       case "Worker Block":
         block = new WorkerBlock(uid, name, x, y, 80, 60);
         break;
@@ -439,6 +443,8 @@ export class Flowchart {
         blockStates.push(new GlobalObjectBlock.State(b));
       } else if (b instanceof SeriesBlock) {
         blockStates.push(new SeriesBlock.State(b));
+      } else if (b instanceof RgbaColorBlock) {
+        blockStates.push(new RgbaColorBlock.State(b));
       } else if (b instanceof WorkerBlock) {
         blockStates.push(new WorkerBlock.State(b));
       } else if (b instanceof ItemSelector) {

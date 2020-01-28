@@ -5,13 +5,13 @@
 import {Flowchart} from "./Flowchart";
 import {closeAllContextMenus, contextMenus, flowchart, sound} from "../Main";
 import {Movable} from "../Movable";
+import {Rectangle} from "../math/Rectangle";
 import {Block} from "./Block";
 import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
 import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
 import {NegationBlock} from "./NegationBlock";
 import {LogicBlock} from "./LogicBlock";
 import {ArithmeticBlock} from "./ArithmeticBlock";
-import {HatBlock} from "./HatBlock";
 import {Port} from "./Port";
 import {Connector} from "./Connector";
 import {PortConnector} from "./PortConnector";
@@ -31,8 +31,8 @@ import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {GlobalObjectBlock} from "./GlobalObjectBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
-import {Rectangle} from "../math/Rectangle";
 import {RainbowHatBlock} from "./RainbowHatBlock";
+import {RgbaColorBlock} from "./RgbaColorBlock";
 
 export class BlockView {
 
@@ -133,6 +133,9 @@ export class BlockView {
             break;
           case "series-block":
             that.addBlock(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
+            break;
+          case "rgba-color-block":
+            that.addBlock(new RgbaColorBlock("Rgba Color Block #" + timestamp, x - 30, y - 40, 60, 80, "Rgba Color Block", "RGBA"));
             break;
           case "worker-block":
             that.addBlock(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
@@ -748,9 +751,6 @@ export class BlockView {
     if (block instanceof ArithmeticBlock) {
       contextMenus.arithmeticBlock.block = block;
       menu = document.getElementById("arithmetic-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof SeriesBlock) {
-      contextMenus.seriesBlock.block = block;
-      menu = document.getElementById("series-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof WorkerBlock) {
       contextMenus.workerBlock.block = block;
       menu = document.getElementById("worker-block-context-menu") as HTMLMenuElement;
@@ -778,9 +778,6 @@ export class BlockView {
     } else if (block instanceof ParametricEquationBlock) {
       contextMenus.parametricEquationBlock.block = block;
       menu = document.getElementById("parametric-equation-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof RainbowHatBlock) {
-      contextMenus.rainbowHatBlock.block = block;
-      menu = document.getElementById("rainbow-hat-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof Slider) {
       contextMenus.slider.block = block;
       menu = document.getElementById("slider-context-menu") as HTMLMenuElement;
@@ -811,6 +808,15 @@ export class BlockView {
     } else if (block instanceof GlobalObjectBlock) {
       contextMenus.globalObjectBlock.block = block;
       menu = document.getElementById("global-object-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof SeriesBlock) {
+      contextMenus.seriesBlock.block = block;
+      menu = document.getElementById("series-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof RgbaColorBlock) {
+      contextMenus.rgbaColorBlock.block = block;
+      menu = document.getElementById("rgba-color-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof RainbowHatBlock) {
+      contextMenus.rainbowHatBlock.block = block;
+      menu = document.getElementById("rainbow-hat-block-context-menu") as HTMLMenuElement;
     } else {
       contextMenus.blockView.view = this;
       menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;
