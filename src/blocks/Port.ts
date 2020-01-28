@@ -110,7 +110,7 @@ export class Port {
       }
     }
     // check other conditions
-    if (true) {
+    if (allow) {
       if (this.hasMultiInput()) {
         if (selectedPort != null) {
           if (flowchart.getConnectorBetweenPorts(this, selectedPort) != null) {
@@ -138,7 +138,7 @@ export class Port {
     ctx.arc(ax, ay, this.arc.radius, this.arc.startAngle, this.arc.endAngle, this.arc.anticlockwise);
     ctx.fill();
     ctx.stroke();
-    if (!iconic && this.block.getPorts().length > 1) {
+    if (!iconic && this.block.getPorts().length > 2) {
       ctx.lineWidth = 0.75;
       ctx.fillStyle = "black";
       let t = this.block.getPortName(this.uid);
