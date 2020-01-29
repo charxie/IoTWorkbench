@@ -227,6 +227,10 @@ export class System {
 
   removeHat(hat: Hat): void {
     this.removeHatByIndex(this.hats.indexOf(hat));
+  }
+
+  removeHatAndBlock(hat: Hat): void {
+    this.removeHatByIndex(this.hats.indexOf(hat));
     let s = hat.uid.substring(0, hat.uid.indexOf("#") - 1);
     let blockId = hat.uid.replace(s, s + " Block");
     flowchart.removeBlock(blockId);

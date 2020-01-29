@@ -32,7 +32,7 @@ export abstract class HatContextMenu extends MyContextMenu {
         buttons: {
           'OK': function () {
             that.hat.attach(null);
-            system.removeHat(that.hat);
+            system.removeHatAndBlock(that.hat);
             $(this).dialog('close');
           },
           'Cancel': function () {

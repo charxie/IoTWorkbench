@@ -38,7 +38,7 @@ export class UnaryFunctionBlock extends FunctionBlock {
     super(uid, x, y, width, height);
     this.symbol = "F(X)";
     this.name = "Unary Function Block";
-    this.color = "#7B68EE";
+    this.color = "#DDA0DD";
     this.portX = new Port(this, true, "X", 0, this.height / 2, false);
     this.portR = new Port(this, false, "R", this.width, this.height / 2, true);
     this.ports.push(this.portX);
