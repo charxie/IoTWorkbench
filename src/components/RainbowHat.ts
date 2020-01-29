@@ -471,16 +471,16 @@ export class RainbowHat extends Hat {
           that.redLedLight.on = childData.redLed;
           that.greenLedLight.on = childData.greenLed;
           that.blueLedLight.on = childData.blueLed;
-          that.buttonA.on = childData.redLed;
-          that.buttonB.on = childData.greenLed;
-          that.buttonC.on = childData.blueLed;
-          if (that.redLedLight.on) {
+          that.buttonA.on = childData.buttonA;
+          that.buttonB.on = childData.buttonB;
+          that.buttonC.on = childData.buttonC;
+          if (that.buttonA.on || that.redLedLight.on) {
             that.buzzer.beepButton("A");
           }
-          if (that.greenLedLight.on) {
+          if (that.buttonB.on || that.greenLedLight.on) {
             that.buzzer.beepButton("B");
           }
-          if (that.blueLedLight.on) {
+          if (that.buttonC.on || that.blueLedLight.on) {
             that.buzzer.beepButton("C");
           }
           if (childData.rainbowRgb) {
