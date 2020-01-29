@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import rainbow_hat_brownian_motion from "./examples/rainbow-hat-brownian-motion.json";
+// @ts-ignore
 import rainbow_hat_fading_led_array from "./examples/rainbow-hat-fading-led-array.json";
 // @ts-ignore
 import rainbow_hat_rgb_led_array from "./examples/rainbow-hat-rgb-led-array.json";
@@ -90,6 +92,7 @@ export class Examples {
     this.files.push({name: "Rainbow HAT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
     this.files.push({name: "Rainbow HAT: Fading LED Array", data: rainbow_hat_fading_led_array});
     this.files.push({name: "Rainbow HAT: Sensor Data", data: rainbow_hat_sensor_data});
+    this.files.push({name: "Rainbow HAT: Mixed-Reality Brownian Motion", data: rainbow_hat_brownian_motion});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 

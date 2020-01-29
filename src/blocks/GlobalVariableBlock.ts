@@ -86,6 +86,13 @@ export class GlobalVariableBlock extends Block {
   updateModel(): void {
     let x = this.portX.getValue();
     if (x != undefined) {
+      if (Array.isArray(x)) { // only accept the latest value of an array
+        if (x.length == 0) {
+          x = 0;
+        } else {
+          x = x[x.length - 1];
+        }
+      }
       this.value = x;
       flowchart.updateGlobalVariable(this.key, this.value);
     }
