@@ -22,13 +22,14 @@ export class RainbowHatBlock extends HatBlock {
   private readonly portPressureSensor: Port;
   private readonly portRgbLeds: Port[];
   private readonly portDisplay: Port;
+  private readonly portClock: Port;
 
   constructor(uid: string, x: number, y: number) {
     super(uid, x, y, 125, 250);
     this.name = "Rainbow HAT";
     this.color = "#A9A9A9";
 
-    let dy = this.height / 13;
+    let dy = this.height / 14;
     this.portRedLed = new Port(this, true, "RL", 0, dy, false); // coordinates relative to this block
     this.portGreenLed = new Port(this, true, "GL", 0, 2 * dy, false);
     this.portBlueLed = new Port(this, true, "BL", 0, 3 * dy, false);
@@ -40,11 +41,13 @@ export class RainbowHatBlock extends HatBlock {
       this.ports.push(p);
     }
     this.portDisplay = new Port(this, true, "DP", 0, 12 * dy, false);
+    this.portClock = new Port(this, true, "CK", 0, 13 * dy, false);
     this.ports.push(this.portRedLed);
     this.ports.push(this.portGreenLed);
     this.ports.push(this.portBlueLed);
     this.ports.push(this.portPiezoBuzzer);
     this.ports.push(this.portDisplay);
+    this.ports.push(this.portClock);
 
     dy = this.height / 6;
     this.portTemperatureSensor = new Port(this, false, "TS", this.width, dy, true);
@@ -77,7 +80,7 @@ export class RainbowHatBlock extends HatBlock {
 
   refreshView(): void {
     super.refreshView();
-    let dy = this.height / 13;
+    let dy = this.height / 14;
     this.portRedLed.setY(dy); // coordinates relative to this block
     this.portGreenLed.setY(2 * dy);
     this.portBlueLed.setY(3 * dy);
@@ -86,6 +89,7 @@ export class RainbowHatBlock extends HatBlock {
       this.portRgbLeds[i].setY((i + 5) * dy);
     }
     this.portDisplay.setY(12 * dy);
+    this.portClock.setY(13 * dy);
     dy = this.height / 6;
     this.portTemperatureSensor.setX(this.width);
     this.portTemperatureSensor.setY(dy);
@@ -141,7 +145,6 @@ export class RainbowHatBlock extends HatBlock {
         }
       }
       hat.updateFirebase({
-        fromBlock: true,
         rainbowRgb: rgbArray,
         redLed: inputRedLed ? inputRedLed : false,
         greenLed: inputGreenLed ? inputGreenLed : false,

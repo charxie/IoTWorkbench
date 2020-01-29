@@ -86,7 +86,7 @@ export abstract class Hat extends Board {
     return -1;
   }
 
-  public getCyberTwin(): Block {
+  public getBlock(): Block {
     let name = this.uid.substring(0, this.uid.indexOf("#") - 1);
     let blockName = name + " Block";
     let blockId = this.uid.replace(name, blockName);

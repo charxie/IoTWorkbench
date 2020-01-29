@@ -19,7 +19,6 @@ import {SensorLineChart} from "./SensorLineChart";
 
 // @ts-ignore
 import rainbowHatImage from "../img/rainbow-hat.png";
-import {RainbowHatBlock} from "../blocks/RainbowHatBlock";
 
 export class RainbowHat extends Hat {
 
@@ -107,7 +106,7 @@ export class RainbowHat extends Hat {
         a.push(c.b);
         list.push(a);
       }
-      this.updateFirebase({rainbowRgb: list, fromBlock: false});
+      this.updateFirebase({rainbowRgb: list});
     }
   }
 
@@ -198,19 +197,19 @@ export class RainbowHat extends Hat {
     let context = this.canvas.getContext("2d");
 
     if (this.redLedLight.toggle(dx, dy)) {
-      this.updateFirebase({redLed: this.redLedLight.on, fromBlock: false});
+      this.updateFirebase({redLed: this.redLedLight.on});
       this.redLedLight.draw(context);
       return;
     }
 
     if (this.greenLedLight.toggle(dx, dy)) {
-      this.updateFirebase({greenLed: this.greenLedLight.on, fromBlock: false});
+      this.updateFirebase({greenLed: this.greenLedLight.on});
       this.greenLedLight.draw(context);
       return;
     }
 
     if (this.blueLedLight.toggle(dx, dy)) {
-      this.updateFirebase({blueLed: this.blueLedLight.on, fromBlock: false});
+      this.updateFirebase({blueLed: this.blueLedLight.on});
       this.blueLedLight.draw(context);
       return;
     }
@@ -220,7 +219,7 @@ export class RainbowHat extends Hat {
       this.buttonA.draw(context);
       this.redLedLight.on = true;
       this.redLedLight.draw(context);
-      this.updateFirebase({redLed: true, fromBlock: false});
+      this.updateFirebase({redLed: true});
       this.buzzer.beepButton("A");
       return;
     }
@@ -230,7 +229,7 @@ export class RainbowHat extends Hat {
       this.buttonB.draw(context);
       this.greenLedLight.on = true;
       this.greenLedLight.draw(context);
-      this.updateFirebase({greenLed: true, fromBlock: false});
+      this.updateFirebase({greenLed: true});
       this.buzzer.beepButton("B");
       return;
     }
@@ -240,7 +239,7 @@ export class RainbowHat extends Hat {
       this.buttonC.draw(context);
       this.blueLedLight.on = true;
       this.blueLedLight.draw(context);
-      this.updateFirebase({blueLed: true, fromBlock: false});
+      this.updateFirebase({blueLed: true});
       this.buzzer.beepButton("C");
       return;
     }
@@ -261,7 +260,7 @@ export class RainbowHat extends Hat {
       this.buttonA.draw(context);
       this.redLedLight.on = false;
       this.redLedLight.draw(context);
-      this.updateFirebase({redLed: false, fromBlock: false});
+      this.updateFirebase({redLed: false});
       return;
     }
 
@@ -270,7 +269,7 @@ export class RainbowHat extends Hat {
       this.buttonB.draw(context);
       this.greenLedLight.on = false;
       this.greenLedLight.draw(context);
-      this.updateFirebase({greenLed: false, fromBlock: false});
+      this.updateFirebase({greenLed: false});
       return;
     }
 
@@ -279,7 +278,7 @@ export class RainbowHat extends Hat {
       this.buttonC.draw(context);
       this.blueLedLight.on = false;
       this.blueLedLight.draw(context);
-      this.updateFirebase({blueLed: false, fromBlock: false});
+      this.updateFirebase({blueLed: false});
       return;
     }
 
@@ -469,9 +468,6 @@ export class RainbowHat extends Hat {
       if (that.raspberryPi != null) { // TODO: We should stop the incoming update instead of shortcircuiting here
         snapshot.forEach(function (child) {
           let childData = child.val();
-          if (childData.fromBlock) {
-            return;
-          }
           that.redLedLight.on = childData.redLed;
           that.greenLedLight.on = childData.greenLed;
           that.blueLedLight.on = childData.blueLed;
@@ -537,11 +533,6 @@ export class RainbowHat extends Hat {
                 that.alphanumericDisplays[i].setCharacter(s[i]);
               }
             }
-          }
-          let block = that.getCyberTwin();
-          if (block != null) {
-            flowchart.traverse(block);
-            flowchart.updateResults();
           }
           that.draw();
         });

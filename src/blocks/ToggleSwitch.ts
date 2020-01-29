@@ -250,6 +250,7 @@ export class ToggleSwitch extends Block {
 
   mouseUp(e: MouseEvent): void {
     if (this.knobGrabbed) {
+      this.checked = this.knob.x > (this.trackMin + this.trackMax) / 2;
       this.updateAll();
       this.knobGrabbed = false;
     }
@@ -268,7 +269,6 @@ export class ToggleSwitch extends Block {
       } else if (this.knob.x > this.trackMax) {
         this.knob.x = this.trackMax;
       }
-      this.checked = this.knob.x > (this.trackMin + this.trackMax) / 2;
     } else {
       if (this.onKnob(x, y)) {
         if (e.target instanceof HTMLCanvasElement) {

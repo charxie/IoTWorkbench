@@ -42,7 +42,7 @@ export class RainbowHatBlockContextMenu extends BlockContextMenu {
 
   protected getPropertiesUI(): string {
     if (this.block instanceof RainbowHatBlock) {
-      let hat = this.block.getPhysicalTwin() as RainbowHat;
+      let hat = this.block.getHat() as RainbowHat;
       return hat.getProperties();
     }
     return null;

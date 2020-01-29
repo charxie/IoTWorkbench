@@ -87,7 +87,7 @@ export class BlockView {
     this.canvas.addEventListener("keydown", this.keyDown.bind(this), false);
     this.canvas.addEventListener("keyup", this.keyUp.bind(this), false);
     this.canvas.addEventListener('contextmenu', this.openContextMenu.bind(this), false);
-    document.addEventListener("mouseleave", this.mouseLeave.bind(this), false);
+    document.addEventListener("mouseout", this.mouseOut.bind(this), false); // FIXME: Why add the listener to the document?
 
     this.originalRectangle = new Rectangle(0, 0, 1, 1);
     this.connectorOntheFly = new Connector();
@@ -728,11 +728,15 @@ export class BlockView {
     this.requestDraw();
   }
 
-  private mouseLeave = (e: MouseEvent): void => {
+  private mouseOut = (e: MouseEvent): void => {
     e.preventDefault();
     this.selectedMovable = null;
     for (let b of this.flowchart.blocks) {
       if (b.isSelected()) {
+        // if the mouse is out of this canvas, consider that an mouseup event would follow to terminate whatever
+        // is going on with the selected block. Without this, the mouseup event will never be fired if the user
+        // drag the mouse and release it outsider the canvas.
+        b.mouseUp(e);
         b.mouseLeave(e);
       }
     }
