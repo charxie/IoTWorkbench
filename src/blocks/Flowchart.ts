@@ -37,7 +37,6 @@ export class Flowchart {
   globalVariables = {};
   blocks: Block[] = [];
   connectors: PortConnector[] = [];
-  copiedBlock: Block;
   readonly blockView: BlockView;
 
   private connectedSources: Block[]; // temporary storage

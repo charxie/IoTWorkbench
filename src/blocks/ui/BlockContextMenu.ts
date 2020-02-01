@@ -27,7 +27,7 @@ export abstract class BlockContextMenu extends MyContextMenu {
   protected copyButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    flowchart.copiedBlock = this.block;
+    flowchart.blockView.setCopiedBlock(this.block);
   }
 
   protected deleteButtonClick(e: MouseEvent): void {

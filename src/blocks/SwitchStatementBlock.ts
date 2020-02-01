@@ -37,7 +37,7 @@ export class SwitchStatementBlock extends Block {
     this.name = name;
     this.cases = [1, 2, 3];
     this.symbol = symbol;
-    this.color = "#EE82EE";
+    this.color = "#DB7093";
     this.portI = new Port(this, true, "I", 0, this.height / 2, false);
     this.ports.push(this.portI);
     this.setOutputPorts();

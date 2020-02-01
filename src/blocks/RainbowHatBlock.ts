@@ -64,7 +64,10 @@ export class RainbowHatBlock extends HatBlock {
   }
 
   getCopy(): Block {
-    return new RainbowHatBlock(name + " #" + Date.now().toString(16), this.x, this.y);
+    let block = new RainbowHatBlock(name + " #" + Date.now().toString(16), this.x, this.y);
+    block.width = this.width;
+    block.height = this.height;
+    return block;
   }
 
   destroy(): void {

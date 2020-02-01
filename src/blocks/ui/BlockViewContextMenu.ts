@@ -81,7 +81,7 @@ export class BlockViewContextMenu extends MyContextMenu {
         modal: true,
         title: "Clear",
         height: 150,
-        width: 300,
+        width: 350,
         buttons: {
           'OK': function () {
             flowchart.clear();

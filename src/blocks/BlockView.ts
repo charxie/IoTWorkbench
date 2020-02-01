@@ -42,6 +42,7 @@ export class BlockView {
   private selectedMovable: Movable;
   private selectedResizeName: string;
   private selectedBlock: Block;
+  private copiedBlock: Block;
   private selectedPort: Port;
   private selectedPortConnector: PortConnector;
   private highlightedPortConnectors: PortConnector[];
@@ -184,15 +185,29 @@ export class BlockView {
     }, false);
   }
 
+  setCopiedBlock(copiedBlock: Block): void {
+    this.copiedBlock = copiedBlock;
+  }
+
   paste(): void {
-    if (!flowchart.copiedBlock) return;
-    let block = flowchart.copiedBlock.getCopy();
-    block.setX(this.contextMenuClickX);
-    block.setY(this.contextMenuClickY);
+    this.pasteTo(this.contextMenuClickX, this.contextMenuClickY);
+  }
+
+  pasteTo(x: number, y: number): void {
+    if (!this.copiedBlock) return;
+    let block = this.copiedBlock.getCopy();
+    block.setX(x);
+    block.setY(y);
     block.updateModel();
     block.refreshView();
     flowchart.blocks.push(block);
     flowchart.storeBlockStates();
+    block.setSelected(true);
+    if (this.selectedBlock != null) {
+      this.selectedBlock.setSelected(false);
+    }
+    this.selectedBlock = block;
+    this.copiedBlock = block;
     this.requestDraw();
   }
 
@@ -314,6 +329,18 @@ export class BlockView {
           case "Delete":
             if (this.selectedBlock != null) {
               flowchart.askToDeleteBlock(this.selectedBlock);
+            }
+            break;
+          case "c":
+            if (e.ctrlKey || e.metaKey) {
+              this.copiedBlock = this.selectedBlock;
+            }
+            break;
+          case "v":
+            if (e.ctrlKey || e.metaKey) {
+              if (this.copiedBlock != null) {
+                this.pasteTo(this.copiedBlock.getX() + 20, this.copiedBlock.getY() + 20);
+              }
             }
             break;
         }
@@ -830,7 +857,7 @@ export class BlockView {
     } else {
       contextMenus.blockView.view = this;
       menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;
-      document.getElementById("block-view-context-menu-paste-menu-item").className = flowchart.copiedBlock ? "menu-item" : "menu-item disabled";
+      document.getElementById("block-view-context-menu-paste-menu-item").className = this.copiedBlock ? "menu-item" : "menu-item disabled";
     }
     if (menu != null) {
       menu.style.left = e.clientX + "px";
