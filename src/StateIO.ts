@@ -38,7 +38,7 @@ export class StateIO {
   }
 
   static restoreBlocks(s: string): void {
-    flowchart.blocks = [];
+    flowchart.blocks.length = 0;
     if (s == null) return;
     let states = JSON.parse(s);
     if (states.length > 0) {
@@ -168,7 +168,7 @@ export class StateIO {
   }
 
   static restoreConnectors(s: string): void {
-    flowchart.connectors = [];
+    flowchart.connectors.length = 0;
     if (s == null) return;
     let states = JSON.parse(s);
     if (states.length > 0) {
@@ -185,11 +185,16 @@ export class StateIO {
     }
   }
 
-  static restoreGlobalVariables(s: string): void {
-    if (s != undefined) {
-      flowchart.globalVariables = JSON.parse(s);
-    } else {
-      flowchart.globalVariables = {};
+  static restoreGlobalVariables(): void {
+    Util.clearObject(flowchart.globalVariables);
+    for (let b of flowchart.blocks) {
+      if (b instanceof GlobalVariableBlock) {
+        flowchart.updateGlobalVariable(b.getKey(), b.getValue());
+      } else if (b instanceof GlobalObjectBlock) {
+        for (let i = 0; i < b.getKeys().length; i++) {
+          flowchart.updateGlobalVariable(b.getKeys()[i], b.getValues()[i])
+        }
+      }
     }
   }
 
@@ -292,6 +297,16 @@ export class StateIO {
     }
   }
 
+  static restore(s): void {
+    this.restoreMcus(JSON.stringify(s.mcuStates));
+    this.restoreHats(JSON.stringify(s.hatStates));
+    this.restoreAttachments(JSON.stringify(s.attachmentStates));
+    this.restoreBlockView(JSON.stringify(s.blockViewState));
+    this.restoreBlocks(JSON.stringify(s.blockStates));
+    this.restoreGlobalVariables();
+    this.restoreConnectors(JSON.stringify(s.connectorStates));
+  }
+
   static open(): void {
     let that = this;
     flowchart.destroy();
@@ -304,13 +319,7 @@ export class StateIO {
         that.lastFileName = target.files[0].name;
         reader.onload = function (e) {
           let s = JSON.parse(reader.result.toString());
-          that.restoreMcus(JSON.stringify(s.mcuStates));
-          that.restoreHats(JSON.stringify(s.hatStates));
-          that.restoreAttachments(JSON.stringify(s.attachmentStates));
-          that.restoreGlobalVariables(JSON.stringify(s.globalVariables));
-          that.restoreBlockView(JSON.stringify(s.blockViewState));
-          that.restoreBlocks(JSON.stringify(s.blockStates));
-          that.restoreConnectors(JSON.stringify(s.connectorStates));
+          that.restore(s);
           flowchart.updateResults();
           flowchart.updateLocalStorage();
           system.updateLocalStorage();

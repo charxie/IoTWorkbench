@@ -12,7 +12,6 @@ export class State {
   readonly blockStates = [];
   readonly connectorStates = [];
   readonly blockViewState;
-  readonly globalVariables = {};
   readonly mcuStates = [];
   readonly hatStates = [];
   readonly attachmentStates = [];
@@ -21,7 +20,6 @@ export class State {
     system.saveMcuStatesTo(this.mcuStates);
     system.saveHatStatesTo(this.hatStates);
     system.saveAttachments(this.attachmentStates);
-    this.globalVariables = JSON.parse(JSON.stringify(flowchart.globalVariables));
     flowchart.saveBlockStatesTo(this.blockStates);
     for (let c of flowchart.connectors) {
       if (c.getOutput() != null && c.getInput() != null) {

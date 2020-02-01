@@ -31,6 +31,7 @@ import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
 import {closeAllContextMenus, flowchart, system} from "../Main";
 import {GlobalObjectBlock} from "./GlobalObjectBlock";
 import {RgbaColorBlock} from "./RgbaColorBlock";
+import {Util} from "../Util";
 
 export class Flowchart {
 
@@ -116,12 +117,10 @@ export class Flowchart {
 
   updateGlobalVariable(name: string, value: any): void {
     this.globalVariables[name] = value;
-    this.storeGlobalVariables();
   }
 
   removeGlobalVariable(name: string): void {
     delete this.globalVariables[name];
-    this.storeGlobalVariables();
   }
 
   isConnectedToGlobalVariable(block: Block): boolean {
@@ -406,14 +405,9 @@ export class Flowchart {
   /* storage methods */
 
   updateLocalStorage(): void {
-    this.storeGlobalVariables();
     this.storeViewState();
     this.storeBlockStates();
     this.storeConnectorStates();
-  }
-
-  storeGlobalVariables(): void {
-    localStorage.setItem("Global Variables", JSON.stringify(this.globalVariables));
   }
 
   storeConnectorStates(): void {
@@ -491,9 +485,9 @@ export class Flowchart {
 
   clear(): void {
     this.destroy();
-    this.globalVariables = {};
-    this.blocks = [];
-    this.connectors = [];
+    Util.clearObject(this.globalVariables);
+    this.blocks.length = 0;
+    this.connectors.length = 0;
     this.updateLocalStorage();
     this.blockView.requestDraw();
   }

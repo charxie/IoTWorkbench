@@ -6,6 +6,12 @@ import $ from "jquery";
 
 export class Util {
 
+  static clearObject(o): void {
+    if (o !== undefined && o !== null) {
+      for (let x in Object.getOwnPropertyNames(o)) delete o[x];
+    }
+  }
+
   static getOS(): string {
     let userAgent = window.navigator.userAgent,
       platform = window.navigator.platform,

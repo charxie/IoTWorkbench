@@ -71,8 +71,6 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
       let heightInputElement = document.getElementById("global-variable-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
-        block.setKey(keyInputElement.value);
-        block.setValue(valueInputElement.value);
         let success = true;
         let message;
         // set width
@@ -93,10 +91,14 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          if (keyInputElement.value !== block.getKey()) {
+            block.setKey(keyInputElement.value);
+          }
+          block.setValue(valueInputElement.value);
+          flowchart.updateGlobalVariable(block.getKey(), block.getValue());
           block.refreshView();
           flowchart.blockView.requestDraw();
-          flowchart.updateGlobalVariable(block.getKey(), block.getValue());
-          flowchart.updateResults(); // global variable must update the results globally
+           flowchart.updateResults(); // global variable must update the results globally
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');

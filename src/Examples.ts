@@ -118,13 +118,7 @@ export class Examples {
 
   load(s): void {
     flowchart.destroy();
-    StateIO.restoreMcus(JSON.stringify(s.mcuStates));
-    StateIO.restoreHats(JSON.stringify(s.hatStates));
-    StateIO.restoreAttachments(JSON.stringify(s.attachmentStates));
-    StateIO.restoreGlobalVariables(JSON.stringify(s.globalVariables));
-    StateIO.restoreBlockView(JSON.stringify(s.blockViewState));
-    StateIO.restoreBlocks(JSON.stringify(s.blockStates));
-    StateIO.restoreConnectors(JSON.stringify(s.connectorStates));
+    StateIO.restore(s);
     flowchart.updateResults();
     flowchart.updateLocalStorage();
     system.updateLocalStorage();

@@ -117,8 +117,8 @@ export class Space2D extends Block {
   }
 
   erase(): void {
-    this.xPoints = [];
-    this.yPoints = [];
+    this.xPoints.length = 0;
+    this.yPoints.length = 0;
     flowchart.blockView.requestDraw();
   }
 

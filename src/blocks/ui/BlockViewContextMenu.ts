@@ -43,6 +43,9 @@ export class BlockViewContextMenu extends MyContextMenu {
               </li>
               <li class="menu-separator"></li>
               <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-global-variables-button"><i class="fas fa-table"></i><span class="menu-text">Global Variables</span></button>
+              </li>
+              <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-settings-button"><i class="fas fa-cog"></i><span class="menu-text">Settings</span></button>
               </li>
             </menu>`;
@@ -61,6 +64,8 @@ export class BlockViewContextMenu extends MyContextMenu {
     screenshotButton.addEventListener("click", this.screenshotButtonClick.bind(this), false);
     let clearButton = document.getElementById(this.id + "-clear-button");
     clearButton.addEventListener("click", this.clearButtonClick.bind(this), false);
+    let globalVariablesButton = document.getElementById(this.id + "-global-variables-button");
+    globalVariablesButton.addEventListener("click", this.globalVariablesButtonClick.bind(this), false);
     let settingsButton = document.getElementById(this.id + "-settings-button");
     settingsButton.addEventListener("click", this.settingsButtonClick.bind(this), false);
   }
@@ -181,6 +186,46 @@ export class BlockViewContextMenu extends MyContextMenu {
       buttons: {
         'OK': okFunction,
         'Cancel': function () {
+          d.dialog('close');
+        }
+      }
+    });
+  }
+
+  private getGlobalVariablesUI(): string {
+    let s = `<div style="font-size: 90%;">
+              <table class="w3-table-all w3-left w3-hoverable">
+                <thead>
+                  <tr class="w3-gray">
+                  <th>Name</th>
+                  <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>`;
+    for (let x in flowchart.globalVariables) {
+      if (flowchart.globalVariables.hasOwnProperty(x)) {
+        s += `<tr><td>${x}</td><td>${flowchart.globalVariables[x]}</td></tr>`;
+      }
+    }
+    s += `</tbody>
+              </table>
+              </div>`;
+    return s;
+  }
+
+  private globalVariablesButtonClick(e: MouseEvent): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    let view = this.view;
+    let d = $("#modal-dialog").html(this.getGlobalVariablesUI());
+    d.dialog({
+      resizable: false,
+      modal: true,
+      title: "Global Variables",
+      height: 300,
+      width: 320,
+      buttons: {
+        'Close': function () {
           d.dialog('close');
         }
       }

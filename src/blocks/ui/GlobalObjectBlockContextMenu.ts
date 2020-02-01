@@ -78,9 +78,6 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
       let heightInputElement = document.getElementById("global-object-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
-        block.setSymbol(nameInputElement.value);
-        block.setKeys(JSON.parse(keysInputElement.value));
-        block.setValues(JSON.parse(valuesInputElement.value));
         let success = true;
         let message;
         // set width
@@ -101,11 +98,17 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
-          block.refreshView();
-          flowchart.blockView.requestDraw();
+          block.setSymbol(nameInputElement.value);
+          let keys = JSON.parse(keysInputElement.value);
+          if (block.getKeys() !== keys) {
+            block.setKeys(keys);
+          }
+          block.setValues(JSON.parse(valuesInputElement.value));
           for (let i = 0; i < block.getKeys().length; i++) {
             flowchart.updateGlobalVariable(block.getKeys()[i], block.getValues()[i]);
           }
+          block.refreshView();
+          flowchart.blockView.requestDraw();
           flowchart.updateResults(); // global variable must update the results globally
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
