@@ -60,6 +60,7 @@ import {SwitchStatementBlockContextMenu} from "./blocks/ui/SwitchStatementBlockC
 import {MultivariableFunctionBlockContextMenu} from "./blocks/ui/MultivariableFunctionBlockContextMenu";
 import {GlobalObjectBlockContextMenu} from "./blocks/ui/GlobalObjectBlockContextMenu";
 import {RgbaColorBlockContextMenu} from "./blocks/ui/RgbaColorBlockContextMenu";
+import {ComplexNumberBlockContextMenu} from "./blocks/ui/ComplexNumberBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -76,6 +77,12 @@ declare global {
 
   interface String {
     startsWith(s);
+  }
+
+  interface Math {
+    hypot(x, y);
+    sinh(x);
+    cosh(x);
   }
 }
 
@@ -250,6 +257,11 @@ function setupContextMenuForBlock() {
   rgbaColorBlockContextMenu.render("rgba-color-block-context-menu-placeholder");
   rgbaColorBlockContextMenu.addListeners();
   contextMenus.rgbaColorBlock = rgbaColorBlockContextMenu;
+
+  let complexNumberBlockContextMenu = new ComplexNumberBlockContextMenu();
+  complexNumberBlockContextMenu.render("complex-number-block-context-menu-placeholder");
+  complexNumberBlockContextMenu.addListeners();
+  contextMenus.complexNumberBlock = complexNumberBlockContextMenu;
 
   let workerBlockContextMenu = new WorkerBlockContextMenu();
   workerBlockContextMenu.render("worker-block-context-menu-placeholder");

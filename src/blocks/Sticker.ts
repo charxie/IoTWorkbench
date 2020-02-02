@@ -6,6 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
 import {flowchart} from "../Main";
+import {Complex} from "../math/Complex";
 
 export class Sticker extends Block {
 
@@ -180,18 +181,26 @@ export class Sticker extends Block {
       if (this.isArray) {
         this.text = "";
         for (let i of v) {
-          try {
+          if (i instanceof Complex) {
             this.text += i.toFixed(this.decimals) + ",";
-          } catch (e) {
-            this.text = i + ","; // value is a boolean or string
+          } else {
+            try {
+              this.text += i.toFixed(this.decimals) + ",";
+            } catch (e) {
+              this.text = i + ","; // value is a boolean or string
+            }
           }
         }
         this.text = this.text.substring(0, this.text.length - 1);
       } else {
-        try {
+        if (v instanceof Complex) {
           this.text = v.toFixed(this.decimals);
-        } catch (e) {
-          this.text = "" + v; // value is a boolean or string
+        } else {
+          try {
+            this.text = v.toFixed(this.decimals);
+          } catch (e) {
+            this.text = "" + v; // value is a boolean or string
+          }
         }
       }
     } else {

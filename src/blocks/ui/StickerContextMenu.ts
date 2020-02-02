@@ -44,7 +44,7 @@ export class StickerContextMenu extends BlockContextMenu {
                   <td><input type="text" id="sticker-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Decimals:</td>
+                  <td>Fraction Digits:</td>
                   <td><input type="text" id="sticker-decimals-field" style="width: 100%"></td>
                 </tr>
                 <tr>

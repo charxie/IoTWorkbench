@@ -8,6 +8,24 @@
 
 'use strict';
 
+if (typeof Math.sinh !== 'function') {
+  Math.sinh = function (x) {
+    return 0.5 * (Math.exp(x) - Math.exp(-x));
+  };
+}
+
+if (typeof Math.cosh !== 'function') {
+  Math.cosh = function (x) {
+    return 0.5 * (Math.exp(x) + Math.exp(-x));
+  };
+}
+
+if (typeof Math.hypot !== 'function') {
+  Math.hypot = function (x, y) {
+    return Math.sqrt(x * x + y * y);
+  };
+}
+
 // A convenient method for counting the number of members of an object
 if (typeof Object.size !== 'function') {
   Object.size = function (obj) {

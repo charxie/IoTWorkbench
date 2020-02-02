@@ -5,16 +5,17 @@
 import {Flowchart} from "./Flowchart";
 import {closeAllContextMenus, contextMenus, flowchart, sound} from "../Main";
 import {Movable} from "../Movable";
+import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
+import {Port} from "./Port";
+import {Connector} from "./Connector";
+import {PortConnector} from "./PortConnector";
 import {Block} from "./Block";
 import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
 import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
 import {NegationBlock} from "./NegationBlock";
 import {LogicBlock} from "./LogicBlock";
 import {ArithmeticBlock} from "./ArithmeticBlock";
-import {Port} from "./Port";
-import {Connector} from "./Connector";
-import {PortConnector} from "./PortConnector";
 import {ToggleSwitch} from "./ToggleSwitch";
 import {MomentarySwitch} from "./MomentarySwitch";
 import {Slider} from "./Slider";
@@ -33,7 +34,7 @@ import {SwitchStatementBlock} from "./SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
 import {RainbowHatBlock} from "./RainbowHatBlock";
 import {RgbaColorBlock} from "./RgbaColorBlock";
-import {Util} from "../Util";
+import {ComplexNumberBlock} from "./ComplexNumberBlock";
 
 export class BlockView {
 
@@ -138,6 +139,9 @@ export class BlockView {
             break;
           case "rgba-color-block":
             that.addBlock(new RgbaColorBlock("Rgba Color Block #" + timestamp, x - 30, y - 40, 60, 80, "Rgba Color Block", "RGBA"));
+            break;
+          case "complex-number-block":
+            that.addBlock(new ComplexNumberBlock("Complex Number Block #" + timestamp, x - 30, y - 40, 60, 80, "Complex Number Block", "a+b*i"));
             break;
           case "worker-block":
             that.addBlock(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
@@ -853,6 +857,9 @@ export class BlockView {
     } else if (block instanceof RgbaColorBlock) {
       contextMenus.rgbaColorBlock.block = block;
       menu = document.getElementById("rgba-color-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof ComplexNumberBlock) {
+      contextMenus.complexNumberBlock.block = block;
+      menu = document.getElementById("complex-number-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof RainbowHatBlock) {
       contextMenus.rainbowHatBlock.block = block;
       menu = document.getElementById("rainbow-hat-block-context-menu") as HTMLMenuElement;

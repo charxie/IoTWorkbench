@@ -24,6 +24,7 @@ import {SwitchStatementBlock} from "../SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "../MultivariableFunctionBlock";
 import {GlobalObjectBlock} from "../GlobalObjectBlock";
 import {RgbaColorBlock} from "../RgbaColorBlock";
+import {ComplexNumberBlock} from "../ComplexNumberBlock";
 
 export class BlockElementsPanel {
 
@@ -70,6 +71,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="global-object-block" title="Global Object" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="series-block" title="Series" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="rgba-color-block" title="RGBA Color" width="45x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="complex-number-block" title="Complex Number" width="45x" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -109,6 +111,7 @@ export class BlockElementsPanel {
     this.drawGlobalObjectBlock("Global Object Block", "obj", "global-object-block");
     this.drawSeriesBlock("Series Block", "Series", "series-block");
     this.drawRgbaColorBlock("Rgba Color Block", "RGBA", "rgba-color-block");
+    this.drawComplexNumberBlock("Complext Number Block", "a+b*i", "complex-number-block");
     this.drawTurnoutSwitch("Turnout Switch", "Turnout", "turnout-switch-block");
     this.drawSwitchStatementBlock("Switch Statement Block", "Switch", "switch-statement-block");
     this.drawWorkerBlock("Worker Block", "Worker", "worker-block");
@@ -150,6 +153,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new RgbaColorBlock("Rgba Color Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawComplexNumberBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new ComplexNumberBlock("Complext Number Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
     block.setIconic(true);
     block.draw(ctx);
   }
