@@ -12,7 +12,7 @@ export class ComplexNumberBlock extends Block {
   private readonly portI: Port;
   private readonly portC: Port;
   private real: number = 0;
-  private imginary: number = 0;
+  private imaginary: number = 0;
 
   static State = class {
     readonly name: string;
@@ -32,7 +32,7 @@ export class ComplexNumberBlock extends Block {
       this.width = b.width;
       this.height = b.height;
       this.real = b.real;
-      this.imaginary = b.imginary;
+      this.imaginary = b.imaginary;
     }
   };
 
@@ -55,7 +55,7 @@ export class ComplexNumberBlock extends Block {
   getCopy(): Block {
     let b = new ComplexNumberBlock("Complex Number Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
     b.real = this.real;
-    b.imginary = this.imginary;
+    b.imaginary = this.imaginary;
     return b;
   }
 
@@ -71,11 +71,11 @@ export class ComplexNumberBlock extends Block {
   }
 
   getImaginary(): number {
-    return this.imginary;
+    return this.imaginary;
   }
 
   setImaginary(imaginary: number): void {
-    this.imginary = imaginary;
+    this.imaginary = imaginary;
   }
 
   refreshView(): void {
@@ -87,9 +87,52 @@ export class ComplexNumberBlock extends Block {
   }
 
   updateModel(): void {
-    this.real = this.portR.getValue() !== undefined ? this.portR.getValue() : 0;
-    this.imginary = this.portI.getValue() !== undefined ? this.portI.getValue() : 0;
-    this.portC.setValue(new Complex(this.real, this.imginary));
+    let re = this.portR.getValue();
+    let im = this.portI.getValue();
+    let isReArray = false;
+    if (re !== undefined) {
+      if (Array.isArray(re)) {
+        isReArray = true;
+        this.real = re[re.length - 1];
+      } else {
+        this.real = re;
+      }
+    } else {
+      this.real = 0;
+    }
+    let isImArray = false;
+    if (im !== undefined) {
+      if (Array.isArray(im)) {
+        isImArray = true;
+        this.imaginary = im[im.length - 1];
+      } else {
+        this.imaginary = im;
+      }
+    } else {
+      this.imaginary = 0;
+    }
+    if (isReArray && isImArray) {
+      let length = Math.min(re.length, im.length);
+      let c = [];
+      for (let i = 0; i < length; i++) {
+        c.push(new Complex(re[i], im[i]));
+      }
+      this.portC.setValue(c);
+    } else if (isReArray && !isImArray) {
+      let c = [];
+      for (let i = 0; i < re.length; i++) {
+        c.push(new Complex(re[i], this.imaginary));
+      }
+      this.portC.setValue(c);
+    } else if (isImArray && !isReArray) {
+      let c = [];
+      for (let i = 0; i < im.length; i++) {
+        c.push(new Complex(this.real, im[i]));
+      }
+      this.portC.setValue(c);
+    } else {
+      this.portC.setValue(new Complex(this.real, this.imaginary));
+    }
     this.updateConnectors();
   }
 

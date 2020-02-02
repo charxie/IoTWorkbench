@@ -4,6 +4,7 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
+import {Complex} from "../math/Complex";
 
 export class ArithmeticBlock extends Block {
 
@@ -57,15 +58,51 @@ export class ArithmeticBlock extends Block {
     this.updateConnectors();
   }
 
-  private getResult(a, b): number {
+  private getResult(a, b): any {
     switch (this.name) {
       case "Add Block":
+        if (a instanceof Complex && b instanceof Complex) {
+          return a.plus(b);
+        }
+        if (a instanceof Complex) {
+          return a.plus(new Complex(b, 0));
+        }
+        if (b instanceof Complex) {
+          return b.plus(new Complex(a, 0));
+        }
         return a + b;
       case "Subtract Block":
+        if (a instanceof Complex && b instanceof Complex) {
+          return a.minus(b);
+        }
+        if (a instanceof Complex) {
+          return a.minus(new Complex(b, 0));
+        }
+        if (b instanceof Complex) {
+          return new Complex(a, 0).minus(b);
+        }
         return a - b;
       case "Multiply Block":
+        if (a instanceof Complex && b instanceof Complex) {
+          return a.times(b);
+        }
+        if (a instanceof Complex) {
+          return a.times(new Complex(b, 0));
+        }
+        if (b instanceof Complex) {
+          return b.times(new Complex(a, 0));
+        }
         return a * b;
       case "Divide Block":
+        if (a instanceof Complex && b instanceof Complex) {
+          return a.divides(b);
+        }
+        if (a instanceof Complex) {
+          return a.divides(new Complex(b, 0));
+        }
+        if (b instanceof Complex) {
+          return new Complex(a, 0).divides(b);
+        }
         return a / b;
       case "Modulus Block":
         return a % b;

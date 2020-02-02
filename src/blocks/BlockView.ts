@@ -330,26 +330,25 @@ export class BlockView {
         this.selectedBlock.keyUp(e);
       } else if (this.selectedBlock instanceof ItemSelector && this.selectedBlock.isDropdownMenuOpen()) {
         this.selectedBlock.keyUp(e);
-      } else {
-        switch (e.key) {
-          case "Delete":
-            if (this.selectedBlock != null) {
-              flowchart.askToDeleteBlock(this.selectedBlock);
+      }
+      switch (e.key) {
+        case "Delete":
+          if (this.selectedBlock != null) {
+            flowchart.askToDeleteBlock(this.selectedBlock);
+          }
+          break;
+        case "c":
+          if (e.ctrlKey || e.metaKey) {
+            this.copiedBlock = this.selectedBlock;
+          }
+          break;
+        case "v":
+          if (e.ctrlKey || e.metaKey) {
+            if (this.copiedBlock != null) {
+              this.pasteTo(this.copiedBlock.getX() + 20, this.copiedBlock.getY() + 20);
             }
-            break;
-          case "c":
-            if (e.ctrlKey || e.metaKey) {
-              this.copiedBlock = this.selectedBlock;
-            }
-            break;
-          case "v":
-            if (e.ctrlKey || e.metaKey) {
-              if (this.copiedBlock != null) {
-                this.pasteTo(this.copiedBlock.getX() + 20, this.copiedBlock.getY() + 20);
-              }
-            }
-            break;
-        }
+          }
+          break;
       }
       e.stopPropagation();
     }

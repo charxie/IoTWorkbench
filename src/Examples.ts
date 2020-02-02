@@ -29,6 +29,10 @@ import global_variables from "./examples/global-variables.json";
 // @ts-ignore
 import series_and_arrays from "./examples/series-and-arrays.json";
 // @ts-ignore
+import complex_numbers from "./examples/complex-numbers.json";
+// @ts-ignore
+import arithmetic_operators_for_complex_numbers from "./examples/arithmetic-operators-for-complex-numbers.json";
+// @ts-ignore
 import unary_functions from "./examples/unary-functions.json";
 // @ts-ignore
 import interesting_unary_functions from "./examples/interesting-unary-functions.json";
@@ -70,6 +74,8 @@ export class Examples {
     this.files.push({name: "Arithmetic Operators", data: arithmetic_operators});
     this.files.push({name: "Global Variables", data: global_variables});
     this.files.push({name: "Series and Arrays", data: series_and_arrays});
+    this.files.push({name: "Complex Numbers", data: complex_numbers});
+    this.files.push({name: "Arithmetic Operators for Complex Numbers", data: arithmetic_operators_for_complex_numbers});
     this.files.push({name: "Unary Functions", data: unary_functions});
     this.files.push({name: "Interesting Unary Functions", data: interesting_unary_functions});
     this.files.push({name: "Binary Functions", data: binary_functions});
