@@ -102,7 +102,7 @@ export class WorkerBlock extends Block {
 
   draw(ctx: CanvasRenderingContext2D): void {
 
-    ctx.clearRect(this.x, this.y, this.width, this.height);
+    // ctx.clearRect(this.x, this.y, this.width, this.height);
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
         let gradient = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);

@@ -42,7 +42,7 @@ export class BlockViewContextMenu extends MyContextMenu {
                 <button type="button" class="menu-btn" id="${this.id}-save-screenshot-button"><i class="fas fa-camera"></i><span class="menu-text">Save Screenshot</span></button>
               </li>
               <li class="menu-separator"></li>
-              <li class="menu-item">
+              <li class="menu-item"  id="${this.id}-global-variables-menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-global-variables-button"><i class="fas fa-table"></i><span class="menu-text">Global Variables</span></button>
               </li>
               <li class="menu-item">

@@ -6,6 +6,10 @@ import $ from "jquery";
 
 export class Util {
 
+  static isEmptyObject(o): boolean {
+    return Object.keys(o).length === 0 && o.constructor === Object;
+  }
+
   static clearObject(o): void {
     if (o !== undefined && o !== null) {
       for (let x in Object.getOwnPropertyNames(o)) delete o[x];

@@ -33,6 +33,7 @@ import {SwitchStatementBlock} from "./SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
 import {RainbowHatBlock} from "./RainbowHatBlock";
 import {RgbaColorBlock} from "./RgbaColorBlock";
+import {Util} from "../Util";
 
 export class BlockView {
 
@@ -234,9 +235,11 @@ export class BlockView {
 
   private draw(): void {
     let ctx = this.canvas.getContext('2d');
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     ctx.fillStyle = this.getBackgroundColor(); // we have to do this otherwise its screenshot will not have a color background
-    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.beginPath();
+    ctx.rect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.fill();
     this.drawGrid(ctx);
     ctx.lineWidth = 4;
     ctx.strokeStyle = "black";
@@ -858,6 +861,7 @@ export class BlockView {
       contextMenus.blockView.view = this;
       menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;
       document.getElementById("block-view-context-menu-paste-menu-item").className = this.copiedBlock ? "menu-item" : "menu-item disabled";
+      document.getElementById("block-view-context-menu-global-variables-menu-item").className = Util.isEmptyObject(flowchart.globalVariables) ? "menu-item disabled" : "menu-item";
     }
     if (menu != null) {
       menu.style.left = e.clientX + "px";
