@@ -235,7 +235,6 @@ export class BlockView {
 
   private draw(): void {
     let ctx = this.canvas.getContext('2d');
-    // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     ctx.fillStyle = this.getBackgroundColor(); // we have to do this otherwise its screenshot will not have a color background
     ctx.beginPath();
     ctx.rect(0, 0, this.canvas.width, this.canvas.height);
@@ -323,7 +322,7 @@ export class BlockView {
   private keyUp(e: KeyboardEvent): void {
     if (this.selectedBlock != null) {
       e.preventDefault();
-      if ((this.selectedBlock instanceof Slider || this.selectedBlock instanceof ToggleSwitch) && this.selectedBlock.isKnobSelected()) {
+      if ((this.selectedBlock instanceof Slider || this.selectedBlock instanceof ToggleSwitch)) {
         this.selectedBlock.keyUp(e);
       } else if (this.selectedBlock instanceof ItemSelector && this.selectedBlock.isDropdownMenuOpen()) {
         this.selectedBlock.keyUp(e);
@@ -355,7 +354,7 @@ export class BlockView {
   private keyDown(e: KeyboardEvent): void {
     if (this.selectedBlock != null) {
       e.preventDefault();
-      if ((this.selectedBlock instanceof Slider || this.selectedBlock instanceof ToggleSwitch) && this.selectedBlock.isKnobSelected()) {
+      if ((this.selectedBlock instanceof Slider || this.selectedBlock instanceof ToggleSwitch)) {
         this.selectedBlock.keyDown(e);
       } else if (this.selectedBlock instanceof ItemSelector && this.selectedBlock.isDropdownMenuOpen()) {
         this.selectedBlock.keyDown(e);

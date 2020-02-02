@@ -124,8 +124,6 @@ export class ItemSelector extends Block {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
-
-    // ctx.clearRect(this.x, this.y, this.width, this.height);
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
         let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.halfHeight);
@@ -294,8 +292,10 @@ export class ItemSelector extends Block {
 
   mouseDown(e: MouseEvent): boolean {
     if (e.which == 3 || e.button == 2) return; // if this is a right-click event
-    let x = e.offsetX;
-    let y = e.offsetY;
+    // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+    let rect = flowchart.blockView.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
     if (this.onTriangle(x, y)) {
       this.dropdownMenuOpen = !this.dropdownMenuOpen;
       flowchart.blockView.requestDraw();
@@ -330,8 +330,10 @@ export class ItemSelector extends Block {
 
   mouseMove(e: MouseEvent): void {
     if (e.which == 3 || e.button == 2) return; // if this is a right-click event
-    let x = e.offsetX;
-    let y = e.offsetY;
+    // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+    let rect = flowchart.blockView.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
     if (this.onTriangle(x, y)) {
       if (e.target instanceof HTMLCanvasElement) {
         e.target.style.cursor = "pointer";

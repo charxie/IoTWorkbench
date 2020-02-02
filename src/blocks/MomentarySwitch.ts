@@ -79,8 +79,6 @@ export class MomentarySwitch extends Block {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
-
-    //ctx.clearRect(this.x, this.y, this.width, this.height);
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
         let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.halfHeight);
@@ -176,8 +174,10 @@ export class MomentarySwitch extends Block {
 
   mouseDown(e: MouseEvent): boolean {
     if (e.which == 3) return; // if this is a right-click event
-    let x = e.offsetX;
-    let y = e.offsetY;
+    // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+    let rect = flowchart.blockView.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
     if (this.onButton(x, y)) {
       this.mouseDownRelativeX = x - this.button.x;
       this.mouseDownRelativeY = y - this.button.y;

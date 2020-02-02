@@ -90,8 +90,6 @@ export class Sticker extends Block {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
-
-    //ctx.clearRect(this.x, this.y, this.width, this.height);
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
         let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);

@@ -152,8 +152,6 @@ export class Slider extends Block {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
-
-    //ctx.clearRect(this.x, this.y, this.width, this.height);
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
         let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.halfHeight);
@@ -238,7 +236,7 @@ export class Slider extends Block {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.halfHeight;
   }
 
-  onKnob(x: number, y: number): boolean {
+  private onKnob(x: number, y: number): boolean {
     return this.knob.contains(x, y);
   }
 
@@ -280,10 +278,13 @@ export class Slider extends Block {
     }
   }
 
+  // return true if the knob is grabbed
   mouseDown(e: MouseEvent): boolean {
-    if (e.which == 3 || e.button == 2) return; // if this is a right-click event
-    let x = e.offsetX;
-    let y = e.offsetY;
+    if (e.which == 3 || e.button == 2) return false; // if this is a right-click event
+    // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+    let rect = flowchart.blockView.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
     this.knobSelected = false;
     if (this.onKnob(x, y)) {
       this.mouseDownRelativeX = x - this.knob.getCenterX();
@@ -310,8 +311,10 @@ export class Slider extends Block {
 
   mouseMove(e: MouseEvent): void {
     if (e.which == 3 || e.button == 2) return; // if this is a right-click event
-    let x = e.offsetX;
-    let y = e.offsetY;
+    // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+    let rect = flowchart.blockView.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
     if (this.knobGrabbed) {
       this.knob.x = x - this.mouseDownRelativeX;
       if (this.knob.x < this.trackLeft - this.knobHalfSize) {

@@ -8,7 +8,6 @@ import {Util} from "../Util";
 import {Arc} from "../math/Arc";
 import {Stadium} from "../math/Stadium";
 import {flowchart} from "../Main";
-import {GlobalVariableBlock} from "./GlobalVariableBlock";
 
 export class ToggleSwitch extends Block {
 
@@ -18,10 +17,6 @@ export class ToggleSwitch extends Block {
   private track: Stadium;
   private trackMin: number;
   private trackMax: number;
-  private knobGrabbed: boolean;
-  private knobSelected: boolean;
-  private mouseDownRelativeX: number;
-  private mouseDownRelativeY: number;
   private halfHeight: number;
   private xMargin: number = 8;
   private yMargin: number = 4;
@@ -71,6 +66,7 @@ export class ToggleSwitch extends Block {
 
   setChecked(checked: boolean): void {
     this.checked = checked;
+    this.knob.x = this.checked ? this.trackMax : this.trackMin;
   }
 
   isChecked(): boolean {
@@ -97,8 +93,6 @@ export class ToggleSwitch extends Block {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
-
-    //ctx.clearRect(this.x, this.y, this.width, this.height);
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
         let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.halfHeight);
@@ -188,14 +182,6 @@ export class ToggleSwitch extends Block {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.halfHeight;
   }
 
-  onKnob(x: number, y: number): boolean {
-    return this.knob.contains(x, y);
-  }
-
-  isKnobSelected(): boolean {
-    return this.knobSelected;
-  }
-
   private updateAll(): void {
     flowchart.traverse(this);
     if (flowchart.isConnectedToGlobalVariable(this)) {
@@ -205,81 +191,35 @@ export class ToggleSwitch extends Block {
   }
 
   keyUp(e: KeyboardEvent): void {
-    let update = false;
-    switch (e.key) {
-      case "ArrowLeft":
-        update = true;
-        break;
-      case "ArrowRight":
-        update = true;
-        break;
-    }
-    if (update) {
-      this.updateAll();
-      flowchart.blockView.requestDraw();
-    }
   }
 
   keyDown(e: KeyboardEvent): void {
-    switch (e.key) {
-      case "ArrowLeft":
-        this.checked = false;
-        this.refreshView();
-        break;
-      case "ArrowRight":
-        this.checked = true;
-        this.refreshView();
-        break;
-    }
   }
 
+  // return true if the knob is grabbed
   mouseDown(e: MouseEvent): boolean {
-    if (e.which == 3) return; // if this is a right-click event
-    let x = e.offsetX;
-    let y = e.offsetY;
-    this.knobSelected = false;
-    if (this.onKnob(x, y)) {
-      this.mouseDownRelativeX = x - this.knob.x;
-      this.mouseDownRelativeY = y - this.knob.y;
-      this.knobGrabbed = true;
-      this.knobSelected = true;
+    // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+    let rect = flowchart.blockView.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+    if (this.track.contains(x, y)) {
+      this.checked = !this.checked;
+      this.updateAll();
+      this.knob.x = this.checked ? this.trackMax : this.trackMin;
+      flowchart.blockView.canvas.style.cursor = "grab";
       return true;
     }
     return false;
   }
 
   mouseUp(e: MouseEvent): void {
-    if (this.knobGrabbed) {
-      this.checked = this.knob.x > (this.trackMin + this.trackMax) / 2;
-      this.updateAll();
-      this.knobGrabbed = false;
-    }
-    this.knob.x = this.knob.x < (this.trackMin + this.trackMax) / 2 ? this.trackMin : this.trackMax;
     flowchart.blockView.canvas.style.cursor = "default";
   }
 
   mouseMove(e: MouseEvent): void {
-    if (e.which == 3) return; // if this is a right-click event
-    let x = e.offsetX;
-    let y = e.offsetY;
-    if (this.knobGrabbed) {
-      this.knob.x = x - this.mouseDownRelativeX;
-      if (this.knob.x < this.trackMin) {
-        this.knob.x = this.trackMin;
-      } else if (this.knob.x > this.trackMax) {
-        this.knob.x = this.trackMax;
-      }
-    } else {
-      if (this.onKnob(x, y)) {
-        if (e.target instanceof HTMLCanvasElement) {
-          e.target.style.cursor = this.knobGrabbed ? "grabbing" : "grab";
-        }
-      }
-    }
   }
 
   mouseLeave(e: MouseEvent): void {
-    this.knobGrabbed = false;
     flowchart.blockView.canvas.style.cursor = "default";
   }
 

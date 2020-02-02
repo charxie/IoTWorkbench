@@ -6,6 +6,7 @@ import {Port} from "./Port";
 import {Block} from "./Block";
 import {flowchart} from "../Main";
 import {Util} from "../Util";
+import {ToggleSwitch} from "./ToggleSwitch";
 
 export class WorkerBlock extends Block {
 
@@ -101,8 +102,6 @@ export class WorkerBlock extends Block {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
-
-    // ctx.clearRect(this.x, this.y, this.width, this.height);
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
         let gradient = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
@@ -227,12 +226,16 @@ export class WorkerBlock extends Block {
         flowchart.blockView.requestDraw();
       };
     }
-    if (this.completed) {
-      this.worker.postMessage({count: 0});
-    }
     this.worker.postMessage({cmd: "Start", interval: this.interval});
     this.paused = false;
     this.completed = (this.count === this.repeatTimes);
+    if (this.completed) {
+      this.worker.postMessage({count: 0});
+      let controller = flowchart.getConnectorWithInput(this.portI).getOutput().getBlock();
+      if (controller instanceof ToggleSwitch) {
+        controller.setChecked(false);
+      }
+    }
   }
 
   private stopWorker(): void {
@@ -260,21 +263,6 @@ export class WorkerBlock extends Block {
 
   onDraggableArea(x: number, y: number): boolean {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
-  }
-
-  mouseDown(e: MouseEvent): boolean {
-    return false;
-  }
-
-  mouseUp(e: MouseEvent): void {
-    flowchart.blockView.canvas.style.cursor = "default";
-  }
-
-  mouseMove(e: MouseEvent): void {
-  }
-
-  mouseLeave(e: MouseEvent): void {
-    flowchart.blockView.canvas.style.cursor = "default";
   }
 
 }
