@@ -6,14 +6,13 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
-import {WorkerBlock} from "../WorkerBlock";
-import {ResetBlock} from "../ResetBlock";
+import {ActionBlock} from "../ActionBlock";
 
-export class ResetBlockContextMenu extends BlockContextMenu {
+export class ActionBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "reset-block-context-menu";
+    this.id = "action-block-context-menu";
   }
 
   getUi(): string {
@@ -38,12 +37,20 @@ export class ResetBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
+                  <td>Type:</td>
+                  <td>
+                    <select id="action-type-selector" style="width: 100%">
+                      <option value="Reset" selected>Reset</option>
+                      <option value="Stop">Stop</option>
+                    </select>
+                </tr>
+                <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="reset-block-width-field" style="width: 120px"></td>
+                  <td><input type="text" id="action-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="reset-block-height-field" style="width: 120px"></td>
+                  <td><input type="text" id="action-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -52,20 +59,23 @@ export class ResetBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof ResetBlock) {
-      const resetter = this.block;
+    if (this.block instanceof ActionBlock) {
+      const act = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let widthInputElement = document.getElementById("reset-block-width-field") as HTMLInputElement;
-      widthInputElement.value = resetter.getWidth().toString();
-      let heightInputElement = document.getElementById("reset-block-height-field") as HTMLInputElement;
-      heightInputElement.value = resetter.getHeight().toString();
+      let typeSelectElement = document.getElementById("action-type-selector") as HTMLSelectElement;
+      typeSelectElement.value = act.getType();
+      let widthInputElement = document.getElementById("action-block-width-field") as HTMLInputElement;
+      widthInputElement.value = act.getWidth().toString();
+      let heightInputElement = document.getElementById("action-block-height-field") as HTMLInputElement;
+      heightInputElement.value = act.getHeight().toString();
       const okFunction = function () {
+        act.setType(typeSelectElement.value);
         let success = true;
         let message;
         // set width
         let w = parseInt(widthInputElement.value);
         if (isNumber(w)) {
-          resetter.setWidth(Math.max(20, w));
+          act.setWidth(Math.max(20, w));
         } else {
           success = false;
           message = widthInputElement.value + " is not a valid width.";
@@ -73,7 +83,7 @@ export class ResetBlockContextMenu extends BlockContextMenu {
         // set height
         let h = parseInt(heightInputElement.value);
         if (isNumber(h)) {
-          resetter.setHeight(Math.max(20, h));
+          act.setHeight(Math.max(20, h));
         } else {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
@@ -81,7 +91,7 @@ export class ResetBlockContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           flowchart.blockView.requestDraw();
-          flowchart.updateResultsForBlock(resetter);
+          flowchart.updateResultsForBlock(act);
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');
@@ -99,8 +109,8 @@ export class ResetBlockContextMenu extends BlockContextMenu {
       d.dialog({
         resizable: false,
         modal: true,
-        title: resetter.getUid(),
-        height: 400,
+        title: act.getUid(),
+        height: 300,
         width: 350,
         buttons: {
           'OK': okFunction,

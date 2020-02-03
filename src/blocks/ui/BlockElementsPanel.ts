@@ -25,7 +25,7 @@ import {MultivariableFunctionBlock} from "../MultivariableFunctionBlock";
 import {GlobalObjectBlock} from "../GlobalObjectBlock";
 import {RgbaColorBlock} from "../RgbaColorBlock";
 import {ComplexNumberBlock} from "../ComplexNumberBlock";
-import {ResetBlock} from "../ResetBlock";
+import {ActionBlock} from "../ActionBlock";
 
 export class BlockElementsPanel {
 
@@ -84,7 +84,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="turnout-switch-block" title="Turnout Switch" width="45x" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="switch-statement-block" title="Switch Statement" width="45x" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="worker-block" title="Worker" width="45x" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="reset-block" title="Reset" width="45x" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="action-block" title="Action" width="45x" height="45px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -117,13 +117,13 @@ export class BlockElementsPanel {
     this.drawTurnoutSwitch("Turnout Switch", "Turnout", "turnout-switch-block");
     this.drawSwitchStatementBlock("Switch Statement Block", "Switch", "switch-statement-block");
     this.drawWorkerBlock("Worker Block", "Worker", "worker-block");
-    this.drawResetBlock("Reset Block", "Reset", "reset-block");
+    this.drawActionBlock("Action Block", "Action", "action-block");
   }
 
-  private drawResetBlock(name: string, symbol: string, canvasId: string): void {
+  private drawActionBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new ResetBlock("Reset Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    let block = new ActionBlock("Action Block Icon", "Action", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

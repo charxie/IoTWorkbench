@@ -5,27 +5,62 @@
 import {Block} from "./Block";
 import {flowchart} from "../Main";
 import {Util} from "../Util";
-import {WorkerBlock} from "./WorkerBlock";
-import {GlobalObjectBlock} from "./GlobalObjectBlock";
-import {Space2D} from "./Space2D";
-import {GlobalVariableBlock} from "./GlobalVariableBlock";
+import {Port} from "./Port";
 
-export class ResetBlock extends Block {
+export class ActionBlock extends Block {
 
+  private type: string = "Reset";
   private pressed: boolean = false;
   private barHeight: number;
+  private readonly portI: Port;
 
-  constructor(uid: string, x: number, y: number, width: number, height: number) {
+  static State = class {
+    readonly name: string;
+    readonly uid: string;
+    readonly x: number;
+    readonly y: number;
+    readonly width: number;
+    readonly height: number;
+    readonly type: string;
+
+    constructor(block: ActionBlock) {
+      this.name = block.name;
+      this.uid = block.uid;
+      this.x = block.x;
+      this.y = block.y;
+      this.width = block.width;
+      this.height = block.height;
+      this.type = block.type;
+    }
+  };
+
+  constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
-    this.name = "Reset Block";
-    this.symbol = "Reset";
+    this.name = name;
+    this.type = "Reset";
+    this.symbol = this.type;
     this.color = "#CD5C5C";
     this.margin = 15;
     this.barHeight = Math.min(30, this.height / 3);
+    let dh = (this.height - this.barHeight) / 2;
+    this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false);
+    this.ports.push(this.portI);
   }
 
   getCopy(): Block {
-    return new ResetBlock(this.name + " #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    let b = new ActionBlock("Action Block #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    b.type = this.type;
+    b.symbol = this.symbol;
+    return b;
+  }
+
+  setType(type: string): void {
+    this.type = type;
+    this.symbol = type;
+  }
+
+  getType(): string {
+    return this.type;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -53,6 +88,13 @@ export class ResetBlock extends Block {
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
+    if (!this.iconic) {
+      ctx.lineWidth = 0.75;
+      ctx.font = "14px Arial";
+      ctx.fillStyle = "black";
+      let titleWidth = ctx.measureText(this.name).width;
+      ctx.fillText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
+    }
 
     if (this.pressed) {
       ctx.fillStyle = "lightgray";
@@ -70,10 +112,15 @@ export class ResetBlock extends Block {
     ctx.strokeStyle = "black";
     ctx.lineWidth = this.iconic ? 0.75 : 1;
     ctx.font = this.iconic ? "8px Arial" : "14px Arial";
-    let textWidth = ctx.measureText(this.symbol).width;
+    let textWidth = ctx.measureText(this.iconic ? this.name : this.symbol).width;
     ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + (this.height + this.barHeight) / 2 + 4);
-    ctx.fillText(this.symbol, 0, 0);
+    ctx.fillText(this.iconic ? this.name : this.symbol, 0, 0);
     ctx.restore();
+
+    // draw the ports
+    ctx.strokeStyle = "black";
+    ctx.font = "bold 12px Times";
+    this.portI.draw(ctx, this.iconic);
 
     if (this.selected) {
       this.highlightSelection(ctx);
@@ -92,17 +139,25 @@ export class ResetBlock extends Block {
   destroy(): void {
   }
 
+  refreshView(): void {
+    super.refreshView();
+    let dh = (this.height - this.barHeight) / 2;
+    this.portI.setY(this.barHeight + dh);
+  }
+
   updateModel(): void {
-    for (let b of flowchart.blocks) {
-      if (b instanceof WorkerBlock) {
-        b.reset();
-      } else if (b instanceof GlobalVariableBlock) {
-        //b.reset();
-      } else if (b instanceof GlobalObjectBlock) {
-        //b.reset();
-      } else if (b instanceof Space2D) {
-        b.erase();
-      }
+    switch (this.type) {
+      case "Reset":
+        flowchart.reset();
+        flowchart.updateResults();
+        flowchart.erase();
+        break;
+      case "Stop":
+        let invokeInput = this.portI.getValue();
+        if (invokeInput) {
+          flowchart.stopSource(this);
+        }
+        break;
     }
   }
 

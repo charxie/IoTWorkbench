@@ -10,7 +10,6 @@ export class GlobalObjectBlock extends Block {
 
   private keys: string[] = ["x", "y"];
   private values: number[] = [0, 0];
-  private initialValues: number[] = [0, 0];
   private portI: Port[];
   private readonly portO: Port;
 
@@ -107,16 +106,6 @@ export class GlobalObjectBlock extends Block {
 
   setValues(values: number[]): void {
     this.values = JSON.parse(JSON.stringify(values));
-  }
-
-  setInitialValues(values: number[]): void {
-    this.initialValues = JSON.parse(JSON.stringify(values));
-  }
-
-  reset(): void {
-    for (let i = 0; i < this.values.length; i++) {
-      //this.values[i] = 0;
-    }
   }
 
   refreshView(): void {

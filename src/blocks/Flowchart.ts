@@ -33,7 +33,7 @@ import {GlobalObjectBlock} from "./GlobalObjectBlock";
 import {RgbaColorBlock} from "./RgbaColorBlock";
 import {Util} from "../Util";
 import {ComplexNumberBlock} from "./ComplexNumberBlock";
-import {ResetBlock} from "./ResetBlock";
+import {ActionBlock} from "./ActionBlock";
 
 export class Flowchart {
 
@@ -82,6 +82,17 @@ export class Flowchart {
     this.blockView.requestDraw();
   }
 
+  stopSource(block: Block): void {
+    for (let b of this.blocks) {
+      if (b instanceof WorkerBlock) {
+        if (this.areBlocksConnected(b, block)) {
+          b.stop();
+        }
+      }
+    }
+    this.blockView.requestDraw();
+  }
+
   private findConnectedSources(block: Block): void {
     this.connectedSources = [];
     for (let b of this.blocks) {
@@ -113,6 +124,20 @@ export class Flowchart {
     this.blockConnectionFlag = false;
     this.findConnection(start, end);
     return this.blockConnectionFlag;
+  }
+
+  reset(): void {
+    for (let b of this.blocks) {
+      b.reset();
+    }
+  }
+
+  erase(): void {
+    for (let b of this.blocks) {
+      if (b instanceof Space2D) {
+        b.erase();
+      }
+    }
   }
 
   /* global variables */
@@ -356,8 +381,8 @@ export class Flowchart {
       case "Worker Block":
         block = new WorkerBlock(uid, name, x, y, 80, 60);
         break;
-      case "Reset Block":
-        block = new ResetBlock(uid, x, y, 80, 60);
+      case "Action Block":
+        block = new ActionBlock(uid, name, x, y, 80, 60);
         break;
       case "Turnout Switch":
         block = new TurnoutSwitch(uid, name, "Turnout", x, y, 60, 100);
@@ -450,6 +475,8 @@ export class Flowchart {
         blockStates.push(new ComplexNumberBlock.State(b));
       } else if (b instanceof WorkerBlock) {
         blockStates.push(new WorkerBlock.State(b));
+      } else if (b instanceof ActionBlock) {
+        blockStates.push(new ActionBlock.State(b));
       } else if (b instanceof ItemSelector) {
         blockStates.push(new ItemSelector.State(b));
       } else if (b instanceof ToggleSwitch) {

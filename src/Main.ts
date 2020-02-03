@@ -61,7 +61,7 @@ import {MultivariableFunctionBlockContextMenu} from "./blocks/ui/MultivariableFu
 import {GlobalObjectBlockContextMenu} from "./blocks/ui/GlobalObjectBlockContextMenu";
 import {RgbaColorBlockContextMenu} from "./blocks/ui/RgbaColorBlockContextMenu";
 import {ComplexNumberBlockContextMenu} from "./blocks/ui/ComplexNumberBlockContextMenu";
-import {ResetBlockContextMenu} from "./blocks/ui/ResetBlockContextMenu";
+import {ActionBlockContextMenu} from "./blocks/ui/ActionBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -199,6 +199,7 @@ window.onload = function () {
   StateIO.restoreWorkbench(localStorage.getItem("Workbench State"));
   StateIO.restoreConnectors(localStorage.getItem("Connector States")); // connectors must be restored after loading HATs
   flowchart.updateResults();
+  flowchart.reset();
 
   setTimeout(function () { // call this to refresh after inserting canvases
     let startTab = localStorage.getItem("Start Tab");
@@ -269,10 +270,10 @@ function setupContextMenuForBlock() {
   workerBlockContextMenu.addListeners();
   contextMenus.workerBlock = workerBlockContextMenu;
 
-  let resetBlockContextMenu = new ResetBlockContextMenu();
-  resetBlockContextMenu.render("reset-block-context-menu-placeholder");
-  resetBlockContextMenu.addListeners();
-  contextMenus.resetBlock = resetBlockContextMenu;
+  let actionBlockContextMenu = new ActionBlockContextMenu();
+  actionBlockContextMenu.render("action-block-context-menu-placeholder");
+  actionBlockContextMenu.addListeners();
+  contextMenus.actionBlock = actionBlockContextMenu;
 
   let turnoutSwitchContextMenu = new TurnoutSwitchContextMenu();
   turnoutSwitchContextMenu.render("turnout-switch-context-menu-placeholder");

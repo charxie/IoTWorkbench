@@ -12,6 +12,7 @@ import {ItemSelector} from "./blocks/ItemSelector";
 import {SeriesBlock} from "./blocks/SeriesBlock";
 import {Grapher} from "./blocks/Grapher";
 import {WorkerBlock} from "./blocks/WorkerBlock";
+import {ActionBlock} from "./blocks/ActionBlock";
 import {UnaryFunctionBlock} from "./blocks/UnaryFunctionBlock";
 import {BinaryFunctionBlock} from "./blocks/BinaryFunctionBlock";
 import {TurnoutSwitch} from "./blocks/TurnoutSwitch";
@@ -29,7 +30,6 @@ import {RainbowHatBlock} from "./blocks/RainbowHatBlock";
 import {RaspberryPi} from "./components/RaspberryPi";
 import {RgbaColorBlock} from "./blocks/RgbaColorBlock";
 import {ComplexNumberBlock} from "./blocks/ComplexNumberBlock";
-import {ResetBlock} from "./blocks/ResetBlock";
 
 export class StateIO {
 
@@ -74,7 +74,6 @@ export class StateIO {
           block.setSymbol(state.symbol);
           block.setKeys(state.keys);
           block.setValues(state.values);
-          block.setInitialValues(state.values);
         } else if (block instanceof SeriesBlock) {
           block.setName(state.name);
           block.setStart(state.start);
@@ -95,8 +94,9 @@ export class StateIO {
           block.setOutputType(state.outputType ? state.outputType : "Natural Number");
           block.setInterval(state.interval);
           if (state.repeatTimes) block.setRepeatTimes(state.repeatTimes);
-        } else if (block instanceof ResetBlock) {
-          // nothing to do so far
+        } else if (block instanceof ActionBlock) {
+          block.setName(state.name);
+          block.setType(state.type ? state.type : "Reset");
         } else if (block instanceof ItemSelector) {
           block.setName(state.name);
           block.setItems(state.items);

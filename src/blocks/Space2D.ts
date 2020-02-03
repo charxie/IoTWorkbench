@@ -116,6 +116,11 @@ export class Space2D extends Block {
   destroy(): void {
   }
 
+  reset(): void {
+    super.reset();
+    this.erase();
+  }
+
   erase(): void {
     this.xPoints.length = 0;
     this.yPoints.length = 0;
@@ -415,12 +420,12 @@ export class Space2D extends Block {
 
   updateModel(): void {
     if (this.pointInput) { // point input mode
-      let vx = this.portX.getValue();
-      if (vx != undefined) {
-        if (Array.isArray(vx) && vx.length > 1) {
-          if (vx[0] != this.xPoints[this.xPoints.length - 1] || vx[1] != this.yPoints[this.yPoints.length - 1]) {
-            this.tempX = vx[0];
-            this.tempY = vx[1];
+      let vp = this.portX.getValue();
+      if (vp != undefined) {
+        if (Array.isArray(vp) && vp.length > 1) {
+          if (vp[0] != this.xPoints[this.xPoints.length - 1] || vp[1] != this.yPoints[this.yPoints.length - 1]) {
+            this.tempX = vp[0];
+            this.tempY = vp[1];
           }
         }
       }

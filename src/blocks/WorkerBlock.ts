@@ -57,7 +57,7 @@ export class WorkerBlock extends Block {
     let dh = (this.height - this.barHeight) / 3;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false);
     this.portN = new Port(this, true, "N", 0, this.barHeight + 2 * dh, false);
-    this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
+    this.portO = new Port(this, false, "O", this.width, (this.height + this.barHeight) / 2, true);
     this.ports.push(this.portI);
     this.ports.push(this.portN);
     this.ports.push(this.portO);
@@ -245,11 +245,23 @@ export class WorkerBlock extends Block {
     }
   }
 
+  stop(): void {
+    if (this.worker !== undefined) {
+      this.worker.postMessage({count: 0});
+      let controller = flowchart.getConnectorWithInput(this.portI).getOutput().getBlock();
+      if (controller instanceof ToggleSwitch) {
+        controller.setChecked(false);
+      }
+    }
+  }
+
   reset(): void {
+    super.reset();
     if (this.worker !== undefined) {
       this.worker.postMessage({count: 0});
     }
     this.value = 0;
+    this.portO.setValue(this.value);
   }
 
   destroy(): void {

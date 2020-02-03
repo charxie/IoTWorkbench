@@ -97,6 +97,9 @@ export abstract class Block implements Movable {
 
   abstract destroy(): void;
 
+  reset(): void {
+  }
+
   getPortName(uid: string): string {
     return uid;
   }
