@@ -9,6 +9,7 @@ import {Util} from "../Util";
 
 export class ParametricEquationBlock extends Block {
 
+  private parameterName: string = "t";
   private expressionX: string = "cos(t)";
   private expressionY: string = "sin(t)";
   private nodeX;
@@ -22,6 +23,7 @@ export class ParametricEquationBlock extends Block {
 
   static State = class {
     readonly uid: string;
+    readonly parameterName: string;
     readonly expressionX: string;
     readonly expressionY: string;
     readonly x: number;
@@ -31,6 +33,7 @@ export class ParametricEquationBlock extends Block {
 
     constructor(block: ParametricEquationBlock) {
       this.uid = block.uid;
+      this.parameterName = block.parameterName;
       this.expressionX = block.expressionX;
       this.expressionY = block.expressionY;
       this.x = block.x;
@@ -44,6 +47,7 @@ export class ParametricEquationBlock extends Block {
     super(uid, x, y, width, height);
     this.symbol = "x(t), y(t)";
     this.name = "Parametric Equation Block";
+    this.parameterName = "t";
     this.expressionX = "cos(t)";
     this.expressionY = "sin(t)";
     this.color = "#A0522D";
@@ -58,12 +62,21 @@ export class ParametricEquationBlock extends Block {
 
   getCopy(): Block {
     let block = new ParametricEquationBlock("Parametric Equation Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    block.parameterName = this.parameterName;
     block.expressionX = this.expressionX;
     block.expressionY = this.expressionY;
     return block;
   }
 
   destroy(): void {
+  }
+
+  setParameterName(parameterName: string): void {
+    this.parameterName = parameterName;
+  }
+
+  getParameterName(): string {
+    return this.parameterName;
   }
 
   setExpressionX(expressionX: string): void {
@@ -117,7 +130,7 @@ export class ParametricEquationBlock extends Block {
   updateModel(): void {
     this.hasError = false;
     let t = this.portT.getValue();
-    if (this.expressionX && this.expressionY && t != undefined) {
+    if (this.expressionX && this.expressionY && this.parameterName && t != undefined) {
       try {
         if (this.codeX == undefined) this.createParserX();
         if (this.codeY == undefined) this.createParserY();
@@ -126,14 +139,14 @@ export class ParametricEquationBlock extends Block {
           let x = new Array(t.length);
           let y = new Array(t.length);
           for (let i = 0; i < t.length; i++) {
-            param["t"] = t[i];
+            param[this.parameterName] = t[i];
             x[i] = this.codeX.evaluate(param);
             y[i] = this.codeY.evaluate(param);
           }
           this.portX.setValue(x);
           this.portY.setValue(y);
         } else {
-          param["t"] = t;
+          param[this.parameterName] = t;
           this.portX.setValue(this.codeX.evaluate(param));
           this.portY.setValue(this.codeY.evaluate(param));
         }

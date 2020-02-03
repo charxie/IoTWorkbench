@@ -61,6 +61,7 @@ import {MultivariableFunctionBlockContextMenu} from "./blocks/ui/MultivariableFu
 import {GlobalObjectBlockContextMenu} from "./blocks/ui/GlobalObjectBlockContextMenu";
 import {RgbaColorBlockContextMenu} from "./blocks/ui/RgbaColorBlockContextMenu";
 import {ComplexNumberBlockContextMenu} from "./blocks/ui/ComplexNumberBlockContextMenu";
+import {ResetBlockContextMenu} from "./blocks/ui/ResetBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -267,6 +268,11 @@ function setupContextMenuForBlock() {
   workerBlockContextMenu.render("worker-block-context-menu-placeholder");
   workerBlockContextMenu.addListeners();
   contextMenus.workerBlock = workerBlockContextMenu;
+
+  let resetBlockContextMenu = new ResetBlockContextMenu();
+  resetBlockContextMenu.render("reset-block-context-menu-placeholder");
+  resetBlockContextMenu.addListeners();
+  contextMenus.resetBlock = resetBlockContextMenu;
 
   let turnoutSwitchContextMenu = new TurnoutSwitchContextMenu();
   turnoutSwitchContextMenu.render("turnout-switch-context-menu-placeholder");

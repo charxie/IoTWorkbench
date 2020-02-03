@@ -76,6 +76,9 @@ export class GlobalVariableBlock extends Block {
     this.value = value;
   }
 
+  reset(): void {
+  }
+
   refreshView(): void {
     super.refreshView();
     this.portX.setY(this.height / 2);

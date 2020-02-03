@@ -35,6 +35,7 @@ import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
 import {RainbowHatBlock} from "./RainbowHatBlock";
 import {RgbaColorBlock} from "./RgbaColorBlock";
 import {ComplexNumberBlock} from "./ComplexNumberBlock";
+import {ResetBlock} from "./ResetBlock";
 
 export class BlockView {
 
@@ -145,6 +146,9 @@ export class BlockView {
             break;
           case "worker-block":
             that.addBlock(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
+            break;
+          case "reset-block":
+            that.addBlock(new ResetBlock("Reset Block #" + timestamp, x - 40, y - 30, 80, 60));
             break;
           case "turnout-switch-block":
             that.addBlock(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 30, y - 50, 60, 100));
@@ -796,6 +800,9 @@ export class BlockView {
     } else if (block instanceof WorkerBlock) {
       contextMenus.workerBlock.block = block;
       menu = document.getElementById("worker-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof ResetBlock) {
+      contextMenus.resetBlock.block = block;
+      menu = document.getElementById("reset-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof TurnoutSwitch) {
       contextMenus.turnoutSwitch.block = block;
       menu = document.getElementById("turnout-switch-context-menu") as HTMLMenuElement;

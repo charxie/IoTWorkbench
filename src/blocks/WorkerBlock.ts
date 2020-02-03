@@ -245,6 +245,13 @@ export class WorkerBlock extends Block {
     }
   }
 
+  reset(): void {
+    if (this.worker !== undefined) {
+      this.worker.postMessage({count: 0});
+    }
+    this.value = 0;
+  }
+
   destroy(): void {
     if (this.worker != undefined) {
       this.worker.terminate();

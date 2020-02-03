@@ -13,6 +13,8 @@ import rainbow_hat_blinking_led_lights from "./examples/rainbow-hat-blinking-led
 // @ts-ignore
 import rainbow_hat_sensor_data from "./examples/rainbow-hat-sensor-data.json";
 // @ts-ignore
+import projectile_motion from "./examples/projectile-motion.json";
+// @ts-ignore
 import brownian_motion from "./examples/brownian-motion.json";
 // @ts-ignore
 import random_walk from "./examples/random-walk.json";
@@ -92,6 +94,7 @@ export class Examples {
     this.files.push({name: "Make Sound with Beepers", data: make_sound_with_beepers});
     this.files.push({name: "Random Walk", data: random_walk});
     this.files.push({name: "Brownian Motion", data: brownian_motion});
+    this.files.push({name: "Projectile Motion", data: projectile_motion});
     this.files.push({name: "Fern Generator: Implementation 1", data: fern_generator_1});
     this.files.push({name: "Fern Generator: Implementation 2", data: fern_generator_2});
     this.files.push({name: "Rainbow HAT: RGB LED Array", data: rainbow_hat_rgb_led_array});

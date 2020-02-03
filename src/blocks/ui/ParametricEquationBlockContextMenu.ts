@@ -37,6 +37,10 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
+                  <td>Parameter Name (e.g., t):</td>
+                  <td><input type="text" id="parametric-equation-block-parameter-name-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Expression for X (e.g., cos(t)):</td>
                   <td><input type="text" id="parametric-equation-block-expression-x-field" style="width: 100%"></td>
                 </tr>
@@ -62,6 +66,8 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof ParametricEquationBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let parameterNameInputElement = document.getElementById("parametric-equation-block-parameter-name-field") as HTMLInputElement;
+      parameterNameInputElement.value = block.getParameterName() ? block.getParameterName().toString() : "t";
       let expressionXInputElement = document.getElementById("parametric-equation-block-expression-x-field") as HTMLInputElement;
       expressionXInputElement.value = block.getExpressionX() ? block.getExpressionX().toString() : "cos(t)";
       let expressionYInputElement = document.getElementById("parametric-equation-block-expression-y-field") as HTMLInputElement;
@@ -89,7 +95,8 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
-        // set expressions
+        // set parameter name and expressions
+        block.setParameterName(parameterNameInputElement.value);
         block.setExpressionX(expressionXInputElement.value);
         block.setExpressionY(expressionYInputElement.value);
         try {
@@ -114,6 +121,7 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
+      parameterNameInputElement.addEventListener("keyup", enterKeyUp);
       expressionXInputElement.addEventListener("keyup", enterKeyUp);
       expressionYInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
@@ -122,7 +130,7 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 320,
+        height: 360,
         width: 500,
         buttons: {
           'OK': okFunction,

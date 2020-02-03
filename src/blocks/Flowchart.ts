@@ -33,6 +33,7 @@ import {GlobalObjectBlock} from "./GlobalObjectBlock";
 import {RgbaColorBlock} from "./RgbaColorBlock";
 import {Util} from "../Util";
 import {ComplexNumberBlock} from "./ComplexNumberBlock";
+import {ResetBlock} from "./ResetBlock";
 
 export class Flowchart {
 
@@ -354,6 +355,9 @@ export class Flowchart {
         break;
       case "Worker Block":
         block = new WorkerBlock(uid, name, x, y, 80, 60);
+        break;
+      case "Reset Block":
+        block = new ResetBlock(uid, x, y, 80, 60);
         break;
       case "Turnout Switch":
         block = new TurnoutSwitch(uid, name, "Turnout", x, y, 60, 100);

@@ -29,6 +29,7 @@ import {RainbowHatBlock} from "./blocks/RainbowHatBlock";
 import {RaspberryPi} from "./components/RaspberryPi";
 import {RgbaColorBlock} from "./blocks/RgbaColorBlock";
 import {ComplexNumberBlock} from "./blocks/ComplexNumberBlock";
+import {ResetBlock} from "./blocks/ResetBlock";
 
 export class StateIO {
 
@@ -73,6 +74,7 @@ export class StateIO {
           block.setSymbol(state.symbol);
           block.setKeys(state.keys);
           block.setValues(state.values);
+          block.setInitialValues(state.values);
         } else if (block instanceof SeriesBlock) {
           block.setName(state.name);
           block.setStart(state.start);
@@ -93,6 +95,8 @@ export class StateIO {
           block.setOutputType(state.outputType ? state.outputType : "Natural Number");
           block.setInterval(state.interval);
           if (state.repeatTimes) block.setRepeatTimes(state.repeatTimes);
+        } else if (block instanceof ResetBlock) {
+          // nothing to do so far
         } else if (block instanceof ItemSelector) {
           block.setName(state.name);
           block.setItems(state.items);
@@ -162,6 +166,7 @@ export class StateIO {
           block.setExpression(state.expression ? state.expression : "x+y+z");
         } else if (block instanceof ParametricEquationBlock) {
           block.setName(state.name);
+          block.setParameterName(state.parameterName ? state.parameterName : "t");
           block.setExpressionX(state.expressionX ? state.expressionX : "cos(t)");
           block.setExpressionY(state.expressionY ? state.expressionY : "sin(t)");
         } else if (block instanceof RainbowHatBlock) {
