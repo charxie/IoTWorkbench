@@ -118,9 +118,11 @@ export class ActionBlock extends Block {
     ctx.restore();
 
     // draw the ports
-    ctx.strokeStyle = "black";
-    ctx.font = "bold 12px Times";
-    this.portI.draw(ctx, this.iconic);
+    if (this.type === "Stop") {
+      ctx.strokeStyle = "black";
+      ctx.font = "bold 12px Times";
+      this.portI.draw(ctx, this.iconic);
+    }
 
     if (this.selected) {
       this.highlightSelection(ctx);
@@ -153,9 +155,8 @@ export class ActionBlock extends Block {
         flowchart.erase();
         break;
       case "Stop":
-        let invokeInput = this.portI.getValue();
-        if (invokeInput) {
-          flowchart.stopSource(this);
+        if (this.portI.getValue()) {
+          flowchart.stopWorker(this);
         }
         break;
     }
@@ -163,6 +164,7 @@ export class ActionBlock extends Block {
 
   mouseDown(e: MouseEvent): boolean {
     if (e.which == 3) return; // if this is a right-click event
+    if (this.type === "Stop") return;
     // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
     let rect = flowchart.blockView.canvas.getBoundingClientRect();
     let x = e.clientX - rect.left;

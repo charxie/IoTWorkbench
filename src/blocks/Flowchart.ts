@@ -82,7 +82,7 @@ export class Flowchart {
     this.blockView.requestDraw();
   }
 
-  stopSource(block: Block): void {
+  stopWorker(block: Block): void {
     for (let b of this.blocks) {
       if (b instanceof WorkerBlock) {
         if (this.areBlocksConnected(b, block)) {
