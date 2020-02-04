@@ -347,7 +347,7 @@ export class Grapher extends Block {
 
     // draw y-axis tick marks
     tmpY = yOffset;
-    let minString = min.toPrecision(1);
+    let minString = min.toPrecision(2);
     ctx.beginPath();
     ctx.moveTo(this.graphWindow.x, horizontalAxisY - tmpY);
     ctx.lineTo(this.graphWindow.x + 4, horizontalAxisY - tmpY);
@@ -355,7 +355,7 @@ export class Grapher extends Block {
     ctx.fillText(minString, this.graphWindow.x - ctx.measureText(minString).width - 5, horizontalAxisY - tmpY);
 
     tmpY = yOffset + (max - min) * dy;
-    let maxString = max.toPrecision(1);
+    let maxString = max.toPrecision(2);
     ctx.beginPath();
     ctx.moveTo(this.graphWindow.x, horizontalAxisY - tmpY);
     ctx.lineTo(this.graphWindow.x + 4, horizontalAxisY - tmpY);

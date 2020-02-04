@@ -230,7 +230,7 @@ export class WorkerBlock extends Block {
     this.paused = false;
     this.completed = (this.count === this.repeatTimes);
     if (this.completed) {
-      this.stop();
+      this.stopWithoutResetCounter();
     }
   }
 
@@ -244,10 +244,17 @@ export class WorkerBlock extends Block {
   stop(): void {
     if (this.worker !== undefined) {
       this.worker.postMessage({count: 0});
+      this.stopWithoutResetCounter();
+    }
+  }
+
+  private stopWithoutResetCounter(): void {
+    if (this.worker !== undefined) {
       let controller = flowchart.getConnectorWithInput(this.portI).getOutput().getBlock();
       if (controller instanceof ToggleSwitch) {
         if (controller.isChecked()) {
           controller.setChecked(false);
+          flowchart.storeBlockStates();
         }
       }
     }
