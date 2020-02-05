@@ -6,13 +6,13 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
-import {SwitchStatementBlock} from "../SwitchStatementBlock";
+import {BundledFunctionsBlock} from "../BundledFunctionsBlock";
 
-export class SwitchStatementBlockContextMenu extends BlockContextMenu {
+export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "switch-statement-block-context-menu";
+    this.id = "bundled-functions-block-context-menu";
   }
 
   getUi(): string {
@@ -37,16 +37,20 @@ export class SwitchStatementBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Cases:<div style="font-size: 70%">(e.g., [1, 2, 3]<br>or ["a", "b", "c"])</div></td>
-                  <td><textarea id="switch-statement-block-cases-field" rows="5" style="width: 100%"></textarea></td>
+                  <td>Input Name (e.g., x):</td>
+                  <td><input type="text" id="bundled-functions-block-input-name-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Expressions:<div style="font-size: 70%">(e.g., ["cos(x)", "sin(x)", "tan(x)"])</div></td>
+                  <td><textarea id="bundled-functions-block-expressions-field" rows="5" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="switch-statement-block-width-field" style="width: 100%"></td>
+                  <td><input type="text" id="bundled-functions-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="switch-statement-block-height-field" style="width: 100%"></td>
+                  <td><input type="text" id="bundled-functions-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -55,26 +59,35 @@ export class SwitchStatementBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(e: MouseEvent): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof SwitchStatementBlock) {
+    if (this.block instanceof BundledFunctionsBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let casesInputElement = document.getElementById("switch-statement-block-cases-field") as HTMLTextAreaElement;
-      casesInputElement.value = JSON.stringify(block.getCases());
-      let widthInputElement = document.getElementById("switch-statement-block-width-field") as HTMLInputElement;
+      let inputNameInputElement = document.getElementById("bundled-functions-block-input-name-field") as HTMLInputElement;
+      inputNameInputElement.value = block.getInputName() ? block.getInputName().toString() : "t";
+      let expressionsInputElement = document.getElementById("bundled-functions-block-expressions-field") as HTMLTextAreaElement;
+      expressionsInputElement.value = JSON.stringify(block.getExpressions());
+      let widthInputElement = document.getElementById("bundled-functions-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("switch-statement-block-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("bundled-functions-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
+        block.setInputName(inputNameInputElement.value);
         let success = true;
         let message;
-        // set cases
-        if (JSON.stringify(block.getCases()) != casesInputElement.value) {
+        // set expressions
+        if (JSON.stringify(block.getExpressions()) != expressionsInputElement.value) {
           try {
-            block.setCases(JSON.parse(casesInputElement.value));
+            block.setExpressions(JSON.parse(expressionsInputElement.value));
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = casesInputElement.value + " is not a valid array.";
+            message = expressionsInputElement.value + " is not a valid array.";
+          }
+          try {
+            flowchart.updateResultsForBlock(block);
+          } catch (err) {
+            success = false;
+            message = JSON.stringify(expressionsInputElement.value) + " are not valid expressions.";
           }
         }
         // set width
@@ -97,7 +110,6 @@ export class SwitchStatementBlockContextMenu extends BlockContextMenu {
         if (success) {
           block.refreshView();
           flowchart.blockView.requestDraw();
-          flowchart.updateResultsForBlock(block);
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');
@@ -110,6 +122,7 @@ export class SwitchStatementBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
+      inputNameInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({

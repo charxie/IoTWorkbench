@@ -66,6 +66,7 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
       nameInputElement.value = itemSelector.getName();
       let itemsInputElement = document.getElementById("item-selector-block-items-field") as HTMLTextAreaElement;
       itemsInputElement.value = JSON.stringify(itemSelector.getItems());
+      itemsInputElement.disabled = itemSelector.hasInput();
       let widthInputElement = document.getElementById("item-selector-block-width-field") as HTMLInputElement;
       widthInputElement.value = itemSelector.getWidth().toString();
       let heightInputElement = document.getElementById("item-selector-block-height-field") as HTMLInputElement;

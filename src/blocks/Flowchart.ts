@@ -34,6 +34,7 @@ import {RgbaColorBlock} from "./RgbaColorBlock";
 import {Util} from "../Util";
 import {ComplexNumberBlock} from "./ComplexNumberBlock";
 import {ActionBlock} from "./ActionBlock";
+import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
 
 export class Flowchart {
 
@@ -327,6 +328,9 @@ export class Flowchart {
       case "Parametric Equation Block":
         block = new ParametricEquationBlock(uid, x, y, 60, 100);
         break;
+      case "Bundled Functions Block":
+        block = new BundledFunctionsBlock(uid, x, y, 60, 100);
+        break;
       case "NOT Block":
         block = new NegationBlock(uid, x, y, 60, 80);
         break;
@@ -503,6 +507,8 @@ export class Flowchart {
         blockStates.push(new MultivariableFunctionBlock.State(b));
       } else if (b instanceof ParametricEquationBlock) {
         blockStates.push(new ParametricEquationBlock.State(b));
+      } else if (b instanceof BundledFunctionsBlock) {
+        blockStates.push(new BundledFunctionsBlock.State(b));
       } else {
         blockStates.push(new Block.State(b));
       }

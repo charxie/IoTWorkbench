@@ -266,6 +266,7 @@ export class WorkerBlock extends Block {
       this.worker.postMessage({count: 0});
     }
     this.value = 0;
+    this.count = 0;
     this.portO.setValue(this.value);
   }
 

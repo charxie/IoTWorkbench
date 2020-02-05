@@ -15,6 +15,8 @@ import rainbow_hat_sensor_data from "./examples/rainbow-hat-sensor-data.json";
 // @ts-ignore
 import euler_method from "./examples/euler-method.json";
 // @ts-ignore
+import harmonic_oscillator from "./examples/harmonic-oscillator.json";
+// @ts-ignore
 import projectile_motion from "./examples/projectile-motion.json";
 // @ts-ignore
 import brownian_motion from "./examples/brownian-motion.json";
@@ -39,7 +41,7 @@ import arithmetic_operators_for_complex_numbers from "./examples/arithmetic-oper
 // @ts-ignore
 import unary_functions from "./examples/unary-functions.json";
 // @ts-ignore
-import interesting_unary_functions from "./examples/interesting-unary-functions.json";
+import bundled_functions from "./examples/bundled-functions.json";
 // @ts-ignore
 import binary_functions from "./examples/binary-functions.json";
 // @ts-ignore
@@ -81,7 +83,7 @@ export class Examples {
     this.files.push({name: "Complex Numbers", data: complex_numbers});
     this.files.push({name: "Arithmetic Operators for Complex Numbers", data: arithmetic_operators_for_complex_numbers});
     this.files.push({name: "Unary Functions", data: unary_functions});
-    this.files.push({name: "Interesting Unary Functions", data: interesting_unary_functions});
+    this.files.push({name: "Bundled Functions", data: bundled_functions});
     this.files.push({name: "Binary Functions", data: binary_functions});
     this.files.push({name: "Multivariable Functions", data: multivariable_functions});
     this.files.push({name: "Toggle Switch vs. Momentary Switch", data: toggle_vs_momentary_switch});
@@ -94,8 +96,9 @@ export class Examples {
     this.files.push({name: "Parametric Equations 2", data: parametric_equations_2});
     this.files.push({name: "Parametric Generator 1", data: parametric_generator_1});
     this.files.push({name: "Parametric Generator 2", data: parametric_generator_2});
-    this.files.push({name: "Projectile Motion", data: projectile_motion});
     this.files.push({name: "Euler Method", data: euler_method});
+    this.files.push({name: "Projectile Motion", data: projectile_motion});
+    this.files.push({name: "Harmonic Oscillator", data: harmonic_oscillator});
     this.files.push({name: "Random Walk", data: random_walk});
     this.files.push({name: "Brownian Motion", data: brownian_motion});
     this.files.push({name: "Fern Generator: Implementation 1", data: fern_generator_1});

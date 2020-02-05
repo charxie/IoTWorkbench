@@ -62,6 +62,7 @@ import {GlobalObjectBlockContextMenu} from "./blocks/ui/GlobalObjectBlockContext
 import {RgbaColorBlockContextMenu} from "./blocks/ui/RgbaColorBlockContextMenu";
 import {ComplexNumberBlockContextMenu} from "./blocks/ui/ComplexNumberBlockContextMenu";
 import {ActionBlockContextMenu} from "./blocks/ui/ActionBlockContextMenu";
+import {BundledFunctionsBlockContextMenu} from "./blocks/ui/BundledFunctionsBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -314,6 +315,11 @@ function setupContextMenuForBlock() {
   parametricEquationBlockContextMenu.render("parametric-equation-block-context-menu-placeholder");
   parametricEquationBlockContextMenu.addListeners();
   contextMenus.parametricEquationBlock = parametricEquationBlockContextMenu;
+
+  let bundledFunctionsBlockContextMenu = new BundledFunctionsBlockContextMenu();
+  bundledFunctionsBlockContextMenu.render("bundled-functions-block-context-menu-placeholder");
+  bundledFunctionsBlockContextMenu.addListeners();
+  contextMenus.bundledFunctionsBlock = bundledFunctionsBlockContextMenu;
 
   let toggleSwitchContextMenu = new ToggleSwitchContextMenu();
   toggleSwitchContextMenu.render("toggle-switch-context-menu-placeholder");

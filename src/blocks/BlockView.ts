@@ -36,6 +36,7 @@ import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
 import {RainbowHatBlock} from "./RainbowHatBlock";
 import {RgbaColorBlock} from "./RgbaColorBlock";
 import {ComplexNumberBlock} from "./ComplexNumberBlock";
+import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
 
 export class BlockView {
 
@@ -128,6 +129,9 @@ export class BlockView {
             break;
           case "parametric-equation-block":
             that.addBlock(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 40, y - 50, 80, 100));
+            break;
+          case "bundled-functions-block":
+            that.addBlock(new BundledFunctionsBlock("Bundled Functions Block #" + timestamp, x - 40, y - 50, 80, 100));
             break;
           case "global-variable-block":
             that.addBlock(new GlobalVariableBlock("Global Variable Block #" + timestamp, "Global Variable Block", "var", x - 30, y - 40, 60, 80));
@@ -827,6 +831,9 @@ export class BlockView {
     } else if (block instanceof ParametricEquationBlock) {
       contextMenus.parametricEquationBlock.block = block;
       menu = document.getElementById("parametric-equation-block-context-menu") as HTMLMenuElement;
+    } else if (block instanceof BundledFunctionsBlock) {
+      contextMenus.bundledFunctionsBlock.block = block;
+      menu = document.getElementById("bundled-functions-block-context-menu") as HTMLMenuElement;
     } else if (block instanceof Slider) {
       contextMenus.slider.block = block;
       menu = document.getElementById("slider-context-menu") as HTMLMenuElement;

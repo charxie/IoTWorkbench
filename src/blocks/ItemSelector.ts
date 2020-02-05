@@ -233,6 +233,10 @@ export class ItemSelector extends Block {
     return this.dropdownMenuOpen;
   }
 
+  hasInput(): boolean {
+    return this.portI.getValue() !== undefined;
+  }
+
   contains(x: number, y: number): boolean {
     if (this.dropdownMenuOpen) {
       return (x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height) ||

@@ -30,6 +30,7 @@ import {RainbowHatBlock} from "./blocks/RainbowHatBlock";
 import {RaspberryPi} from "./components/RaspberryPi";
 import {RgbaColorBlock} from "./blocks/RgbaColorBlock";
 import {ComplexNumberBlock} from "./blocks/ComplexNumberBlock";
+import {BundledFunctionsBlock} from "./blocks/BundledFunctionsBlock";
 
 export class StateIO {
 
@@ -169,6 +170,10 @@ export class StateIO {
           block.setParameterName(state.parameterName ? state.parameterName : "t");
           block.setExpressionX(state.expressionX ? state.expressionX : "cos(t)");
           block.setExpressionY(state.expressionY ? state.expressionY : "sin(t)");
+        } else if (block instanceof BundledFunctionsBlock) {
+          block.setName(state.name);
+          block.setInputName(state.inputName ? state.inputName : "t");
+          block.setExpressions(state.expressions);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

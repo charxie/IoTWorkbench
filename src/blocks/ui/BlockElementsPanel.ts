@@ -26,6 +26,7 @@ import {GlobalObjectBlock} from "../GlobalObjectBlock";
 import {RgbaColorBlock} from "../RgbaColorBlock";
 import {ComplexNumberBlock} from "../ComplexNumberBlock";
 import {ActionBlock} from "../ActionBlock";
+import {BundledFunctionsBlock} from "../BundledFunctionsBlock";
 
 export class BlockElementsPanel {
 
@@ -44,6 +45,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="binary-function-block" title="f(x, y)" width="45px" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="multivariable-function-block" title="f(x, y, z)" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="parametric-equation-block" title="x(t), y(t)" width="45px" height="80px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="bundled-functions-block" title="x(t), y(t)" width="45px" height="80px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -98,6 +100,7 @@ export class BlockElementsPanel {
     this.drawBinaryFunctionBlock("binary-function-block");
     this.drawMultivariableFunctionBlock("multivariable-function-block");
     this.drawParametricEquationBlock("parametric-equation-block");
+    this.drawBundledFunctionsBlock("bundled-functions-block");
     this.drawLogicBlock("AND Block", "AND", "logic-and-block");
     this.drawNegationBlock("logic-not-block");
     this.drawArithmeticBlock("Add Block", "+", "arithmetic-add-block");
@@ -316,6 +319,16 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new ParametricEquationBlock("Parametric Equation Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    if (block != null) {
+      block.setIconic(true);
+      block.draw(ctx);
+    }
+  }
+
+  private drawBundledFunctionsBlock(canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new BundledFunctionsBlock("Bundled Functions Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     if (block != null) {
       block.setIconic(true);
       block.draw(ctx);
