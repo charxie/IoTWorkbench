@@ -17,7 +17,9 @@ import euler_method from "./examples/euler-method.json";
 // @ts-ignore
 import harmonic_oscillator from "./examples/harmonic-oscillator.json";
 // @ts-ignore
-import projectile_motion from "./examples/projectile-motion.json";
+import projectile_motion_1 from "./examples/projectile-motion-1.json";
+// @ts-ignore
+import projectile_motion_2 from "./examples/projectile-motion-2.json";
 // @ts-ignore
 import brownian_motion from "./examples/brownian-motion.json";
 // @ts-ignore
@@ -97,7 +99,8 @@ export class Examples {
     this.files.push({name: "Parametric Generator 1", data: parametric_generator_1});
     this.files.push({name: "Parametric Generator 2", data: parametric_generator_2});
     this.files.push({name: "Euler Method", data: euler_method});
-    this.files.push({name: "Projectile Motion", data: projectile_motion});
+    this.files.push({name: "Projectile Motion: Implementation 1", data: projectile_motion_1});
+    this.files.push({name: "Projectile Motion: Implementation 2", data: projectile_motion_2});
     this.files.push({name: "Harmonic Oscillator", data: harmonic_oscillator});
     this.files.push({name: "Random Walk", data: random_walk});
     this.files.push({name: "Brownian Motion", data: brownian_motion});

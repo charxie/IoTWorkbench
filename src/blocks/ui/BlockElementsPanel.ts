@@ -41,11 +41,11 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="arithmetic-add-block" title="Arithmetic Operator" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="logic-and-block" title="Logic Operator" width="45px" height="60px" style="left: 10px; cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="logic-not-block" title="Not Operator" width="45px" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="unary-function-block" title="f(x)" width="45px" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="binary-function-block" title="f(x, y)" width="45px" height="70px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="multivariable-function-block" title="f(x, y, z)" width="45px" height="80px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="parametric-equation-block" title="x(t), y(t)" width="45px" height="80px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="bundled-functions-block" title="x(t), y(t)" width="45px" height="80px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="unary-function-block" title="Unary Function" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="binary-function-block" title="Binary Function" width="45px" height="70px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="multivariable-function-block" title="Multivariable Function" width="45px" height="80px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="parametric-equation-block" title="Parametric Equations" width="45px" height="80px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="bundled-functions-block" title="Bundled Functions" width="45px" height="80px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
