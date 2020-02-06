@@ -369,7 +369,8 @@ export class Space2D extends Block {
           ctx.moveTo(tmpX, 0);
           ctx.lineTo(tmpX, -4);
           ctx.stroke();
-          let iString = (xmin + i * inx).toPrecision(2);
+          let xtick = xmin + i * inx;
+          let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(2);
           ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
         }
         let iny = (ymax - ymin) / 10;
@@ -380,7 +381,8 @@ export class Space2D extends Block {
           ctx.moveTo(0, tmpY);
           ctx.lineTo(4, tmpY);
           ctx.stroke();
-          let iString = (ymin + i * iny).toPrecision(2);
+          let ytick = ymin + i * iny;
+          let iString = Math.abs(ytick) < 0.01 ? "0" : ytick.toPrecision(2);
           ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
         }
         ctx.restore();
