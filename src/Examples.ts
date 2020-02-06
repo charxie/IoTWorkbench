@@ -13,7 +13,7 @@ import rainbow_hat_blinking_led_lights from "./examples/rainbow-hat-blinking-led
 // @ts-ignore
 import rainbow_hat_sensor_data from "./examples/rainbow-hat-sensor-data.json";
 // @ts-ignore
-import euler_method from "./examples/euler-method.json";
+import logistic_population_equation from "./examples/logistic-population-equation.json";
 // @ts-ignore
 import predator_prey_equations from "./examples/predator-prey-equations.json";
 // @ts-ignore
@@ -100,7 +100,7 @@ export class Examples {
     this.files.push({name: "Parametric Equations 2", data: parametric_equations_2});
     this.files.push({name: "Parametric Generator 1", data: parametric_generator_1});
     this.files.push({name: "Parametric Generator 2", data: parametric_generator_2});
-    this.files.push({name: "Euler Method", data: euler_method});
+    this.files.push({name: "Logistic Population Model", data: logistic_population_equation});
     this.files.push({name: "Projectile Motion: Implementation 1", data: projectile_motion_1});
     this.files.push({name: "Projectile Motion: Implementation 2", data: projectile_motion_2});
     this.files.push({name: "Harmonic Oscillator", data: harmonic_oscillator});

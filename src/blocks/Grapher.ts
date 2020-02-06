@@ -329,6 +329,13 @@ export class Grapher extends Block {
     // draw x-axis tick marks
     ctx.fillStyle = "black";
     let spacing = Math.pow(10, Util.countDigits(this.data.length) - 1);
+    let precision: number;
+    if (this.x0 != undefined && this.dx != undefined) {
+      let xmax = this.x0 + this.data.length * this.dx;
+      precision = xmax < 1 ? 2 : (1 + Math.round(xmax).toString().length);
+    } else {
+      precision = this.data.length.toString().length;
+    }
     for (let i = 0; i < this.data.length; i++) {
       if (i % spacing == 0) {
         tmpX = this.graphWindow.x + dx * i;
@@ -340,22 +347,24 @@ export class Grapher extends Block {
         if (this.x0 != undefined && this.dx != undefined) {
           x = this.x0 + i * this.dx;
         }
-        let xString = x.toPrecision(2);
+        let xString = x.toPrecision(precision);
         ctx.fillText(xString, tmpX - 4 - ctx.measureText(xString).width / 2, horizontalAxisY + 10);
       }
     }
 
     // draw y-axis tick marks
+    precision = min < 1 ? 2 : Math.round(min).toString().length;
     tmpY = yOffset;
-    let minString = min.toPrecision(2);
+    let minString = (Math.abs(min) < 0.000001 ? 0 : min).toPrecision(precision);
     ctx.beginPath();
     ctx.moveTo(this.graphWindow.x, horizontalAxisY - tmpY);
     ctx.lineTo(this.graphWindow.x + 4, horizontalAxisY - tmpY);
     ctx.stroke();
     ctx.fillText(minString, this.graphWindow.x - ctx.measureText(minString).width - 5, horizontalAxisY - tmpY);
 
+    precision = max < 1 ? 2 : Math.round(max).toString().length;
     tmpY = yOffset + (max - min) * dy;
-    let maxString = max.toPrecision(2);
+    let maxString = (Math.abs(max) < 0.000001 ? 0 : max).toPrecision(precision);
     ctx.beginPath();
     ctx.moveTo(this.graphWindow.x, horizontalAxisY - tmpY);
     ctx.lineTo(this.graphWindow.x + 4, horizontalAxisY - tmpY);
