@@ -108,7 +108,7 @@ export class TurnoutSwitch extends FunctionBlock {
       this.setOutputs(result);
     } catch (e) {
       console.log(e.stack);
-      Util.showErrorMessage(e.toString());
+      Util.showBlockError(e.toString());
       this.portT.setValue(undefined);
       this.portF.setValue(undefined);
       this.hasError = true;

@@ -123,7 +123,7 @@ export class BinaryFunctionBlock extends FunctionBlock {
         this.updateConnectors();
       } catch (e) {
         console.log(e.stack);
-        Util.showErrorMessage(e.toString());
+        Util.showBlockError(e.toString());
         this.hasError = true;
       }
     } else {

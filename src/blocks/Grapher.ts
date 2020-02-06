@@ -7,15 +7,16 @@ import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
+import {DataArray} from "./DataArray";
 
 export class Grapher extends Block {
 
-  private portI: Port;
+  private portI: Port[];
   private portX: Port;
   private portD: Port;
   private x0: number;
   private dx: number;
-  private data: number[] = [];
+  private dataArrays: DataArray[] = [];
   private minimumValue: number = 0;
   private maximumValue: number = 1;
   private autoscale: boolean = true;
@@ -52,6 +53,7 @@ export class Grapher extends Block {
     readonly maximumValue: number;
     readonly graphSymbol: string;
     readonly graphSymbolColor: string;
+    readonly dataPortNumber: number;
 
     constructor(grapher: Grapher) {
       this.name = grapher.name;
@@ -70,6 +72,7 @@ export class Grapher extends Block {
       this.maximumValue = grapher.maximumValue;
       this.graphSymbol = grapher.graphSymbol;
       this.graphSymbolColor = grapher.graphSymbolColor;
+      this.dataPortNumber = grapher.getDataPortNumber();
     }
   };
 
@@ -79,13 +82,15 @@ export class Grapher extends Block {
     this.color = "#F0FFFF";
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 4;
-    this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false);
+    this.portI = [];
+    this.portI.push(new Port(this, true, "I", 0, this.barHeight + dh, false));
     this.portX = new Port(this, true, "X", 0, this.barHeight + 2 * dh, false);
     this.portD = new Port(this, true, "D", 0, this.barHeight + 3 * dh, false);
-    this.ports.push(this.portI);
+    this.ports.push(this.portI[0]);
     this.ports.push(this.portX);
     this.ports.push(this.portD);
     this.graphWindow = new Rectangle(0, 0, 1, 1);
+    this.dataArrays.push(new DataArray());
   }
 
   getCopy(): Block {
@@ -100,10 +105,35 @@ export class Grapher extends Block {
     copy.graphSymbolColor = this.graphSymbolColor;
     copy.lineType = this.lineType;
     copy.lineColor = this.lineColor;
+    copy.setDataPortNumber(this.getDataPortNumber());
     return copy;
   }
 
   destroy(): void {
+  }
+
+  setDataPortNumber(portNumber: number): void {
+    if (portNumber > this.portI.length) { // increase data ports
+      for (let i = 0; i < portNumber; i++) {
+        if (i >= this.portI.length) {
+          let p = new Port(this, true, String.fromCharCode("I".charCodeAt(0) + i), 0, 0, false);
+          this.portI.push(p);
+          this.ports.push(p);
+          this.dataArrays.push((new DataArray()));
+        }
+      }
+    } else if (portNumber < this.portI.length) { // decrease data ports
+      for (let i = this.portI.length - 1; i >= portNumber; i--) {
+        this.portI.pop();
+        flowchart.removeConnectorsToPort(this.ports.pop());
+        this.dataArrays.pop();
+      }
+    }
+    this.refreshView();
+  }
+
+  getDataPortNumber(): number {
+    return this.portI.length;
   }
 
   setMinimumValue(minimumValue: number): void {
@@ -230,7 +260,7 @@ export class Grapher extends Block {
     ctx.stroke();
     if (!this.iconic) {
       this.drawAxisLabels(ctx);
-      if (this.data.length > 1) {
+      if (this.dataArrays[0].length() > 1) {
         this.drawLineCharts(ctx);
       }
     }
@@ -238,9 +268,9 @@ export class Grapher extends Block {
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
-    this.portI.draw(ctx, this.iconic);
-    this.portX.draw(ctx, this.iconic);
-    this.portD.draw(ctx, this.iconic);
+    for (let p of this.ports) {
+      p.draw(ctx, this.iconic);
+    }
 
     if (this.selected) {
       this.highlightSelection(ctx);
@@ -254,12 +284,14 @@ export class Grapher extends Block {
     let min = Number.MAX_VALUE;
     let max = -min;
     if (this.autoscale) {
-      for (let d of this.data) {
-        if (d > max) {
-          max = d;
-        }
-        if (d < min) {
-          min = d;
+      for (let arr of this.dataArrays) {
+        for (let d of arr.data) {
+          if (d > max) {
+            max = d;
+          }
+          if (d < min) {
+            min = d;
+          }
         }
       }
     } else {
@@ -269,7 +301,7 @@ export class Grapher extends Block {
 
     // determine the graph window
 
-    let dx = this.graphWindow.width / (this.data.length - 1);
+    let dx = this.graphWindow.width / (this.dataArrays[0].length() - 1);
     let yOffset = 0.1 * this.graphWindow.height;
     let dy = (this.graphWindow.height - 2 * yOffset) / (max - min);
     let tmpX;
@@ -283,16 +315,18 @@ export class Grapher extends Block {
         ctx.strokeStyle = this.lineColor;
         ctx.font = "10px Arial";
         ctx.fillStyle = "black";
-        ctx.beginPath();
-        tmpX = this.graphWindow.x;
-        tmpY = yOffset + (this.data[0] - min) * dy;
-        ctx.moveTo(tmpX, horizontalAxisY - tmpY);
-        for (let i = 1; i < this.data.length; i++) {
-          tmpX = this.graphWindow.x + dx * i;
-          tmpY = yOffset + (this.data[i] - min) * dy;
-          ctx.lineTo(tmpX, horizontalAxisY - tmpY);
+        for (let arr of this.dataArrays) {
+          ctx.beginPath();
+          tmpX = this.graphWindow.x;
+          tmpY = yOffset + (arr.data[0] - min) * dy;
+          ctx.moveTo(tmpX, horizontalAxisY - tmpY);
+          for (let i = 1; i < arr.length(); i++) {
+            tmpX = this.graphWindow.x + dx * i;
+            tmpY = yOffset + (arr.data[i] - min) * dy;
+            ctx.lineTo(tmpX, horizontalAxisY - tmpY);
+          }
+          ctx.stroke();
         }
-        ctx.stroke();
         break;
     }
 
@@ -300,43 +334,47 @@ export class Grapher extends Block {
     // draw symbols on top of the line
     switch (this.graphSymbol) { // put switch outside, though the code is longer, the performance is better
       case "Circle":
-        for (let i = 0; i < this.data.length; i++) {
-          tmpX = this.graphWindow.x + dx * i;
-          tmpY = yOffset + (this.data[i] - min) * dy;
-          ctx.beginPath();
-          ctx.arc(tmpX, horizontalAxisY - tmpY, 3, 0, 2 * Math.PI);
-          ctx.closePath();
-          ctx.fillStyle = this.graphSymbolColor;
-          ctx.fill();
-          ctx.strokeStyle = this.lineColor;
-          ctx.stroke();
+        for (let arr of this.dataArrays) {
+          for (let i = 0; i < arr.length(); i++) {
+            tmpX = this.graphWindow.x + dx * i;
+            tmpY = yOffset + (arr.data[i] - min) * dy;
+            ctx.beginPath();
+            ctx.arc(tmpX, horizontalAxisY - tmpY, 3, 0, 2 * Math.PI);
+            ctx.closePath();
+            ctx.fillStyle = this.graphSymbolColor;
+            ctx.fill();
+            ctx.strokeStyle = this.lineColor;
+            ctx.stroke();
+          }
         }
         break;
       case "Square":
-        for (let i = 0; i < this.data.length; i++) {
-          tmpX = this.graphWindow.x + dx * i;
-          tmpY = yOffset + (this.data[i] - min) * dy;
-          ctx.beginPath();
-          ctx.rect(tmpX - 2, horizontalAxisY - tmpY - 2, 4, 4);
-          ctx.fillStyle = this.graphSymbolColor;
-          ctx.fill();
-          ctx.strokeStyle = this.lineColor;
-          ctx.stroke();
+        for (let arr of this.dataArrays) {
+          for (let i = 0; i < arr.length(); i++) {
+            tmpX = this.graphWindow.x + dx * i;
+            tmpY = yOffset + (arr.data[i] - min) * dy;
+            ctx.beginPath();
+            ctx.rect(tmpX - 2, horizontalAxisY - tmpY - 2, 4, 4);
+            ctx.fillStyle = this.graphSymbolColor;
+            ctx.fill();
+            ctx.strokeStyle = this.lineColor;
+            ctx.stroke();
+          }
         }
         break;
     }
 
     // draw x-axis tick marks
     ctx.fillStyle = "black";
-    let spacing = Math.pow(10, Util.countDigits(this.data.length) - 1);
+    let spacing = Math.pow(10, Util.countDigits(this.dataArrays[0].length()) - 1);
     let precision: number;
     if (this.x0 != undefined && this.dx != undefined) {
-      let xmax = this.x0 + this.data.length * this.dx;
+      let xmax = this.x0 + this.dataArrays[0].length() * this.dx;
       precision = xmax < 1 ? 2 : (1 + Math.round(xmax).toString().length);
     } else {
-      precision = this.data.length.toString().length;
+      precision = this.dataArrays[0].data.length.toString().length;
     }
-    for (let i = 0; i < this.data.length; i++) {
+    for (let i = 0; i < this.dataArrays[0].length(); i++) {
       if (i % spacing == 0) {
         tmpX = this.graphWindow.x + dx * i;
         ctx.beginPath();
@@ -390,8 +428,10 @@ export class Grapher extends Block {
   }
 
   updateModel(): void {
-    let v = this.portI.getValue();
-    this.data = Array.isArray(v) ? v : [v];
+    for (let i = 0; i < this.portI.length; i++) {
+      let v = this.portI[i].getValue();
+      this.dataArrays[i].data = Array.isArray(v) ? v : [v];
+    }
     let x0 = this.portX.getValue();
     if (x0 != undefined) {
       this.x0 = x0;
@@ -408,10 +448,12 @@ export class Grapher extends Block {
     this.graphMargin.bottom = 30;
     this.graphMargin.left = 40;
     this.graphMargin.right = 10;
-    let dh = (this.height - this.barHeight) / 4;
-    this.portI.setY(this.barHeight + dh);
-    this.portX.setY(this.barHeight + 2 * dh);
-    this.portD.setY(this.barHeight + 3 * dh);
+    let dh = (this.height - this.barHeight) / (this.portI.length + 3);
+    for (let i = 0; i < this.portI.length; i++) {
+      this.portI[i].setY(this.barHeight + (i + 1) * dh);
+    }
+    this.portX.setY(this.barHeight + (this.portI.length + 1) * dh);
+    this.portD.setY(this.barHeight + (this.portI.length + 2) * dh);
     this.updateModel();
   }
 

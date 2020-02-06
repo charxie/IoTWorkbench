@@ -240,6 +240,20 @@ export class Slider extends Block {
     return this.knob.contains(x, y);
   }
 
+  private onTrack(x: number, y: number): boolean {
+    return x < this.trackRight && x > this.trackLeft && y < this.knob.getYmax() && y > this.knob.getYmin();
+  }
+
+  private setValueFromKnob(x: number): void {
+    this.knob.x = x;
+    if (this.knob.x < this.trackLeft - this.knobHalfSize) {
+      this.knob.x = this.trackLeft - this.knobHalfSize;
+    } else if (this.knob.x > this.trackRight - this.knobHalfSize) {
+      this.knob.x = this.trackRight - this.knobHalfSize;
+    }
+    this.value = this.minimum + (this.maximum - this.minimum) / (this.trackRight - this.trackLeft) * (this.knob.x + this.knobHalfSize - this.trackLeft);
+  }
+
   private updateAll(): void {
     flowchart.traverse(this);
     if (flowchart.isConnectedToGlobalVariable(this)) {
@@ -298,12 +312,21 @@ export class Slider extends Block {
 
   mouseUp(e: MouseEvent): void {
     if (e.which == 3 || e.button == 2) return; // if this is a right-click event
+    if (!this.knobGrabbed) {
+      let rect = flowchart.blockView.canvas.getBoundingClientRect();
+      this.setValueFromKnob(e.clientX - rect.left - this.knobHalfSize);
+    }
     if (this.snapToTick) {
       let d = (this.maximum - this.minimum) / this.steps;
       let n = Math.round(this.value / d);
       this.value = n * d;
       this.refreshView();
       this.updateAll();
+    } else {
+      if (!this.knobGrabbed) {
+        this.updateAll();
+      }
+      // if the knob is grabbed, updateAll is already called in the mouseMove method
     }
     this.knobGrabbed = false;
     flowchart.blockView.canvas.style.cursor = "default";
@@ -316,13 +339,7 @@ export class Slider extends Block {
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
     if (this.knobGrabbed) {
-      this.knob.x = x - this.mouseDownRelativeX;
-      if (this.knob.x < this.trackLeft - this.knobHalfSize) {
-        this.knob.x = this.trackLeft - this.knobHalfSize;
-      } else if (this.knob.x > this.trackRight - this.knobHalfSize) {
-        this.knob.x = this.trackRight - this.knobHalfSize;
-      }
-      this.value = this.minimum + (this.maximum - this.minimum) / (this.trackRight - this.trackLeft) * (this.knob.x + this.knobHalfSize - this.trackLeft);
+      this.setValueFromKnob(x - this.mouseDownRelativeX);
       this.updateAll();
     } else {
       if (this.onKnob(x, y)) {

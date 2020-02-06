@@ -107,7 +107,7 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
           flowchart.storeConnectorStates();
           d.dialog('close');
         } else {
-          Util.showErrorMessage(message);
+          Util.showInputError(message);
         }
       };
       const enterKeyUp = function (e) {

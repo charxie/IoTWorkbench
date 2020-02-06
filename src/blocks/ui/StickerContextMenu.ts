@@ -144,7 +144,7 @@ export class StickerContextMenu extends BlockContextMenu {
           flowchart.blockView.requestDraw();
           d.dialog('close');
         } else {
-          Util.showErrorMessage(message);
+          Util.showInputError(message);
         }
       };
       const enterKeyUp = function (e) {

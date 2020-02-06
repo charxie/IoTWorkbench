@@ -58,6 +58,10 @@ export class GrapherContextMenu extends BlockContextMenu {
                       <input type="radio" name="scale" id="grapher-fixed-scale-radio-button"> Fixed</td>
                 </tr>
                 <tr>
+                  <td>Data Ports:</td>
+                  <td><input type="text" id="grapher-data-ports-field" style="width: 120px"></td>
+                </tr>
+                <tr>
                   <td>Minimum Value:</td>
                   <td><input type="text" id="grapher-minimum-value-field" style="width: 120px"></td>
                 </tr>
@@ -123,6 +127,8 @@ export class GrapherContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("grapher-name-field") as HTMLInputElement;
       nameInputElement.value = g.getName();
+      let dataPortsInputElement = document.getElementById("grapher-data-ports-field") as HTMLInputElement;
+      dataPortsInputElement.value = g.getDataPortNumber().toString();
       let lineTypeSelectElement = document.getElementById("grapher-line-type-selector") as HTMLSelectElement;
       lineTypeSelectElement.value = g.getLineType();
       let symbolSelectElement = document.getElementById("grapher-symbol-selector") as HTMLSelectElement;
@@ -161,13 +167,26 @@ export class GrapherContextMenu extends BlockContextMenu {
         g.setAutoScale(autoScaleRadioButton.checked);
         let success = true;
         let message;
+        // set data port number
+        let dataPortNumber = parseFloat(dataPortsInputElement.value);
+        if (isNumber(dataPortNumber)) {
+          if (dataPortNumber > 5 || dataPortNumber < 1) {
+            success = false;
+            message = "Data port number must be between 1 and 5";
+          } else {
+            g.setDataPortNumber(dataPortNumber);
+          }
+        } else {
+          success = false;
+          message = dataPortsInputElement.value + " is not a valid value for data port number";
+        }
         // set minimum value
         let minimumValue = parseFloat(minimumValueInputElement.value);
         if (isNumber(minimumValue)) {
           g.setMinimumValue(minimumValue);
         } else {
           success = false;
-          message = minimumValueInputElement.value + " is not a valid value for minimum.";
+          message = minimumValueInputElement.value + " is not a valid value for minimum";
         }
         // set maximum value
         let maximumValue = parseFloat(maximumValueInputElement.value);
@@ -175,7 +194,7 @@ export class GrapherContextMenu extends BlockContextMenu {
           g.setMaximumValue(maximumValue);
         } else {
           success = false;
-          message = maximumValueInputElement.value + " is not a valid value for maximum.";
+          message = maximumValueInputElement.value + " is not a valid value for maximum";
         }
         // set width
         let w = parseInt(widthInputElement.value);
@@ -183,7 +202,7 @@ export class GrapherContextMenu extends BlockContextMenu {
           g.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -191,7 +210,7 @@ export class GrapherContextMenu extends BlockContextMenu {
           g.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // finish
         if (success) {
@@ -200,7 +219,7 @@ export class GrapherContextMenu extends BlockContextMenu {
           flowchart.blockView.requestDraw();
           d.dialog('close');
         } else {
-          Util.showErrorMessage(message);
+          Util.showInputError(message);
         }
       };
       const enterKeyUp = function (e) {
@@ -209,6 +228,7 @@ export class GrapherContextMenu extends BlockContextMenu {
         }
       };
       nameInputElement.addEventListener("keyup", enterKeyUp);
+      dataPortsInputElement.addEventListener("keyup", enterKeyUp);
       minimumValueInputElement.addEventListener("keyup", enterKeyUp);
       maximumValueInputElement.addEventListener("keyup", enterKeyUp);
       xAxisLableInputElement.addEventListener("keyup", enterKeyUp);

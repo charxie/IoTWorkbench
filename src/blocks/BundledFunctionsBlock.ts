@@ -157,7 +157,7 @@ export class BundledFunctionsBlock extends Block {
         this.updateConnectors();
       } catch (e) {
         console.log(e.stack);
-        Util.showErrorMessage(e.toString());
+        Util.showBlockError(e.toString());
         this.hasError = true;
       }
     } else {

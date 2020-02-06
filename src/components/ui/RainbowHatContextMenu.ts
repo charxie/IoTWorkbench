@@ -102,7 +102,7 @@ export class RainbowHatContextMenu extends HatContextMenu {
           system.storeHatStates();
           d.dialog('close');
         } else {
-          Util.showErrorMessage(message);
+          Util.showBlockError(message);
         }
       };
       const enterKeyUp = function (e) {

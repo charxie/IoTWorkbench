@@ -242,6 +242,13 @@ export class Flowchart {
     this.storeConnectorStates();
   }
 
+  removeConnectorsToPort(port: Port): void {
+    let connectors = this.getConnectors(port);
+    for (let c of connectors) {
+      this.removePortConnector(c);
+    }
+  }
+
   /* block methods */
 
   removeBlock(uid: string) {

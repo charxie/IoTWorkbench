@@ -88,7 +88,7 @@ export class RaspberryPiContextMenu extends MyContextMenu {
           system.storeMcuStates();
           d.dialog('close');
         } else {
-          Util.showErrorMessage(message);
+          Util.showBlockError(message);
         }
       };
       const enterKeyUp = function (e) {

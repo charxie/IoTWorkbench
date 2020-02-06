@@ -130,6 +130,7 @@ export class StateIO {
           if (state.lineType != undefined) block.setLineType(state.lineType);
           if (state.lineColor != undefined) block.setLineColor(state.lineColor);
           if (state.graphSymbolColor != undefined) block.setGraphSymbolColor(state.graphSymbolColor);
+          if (state.dataPortNumber != undefined) block.setDataPortNumber(state.dataPortNumber);
         } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);

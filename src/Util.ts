@@ -37,13 +37,29 @@ export class Util {
     return os;
   }
 
-  static showErrorMessage(message): void {
+  static showBlockError(message): void {
     let d = $("#error-dialog").html("<div style='font-size: 90%;'>" + message + ".<br>Please fix the highlighted blocks.</div>");
     d.dialog({
       resizable: false,
       modal: false,
-      title: "Error",
-      height: 200,
+      title: "Block Error",
+      height: 300,
+      width: 250,
+      buttons: {
+        "OK": function () {
+          d.dialog('close');
+        }
+      }
+    });
+  }
+
+  static showInputError(message): void {
+    let d = $("#error-dialog").html("<div style='font-size: 90%;'>" + message + ".<br>Please fix the input.</div>");
+    d.dialog({
+      resizable: false,
+      modal: true,
+      title: "Input Error",
+      height: 300,
       width: 250,
       buttons: {
         "OK": function () {
