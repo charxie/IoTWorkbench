@@ -405,7 +405,7 @@ export class Space2D extends Block {
   }
 
   private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
-    ctx.font = "15px Arial";
+    ctx.font = "italic 15px Times New Roman";
     ctx.fillStyle = "black";
     let horizontalAxisY = this.height - this.spaceMargin.bottom;
     ctx.fillText(this.xAxisLabel, this.spaceWindow.x + (this.spaceWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 30);

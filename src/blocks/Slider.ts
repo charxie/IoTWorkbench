@@ -312,9 +312,12 @@ export class Slider extends Block {
 
   mouseUp(e: MouseEvent): void {
     if (e.which == 3 || e.button == 2) return; // if this is a right-click event
-    if (!this.knobGrabbed) {
-      let rect = flowchart.blockView.canvas.getBoundingClientRect();
-      this.setValueFromKnob(e.clientX - rect.left - this.knobHalfSize);
+    let rect = flowchart.blockView.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+    let onTrack = this.onTrack(x, y);
+    if (!this.knobGrabbed && onTrack) {
+      this.setValueFromKnob(x - this.knobHalfSize);
     }
     if (this.snapToTick) {
       let d = (this.maximum - this.minimum) / this.steps;
@@ -323,7 +326,7 @@ export class Slider extends Block {
       this.refreshView();
       this.updateAll();
     } else {
-      if (!this.knobGrabbed) {
+      if (!this.knobGrabbed && onTrack) {
         this.updateAll();
       }
       // if the knob is grabbed, updateAll is already called in the mouseMove method
