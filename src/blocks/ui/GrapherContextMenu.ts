@@ -159,10 +159,6 @@ export class GrapherContextMenu extends BlockContextMenu {
         g.setName(nameInputElement.value);
         g.setXAxisLabel(xAxisLableInputElement.value);
         g.setYAxisLabel(yAxisLableInputElement.value);
-        g.setLineType(lineTypeSelectElement.value);
-        g.setLineColor(lineColorInputElement.value);
-        g.setGraphSymbol(symbolSelectElement.value);
-        g.setGraphSymbolColor(symbolColorInputElement.value);
         g.setGraphWindowColor(windowColorInputElement.value);
         g.setAutoScale(autoScaleRadioButton.checked);
         let success = true;
@@ -214,6 +210,10 @@ export class GrapherContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          g.setLineType(lineTypeSelectElement.value);
+          g.setLineColor(lineColorInputElement.value);
+          g.setGraphSymbol(symbolSelectElement.value);
+          g.setGraphSymbolColor(symbolColorInputElement.value);
           g.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();

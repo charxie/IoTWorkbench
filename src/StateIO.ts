@@ -126,11 +126,11 @@ export class StateIO {
           if (state.xAxisLabel != undefined) block.setXAxisLabel(state.xAxisLabel);
           if (state.yAxisLabel != undefined) block.setYAxisLabel(state.yAxisLabel);
           if (state.graphWindowColor != undefined) block.setGraphWindowColor(state.graphWindowColor);
+          if (state.dataPortNumber != undefined) block.setDataPortNumber(state.dataPortNumber);
           if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
           if (state.graphSymbols != undefined) block.setGraphSymbols(state.graphSymbols);
           if (state.graphSymbolColors != undefined) block.setGraphSymbolColors(state.graphSymbolColors);
-          if (state.dataPortNumber != undefined) block.setDataPortNumber(state.dataPortNumber);
         } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);
