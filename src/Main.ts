@@ -134,7 +134,7 @@ window.onload = function () {
   document.getElementById("version-label").innerHTML = Constants.Software.version;
   document.getElementById('credit').innerHTML = social + "<div class='horizontal-divider'></div>"
     + Constants.Software.name + " " + Constants.Software.version
-    + ", created by <a href='https://charxie.github.io/' style='text-decoration: none;'>Dr. Charles Xie</a>, &copy; " + new Date().getFullYear();
+    + ", created by <a href='https://charxie.github.io/' style='text-decoration: none;'>Dr. Charles Xie</a>, " + new Date().getFullYear();
 
   let examples = new Examples();
 
@@ -200,7 +200,7 @@ window.onload = function () {
   StateIO.restoreWorkbench(localStorage.getItem("Workbench State"));
   StateIO.restoreConnectors(localStorage.getItem("Connector States")); // connectors must be restored after loading HATs
   flowchart.updateResults();
-  flowchart.reset();
+  // flowchart.reset(); // FIXME: why did I call this?
 
   setTimeout(function () { // call this to refresh after inserting canvases
     let startTab = localStorage.getItem("Start Tab");

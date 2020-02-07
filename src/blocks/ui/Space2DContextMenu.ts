@@ -64,6 +64,10 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td><input type="text" id="space2d-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Points:</td>
+                  <td><input type="text" id="space2d-points-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Input Type:</td>
                   <td><input type="radio" name="input" id="space2d-dual-input-radio-button" checked> Dual
                       <input type="radio" name="input" id="space2d-point-input-radio-button"> Point</td>
@@ -147,6 +151,8 @@ export class Space2DContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("space2d-name-field") as HTMLInputElement;
       nameInputElement.value = g.getName();
+      let pointsInputElement = document.getElementById("space2d-points-field") as HTMLInputElement;
+      pointsInputElement.value = g.getNumberOfPoints().toString();
       let dualInputRadioButton = document.getElementById("space2d-dual-input-radio-button") as HTMLInputElement;
       dualInputRadioButton.checked = !g.getPointInput();
       let pointInputRadioButton = document.getElementById("space2d-point-input-radio-button") as HTMLInputElement;
@@ -194,6 +200,19 @@ export class Space2DContextMenu extends BlockContextMenu {
         g.setPointInput(pointInputRadioButton.checked);
         let success = true;
         let message;
+        // set number of points
+        let numberOfPoints = parseFloat(pointsInputElement.value);
+        if (isNumber(numberOfPoints)) {
+          if (numberOfPoints > 10 || numberOfPoints < 1) {
+            success = false;
+            message = "Number of points must be between 1 and 10";
+          } else {
+            g.setNumberOfPoints(numberOfPoints);
+          }
+        } else {
+          success = false;
+          message = pointsInputElement.value + " is not a valid value for number of points";
+        }
         // set minimum X value
         let minimumXValue = parseFloat(minimumXValueInputElement.value);
         if (isNumber(minimumXValue)) {
@@ -258,6 +277,7 @@ export class Space2DContextMenu extends BlockContextMenu {
         }
       };
       nameInputElement.addEventListener("keyup", enterKeyUp);
+      pointsInputElement.addEventListener("keyup", enterKeyUp);
       minimumXValueInputElement.addEventListener("keyup", enterKeyUp);
       maximumXValueInputElement.addEventListener("keyup", enterKeyUp);
       minimumYValueInputElement.addEventListener("keyup", enterKeyUp);

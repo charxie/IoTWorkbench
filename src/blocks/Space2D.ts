@@ -129,10 +129,36 @@ export class Space2D extends Block {
 
   setPointInput(pointInput: boolean): void {
     this.pointInput = pointInput;
+    let dh = (this.height - this.barHeight) / 3;
+    this.ports.length = 0;
+    if (this.pointInput) {
+      this.portX = new Port(this, true, "A", 0, this.barHeight + dh, false);
+      this.portY = new Port(this, true, "B", 0, this.barHeight + 2 * dh, false)
+      this.ports.push(this.portX);
+      this.ports.push(this.portY);
+    } else {
+      this.portX = new Port(this, true, "X", 0, this.barHeight + dh, false);
+      this.portY = new Port(this, true, "Y", 0, this.barHeight + 2 * dh, false)
+      this.ports.push(this.portX);
+      this.ports.push(this.portY);
+    }
   }
 
   getPointInput(): boolean {
     return this.pointInput;
+  }
+
+  setNumberOfPoints(numberOfPoints: number): void {
+    if (this.pointInput) {
+
+    }
+  }
+
+  getNumberOfPoints(): number {
+    if (this.pointInput) {
+      return 1;
+    }
+    return 1;
   }
 
   setMinimumXValue(minimumXValue: number): void {
@@ -370,7 +396,12 @@ export class Space2D extends Block {
           ctx.lineTo(tmpX, -4);
           ctx.stroke();
           let xtick = xmin + i * inx;
-          let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(2);
+          let precision = 2;
+          if (Math.abs(xtick) > 1) {
+            let diff = Math.abs(xtick - Math.round(xtick));
+            precision = Math.round(xtick).toString().length + (diff < 0.1 ? 0 : 1);
+          }
+          let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
           ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
         }
         let iny = (ymax - ymin) / 10;
@@ -382,7 +413,12 @@ export class Space2D extends Block {
           ctx.lineTo(4, tmpY);
           ctx.stroke();
           let ytick = ymin + i * iny;
-          let iString = Math.abs(ytick) < 0.01 ? "0" : ytick.toPrecision(2);
+          let precision = 2;
+          if (Math.abs(ytick) > 1) {
+            let diff = Math.abs(ytick - Math.round(ytick));
+            precision = Math.round(ytick).toString().length + (diff < 0.1 ? 0 : 1);
+          }
+          let iString = Math.abs(ytick) < 0.01 ? "0" : ytick.toPrecision(precision);
           ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
         }
         ctx.restore();
