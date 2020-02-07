@@ -11,6 +11,14 @@ export class Point {
     this.set(x, y);
   }
 
+  setX(x: number) {
+    this.x = x;
+  }
+
+  setY(y: number) {
+    this.y = y;
+  }
+
   set(x: number, y: number) {
     this.x = x;
     this.y = y;

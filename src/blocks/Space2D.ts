@@ -7,14 +7,16 @@ import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
+import {DataArray} from "./DataArray";
+import {Point2DArray} from "./Point2DArray";
 
 export class Space2D extends Block {
 
   private portX: Port;
   private portY: Port;
+  private points: Point2DArray = new Point2DArray();
   private pointInput: boolean = false;
-  private xPoints: number[] = [];
-  private yPoints: number[] = [];
+  private portPoints: Port[];
   private minimumXValue: number = 0;
   private maximumXValue: number = 1;
   private minimumYValue: number = 0;
@@ -58,6 +60,7 @@ export class Space2D extends Block {
     readonly minimumYValue: number;
     readonly maximumYValue: number;
     readonly pointInput: boolean;
+    readonly numberOfPoints: number;
 
     constructor(g: Space2D) {
       this.name = g.name;
@@ -79,6 +82,7 @@ export class Space2D extends Block {
       this.minimumYValue = g.minimumYValue;
       this.maximumYValue = g.maximumYValue;
       this.pointInput = g.pointInput;
+      this.numberOfPoints = g.getNumberOfPoints();
     }
   };
 
@@ -122,23 +126,27 @@ export class Space2D extends Block {
   }
 
   erase(): void {
-    this.xPoints.length = 0;
-    this.yPoints.length = 0;
+    this.points.clear();
     flowchart.blockView.requestDraw();
   }
 
   setPointInput(pointInput: boolean): void {
+    if (this.pointInput === pointInput) return;
     this.pointInput = pointInput;
-    let dh = (this.height - this.barHeight) / 3;
+    for (let p of this.ports) {
+      flowchart.removeConnectorsToPort(p);
+    }
     this.ports.length = 0;
     if (this.pointInput) {
-      this.portX = new Port(this, true, "A", 0, this.barHeight + dh, false);
-      this.portY = new Port(this, true, "B", 0, this.barHeight + 2 * dh, false)
-      this.ports.push(this.portX);
-      this.ports.push(this.portY);
+      if (this.portPoints == undefined) {
+        this.portPoints = [];
+        let dh = (this.height - this.barHeight) / 2;
+        this.portPoints.push(new Port(this, true, "A", 0, this.barHeight + dh, false));
+      }
+      for (let p of this.portPoints) {
+        this.ports.push(p);
+      }
     } else {
-      this.portX = new Port(this, true, "X", 0, this.barHeight + dh, false);
-      this.portY = new Port(this, true, "Y", 0, this.barHeight + 2 * dh, false)
       this.ports.push(this.portX);
       this.ports.push(this.portY);
     }
@@ -150,13 +158,37 @@ export class Space2D extends Block {
 
   setNumberOfPoints(numberOfPoints: number): void {
     if (this.pointInput) {
-
+      if (numberOfPoints > this.portPoints.length) { // increase data ports
+        for (let i = 0; i < numberOfPoints; i++) {
+          if (i >= this.portPoints.length) {
+            let p = new Port(this, true, String.fromCharCode("A".charCodeAt(0) + i), 0, 0, false);
+            this.portPoints.push(p);
+            this.ports.push(p);
+            // this.dataArrays.push((new DataArray()));
+            // this.lineTypes.push("Solid");
+            // this.lineColors.push("black");
+            // this.graphSymbols.push("Circle");
+            // this.graphSymbolColors.push("white");
+          }
+        }
+      } else if (numberOfPoints < this.portPoints.length) { // decrease data ports
+        for (let i = this.portPoints.length - 1; i >= numberOfPoints; i--) {
+          this.portPoints.pop();
+          flowchart.removeConnectorsToPort(this.ports.pop());
+          // this.dataArrays.pop();
+          // this.lineTypes.pop();
+          // this.lineColors.pop();
+          // this.graphSymbols.pop();
+          // this.graphSymbolColors.pop();
+        }
+      }
+      this.refreshView();
     }
   }
 
   getNumberOfPoints(): number {
     if (this.pointInput) {
-      return 1;
+      return this.portPoints.length;
     }
     return 1;
   }
@@ -278,7 +310,7 @@ export class Space2D extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "white";
-      let title = this.name + " (" + this.xPoints.length + " points)";
+      let title = this.name + " (" + this.points.length() + " points)";
       let titleWidth = ctx.measureText(title).width;
       ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
@@ -304,37 +336,24 @@ export class Space2D extends Block {
     }
 
     // draw X-Y plot
-    if (this.xPoints && this.yPoints) {
-      let length = Math.min(this.xPoints.length, this.yPoints.length);
+    if (this.points) {
+      let length = this.points.length();
       if (length > 1) {
         ctx.strokeStyle = this.lineColor;
         // detect minimum and maximum of x and y values
-        let xmin = Number.MAX_VALUE;
-        let xmax = -xmin;
+        let xmin, xmax, ymin, ymax;
         if (this.autoscale) {
-          for (let d of this.xPoints) {
-            if (d > xmax) {
-              xmax = d;
-            }
-            if (d < xmin) {
-              xmin = d;
-            }
-          }
+          let xminxmax = this.points.getXminXmax();
+          xmin = xminxmax.min;
+          xmax = xminxmax.max;
         } else {
           xmin = this.minimumXValue;
           xmax = this.maximumXValue;
         }
-        let ymin = Number.MAX_VALUE;
-        let ymax = -xmin;
         if (this.autoscale) {
-          for (let d of this.yPoints) {
-            if (d > ymax) {
-              ymax = d;
-            }
-            if (d < ymin) {
-              ymin = d;
-            }
-          }
+          let yminymax = this.points.getYminYmax();
+          ymin = yminymax.min;
+          ymax = yminymax.max;
         } else {
           ymin = this.minimumYValue;
           ymax = this.maximumYValue;
@@ -345,9 +364,9 @@ export class Space2D extends Block {
         ctx.translate(this.spaceWindow.x, this.spaceWindow.y + this.spaceWindow.height);
         if (this.lineType === "Solid") {
           ctx.beginPath();
-          ctx.moveTo((this.xPoints[0] - xmin) * dx, -(this.yPoints[0] - ymin) * dy);
+          ctx.moveTo((this.points.getX(0) - xmin) * dx, -(this.points.getY(0) - ymin) * dy);
           for (let i = 0; i < length; i++) {
-            ctx.lineTo((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy);
+            ctx.lineTo((this.points.getX(i) - xmin) * dx, -(this.points.getY(i) - ymin) * dy);
           }
           ctx.stroke();
         }
@@ -357,7 +376,7 @@ export class Space2D extends Block {
           case "Circle":
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
-              ctx.arc((this.xPoints[i] - xmin) * dx, -(this.yPoints[i] - ymin) * dy, 3, 0, 2 * Math.PI);
+              ctx.arc((this.points.getX(i) - xmin) * dx, -(this.points.getY(i) - ymin) * dy, 3, 0, 2 * Math.PI);
               ctx.fillStyle = this.dataSymbolColor;
               ctx.fill();
               ctx.strokeStyle = this.lineColor;
@@ -367,7 +386,7 @@ export class Space2D extends Block {
           case "Square":
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
-              ctx.rect((this.xPoints[i] - xmin) * dx - 2, -(this.yPoints[i] - ymin) * dy - 2, 4, 4);
+              ctx.rect((this.points.getX(i) - xmin) * dx - 2, -(this.points.getY(i) - ymin) * dy - 2, 4, 4);
               ctx.fillStyle = this.dataSymbolColor;
               ctx.fill();
               ctx.strokeStyle = this.lineColor;
@@ -377,7 +396,7 @@ export class Space2D extends Block {
           case "Dot":
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
-              ctx.rect((this.xPoints[i] - xmin) * dx - 1.5, -(this.yPoints[i] - ymin) * dy - 1.5, 3, 3);
+              ctx.rect((this.points.getX(i) - xmin) * dx - 1.5, -(this.points.getY(i) - ymin) * dy - 1.5, 3, 3);
               ctx.fillStyle = this.dataSymbolColor;
               ctx.fill();
             }
@@ -429,8 +448,12 @@ export class Space2D extends Block {
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
-    this.portX.draw(ctx, this.iconic);
-    if (!this.pointInput) {
+    if (this.pointInput) {
+      for (let p of this.portPoints) {
+        p.draw(ctx, this.iconic);
+      }
+    } else {
+      this.portX.draw(ctx, this.iconic);
       this.portY.draw(ctx, this.iconic);
     }
 
@@ -458,10 +481,12 @@ export class Space2D extends Block {
 
   updateModel(): void {
     if (this.pointInput) { // point input mode
-      let vp = this.portX.getValue();
+      let vp = this.portPoints[0].getValue();
       if (vp != undefined) {
         if (Array.isArray(vp) && vp.length > 1) {
-          if (vp[0] != this.xPoints[this.xPoints.length - 1] || vp[1] != this.yPoints[this.yPoints.length - 1]) {
+          let px = this.points.getX(this.points.length() - 1);
+          let py = this.points.getY(this.points.length() - 1);
+          if (vp[0] != px || vp[1] != py) {
             this.tempX = vp[0];
             this.tempY = vp[1];
           }
@@ -471,9 +496,10 @@ export class Space2D extends Block {
       let vx = this.portX.getValue();
       if (vx != undefined) {
         if (Array.isArray(vx)) {
-          this.xPoints = vx;
+          this.points.setXPoints(vx);
         } else {
-          if (vx != this.xPoints[this.xPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
+          let px = this.points.getX(this.points.length() - 1);
+          if (vx != px) { // TODO: Not a reliable way to store x and y at the same time
             this.tempX = vx;
           }
         }
@@ -481,9 +507,10 @@ export class Space2D extends Block {
       let vy = this.portY.getValue();
       if (vy != undefined) {
         if (Array.isArray(vy)) {
-          this.yPoints = vy;
+          this.points.setYPoints(vy);
         } else {
-          if (vy != this.yPoints[this.yPoints.length - 1]) { // TODO: Not a reliable way to store x and y at the same time
+          let py = this.points.getY(this.points.length() - 1);
+          if (vy != py) { // TODO: Not a reliable way to store x and y at the same time
             this.tempY = vy;
           }
         }
@@ -491,8 +518,7 @@ export class Space2D extends Block {
     }
     // console.log(this.xPoints.length + "=" + this.yPoints.length + ":" + this.tempX + "," + this.tempY);
     if (this.tempX != undefined && this.tempY != undefined) {
-      this.xPoints.push(this.tempX);
-      this.yPoints.push(this.tempY);
+      this.points.addPoint(this.tempX, this.tempY);
       this.tempX = undefined;
       this.tempY = undefined;
     }
@@ -505,9 +531,10 @@ export class Space2D extends Block {
     this.spaceMargin.left = 40;
     this.spaceMargin.right = 10;
     if (this.pointInput) {
-      let dh = (this.height - this.barHeight) / 2;
-      this.portX.setY(this.barHeight + dh);
-      this.portY.setY(-1000000); // just move it out of scope so that we don't accidentally click on it
+      let dh = (this.height - this.barHeight) / (this.portPoints.length + 1);
+      for (let i = 0; i < this.portPoints.length; i++) {
+        this.portPoints[i].setY(this.barHeight + dh * (i + 1));
+      }
     } else {
       let dh = (this.height - this.barHeight) / 3;
       this.portX.setY(this.barHeight + dh);
