@@ -6,6 +6,7 @@ import {Port} from "./Port";
 import {flowchart, math} from "../Main";
 import {Block} from "./Block";
 import {Util} from "../Util";
+import {GlobalBlock} from "./GlobalBlock";
 
 export class BundledFunctionsBlock extends Block {
 
@@ -152,6 +153,14 @@ export class BundledFunctionsBlock extends Block {
           param[this.inputName] = x;
           for (let n = 0; n < this.expressions.length; n++) {
             this.portO[n].setValue(this.codes[n].evaluate(param));
+            // update the global variables at each step, or the solution for an iterative method will be incorrect
+            let connectors = flowchart.getConnectorsWithOutput(this.portO[n]);
+            for (let c of connectors) {
+              let input = c.getInput();
+              if (input.getBlock() instanceof GlobalBlock) {
+                param[input.getUid()] = this.portO[n].getValue();
+              }
+            }
           }
         }
         this.updateConnectors();

@@ -75,6 +75,7 @@ export class StateIO {
           block.setSymbol(state.symbol);
           block.setKeys(state.keys);
           block.setValues(state.values);
+          block.setMargin(state.margin == undefined ? 15 : state.margin);
         } else if (block instanceof SeriesBlock) {
           block.setName(state.name);
           block.setStart(state.start);

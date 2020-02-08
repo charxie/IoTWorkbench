@@ -243,6 +243,10 @@ export abstract class Block implements Movable {
     this.margin = margin;
   }
 
+  getMargin(): number {
+    return this.margin;
+  }
+
   contains(x: number, y: number): boolean {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.height;
   }

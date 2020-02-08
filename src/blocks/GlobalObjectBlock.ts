@@ -5,8 +5,9 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {flowchart} from "../Main";
+import {GlobalBlock} from "./GlobalBlock";
 
-export class GlobalObjectBlock extends Block {
+export class GlobalObjectBlock extends GlobalBlock {
 
   private keys: string[] = ["x", "y"];
   private values: number[] = [0, 0];
@@ -23,6 +24,7 @@ export class GlobalObjectBlock extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly margin: number;
 
     constructor(block: GlobalObjectBlock) {
       this.name = block.name;
@@ -34,6 +36,7 @@ export class GlobalObjectBlock extends Block {
       this.y = block.y;
       this.width = block.width;
       this.height = block.height;
+      this.margin = block.margin;
     }
   };
 
@@ -81,6 +84,7 @@ export class GlobalObjectBlock extends Block {
     let copy = new GlobalObjectBlock("Global Object Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
     copy.keys = this.keys;
     copy.values = this.values;
+    copy.margin = this.margin;
     return copy;
   }
 

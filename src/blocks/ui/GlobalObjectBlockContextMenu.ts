@@ -50,6 +50,10 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="global-object-values-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Inset Margin:</td>
+                  <td><input type="text" id="global-object-inset-margin-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="global-object-block-width-field" style="width: 100%"></td>
                 </tr>
@@ -73,6 +77,8 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
       keysInputElement.value = JSON.stringify(block.getKeys());
       let valuesInputElement = document.getElementById("global-object-values-field") as HTMLInputElement;
       valuesInputElement.value = JSON.stringify(block.getValues());
+      let insetMarginInputElement = document.getElementById("global-object-inset-margin-field") as HTMLInputElement;
+      insetMarginInputElement.value = block.getMargin().toString();
       let widthInputElement = document.getElementById("global-object-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("global-object-block-height-field") as HTMLInputElement;
@@ -80,6 +86,14 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
       const okFunction = function () {
         let success = true;
         let message;
+        // set inset margin
+        let margin = parseInt(insetMarginInputElement.value);
+        if (isNumber(margin)) {
+          block.setMargin(Math.max(15, margin));
+        } else {
+          success = false;
+          message = insetMarginInputElement.value + " is not a valid margin.";
+        }
         // set width
         let w = parseInt(widthInputElement.value);
         if (isNumber(w)) {
@@ -103,9 +117,10 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
           if (block.getKeys() !== keys) {
             block.setKeys(keys);
           }
-          block.setValues(JSON.parse(valuesInputElement.value));
-          for (let i = 0; i < block.getKeys().length; i++) {
-            flowchart.updateGlobalVariable(block.getKeys()[i], block.getValues()[i]);
+          let values = JSON.parse(valuesInputElement.value);
+          block.setValues(values);
+          for (let i = 0; i < keys.length; i++) {
+            flowchart.updateGlobalVariable(keys[i], values[i]);
           }
           block.refreshView();
           flowchart.blockView.requestDraw();
@@ -125,14 +140,15 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
       nameInputElement.addEventListener("keyup", enterKeyUp);
       keysInputElement.addEventListener("keyup", enterKeyUp);
       valuesInputElement.addEventListener("keyup", enterKeyUp);
+      insetMarginInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 320,
-        width: 300,
+        height: 400,
+        width: 360,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

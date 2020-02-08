@@ -5,8 +5,9 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {flowchart} from "../Main";
+import {GlobalBlock} from "./GlobalBlock";
 
-export class GlobalVariableBlock extends Block {
+export class GlobalVariableBlock extends GlobalBlock {
 
   private readonly portX: Port;
   private readonly portO: Port;
