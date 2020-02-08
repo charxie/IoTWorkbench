@@ -123,7 +123,7 @@ export class Grapher extends Block {
           let p = new Port(this, true, String.fromCharCode("I".charCodeAt(0) + i), 0, 0, false);
           this.portI.push(p);
           this.ports.push(p);
-          this.dataArrays.push((new DataArray()));
+          this.dataArrays.push(new DataArray());
           this.lineTypes.push("Solid");
           this.lineColors.push("black");
           this.graphSymbols.push("Circle");
@@ -321,13 +321,12 @@ export class Grapher extends Block {
     let max = -min;
     if (this.autoscale) {
       for (let arr of this.dataArrays) {
-        for (let d of arr.data) {
-          if (d > max) {
-            max = d;
-          }
-          if (d < min) {
-            min = d;
-          }
+        let minmax = arr.getMinMax();
+        if (min > minmax.min) {
+          min = minmax.min;
+        }
+        if (max < minmax.max) {
+          max = minmax.max;
         }
       }
     } else {

@@ -42,7 +42,7 @@ export class BundledFunctionsBlock extends Block {
     this.symbol = "f, g, h";
     this.name = "Bundled Functions Block";
     this.inputName = "x";
-    this.color = "#40E0D0";
+    this.color = "#39C";
     this.portI = new Port(this, true, "I", 0, this.height / 2, false);
     this.ports.push(this.portI);
     this.setOutputPorts();

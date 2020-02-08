@@ -2,7 +2,6 @@
  * @author Charles Xie
  */
 
-import {Point} from "../math/Point";
 import {MinMax} from "./MinMax";
 
 export class Point2DArray {
@@ -27,8 +26,16 @@ export class Point2DArray {
     return this.xPoints[i];
   }
 
+  getLatestX(): number {
+    return this.xPoints[this.xPoints.length - 1];
+  }
+
   getY(i: number): number {
     return this.yPoints[i];
+  }
+
+  getLatestY(): number {
+    return this.yPoints[this.yPoints.length - 1];
   }
 
   getXminXmax(): MinMax {
