@@ -28,6 +28,7 @@ export class Space2D extends Block {
   private lineType: string = "Solid";
   private dataSymbol: string = "None";
   private dataSymbolColor: string = "lightgray";
+  private endSymbol: boolean = false;
   private spaceWindow: Rectangle;
   private barHeight: number;
   private readonly spaceMargin = {
@@ -60,6 +61,7 @@ export class Space2D extends Block {
     readonly maximumYValue: number;
     readonly pointInput: boolean;
     readonly numberOfPoints: number;
+    readonly endSymbol: boolean;
 
     constructor(g: Space2D) {
       this.name = g.name;
@@ -82,6 +84,7 @@ export class Space2D extends Block {
       this.maximumYValue = g.maximumYValue;
       this.pointInput = g.pointInput;
       this.numberOfPoints = g.getNumberOfPoints();
+      this.endSymbol = g.endSymbol;
     }
   };
 
@@ -281,6 +284,14 @@ export class Space2D extends Block {
     return this.dataSymbolColor;
   }
 
+  setEndSymbol(endSymbol: boolean): void {
+    this.endSymbol = endSymbol;
+  }
+
+  getEndSymbol(): boolean {
+    return this.endSymbol;
+  }
+
   draw(ctx: CanvasRenderingContext2D): void {
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
@@ -413,6 +424,17 @@ export class Space2D extends Block {
             break;
         }
       }
+      if (this.endSymbol) {
+        let i = length - 1;
+        if (i >= 0) {
+          ctx.beginPath();
+          ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, 5, 0, 2 * Math.PI);
+          ctx.fillStyle = this.dataSymbolColor;
+          ctx.fill();
+          ctx.strokeStyle = this.lineColor;
+          ctx.stroke();
+        }
+      }
     }
 
     // draw axis tick marks and labels
@@ -433,9 +455,6 @@ export class Space2D extends Block {
         precision = Math.round(xtick).toString().length + (diff < 0.1 ? 0 : 1);
       }
       let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
-      if (iString.length > 1 && iString.substring(iString.length - 1) === "0") {
-        iString = iString.substring(0, iString.length - 1);
-      }
       ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
     }
     let iny = (ymax - ymin) / 10;
@@ -453,9 +472,6 @@ export class Space2D extends Block {
         precision = Math.round(ytick).toString().length + (diff < 0.1 ? 0 : 1);
       }
       let iString = Math.abs(ytick) < 0.01 ? "0" : ytick.toPrecision(precision);
-      if (iString.length > 1 && iString.substring(iString.length - 1) === "0") {
-        iString = iString.substring(0, iString.length - 1);
-      }
       ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
     }
     ctx.restore();

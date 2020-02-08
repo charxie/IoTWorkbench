@@ -120,6 +120,11 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td><input type="text" id="space2d-symbol-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>End Symbol:</td>
+                  <td><input type="radio" name="end-symbol" id="space2d-no-end-symbol-radio-button" checked> No
+                      <input type="radio" name="end-symbol" id="space2d-end-symbol-radio-button"> Yes</td>
+                </tr>
+                <tr>
                   <td>X-Axis Label:</td>
                   <td><input type="text" id="space2d-x-axis-label-field" style="width: 100%"></td>
                 </tr>
@@ -165,6 +170,10 @@ export class Space2DContextMenu extends BlockContextMenu {
       symbolSelectElement.value = g.getDataSymbol();
       let symbolColorInputElement = document.getElementById("space2d-symbol-color-field") as HTMLInputElement;
       symbolColorInputElement.value = g.getDataSymbolColor();
+      let noEndSymbolRadioButton = document.getElementById("space2d-no-end-symbol-radio-button") as HTMLInputElement;
+      noEndSymbolRadioButton.checked = !g.getEndSymbol();
+      let endSymbolRadioButton = document.getElementById("space2d-end-symbol-radio-button") as HTMLInputElement;
+      endSymbolRadioButton.checked = g.getEndSymbol();
       let autoScaleRadioButton = document.getElementById("space2d-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("space2d-fixed-scale-radio-button") as HTMLInputElement;
@@ -197,6 +206,7 @@ export class Space2DContextMenu extends BlockContextMenu {
         g.setYAxisLabel(yAxisLableInputElement.value);
         g.setSpaceWindowColor(windowColorInputElement.value);
         g.setAutoScale(autoScaleRadioButton.checked);
+        g.setEndSymbol(endSymbolRadioButton.checked);
         g.setPointInput(pointInputRadioButton.checked);
         let success = true;
         let message;
