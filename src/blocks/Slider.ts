@@ -315,6 +315,7 @@ export class Slider extends Block {
     let rect = flowchart.blockView.canvas.getBoundingClientRect();
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
+    if (this.onDraggableArea(x, y)) return;
     let onTrack = this.onTrack(x, y);
     if (!this.knobGrabbed && onTrack) {
       this.setValueFromKnob(x - this.knobHalfSize);

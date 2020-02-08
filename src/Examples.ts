@@ -19,6 +19,8 @@ import predator_prey_equations from "./examples/predator-prey-equations.json";
 // @ts-ignore
 import competitive_lotka_volterra_equations from "./examples/competitive-lotka-volterra-equations.json";
 // @ts-ignore
+import lorentz_force from "./examples/lorentz-force.json";
+// @ts-ignore
 import harmonic_oscillator from "./examples/harmonic-oscillator.json";
 // @ts-ignore
 import projectile_motion_1 from "./examples/projectile-motion-1.json";
@@ -108,6 +110,7 @@ export class Examples {
     this.files.push({name: "Projectile Motion: Implementation 1", data: projectile_motion_1});
     this.files.push({name: "Projectile Motion: Implementation 2", data: projectile_motion_2});
     this.files.push({name: "Harmonic Oscillator", data: harmonic_oscillator});
+    this.files.push({name: "Lorentz Force", data: lorentz_force});
     this.files.push({name: "Random Walk", data: random_walk});
     this.files.push({name: "Brownian Motion", data: brownian_motion});
     this.files.push({name: "Fern Generator: Implementation 1", data: fern_generator_1});

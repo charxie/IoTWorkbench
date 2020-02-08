@@ -50,6 +50,7 @@ export class BlockView {
   private selectedPort: Port;
   private selectedPortConnector: PortConnector;
   private highlightedPortConnectors: PortConnector[];
+  private mouseUpExpected: boolean;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private originalRectangle: Rectangle;
@@ -434,6 +435,7 @@ export class BlockView {
   }
 
   private mouseDown(e: MouseEvent): void {
+    this.mouseUpExpected = true;
     this.selectedMovable = null;
     this.selectedResizeName = null;
     this.selectedPort = null;
@@ -511,6 +513,7 @@ export class BlockView {
   }
 
   private mouseUp(e: MouseEvent): void {
+    this.mouseUpExpected = false;
     if (e.which === 3 || e.button === 2) return; // if this is a right-click event
     // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
     let rect = this.canvas.getBoundingClientRect();
@@ -774,9 +777,11 @@ export class BlockView {
     for (let b of this.flowchart.blocks) {
       if (b.isSelected()) {
         // if the mouse is out of this canvas, consider that an mouseup event would follow to terminate whatever
-        // is going on with the selected block. Without this, the mouseup event will never be fired if the user
-        // drag the mouse and release it outsider the canvas.
-        b.mouseUp(e);
+        // is going on with the selected block if it is not already fired. Without this, the mouseup event will
+        // never be fired if the user drag the mouse and release it outsider the canvas.
+        if (this.mouseUpExpected) {
+          b.mouseUp(e);
+        }
         b.mouseLeave(e);
       }
     }

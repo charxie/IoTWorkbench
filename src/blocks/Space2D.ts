@@ -113,7 +113,7 @@ export class Space2D extends Block {
     copy.lineType = this.lineType;
     copy.dataSymbol = this.dataSymbol;
     copy.dataSymbolColor = this.dataSymbolColor;
-    copy.pointInput = this.pointInput;
+    copy.setPointInput(this.pointInput);
     copy.setNumberOfPoints(this.getNumberOfPoints());
     return copy;
   }
@@ -433,6 +433,9 @@ export class Space2D extends Block {
         precision = Math.round(xtick).toString().length + (diff < 0.1 ? 0 : 1);
       }
       let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
+      if (iString.length > 1 && iString.substring(iString.length - 1) === "0") {
+        iString = iString.substring(0, iString.length - 1);
+      }
       ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
     }
     let iny = (ymax - ymin) / 10;
@@ -450,6 +453,9 @@ export class Space2D extends Block {
         precision = Math.round(ytick).toString().length + (diff < 0.1 ? 0 : 1);
       }
       let iString = Math.abs(ytick) < 0.01 ? "0" : ytick.toPrecision(precision);
+      if (iString.length > 1 && iString.substring(iString.length - 1) === "0") {
+        iString = iString.substring(0, iString.length - 1);
+      }
       ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
     }
     ctx.restore();
