@@ -120,9 +120,8 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td><input type="text" id="space2d-symbol-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>End Symbol:</td>
-                  <td><input type="radio" name="end-symbol" id="space2d-no-end-symbol-radio-button" checked> No
-                      <input type="radio" name="end-symbol" id="space2d-end-symbol-radio-button"> Yes</td>
+                  <td>End Symbol Radius:</td>
+                  <td><input type="text" id="space2d-end-symbol-radius-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>X-Axis Label:</td>
@@ -170,10 +169,8 @@ export class Space2DContextMenu extends BlockContextMenu {
       symbolSelectElement.value = g.getDataSymbol();
       let symbolColorInputElement = document.getElementById("space2d-symbol-color-field") as HTMLInputElement;
       symbolColorInputElement.value = g.getDataSymbolColor();
-      let noEndSymbolRadioButton = document.getElementById("space2d-no-end-symbol-radio-button") as HTMLInputElement;
-      noEndSymbolRadioButton.checked = !g.getEndSymbol();
-      let endSymbolRadioButton = document.getElementById("space2d-end-symbol-radio-button") as HTMLInputElement;
-      endSymbolRadioButton.checked = g.getEndSymbol();
+      let endSymbolRadiusInputElement = document.getElementById("space2d-end-symbol-radius-field") as HTMLInputElement;
+      endSymbolRadiusInputElement.value = g.getEndSymbolRadius().toString();
       let autoScaleRadioButton = document.getElementById("space2d-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("space2d-fixed-scale-radio-button") as HTMLInputElement;
@@ -206,7 +203,6 @@ export class Space2DContextMenu extends BlockContextMenu {
         g.setYAxisLabel(yAxisLableInputElement.value);
         g.setSpaceWindowColor(windowColorInputElement.value);
         g.setAutoScale(autoScaleRadioButton.checked);
-        g.setEndSymbol(endSymbolRadioButton.checked);
         g.setPointInput(pointInputRadioButton.checked);
         let success = true;
         let message;
@@ -255,6 +251,14 @@ export class Space2DContextMenu extends BlockContextMenu {
           success = false;
           message = maximumYValueInputElement.value + " is not a valid value for maximum Y.";
         }
+        // set end symbol radius
+        let r = parseInt(endSymbolRadiusInputElement.value);
+        if (isNumber(r)) {
+          g.setEndSymbolRadius(Math.max(0, r));
+        } else {
+          success = false;
+          message = endSymbolRadiusInputElement.value + " is not a valid radius for end symbol.";
+        }
         // set width
         let w = parseInt(widthInputElement.value);
         if (isNumber(w)) {
@@ -297,6 +301,7 @@ export class Space2DContextMenu extends BlockContextMenu {
       windowColorInputElement.addEventListener("keyup", enterKeyUp);
       lineColorInputElement.addEventListener("keyup", enterKeyUp);
       symbolColorInputElement.addEventListener("keyup", enterKeyUp);
+      endSymbolRadiusInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({

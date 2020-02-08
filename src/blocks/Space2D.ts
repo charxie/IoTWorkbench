@@ -28,7 +28,7 @@ export class Space2D extends Block {
   private lineType: string = "Solid";
   private dataSymbol: string = "None";
   private dataSymbolColor: string = "lightgray";
-  private endSymbol: boolean = false;
+  private endSymbolRadius: number = 0;
   private spaceWindow: Rectangle;
   private barHeight: number;
   private readonly spaceMargin = {
@@ -54,6 +54,7 @@ export class Space2D extends Block {
     readonly lineType: string;
     readonly dataSymbol: string;
     readonly dataSymbolColor: string;
+    readonly endSymbolRadius: number;
     readonly autoscale: boolean;
     readonly minimumXValue: number;
     readonly maximumXValue: number;
@@ -61,7 +62,6 @@ export class Space2D extends Block {
     readonly maximumYValue: number;
     readonly pointInput: boolean;
     readonly numberOfPoints: number;
-    readonly endSymbol: boolean;
 
     constructor(g: Space2D) {
       this.name = g.name;
@@ -77,6 +77,7 @@ export class Space2D extends Block {
       this.lineType = g.lineType;
       this.dataSymbol = g.dataSymbol;
       this.dataSymbolColor = g.dataSymbolColor;
+      this.endSymbolRadius = g.endSymbolRadius;
       this.autoscale = g.autoscale;
       this.minimumXValue = g.minimumXValue;
       this.maximumXValue = g.maximumXValue;
@@ -84,7 +85,6 @@ export class Space2D extends Block {
       this.maximumYValue = g.maximumYValue;
       this.pointInput = g.pointInput;
       this.numberOfPoints = g.getNumberOfPoints();
-      this.endSymbol = g.endSymbol;
     }
   };
 
@@ -284,12 +284,12 @@ export class Space2D extends Block {
     return this.dataSymbolColor;
   }
 
-  setEndSymbol(endSymbol: boolean): void {
-    this.endSymbol = endSymbol;
+  setEndSymbolRadius(endSymbolRadius: number): void {
+    this.endSymbolRadius = endSymbolRadius;
   }
 
-  getEndSymbol(): boolean {
-    return this.endSymbol;
+  getEndSymbolRadius(): number {
+    return this.endSymbolRadius;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -424,11 +424,11 @@ export class Space2D extends Block {
             break;
         }
       }
-      if (this.endSymbol) {
+      if (this.endSymbolRadius > 0) {
         let i = length - 1;
         if (i >= 0) {
           ctx.beginPath();
-          ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, 5, 0, 2 * Math.PI);
+          ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.endSymbolRadius, 0, 2 * Math.PI);
           ctx.fillStyle = this.dataSymbolColor;
           ctx.fill();
           ctx.strokeStyle = this.lineColor;

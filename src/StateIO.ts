@@ -147,7 +147,7 @@ export class StateIO {
           block.setLineType(state.lineType);
           block.setLineColor(state.lineColor);
           block.setPointInput(state.pointInput);
-          block.setEndSymbol(state.endSymbol);
+          block.setEndSymbolRadius(state.endSymbolRadius == undefined ? 0 : state.endSymbolRadius);
           if (state.numberOfPoints) block.setNumberOfPoints(state.numberOfPoints);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
