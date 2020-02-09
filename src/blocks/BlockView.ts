@@ -64,8 +64,6 @@ export class BlockView {
   private touchStartTime: number;
   private static readonly longPressTime: number = 2000;
   private static readonly resizeNames: string[] = ["upperLeft", "upperRight", "lowerLeft", "lowerRight", "upperMid", "lowerMid", "leftMid", "rightMid"];
-  private static readonly dashedLine = [5, 5];
-  private static readonly solidLine = [];
   private drawFunc;
 
   static State = class {
@@ -365,29 +363,43 @@ export class BlockView {
           flowchart.askToDeleteBlock(this.selectedBlock);
         }
         break;
-      case "c":
+      case "c": // ctrl+C for copy
         if (e.ctrlKey || e.metaKey) {
           this.copiedBlock = this.selectedBlock;
         }
         break;
-      case "v":
+      case "v": // ctrl+V for paste
         if (e.ctrlKey || e.metaKey) {
           if (this.copiedBlock != null) {
             this.pasteTo(this.copiedBlock.getX() + 20, this.copiedBlock.getY() + 20);
           }
         }
         break;
-      case "z":
+      case "z": // ctrl+Z for undo
         if (e.ctrlKey || e.metaKey) {
           if (undoManager.hasUndo()) {
             undoManager.undo();
           }
         }
         break;
-      case "y":
+      case "Z": // ctrl+shift+Z for redo
         if (e.ctrlKey || e.metaKey) {
           if (undoManager.hasRedo()) {
             undoManager.redo();
+          }
+        }
+        break;
+      case "y": // ctrl+Y for redo
+        if (e.ctrlKey || e.metaKey) {
+          if (undoManager.hasRedo()) {
+            undoManager.redo();
+          }
+        }
+        break;
+      case "Backspace": // alt+backspace for undo
+        if (e.altKey) {
+          if (undoManager.hasUndo()) {
+            undoManager.undo();
           }
         }
         break;
@@ -398,44 +410,45 @@ export class BlockView {
   private keyDown(e: KeyboardEvent): void {
     if (this.selectedBlock != null) {
       e.preventDefault();
-      if ((this.selectedBlock instanceof Slider || this.selectedBlock instanceof ToggleSwitch)) {
+      if (this.selectedBlock instanceof Slider && this.selectedBlock.isTrackSelected()) { // support keyevent for slider
         this.selectedBlock.keyDown(e);
-      } else if (this.selectedBlock instanceof ItemSelector && this.selectedBlock.isDropdownMenuOpen()) {
+      } else if (this.selectedBlock instanceof ItemSelector && this.selectedBlock.isDropdownMenuOpen()) { // support key event for item selector
         this.selectedBlock.keyDown(e);
       } else {
-        this.moveByArrowKey(e.key, false);
+        this.moveByArrowKey(e, false);
       }
       this.requestDraw();
       e.stopPropagation();
     }
   }
 
-  private moveByArrowKey(key: string, storeState: boolean) {
-    switch (key) {
+  private moveByArrowKey(e: KeyboardEvent, storeState: boolean) {
+    const movement = e.shiftKey ? 1 : 5;
+    switch (e.key) {
       case "ArrowUp":
         if (this.selectedBlock != null) {
-          this.selectedBlock.translateBy(0, -5);
+          this.selectedBlock.translateBy(0, -movement);
           this.selectedBlock.refreshView();
           if (storeState) flowchart.storeBlockStates();
         }
         break;
       case "ArrowDown":
         if (this.selectedBlock != null) {
-          this.selectedBlock.translateBy(0, 5);
+          this.selectedBlock.translateBy(0, movement);
           this.selectedBlock.refreshView();
           if (storeState) flowchart.storeBlockStates();
         }
         break;
       case "ArrowLeft":
         if (this.selectedBlock != null) {
-          this.selectedBlock.translateBy(-5, 0);
+          this.selectedBlock.translateBy(-movement, 0);
           this.selectedBlock.refreshView();
           if (storeState) flowchart.storeBlockStates();
         }
         break;
       case "ArrowRight":
         if (this.selectedBlock != null) {
-          this.selectedBlock.translateBy(5, 0);
+          this.selectedBlock.translateBy(movement, 0);
           this.selectedBlock.refreshView();
           if (storeState) flowchart.storeBlockStates();
         }

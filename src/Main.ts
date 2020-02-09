@@ -125,11 +125,11 @@ function showUnderConstructionMessage() {
   });
 }
 
-let social = `<span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-facebook-square"></i></span>
-              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-weixin"></i></span>
-              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-twitter"></i></span>
-              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-weibo"></i></span>
-              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;"><i class="fab fa-youtube"></i></span>`;
+let social = `<span style="font-size: 2em; vertical-align: middle; cursor: pointer;" title="Facebook"><i class="fab fa-facebook-square"></i></span>
+              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;" title="WeChat"><i class="fab fa-weixin"></i></span>
+              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;" title="Twitter"><i class="fab fa-twitter"></i></span>
+              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;" title="Weibo"><i class="fab fa-weibo"></i></span>
+              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;" title="YouTube"><i class="fab fa-youtube"></i></span>`;
 
 window.onload = function () {
 
@@ -142,6 +142,16 @@ window.onload = function () {
 
   let examples = new Examples();
 
+  document.getElementById("main-page-undo-button").onclick = function () {
+    if (undoManager.hasUndo()) {
+      undoManager.undo();
+    }
+  };
+  document.getElementById("main-page-redo-button").onclick = function () {
+    if (undoManager.hasRedo()) {
+      undoManager.redo();
+    }
+  };
   document.getElementById("main-page-home-button").onclick = showUnderConstructionMessage;
   document.getElementById("main-page-camera-button").onclick = function () {
     html2canvas(document.body).then(function (canvas) {

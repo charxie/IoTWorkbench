@@ -18,6 +18,7 @@ export class Slider extends Block {
   private halfHeight: number;
   private knobGrabbed: boolean;
   private knobSelected: boolean;
+  private trackSelected: boolean;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private minimum: number = 0;
@@ -26,6 +27,7 @@ export class Slider extends Block {
   private value: number = 50;
   private snapToTick: boolean;
   private valuePrecision: number = 2;
+  private static readonly dashedLine = [2, 2];
 
   static State = class {
     readonly name: string;
@@ -135,6 +137,10 @@ export class Slider extends Block {
     return this.knobSelected;
   }
 
+  isTrackSelected(): boolean {
+    return this.trackSelected;
+  }
+
   updateModel(): void {
     this.ports[0].setValue(this.value);
     this.updateConnectors();
@@ -205,6 +211,16 @@ export class Slider extends Block {
       ctx.moveTo(this.trackLeft + dx * i, y0 - 6);
       ctx.lineTo(this.trackLeft + dx * i, y0);
       ctx.stroke();
+    }
+    if (this.trackSelected) {
+      ctx.save();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "gray";
+      ctx.setLineDash(Slider.dashedLine);
+      ctx.beginPath();
+      ctx.rect(this.trackLeft, this.knob.y, this.trackRight - this.trackLeft, this.knob.height);
+      ctx.stroke();
+      ctx.restore();
     }
 
     // draw the knob
@@ -300,12 +316,17 @@ export class Slider extends Block {
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
     this.knobSelected = false;
+    this.trackSelected = false;
     if (this.onKnob(x, y)) {
       this.mouseDownRelativeX = x - this.knob.getCenterX();
       this.mouseDownRelativeY = y - this.knob.getCenterY();
       this.knobGrabbed = true;
       this.knobSelected = true;
+      this.trackSelected = true;
       return true;
+    }
+    if (this.onTrack(x, y)) {
+      this.trackSelected = true;
     }
     return false;
   }
