@@ -142,13 +142,13 @@ export class StateIO {
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
           block.setSpaceWindowColor(state.spaceWindowColor);
-          block.setDataSymbol(state.dataSymbol);
-          block.setDataSymbolColor(state.dataSymbolColor);
-          block.setLineType(state.lineType);
-          block.setLineColor(state.lineColor);
           block.setPointInput(state.pointInput);
           block.setEndSymbolRadius(state.endSymbolRadius == undefined ? 0 : state.endSymbolRadius);
-          if (state.numberOfPoints) block.setNumberOfPoints(state.numberOfPoints);
+          if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);
+          if (state.lineColors != undefined) block.setLineColors(state.lineColors);
+          if (state.dataSymbols != undefined) block.setDataSymbols(state.dataSymbols);
+          if (state.dataSymbolColors != undefined) block.setDataSymbolColors(state.dataSymbolColors);
+          if (state.numberOfPoints != undefined) block.setNumberOfPoints(state.numberOfPoints);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");

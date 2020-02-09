@@ -27,7 +27,9 @@ import projectile_motion_1 from "./examples/projectile-motion-1.json";
 // @ts-ignore
 import projectile_motion_2 from "./examples/projectile-motion-2.json";
 // @ts-ignore
-import brownian_motion from "./examples/brownian-motion.json";
+import brownian_motion_single_particle from "./examples/brownian-motion-single-particle.json";
+// @ts-ignore
+import brownian_motion_multiple_particles from "./examples/brownian-motion-multiple-particles.json";
 // @ts-ignore
 import random_walk from "./examples/random-walk.json";
 // @ts-ignore
@@ -112,7 +114,8 @@ export class Examples {
     this.files.push({name: "Harmonic Oscillator", data: harmonic_oscillator});
     this.files.push({name: "Lorentz Force", data: lorentz_force});
     this.files.push({name: "Random Walk", data: random_walk});
-    this.files.push({name: "Brownian Motion", data: brownian_motion});
+    this.files.push({name: "Brownian Motion: Single Particle", data: brownian_motion_single_particle});
+    this.files.push({name: "Brownian Motion: Multiple Particles", data: brownian_motion_multiple_particles});
     this.files.push({name: "Fern Generator: Implementation 1", data: fern_generator_1});
     this.files.push({name: "Fern Generator: Implementation 2", data: fern_generator_2});
     this.files.push({name: "Rainbow HAT: RGB LED Array", data: rainbow_hat_rgb_led_array});

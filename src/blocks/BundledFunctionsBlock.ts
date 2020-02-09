@@ -73,7 +73,7 @@ export class BundledFunctionsBlock extends Block {
   getCopy(): Block {
     let block = new BundledFunctionsBlock("Bundled Functions Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.inputName = this.inputName;
-    block.expressions = JSON.parse(JSON.stringify(this.expressions));
+    block.setExpressions(JSON.parse(JSON.stringify(this.expressions)));
     return block;
   }
 
@@ -152,13 +152,15 @@ export class BundledFunctionsBlock extends Block {
         } else {
           param[this.inputName] = x;
           for (let n = 0; n < this.expressions.length; n++) {
-            this.portO[n].setValue(this.codes[n].evaluate(param));
-            // update the global variables at each step, or the solution for an iterative method will be incorrect
-            let connectors = flowchart.getConnectorsWithOutput(this.portO[n]);
-            for (let c of connectors) {
-              let input = c.getInput();
-              if (input.getBlock() instanceof GlobalBlock) {
-                param[input.getUid()] = this.portO[n].getValue();
+            if (this.portO[n]) {
+              this.portO[n].setValue(this.codes[n].evaluate(param));
+              // update the global variables at each step, or the solution for an iterative method will be incorrect
+              let connectors = flowchart.getConnectorsWithOutput(this.portO[n]);
+              for (let c of connectors) {
+                let input = c.getInput();
+                if (input.getBlock() instanceof GlobalBlock) {
+                  param[input.getUid()] = this.portO[n].getValue();
+                }
               }
             }
           }

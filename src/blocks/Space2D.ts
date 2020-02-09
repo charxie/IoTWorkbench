@@ -24,10 +24,6 @@ export class Space2D extends Block {
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private spaceWindowColor: string = "white";
-  private lineColor: string = "black";
-  private lineType: string = "Solid";
-  private dataSymbol: string = "None";
-  private dataSymbolColor: string = "lightgray";
   private endSymbolRadius: number = 0;
   private spaceWindow: Rectangle;
   private barHeight: number;
@@ -39,6 +35,10 @@ export class Space2D extends Block {
   };
   private tempX: number; // temporarily store x and y before pushing them into the point arrays
   private tempY: number;
+  private lineTypes: string[] = [];
+  private lineColors: string[] = [];
+  private dataSymbols: string[] = [];
+  private dataSymbolColors: string[] = [];
 
   static State = class {
     readonly name: string;
@@ -50,10 +50,6 @@ export class Space2D extends Block {
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly spaceWindowColor: string;
-    readonly lineColor: string;
-    readonly lineType: string;
-    readonly dataSymbol: string;
-    readonly dataSymbolColor: string;
     readonly endSymbolRadius: number;
     readonly autoscale: boolean;
     readonly minimumXValue: number;
@@ -62,6 +58,10 @@ export class Space2D extends Block {
     readonly maximumYValue: number;
     readonly pointInput: boolean;
     readonly numberOfPoints: number;
+    readonly lineTypes: string[] = [];
+    readonly lineColors: string[] = [];
+    readonly dataSymbols: string[] = [];
+    readonly dataSymbolColors: string[] = [];
 
     constructor(g: Space2D) {
       this.name = g.name;
@@ -73,10 +73,10 @@ export class Space2D extends Block {
       this.xAxisLabel = g.xAxisLabel;
       this.yAxisLabel = g.yAxisLabel;
       this.spaceWindowColor = g.spaceWindowColor;
-      this.lineColor = g.lineColor;
-      this.lineType = g.lineType;
-      this.dataSymbol = g.dataSymbol;
-      this.dataSymbolColor = g.dataSymbolColor;
+      this.lineColors = g.lineColors;
+      this.lineTypes = g.lineTypes;
+      this.dataSymbols = g.dataSymbols;
+      this.dataSymbolColors = g.dataSymbolColors;
       this.endSymbolRadius = g.endSymbolRadius;
       this.autoscale = g.autoscale;
       this.minimumXValue = g.minimumXValue;
@@ -100,6 +100,10 @@ export class Space2D extends Block {
     this.ports.push(this.portY);
     this.spaceWindow = new Rectangle(0, 0, 1, 1);
     this.points.push(new Point2DArray());
+    this.lineTypes.push("Solid");
+    this.lineColors.push("black");
+    this.dataSymbols.push("Circle");
+    this.dataSymbolColors.push("white");
   }
 
   getCopy(): Block {
@@ -112,10 +116,10 @@ export class Space2D extends Block {
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.spaceWindowColor = this.spaceWindowColor;
-    copy.lineColor = this.lineColor;
-    copy.lineType = this.lineType;
-    copy.dataSymbol = this.dataSymbol;
-    copy.dataSymbolColor = this.dataSymbolColor;
+    copy.lineColors = JSON.parse(JSON.stringify(this.lineColors));
+    copy.lineTypes = JSON.parse(JSON.stringify(this.lineTypes));
+    copy.dataSymbols = JSON.parse(JSON.stringify(this.dataSymbols));
+    copy.dataSymbolColors = JSON.parse(JSON.stringify(this.dataSymbolColors));
     copy.setPointInput(this.pointInput);
     copy.setNumberOfPoints(this.getNumberOfPoints());
     return copy;
@@ -165,12 +169,20 @@ export class Space2D extends Block {
   setNumberOfPoints(numberOfPoints: number): void {
     if (this.pointInput) {
       if (numberOfPoints > this.portPoints.length) { // increase data ports
+        // test if the line and symbol properties have already been set (this happens when loading an existing state)
+        let notSet = this.lineColors.length == this.portPoints.length;
         for (let i = 0; i < numberOfPoints; i++) {
           if (i >= this.portPoints.length) {
             let p = new Port(this, true, String.fromCharCode("A".charCodeAt(0) + i), 0, 0, false);
             this.portPoints.push(p);
             this.ports.push(p);
             this.points.push(new Point2DArray());
+            if (notSet) {
+              this.lineTypes.push("Solid");
+              this.lineColors.push("black");
+              this.dataSymbols.push("Circle");
+              this.dataSymbolColors.push("white");
+            }
           }
         }
       } else if (numberOfPoints < this.portPoints.length) { // decrease data ports
@@ -178,6 +190,10 @@ export class Space2D extends Block {
           this.portPoints.pop();
           this.points.pop();
           flowchart.removeConnectorsToPort(this.ports.pop());
+          this.lineTypes.pop();
+          this.lineColors.pop();
+          this.dataSymbols.pop();
+          this.dataSymbolColors.pop();
         }
       }
       this.refreshView();
@@ -252,36 +268,60 @@ export class Space2D extends Block {
     return this.spaceWindowColor;
   }
 
+  setLineColors(lineColors: string[]): void {
+    this.lineColors = lineColors;
+  }
+
   setLineColor(lineColor: string): void {
-    this.lineColor = lineColor;
+    for (let i = 0; i < this.lineColors.length; i++) {
+      this.lineColors[i] = lineColor;
+    }
   }
 
   getLineColor(): string {
-    return this.lineColor;
+    return this.lineColors[0];
+  }
+
+  setLineTypes(lineTypes: string[]): void {
+    this.lineTypes = lineTypes;
   }
 
   setLineType(lineType: string): void {
-    this.lineType = lineType;
+    for (let i = 0; i < this.lineTypes.length; i++) {
+      this.lineTypes[i] = lineType;
+    }
   }
 
   getLineType(): string {
-    return this.lineType;
+    return this.lineTypes[0];
+  }
+
+  setDataSymbols(dataSymbols: string[]): void {
+    this.dataSymbols = dataSymbols;
   }
 
   setDataSymbol(dataSymbol: string): void {
-    this.dataSymbol = dataSymbol;
+    for (let i = 0; i < this.dataSymbols.length; i++) {
+      this.dataSymbols[i] = dataSymbol;
+    }
   }
 
   getDataSymbol(): string {
-    return this.dataSymbol;
+    return this.dataSymbols[0];
+  }
+
+  setDataSymbolColors(dataSymbolColors: string[]): void {
+    this.dataSymbolColors = dataSymbolColors;
   }
 
   setDataSymbolColor(dataSymbolColor: string): void {
-    this.dataSymbolColor = dataSymbolColor;
+    for (let i = 0; i < this.dataSymbolColors.length; i++) {
+      this.dataSymbolColors[i] = dataSymbolColor;
+    }
   }
 
   getDataSymbolColor(): string {
-    return this.dataSymbolColor;
+    return this.dataSymbolColors[0];
   }
 
   setEndSymbolRadius(endSymbolRadius: number): void {
@@ -381,9 +421,10 @@ export class Space2D extends Block {
     ctx.translate(this.spaceWindow.x, this.spaceWindow.y + this.spaceWindow.height);
     for (let p of this.points) {
       let length = p.length();
+      let index = this.points.indexOf(p);
       if (length > 1) {
-        ctx.strokeStyle = this.lineColor;
-        if (this.lineType === "Solid") {
+        ctx.strokeStyle = this.lineColors[index];
+        if (this.lineTypes[index] === "Solid") {
           ctx.beginPath();
           ctx.moveTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
           for (let i = 1; i < length; i++) {
@@ -393,14 +434,14 @@ export class Space2D extends Block {
         }
 
         // draw symbols on top of the line
-        switch (this.dataSymbol) {
+        switch (this.dataSymbols[index]) {
           case "Circle":
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
               ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, 3, 0, 2 * Math.PI);
-              ctx.fillStyle = this.dataSymbolColor;
+              ctx.fillStyle = this.dataSymbolColors[index];
               ctx.fill();
-              ctx.strokeStyle = this.lineColor;
+              ctx.strokeStyle = this.lineColors[index];
               ctx.stroke();
             }
             break;
@@ -408,9 +449,9 @@ export class Space2D extends Block {
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
               ctx.rect((p.getX(i) - xmin) * dx - 2, -(p.getY(i) - ymin) * dy - 2, 4, 4);
-              ctx.fillStyle = this.dataSymbolColor;
+              ctx.fillStyle = this.dataSymbolColors[index];
               ctx.fill();
-              ctx.strokeStyle = this.lineColor;
+              ctx.strokeStyle = this.lineColors[index];
               ctx.stroke();
             }
             break;
@@ -418,7 +459,7 @@ export class Space2D extends Block {
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
               ctx.rect((p.getX(i) - xmin) * dx - 1, -(p.getY(i) - ymin) * dy - 1, 2, 2);
-              ctx.fillStyle = this.dataSymbolColor;
+              ctx.fillStyle = this.dataSymbolColors[index];
               ctx.fill();
             }
             break;
@@ -429,9 +470,9 @@ export class Space2D extends Block {
         if (i >= 0) {
           ctx.beginPath();
           ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.endSymbolRadius, 0, 2 * Math.PI);
-          ctx.fillStyle = this.dataSymbolColor;
+          ctx.fillStyle = this.dataSymbolColors[index];
           ctx.fill();
-          ctx.strokeStyle = this.lineColor;
+          ctx.strokeStyle = this.lineColors[index];
           ctx.stroke();
         }
       }
