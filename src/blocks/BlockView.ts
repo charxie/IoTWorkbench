@@ -43,6 +43,8 @@ export class BlockView {
   readonly canvas: HTMLCanvasElement;
 
   private selectedMovable: Movable;
+  private selectedMovablePreviousX: number;
+  private selectedMovablePreviousY: number;
   private selectedResizeName: string;
   private selectedBlock: Block;
   private copiedBlock: Block;
@@ -499,6 +501,8 @@ export class BlockView {
         if (block.onDraggableArea(x, y)) {
           this.selectedBlock = block;
           this.selectedMovable = block;
+          this.selectedMovablePreviousX = block.getX();
+          this.selectedMovablePreviousY = block.getY();
           this.selectedBlock.setSelected(true);
           break;
         } else if (block.contains(x, y)) {
@@ -591,7 +595,10 @@ export class BlockView {
           }
         }
       }
-    this.selectedMovable = null;
+    if (this.selectedMovable != null) {
+      this.moveToUndable(x, y, this.selectedMovable);
+      this.selectedMovable = null;
+    }
     this.selectedPort = null;
     this.selectedResizeName = null;
     this.preventMainMouseEvent = false;
@@ -965,6 +972,22 @@ export class BlockView {
     if (m instanceof Block) {
       flowchart.storeBlockStates();
     }
+  }
+
+  private moveToUndable(x: number, y: number, m: Movable): void {
+    let oldX = this.selectedMovablePreviousX + this.mouseDownRelativeX;
+    let oldY = this.selectedMovablePreviousY + this.mouseDownRelativeY;
+    this.moveTo(x, y, m);
+    let that = this;
+    undoManager.add({
+      undo: function () {
+        that.moveTo(oldX, oldY, m);
+        that.requestDraw();
+      }, redo: function () {
+        that.moveTo(x, y, m);
+        that.requestDraw();
+      }
+    });
   }
 
 }
