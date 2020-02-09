@@ -224,6 +224,13 @@ export abstract class Block implements Movable {
     this.height = height;
   }
 
+  setRect(rect: Rectangle): void {
+    this.x = rect.x;
+    this.y = rect.y;
+    this.width = rect.width;
+    this.height = rect.height;
+  }
+
   setColor(color: string): void {
     this.color = color;
   }

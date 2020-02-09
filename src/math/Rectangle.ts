@@ -13,6 +13,10 @@ export class Rectangle {
     this.setRect(x, y, width, height);
   }
 
+  public clone(): Rectangle {
+    return new Rectangle(this.x, this.y, this.width, this.height);
+  }
+
   public setRect(x: number, y: number, width: number, height: number) {
     this.x = x;
     this.y = y;

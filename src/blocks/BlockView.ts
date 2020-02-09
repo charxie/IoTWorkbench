@@ -49,6 +49,8 @@ export class BlockView {
   private keyDownCount: number = 0; // keyDown events are fired continuously when the key is held down. To undo, we need to know the first time it is down.
   private selectedResizeName: string;
   private selectedBlock: Block;
+  private selectedBlockPreviousRect: Rectangle;
+  private selectedBlockResized: boolean = false;
   private copiedBlock: Block;
   private selectedPort: Port;
   private selectedPortConnector: PortConnector;
@@ -56,7 +58,6 @@ export class BlockView {
   private mouseUpExpected: boolean;
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
-  private originalRectangle: Rectangle;
   private draggedElementId: string;
   private connectorOntheFly: Connector;
   private gridSize: number = 100;
@@ -95,7 +96,7 @@ export class BlockView {
     this.canvas.addEventListener('contextmenu', this.openContextMenu.bind(this), false);
     document.addEventListener("mouseout", this.mouseOut.bind(this), false); // FIXME: Why add the listener to the document?
 
-    this.originalRectangle = new Rectangle(0, 0, 1, 1);
+    this.selectedBlockPreviousRect = new Rectangle(0, 0, 1, 1);
     this.connectorOntheFly = new Connector();
 
     let playground = document.getElementById("block-playground") as HTMLDivElement;
@@ -541,7 +542,7 @@ export class BlockView {
               this.selectedBlock = block;
               this.selectedBlock.setSelected(true);
               this.selectedResizeName = n;
-              this.originalRectangle.setRect(block.getX(), block.getY(), block.getWidth(), block.getHeight());
+              this.selectedBlockPreviousRect.setRect(block.getX(), block.getY(), block.getWidth(), block.getHeight());
               break outerLoop1;
             }
           }
@@ -624,6 +625,9 @@ export class BlockView {
     if (this.selectedMovable != null) {
       this.mouseMoveToUndable(x, y, this.selectedMovable);
       this.selectedMovable = null;
+    }
+    if (this.selectedBlock != null && this.selectedBlockResized) {
+      this.resizeSelectedBlockUndoable();
     }
     this.selectedPort = null;
     this.selectedResizeName = null;
@@ -733,102 +737,7 @@ export class BlockView {
             }
           }
           if (this.selectedBlock != null) {
-            let dx, dy, w, h;
-            let updateBlock = false;
-            switch (this.selectedResizeName) {
-              case "upperLeft":
-                dx = x - this.originalRectangle.x;
-                dy = y - this.originalRectangle.y;
-                w = this.originalRectangle.width - dx;
-                h = this.originalRectangle.height - dy;
-                if (w > 20 && h > 20) {
-                  this.selectedBlock.setX(x);
-                  this.selectedBlock.setY(y);
-                  this.selectedBlock.setWidth(w);
-                  this.selectedBlock.setHeight(h);
-                  updateBlock = true;
-                }
-                break;
-              case "upperRight":
-                dx = x - (this.originalRectangle.x + this.originalRectangle.width);
-                dy = y - this.originalRectangle.y;
-                w = this.originalRectangle.width + dx;
-                h = this.originalRectangle.height - dy;
-                if (w > 20 && h > 20) {
-                  this.selectedBlock.setX(x - w);
-                  this.selectedBlock.setY(y);
-                  this.selectedBlock.setWidth(w);
-                  this.selectedBlock.setHeight(h);
-                  updateBlock = true;
-                }
-                break;
-              case "lowerLeft":
-                dx = x - this.originalRectangle.x;
-                dy = y - (this.originalRectangle.y + this.originalRectangle.height);
-                w = this.originalRectangle.width - dx;
-                h = this.originalRectangle.height + dy;
-                if (w > 20 && h > 20) {
-                  this.selectedBlock.setX(x);
-                  this.selectedBlock.setY(y - h);
-                  this.selectedBlock.setWidth(w);
-                  this.selectedBlock.setHeight(h);
-                  updateBlock = true;
-                }
-                break;
-              case "lowerRight":
-                dx = x - (this.originalRectangle.x + this.originalRectangle.width);
-                dy = y - (this.originalRectangle.y + this.originalRectangle.height);
-                w = this.originalRectangle.width + dx;
-                h = this.originalRectangle.height + dy;
-                if (w > 20 && h > 20) {
-                  this.selectedBlock.setX(x - w);
-                  this.selectedBlock.setY(y - h);
-                  this.selectedBlock.setWidth(w);
-                  this.selectedBlock.setHeight(h);
-                  updateBlock = true;
-                }
-                break;
-              case "upperMid":
-                dy = y - this.originalRectangle.y;
-                h = this.originalRectangle.height - dy;
-                if (h > 20) {
-                  this.selectedBlock.setY(y);
-                  this.selectedBlock.setHeight(h);
-                  updateBlock = true;
-                }
-                break;
-              case "lowerMid":
-                dy = y - (this.originalRectangle.y + this.originalRectangle.height);
-                h = this.originalRectangle.height + dy;
-                if (h > 20) {
-                  this.selectedBlock.setY(y - h);
-                  this.selectedBlock.setHeight(h);
-                  updateBlock = true;
-                }
-                break;
-              case "leftMid":
-                dx = x - this.originalRectangle.x;
-                w = this.originalRectangle.width - dx;
-                if (w > 20) {
-                  this.selectedBlock.setX(x);
-                  this.selectedBlock.setWidth(w);
-                  updateBlock = true;
-                }
-                break;
-              case "rightMid":
-                dx = x - (this.originalRectangle.x + this.originalRectangle.width);
-                w = this.originalRectangle.width + dx;
-                if (w > 20) {
-                  this.selectedBlock.setX(x - w);
-                  this.selectedBlock.setWidth(w);
-                  updateBlock = true;
-                }
-                break;
-            }
-            if (updateBlock) {
-              this.selectedBlock.refreshView();
-              flowchart.storeBlockStates();
-            }
+            this.resizeSelectedBlock(x, y);
           }
         }
       }
@@ -1027,6 +936,127 @@ export class BlockView {
     m.setY(y);
     m.refreshView();
     if (m instanceof Block) {
+      flowchart.storeBlockStates();
+    }
+  }
+
+  private resizeSelectedBlockUndoable(): void {
+    let that = this;
+    let block = this.selectedBlock;
+    let oldRect = this.selectedBlockPreviousRect.clone();
+    let newRect = new Rectangle(this.selectedBlock.getX(), this.selectedBlock.getY(), this.selectedBlock.getWidth(), this.selectedBlock.getHeight());
+    undoManager.add({
+      undo: function () {
+        block.setRect(oldRect);
+        block.refreshView();
+        that.requestDraw();
+        flowchart.storeBlockStates();
+      }, redo: function () {
+        block.setRect(newRect);
+        block.refreshView();
+        that.requestDraw();
+        flowchart.storeBlockStates();
+      }
+    });
+    this.selectedBlockResized = false;
+  }
+
+  private resizeSelectedBlock(x: number, y: number): void {
+    let dx, dy, w, h;
+    let updateBlock = false;
+    switch (this.selectedResizeName) {
+      case "upperLeft":
+        dx = x - this.selectedBlockPreviousRect.x;
+        dy = y - this.selectedBlockPreviousRect.y;
+        w = this.selectedBlockPreviousRect.width - dx;
+        h = this.selectedBlockPreviousRect.height - dy;
+        if (w > 20 && h > 20) {
+          this.selectedBlock.setX(x);
+          this.selectedBlock.setY(y);
+          this.selectedBlock.setWidth(w);
+          this.selectedBlock.setHeight(h);
+          updateBlock = true;
+        }
+        break;
+      case "upperRight":
+        dx = x - (this.selectedBlockPreviousRect.x + this.selectedBlockPreviousRect.width);
+        dy = y - this.selectedBlockPreviousRect.y;
+        w = this.selectedBlockPreviousRect.width + dx;
+        h = this.selectedBlockPreviousRect.height - dy;
+        if (w > 20 && h > 20) {
+          this.selectedBlock.setX(x - w);
+          this.selectedBlock.setY(y);
+          this.selectedBlock.setWidth(w);
+          this.selectedBlock.setHeight(h);
+          updateBlock = true;
+        }
+        break;
+      case "lowerLeft":
+        dx = x - this.selectedBlockPreviousRect.x;
+        dy = y - (this.selectedBlockPreviousRect.y + this.selectedBlockPreviousRect.height);
+        w = this.selectedBlockPreviousRect.width - dx;
+        h = this.selectedBlockPreviousRect.height + dy;
+        if (w > 20 && h > 20) {
+          this.selectedBlock.setX(x);
+          this.selectedBlock.setY(y - h);
+          this.selectedBlock.setWidth(w);
+          this.selectedBlock.setHeight(h);
+          updateBlock = true;
+        }
+        break;
+      case "lowerRight":
+        dx = x - (this.selectedBlockPreviousRect.x + this.selectedBlockPreviousRect.width);
+        dy = y - (this.selectedBlockPreviousRect.y + this.selectedBlockPreviousRect.height);
+        w = this.selectedBlockPreviousRect.width + dx;
+        h = this.selectedBlockPreviousRect.height + dy;
+        if (w > 20 && h > 20) {
+          this.selectedBlock.setX(x - w);
+          this.selectedBlock.setY(y - h);
+          this.selectedBlock.setWidth(w);
+          this.selectedBlock.setHeight(h);
+          updateBlock = true;
+        }
+        break;
+      case "upperMid":
+        dy = y - this.selectedBlockPreviousRect.y;
+        h = this.selectedBlockPreviousRect.height - dy;
+        if (h > 20) {
+          this.selectedBlock.setY(y);
+          this.selectedBlock.setHeight(h);
+          updateBlock = true;
+        }
+        break;
+      case "lowerMid":
+        dy = y - (this.selectedBlockPreviousRect.y + this.selectedBlockPreviousRect.height);
+        h = this.selectedBlockPreviousRect.height + dy;
+        if (h > 20) {
+          this.selectedBlock.setY(y - h);
+          this.selectedBlock.setHeight(h);
+          updateBlock = true;
+        }
+        break;
+      case "leftMid":
+        dx = x - this.selectedBlockPreviousRect.x;
+        w = this.selectedBlockPreviousRect.width - dx;
+        if (w > 20) {
+          this.selectedBlock.setX(x);
+          this.selectedBlock.setWidth(w);
+          updateBlock = true;
+        }
+        break;
+      case "rightMid":
+        dx = x - (this.selectedBlockPreviousRect.x + this.selectedBlockPreviousRect.width);
+        w = this.selectedBlockPreviousRect.width + dx;
+        if (w > 20) {
+          this.selectedBlock.setX(x - w);
+          this.selectedBlock.setWidth(w);
+          updateBlock = true;
+        }
+        break;
+    }
+    if (updateBlock) {
+      this.selectedBlockResized = true;
+      this.selectedBlock.refreshView();
       flowchart.storeBlockStates();
     }
   }
