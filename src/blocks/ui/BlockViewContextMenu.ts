@@ -167,8 +167,8 @@ export class BlockViewContextMenu extends MyContextMenu {
     const okFunction = function () {
       view.setBackgroundColor(backgroundColorInputElement.value);
       view.setBlockStyle(blockStyleSelectElement.value);
-      view.flowchart.storeViewState();
-      view.flowchart.blockView.requestDraw();
+      flowchart.storeViewState();
+      flowchart.blockView.requestDraw();
       d.dialog('close');
     };
     const enterKeyUp = function (e) {

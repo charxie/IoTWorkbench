@@ -20,7 +20,8 @@
     "jquery-ui-bundle": "^1.12.1-migrate",
     "mathjs": "^6.3.0",
     "parcel": "^1.12.4",
-    "three-js": "^79.0.0"
+    "three-js": "^79.0.0",
+    "undo-manager": "^1.0.5"
   },
   "devDependencies": {
     "typescript": "^3.7.3",

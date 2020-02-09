@@ -3,7 +3,7 @@
  */
 
 import {Flowchart} from "./Flowchart";
-import {closeAllContextMenus, contextMenus, flowchart, sound} from "../Main";
+import {closeAllContextMenus, contextMenus, flowchart, sound, undoManager} from "../Main";
 import {Movable} from "../Movable";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
@@ -42,7 +42,6 @@ export class BlockView {
 
   readonly canvas: HTMLCanvasElement;
 
-  flowchart: Flowchart;
   private selectedMovable: Movable;
   private selectedResizeName: string;
   private selectedBlock: Block;
@@ -82,7 +81,6 @@ export class BlockView {
   };
 
   constructor(canvasId: string, flowchart: Flowchart) {
-    this.flowchart = flowchart;
     this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     this.canvas.addEventListener("mousedown", this.mouseDown.bind(this), false);
     this.canvas.addEventListener("mouseup", this.mouseUp.bind(this), false);
@@ -120,81 +118,82 @@ export class BlockView {
         let timestamp = Date.now().toString(16);
         switch (that.draggedElementId) {
           case "unary-function-block":
-            that.addBlock(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x - 30, y - 40, 60, 80));
+            that.addBlockUndoable(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "binary-function-block":
-            that.addBlock(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
+            that.addBlockUndoable(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
             break;
           case "multivariable-function-block":
-            that.addBlock(new MultivariableFunctionBlock("Multivariable Function Block #" + timestamp, x - 30, y - 60, 60, 120));
+            that.addBlockUndoable(new MultivariableFunctionBlock("Multivariable Function Block #" + timestamp, x - 30, y - 60, 60, 120));
             break;
           case "parametric-equation-block":
-            that.addBlock(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 40, y - 50, 80, 100));
+            that.addBlockUndoable(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 40, y - 50, 80, 100));
             break;
           case "bundled-functions-block":
-            that.addBlock(new BundledFunctionsBlock("Bundled Functions Block #" + timestamp, x - 40, y - 50, 80, 100));
+            that.addBlockUndoable(new BundledFunctionsBlock("Bundled Functions Block #" + timestamp, x - 40, y - 50, 80, 100));
             break;
           case "global-variable-block":
-            that.addBlock(new GlobalVariableBlock("Global Variable Block #" + timestamp, "Global Variable Block", "var", x - 30, y - 40, 60, 80));
+            that.addBlockUndoable(new GlobalVariableBlock("Global Variable Block #" + timestamp, "Global Variable Block", "var", x - 30, y - 40, 60, 80));
             break;
           case "global-object-block":
-            that.addBlock(new GlobalObjectBlock("Global Object Block #" + timestamp, "Global Object Block", "obj", x - 30, y - 60, 60, 120));
+            that.addBlockUndoable(new GlobalObjectBlock("Global Object Block #" + timestamp, "Global Object Block", "obj", x - 30, y - 60, 60, 120));
             break;
           case "series-block":
-            that.addBlock(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
+            that.addBlockUndoable(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
             break;
           case "rgba-color-block":
-            that.addBlock(new RgbaColorBlock("Rgba Color Block #" + timestamp, x - 30, y - 40, 60, 80, "Rgba Color Block", "RGBA"));
+            that.addBlockUndoable(new RgbaColorBlock("Rgba Color Block #" + timestamp, x - 30, y - 40, 60, 80, "Rgba Color Block", "RGBA"));
             break;
           case "complex-number-block":
-            that.addBlock(new ComplexNumberBlock("Complex Number Block #" + timestamp, x - 30, y - 40, 60, 80, "Complex Number Block", "a+b*i"));
+            that.addBlockUndoable(new ComplexNumberBlock("Complex Number Block #" + timestamp, x - 30, y - 40, 60, 80, "Complex Number Block", "a+b*i"));
             break;
           case "worker-block":
-            that.addBlock(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
+            that.addBlockUndoable(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
             break;
           case "action-block":
-            that.addBlock(new ActionBlock("Action Block #" + timestamp, "Action", x - 40, y - 30, 80, 60));
+            that.addBlockUndoable(new ActionBlock("Action Block #" + timestamp, "Action", x - 40, y - 30, 80, 60));
             break;
           case "turnout-switch-block":
-            that.addBlock(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 30, y - 50, 60, 100));
+            that.addBlockUndoable(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 30, y - 50, 60, 100));
             break;
           case "switch-statement-block":
-            that.addBlock(new SwitchStatementBlock("Switch Statement Block #" + timestamp, "Switch Statement Block", "Switch", x - 30, y - 50, 60, 100));
+            that.addBlockUndoable(new SwitchStatementBlock("Switch Statement Block #" + timestamp, "Switch Statement Block", "Switch", x - 30, y - 50, 60, 100));
             break;
           case "logic-and-block":
-            that.addBlock(new LogicBlock("AND Block #" + timestamp, x - 30, y - 40, 60, 80, "AND Block", "AND"));
+            that.addBlockUndoable(new LogicBlock("AND Block #" + timestamp, x - 30, y - 40, 60, 80, "AND Block", "AND"));
             break;
           case "logic-not-block":
-            that.addBlock(new NegationBlock("NOT Block #" + timestamp, x - 30, y - 40, 60, 80));
+            that.addBlockUndoable(new NegationBlock("NOT Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "arithmetic-add-block":
-            that.addBlock(new ArithmeticBlock("Add Block #" + timestamp, x - 30, y - 30, 60, 60, "Add Block", "+"));
+            that.addBlockUndoable(new ArithmeticBlock("Add Block #" + timestamp, x - 30, y - 30, 60, 60, "Add Block", "+"));
             break;
           case "slider-block":
-            that.addBlock(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));
+            that.addBlockUndoable(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));
             break;
           case "item-selector-block":
-            that.addBlock(new ItemSelector("Item Selector #" + timestamp, "Items", x - 40, y - 30, 80, 60));
+            that.addBlockUndoable(new ItemSelector("Item Selector #" + timestamp, "Items", x - 40, y - 30, 80, 60));
             break;
           case "toggle-switch-block":
-            that.addBlock(new ToggleSwitch("Switch #" + timestamp, "Boolean", x - 40, y - 30, 80, 60));
+            that.addBlockUndoable(new ToggleSwitch("Switch #" + timestamp, "Boolean", x - 40, y - 30, 80, 60));
             break;
           case "momentary-switch-block":
-            that.addBlock(new MomentarySwitch("Momentary Switch #" + timestamp, "Boolean", x - 30, y - 30, 60, 60));
+            that.addBlockUndoable(new MomentarySwitch("Momentary Switch #" + timestamp, "Boolean", x - 30, y - 30, 60, 60));
             break;
           case "sticker-block":
-            that.addBlock(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));
+            that.addBlockUndoable(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));
             break;
           case "beeper-block":
-            that.addBlock(new Beeper("Beeper #" + timestamp, "Beeper", x - 50, y - 50, 100, 100));
+            that.addBlockUndoable(new Beeper("Beeper #" + timestamp, "Beeper", x - 50, y - 50, 100, 100));
             break;
           case "grapher-block":
-            that.addBlock(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));
+            that.addBlockUndoable(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));
             break;
           case "space2d-block":
-            that.addBlock(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));
+            that.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));
             break;
         }
+        that.canvas.focus();
       }
     }, false);
   }
@@ -229,11 +228,30 @@ export class BlockView {
     return this.selectedPort;
   }
 
-  private addBlock(block: Block): void {
-    this.flowchart.blocks.push(block);
+  private removeBlock(block: Block): void {
+    flowchart.blocks.splice(flowchart.blocks.indexOf(block), 1);
     block.refreshView();
-    this.flowchart.storeBlockStates();
+    flowchart.storeBlockStates();
     this.requestDraw();
+  }
+
+  private addBlock(block: Block): void {
+    flowchart.blocks.push(block);
+    block.refreshView();
+    flowchart.storeBlockStates();
+    this.requestDraw();
+  }
+
+  private addBlockUndoable(block: Block): void {
+    this.addBlock(block);
+    let that = this;
+    undoManager.add({
+      undo: function () {
+        that.removeBlock(block);
+      }, redo: function () {
+        that.addBlock(block);
+      }
+    });
   }
 
   requestDraw(): void {
@@ -255,11 +273,11 @@ export class BlockView {
     this.drawGrid(ctx);
     ctx.lineWidth = 4;
     ctx.strokeStyle = "black";
-    for (let c of this.flowchart.connectors) {
+    for (let c of flowchart.connectors) {
       c.draw(ctx);
     }
     ctx.lineWidth = 2;
-    for (let c of this.flowchart.connectors) {
+    for (let c of flowchart.connectors) {
       if (this.highlightedPortConnectors == null) {
         ctx.strokeStyle = c.getOutput().getValue() == undefined ? "lightgray" : "white";
       } else {
@@ -267,7 +285,7 @@ export class BlockView {
       }
       c.draw(ctx);
     }
-    for (let b of this.flowchart.blocks) {
+    for (let b of flowchart.blocks) {
       b.draw(ctx);
     }
     if (this.selectedPort && !this.selectedPort.isInput()) {
@@ -333,34 +351,48 @@ export class BlockView {
   }
 
   private keyUp(e: KeyboardEvent): void {
+    e.preventDefault();
     if (this.selectedBlock != null) {
-      e.preventDefault();
       if ((this.selectedBlock instanceof Slider || this.selectedBlock instanceof ToggleSwitch)) {
         this.selectedBlock.keyUp(e);
       } else if (this.selectedBlock instanceof ItemSelector && this.selectedBlock.isDropdownMenuOpen()) {
         this.selectedBlock.keyUp(e);
       }
-      switch (e.key) {
-        case "Delete":
-          if (this.selectedBlock != null) {
-            flowchart.askToDeleteBlock(this.selectedBlock);
-          }
-          break;
-        case "c":
-          if (e.ctrlKey || e.metaKey) {
-            this.copiedBlock = this.selectedBlock;
-          }
-          break;
-        case "v":
-          if (e.ctrlKey || e.metaKey) {
-            if (this.copiedBlock != null) {
-              this.pasteTo(this.copiedBlock.getX() + 20, this.copiedBlock.getY() + 20);
-            }
-          }
-          break;
-      }
-      e.stopPropagation();
     }
+    switch (e.key) {
+      case "Delete":
+        if (this.selectedBlock != null) {
+          flowchart.askToDeleteBlock(this.selectedBlock);
+        }
+        break;
+      case "c":
+        if (e.ctrlKey || e.metaKey) {
+          this.copiedBlock = this.selectedBlock;
+        }
+        break;
+      case "v":
+        if (e.ctrlKey || e.metaKey) {
+          if (this.copiedBlock != null) {
+            this.pasteTo(this.copiedBlock.getX() + 20, this.copiedBlock.getY() + 20);
+          }
+        }
+        break;
+      case "z":
+        if (e.ctrlKey || e.metaKey) {
+          if (undoManager.hasUndo()) {
+            undoManager.undo();
+          }
+        }
+        break;
+      case "y":
+        if (e.ctrlKey || e.metaKey) {
+          if (undoManager.hasRedo()) {
+            undoManager.redo();
+          }
+        }
+        break;
+    }
+    e.stopPropagation();
   }
 
   private keyDown(e: KeyboardEvent): void {
@@ -384,28 +416,28 @@ export class BlockView {
         if (this.selectedBlock != null) {
           this.selectedBlock.translateBy(0, -5);
           this.selectedBlock.refreshView();
-          if (storeState) this.flowchart.storeBlockStates();
+          if (storeState) flowchart.storeBlockStates();
         }
         break;
       case "ArrowDown":
         if (this.selectedBlock != null) {
           this.selectedBlock.translateBy(0, 5);
           this.selectedBlock.refreshView();
-          if (storeState) this.flowchart.storeBlockStates();
+          if (storeState) flowchart.storeBlockStates();
         }
         break;
       case "ArrowLeft":
         if (this.selectedBlock != null) {
           this.selectedBlock.translateBy(-5, 0);
           this.selectedBlock.refreshView();
-          if (storeState) this.flowchart.storeBlockStates();
+          if (storeState) flowchart.storeBlockStates();
         }
         break;
       case "ArrowRight":
         if (this.selectedBlock != null) {
           this.selectedBlock.translateBy(5, 0);
           this.selectedBlock.refreshView();
-          if (storeState) this.flowchart.storeBlockStates();
+          if (storeState) flowchart.storeBlockStates();
         }
         break;
     }
@@ -446,10 +478,11 @@ export class BlockView {
     let y = e.clientY - rect.top;
     if (this.selectedBlock != null) {
       this.selectedBlock.setSelected(false);
+      this.selectedBlock = null;
     }
     outerLoop1:
-      for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
-        let block = this.flowchart.blocks[i];
+      for (let i = flowchart.blocks.length - 1; i >= 0; i--) {
+        let block = flowchart.blocks[i];
         if (block.onDraggableArea(x, y)) {
           this.selectedBlock = block;
           this.selectedMovable = block;
@@ -476,14 +509,14 @@ export class BlockView {
       this.mouseDownRelativeY = y - this.selectedMovable.getY();
     } else {
       outerLoop2:
-        for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
-          let block = this.flowchart.blocks[n];
+        for (let n = flowchart.blocks.length - 1; n >= 0; n--) {
+          let block = flowchart.blocks[n];
           for (let p of block.getPorts()) {
             if (p.near(x - block.getX(), y - block.getY())) {
               this.selectedPort = p;
               if (this.selectedPort.isInput()) {
                 // if the selected port is an input, select one of its connectors
-                this.selectedPortConnector = this.flowchart.getConnectorWithInput(this.selectedPort);
+                this.selectedPortConnector = flowchart.getConnectorWithInput(this.selectedPort);
               } else {
                 // if the selected port is an output, clicking on it starts a new connector
                 let p = this.selectedPort.getAbsolutePoint();
@@ -496,7 +529,7 @@ export class BlockView {
         }
     }
     let grab = false;
-    for (let b of this.flowchart.blocks) {
+    for (let b of flowchart.blocks) {
       if (b.isSelected()) {
         if (b.mouseDown(e)) {
           grab = true;
@@ -521,14 +554,14 @@ export class BlockView {
     let y = e.clientY - rect.top;
     if (this.selectedPort != null) {
       outerLoop1:
-        for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
-          let block = this.flowchart.blocks[n];
+        for (let n = flowchart.blocks.length - 1; n >= 0; n--) {
+          let block = flowchart.blocks[n];
           for (let p of block.getPorts()) {
             if (p !== this.selectedPort && p.getBlock() !== this.selectedPort.getBlock() && p.isInput() && p.near(x - block.getX(), y - block.getY())) {
-              if (this.flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
+              if (flowchart.addPortConnector(this.selectedPort, p, "Port Connector #" + Date.now().toString(16))) {
                 sound.play();
-                this.flowchart.traverse(this.selectedPort.getBlock());
-                this.flowchart.storeConnectorStates();
+                flowchart.traverse(this.selectedPort.getBlock());
+                flowchart.storeConnectorStates();
               }
               break outerLoop1;
             }
@@ -536,8 +569,8 @@ export class BlockView {
         }
     }
     outerLoop2:
-      for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
-        let block = this.flowchart.blocks[n];
+      for (let n = flowchart.blocks.length - 1; n >= 0; n--) {
+        let block = flowchart.blocks[n];
         for (let p of block.getPorts()) {
           if (p.near(x - block.getX(), y - block.getY())) {
             this.highlightedPortConnectors = flowchart.getConnectors(p);
@@ -549,7 +582,7 @@ export class BlockView {
     this.selectedPort = null;
     this.selectedResizeName = null;
     this.preventMainMouseEvent = false;
-    for (let b of this.flowchart.blocks) {
+    for (let b of flowchart.blocks) {
       if (b.isSelected()) {
         b.mouseUp(e);
         if (b.isSource()) {
@@ -572,8 +605,8 @@ export class BlockView {
         this.mouseOverPort = null;
       }
       outerloop: // find the current mouse over port
-        for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
-          let block = this.flowchart.blocks[n];
+        for (let n = flowchart.blocks.length - 1; n >= 0; n--) {
+          let block = flowchart.blocks[n];
           for (let p of block.getPorts()) {
             if (p.near(x - block.getX(), y - block.getY())) {
               this.mouseOverPort = p;
@@ -613,8 +646,8 @@ export class BlockView {
       } else {
         if (this.selectedMovable == null) {  // if not moving an object, set cursor for mouse over
           let cursorSet: boolean = false;
-          for (let n = this.flowchart.blocks.length - 1; n >= 0; n--) {
-            let block = this.flowchart.blocks[n];
+          for (let n = flowchart.blocks.length - 1; n >= 0; n--) {
+            let block = flowchart.blocks[n];
             if (block.onResizeRect("lowerLeft", x, y)) {
               this.canvas.style.cursor = "sw-resize";
               cursorSet = true;
@@ -754,7 +787,7 @@ export class BlockView {
       }
     }
 
-    for (let b of this.flowchart.blocks) {
+    for (let b of flowchart.blocks) {
       if (b.isSelected()) {
         if (b instanceof MomentarySwitch) { // special treatment for momentary switch
           if (b.isPressed() && !b.contains(x, y)) {
@@ -771,10 +804,10 @@ export class BlockView {
     this.requestDraw();
   }
 
-  private mouseOut = (e: MouseEvent): void => {
+  private mouseOut(e: MouseEvent): void {
     e.preventDefault();
     this.selectedMovable = null;
-    for (let b of this.flowchart.blocks) {
+    for (let b of flowchart.blocks) {
       if (b.isSelected()) {
         // if the mouse is out of this canvas, consider that an mouseup event would follow to terminate whatever
         // is going on with the selected block if it is not already fired. Without this, the mouseup event will
@@ -785,7 +818,7 @@ export class BlockView {
         b.mouseLeave(e);
       }
     }
-  };
+  }
 
   private openContextMenu(e: MouseEvent): void {
     e.preventDefault();
@@ -795,9 +828,9 @@ export class BlockView {
     this.contextMenuClickX = e.clientX - rect.left;
     this.contextMenuClickY = e.clientY - rect.top;
     let block = null;
-    for (let i = this.flowchart.blocks.length - 1; i >= 0; i--) {
-      if (this.flowchart.blocks[i].contains(this.contextMenuClickX, this.contextMenuClickY)) {
-        block = this.flowchart.blocks[i];
+    for (let i = flowchart.blocks.length - 1; i >= 0; i--) {
+      if (flowchart.blocks[i].contains(this.contextMenuClickX, this.contextMenuClickY)) {
+        block = flowchart.blocks[i];
         break;
       }
     }
@@ -917,7 +950,7 @@ export class BlockView {
     m.setY(dy);
     m.refreshView();
     if (m instanceof Block) {
-      this.flowchart.storeBlockStates();
+      flowchart.storeBlockStates();
     }
   }
 

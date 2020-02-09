@@ -10,6 +10,7 @@ import "jquery-ui-bundle/jquery-ui";
 import "@fortawesome/fontawesome-free/css/all.css";
 import {create, all} from "mathjs";
 import html2canvas from "html2canvas";
+import UndoManager from "undo-manager";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
 
@@ -83,7 +84,9 @@ declare global {
 
   interface Math {
     hypot(x, y);
+
     sinh(x);
+
     cosh(x);
   }
 }
@@ -94,6 +97,7 @@ export const user = new User("Charles", null, "Xie");
 export const contextMenus: any = {};
 export const sound = new Sound();
 export const math = create(all, {});
+export const undoManager = new UndoManager();
 
 export function closeAllContextMenus() {
   Object.keys(contextMenus).forEach(key => {
