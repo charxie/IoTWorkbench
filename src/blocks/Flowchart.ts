@@ -251,6 +251,48 @@ export class Flowchart {
 
   /* block methods */
 
+  sendToBack(block: Block): void {
+    let index = this.blocks.indexOf(block);
+    if (index >= 0) {
+      this.blocks.splice(index, 1);
+      this.blocks.unshift(block);
+      this.blockView.requestDraw();
+      this.storeBlockStates();
+    }
+  }
+
+  sendBackward(block: Block): void {
+    let index = this.blocks.indexOf(block);
+    if (index >= 1) {
+      let x = this.blocks[index - 1];
+      this.blocks[index - 1] = block;
+      this.blocks[index] = x;
+      this.blockView.requestDraw();
+      this.storeBlockStates();
+    }
+  }
+
+  bringForward(block: Block): void {
+    let index = this.blocks.indexOf(block);
+    if (index >= 0 && index < this.blocks.length - 1) {
+      let x = this.blocks[index + 1];
+      this.blocks[index + 1] = block;
+      this.blocks[index] = x;
+      this.blockView.requestDraw();
+      this.storeBlockStates();
+    }
+  }
+
+  bringToFront(block: Block): void {
+    let index = this.blocks.indexOf(block);
+    if (index >= 0) {
+      this.blocks.splice(index, 1);
+      this.blocks.push(block);
+      this.blockView.requestDraw();
+      this.storeBlockStates();
+    }
+  }
+
   removeBlock(uid: string) {
     let selectedBlock: Block = null;
     for (let b of this.blocks) {

@@ -24,6 +24,7 @@ export class GrapherContextMenu extends BlockContextMenu {
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
               </li>
+              <li class="menu-separator"></li>` + this.getLayerMenu() + `<li class="menu-separator"></li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-save-image-button"><i class="fas fa-camera"></i><span class="menu-text">Save Image</span></button>
               </li>

@@ -25,6 +25,7 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
               </li>
+             <li class="menu-separator"></li>` + this.getLayerMenu() + `<li class="menu-separator"></li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-properties-button"><i class="fas fa-cog"></i><span class="menu-text">Properties</span></button>
               </li>

@@ -20,6 +20,7 @@ export class RainbowHatBlockContextMenu extends BlockContextMenu {
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-clear-sensor-data-button"><i class="fas fa-eraser"></i><span class="menu-text">Clear Sensor Data</span></button>
               </li>
+             <li class="menu-separator"></li>` + this.getLayerMenu() + `<li class="menu-separator"></li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-properties-button"><i class="fas fa-cog"></i><span class="menu-text">Properties</span></button>
               </li>

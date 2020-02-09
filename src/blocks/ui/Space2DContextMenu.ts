@@ -17,7 +17,7 @@ export class Space2DContextMenu extends BlockContextMenu {
   }
 
   getUi(): string {
-    return `<menu id="${this.id}" class="menu" style="width: 140px; z-index: 10000">
+    return `<menu id="${this.id}" class="menu" style="width: 150px; z-index: 10000">
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-copy-button"><i class="fas fa-copy"></i><span class="menu-text">Copy</span></button>
               </li>
@@ -27,6 +27,7 @@ export class Space2DContextMenu extends BlockContextMenu {
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-erase-button"><i class="fas fa-eraser"></i><span class="menu-text">Erase</span></button>
               </li>
+              <li class="menu-separator"></li>` + this.getLayerMenu() + `<li class="menu-separator"></li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-save-image-button"><i class="fas fa-camera"></i><span class="menu-text">Save Image</span></button>
               </li>

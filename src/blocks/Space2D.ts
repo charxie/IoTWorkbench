@@ -479,41 +479,43 @@ export class Space2D extends Block {
     }
 
     // draw axis tick marks and labels
-    ctx.font = "10px Arial";
-    ctx.fillStyle = "black";
-    let inx = (xmax - xmin) / 10;
-    dx = this.spaceWindow.width / 10;
-    for (let i = 0; i < 11; i++) {
-      let tmpX = dx * i;
-      ctx.beginPath();
-      ctx.moveTo(tmpX, 0);
-      ctx.lineTo(tmpX, -4);
-      ctx.stroke();
-      let xtick = xmin + i * inx;
-      let precision = 2;
-      if (Math.abs(xtick) > 1) {
-        let diff = Math.abs(xtick - Math.round(xtick));
-        precision = Math.round(xtick).toString().length + (diff < 0.1 ? 0 : 1);
+    if (!this.iconic) {
+      ctx.font = "10px Arial";
+      ctx.fillStyle = "black";
+      let inx = (xmax - xmin) / 10;
+      dx = this.spaceWindow.width / 10;
+      for (let i = 0; i < 11; i++) {
+        let tmpX = dx * i;
+        ctx.beginPath();
+        ctx.moveTo(tmpX, 0);
+        ctx.lineTo(tmpX, -4);
+        ctx.stroke();
+        let xtick = xmin + i * inx;
+        let precision = 2;
+        if (Math.abs(xtick) > 1) {
+          let diff = Math.abs(xtick - Math.round(xtick));
+          precision = Math.round(xtick).toString().length + (diff < 0.1 ? 0 : 1);
+        }
+        let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
+        ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
       }
-      let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
-      ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
-    }
-    let iny = (ymax - ymin) / 10;
-    dy = this.spaceWindow.height / 10;
-    for (let i = 0; i < 11; i++) {
-      let tmpY = -dy * i;
-      ctx.beginPath();
-      ctx.moveTo(0, tmpY);
-      ctx.lineTo(4, tmpY);
-      ctx.stroke();
-      let ytick = ymin + i * iny;
-      let precision = 2;
-      if (Math.abs(ytick) > 1) {
-        let diff = Math.abs(ytick - Math.round(ytick));
-        precision = Math.round(ytick).toString().length + (diff < 0.1 ? 0 : 1);
+      let iny = (ymax - ymin) / 10;
+      dy = this.spaceWindow.height / 10;
+      for (let i = 0; i < 11; i++) {
+        let tmpY = -dy * i;
+        ctx.beginPath();
+        ctx.moveTo(0, tmpY);
+        ctx.lineTo(4, tmpY);
+        ctx.stroke();
+        let ytick = ymin + i * iny;
+        let precision = 2;
+        if (Math.abs(ytick) > 1) {
+          let diff = Math.abs(ytick - Math.round(ytick));
+          precision = Math.round(ytick).toString().length + (diff < 0.1 ? 0 : 1);
+        }
+        let iString = Math.abs(ytick) < 0.01 ? "0" : ytick.toPrecision(precision);
+        ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
       }
-      let iString = Math.abs(ytick) < 0.01 ? "0" : ytick.toPrecision(precision);
-      ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
     }
     ctx.restore();
 
