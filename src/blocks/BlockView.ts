@@ -43,8 +43,10 @@ export class BlockView {
   readonly canvas: HTMLCanvasElement;
 
   private selectedMovable: Movable;
+  private selectedMovableMoved: boolean = false;
   private selectedMovablePreviousX: number;
   private selectedMovablePreviousY: number;
+  private keyDownCount: number = 0; // keyDown events are fired continuously when the key is held down. To undo, we need to know the first time it is down.
   private selectedResizeName: string;
   private selectedBlock: Block;
   private copiedBlock: Block;
@@ -352,6 +354,10 @@ export class BlockView {
 
   private keyUp(e: KeyboardEvent): void {
     e.preventDefault();
+    if (this.keyDownCount > 0) {
+      this.processMoveByArrowKey(e);
+      this.keyDownCount = 0;
+    }
     if (this.selectedBlock != null) {
       if ((this.selectedBlock instanceof Slider || this.selectedBlock instanceof ToggleSwitch)) {
         this.selectedBlock.keyUp(e);
@@ -412,47 +418,67 @@ export class BlockView {
   private keyDown(e: KeyboardEvent): void {
     if (this.selectedBlock != null) {
       e.preventDefault();
+      if (this.keyDownCount == 0) {
+        this.selectedMovablePreviousX = this.selectedBlock.getX();
+        this.selectedMovablePreviousY = this.selectedBlock.getY();
+      }
+      this.keyDownCount++;
       if (this.selectedBlock instanceof Slider && this.selectedBlock.isTrackSelected()) { // support keyevent for slider
         this.selectedBlock.keyDown(e);
       } else if (this.selectedBlock instanceof ItemSelector && this.selectedBlock.isDropdownMenuOpen()) { // support key event for item selector
         this.selectedBlock.keyDown(e);
       } else {
-        this.moveByArrowKey(e, false);
+        this.moveByArrowKey(e);
       }
       this.requestDraw();
       e.stopPropagation();
     }
   }
 
-  private moveByArrowKey(e: KeyboardEvent, storeState: boolean) {
+  private processMoveByArrowKey(e: KeyboardEvent): void {
+    if (this.selectedBlock == null) return;
+    flowchart.storeBlockStates();
+    let oldX = this.selectedMovablePreviousX;
+    let oldY = this.selectedMovablePreviousY;
+    let newX = this.selectedBlock.getX();
+    let newY = this.selectedBlock.getY();
+    let that = this;
+    undoManager.add({
+      undo: function () {
+        that.moveTo(oldX, oldY, that.selectedBlock);
+        that.requestDraw();
+      }, redo: function () {
+        that.moveTo(newX, newY, that.selectedBlock);
+        that.requestDraw();
+      }
+    });
+  }
+
+  private moveByArrowKey(e: KeyboardEvent) {
     const movement = e.shiftKey ? 1 : 5;
     switch (e.key) {
       case "ArrowUp":
         if (this.selectedBlock != null) {
           this.selectedBlock.translateBy(0, -movement);
           this.selectedBlock.refreshView();
-          if (storeState) flowchart.storeBlockStates();
         }
         break;
       case "ArrowDown":
         if (this.selectedBlock != null) {
           this.selectedBlock.translateBy(0, movement);
           this.selectedBlock.refreshView();
-          if (storeState) flowchart.storeBlockStates();
         }
         break;
       case "ArrowLeft":
         if (this.selectedBlock != null) {
           this.selectedBlock.translateBy(-movement, 0);
           this.selectedBlock.refreshView();
-          if (storeState) flowchart.storeBlockStates();
         }
         break;
       case "ArrowRight":
         if (this.selectedBlock != null) {
           this.selectedBlock.translateBy(movement, 0);
           this.selectedBlock.refreshView();
-          if (storeState) flowchart.storeBlockStates();
         }
         break;
     }
@@ -596,7 +622,7 @@ export class BlockView {
         }
       }
     if (this.selectedMovable != null) {
-      this.moveToUndable(x, y, this.selectedMovable);
+      this.mouseMoveToUndable(x, y, this.selectedMovable);
       this.selectedMovable = null;
     }
     this.selectedPort = null;
@@ -638,7 +664,8 @@ export class BlockView {
 
     if (!this.preventMainMouseEvent) {
       if (this.selectedMovable != null) {
-        this.moveTo(x, y, this.selectedMovable);
+        this.mouseMoveTo(x, y, this.selectedMovable);
+        this.selectedMovableMoved = true;
       } else if (this.selectedPort != null) {
         if (this.selectedPort.isInput()) {
           if (this.selectedPortConnector) { // if the clicked port is an input and there is a connector to it
@@ -951,7 +978,7 @@ export class BlockView {
     }
   }
 
-  private moveTo(x: number, y: number, m: Movable): void {
+  private mouseMoveTo(x: number, y: number, m: Movable): void {
     let dx = x - this.mouseDownRelativeX;
     let dy = y - this.mouseDownRelativeY;
     let xmax = this.canvas.width - m.getWidth();
@@ -974,20 +1001,34 @@ export class BlockView {
     }
   }
 
-  private moveToUndable(x: number, y: number, m: Movable): void {
-    let oldX = this.selectedMovablePreviousX + this.mouseDownRelativeX;
-    let oldY = this.selectedMovablePreviousY + this.mouseDownRelativeY;
-    this.moveTo(x, y, m);
-    let that = this;
-    undoManager.add({
-      undo: function () {
-        that.moveTo(oldX, oldY, m);
-        that.requestDraw();
-      }, redo: function () {
-        that.moveTo(x, y, m);
-        that.requestDraw();
-      }
-    });
+  private mouseMoveToUndable(x: number, y: number, m: Movable): void {
+    if (this.selectedMovableMoved) { // fire only when m is actually moved (don't fire for a mouse click without move)
+      let oldX = this.selectedMovablePreviousX;
+      let oldY = this.selectedMovablePreviousY;
+      this.mouseMoveTo(x, y, m);
+      let newX = m.getX();
+      let newY = m.getY();
+      let that = this;
+      undoManager.add({
+        undo: function () {
+          that.moveTo(oldX, oldY, m);
+          that.requestDraw();
+        }, redo: function () {
+          that.moveTo(newX, newY, m);
+          that.requestDraw();
+        }
+      });
+      this.selectedMovableMoved = false;
+    }
+  }
+
+  private moveTo(x: number, y: number, m: Movable): void {
+    m.setX(x);
+    m.setY(y);
+    m.refreshView();
+    if (m instanceof Block) {
+      flowchart.storeBlockStates();
+    }
   }
 
 }
