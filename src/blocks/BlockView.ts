@@ -355,9 +355,11 @@ export class BlockView {
 
   private keyUp(e: KeyboardEvent): void {
     e.preventDefault();
-    if (this.keyDownCount > 0) {
-      this.processMoveByArrowKey(e);
-      this.keyDownCount = 0;
+    if (Util.isArrowKey(e)) {
+      if (this.keyDownCount > 0) {
+        this.processMoveByArrowKey(e);
+        this.keyDownCount = 0;
+      }
     }
     if (this.selectedBlock != null) {
       if ((this.selectedBlock instanceof Slider || this.selectedBlock instanceof ToggleSwitch)) {
@@ -419,17 +421,21 @@ export class BlockView {
   private keyDown(e: KeyboardEvent): void {
     if (this.selectedBlock != null) {
       e.preventDefault();
-      if (this.keyDownCount == 0) {
-        this.selectedMovablePreviousX = this.selectedBlock.getX();
-        this.selectedMovablePreviousY = this.selectedBlock.getY();
+      if (Util.isArrowKey(e)) {
+        if (this.keyDownCount == 0) {
+          this.selectedMovablePreviousX = this.selectedBlock.getX();
+          this.selectedMovablePreviousY = this.selectedBlock.getY();
+        }
+        this.keyDownCount++;
       }
-      this.keyDownCount++;
       if (this.selectedBlock instanceof Slider && this.selectedBlock.isTrackSelected()) { // support keyevent for slider
         this.selectedBlock.keyDown(e);
       } else if (this.selectedBlock instanceof ItemSelector && this.selectedBlock.isDropdownMenuOpen()) { // support key event for item selector
         this.selectedBlock.keyDown(e);
       } else {
-        this.moveByArrowKey(e);
+        if (Util.isArrowKey(e)) {
+          this.moveByArrowKey(e);
+        }
       }
       this.requestDraw();
       e.stopPropagation();

@@ -16,6 +16,10 @@ export class Util {
     }
   }
 
+  static isArrowKey(e: KeyboardEvent): boolean {
+    return e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "ArrowLeft" || e.key === "ArrowRight";
+  }
+
   static getOS(): string {
     let userAgent = window.navigator.userAgent,
       platform = window.navigator.platform,
