@@ -19,6 +19,8 @@ import predator_prey_equations from "./examples/predator-prey-equations.json";
 // @ts-ignore
 import competitive_lotka_volterra_equations from "./examples/competitive-lotka-volterra-equations.json";
 // @ts-ignore
+import chemical_kinetics from "./examples/chemical-kinetics.json";
+// @ts-ignore
 import lorentz_force from "./examples/lorentz-force.json";
 // @ts-ignore
 import harmonic_oscillator from "./examples/harmonic-oscillator.json";
@@ -94,16 +96,16 @@ export class Examples {
     this.files.push({name: "Series and Arrays", data: series_and_arrays});
     this.files.push({name: "Complex Numbers", data: complex_numbers});
     this.files.push({name: "Arithmetic Operators for Complex Numbers", data: arithmetic_operators_for_complex_numbers});
+    this.files.push({name: "Workers", data: workers});
+    this.files.push({name: "Toggle Switch vs. Momentary Switch", data: toggle_vs_momentary_switch});
+    this.files.push({name: "Turnout Switch", data: turnout_switch});
+    this.files.push({name: "If-Else Statements", data: if_else_statements});
+    this.files.push({name: "Switch Statements", data: switch_statements});
     this.files.push({name: "Unary Functions", data: unary_functions});
     this.files.push({name: "Bundled Functions", data: bundled_functions});
     this.files.push({name: "Binary Functions", data: binary_functions});
     this.files.push({name: "Multivariable Functions", data: multivariable_functions});
     this.files.push({name: "Heart Function", data: heart_function});
-    this.files.push({name: "Toggle Switch vs. Momentary Switch", data: toggle_vs_momentary_switch});
-    this.files.push({name: "Turnout Switch", data: turnout_switch});
-    this.files.push({name: "If-Else Statements", data: if_else_statements});
-    this.files.push({name: "Switch Statements", data: switch_statements});
-    this.files.push({name: "Workers", data: workers});
     this.files.push({name: "Make Sound with Beepers", data: make_sound_with_beepers});
     this.files.push({name: "Parametric Equations 1", data: parametric_equations_1});
     this.files.push({name: "Parametric Equations 2", data: parametric_equations_2});
@@ -112,6 +114,7 @@ export class Examples {
     this.files.push({name: "Logistic Population Model", data: logistic_population_equation});
     this.files.push({name: "Predator-Prey Equations", data: predator_prey_equations});
     this.files.push({name: "Competitive Lotka-Volterra Equations", data: competitive_lotka_volterra_equations});
+    this.files.push({name: "Chemical Kinetics: Irreversible Reaction", data: chemical_kinetics});
     this.files.push({name: "Projectile Motion: Implementation 1", data: projectile_motion_1});
     this.files.push({name: "Projectile Motion: Implementation 2", data: projectile_motion_2});
     this.files.push({name: "Harmonic Oscillator", data: harmonic_oscillator});
