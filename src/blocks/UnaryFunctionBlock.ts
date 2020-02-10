@@ -92,6 +92,10 @@ export class UnaryFunctionBlock extends FunctionBlock {
           for (let i = 0; i < r.length; i++) {
             param[this.variableName] = x[i];
             r[i] = this.code.evaluate(param);
+            // TODO: if the output is complex, only take the real part. I don't know what else to do at this point
+            if (r[i].re) {
+              r[i] = r[i].re;
+            }
           }
           this.portR.setValue(r);
         } else {

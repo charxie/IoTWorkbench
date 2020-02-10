@@ -51,6 +51,8 @@ import arithmetic_operators_for_complex_numbers from "./examples/arithmetic-oper
 // @ts-ignore
 import unary_functions from "./examples/unary-functions.json";
 // @ts-ignore
+import heart_function from "./examples/heart-function.json";
+// @ts-ignore
 import bundled_functions from "./examples/bundled-functions.json";
 // @ts-ignore
 import binary_functions from "./examples/binary-functions.json";
@@ -96,6 +98,7 @@ export class Examples {
     this.files.push({name: "Bundled Functions", data: bundled_functions});
     this.files.push({name: "Binary Functions", data: binary_functions});
     this.files.push({name: "Multivariable Functions", data: multivariable_functions});
+    this.files.push({name: "Heart Function", data: heart_function});
     this.files.push({name: "Toggle Switch vs. Momentary Switch", data: toggle_vs_momentary_switch});
     this.files.push({name: "Turnout Switch", data: turnout_switch});
     this.files.push({name: "If-Else Statements", data: if_else_statements});

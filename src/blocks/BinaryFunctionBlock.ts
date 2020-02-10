@@ -113,6 +113,34 @@ export class BinaryFunctionBlock extends FunctionBlock {
             param[this.variable1Name] = i < x.length ? x[i] : 0;
             param[this.variable2Name] = i < y.length ? y[i] : 0;
             r[i] = this.code.evaluate(param);
+            // TODO: if the output is complex, only take the real part. I don't know what else to do at this point
+            if (r[i].re) {
+              r[i] = r[i].re;
+            }
+          }
+          this.portR.setValue(r);
+        } else if (Array.isArray(x)) {
+          param[this.variable2Name] = y;
+          let r = new Array(x.length);
+          for (let i = 0; i < r.length; i++) {
+            param[this.variable1Name] = x[i];
+            r[i] = this.code.evaluate(param);
+            // TODO: if the output is complex, only take the real part. I don't know what else to do at this point
+            if (r[i].re) {
+              r[i] = r[i].re;
+            }
+          }
+          this.portR.setValue(r);
+        } else if (Array.isArray(y)) {
+          param[this.variable1Name] = x;
+          let r = new Array(y.length);
+          for (let i = 0; i < r.length; i++) {
+            param[this.variable2Name] = y[i];
+            r[i] = this.code.evaluate(param);
+            // TODO: if the output is complex, only take the real part. I don't know what else to do at this point
+            if (r[i].re) {
+              r[i] = r[i].re;
+            }
           }
           this.portR.setValue(r);
         } else {

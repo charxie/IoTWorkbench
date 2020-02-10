@@ -119,6 +119,13 @@ export class MultivariableFunctionBlock extends FunctionBlock {
       try {
         if (this.code == null) this.createParser();
         let param = {...flowchart.globalVariables};
+        let hasArray = false;
+        for (let i = 0; i < x.length; i++) {
+          if (Array.isArray(x[i])) {
+            hasArray = true;
+            break;
+          }
+        }
         let allArray = true;
         for (let i = 0; i < x.length; i++) {
           if (!Array.isArray(x[i])) {
@@ -136,12 +143,41 @@ export class MultivariableFunctionBlock extends FunctionBlock {
           let r = new Array(maxLength);
           for (let i = 0; i < r.length; i++) {
             for (let k = 0; k < x.length; k++) {
-              param[this.variables[k]] = i < x[k].length ? x[k].length : 0;
+              param[this.variables[k]] = i < x[k].length ? x[k][i] : 0;
             }
             r[i] = this.code.evaluate(param);
+            // TODO: if the output is complex, only take the real part. I don't know what else to do at this point
+            if (r[i].re) {
+              r[i] = r[i].re;
+            }
           }
           this.portR.setValue(r);
-        } else {
+        } else if (hasArray) {
+          let maxLength = 0;
+          for (let i = 0; i < x.length; i++) {
+            if (Array.isArray(x[i])) {
+              if (x[i].length > maxLength) {
+                maxLength = x[i].length;
+              }
+            } else {
+              param[this.variables[i]] = x[i];
+            }
+          }
+          let r = new Array(maxLength);
+          for (let i = 0; i < r.length; i++) {
+            for (let k = 0; k < x.length; k++) {
+              if (Array.isArray(x[k])) {
+                param[this.variables[k]] = i < x[k].length ? x[k][i] : 0;
+              }
+            }
+            r[i] = this.code.evaluate(param);
+            // TODO: if the output is complex, only take the real part. I don't know what else to do at this point
+            if (r[i].re) {
+              r[i] = r[i].re;
+            }
+          }
+          this.portR.setValue(r);
+        } else { // no array
           for (let i = 0; i < x.length; i++) {
             param[this.variables[i]] = x[i];
           }
