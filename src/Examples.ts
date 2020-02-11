@@ -23,6 +23,8 @@ import chemical_kinetics from "./examples/chemical-kinetics.json";
 // @ts-ignore
 import chemical_kinetics_reversible_reaction from "./examples/chemical-kinetics-reversible-reaction.json";
 // @ts-ignore
+import brusselator from "./examples/brusselator.json";
+// @ts-ignore
 import lorentz_force from "./examples/lorentz-force.json";
 // @ts-ignore
 import harmonic_oscillator from "./examples/harmonic-oscillator.json";
@@ -118,6 +120,7 @@ export class Examples {
     this.files.push({name: "Competitive Lotka-Volterra Equations", data: competitive_lotka_volterra_equations});
     this.files.push({name: "Chemical Kinetics: Irreversible Reaction", data: chemical_kinetics});
     this.files.push({name: "Chemical Kinetics: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
+    this.files.push({name: "Chemical Kinetics: Brusselator", data: brusselator});
     this.files.push({name: "Projectile Motion: Implementation 1", data: projectile_motion_1});
     this.files.push({name: "Projectile Motion: Implementation 2", data: projectile_motion_2});
     this.files.push({name: "Harmonic Oscillator", data: harmonic_oscillator});
