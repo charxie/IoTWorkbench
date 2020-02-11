@@ -70,13 +70,13 @@ export class BlockViewContextMenu extends MyContextMenu {
     settingsButton.addEventListener("click", this.settingsButtonClick.bind(this), false);
   }
 
-  private pasteButtonClick(e: MouseEvent): void {
+  private pasteButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     flowchart.blockView.paste();
   }
 
-  private clearButtonClick(e: MouseEvent): void {
+  private clearButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (flowchart.blocks.length > 0 || flowchart.connectors.length > 0) {
@@ -100,25 +100,25 @@ export class BlockViewContextMenu extends MyContextMenu {
     }
   }
 
-  private openButtonClick(e: MouseEvent): void {
+  private openButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     StateIO.open();
   }
 
-  private saveButtonClick(e: MouseEvent): void {
+  private saveButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     StateIO.saveAs(JSON.stringify(new State()));
   }
 
-  private copyImageButtonClick(e: MouseEvent): void {
+  private copyImageButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     //this.view.canvas.toBlob(blob => navigator.clipboard.write([new ClipboardItem({'image/png': blob})]));
   }
 
-  private screenshotButtonClick(e: MouseEvent): void {
+  private screenshotButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     PngSaver.saveAs(this.view.canvas);
@@ -151,7 +151,7 @@ export class BlockViewContextMenu extends MyContextMenu {
             </div>`;
   }
 
-  private settingsButtonClick(e: MouseEvent): void {
+  private settingsButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     let view = this.view;
@@ -213,7 +213,7 @@ export class BlockViewContextMenu extends MyContextMenu {
     return s;
   }
 
-  private globalVariablesButtonClick(e: MouseEvent): void {
+  private globalVariablesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     let view = this.view;

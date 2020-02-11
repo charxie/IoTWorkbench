@@ -45,13 +45,13 @@ export class Space2DContextMenu extends BlockContextMenu {
     saveImageButton.addEventListener("click", this.saveImageButtonClick.bind(this), false);
   }
 
-  private eraseButtonClick(e: MouseEvent): void {
+  private eraseButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     (<Space2D>this.block).erase();
   }
 
-  private saveImageButtonClick(e: MouseEvent): void {
+  private saveImageButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     PngSaver.saveAs((<Space2D>this.block).toCanvas());
@@ -148,7 +148,7 @@ export class Space2DContextMenu extends BlockContextMenu {
             </div>`;
   }
 
-  protected propertiesButtonClick(e: MouseEvent): void {
+  protected propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof Space2D) {

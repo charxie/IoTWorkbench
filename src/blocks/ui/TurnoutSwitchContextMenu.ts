@@ -15,25 +15,6 @@ export class TurnoutSwitchContextMenu extends BlockContextMenu {
     this.id = "turnout-switch-context-menu";
   }
 
-  getUi(): string {
-    return `<menu id="${this.id}" class="menu" style="width: 140px; z-index: 10000">
-              <li class="menu-item">
-                <button type="button" class="menu-btn" id="${this.id}-copy-button"><i class="fas fa-copy"></i><span class="menu-text">Copy</span></button>
-              </li>
-              <li class="menu-item">
-                <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
-              </li>
-             <li class="menu-separator"></li>` + this.getLayerMenu() + `<li class="menu-separator"></li>
-              <li class="menu-item">
-                <button type="button" class="menu-btn" id="${this.id}-properties-button"><i class="fas fa-cog"></i><span class="menu-text">Properties</span></button>
-              </li>
-            </menu>`;
-  }
-
-  addListeners(): void {
-    super.addListeners();
-  }
-
   getPropertiesUI(): string {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
@@ -57,7 +38,7 @@ export class TurnoutSwitchContextMenu extends BlockContextMenu {
             </div>`;
   }
 
-  propertiesButtonClick(e: MouseEvent): void {
+  propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof TurnoutSwitch) {

@@ -369,6 +369,11 @@ export class BlockView {
       }
     }
     switch (e.key) {
+      case "Enter":
+        if (this.selectedBlock != null) {
+
+        }
+        break;
       case "Delete":
         if (this.selectedBlock != null) {
           flowchart.askToDeleteBlock(this.selectedBlock);

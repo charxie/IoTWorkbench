@@ -34,7 +34,7 @@ export class RainbowHatBlockContextMenu extends BlockContextMenu {
     settingsButton.addEventListener("click", this.propertiesButtonClick.bind(this), false);
   }
 
-  private clearSensorDataButtonClick(e: MouseEvent): void {
+  private clearSensorDataButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     (<RainbowHatBlock>this.block).clearSensorData();
@@ -49,7 +49,7 @@ export class RainbowHatBlockContextMenu extends BlockContextMenu {
     return null;
   }
 
-  propertiesButtonClick(e: MouseEvent): void {
+  propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof RainbowHatBlock) {

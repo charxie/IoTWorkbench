@@ -40,7 +40,7 @@ export class GrapherContextMenu extends BlockContextMenu {
     saveImageButton.addEventListener("click", this.saveImageButtonClick.bind(this), false);
   }
 
-  private saveImageButtonClick(e: MouseEvent): void {
+  private saveImageButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     PngSaver.saveAs((<Grapher>this.block).toCanvas());
@@ -120,7 +120,7 @@ export class GrapherContextMenu extends BlockContextMenu {
             </div>`;
   }
 
-  protected propertiesButtonClick(e: MouseEvent): void {
+  protected propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof Grapher) {
