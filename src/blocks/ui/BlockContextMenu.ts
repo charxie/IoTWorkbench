@@ -101,6 +101,11 @@ export abstract class BlockContextMenu extends MyContextMenu {
 
   protected abstract getPropertiesUI(): string;
 
+  openPropertiesWindow(block: Block): void {
+    this.block = block;
+    this.propertiesButtonClick();
+  }
+
   protected abstract propertiesButtonClick(): void;
 
   protected getLayerMenu(): string {

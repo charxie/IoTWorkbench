@@ -37,6 +37,7 @@ import {RainbowHatBlock} from "./RainbowHatBlock";
 import {RgbaColorBlock} from "./RgbaColorBlock";
 import {ComplexNumberBlock} from "./ComplexNumberBlock";
 import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
+import {BlockUtilities} from "./BlockUtilities";
 
 export class BlockView {
 
@@ -371,7 +372,7 @@ export class BlockView {
     switch (e.key) {
       case "Enter":
         if (this.selectedBlock != null) {
-
+          BlockUtilities.getMenu(this.selectedBlock).openPropertiesWindow(this.selectedBlock);
         }
         break;
       case "Delete":
@@ -802,86 +803,8 @@ export class BlockView {
       }
     }
     this.selectedBlock = block;
-    let menu: HTMLMenuElement = null;
-    if (block instanceof ArithmeticBlock) {
-      contextMenus.arithmeticBlock.block = block;
-      menu = document.getElementById("arithmetic-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof WorkerBlock) {
-      contextMenus.workerBlock.block = block;
-      menu = document.getElementById("worker-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof ActionBlock) {
-      contextMenus.actionBlock.block = block;
-      menu = document.getElementById("action-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof TurnoutSwitch) {
-      contextMenus.turnoutSwitch.block = block;
-      menu = document.getElementById("turnout-switch-context-menu") as HTMLMenuElement;
-    } else if (block instanceof SwitchStatementBlock) {
-      contextMenus.switchStatementBlock.block = block;
-      menu = document.getElementById("switch-statement-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof NegationBlock) {
-      contextMenus.notBlock.block = block;
-      menu = document.getElementById("not-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof LogicBlock) {
-      contextMenus.logicBlock.block = block;
-      menu = document.getElementById("logic-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof UnaryFunctionBlock) {
-      contextMenus.unaryFunctionBlock.block = block;
-      menu = document.getElementById("unary-function-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof BinaryFunctionBlock) {
-      contextMenus.binaryFunctionBlock.block = block;
-      menu = document.getElementById("binary-function-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof MultivariableFunctionBlock) {
-      contextMenus.multivariableFunctionBlock.block = block;
-      menu = document.getElementById("multivariable-function-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof ParametricEquationBlock) {
-      contextMenus.parametricEquationBlock.block = block;
-      menu = document.getElementById("parametric-equation-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof BundledFunctionsBlock) {
-      contextMenus.bundledFunctionsBlock.block = block;
-      menu = document.getElementById("bundled-functions-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof Slider) {
-      contextMenus.slider.block = block;
-      menu = document.getElementById("slider-context-menu") as HTMLMenuElement;
-    } else if (block instanceof ItemSelector) {
-      contextMenus.itemSelector.block = block;
-      menu = document.getElementById("item-selector-context-menu") as HTMLMenuElement;
-    } else if (block instanceof ToggleSwitch) {
-      contextMenus.toggleSwitch.block = block;
-      menu = document.getElementById("toggle-switch-context-menu") as HTMLMenuElement;
-    } else if (block instanceof MomentarySwitch) {
-      contextMenus.momentarySwitch.block = block;
-      menu = document.getElementById("momentary-switch-context-menu") as HTMLMenuElement;
-    } else if (block instanceof Sticker) {
-      contextMenus.sticker.block = block;
-      menu = document.getElementById("sticker-context-menu") as HTMLMenuElement;
-    } else if (block instanceof Beeper) {
-      contextMenus.beeper.block = block;
-      menu = document.getElementById("beeper-context-menu") as HTMLMenuElement;
-    } else if (block instanceof Grapher) {
-      contextMenus.grapher.block = block;
-      menu = document.getElementById("grapher-context-menu") as HTMLMenuElement;
-    } else if (block instanceof Space2D) {
-      contextMenus.space2d.block = block;
-      menu = document.getElementById("space2d-context-menu") as HTMLMenuElement;
-    } else if (block instanceof GlobalVariableBlock) {
-      contextMenus.globalVariableBlock.block = block;
-      menu = document.getElementById("global-variable-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof GlobalObjectBlock) {
-      contextMenus.globalObjectBlock.block = block;
-      menu = document.getElementById("global-object-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof SeriesBlock) {
-      contextMenus.seriesBlock.block = block;
-      menu = document.getElementById("series-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof RgbaColorBlock) {
-      contextMenus.rgbaColorBlock.block = block;
-      menu = document.getElementById("rgba-color-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof ComplexNumberBlock) {
-      contextMenus.complexNumberBlock.block = block;
-      menu = document.getElementById("complex-number-block-context-menu") as HTMLMenuElement;
-    } else if (block instanceof RainbowHatBlock) {
-      contextMenus.rainbowHatBlock.block = block;
-      menu = document.getElementById("rainbow-hat-block-context-menu") as HTMLMenuElement;
-    } else {
+    let menu: HTMLMenuElement = BlockUtilities.getHtmlMenuElement(block);
+    if (menu == null) {
       contextMenus.blockView.view = this;
       menu = document.getElementById("block-view-context-menu") as HTMLMenuElement;
       document.getElementById("block-view-context-menu-paste-menu-item").className = this.copiedBlock ? "menu-item" : "menu-item disabled";

@@ -15,10 +15,6 @@ export class SliderContextMenu extends BlockContextMenu {
     this.id = "slider-context-menu";
   }
 
-  addListeners(): void {
-    super.addListeners();
-  }
-
   protected getPropertiesUI(): string {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
