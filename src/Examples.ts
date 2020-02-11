@@ -29,6 +29,8 @@ import lorentz_force from "./examples/lorentz-force.json";
 // @ts-ignore
 import harmonic_oscillator from "./examples/harmonic-oscillator.json";
 // @ts-ignore
+import rlc_circuit from "./examples/rlc-circuit.json";
+// @ts-ignore
 import projectile_motion_1 from "./examples/projectile-motion-1.json";
 // @ts-ignore
 import projectile_motion_2 from "./examples/projectile-motion-2.json";
@@ -124,6 +126,7 @@ export class Examples {
     this.files.push({name: "Projectile Motion: Implementation 1", data: projectile_motion_1});
     this.files.push({name: "Projectile Motion: Implementation 2", data: projectile_motion_2});
     this.files.push({name: "Harmonic Oscillator", data: harmonic_oscillator});
+    this.files.push({name: "RLC Circuit", data: rlc_circuit});
     this.files.push({name: "Lorentz Force", data: lorentz_force});
     this.files.push({name: "Random Walk", data: random_walk});
     this.files.push({name: "Brownian Motion: Single Particle", data: brownian_motion_single_particle});
