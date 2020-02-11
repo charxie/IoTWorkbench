@@ -167,8 +167,8 @@ export class MomentarySwitch extends Block {
   updateImmediately(): void {
     this.updateModel();
     flowchart.traverse(this);
-    if (flowchart.isConnectedToGlobalVariable(this)) {
-      flowchart.updateResults();
+    if (flowchart.isConnectedToGlobalBlock(this)) {
+      flowchart.updateResultsExcludingWorkerBlocks();
     }
   }
 

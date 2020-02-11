@@ -38,7 +38,6 @@ export class ComplexNumberBlock extends Block {
 
   constructor(uid: string, x: number, y: number, width: number, height: number, name: string, symbol: string) {
     super(uid, x, y, width, height);
-    this.source = true;
     this.name = name;
     this.symbol = symbol;
     this.color = "#BDB76B";

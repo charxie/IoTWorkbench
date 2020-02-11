@@ -195,12 +195,10 @@ export class StateIO {
         let inputBlock = flowchart.getBlock(state.inputBlockId);
         let outputBlock = flowchart.getBlock(state.outputBlockId);
         if (inputBlock && outputBlock) {
-          if (inputBlock instanceof GlobalVariableBlock) {
-            outputBlock.setSource(false);
-          }
           flowchart.addPortConnector(outputBlock.getPort(state.outputPortId), inputBlock.getPort(state.inputPortId), "Port Connector #" + flowchart.connectors.length);
         }
       }
+      flowchart.confirmSources();
     }
   }
 

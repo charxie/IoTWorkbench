@@ -272,8 +272,8 @@ export class Slider extends Block {
 
   private updateAll(): void {
     flowchart.traverse(this);
-    if (flowchart.isConnectedToGlobalVariable(this)) {
-      flowchart.updateResults();
+    if (flowchart.isConnectedToGlobalBlock(this)) {
+      flowchart.updateResultsExcludingWorkerBlocks();
     }
     flowchart.storeBlockStates();
   }

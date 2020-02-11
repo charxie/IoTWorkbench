@@ -35,6 +35,7 @@ import {Util} from "../Util";
 import {ComplexNumberBlock} from "./ComplexNumberBlock";
 import {ActionBlock} from "./ActionBlock";
 import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
+import {GlobalBlock} from "./GlobalBlock";
 
 export class Flowchart {
 
@@ -46,6 +47,7 @@ export class Flowchart {
   private connectedSources: Block[]; // temporary storage
   private blockConnectionFlag: boolean; // temporary flag
   private globalBlockFlag: boolean; // temporary flag
+  private workerBlockFlag: boolean; // temporary flag
 
   constructor() {
     this.blockView = new BlockView("block-view", this);
@@ -83,6 +85,35 @@ export class Flowchart {
     this.blockView.requestDraw();
   }
 
+  updateResultsExcludingWorkerBlocks(): void {
+    for (let b of this.blocks) {
+      // if the source block is connected to a worker, it is expected to rely on the worker to update all blocks that are connected to it
+      if (b.isSource() && !this.isConnectedToWorkerBlock(b)) {
+        this.traverse(b);
+      }
+    }
+    this.blockView.requestDraw();
+  }
+
+  private isConnectedToWorkerBlock(block: Block): boolean {
+    this.workerBlockFlag = false;
+    this.findWorkerBlock(block);
+    return this.workerBlockFlag;
+  }
+
+  // we cannot use a return function in this recursion as there is an array iteration inside
+  // (add return will cause only the first case of the array to be executed)
+  private findWorkerBlock(block: Block): void {
+    let outputTo = block.outputTo();
+    for (let next of outputTo) {
+      if (next instanceof WorkerBlock) {
+        this.workerBlockFlag = true;
+        return;
+      }
+      this.findWorkerBlock(next);
+    }
+  }
+
   stopWorker(block: Block): void {
     for (let b of this.blocks) {
       if (b instanceof WorkerBlock) {
@@ -92,6 +123,30 @@ export class Flowchart {
       }
     }
     this.blockView.requestDraw();
+  }
+
+  confirmSources(): void {
+    for (let b of this.blocks) {
+      this.confirmSource(b);
+    }
+  }
+
+  private confirmSource(block: Block): void {
+    if (block.isSource()) {
+      let count = 0;
+      let global = false;
+      for (let c of this.connectors) {
+        if (c.getOutput().getBlock() == block) {
+          count++;
+          if (c.getInput().getBlock() instanceof GlobalBlock) {
+            global = true;
+          }
+        }
+      }
+      if (count == 1 && global) { // when this block is connected to only one global block, it is considered as a non-source block
+        block.setSource(false);
+      }
+    }
   }
 
   private findConnectedSources(block: Block): void {
@@ -151,22 +206,22 @@ export class Flowchart {
     delete this.globalVariables[name];
   }
 
-  isConnectedToGlobalVariable(block: Block): boolean {
+  isConnectedToGlobalBlock(block: Block): boolean {
     this.globalBlockFlag = false;
-    this.findGlobalVariable(block);
+    this.findGlobalBlock(block);
     return this.globalBlockFlag;
   }
 
   // we cannot use a return function in this recursion as there is an array iteration inside
   // (add return will cause only the first case of the array to be executed)
-  private findGlobalVariable(block: Block): void {
+  private findGlobalBlock(block: Block): void {
     let outputTo = block.outputTo();
     for (let next of outputTo) {
-      if (next instanceof GlobalVariableBlock) {
+      if (next instanceof GlobalBlock) {
         this.globalBlockFlag = true;
         return;
       }
-      this.findGlobalVariable(next);
+      this.findGlobalBlock(next);
     }
   }
 

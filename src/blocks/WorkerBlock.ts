@@ -183,7 +183,7 @@ export class WorkerBlock extends Block {
     let invokeInput = this.portI.getValue();
     if (invokeInput === true) {
       if (!this.completed || this.previousInput === false) {
-        this.connectedToGlobalVariable = flowchart.isConnectedToGlobalVariable(this);
+        this.connectedToGlobalVariable = flowchart.isConnectedToGlobalBlock(this);
         this.startWorker();
       }
     } else {
