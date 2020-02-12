@@ -81,6 +81,8 @@ import workers from "./examples/workers.json";
 // @ts-ignore
 import make_sound_with_beepers from "./examples/make-sound-with-beepers.json";
 // @ts-ignore
+import synthesizing_sound from "./examples/synthesizing-sound.json";
+// @ts-ignore
 import parametric_equations_1 from "./examples/parametric-equations-1.json";
 // @ts-ignore
 import parametric_equations_2 from "./examples/parametric-equations-2.json";
@@ -115,6 +117,7 @@ export class Examples {
     this.files.push({name: "Multivariable Functions", data: multivariable_functions});
     this.files.push({name: "Heart Function", data: heart_function});
     this.files.push({name: "Make Sound with Beepers", data: make_sound_with_beepers});
+    this.files.push({name: "Synthesizing Sound", data: synthesizing_sound});
     this.files.push({name: "Parametric Equations 1", data: parametric_equations_1});
     this.files.push({name: "Parametric Equations 2", data: parametric_equations_2});
     this.files.push({name: "Parametric Generator 1", data: parametric_generator_1});
