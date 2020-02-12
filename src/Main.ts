@@ -213,7 +213,7 @@ window.onload = function () {
   StateIO.restoreGlobalVariables();
   StateIO.restoreWorkbench(localStorage.getItem("Workbench State"));
   StateIO.restoreConnectors(localStorage.getItem("Connector States")); // connectors must be restored after loading HATs
-  flowchart.updateResults();
+  flowchart.updateResultsExcludingWorkerBlocks();
   // flowchart.reset(); // FIXME: why did I call this?
 
   setTimeout(function () { // call this to refresh after inserting canvases

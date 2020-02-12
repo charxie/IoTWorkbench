@@ -186,6 +186,10 @@ export class WorkerBlock extends Block {
         this.connectedToGlobalVariable = flowchart.isConnectedToGlobalBlock(this);
         this.startWorker();
       }
+      if (this.count == undefined) {
+        this.portO.setValue(this.value);
+        this.updateConnectors();
+      }
     } else {
       this.stopWorker();
     }
