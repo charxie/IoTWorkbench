@@ -23,8 +23,12 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="global-variable-key-field" style="width: 120px"></td>
                 </tr>
                 <tr>
-                  <td>Value:</td>
+                  <td>Current Value:</td>
                   <td><input type="text" id="global-variable-value-field" style="width: 120px"></td>
+                </tr>
+                <tr>
+                  <td>Initial Value:</td>
+                  <td><input type="text" id="global-variable-initial-value-field" style="width: 120px"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
@@ -48,6 +52,8 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
       keyInputElement.value = block.getKey();
       let valueInputElement = document.getElementById("global-variable-value-field") as HTMLInputElement;
       valueInputElement.value = block.getValue() ? block.getValue().toString() : 0;
+      let initialValueInputElement = document.getElementById("global-variable-initial-value-field") as HTMLInputElement;
+      initialValueInputElement.value = block.getInitialValue() ? block.getInitialValue().toString() : undefined;
       let widthInputElement = document.getElementById("global-variable-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("global-variable-block-height-field") as HTMLInputElement;
@@ -77,10 +83,11 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
             block.setKey(keyInputElement.value);
           }
           block.setValue(valueInputElement.value);
+          block.setInitialValue(initialValueInputElement.value);
           flowchart.updateGlobalVariable(block.getKey(), block.getValue());
           block.refreshView();
           flowchart.blockView.requestDraw();
-           flowchart.updateResults(); // global variable must update the results globally
+          flowchart.updateResults(); // global variable must update the results globally
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');
@@ -95,14 +102,15 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
       };
       keyInputElement.addEventListener("keyup", enterKeyUp);
       valueInputElement.addEventListener("keyup", enterKeyUp);
+      initialValueInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 300,
-        width: 300,
+        height: 360,
+        width: 360,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

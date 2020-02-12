@@ -11,6 +11,7 @@ export class GlobalObjectBlock extends GlobalBlock {
 
   private keys: string[] = ["x", "y"];
   private values: number[] = [0, 0];
+  private initialValues: number[] = [0, 0];
   private portI: Port[];
   private readonly portO: Port;
 
@@ -19,6 +20,7 @@ export class GlobalObjectBlock extends GlobalBlock {
     readonly symbol: string;
     readonly keys: string[];
     readonly values: number[];
+    readonly initialValues: number[];
     readonly uid: string;
     readonly x: number;
     readonly y: number;
@@ -31,6 +33,7 @@ export class GlobalObjectBlock extends GlobalBlock {
       this.symbol = block.symbol;
       this.keys = block.keys;
       this.values = block.values;
+      this.initialValues = block.initialValues;
       this.uid = block.uid;
       this.x = block.x;
       this.y = block.y;
@@ -83,7 +86,8 @@ export class GlobalObjectBlock extends GlobalBlock {
   getCopy(): Block {
     let copy = new GlobalObjectBlock("Global Object Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
     copy.keys = this.keys;
-    copy.values = this.values;
+    copy.values = JSON.parse(JSON.stringify(this.values));
+    copy.initialValues = JSON.parse(JSON.stringify(this.initialValues));
     copy.margin = this.margin;
     return copy;
   }
@@ -110,6 +114,26 @@ export class GlobalObjectBlock extends GlobalBlock {
 
   setValues(values: number[]): void {
     this.values = JSON.parse(JSON.stringify(values));
+  }
+
+  getInitialValues(): number[] {
+    return JSON.parse(JSON.stringify(this.initialValues));
+  }
+
+  setInitialValues(initialValues: number[]): void {
+    if (initialValues != undefined) {
+      this.initialValues = JSON.parse(JSON.stringify(initialValues));
+    }
+  }
+
+  reset(): void {
+    super.reset();
+    if (this.initialValues != undefined) {
+      for (let i = 0; i < this.values.length; i++) {
+        this.values[i] = this.initialValues[i];
+        flowchart.updateGlobalVariable(this.keys[i], this.values[i]);
+      }
+    }
   }
 
   refreshView(): void {

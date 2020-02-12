@@ -13,11 +13,13 @@ export class GlobalVariableBlock extends GlobalBlock {
   private readonly portO: Port;
   private key: string = "x";
   private value: any;
+  private initialValue: any;
 
   static State = class {
     readonly name: string;
     readonly key: string;
     readonly value: any;
+    readonly initialValue: any;
     readonly uid: string;
     readonly x: number;
     readonly y: number;
@@ -28,6 +30,7 @@ export class GlobalVariableBlock extends GlobalBlock {
       this.name = block.name;
       this.key = block.key;
       this.value = block.value;
+      this.initialValue = block.initialValue;
       this.uid = block.uid;
       this.x = block.x;
       this.y = block.y;
@@ -53,6 +56,7 @@ export class GlobalVariableBlock extends GlobalBlock {
     let copy = new GlobalVariableBlock("Global Variable Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
     copy.key = this.key;
     copy.value = this.value;
+    copy.initialValue = this.initialValue;
     return copy;
   }
 
@@ -75,6 +79,23 @@ export class GlobalVariableBlock extends GlobalBlock {
 
   setValue(value: any): void {
     this.value = value;
+  }
+
+  getInitialValue(): any {
+    return this.initialValue;
+  }
+
+  setInitialValue(initialValue: any): void {
+    if (initialValue == undefined || initialValue === "undefined") return;
+    this.initialValue = initialValue;
+  }
+
+  reset(): void {
+    super.reset();
+    if (this.initialValue != undefined) {
+      this.value = this.initialValue;
+      flowchart.updateGlobalVariable(this.key, this.value);
+    }
   }
 
   refreshView(): void {

@@ -16,6 +16,7 @@ export class WorkerBlock extends Block {
   private repeatTimes: number = 1000000;
   private barHeight: number;
   private readonly portI: Port;
+  private readonly portR: Port;
   private readonly portN: Port;
   private readonly portO: Port;
   private worker: Worker;
@@ -54,11 +55,13 @@ export class WorkerBlock extends Block {
     this.name = name;
     this.color = "#00CED1";
     this.barHeight = Math.min(30, this.height / 3);
-    let dh = (this.height - this.barHeight) / 3;
+    let dh = (this.height - this.barHeight) / 4;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false);
-    this.portN = new Port(this, true, "N", 0, this.barHeight + 2 * dh, false);
+    this.portR = new Port(this, true, "R", 0, this.barHeight + 2 * dh, false);
+    this.portN = new Port(this, true, "N", 0, this.barHeight + 3 * dh, false);
     this.portO = new Port(this, false, "O", this.width, (this.height + this.barHeight) / 2, true);
     this.ports.push(this.portI);
+    this.ports.push(this.portR);
     this.ports.push(this.portN);
     this.ports.push(this.portO);
   }
@@ -168,10 +171,10 @@ export class WorkerBlock extends Block {
 
     // draw the ports
     ctx.strokeStyle = "black";
-    ctx.font = "bold 12px Times";
-    this.portI.draw(ctx, this.iconic);
-    this.portN.draw(ctx, this.iconic);
-    this.portO.draw(ctx, this.iconic);
+    ctx.font = "bold 10px Times";
+    for (let p of this.ports) {
+      p.draw(ctx, this.iconic);
+    }
 
     if (this.selected) {
       this.highlightSelection(ctx);
@@ -289,6 +292,7 @@ export class WorkerBlock extends Block {
     this.count = 0;
     this.portO.setValue(0);
     this.updateConnectors();
+    flowchart.resetConnectedBlocks(this);
   }
 
   destroy(): void {
@@ -299,9 +303,10 @@ export class WorkerBlock extends Block {
 
   refreshView(): void {
     super.refreshView();
-    let dh = (this.height - this.barHeight) / 3;
+    let dh = (this.height - this.barHeight) / 4;
     this.portI.setY(this.barHeight + dh);
-    this.portN.setY(this.barHeight + 2 * dh);
+    this.portR.setY(this.barHeight + 2 * dh);
+    this.portN.setY(this.barHeight + 3 * dh);
     this.portO.setX(this.width);
     dh = (this.height - this.barHeight) / 2;
     this.portO.setY(this.barHeight + dh);

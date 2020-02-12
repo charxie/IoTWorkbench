@@ -61,6 +61,14 @@ export class Flowchart {
     }
   }
 
+  reset(block: Block): void {
+    let outputTo = block.outputTo();
+    for (let next of outputTo) {
+      next.reset();
+      this.reset(next);
+    }
+  }
+
   // less efficient: this updates all the sources
   updateResults(): void {
     for (let b of this.blocks) {
@@ -93,6 +101,14 @@ export class Flowchart {
       }
     }
     this.blockView.requestDraw();
+  }
+
+  resetConnectedBlocks(block: Block) {
+    let outputTo = block.outputTo();
+    for (let next of outputTo) {
+      next.reset();
+      this.resetConnectedBlocks(next);
+    }
   }
 
   isConnectedToWorkerBlock(block: Block): boolean {
@@ -180,12 +196,6 @@ export class Flowchart {
     this.blockConnectionFlag = false;
     this.findConnection(start, end);
     return this.blockConnectionFlag;
-  }
-
-  reset(): void {
-    for (let b of this.blocks) {
-      b.reset();
-    }
   }
 
   erase(): void {

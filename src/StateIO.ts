@@ -70,11 +70,13 @@ export class StateIO {
           block.setName(state.name);
           block.setKey(state.key);
           block.setValue(state.value);
+          block.setInitialValue(state.initialValue);
         } else if (block instanceof GlobalObjectBlock) {
           block.setName(state.name);
           block.setSymbol(state.symbol);
           block.setKeys(state.keys);
           block.setValues(state.values);
+          block.setInitialValues(state.initialValues);
           block.setMargin(state.margin == undefined ? 15 : state.margin);
         } else if (block instanceof SeriesBlock) {
           block.setName(state.name);

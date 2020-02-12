@@ -13,6 +13,7 @@ export class ActionBlock extends Block {
   private pressed: boolean = false;
   private barHeight: number;
   private readonly portI: Port;
+  private readonly portO: Port;
 
   static State = class {
     readonly name: string;
@@ -45,6 +46,8 @@ export class ActionBlock extends Block {
     let dh = (this.height - this.barHeight) / 2;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false);
     this.ports.push(this.portI);
+    this.portO = new Port(this, false, "O", this.width, this.barHeight + dh, true);
+    this.ports.push(this.portO);
   }
 
   getCopy(): Block {
@@ -91,7 +94,7 @@ export class ActionBlock extends Block {
     if (!this.iconic) {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
-      ctx.fillStyle = "black";
+      ctx.fillStyle = "white";
       let titleWidth = ctx.measureText(this.name).width;
       ctx.fillText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
@@ -118,10 +121,15 @@ export class ActionBlock extends Block {
     ctx.restore();
 
     // draw the ports
-    if (this.type === "Stop") {
-      ctx.strokeStyle = "black";
-      ctx.font = "bold 12px Times";
-      this.portI.draw(ctx, this.iconic);
+    ctx.strokeStyle = "black";
+    ctx.font = "bold 12px Times";
+    switch (this.type) {
+      case "Stop":
+        this.portI.draw(ctx, this.iconic);
+        break;
+      case "Reset":
+        this.portO.draw(ctx, this.iconic);
+        break;
     }
 
     if (this.selected) {
@@ -143,14 +151,17 @@ export class ActionBlock extends Block {
 
   refreshView(): void {
     super.refreshView();
+    this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 2;
     this.portI.setY(this.barHeight + dh);
+    this.portO.setY(this.barHeight + dh);
+    this.portO.setX(this.width);
   }
 
   updateModel(): void {
     switch (this.type) {
       case "Reset":
-        flowchart.reset();
+        flowchart.reset(this);
         flowchart.updateResults();
         flowchart.erase();
         break;

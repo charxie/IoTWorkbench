@@ -28,8 +28,12 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="global-object-keys-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Values:</td>
+                  <td>Current Values:</td>
                   <td><input type="text" id="global-object-values-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Initial Values:</td>
+                  <td><input type="text" id="global-object-initial-values-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Inset Margin:</td>
@@ -59,6 +63,8 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
       keysInputElement.value = JSON.stringify(block.getKeys());
       let valuesInputElement = document.getElementById("global-object-values-field") as HTMLInputElement;
       valuesInputElement.value = JSON.stringify(block.getValues());
+      let initialValuesInputElement = document.getElementById("global-object-initial-values-field") as HTMLInputElement;
+      initialValuesInputElement.value = block.getInitialValues() == undefined ? "" : JSON.stringify(block.getInitialValues());
       let insetMarginInputElement = document.getElementById("global-object-inset-margin-field") as HTMLInputElement;
       insetMarginInputElement.value = block.getMargin().toString();
       let widthInputElement = document.getElementById("global-object-block-width-field") as HTMLInputElement;
@@ -104,6 +110,8 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
           for (let i = 0; i < keys.length; i++) {
             flowchart.updateGlobalVariable(keys[i], values[i]);
           }
+          let initialValues = JSON.parse(initialValuesInputElement.value);
+          block.setInitialValues(initialValues);
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.updateResults(); // global variable must update the results globally
@@ -122,6 +130,7 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
       nameInputElement.addEventListener("keyup", enterKeyUp);
       keysInputElement.addEventListener("keyup", enterKeyUp);
       valuesInputElement.addEventListener("keyup", enterKeyUp);
+      initialValuesInputElement.addEventListener("keyup", enterKeyUp);
       insetMarginInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
@@ -129,8 +138,8 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 400,
-        width: 360,
+        height: 450,
+        width: 400,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {
