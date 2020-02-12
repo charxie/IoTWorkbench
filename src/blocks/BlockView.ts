@@ -120,84 +120,89 @@ export class BlockView {
         let x = e.offsetX;
         let y = e.offsetY;
         let timestamp = Date.now().toString(16);
+        let b = null;
         switch (that.draggedElementId) {
           case "unary-function-block":
-            that.addBlockUndoable(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x - 30, y - 40, 60, 80));
+            b = that.addBlockUndoable(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "binary-function-block":
-            that.addBlockUndoable(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
+            b = that.addBlockUndoable(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
             break;
           case "multivariable-function-block":
-            that.addBlockUndoable(new MultivariableFunctionBlock("Multivariable Function Block #" + timestamp, x - 30, y - 60, 60, 120));
+            b = that.addBlockUndoable(new MultivariableFunctionBlock("Multivariable Function Block #" + timestamp, x - 30, y - 60, 60, 120));
             break;
           case "parametric-equation-block":
-            that.addBlockUndoable(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 40, y - 50, 80, 100));
+            b = that.addBlockUndoable(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 40, y - 50, 80, 100));
             break;
           case "bundled-functions-block":
-            that.addBlockUndoable(new BundledFunctionsBlock("Bundled Functions Block #" + timestamp, x - 40, y - 50, 80, 100));
+            b = that.addBlockUndoable(new BundledFunctionsBlock("Bundled Functions Block #" + timestamp, x - 40, y - 50, 80, 100));
             break;
           case "global-variable-block":
-            that.addBlockUndoable(new GlobalVariableBlock("Global Variable Block #" + timestamp, "Global Variable Block", "var", x - 30, y - 40, 60, 80));
+            b = that.addBlockUndoable(new GlobalVariableBlock("Global Variable Block #" + timestamp, "Global Variable Block", "var", x - 30, y - 40, 60, 80));
             break;
           case "global-object-block":
-            that.addBlockUndoable(new GlobalObjectBlock("Global Object Block #" + timestamp, "Global Object Block", "obj", x - 30, y - 60, 60, 120));
+            b = that.addBlockUndoable(new GlobalObjectBlock("Global Object Block #" + timestamp, "Global Object Block", "obj", x - 30, y - 60, 60, 120));
             break;
           case "series-block":
-            that.addBlockUndoable(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
+            b = that.addBlockUndoable(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
             break;
           case "rgba-color-block":
-            that.addBlockUndoable(new RgbaColorBlock("Rgba Color Block #" + timestamp, x - 30, y - 40, 60, 80, "Rgba Color Block", "RGBA"));
+            b = that.addBlockUndoable(new RgbaColorBlock("Rgba Color Block #" + timestamp, x - 30, y - 40, 60, 80, "Rgba Color Block", "RGBA"));
             break;
           case "complex-number-block":
-            that.addBlockUndoable(new ComplexNumberBlock("Complex Number Block #" + timestamp, x - 30, y - 40, 60, 80, "Complex Number Block", "a+b*i"));
+            b = that.addBlockUndoable(new ComplexNumberBlock("Complex Number Block #" + timestamp, x - 30, y - 40, 60, 80, "Complex Number Block", "a+b*i"));
             break;
           case "worker-block":
-            that.addBlockUndoable(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
+            b = that.addBlockUndoable(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
             break;
           case "action-block":
-            that.addBlockUndoable(new ActionBlock("Action Block #" + timestamp, "Action", x - 40, y - 30, 80, 60));
+            b = that.addBlockUndoable(new ActionBlock("Action Block #" + timestamp, "Action", x - 40, y - 30, 80, 60));
             break;
           case "turnout-switch-block":
-            that.addBlockUndoable(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 30, y - 50, 60, 100));
+            b = that.addBlockUndoable(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 30, y - 50, 60, 100));
             break;
           case "switch-statement-block":
-            that.addBlockUndoable(new SwitchStatementBlock("Switch Statement Block #" + timestamp, "Switch Statement Block", "Switch", x - 30, y - 50, 60, 100));
+            b = that.addBlockUndoable(new SwitchStatementBlock("Switch Statement Block #" + timestamp, "Switch Statement Block", "Switch", x - 30, y - 50, 60, 100));
             break;
           case "logic-and-block":
-            that.addBlockUndoable(new LogicBlock("AND Block #" + timestamp, x - 30, y - 40, 60, 80, "AND Block", "AND"));
+            b = that.addBlockUndoable(new LogicBlock("AND Block #" + timestamp, x - 30, y - 40, 60, 80, "AND Block", "AND"));
             break;
           case "logic-not-block":
-            that.addBlockUndoable(new NegationBlock("NOT Block #" + timestamp, x - 30, y - 40, 60, 80));
+            b = that.addBlockUndoable(new NegationBlock("NOT Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "arithmetic-add-block":
-            that.addBlockUndoable(new ArithmeticBlock("Add Block #" + timestamp, x - 30, y - 30, 60, 60, "Add Block", "+"));
+            b = that.addBlockUndoable(new ArithmeticBlock("Add Block #" + timestamp, x - 30, y - 30, 60, 60, "Add Block", "+"));
             break;
           case "slider-block":
-            that.addBlockUndoable(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));
+            b = that.addBlockUndoable(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));
             break;
           case "item-selector-block":
-            that.addBlockUndoable(new ItemSelector("Item Selector #" + timestamp, "Items", x - 40, y - 30, 80, 60));
+            b = that.addBlockUndoable(new ItemSelector("Item Selector #" + timestamp, "Items", x - 40, y - 30, 80, 60));
             break;
           case "toggle-switch-block":
-            that.addBlockUndoable(new ToggleSwitch("Switch #" + timestamp, "Boolean", x - 40, y - 30, 80, 60));
+            b = that.addBlockUndoable(new ToggleSwitch("Switch #" + timestamp, "Boolean", x - 40, y - 30, 80, 60));
             break;
           case "momentary-switch-block":
-            that.addBlockUndoable(new MomentarySwitch("Momentary Switch #" + timestamp, "Boolean", x - 30, y - 30, 60, 60));
+            b = that.addBlockUndoable(new MomentarySwitch("Momentary Switch #" + timestamp, "Boolean", x - 30, y - 30, 60, 60));
             break;
           case "sticker-block":
-            that.addBlockUndoable(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));
+            b = that.addBlockUndoable(new Sticker("Sticker #" + timestamp, "Text Display", x - 60, y - 60, 120, 120));
             break;
           case "beeper-block":
-            that.addBlockUndoable(new Beeper("Beeper #" + timestamp, "Beeper", x - 50, y - 50, 100, 100));
+            b = that.addBlockUndoable(new Beeper("Beeper #" + timestamp, "Beeper", x - 50, y - 50, 100, 100));
             break;
           case "grapher-block":
-            that.addBlockUndoable(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));
+            b = that.addBlockUndoable(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));
             break;
           case "space2d-block":
-            that.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));
+            b = that.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));
             break;
         }
         that.canvas.focus();
+        if (b != null) {
+          b.setSelected(true);
+          that.selectedBlock = b;
+        }
       }
     }, false);
   }
@@ -246,7 +251,7 @@ export class BlockView {
     this.requestDraw();
   }
 
-  private addBlockUndoable(block: Block): void {
+  private addBlockUndoable(block: Block): Block {
     this.addBlock(block);
     let that = this;
     undoManager.add({
@@ -256,6 +261,7 @@ export class BlockView {
         that.addBlock(block);
       }
     });
+    return block;
   }
 
   requestDraw(): void {

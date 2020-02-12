@@ -13,6 +13,8 @@ import rainbow_hat_blinking_led_lights from "./examples/rainbow-hat-blinking-led
 // @ts-ignore
 import rainbow_hat_sensor_data from "./examples/rainbow-hat-sensor-data.json";
 // @ts-ignore
+import root_finding_bisection_method from "./examples/root-finding-bisection-method.json";
+// @ts-ignore
 import runge_kutta_method from "./examples/runge-kutta-method.json";
 // @ts-ignore
 import logistic_population_equation from "./examples/logistic-population-equation.json";
@@ -116,6 +118,7 @@ export class Examples {
     this.files.push({name: "Binary Functions", data: binary_functions});
     this.files.push({name: "Multivariable Functions", data: multivariable_functions});
     this.files.push({name: "Heart Function", data: heart_function});
+    this.files.push({name: "Root-Finding: Bisection Method", data: root_finding_bisection_method});
     this.files.push({name: "Make Sound with Beepers", data: make_sound_with_beepers});
     this.files.push({name: "Synthesizing Sound", data: synthesizing_sound});
     this.files.push({name: "Parametric Equations 1", data: parametric_equations_1});
