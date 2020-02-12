@@ -29,6 +29,10 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="multivariable-function-block-expression-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Inset Margin:</td>
+                  <td><input type="text" id="multivariable-function-inset-margin-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="multivariable-function-block-width-field" style="width: 100%"></td>
                 </tr>
@@ -50,6 +54,8 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
       variablesInputElement.value = JSON.stringify(block.getVariables());
       let expressionInputElement = document.getElementById("multivariable-function-block-expression-field") as HTMLInputElement;
       expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x+y+z";
+      let insetMarginInputElement = document.getElementById("multivariable-function-inset-margin-field") as HTMLInputElement;
+      insetMarginInputElement.value = block.getMargin().toString();
       let widthInputElement = document.getElementById("multivariable-function-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("multivariable-function-block-height-field") as HTMLInputElement;
@@ -57,6 +63,14 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
       const okFunction = function () {
         let success = true;
         let message;
+        // set inset margin
+        let margin = parseInt(insetMarginInputElement.value);
+        if (isNumber(margin)) {
+          block.setMargin(Math.max(15, margin));
+        } else {
+          success = false;
+          message = insetMarginInputElement.value + " is not a valid margin.";
+        }
         // set variables
         if (JSON.stringify(block.getVariables()) != variablesInputElement.value) {
           try {
@@ -108,6 +122,7 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
         }
       };
       expressionInputElement.addEventListener("keyup", enterKeyUp);
+      insetMarginInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({

@@ -565,11 +565,12 @@ export class Space2D extends Block {
                 this.tempY = vp[1];
               }
             }
-          }
-          if (this.tempX != undefined && this.tempY != undefined) {
-            this.points[i].addPoint(this.tempX, this.tempY);
-            this.tempX = undefined;
-            this.tempY = undefined;
+            // console.log(i+"="+this.portPoints[i].getUid()+","+this.tempX + "," + this.tempY);
+            if (this.tempX != undefined && this.tempY != undefined) {
+              this.points[i].addPoint(this.tempX, this.tempY);
+              this.tempX = undefined;
+              this.tempY = undefined;
+            }
           }
         }
       }

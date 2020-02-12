@@ -193,8 +193,6 @@ export class WorkerBlock extends Block {
     if (intervalInput) {
       this.interval = intervalInput;
     }
-    this.portO.setValue(this.value);
-    this.updateConnectors();
     this.previousInput = invokeInput;
   }
 
@@ -217,6 +215,8 @@ export class WorkerBlock extends Block {
             that.value = that.value ? false : true;
             break;
         }
+        that.portO.setValue(that.value);
+        that.updateConnectors();
         // FIXME: potential deadlock
         if (that.connectedToGlobalVariable) {
           flowchart.updateResults();
@@ -267,7 +267,8 @@ export class WorkerBlock extends Block {
     }
     this.value = 0;
     this.count = 0;
-    this.portO.setValue(this.value);
+    this.portO.setValue(0);
+    this.updateConnectors();
   }
 
   destroy(): void {

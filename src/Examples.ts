@@ -13,13 +13,15 @@ import rainbow_hat_blinking_led_lights from "./examples/rainbow-hat-blinking-led
 // @ts-ignore
 import rainbow_hat_sensor_data from "./examples/rainbow-hat-sensor-data.json";
 // @ts-ignore
+import runge_kutta_method from "./examples/runge-kutta-method.json";
+// @ts-ignore
 import logistic_population_equation from "./examples/logistic-population-equation.json";
 // @ts-ignore
 import predator_prey_equations from "./examples/predator-prey-equations.json";
 // @ts-ignore
 import competitive_lotka_volterra_equations from "./examples/competitive-lotka-volterra-equations.json";
 // @ts-ignore
-import chemical_kinetics from "./examples/chemical-kinetics.json";
+import chemical_kinetics_irreversible_reaction from "./examples/chemical-kinetics-irreversible-reaction.json";
 // @ts-ignore
 import chemical_kinetics_reversible_reaction from "./examples/chemical-kinetics-reversible-reaction.json";
 // @ts-ignore
@@ -120,7 +122,7 @@ export class Examples {
     this.files.push({name: "Logistic Population Model", data: logistic_population_equation});
     this.files.push({name: "Predator-Prey Equations", data: predator_prey_equations});
     this.files.push({name: "Competitive Lotka-Volterra Equations", data: competitive_lotka_volterra_equations});
-    this.files.push({name: "Chemical Kinetics: Irreversible Reaction", data: chemical_kinetics});
+    this.files.push({name: "Chemical Kinetics: Irreversible Reaction", data: chemical_kinetics_irreversible_reaction});
     this.files.push({name: "Chemical Kinetics: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
     this.files.push({name: "Chemical Kinetics: Brusselator", data: brusselator});
     this.files.push({name: "Projectile Motion: Implementation 1", data: projectile_motion_1});
@@ -128,6 +130,7 @@ export class Examples {
     this.files.push({name: "Harmonic Oscillator", data: harmonic_oscillator});
     this.files.push({name: "RLC Circuit", data: rlc_circuit});
     this.files.push({name: "Lorentz Force", data: lorentz_force});
+    this.files.push({name: "The Runge-Kutta Method", data: runge_kutta_method});
     this.files.push({name: "Random Walk", data: random_walk});
     this.files.push({name: "Brownian Motion: Single Particle", data: brownian_motion_single_particle});
     this.files.push({name: "Brownian Motion: Multiple Particles", data: brownian_motion_multiple_particles});

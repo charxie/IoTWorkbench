@@ -378,6 +378,7 @@ export class BlockView {
       case "Delete":
         if (this.selectedBlock != null) {
           flowchart.askToDeleteBlock(this.selectedBlock);
+          this.selectedBlock = null;
         }
         break;
       case "c": // ctrl+C for copy
