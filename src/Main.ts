@@ -135,6 +135,7 @@ window.onload = function () {
 
   document.getElementById("sign-in-label").innerHTML = "Hello, " + user.firstName;
   document.getElementById("name-label").innerHTML = Constants.Software.name;
+  document.getElementById("tagline-label").innerHTML = Constants.Software.tagline;
   document.getElementById("version-label").innerHTML = Constants.Software.version;
   document.getElementById('credit').innerHTML = social + "<div class='horizontal-divider'></div>"
     + Constants.Software.name + " " + Constants.Software.version
