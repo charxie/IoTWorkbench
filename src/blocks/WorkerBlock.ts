@@ -230,8 +230,24 @@ export class WorkerBlock extends Block {
         flowchart.blockView.requestDraw();
       };
     }
+    // to avoid the jump when we pause and resume this worker, we must advance the counter and the value
+    if (this.paused) {
+      switch (this.outputType) {
+        case "Natural Number":
+          this.portO.setValue(this.value + 1);
+          break;
+        case "Random Number":
+          this.portO.setValue(Math.random());
+          break;
+        case "Alternating Bit":
+          this.portO.setValue(this.value ? false : true);
+          break;
+      }
+      this.updateConnectors();
+      this.worker.postMessage({count: this.count + 1});
+      this.paused = false;
+    }
     this.worker.postMessage({cmd: "Start", interval: this.interval});
-    this.paused = false;
     this.completed = (this.count === this.repeatTimes);
     if (this.completed) {
       this.stopWithoutResetCounter();

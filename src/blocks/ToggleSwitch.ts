@@ -183,9 +183,17 @@ export class ToggleSwitch extends Block {
   }
 
   private updateAll(): void {
-    flowchart.traverse(this);
-    if (flowchart.isConnectedToGlobalBlock(this)) {
-      flowchart.updateResultsExcludingWorkerBlocks();
+    let moveOn = true;
+    if (!this.checked) {
+      if (flowchart.isConnectedToWorkerBlock(this)) {
+        moveOn = false; // don't traverse a worker strand because we most likely rely on the worker to update the blocks of the strand
+      }
+    }
+    if (moveOn) {
+      flowchart.traverse(this);
+      if (flowchart.isConnectedToGlobalBlock(this)) {
+        flowchart.updateResultsExcludingWorkerBlocks();
+      }
     }
     flowchart.storeBlockStates();
   }

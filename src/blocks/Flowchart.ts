@@ -95,7 +95,7 @@ export class Flowchart {
     this.blockView.requestDraw();
   }
 
-  private isConnectedToWorkerBlock(block: Block): boolean {
+  isConnectedToWorkerBlock(block: Block): boolean {
     this.workerBlockFlag = false;
     this.findWorkerBlock(block);
     return this.workerBlockFlag;
