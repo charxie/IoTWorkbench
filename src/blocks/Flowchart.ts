@@ -36,6 +36,7 @@ import {ComplexNumberBlock} from "./ComplexNumberBlock";
 import {ActionBlock} from "./ActionBlock";
 import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
 import {GlobalBlock} from "./GlobalBlock";
+import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
 
 export class Flowchart {
 
@@ -444,6 +445,27 @@ export class Flowchart {
         break;
       case "Bundled Functions Block":
         block = new BundledFunctionsBlock(uid, x, y, 60, 100);
+        break;
+      case "Bitwise AND Block":
+        block = new BitwiseOperatorBlock(uid, x, y, 60, 60, name, "&");
+        break;
+      case "Bitwise OR Block":
+        block = new BitwiseOperatorBlock(uid, x, y, 60, 60, name, "|");
+        break;
+      case "Bitwise XOR Block":
+        block = new BitwiseOperatorBlock(uid, x, y, 60, 60, name, "^");
+        break;
+      case "Bitwise NOT Block":
+        block = new BitwiseOperatorBlock(uid, x, y, 60, 60, name, "~");
+        break;
+      case "Bitwise Left Shift Block":
+        block = new BitwiseOperatorBlock(uid, x, y, 80, 60, name, "<<");
+        break;
+      case "Bitwise Signed Right Shift Block":
+        block = new BitwiseOperatorBlock(uid, x, y, 80, 60, name, ">>");
+        break;
+      case "Bitwise Zero-Fill Right Shift Block":
+        block = new BitwiseOperatorBlock(uid, x, y, 80, 60, name, ">>>");
         break;
       case "NOT Block":
         block = new NegationBlock(uid, x, y, 60, 80);

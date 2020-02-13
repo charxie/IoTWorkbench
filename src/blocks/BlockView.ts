@@ -38,6 +38,7 @@ import {RgbaColorBlock} from "./RgbaColorBlock";
 import {ComplexNumberBlock} from "./ComplexNumberBlock";
 import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
 import {BlockUtilities} from "./BlockUtilities";
+import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
 
 export class BlockView {
 
@@ -169,6 +170,9 @@ export class BlockView {
             break;
           case "logic-not-block":
             b = that.addBlockUndoable(new NegationBlock("NOT Block #" + timestamp, x - 30, y - 40, 60, 80));
+            break;
+          case "bitwise-operator-and-block":
+            b = that.addBlockUndoable(new BitwiseOperatorBlock("Bitwise AND Block #" + timestamp, x - 30, y - 30, 60, 60, "Bitwise AND Block", "&"));
             break;
           case "arithmetic-add-block":
             b = that.addBlockUndoable(new ArithmeticBlock("Add Block #" + timestamp, x - 30, y - 30, 60, 60, "Add Block", "+"));

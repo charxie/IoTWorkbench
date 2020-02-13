@@ -57,6 +57,8 @@ import fern_generator_2 from "./examples/fern-generator-2.json";
 // @ts-ignore
 import logical_operators from "./examples/logical-operators.json";
 // @ts-ignore
+import bitwise_operators from "./examples/bitwise-operators.json";
+// @ts-ignore
 import arithmetic_operators from "./examples/arithmetic-operators.json";
 // @ts-ignore
 import global_variables from "./examples/global-variables.json";
@@ -109,6 +111,7 @@ export class Examples {
   constructor() {
 
     this.files.push({name: "Logical Operators", data: logical_operators});
+    this.files.push({name: "Bitwise Operators", data: bitwise_operators});
     this.files.push({name: "Arithmetic Operators", data: arithmetic_operators});
     this.files.push({name: "Global Variables", data: global_variables});
     this.files.push({name: "Series and Arrays", data: series_and_arrays});

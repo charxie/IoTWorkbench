@@ -31,10 +31,14 @@ import {ComplexNumberBlock} from "./ComplexNumberBlock";
 import {RainbowHatBlock} from "./RainbowHatBlock";
 import {BlockContextMenu} from "./ui/BlockContextMenu";
 import {Block} from "./Block";
+import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
 
 export class BlockUtilities {
 
   static getMenu(block: Block): BlockContextMenu {
+    if (block instanceof BitwiseOperatorBlock) {
+      return contextMenus.bitwiseOperatorBlock;
+    }
     if (block instanceof ArithmeticBlock) {
       return contextMenus.arithmeticBlock;
     }
@@ -117,6 +121,10 @@ export class BlockUtilities {
   }
 
   static getHtmlMenuElement(block: Block): HTMLMenuElement {
+    if (block instanceof BitwiseOperatorBlock) {
+      contextMenus.bitwiseOperatorBlock.block = block;
+      return document.getElementById("bitwise-operator-block-context-menu") as HTMLMenuElement;
+    }
     if (block instanceof ArithmeticBlock) {
       contextMenus.arithmeticBlock.block = block;
       return document.getElementById("arithmetic-block-context-menu") as HTMLMenuElement;

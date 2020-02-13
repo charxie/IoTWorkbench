@@ -27,6 +27,7 @@ import {RgbaColorBlock} from "../RgbaColorBlock";
 import {ComplexNumberBlock} from "../ComplexNumberBlock";
 import {ActionBlock} from "../ActionBlock";
 import {BundledFunctionsBlock} from "../BundledFunctionsBlock";
+import {BitwiseOperatorBlock} from "../BitwiseOperatorBlock";
 
 export class BlockElementsPanel {
 
@@ -39,6 +40,7 @@ export class BlockElementsPanel {
                 <table style="width: 100%">
                   <tr>
                   <td><canvas draggable="true" id="arithmetic-add-block" title="Arithmetic Operator" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="bitwise-operator-and-block" title="Bitwise Operator" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="logic-and-block" title="Logic Operator" width="45px" height="60px" style="left: 10px; cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="logic-not-block" title="Not Operator" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="unary-function-block" title="Unary Function" width="45px" height="60px" style="cursor: pointer;"/></td>
@@ -104,6 +106,7 @@ export class BlockElementsPanel {
     this.drawLogicBlock("AND Block", "AND", "logic-and-block");
     this.drawNegationBlock("logic-not-block");
     this.drawArithmeticBlock("Add Block", "+", "arithmetic-add-block");
+    this.drawBitwiseOperatorBlock("AND Block", "&", "bitwise-operator-and-block");
     this.drawToggleSwitch("Switch", "toggle-switch-block");
     this.drawMomentarySwitch("Momentary Switch", "momentary-switch-block");
     this.drawSlider("Slider", "slider-block");
@@ -255,6 +258,15 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new ItemSelector("Item Selector Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawBitwiseOperatorBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new BitwiseOperatorBlock("Bitwise Operator Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    block.setName(name);
     block.setIconic(true);
     block.draw(ctx);
   }
