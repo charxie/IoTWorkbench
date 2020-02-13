@@ -47,6 +47,10 @@ import brownian_motion_multiple_particles from "./examples/brownian-motion-multi
 // @ts-ignore
 import random_walk from "./examples/random-walk.json";
 // @ts-ignore
+import spirals from "./examples/spirals.json";
+// @ts-ignore
+import sunflower_vogel_model from "./examples/sunflower-vogel-model.json";
+// @ts-ignore
 import fern_generator_1 from "./examples/fern-generator-1.json";
 // @ts-ignore
 import fern_generator_2 from "./examples/fern-generator-2.json";
@@ -128,6 +132,8 @@ export class Examples {
     this.files.push({name: "Parametric Equations 2", data: parametric_equations_2});
     this.files.push({name: "Parametric Generator 1", data: parametric_generator_1});
     this.files.push({name: "Parametric Generator 2", data: parametric_generator_2});
+    this.files.push({name: "Spirals", data: spirals});
+    this.files.push({name: "Sunflower Pattern", data: sunflower_vogel_model});
     this.files.push({name: "Logistic Population Model", data: logistic_population_equation});
     this.files.push({name: "Predator-Prey Equations", data: predator_prey_equations});
     this.files.push({name: "Competitive Lotka-Volterra Equations", data: competitive_lotka_volterra_equations});
