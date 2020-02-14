@@ -98,7 +98,7 @@ export const flowchart = new Flowchart();
 export const user = new User("Charles", null, "Xie");
 export const contextMenus: any = {};
 export const sound = new Sound();
-export const math = create(all);
+export const math = create(all, {});
 export const undoManager = new UndoManager();
 
 export function closeAllContextMenus() {

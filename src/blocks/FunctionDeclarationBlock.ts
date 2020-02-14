@@ -4,6 +4,7 @@
 
 import {Block} from "./Block";
 import {flowchart} from "../Main";
+import {Util} from "../Util";
 
 export class FunctionDeclarationBlock extends Block {
 
@@ -92,7 +93,11 @@ export class FunctionDeclarationBlock extends Block {
       ctx.font = "Italic 9px Times New Roman";
       this.drawText(this.symbol ? this.symbol : this.name, ctx);
     } else {
-      ctx.font = "Italic 16px Times New Roman";
+      if (Util.getOS() == "Android") {
+        ctx.font = this.iconic ? "italic 9px Noto Serif" : "italic 16px Noto Serif";
+      } else {
+        ctx.font = this.iconic ? "italic 9px Times New Roman" : "italic 16px Times New Roman";
+      }
       let s = this.symbol ? this.symbol : this.name;
       this.drawText(s + "(" + this.variableName + ")" + " = " + this.expression, ctx);
     }

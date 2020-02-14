@@ -22,8 +22,24 @@ export abstract class FunctionBlock extends Block {
 
   useDeclaredFunctions() {
     let exp = this.expression;
+    const pattern = /[a-z][a-z0-9']*\([a-z0-9]+\)/g;
+    const result = exp.match(pattern);
+    if (result == null || result.length == 0) return; // no declared function found in the expression
     Object.keys(flowchart.declaredFunctions).forEach(e => {
-      exp = exp.replace(e, "(" + flowchart.declaredFunctions[e] + ")");
+      let i = e.indexOf("(");
+      let j = e.indexOf(")");
+      let functionName1 = e.substring(0, i);
+      let variableName1 = e.substring(i + 1, j);
+      for (let fun of result) {
+        i = fun.indexOf("(");
+        let functionName2 = fun.substring(0, i);
+        if (functionName1 === functionName2) {
+          j = fun.indexOf(")");
+          let variableName2 = fun.substring(i + 1, j);
+          let fun2 = (<String>flowchart.declaredFunctions[e]).replace(new RegExp(variableName1, "g"), variableName2);
+          exp = exp.replace(fun, "(" + fun2 + ")");
+        }
+      }
     });
     // handle derivatives
     if (this.expression.indexOf("'") != -1) {
@@ -32,12 +48,14 @@ export abstract class FunctionBlock extends Block {
           let i = e.indexOf("(");
           if (i > 0) {
             let j = e.indexOf(")");
-            let variable = e.substr(i + 1, j - i - 1);
+            let variable = e.substring(i + 1, j);
             let s = e.slice(0, i) + "'''" + e.slice(i);
-            let firstOrderDerivative = math.derivative(flowchart.declaredFunctions[e], variable).toString();
-            let secondOrderDerivative = math.derivative(firstOrderDerivative, variable).toString();
-            let thirdOrderDerivative = math.derivative(secondOrderDerivative, variable).toString();
-            exp = exp.replace(s, "(" + thirdOrderDerivative + ")");
+            if (exp.indexOf(s) != -1) {
+              let firstOrderDerivative = math.derivative(flowchart.declaredFunctions[e], variable).toString();
+              let secondOrderDerivative = math.derivative(firstOrderDerivative, variable).toString();
+              let thirdOrderDerivative = math.derivative(secondOrderDerivative, variable).toString();
+              exp = exp.replace(s, "(" + thirdOrderDerivative + ")");
+            }
           }
         });
       }
@@ -46,11 +64,13 @@ export abstract class FunctionBlock extends Block {
           let i = e.indexOf("(");
           if (i > 0) {
             let j = e.indexOf(")");
-            let variable = e.substr(i + 1, j - i - 1);
+            let variable = e.substring(i + 1, j);
             let s = e.slice(0, i) + "''" + e.slice(i);
-            let firstOrderDerivative = math.derivative(flowchart.declaredFunctions[e], variable).toString();
-            let secondOrderDerivative = math.derivative(firstOrderDerivative, variable).toString();
-            exp = exp.replace(s, "(" + secondOrderDerivative + ")");
+            if (exp.indexOf(s) != -1) {
+              let firstOrderDerivative = math.derivative(flowchart.declaredFunctions[e], variable).toString();
+              let secondOrderDerivative = math.derivative(firstOrderDerivative, variable).toString();
+              exp = exp.replace(s, "(" + secondOrderDerivative + ")");
+            }
           }
         });
       }
@@ -58,17 +78,18 @@ export abstract class FunctionBlock extends Block {
         let i = e.indexOf("(");
         if (i > 0) {
           let j = e.indexOf(")");
-          let variable = e.substr(i + 1, j - i - 1);
+          let variable = e.substring(i + 1, j);
           let s = e.slice(0, i) + "'" + e.slice(i);
-          let derivative = math.derivative(flowchart.declaredFunctions[e], variable).toString();
-          exp = exp.replace(s, "(" + derivative + ")");
+          if (exp.indexOf(s) != -1) {
+            let derivative = math.derivative(flowchart.declaredFunctions[e], variable).toString();
+            exp = exp.replace(s, "(" + derivative + ")");
+          }
         }
       });
     }
     if (exp !== this.expression) {
       this.code = math.parse(exp).compile();
     }
-    //console.log(exp)
   }
 
   protected createParser(): void {

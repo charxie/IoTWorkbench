@@ -119,7 +119,6 @@ export class Examples {
     this.files.push({name: "Series and Arrays", data: series_and_arrays});
     this.files.push({name: "Complex Numbers", data: complex_numbers});
     this.files.push({name: "Arithmetic Operators for Complex Numbers", data: arithmetic_operators_for_complex_numbers});
-    this.files.push({name: "Derivatives", data: derivatives});
     this.files.push({name: "Workers", data: workers});
     this.files.push({name: "Toggle Switch vs. Momentary Switch", data: toggle_vs_momentary_switch});
     this.files.push({name: "Turnout Switch", data: turnout_switch});
@@ -130,6 +129,7 @@ export class Examples {
     this.files.push({name: "Binary Functions", data: binary_functions});
     this.files.push({name: "Multivariable Functions", data: multivariable_functions});
     this.files.push({name: "Heart Function", data: heart_function});
+    this.files.push({name: "Derivatives", data: derivatives});
     this.files.push({name: "Root-Finding: Bisection Method", data: root_finding_bisection_method});
     this.files.push({name: "Root-Finding: Newton-Raphson Method", data: root_finding_newton_raphson});
     this.files.push({name: "Make Sound with Beepers", data: make_sound_with_beepers});
