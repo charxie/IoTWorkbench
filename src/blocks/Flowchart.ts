@@ -42,8 +42,8 @@ import {FunctionBlock} from "./FunctionBlock";
 
 export class Flowchart {
 
-  functionDeclarations = {};
-  functionCodes = {};
+  declaredFunctions = {};
+  declaredFunctionCodes = {};
   globalVariables = {};
   blocks: Block[] = [];
   connectors: PortConnector[] = [];
@@ -214,8 +214,8 @@ export class Flowchart {
   /* function declarations */
 
   updateFunctionDeclaration(name: string, expression: string): void {
-    this.functionDeclarations[name] = expression;
-    this.functionCodes[name] = math.parse(expression).compile();
+    this.declaredFunctions[name] = expression;
+    this.declaredFunctionCodes[name] = math.parse(expression).compile();
   }
 
   useDeclaredFunctions() {
@@ -227,8 +227,8 @@ export class Flowchart {
   }
 
   removeFunctionDeclaration(name: string): void {
-    delete this.functionDeclarations[name];
-    delete this.functionCodes[name];
+    delete this.declaredFunctions[name];
+    delete this.declaredFunctionCodes[name];
   }
 
   /* global variables */
@@ -693,8 +693,8 @@ export class Flowchart {
 
   clear(): void {
     this.destroy();
-    Util.clearObject(this.functionDeclarations);
-    Util.clearObject(this.functionCodes);
+    Util.clearObject(this.declaredFunctions);
+    Util.clearObject(this.declaredFunctionCodes);
     Util.clearObject(this.globalVariables);
     this.blocks.length = 0;
     this.connectors.length = 0;

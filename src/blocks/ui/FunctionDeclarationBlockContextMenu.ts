@@ -7,7 +7,6 @@ import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
 import {FunctionDeclarationBlock} from "../FunctionDeclarationBlock";
-import {FunctionBlock} from "../FunctionBlock";
 
 export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
 
@@ -100,6 +99,7 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
+      variableNameInputElement.addEventListener("keyup", enterKeyUp);
       functionNameInputElement.addEventListener("keyup", enterKeyUp);
       expressionInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);

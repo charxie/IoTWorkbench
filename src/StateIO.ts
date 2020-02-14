@@ -32,7 +32,6 @@ import {RgbaColorBlock} from "./blocks/RgbaColorBlock";
 import {ComplexNumberBlock} from "./blocks/ComplexNumberBlock";
 import {BundledFunctionsBlock} from "./blocks/BundledFunctionsBlock";
 import {FunctionDeclarationBlock} from "./blocks/FunctionDeclarationBlock";
-import {FunctionBlock} from "./blocks/FunctionBlock";
 
 export class StateIO {
 
@@ -226,8 +225,8 @@ export class StateIO {
   }
 
   static restoreFunctionDeclarations(): void {
-    Util.clearObject(flowchart.functionDeclarations);
-    Util.clearObject(flowchart.functionCodes);
+    Util.clearObject(flowchart.declaredFunctions);
+    Util.clearObject(flowchart.declaredFunctionCodes);
     for (let b of flowchart.blocks) {
       if (b instanceof FunctionDeclarationBlock) {
         flowchart.updateFunctionDeclaration(b.getKey(), b.getExpression());

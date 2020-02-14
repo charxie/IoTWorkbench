@@ -65,7 +65,6 @@ import {ComplexNumberBlockContextMenu} from "./blocks/ui/ComplexNumberBlockConte
 import {ActionBlockContextMenu} from "./blocks/ui/ActionBlockContextMenu";
 import {BundledFunctionsBlockContextMenu} from "./blocks/ui/BundledFunctionsBlockContextMenu";
 import {BitwiseOperatorBlockContextMenu} from "./blocks/ui/BitwiseOperatorBlockContextMenu";
-import {FunctionDeclarationBlock} from "./blocks/FunctionDeclarationBlock";
 import {FunctionDeclarationBlockContextMenu} from "./blocks/ui/FunctionDeclarationBlockContextMenu";
 
 declare global {
@@ -99,7 +98,7 @@ export const flowchart = new Flowchart();
 export const user = new User("Charles", null, "Xie");
 export const contextMenus: any = {};
 export const sound = new Sound();
-export const math = create(all, {});
+export const math = create(all);
 export const undoManager = new UndoManager();
 
 export function closeAllContextMenus() {
