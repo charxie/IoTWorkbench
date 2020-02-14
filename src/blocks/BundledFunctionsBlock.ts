@@ -12,7 +12,6 @@ export class BundledFunctionsBlock extends Block {
 
   private inputName: string = "x";
   private expressions: string[] = ["cos(x)", "sin(x)", "tan(x)"];
-  private nodes;
   private codes;
 
   private readonly portI: Port;
@@ -90,6 +89,9 @@ export class BundledFunctionsBlock extends Block {
 
   setExpressions(expressions: any[]): void {
     this.expressions = JSON.parse(JSON.stringify(expressions));
+    for (let i = 0; i < this.expressions.length; i++) {
+      this.expressions[i] = this.expressions[i].replace(/\s/g, "");
+    }
     this.setOutputPorts();
     this.refreshView();
     this.createParsers();
@@ -123,13 +125,11 @@ export class BundledFunctionsBlock extends Block {
   }
 
   private createParsers(): void {
-    if (this.nodes === undefined || this.nodes.length !== this.expressions.length) {
-      this.nodes = new Array(this.expressions.length);
+    if (this.codes === undefined || this.codes.length !== this.expressions.length) {
       this.codes = new Array(this.expressions.length);
     }
     for (let i = 0; i < this.expressions.length; i++) {
-      this.nodes[i] = math.parse(this.expressions[i]);
-      this.codes[i] = this.nodes[i].compile();
+      this.codes[i] = math.parse(this.expressions[i]).compile();
     }
   }
 

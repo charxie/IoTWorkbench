@@ -5,14 +5,15 @@
 import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
-import {UnaryFunctionBlock} from "../UnaryFunctionBlock";
 import {Util} from "../../Util";
+import {FunctionDeclarationBlock} from "../FunctionDeclarationBlock";
+import {FunctionBlock} from "../FunctionBlock";
 
-export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
+export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "unary-function-block-context-menu";
+    this.id = "function-declaration-block-context-menu";
   }
 
   getPropertiesUI(): string {
@@ -20,19 +21,23 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Variable Name (e.g. x):</td>
-                  <td><input type="text" id="unary-function-block-variable-name-field" style="width: 100%"></td>
+                  <td><input type="text" id="function-declaration-block-variable-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Expression (e.g. sin(x)):</td>
-                  <td><input type="text" id="unary-function-block-expression-field" style="width: 100%"></td>
+                  <td>Function Name (e.g., f):</td>
+                  <td><input type="text" id="function-declaration-block-function-name-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Expression:</td>
+                  <td><input type="text" id="function-declaration-block-expression-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="unary-function-block-width-field" style="width: 100%"></td>
+                  <td><input type="text" id="function-declaration-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="unary-function-block-height-field" style="width: 100%"></td>
+                  <td><input type="text" id="function-declaration-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -41,16 +46,18 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof UnaryFunctionBlock) {
+    if (this.block instanceof FunctionDeclarationBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let variableNameInputElement = document.getElementById("unary-function-block-variable-name-field") as HTMLInputElement;
+      let variableNameInputElement = document.getElementById("function-declaration-block-variable-name-field") as HTMLInputElement;
       variableNameInputElement.value = block.getVariableName() ? block.getVariableName() : "x";
-      let expressionInputElement = document.getElementById("unary-function-block-expression-field") as HTMLInputElement;
-      expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x";
-      let widthInputElement = document.getElementById("unary-function-block-width-field") as HTMLInputElement;
+      let functionNameInputElement = document.getElementById("function-declaration-block-function-name-field") as HTMLInputElement;
+      functionNameInputElement.value = block.getFunctionName() ? block.getFunctionName() : "f";
+      let expressionInputElement = document.getElementById("function-declaration-block-expression-field") as HTMLInputElement;
+      expressionInputElement.value = block.getExpression() ? block.getExpression() : "x";
+      let widthInputElement = document.getElementById("function-declaration-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("unary-function-block-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("function-declaration-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
         let success = true;
@@ -71,19 +78,16 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
-        block.setVariableName(variableNameInputElement.value);
-        block.setExpression(expressionInputElement.value);
-        block.useDeclaredFunctions();
-        try {
-          flowchart.updateResultsForBlock(block);
-        } catch (err) {
-          success = false;
-          message = expressionInputElement.value + " is not a valid expression.";
-        }
-        // finish up
+        // finish
         if (success) {
+          block.setVariableName(variableNameInputElement.value);
+          block.setFunctionName(functionNameInputElement.value);
+          block.setExpression(expressionInputElement.value);
+          flowchart.updateFunctionDeclaration(block.getKey(), block.getExpression());
+          flowchart.useDeclaredFunctions();
           block.refreshView();
           flowchart.blockView.requestDraw();
+          flowchart.updateResults(); // global variable must update the results globally
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');
@@ -96,7 +100,7 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
-      variableNameInputElement.addEventListener("keyup", enterKeyUp);
+      functionNameInputElement.addEventListener("keyup", enterKeyUp);
       expressionInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
@@ -104,8 +108,8 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 300,
-        width: 450,
+        height: 360,
+        width: 420,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

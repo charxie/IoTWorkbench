@@ -55,10 +55,9 @@ export class TurnoutSwitchContextMenu extends BlockContextMenu {
       const okFunction = function () {
         let success = true;
         let message;
-        // set variable name
         block.setVariableName(variableNameInputElement.value);
-        // set expression
         block.setExpression(expressionInputElement.value);
+        block.useDeclaredFunctions();
         try {
           flowchart.updateResultsForBlock(block);
         } catch (err) {

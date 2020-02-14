@@ -12,9 +12,7 @@ export class ParametricEquationBlock extends Block {
   private parameterName: string = "t";
   private expressionX: string = "cos(t)";
   private expressionY: string = "sin(t)";
-  private nodeX;
   private codeX;
-  private nodeY;
   private codeY;
 
   private readonly portT: Port;
@@ -80,7 +78,7 @@ export class ParametricEquationBlock extends Block {
   }
 
   setExpressionX(expressionX: string): void {
-    this.expressionX = expressionX;
+    this.expressionX = expressionX.replace(/\s/g, "");
     this.createParserX();
   }
 
@@ -89,7 +87,7 @@ export class ParametricEquationBlock extends Block {
   }
 
   setExpressionY(expressionY: string): void {
-    this.expressionY = expressionY;
+    this.expressionY = expressionY.replace(/\s/g, "");
     this.createParserY();
   }
 
@@ -98,13 +96,11 @@ export class ParametricEquationBlock extends Block {
   }
 
   private createParserX(): void {
-    this.nodeX = math.parse(this.expressionX);
-    this.codeX = this.nodeX.compile();
+    this.codeX = math.parse(this.expressionX).compile();
   }
 
   private createParserY(): void {
-    this.nodeY = math.parse(this.expressionY);
-    this.codeY = this.nodeY.compile();
+    this.codeY = math.parse(this.expressionY).compile();
   }
 
   refreshView(): void {

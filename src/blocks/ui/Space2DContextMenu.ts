@@ -70,13 +70,17 @@ export class Space2DContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Input Type:</td>
-                  <td><input type="radio" name="input" id="space2d-dual-input-radio-button" checked> Dual
-                      <input type="radio" name="input" id="space2d-point-input-radio-button"> Point</td>
+                  <td>
+                    <input type="radio" name="input" id="space2d-dual-input-radio-button" checked> Dual
+                    <input type="radio" name="input" id="space2d-point-input-radio-button"> Point
+                  </td>
                 </tr>
                 <tr>
                   <td>Scale:</td>
-                  <td><input type="radio" name="scale" id="space2d-auto-scale-radio-button" checked> Auto
-                      <input type="radio" name="scale" id="space2d-fixed-scale-radio-button"> Fixed</td>
+                  <td>
+                    <input type="radio" name="scale" id="space2d-auto-scale-radio-button" checked> Auto
+                    <input type="radio" name="scale" id="space2d-fixed-scale-radio-button"> Fixed
+                  </td>
                 </tr>
                 <tr>
                   <td>Minimum X Value:</td>

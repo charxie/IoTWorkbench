@@ -65,6 +65,8 @@ import {ComplexNumberBlockContextMenu} from "./blocks/ui/ComplexNumberBlockConte
 import {ActionBlockContextMenu} from "./blocks/ui/ActionBlockContextMenu";
 import {BundledFunctionsBlockContextMenu} from "./blocks/ui/BundledFunctionsBlockContextMenu";
 import {BitwiseOperatorBlockContextMenu} from "./blocks/ui/BitwiseOperatorBlockContextMenu";
+import {FunctionDeclarationBlock} from "./blocks/FunctionDeclarationBlock";
+import {FunctionDeclarationBlockContextMenu} from "./blocks/ui/FunctionDeclarationBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -212,6 +214,7 @@ window.onload = function () {
   StateIO.restoreAttachments(localStorage.getItem("Attachments"));
   StateIO.restoreBlockView(localStorage.getItem("Block View State"));
   StateIO.restoreBlocks(localStorage.getItem("Block States"));
+  StateIO.restoreFunctionDeclarations();
   StateIO.restoreGlobalVariables();
   StateIO.restoreWorkbench(localStorage.getItem("Workbench State"));
   StateIO.restoreConnectors(localStorage.getItem("Connector States")); // connectors must be restored after loading HATs
@@ -251,6 +254,11 @@ function setupContextMenuForBlock() {
   blockViewContextMenu.render("block-view-context-menu-placeholder");
   blockViewContextMenu.addListeners();
   contextMenus.blockView = blockViewContextMenu;
+
+  let functionDeclarationBlockContextMenu = new FunctionDeclarationBlockContextMenu();
+  functionDeclarationBlockContextMenu.render("function-declaration-block-context-menu-placeholder");
+  functionDeclarationBlockContextMenu.addListeners();
+  contextMenus.functionDeclarationBlock = functionDeclarationBlockContextMenu;
 
   let bitwiseOperatorBlockContextMenu = new BitwiseOperatorBlockContextMenu();
   bitwiseOperatorBlockContextMenu.render("bitwise-operator-block-context-menu-placeholder");

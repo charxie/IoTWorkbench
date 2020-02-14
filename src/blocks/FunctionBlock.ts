@@ -3,17 +3,16 @@
  */
 
 import {Block} from "./Block";
-import {math} from "../Main";
+import {flowchart, math} from "../Main";
 import {Util} from "../Util";
 
 export abstract class FunctionBlock extends Block {
 
   protected expression: string = "x";
-  protected node;
   protected code;
 
   setExpression(expression: string): void {
-    this.expression = expression;
+    this.expression = expression.replace(/\s/g, "");
     this.createParser();
   }
 
@@ -21,9 +20,19 @@ export abstract class FunctionBlock extends Block {
     return this.expression;
   }
 
+  useDeclaredFunctions() {
+    let exp = this.expression;
+    Object.keys(flowchart.functionDeclarations).forEach(e => {
+      exp = exp.replace(e, "(" + flowchart.functionDeclarations[e] + ")");
+    });
+    if (exp !== this.expression) {
+      this.code = math.parse(exp).compile();
+    }
+    //console.log(exp)
+  }
+
   protected createParser(): void {
-    this.node = math.parse(this.expression);
-    this.code = this.node.compile();
+    this.code = math.parse(this.expression).compile();
   }
 
   protected drawLabel(ctx: CanvasRenderingContext2D): void {

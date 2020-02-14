@@ -28,7 +28,7 @@ import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
-import {closeAllContextMenus, flowchart, system} from "../Main";
+import {closeAllContextMenus, flowchart, math, system} from "../Main";
 import {GlobalObjectBlock} from "./GlobalObjectBlock";
 import {RgbaColorBlock} from "./RgbaColorBlock";
 import {Util} from "../Util";
@@ -37,9 +37,13 @@ import {ActionBlock} from "./ActionBlock";
 import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
 import {GlobalBlock} from "./GlobalBlock";
 import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
+import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
+import {FunctionBlock} from "./FunctionBlock";
 
 export class Flowchart {
 
+  functionDeclarations = {};
+  functionCodes = {};
   globalVariables = {};
   blocks: Block[] = [];
   connectors: PortConnector[] = [];
@@ -205,6 +209,26 @@ export class Flowchart {
         b.erase();
       }
     }
+  }
+
+  /* function declarations */
+
+  updateFunctionDeclaration(name: string, expression: string): void {
+    this.functionDeclarations[name] = expression;
+    this.functionCodes[name] = math.parse(expression).compile();
+  }
+
+  useDeclaredFunctions() {
+    for (let b of this.blocks) {
+      if (b instanceof FunctionBlock) {
+        b.useDeclaredFunctions();
+      }
+    }
+  }
+
+  removeFunctionDeclaration(name: string): void {
+    delete this.functionDeclarations[name];
+    delete this.functionCodes[name];
   }
 
   /* global variables */
@@ -431,6 +455,9 @@ export class Flowchart {
   addBlock(name: string, x: number, y: number, uid: string): Block {
     let block: Block = null;
     switch (name) {
+      case "Function Declaration Block":
+        block = new FunctionDeclarationBlock(uid, name, "f", x, y, 60, 80);
+        break;
       case "Unary Function Block":
         block = new UnaryFunctionBlock(uid, x, y, 60, 80);
         break;
@@ -609,6 +636,8 @@ export class Flowchart {
         blockStates.push(new GlobalObjectBlock.State(b));
       } else if (b instanceof SeriesBlock) {
         blockStates.push(new SeriesBlock.State(b));
+      } else if (b instanceof FunctionDeclarationBlock) {
+        blockStates.push(new FunctionDeclarationBlock.State(b));
       } else if (b instanceof RgbaColorBlock) {
         blockStates.push(new RgbaColorBlock.State(b));
       } else if (b instanceof ComplexNumberBlock) {
@@ -664,6 +693,8 @@ export class Flowchart {
 
   clear(): void {
     this.destroy();
+    Util.clearObject(this.functionDeclarations);
+    Util.clearObject(this.functionCodes);
     Util.clearObject(this.globalVariables);
     this.blocks.length = 0;
     this.connectors.length = 0;

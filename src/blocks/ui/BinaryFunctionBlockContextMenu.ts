@@ -77,11 +77,10 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
-        // set variable names
         block.setVariable1Name(variable1NameInputElement.value);
         block.setVariable2Name(variable2NameInputElement.value);
-        // set expression
         block.setExpression(expressionInputElement.value);
+        block.useDeclaredFunctions();
         try {
           flowchart.updateResultsForBlock(block);
         } catch (err) {

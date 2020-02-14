@@ -32,10 +32,14 @@ import {RainbowHatBlock} from "./RainbowHatBlock";
 import {BlockContextMenu} from "./ui/BlockContextMenu";
 import {Block} from "./Block";
 import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
+import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
 
 export class BlockUtilities {
 
   static getMenu(block: Block): BlockContextMenu {
+    if (block instanceof FunctionDeclarationBlock) {
+      return contextMenus.functionDeclarationBlock;
+    }
     if (block instanceof BitwiseOperatorBlock) {
       return contextMenus.bitwiseOperatorBlock;
     }
@@ -121,6 +125,10 @@ export class BlockUtilities {
   }
 
   static getHtmlMenuElement(block: Block): HTMLMenuElement {
+    if (block instanceof FunctionDeclarationBlock) {
+      contextMenus.functionDeclarationBlock.block = block;
+      return document.getElementById("function-declaration-block-context-menu") as HTMLMenuElement;
+    }
     if (block instanceof BitwiseOperatorBlock) {
       contextMenus.bitwiseOperatorBlock.block = block;
       return document.getElementById("bitwise-operator-block-context-menu") as HTMLMenuElement;

@@ -20,6 +20,7 @@ export class GlobalVariableBlock extends GlobalBlock {
     readonly key: string;
     readonly value: any;
     readonly initialValue: any;
+    readonly showValue: boolean;
     readonly uid: string;
     readonly x: number;
     readonly y: number;
@@ -31,6 +32,7 @@ export class GlobalVariableBlock extends GlobalBlock {
       this.key = block.key;
       this.value = block.value;
       this.initialValue = block.initialValue;
+      this.showValue = block.showValue;
       this.uid = block.uid;
       this.x = block.x;
       this.y = block.y;
@@ -57,6 +59,7 @@ export class GlobalVariableBlock extends GlobalBlock {
     copy.key = this.key;
     copy.value = this.value;
     copy.initialValue = this.initialValue;
+    copy.showValue = this.showValue;
     return copy;
   }
 
@@ -120,6 +123,25 @@ export class GlobalVariableBlock extends GlobalBlock {
     }
     this.portO.setValue(x);
     this.updateConnectors();
+  }
+
+  protected drawLabel(ctx: CanvasRenderingContext2D): void {
+    if (this.iconic) {
+      ctx.font = "9px Times";
+      this.drawText(this.symbol ? this.symbol : this.name, ctx);
+    } else {
+      ctx.font = "16px Times";
+      let s = this.symbol ? this.symbol : this.name;
+      if (this.showValue) {
+        if (typeof this.value == "number") {
+          this.drawText(s + " = " + this.value.toPrecision(3), ctx);
+        } else {
+          this.drawText(s + " = " + this.value, ctx);
+        }
+      } else {
+        this.drawText(s, ctx);
+      }
+    }
   }
 
 }

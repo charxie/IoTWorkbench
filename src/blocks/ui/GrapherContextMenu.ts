@@ -55,8 +55,10 @@ export class GrapherContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Scale:</td>
-                  <td><input type="radio" name="scale" id="grapher-auto-scale-radio-button" checked> Auto
-                      <input type="radio" name="scale" id="grapher-fixed-scale-radio-button"> Fixed</td>
+                  <td>
+                    <input type="radio" name="scale" id="grapher-auto-scale-radio-button" checked> Auto
+                    <input type="radio" name="scale" id="grapher-fixed-scale-radio-button"> Fixed
+                  </td>
                 </tr>
                 <tr>
                   <td>Data Ports:</td>

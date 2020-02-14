@@ -28,6 +28,7 @@ import {ComplexNumberBlock} from "../ComplexNumberBlock";
 import {ActionBlock} from "../ActionBlock";
 import {BundledFunctionsBlock} from "../BundledFunctionsBlock";
 import {BitwiseOperatorBlock} from "../BitwiseOperatorBlock";
+import {FunctionDeclarationBlock} from "../FunctionDeclarationBlock";
 
 export class BlockElementsPanel {
 
@@ -74,6 +75,7 @@ export class BlockElementsPanel {
                   <tr>
                   <td><canvas draggable="true" id="global-variable-block" title="Global Variable" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="global-object-block" title="Global Object" width="45x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="function-declaration-block" title="Function Declaration" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="series-block" title="Series" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="rgba-color-block" title="RGBA Color" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="complex-number-block" title="Complex Number" width="45x" height="60px" style="cursor: pointer;"/></td>
@@ -117,6 +119,7 @@ export class BlockElementsPanel {
     this.drawSpace2D("Space2D", "space2d-block");
     this.drawGlobalVariableBlock("Global Variable Block", "var", "global-variable-block");
     this.drawGlobalObjectBlock("Global Object Block", "obj", "global-object-block");
+    this.drawFunctionDeclarationBlock("Function Declaration Block", "obj", "function-declaration-block");
     this.drawSeriesBlock("Series Block", "Series", "series-block");
     this.drawRgbaColorBlock("Rgba Color Block", "RGBA", "rgba-color-block");
     this.drawComplexNumberBlock("Complext Number Block", "a+b*i", "complex-number-block");
@@ -124,6 +127,14 @@ export class BlockElementsPanel {
     this.drawSwitchStatementBlock("Switch Statement Block", "Switch", "switch-statement-block");
     this.drawWorkerBlock("Worker Block", "Worker", "worker-block");
     this.drawActionBlock("Action Block", "Action", "action-block");
+  }
+
+  private drawFunctionDeclarationBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new FunctionDeclarationBlock("Function Declaration Block Icon", "Function Declaration", "F", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
   }
 
   private drawActionBlock(name: string, symbol: string, canvasId: string): void {

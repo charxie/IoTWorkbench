@@ -39,6 +39,7 @@ import {ComplexNumberBlock} from "./ComplexNumberBlock";
 import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
 import {BlockUtilities} from "./BlockUtilities";
 import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
+import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
 
 export class BlockView {
 
@@ -123,6 +124,9 @@ export class BlockView {
         let timestamp = Date.now().toString(16);
         let b = null;
         switch (that.draggedElementId) {
+          case "function-declaration-block":
+            b = that.addBlockUndoable(new FunctionDeclarationBlock("Function Declaration Block #" + timestamp, "Function Declaration Block", "f", x - 30, y - 40, 60, 80));
+            break;
           case "unary-function-block":
             b = that.addBlockUndoable(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;

@@ -31,6 +31,8 @@ import {RaspberryPi} from "./components/RaspberryPi";
 import {RgbaColorBlock} from "./blocks/RgbaColorBlock";
 import {ComplexNumberBlock} from "./blocks/ComplexNumberBlock";
 import {BundledFunctionsBlock} from "./blocks/BundledFunctionsBlock";
+import {FunctionDeclarationBlock} from "./blocks/FunctionDeclarationBlock";
+import {FunctionBlock} from "./blocks/FunctionBlock";
 
 export class StateIO {
 
@@ -66,11 +68,17 @@ export class StateIO {
           block.setValue(state.value);
           block.setSnapToTick(state.snapToTick);
           if (state.valuePrecision != undefined) block.setValuePrecision(state.valuePrecision);
+        } else if (block instanceof FunctionDeclarationBlock) {
+          block.setName(state.name);
+          block.setVariableName(state.variableName);
+          block.setFunctionName(state.functionName);
+          block.setExpression(state.expression);
         } else if (block instanceof GlobalVariableBlock) {
           block.setName(state.name);
           block.setKey(state.key);
           block.setValue(state.value);
           block.setInitialValue(state.initialValue);
+          block.setShowValue(state.showValue);
         } else if (block instanceof GlobalObjectBlock) {
           block.setName(state.name);
           block.setSymbol(state.symbol);
@@ -217,6 +225,17 @@ export class StateIO {
     }
   }
 
+  static restoreFunctionDeclarations(): void {
+    Util.clearObject(flowchart.functionDeclarations);
+    Util.clearObject(flowchart.functionCodes);
+    for (let b of flowchart.blocks) {
+      if (b instanceof FunctionDeclarationBlock) {
+        flowchart.updateFunctionDeclaration(b.getKey(), b.getExpression());
+      }
+    }
+    flowchart.useDeclaredFunctions();
+  }
+
   static restoreBlockView(s: string): void {
     if (s == null) {
       flowchart.blockView.setBackgroundColor("#d4d0c8");
@@ -322,6 +341,7 @@ export class StateIO {
     this.restoreAttachments(JSON.stringify(s.attachmentStates));
     this.restoreBlockView(JSON.stringify(s.blockViewState));
     this.restoreBlocks(JSON.stringify(s.blockStates));
+    this.restoreFunctionDeclarations();
     this.restoreGlobalVariables();
     this.restoreConnectors(JSON.stringify(s.connectorStates));
   }

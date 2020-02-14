@@ -31,6 +31,13 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="global-variable-initial-value-field" style="width: 120px"></td>
                 </tr>
                 <tr>
+                  <td>Show Value:</td>
+                  <td>
+                    <input type="radio" name="show-value" id="global-variable-show-value-no-radio-button" checked> No
+                    <input type="radio" name="show-value" id="global-variable-show-value-yes-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="global-variable-block-width-field" style="width: 120px"></td>
                 </tr>
@@ -54,11 +61,16 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
       valueInputElement.value = block.getValue() ? block.getValue().toString() : 0;
       let initialValueInputElement = document.getElementById("global-variable-initial-value-field") as HTMLInputElement;
       initialValueInputElement.value = block.getInitialValue() ? block.getInitialValue().toString() : undefined;
+      let showValueNoRadioButton = document.getElementById("global-variable-show-value-no-radio-button") as HTMLInputElement;
+      showValueNoRadioButton.checked = !block.getShowValue();
+      let showValueYesRadioButton = document.getElementById("global-variable-show-value-yes-radio-button") as HTMLInputElement;
+      showValueYesRadioButton.checked = block.getShowValue();
       let widthInputElement = document.getElementById("global-variable-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("global-variable-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
+        block.setShowValue(showValueYesRadioButton.checked);
         let success = true;
         let message;
         // set width
@@ -109,7 +121,7 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 360,
+        height: 400,
         width: 360,
         buttons: {
           'OK': okFunction,

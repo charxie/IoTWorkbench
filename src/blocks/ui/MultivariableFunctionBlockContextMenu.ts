@@ -81,8 +81,8 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
             message = variablesInputElement.value + " is not a valid array for variables";
           }
         }
-        // set expression
         block.setExpression(expressionInputElement.value);
+        block.useDeclaredFunctions();
         try {
           flowchart.updateResultsForBlock(block);
         } catch (err) {
