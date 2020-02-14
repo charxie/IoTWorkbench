@@ -22,7 +22,7 @@ export abstract class FunctionBlock extends Block {
 
   useDeclaredFunctions() {
     let exp = this.expression;
-    const pattern = /[a-z][a-z0-9']*\([a-z0-9]+\)/g;
+    const pattern = /[a-z][a-z0-9]*[']*\([a-z0-9]+\)/g;
     const result = exp.match(pattern);
     if (result == null || result.length == 0) return; // no declared function found in the expression
     Object.keys(flowchart.declaredFunctions).forEach(e => {
@@ -43,49 +43,66 @@ export abstract class FunctionBlock extends Block {
     });
     // handle derivatives
     if (this.expression.indexOf("'") != -1) {
-      if (this.expression.indexOf("'''") != -1) {
-        Object.keys(flowchart.declaredFunctions).forEach(e => {
-          let i = e.indexOf("(");
-          if (i > 0) {
-            let j = e.indexOf(")");
-            let variable = e.substring(i + 1, j);
-            let s = e.slice(0, i) + "'''" + e.slice(i);
-            if (exp.indexOf(s) != -1) {
-              let firstOrderDerivative = math.derivative(flowchart.declaredFunctions[e], variable).toString();
-              let secondOrderDerivative = math.derivative(firstOrderDerivative, variable).toString();
-              let thirdOrderDerivative = math.derivative(secondOrderDerivative, variable).toString();
-              exp = exp.replace(s, "(" + thirdOrderDerivative + ")");
-            }
-          }
-        });
-      }
-      if (this.expression.indexOf("''") != -1) {
-        Object.keys(flowchart.declaredFunctions).forEach(e => {
-          let i = e.indexOf("(");
-          if (i > 0) {
-            let j = e.indexOf(")");
-            let variable = e.substring(i + 1, j);
-            let s = e.slice(0, i) + "''" + e.slice(i);
-            if (exp.indexOf(s) != -1) {
-              let firstOrderDerivative = math.derivative(flowchart.declaredFunctions[e], variable).toString();
-              let secondOrderDerivative = math.derivative(firstOrderDerivative, variable).toString();
-              exp = exp.replace(s, "(" + secondOrderDerivative + ")");
-            }
-          }
-        });
-      }
       Object.keys(flowchart.declaredFunctions).forEach(e => {
         let i = e.indexOf("(");
-        if (i > 0) {
-          let j = e.indexOf(")");
-          let variable = e.substring(i + 1, j);
-          let s = e.slice(0, i) + "'" + e.slice(i);
-          if (exp.indexOf(s) != -1) {
-            let derivative = math.derivative(flowchart.declaredFunctions[e], variable).toString();
-            exp = exp.replace(s, "(" + derivative + ")");
+        let j = e.indexOf(")");
+        let functionName1 = e.substring(0, i) + "'";
+        let variableName1 = e.substring(i + 1, j);
+        for (let fun of result) {
+          i = fun.indexOf("(");
+          let functionName2 = fun.substring(0, i);
+          if (functionName1 === functionName2) {
+            j = fun.indexOf(")");
+            let variableName2 = fun.substring(i + 1, j);
+            let fun2 = (<String>flowchart.declaredFunctions[e]).replace(new RegExp(variableName1, "g"), variableName2);
+            let derivative = math.derivative(fun2, variableName2).toString();
+            exp = exp.replace(fun, "(" + derivative + ")");
           }
         }
       });
+      if (this.expression.indexOf("''") != -1) {
+        Object.keys(flowchart.declaredFunctions).forEach(e => {
+          let i = e.indexOf("(");
+          let j = e.indexOf(")");
+          let functionName1 = e.substring(0, i) + "''";
+          let variableName1 = e.substring(i + 1, j);
+          for (let fun of result) {
+            i = fun.indexOf("(");
+            let functionName2 = fun.substring(0, i);
+            if (functionName1 === functionName2) {
+              j = fun.indexOf(")");
+              let variableName2 = fun.substring(i + 1, j);
+              let fun2 = (<String>flowchart.declaredFunctions[e]).replace(new RegExp(variableName1, "g"), variableName2);
+              let firstOrderDerivative = math.derivative(fun2, variableName2).toString();
+              let secondOrderDerivative = math.derivative(firstOrderDerivative, variableName2).toString();
+              exp = exp.replace(fun, "(" + secondOrderDerivative + ")");
+            }
+          }
+        });
+      }
+      if (this.expression.indexOf("'''") != -1) {
+        Object.keys(flowchart.declaredFunctions).forEach(e => {
+          Object.keys(flowchart.declaredFunctions).forEach(e => {
+            let i = e.indexOf("(");
+            let j = e.indexOf(")");
+            let functionName1 = e.substring(0, i) + "'''";
+            let variableName1 = e.substring(i + 1, j);
+            for (let fun of result) {
+              i = fun.indexOf("(");
+              let functionName2 = fun.substring(0, i);
+              if (functionName1 === functionName2) {
+                j = fun.indexOf(")");
+                let variableName2 = fun.substring(i + 1, j);
+                let fun2 = (<String>flowchart.declaredFunctions[e]).replace(new RegExp(variableName1, "g"), variableName2);
+                let firstOrderDerivative = math.derivative(fun2, variableName2).toString();
+                let secondOrderDerivative = math.derivative(firstOrderDerivative, variableName2).toString();
+                let thirdOrderDerivative = math.derivative(secondOrderDerivative, variableName2).toString();
+                exp = exp.replace(fun, "(" + thirdOrderDerivative + ")");
+              }
+            }
+          });
+        });
+      }
     }
     if (exp !== this.expression) {
       this.code = math.parse(exp).compile();
