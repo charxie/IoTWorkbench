@@ -27,6 +27,20 @@ export abstract class FunctionBlock extends Block {
     });
     // handle derivatives
     if (this.expression.indexOf("'") != -1) {
+      if (this.expression.indexOf("'''") != -1) {
+        Object.keys(flowchart.declaredFunctions).forEach(e => {
+          let i = e.indexOf("(");
+          if (i > 0) {
+            let j = e.indexOf(")");
+            let variable = e.substr(i + 1, j - i - 1);
+            let s = e.slice(0, i) + "'''" + e.slice(i);
+            let firstOrderDerivative = math.derivative(flowchart.declaredFunctions[e], variable).toString();
+            let secondOrderDerivative = math.derivative(firstOrderDerivative, variable).toString();
+            let thirdOrderDerivative = math.derivative(secondOrderDerivative, variable).toString();
+            exp = exp.replace(s, "(" + thirdOrderDerivative + ")");
+          }
+        });
+      }
       if (this.expression.indexOf("''") != -1) {
         Object.keys(flowchart.declaredFunctions).forEach(e => {
           let i = e.indexOf("(");
@@ -35,8 +49,8 @@ export abstract class FunctionBlock extends Block {
             let variable = e.substr(i + 1, j - i - 1);
             let s = e.slice(0, i) + "''" + e.slice(i);
             let firstOrderDerivative = math.derivative(flowchart.declaredFunctions[e], variable).toString();
-            let secondOrderDivative = math.derivative(firstOrderDerivative, variable).toString();
-            exp = exp.replace(s, "(" + secondOrderDivative + ")");
+            let secondOrderDerivative = math.derivative(firstOrderDerivative, variable).toString();
+            exp = exp.replace(s, "(" + secondOrderDerivative + ")");
           }
         });
       }

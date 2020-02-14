@@ -89,10 +89,10 @@ export class FunctionDeclarationBlock extends Block {
 
   protected drawLabel(ctx: CanvasRenderingContext2D): void {
     if (this.iconic) {
-      ctx.font = "9px Times";
+      ctx.font = "Italic 9px Times New Roman";
       this.drawText(this.symbol ? this.symbol : this.name, ctx);
     } else {
-      ctx.font = "16px Times";
+      ctx.font = "Italic 16px Times New Roman";
       let s = this.symbol ? this.symbol : this.name;
       this.drawText(s + "(" + this.variableName + ")" + " = " + this.expression, ctx);
     }
