@@ -60,6 +60,7 @@ export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
         if (JSON.stringify(block.getExpressions()) != expressionsInputElement.value) {
           try {
             block.setExpressions(JSON.parse(expressionsInputElement.value));
+            block.useDeclaredFunctions();
           } catch (err) {
             console.log(err.stack);
             success = false;

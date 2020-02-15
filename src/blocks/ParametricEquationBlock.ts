@@ -95,6 +95,17 @@ export class ParametricEquationBlock extends Block {
     return this.expressionY;
   }
 
+  useDeclaredFunctions() {
+    let exp = flowchart.replaceWithDeclaredFunctions(this.expressionX);
+    if (exp != this.expressionX) {
+      this.codeX = math.parse(exp).compile();
+    }
+    exp = flowchart.replaceWithDeclaredFunctions(this.expressionY);
+    if (exp != this.expressionY) {
+      this.codeY = math.parse(exp).compile();
+    }
+  }
+
   private createParserX(): void {
     this.codeX = math.parse(this.expressionX).compile();
   }

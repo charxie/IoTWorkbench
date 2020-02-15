@@ -124,6 +124,15 @@ export class BundledFunctionsBlock extends Block {
     }
   }
 
+  useDeclaredFunctions() {
+    for (let i = 0; i < this.expressions.length; i++) {
+      let exp = flowchart.replaceWithDeclaredFunctions(this.expressions[i]);
+      if (exp != this.expressions[i]) {
+        this.codes[i] = math.parse(exp).compile();
+      }
+    }
+  }
+
   private createParsers(): void {
     if (this.codes === undefined || this.codes.length !== this.expressions.length) {
       this.codes = new Array(this.expressions.length);

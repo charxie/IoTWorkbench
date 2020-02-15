@@ -220,10 +220,95 @@ export class Flowchart {
 
   useDeclaredFunctions() {
     for (let b of this.blocks) {
-      if (b instanceof FunctionBlock) {
+      if (b instanceof FunctionBlock || b instanceof BundledFunctionsBlock || b instanceof ParametricEquationBlock) {
         b.useDeclaredFunctions();
       }
     }
+  }
+
+  replaceWithDeclaredFunctions(expression: string): string {
+    let exp = expression;
+    const pattern = /[a-z][a-z0-9]*[']*\([a-z0-9]+\)/g;
+    const result = exp.match(pattern);
+    if (result == null || result.length == 0) return exp; // no declared function found in the expression
+    Object.keys(this.declaredFunctions).forEach(e => {
+      let i = e.indexOf("(");
+      let j = e.indexOf(")");
+      let functionName1 = e.substring(0, i);
+      let variableName1 = e.substring(i + 1, j);
+      for (let fun of result) {
+        i = fun.indexOf("(");
+        let functionName2 = fun.substring(0, i);
+        if (functionName1 === functionName2) {
+          j = fun.indexOf(")");
+          let variableName2 = fun.substring(i + 1, j);
+          let fun2 = (<String>this.declaredFunctions[e]).replace(new RegExp(variableName1, "g"), variableName2);
+          exp = exp.replace(fun, "(" + fun2 + ")");
+        }
+      }
+    });
+    // handle derivatives
+    if (expression.indexOf("'") != -1) {
+      Object.keys(this.declaredFunctions).forEach(e => {
+        let i = e.indexOf("(");
+        let j = e.indexOf(")");
+        let functionName1 = e.substring(0, i) + "'";
+        let variableName1 = e.substring(i + 1, j);
+        for (let fun of result) {
+          i = fun.indexOf("(");
+          let functionName2 = fun.substring(0, i);
+          if (functionName1 === functionName2) {
+            j = fun.indexOf(")");
+            let variableName2 = fun.substring(i + 1, j);
+            let fun2 = (<String>this.declaredFunctions[e]).replace(new RegExp(variableName1, "g"), variableName2);
+            let derivative = math.derivative(fun2, variableName2).toString();
+            exp = exp.replace(fun, "(" + derivative + ")");
+          }
+        }
+      });
+      if (expression.indexOf("''") != -1) {
+        Object.keys(this.declaredFunctions).forEach(e => {
+          let i = e.indexOf("(");
+          let j = e.indexOf(")");
+          let functionName1 = e.substring(0, i) + "''";
+          let variableName1 = e.substring(i + 1, j);
+          for (let fun of result) {
+            i = fun.indexOf("(");
+            let functionName2 = fun.substring(0, i);
+            if (functionName1 === functionName2) {
+              j = fun.indexOf(")");
+              let variableName2 = fun.substring(i + 1, j);
+              let fun2 = (<String>this.declaredFunctions[e]).replace(new RegExp(variableName1, "g"), variableName2);
+              let firstOrderDerivative = math.derivative(fun2, variableName2).toString();
+              let secondOrderDerivative = math.derivative(firstOrderDerivative, variableName2).toString();
+              exp = exp.replace(fun, "(" + secondOrderDerivative + ")");
+            }
+          }
+        });
+      }
+      if (expression.indexOf("'''") != -1) {
+        Object.keys(this.declaredFunctions).forEach(e => {
+          let i = e.indexOf("(");
+          let j = e.indexOf(")");
+          let functionName1 = e.substring(0, i) + "'''";
+          let variableName1 = e.substring(i + 1, j);
+          for (let fun of result) {
+            i = fun.indexOf("(");
+            let functionName2 = fun.substring(0, i);
+            if (functionName1 === functionName2) {
+              j = fun.indexOf(")");
+              let variableName2 = fun.substring(i + 1, j);
+              let fun2 = (<String>this.declaredFunctions[e]).replace(new RegExp(variableName1, "g"), variableName2);
+              let firstOrderDerivative = math.derivative(fun2, variableName2).toString();
+              let secondOrderDerivative = math.derivative(firstOrderDerivative, variableName2).toString();
+              let thirdOrderDerivative = math.derivative(secondOrderDerivative, variableName2).toString();
+              exp = exp.replace(fun, "(" + thirdOrderDerivative + ")");
+            }
+          }
+        });
+      }
+    }
+    return exp;
   }
 
   removeFunctionDeclaration(name: string): void {

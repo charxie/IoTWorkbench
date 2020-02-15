@@ -85,10 +85,10 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
           flowchart.updateFunctionDeclaration(block.getKey(), block.getExpression());
           flowchart.useDeclaredFunctions();
           block.refreshView();
-          flowchart.blockView.requestDraw();
           flowchart.updateResults(); // global variable must update the results globally
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
+          flowchart.blockView.requestDraw();
           d.dialog('close');
         } else {
           Util.showInputError(message);

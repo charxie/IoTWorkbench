@@ -81,6 +81,7 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
         block.setParameterName(parameterNameInputElement.value);
         block.setExpressionX(expressionXInputElement.value);
         block.setExpressionY(expressionYInputElement.value);
+        block.useDeclaredFunctions();
         try {
           flowchart.updateResultsForBlock(block);
         } catch (err) {
