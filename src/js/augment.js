@@ -83,6 +83,10 @@ if (typeof String.prototype.startsWith !== 'function') { // do not call this, do
   };
 }
 
+String.prototype.replaceFromTo = function (start, end, replacement) {
+  return this.substr(0, start) + replacement + this.substr(end);
+};
+
 // Fisher–Yates shuffle of an array
 if (typeof Array.prototype.shuffle !== 'function') {
   Array.prototype.shuffle = function shuffle() {

@@ -235,15 +235,17 @@ export class Flowchart {
     }
   }
 
-  replaceWithDeclaredFunctions(expression: string): string {
-    let exp = expression;
-    const pattern = /[a-z][a-z0-9]*[']*\([a-z0-9]+\)/g;
-    const result = exp.match(pattern);
-    if (result == null || result.length == 0) return exp; // no declared function found in the expression
+  private replaceWithDeclaredFunctionsAndDerivatives(exp: string, result: RegExpMatchArray, order: number): string {
+    const wordPattern = /\w/g;
     Object.keys(this.declaredFunctions).forEach(e => {
       let i = e.indexOf("(");
       let j = e.indexOf(")");
       let functionName1 = e.substring(0, i);
+      if (order > 0) {
+        for (let i = 0; i < order; i++) {
+          functionName1 += "'";
+        }
+      }
       let variableName1 = e.substring(i + 1, j);
       for (let fun of result) {
         i = fun.indexOf("(");
@@ -251,70 +253,63 @@ export class Flowchart {
         if (functionName1 === functionName2) {
           j = fun.indexOf(")");
           let variableName2 = fun.substring(i + 1, j);
-          let fun2 = (<String>this.declaredFunctions[e]).replace(new RegExp(variableName1, "g"), variableName2);
-          exp = exp.replace(fun, "(" + fun2 + ")");
-        }
-      }
-    });
-    // handle derivatives
-    if (expression.indexOf("'") != -1) {
-      Object.keys(this.declaredFunctions).forEach(e => {
-        let i = e.indexOf("(");
-        let j = e.indexOf(")");
-        let functionName1 = e.substring(0, i) + "'";
-        let variableName1 = e.substring(i + 1, j);
-        for (let fun of result) {
-          i = fun.indexOf("(");
-          let functionName2 = fun.substring(0, i);
-          if (functionName1 === functionName2) {
-            j = fun.indexOf(")");
-            let variableName2 = fun.substring(i + 1, j);
-            let fun2 = (<String>this.declaredFunctions[e]).replace(new RegExp(variableName1, "g"), variableName2);
-            let derivative = math.derivative(fun2, variableName2).toString();
-            exp = exp.replace(fun, "(" + derivative + ")");
+          let fun2 = this.declaredFunctions[e] as string;
+          if (variableName2 !== variableName1) {
+            let regex = new RegExp(variableName1, "g");
+            let match: RegExpExecArray = regex.exec(fun2);
+            while (match != null) {
+              let c1 = match.index > 0 ? fun2.charAt(match.index - 1) : null;
+              let c2 = match.index + variableName1.length < fun2.length ? fun2.charAt(match.index + variableName1.length) : null;
+              let realVariable = true;
+              if ((c1 != null && c1.match(wordPattern) != null) || (c2 != null && c2.match(wordPattern) != null)) {
+                realVariable = false;
+              }
+              if (realVariable) {
+                fun2 = fun2.replaceFromTo(match.index, match.index + variableName1.length, variableName2);
+              }
+              regex.lastIndex = 0;
+              match = regex.exec(fun2);
+            }
           }
-        }
-      });
-      if (expression.indexOf("''") != -1) {
-        Object.keys(this.declaredFunctions).forEach(e => {
-          let i = e.indexOf("(");
-          let j = e.indexOf(")");
-          let functionName1 = e.substring(0, i) + "''";
-          let variableName1 = e.substring(i + 1, j);
-          for (let fun of result) {
-            i = fun.indexOf("(");
-            let functionName2 = fun.substring(0, i);
-            if (functionName1 === functionName2) {
-              j = fun.indexOf(")");
-              let variableName2 = fun.substring(i + 1, j);
-              let fun2 = (<String>this.declaredFunctions[e]).replace(new RegExp(variableName1, "g"), variableName2);
+          switch (order) {
+            case 0:
+              exp = exp.replace(fun, "(" + fun2 + ")");
+              break;
+            case 1:
+              let derivative = math.derivative(fun2, variableName2).toString();
+              exp = exp.replace(fun, "(" + derivative + ")");
+              break;
+            case 2:
               let firstOrderDerivative = math.derivative(fun2, variableName2).toString();
               let secondOrderDerivative = math.derivative(firstOrderDerivative, variableName2).toString();
               exp = exp.replace(fun, "(" + secondOrderDerivative + ")");
-            }
-          }
-        });
-      }
-      if (expression.indexOf("'''") != -1) {
-        Object.keys(this.declaredFunctions).forEach(e => {
-          let i = e.indexOf("(");
-          let j = e.indexOf(")");
-          let functionName1 = e.substring(0, i) + "'''";
-          let variableName1 = e.substring(i + 1, j);
-          for (let fun of result) {
-            i = fun.indexOf("(");
-            let functionName2 = fun.substring(0, i);
-            if (functionName1 === functionName2) {
-              j = fun.indexOf(")");
-              let variableName2 = fun.substring(i + 1, j);
-              let fun2 = (<String>this.declaredFunctions[e]).replace(new RegExp(variableName1, "g"), variableName2);
-              let firstOrderDerivative = math.derivative(fun2, variableName2).toString();
-              let secondOrderDerivative = math.derivative(firstOrderDerivative, variableName2).toString();
-              let thirdOrderDerivative = math.derivative(secondOrderDerivative, variableName2).toString();
+              break;
+            case 3:
+              let firstOrderDerivative3 = math.derivative(fun2, variableName2).toString();
+              let secondOrderDerivative3 = math.derivative(firstOrderDerivative3, variableName2).toString();
+              let thirdOrderDerivative = math.derivative(secondOrderDerivative3, variableName2).toString();
               exp = exp.replace(fun, "(" + thirdOrderDerivative + ")");
-            }
+              break;
           }
-        });
+        }
+      }
+    });
+    return exp;
+  }
+
+  replaceWithDeclaredFunctions(expression: string): string {
+    let exp = expression;
+    const pattern = /[A-Za-z][\w]*[']*\([A-Za-z0-9]+\)/g;
+    const result = exp.match(pattern);
+    if (result == null || result.length == 0) return exp; // no declared function found in the expression
+    exp = this.replaceWithDeclaredFunctionsAndDerivatives(exp, result, 0);
+    if (expression.indexOf("'") != -1) {
+      exp = this.replaceWithDeclaredFunctionsAndDerivatives(exp, result, 1)
+      if (expression.indexOf("''") != -1) {
+        exp = this.replaceWithDeclaredFunctionsAndDerivatives(exp, result, 2)
+        if (expression.indexOf("'''") != -1) {
+          exp = this.replaceWithDeclaredFunctionsAndDerivatives(exp, result, 3);
+        }
       }
     }
     // console.log(expression + "," + exp)
