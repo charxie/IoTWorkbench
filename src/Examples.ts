@@ -81,6 +81,8 @@ import binary_functions from "./examples/binary-functions.json";
 // @ts-ignore
 import multivariable_functions from "./examples/multivariable-functions.json";
 // @ts-ignore
+import declared_functions from "./examples/declared-functions.json";
+// @ts-ignore
 import toggle_vs_momentary_switch from "./examples/toggle-vs-momentary-switch.json";
 // @ts-ignore
 import turnout_switch from "./examples/turnout-switch.json";
@@ -129,6 +131,7 @@ export class Examples {
     this.files.push({name: "Binary Functions", data: binary_functions});
     this.files.push({name: "Multivariable Functions", data: multivariable_functions});
     this.files.push({name: "Heart Function", data: heart_function});
+    this.files.push({name: "Declared Functions", data: declared_functions});
     this.files.push({name: "Derivatives", data: derivatives});
     this.files.push({name: "Root-Finding: Bisection Method", data: root_finding_bisection_method});
     this.files.push({name: "Root-Finding: Newton-Raphson Method", data: root_finding_newton_raphson});

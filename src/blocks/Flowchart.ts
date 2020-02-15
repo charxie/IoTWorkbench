@@ -214,17 +214,46 @@ export class Flowchart {
   /* function declarations */
 
   updateFunctionDeclaration(name: string, expression: string): void {
+    if (this.isFunctionExpressionDeclared(name, expression) && this.isFunctionNameDeclared(name)) return;
     let i = name.indexOf("(");
     let functionName = name.substring(0, i);
-    let that = this;
     for (let key in this.declaredFunctions) {
       let funName = key.substring(0, key.indexOf("("));
       if (funName === functionName) {
-        that.removeFunctionDeclaration(key);
+        this.removeFunctionDeclaration(key);
       }
     }
     this.declaredFunctions[name] = expression;
     this.declaredFunctionCodes[name] = math.parse(expression).compile();
+  }
+
+  isFunctionNameDeclared(name: string): boolean {
+    let i = name.indexOf("(");
+    let functionName = name.substring(0, i);
+    for (let key in this.declaredFunctions) {
+      i = key.indexOf("(");
+      let fName = key.substring(0, i);
+      if (fName === functionName) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  isFunctionExpressionDeclared(name: string, expression: string): boolean {
+    let i = name.indexOf("(");
+    let j = name.indexOf(")");
+    let variableName = name.substring(i + 1, j);
+    for (let key in this.declaredFunctions) {
+      i = key.indexOf("(");
+      j = key.indexOf(")");
+      let vName = key.substring(i + 1, j);
+      let exp = this.declaredFunctions[key].replace(new RegExp(vName, "g"), variableName);
+      if (exp === expression) {
+        return true;
+      }
+    }
+    return false;
   }
 
   useDeclaredFunctions() {
@@ -790,6 +819,30 @@ export class Flowchart {
     this.connectors.length = 0;
     this.updateLocalStorage();
     this.blockView.requestDraw();
+  }
+
+  askToClear() : void {
+    if (this.blocks.length > 0 || this.connectors.length > 0) {
+      let message = "<div style='font-size: 90%;'>Are you sure you want to clear the code?</div>";
+      let that = this;
+      $("#modal-dialog").html(message).dialog({
+        resizable: false,
+        modal: true,
+        title: "Clear",
+        height: 150,
+        width: 350,
+        buttons: {
+          'OK': function () {
+            that.clear();
+            $(this).dialog('close');
+          },
+          'Cancel': function () {
+            $(this).dialog('close');
+          }
+        }
+      });
+    }
+
   }
 
 }

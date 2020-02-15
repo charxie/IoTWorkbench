@@ -169,9 +169,9 @@ export class GrapherContextMenu extends BlockContextMenu {
         // set data port number
         let dataPortNumber = parseFloat(dataPortsInputElement.value);
         if (isNumber(dataPortNumber)) {
-          if (dataPortNumber > 5 || dataPortNumber < 1) {
+          if (dataPortNumber > 10 || dataPortNumber < 1) {
             success = false;
-            message = "Data port number must be between 1 and 5";
+            message = "Data port number must be between 1 and 10";
           } else {
             g.setDataPortNumber(dataPortNumber);
           }

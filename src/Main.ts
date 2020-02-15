@@ -147,6 +147,9 @@ window.onload = function () {
 
   let examples = new Examples();
 
+  document.getElementById("main-page-new-file-button").onclick = function () {
+    flowchart.askToClear();
+  };
   document.getElementById("main-page-undo-button").onclick = function () {
     if (undoManager.hasUndo()) {
       undoManager.undo();

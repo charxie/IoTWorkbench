@@ -77,11 +77,26 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
+        // set function name and expression
+        let fun = functionNameInputElement.value + "(" + variableNameInputElement.value + ")";
+        if (functionNameInputElement.value !== block.getFunctionName()) {
+          if (flowchart.isFunctionNameDeclared(fun)) {
+            success = false;
+            message = "The function " + name + " is already declared.";
+          }
+        }
+        let expression = expressionInputElement.value;
+        if (expression !== block.getExpression()) {
+          if (flowchart.isFunctionExpressionDeclared(fun, expression)) {
+            success = false;
+            message = "The function expression " + expression + " is already declared.";
+          }
+        }
         // finish
         if (success) {
           block.setVariableName(variableNameInputElement.value);
           block.setFunctionName(functionNameInputElement.value);
-          block.setExpression(expressionInputElement.value);
+          block.setExpression(expression);
           flowchart.updateFunctionDeclaration(block.getKey(), block.getExpression());
           flowchart.useDeclaredFunctions();
           block.refreshView();
