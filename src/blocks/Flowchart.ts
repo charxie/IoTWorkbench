@@ -214,6 +214,15 @@ export class Flowchart {
   /* function declarations */
 
   updateFunctionDeclaration(name: string, expression: string): void {
+    let i = name.indexOf("(");
+    let functionName = name.substring(0, i);
+    let that = this;
+    for (let key in this.declaredFunctions) {
+      let funName = key.substring(0, key.indexOf("("));
+      if (funName === functionName) {
+        that.removeFunctionDeclaration(key);
+      }
+    }
     this.declaredFunctions[name] = expression;
     this.declaredFunctionCodes[name] = math.parse(expression).compile();
   }
@@ -308,6 +317,7 @@ export class Flowchart {
         });
       }
     }
+    // console.log(expression + "," + exp)
     return exp;
   }
 
