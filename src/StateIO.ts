@@ -117,6 +117,7 @@ export class StateIO {
           block.setChecked(state.checked);
         } else if (block instanceof MomentarySwitch) {
           block.setName(state.name);
+          block.setFireOnlyAtMouseUp(state.fireOnlyAtMouseUp == undefined ? false : state.fireOnlyAtMouseUp);
         } else if (block instanceof Beeper) {
           block.setName(state.name);
           block.setOscillatorType(state.oscillatorType);

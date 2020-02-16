@@ -9,11 +9,11 @@ let workerRepeat = 1000000;
 let workerName;
 
 function timedCount() {
-  // console.log(workerName + ":" + workerCount);
+  // console.log(workerName + ": " + workerCount);
   if (!workerPaused && workerCount < workerRepeat) {
-    workerCount++;
     // @ts-ignore: If I add the targetOrigin, then the browser doesn't recognize the signature
     postMessage(workerCount);
+    workerCount++;
   }
   setTimeout(timedCount, workerInterval);
 }

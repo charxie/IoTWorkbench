@@ -20,15 +20,22 @@ export class MomentarySwitchContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="momentary-switch-name-field"></td>
+                  <td><input type="text" id="momentary-switch-name-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Continuous:</td>
+                  <td>
+                    <input type="radio" name="continuous" id="momentary-switch-continuous-radio-button" checked> Yes
+                    <input type="radio" name="continuous" id="momentary-switch-not-continuous-radio-button"> No
+                  </td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="momentary-switch-width-field"></td>
+                  <td><input type="text" id="momentary-switch-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="momentary-switch-height-field"></td>
+                  <td><input type="text" id="momentary-switch-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -42,12 +49,15 @@ export class MomentarySwitchContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("momentary-switch-name-field") as HTMLInputElement;
       nameInputElement.value = s.getName();
+      let continuousRadioButton = document.getElementById("momentary-switch-continuous-radio-button") as HTMLInputElement;
+      continuousRadioButton.checked = !s.getFireOnlyAtMouseUp();
+      let notContinuousRadioButton = document.getElementById("momentary-switch-not-continuous-radio-button") as HTMLInputElement;
+      notContinuousRadioButton.checked = s.getFireOnlyAtMouseUp();
       let widthInputElement = document.getElementById("momentary-switch-width-field") as HTMLInputElement;
       widthInputElement.value = s.getWidth().toString();
       let heightInputElement = document.getElementById("momentary-switch-height-field") as HTMLInputElement;
       heightInputElement.value = s.getHeight().toString();
       const okFunction = function () {
-        s.setName(nameInputElement.value);
         let success = true;
         let message;
         // set width
@@ -67,6 +77,8 @@ export class MomentarySwitchContextMenu extends BlockContextMenu {
           message = heightInputElement.value + " is not a valid height.";
         }
         if (success) {
+          s.setName(nameInputElement.value);
+          s.setFireOnlyAtMouseUp(notContinuousRadioButton.checked);
           s.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();

@@ -7,11 +7,11 @@ import {Port} from "./Port";
 import {Util} from "../Util";
 import {Arc} from "../math/Arc";
 import {flowchart} from "../Main";
-import {GlobalVariableBlock} from "./GlobalVariableBlock";
 
 export class MomentarySwitch extends Block {
 
   private pressed: boolean = false;
+  private fireOnlyAtMouseUp: boolean = false;
   private button: Arc;
   private buttonRadius: number = 10;
   private mouseDownRelativeX: number;
@@ -26,6 +26,7 @@ export class MomentarySwitch extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly fireOnlyAtMouseUp: boolean;
 
     constructor(momentarySwitch: MomentarySwitch) {
       this.name = momentarySwitch.name;
@@ -34,6 +35,7 @@ export class MomentarySwitch extends Block {
       this.y = momentarySwitch.y;
       this.width = momentarySwitch.width;
       this.height = momentarySwitch.height;
+      this.fireOnlyAtMouseUp = momentarySwitch.fireOnlyAtMouseUp;
     }
   };
 
@@ -63,9 +65,12 @@ export class MomentarySwitch extends Block {
     return this.pressed;
   }
 
-  updateModel(): void {
-    this.ports[0].setValue(this.pressed);
-    this.updateConnectors();
+  setFireOnlyAtMouseUp(fireOnlyAtMouseUp: boolean): void {
+    this.fireOnlyAtMouseUp = fireOnlyAtMouseUp;
+  }
+
+  getFireOnlyAtMouseUp(): boolean {
+    return this.fireOnlyAtMouseUp;
   }
 
   refreshView(): void {
@@ -164,8 +169,12 @@ export class MomentarySwitch extends Block {
     return this.button.contains(x, y);
   }
 
+  updateModel(): void {
+    this.ports[0].setValue(this.pressed);
+    this.updateConnectors();
+  }
+
   updateImmediately(): void {
-    this.updateModel();
     flowchart.traverse(this);
     if (flowchart.isConnectedToGlobalBlock(this)) {
       flowchart.updateResultsExcludingWorkerBlocks();
@@ -182,7 +191,9 @@ export class MomentarySwitch extends Block {
       this.mouseDownRelativeX = x - this.button.x;
       this.mouseDownRelativeY = y - this.button.y;
       this.pressed = true;
-      this.updateImmediately();
+      if (!this.fireOnlyAtMouseUp) {
+        this.updateImmediately();
+      }
       return true;
     }
     return false;
@@ -190,8 +201,13 @@ export class MomentarySwitch extends Block {
 
   mouseUp(e: MouseEvent): void {
     if (this.pressed) {
-      this.pressed = false;
-      this.updateImmediately();
+      if (this.fireOnlyAtMouseUp) {
+        this.updateImmediately();
+        this.pressed = false;
+      } else {
+        this.pressed = false;
+        this.updateImmediately();
+      }
     }
     flowchart.storeBlockStates();
     flowchart.blockView.canvas.style.cursor = "default";
