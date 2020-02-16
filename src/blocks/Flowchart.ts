@@ -66,6 +66,19 @@ export class Flowchart {
     }
   }
 
+  // sometimes traversing from a block itself to update its children can cause an infinite loop. This method bypasses the parent itself.
+  traverseChildren(parent: Block): void {
+    let ports = parent.getPorts();
+    for (let p of ports) {
+      if (!p.isInput()) {
+        let connectors = this.getConnectors(p);
+        for (let c of connectors) {
+          this.traverse(c.getInput().getBlock());
+        }
+      }
+    }
+  }
+
   reset(block: Block): void {
     let outputTo = block.outputTo();
     for (let next of outputTo) {
@@ -821,7 +834,7 @@ export class Flowchart {
     this.blockView.requestDraw();
   }
 
-  askToClear() : void {
+  askToClear(): void {
     if (this.blocks.length > 0 || this.connectors.length > 0) {
       let message = "<div style='font-size: 90%;'>Are you sure you want to clear the code?</div>";
       let that = this;

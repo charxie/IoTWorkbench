@@ -259,8 +259,10 @@ export class WorkerBlock extends Block {
 
   private stopWorker(): void {
     if (this.worker != undefined) {
-      this.worker.postMessage({cmd: "Pause"});
+      this.worker.postMessage({cmd: "Pause", count: this.count + 1});
       this.paused = true;
+      // make sure that we update the state of the connected blocks so that they are consistent when stopped
+      flowchart.traverseChildren(this);
     }
   }
 
