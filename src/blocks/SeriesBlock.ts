@@ -39,7 +39,7 @@ export class SeriesBlock extends Block {
     }
   };
 
-  constructor(uid: string, x: number, y: number, width: number, height: number, name: string, symbol: string) {
+  constructor(uid: string, name: string, symbol: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.source = true;
     this.name = name;
@@ -62,7 +62,7 @@ export class SeriesBlock extends Block {
   }
 
   getCopy(): Block {
-    return new SeriesBlock("Series Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
+    return new SeriesBlock("Series Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
   }
 
   destroy(): void {

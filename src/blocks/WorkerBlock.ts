@@ -259,9 +259,10 @@ export class WorkerBlock extends Block {
 
   private stopWorker(): void {
     if (this.worker != undefined) {
-      this.worker.postMessage({cmd: "Pause", count: this.count + 1});
+      this.worker.postMessage({cmd: "Pause"});
       this.paused = true;
       // make sure that we update the state of the connected blocks so that they are consistent when stopped
+      // FIXME: However, this creates a problem if a Space2D is connected as it adds data points to it without updating the clock
       flowchart.traverseChildren(this);
     }
   }

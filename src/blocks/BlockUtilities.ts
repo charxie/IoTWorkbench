@@ -33,6 +33,7 @@ import {BlockContextMenu} from "./ui/BlockContextMenu";
 import {Block} from "./Block";
 import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
 import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
+import {VectorBlock} from "./VectorBlock";
 
 export class BlockUtilities {
 
@@ -117,6 +118,9 @@ export class BlockUtilities {
     }
     if (block instanceof ComplexNumberBlock) {
       return contextMenus.complexNumberBlock;
+    }
+    if (block instanceof VectorBlock) {
+      return contextMenus.vectorBlock;
     }
     if (block instanceof RainbowHatBlock) {
       return contextMenus.rainbowHatBlock;
@@ -232,6 +236,10 @@ export class BlockUtilities {
     if (block instanceof ComplexNumberBlock) {
       contextMenus.complexNumberBlock.block = block;
       return document.getElementById("complex-number-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof VectorBlock) {
+      contextMenus.vectorBlock.block = block;
+      return document.getElementById("vector-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof RainbowHatBlock) {
       contextMenus.rainbowHatBlock.block = block;

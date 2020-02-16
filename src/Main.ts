@@ -66,6 +66,7 @@ import {ActionBlockContextMenu} from "./blocks/ui/ActionBlockContextMenu";
 import {BundledFunctionsBlockContextMenu} from "./blocks/ui/BundledFunctionsBlockContextMenu";
 import {BitwiseOperatorBlockContextMenu} from "./blocks/ui/BitwiseOperatorBlockContextMenu";
 import {FunctionDeclarationBlockContextMenu} from "./blocks/ui/FunctionDeclarationBlockContextMenu";
+import {VectorBlockContextMenu} from "./blocks/ui/VectorBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -298,6 +299,11 @@ function setupContextMenuForBlock() {
   complexNumberBlockContextMenu.render("complex-number-block-context-menu-placeholder");
   complexNumberBlockContextMenu.addListeners();
   contextMenus.complexNumberBlock = complexNumberBlockContextMenu;
+
+  let vectorBlockContextMenu = new VectorBlockContextMenu();
+  vectorBlockContextMenu.render("vector-block-context-menu-placeholder");
+  vectorBlockContextMenu.addListeners();
+  contextMenus.vectorBlock = vectorBlockContextMenu;
 
   let workerBlockContextMenu = new WorkerBlockContextMenu();
   workerBlockContextMenu.render("worker-block-context-menu-placeholder");

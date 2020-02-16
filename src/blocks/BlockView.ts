@@ -33,13 +33,13 @@ import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {GlobalObjectBlock} from "./GlobalObjectBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
-import {RainbowHatBlock} from "./RainbowHatBlock";
 import {RgbaColorBlock} from "./RgbaColorBlock";
 import {ComplexNumberBlock} from "./ComplexNumberBlock";
 import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
 import {BlockUtilities} from "./BlockUtilities";
 import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
 import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
+import {VectorBlock} from "./VectorBlock";
 
 export class BlockView {
 
@@ -149,13 +149,16 @@ export class BlockView {
             b = that.addBlockUndoable(new GlobalObjectBlock("Global Object Block #" + timestamp, "Global Object Block", "obj", x - 30, y - 60, 60, 120));
             break;
           case "series-block":
-            b = that.addBlockUndoable(new SeriesBlock("Series Block #" + timestamp, x - 30, y - 40, 60, 80, "Series Block", "Series"));
+            b = that.addBlockUndoable(new SeriesBlock("Series Block #" + timestamp, "Series Block", "Series", x - 30, y - 40, 60, 80));
             break;
           case "rgba-color-block":
-            b = that.addBlockUndoable(new RgbaColorBlock("Rgba Color Block #" + timestamp, x - 30, y - 40, 60, 80, "Rgba Color Block", "RGBA"));
+            b = that.addBlockUndoable(new RgbaColorBlock("Rgba Color Block #" + timestamp, "Rgba Color Block", "RGBA", x - 30, y - 40, 60, 80));
             break;
           case "complex-number-block":
-            b = that.addBlockUndoable(new ComplexNumberBlock("Complex Number Block #" + timestamp, x - 30, y - 40, 60, 80, "Complex Number Block", "a+b*i"));
+            b = that.addBlockUndoable(new ComplexNumberBlock("Complex Number Block #" + timestamp, "Complex Number Block", "a+b*i", x - 30, y - 40, 60, 80));
+            break;
+          case "vector-block":
+            b = that.addBlockUndoable(new VectorBlock("Vector Block #" + timestamp, "Vector Block", "V", x - 30, y - 40, 60, 80));
             break;
           case "worker-block":
             b = that.addBlockUndoable(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
@@ -170,16 +173,16 @@ export class BlockView {
             b = that.addBlockUndoable(new SwitchStatementBlock("Switch Statement Block #" + timestamp, "Switch Statement Block", "Switch", x - 30, y - 50, 60, 100));
             break;
           case "logic-and-block":
-            b = that.addBlockUndoable(new LogicBlock("AND Block #" + timestamp, x - 30, y - 40, 60, 80, "AND Block", "AND"));
+            b = that.addBlockUndoable(new LogicBlock("AND Block #" + timestamp, "AND Block", "AND", x - 30, y - 40, 60, 80));
             break;
           case "logic-not-block":
             b = that.addBlockUndoable(new NegationBlock("NOT Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "bitwise-operator-and-block":
-            b = that.addBlockUndoable(new BitwiseOperatorBlock("Bitwise AND Block #" + timestamp, x - 30, y - 30, 60, 60, "Bitwise AND Block", "&"));
+            b = that.addBlockUndoable(new BitwiseOperatorBlock("Bitwise AND Block #" + timestamp, "Bitwise AND Block", "&", x - 30, y - 30, 60, 60));
             break;
           case "arithmetic-add-block":
-            b = that.addBlockUndoable(new ArithmeticBlock("Add Block #" + timestamp, x - 30, y - 30, 60, 60, "Add Block", "+"));
+            b = that.addBlockUndoable(new ArithmeticBlock("Add Block #" + timestamp, "Add Block", "+", x - 30, y - 30, 60, 60));
             break;
           case "slider-block":
             b = that.addBlockUndoable(new Slider("Slider #" + timestamp, "Variable", x - 50, y - 30, 100, 60));

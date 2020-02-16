@@ -43,7 +43,7 @@ export class RgbaColorBlock extends Block {
     }
   };
 
-  constructor(uid: string, x: number, y: number, width: number, height: number, name: string, symbol: string) {
+  constructor(uid: string, name: string, symbol: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = name;
     this.symbol = symbol;
@@ -63,7 +63,7 @@ export class RgbaColorBlock extends Block {
   }
 
   getCopy(): Block {
-    let b = new RgbaColorBlock("Rgba Color Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
+    let b = new RgbaColorBlock("Rgba Color Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
     b.red = this.red;
     b.green = this.green;
     b.blue = this.blue;

@@ -39,6 +39,7 @@ import {GlobalBlock} from "./GlobalBlock";
 import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
 import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
 import {FunctionBlock} from "./FunctionBlock";
+import {VectorBlock} from "./VectorBlock";
 
 export class Flowchart {
 
@@ -606,61 +607,61 @@ export class Flowchart {
         block = new BundledFunctionsBlock(uid, x, y, 60, 100);
         break;
       case "Bitwise AND Block":
-        block = new BitwiseOperatorBlock(uid, x, y, 60, 60, name, "&");
+        block = new BitwiseOperatorBlock(uid, name, "&", x, y, 60, 60);
         break;
       case "Bitwise OR Block":
-        block = new BitwiseOperatorBlock(uid, x, y, 60, 60, name, "|");
+        block = new BitwiseOperatorBlock(uid, name, "|", x, y, 60, 60);
         break;
       case "Bitwise XOR Block":
-        block = new BitwiseOperatorBlock(uid, x, y, 60, 60, name, "^");
+        block = new BitwiseOperatorBlock(uid, name, "^", x, y, 60, 60);
         break;
       case "Bitwise NOT Block":
-        block = new BitwiseOperatorBlock(uid, x, y, 60, 60, name, "~");
+        block = new BitwiseOperatorBlock(uid, name, "~", x, y, 60, 60);
         break;
       case "Bitwise Left Shift Block":
-        block = new BitwiseOperatorBlock(uid, x, y, 80, 60, name, "<<");
+        block = new BitwiseOperatorBlock(uid, name, "<<", x, y, 80, 60);
         break;
       case "Bitwise Signed Right Shift Block":
-        block = new BitwiseOperatorBlock(uid, x, y, 80, 60, name, ">>");
+        block = new BitwiseOperatorBlock(uid, name, ">>", x, y, 80, 60);
         break;
       case "Bitwise Zero-Fill Right Shift Block":
-        block = new BitwiseOperatorBlock(uid, x, y, 80, 60, name, ">>>");
+        block = new BitwiseOperatorBlock(uid, name, ">>>", x, y, 80, 60);
         break;
       case "NOT Block":
         block = new NegationBlock(uid, x, y, 60, 80);
         break;
       case "AND Block":
-        block = new LogicBlock(uid, x, y, 60, 90, name, "AND");
+        block = new LogicBlock(uid, name, "AND", x, y, 60, 90);
         break;
       case "OR Block":
-        block = new LogicBlock(uid, x, y, 60, 90, name, "OR");
+        block = new LogicBlock(uid, name, "OR", x, y, 60, 90);
         break;
       case "NOR Block":
-        block = new LogicBlock(uid, x, y, 60, 90, name, "NOR");
+        block = new LogicBlock(uid, name, "NOR", x, y, 60, 90);
         break;
       case "XOR Block":
-        block = new LogicBlock(uid, x, y, 60, 90, name, "XOR");
+        block = new LogicBlock(uid, name, "XOR", x, y, 60, 90);
         break;
       case "XNOR Block":
-        block = new LogicBlock(uid, x, y, 60, 90, name, "XNOR");
+        block = new LogicBlock(uid, name, "XNOR", x, y, 60, 90);
         break;
       case "Add Block":
-        block = new ArithmeticBlock(uid, x, y, 60, 60, name, "+");
+        block = new ArithmeticBlock(uid, name, "+", x, y, 60, 60);
         break;
       case "Subtract Block":
-        block = new ArithmeticBlock(uid, x, y, 60, 60, name, "−");
+        block = new ArithmeticBlock(uid, name, "−", x, y, 60, 60);
         break;
       case "Multiply Block":
-        block = new ArithmeticBlock(uid, x, y, 60, 60, name, "×");
+        block = new ArithmeticBlock(uid, name, "×", x, y, 60, 60);
         break;
       case "Divide Block":
-        block = new ArithmeticBlock(uid, x, y, 60, 60, name, "÷");
+        block = new ArithmeticBlock(uid, name, "÷", x, y, 60, 60);
         break;
       case "Modulus Block":
-        block = new ArithmeticBlock(uid, x, y, 60, 60, name, "%");
+        block = new ArithmeticBlock(uid, name, "%", x, y, 60, 60);
         break;
       case "Exponentiation Block":
-        block = new ArithmeticBlock(uid, x, y, 60, 60, name, "^");
+        block = new ArithmeticBlock(uid, name, "^", x, y, 60, 60);
         break;
       case "Global Variable Block":
         block = new GlobalVariableBlock(uid, name, "var", x, y, 80, 80);
@@ -669,13 +670,16 @@ export class Flowchart {
         block = new GlobalObjectBlock(uid, name, "obj", x, y, 80, 120);
         break;
       case "Series Block":
-        block = new SeriesBlock(uid, x, y, 80, 80, name, "Series");
+        block = new SeriesBlock(uid, name, "Series", x, y, 80, 80);
         break;
       case "Rgba Color Block":
-        block = new RgbaColorBlock(uid, x, y, 80, 80, name, "RGBA");
+        block = new RgbaColorBlock(uid, name, "RGBA", x, y, 80, 80);
         break;
       case "Complex Number Block":
-        block = new ComplexNumberBlock(uid, x, y, 80, 80, name, "a+b*i");
+        block = new ComplexNumberBlock(uid, name, "a+b*i", x, y, 80, 80);
+        break;
+      case "Vector Block":
+        block = new VectorBlock(uid, name, "V", x, y, 80, 80);
         break;
       case "Worker Block":
         block = new WorkerBlock(uid, name, x, y, 80, 60);
@@ -774,6 +778,8 @@ export class Flowchart {
         blockStates.push(new RgbaColorBlock.State(b));
       } else if (b instanceof ComplexNumberBlock) {
         blockStates.push(new ComplexNumberBlock.State(b));
+      } else if (b instanceof VectorBlock) {
+        blockStates.push(new VectorBlock.State(b));
       } else if (b instanceof WorkerBlock) {
         blockStates.push(new WorkerBlock.State(b));
       } else if (b instanceof ActionBlock) {
@@ -847,6 +853,8 @@ export class Flowchart {
         buttons: {
           'OK': function () {
             that.clear();
+            let selectElement = document.getElementById("example-list") as HTMLSelectElement;
+            selectElement.value = "select";
             $(this).dialog('close');
           },
           'Cancel': function () {

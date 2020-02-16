@@ -32,6 +32,7 @@ import {RgbaColorBlock} from "./blocks/RgbaColorBlock";
 import {ComplexNumberBlock} from "./blocks/ComplexNumberBlock";
 import {BundledFunctionsBlock} from "./blocks/BundledFunctionsBlock";
 import {FunctionDeclarationBlock} from "./blocks/FunctionDeclarationBlock";
+import {VectorBlock} from "./blocks/VectorBlock";
 
 export class StateIO {
 
@@ -100,6 +101,9 @@ export class StateIO {
           block.setName(state.name);
           block.setReal(state.real);
           block.setImaginary(state.imaginary);
+        } else if (block instanceof VectorBlock) {
+          block.setName(state.name);
+          block.setValues(state.values != undefined ? state.values : [1, 0]);
         } else if (block instanceof WorkerBlock) {
           block.setName(state.name);
           block.setOutputType(state.outputType ? state.outputType : "Natural Number");

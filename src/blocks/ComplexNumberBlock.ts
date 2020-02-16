@@ -36,7 +36,7 @@ export class ComplexNumberBlock extends Block {
     }
   };
 
-  constructor(uid: string, x: number, y: number, width: number, height: number, name: string, symbol: string) {
+  constructor(uid: string, name: string, symbol: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = name;
     this.symbol = symbol;
@@ -52,7 +52,7 @@ export class ComplexNumberBlock extends Block {
   }
 
   getCopy(): Block {
-    let b = new ComplexNumberBlock("Complex Number Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height, this.name, this.symbol);
+    let b = new ComplexNumberBlock("Complex Number Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
     b.real = this.real;
     b.imaginary = this.imaginary;
     return b;

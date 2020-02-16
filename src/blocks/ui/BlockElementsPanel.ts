@@ -29,6 +29,7 @@ import {ActionBlock} from "../ActionBlock";
 import {BundledFunctionsBlock} from "../BundledFunctionsBlock";
 import {BitwiseOperatorBlock} from "../BitwiseOperatorBlock";
 import {FunctionDeclarationBlock} from "../FunctionDeclarationBlock";
+import {VectorBlock} from "../VectorBlock";
 
 export class BlockElementsPanel {
 
@@ -79,6 +80,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="series-block" title="Series" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="rgba-color-block" title="RGBA Color" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="complex-number-block" title="Complex Number" width="45x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="vector-block" title="Vector" width="45x" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -123,6 +125,7 @@ export class BlockElementsPanel {
     this.drawSeriesBlock("Series Block", "Series", "series-block");
     this.drawRgbaColorBlock("Rgba Color Block", "RGBA", "rgba-color-block");
     this.drawComplexNumberBlock("Complext Number Block", "a+b*i", "complex-number-block");
+    this.drawVectorBlock("Vector Block", "V", "vector-block");
     this.drawTurnoutSwitch("Turnout Switch", "Turnout", "turnout-switch-block");
     this.drawSwitchStatementBlock("Switch Statement Block", "Switch", "switch-statement-block");
     this.drawWorkerBlock("Worker Block", "Worker", "worker-block");
@@ -172,7 +175,7 @@ export class BlockElementsPanel {
   private drawSeriesBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new SeriesBlock("Series Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    let block = new SeriesBlock("Series Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }
@@ -180,7 +183,7 @@ export class BlockElementsPanel {
   private drawRgbaColorBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new RgbaColorBlock("Rgba Color Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    let block = new RgbaColorBlock("Rgba Color Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }
@@ -188,7 +191,15 @@ export class BlockElementsPanel {
   private drawComplexNumberBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new ComplexNumberBlock("Complext Number Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    let block = new ComplexNumberBlock("Complext Number Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawVectorBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new VectorBlock("Vector Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }
@@ -276,7 +287,7 @@ export class BlockElementsPanel {
   private drawBitwiseOperatorBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new BitwiseOperatorBlock("Bitwise Operator Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    let block = new BitwiseOperatorBlock("Bitwise Operator Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setName(name);
     block.setIconic(true);
     block.draw(ctx);
@@ -285,7 +296,7 @@ export class BlockElementsPanel {
   private drawArithmeticBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new ArithmeticBlock("Arithmetic Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    let block = new ArithmeticBlock("Arithmetic Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setName(name);
     block.setIconic(true);
     block.draw(ctx);
@@ -294,7 +305,7 @@ export class BlockElementsPanel {
   private drawLogicBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new LogicBlock("Logic Block Icon", 8, 8, canvas.width - 16, canvas.height - 16, name, symbol);
+    let block = new LogicBlock("Logic Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setName(name);
     block.setIconic(true);
     block.draw(ctx);
