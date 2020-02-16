@@ -40,6 +40,7 @@ import {BlockUtilities} from "./BlockUtilities";
 import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
 import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
 import {VectorBlock} from "./VectorBlock";
+import {NormalizationBlock} from "./NormalizationBlock";
 
 export class BlockView {
 
@@ -159,6 +160,9 @@ export class BlockView {
             break;
           case "vector-block":
             b = that.addBlockUndoable(new VectorBlock("Vector Block #" + timestamp, "Vector Block", "V", x - 50, y - 80, 100, 160));
+            break;
+          case "normalization-block":
+            b = that.addBlockUndoable(new NormalizationBlock("Normalization Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "worker-block":
             b = that.addBlockUndoable(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));

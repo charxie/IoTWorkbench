@@ -67,6 +67,8 @@ import series_and_arrays from "./examples/series-and-arrays.json";
 // @ts-ignore
 import complex_numbers from "./examples/complex-numbers.json";
 // @ts-ignore
+import vectors from "./examples/vectors.json";
+// @ts-ignore
 import arithmetic_operators_for_complex_numbers from "./examples/arithmetic-operators-for-complex-numbers.json";
 // @ts-ignore
 import derivatives from "./examples/derivatives.json";
@@ -121,6 +123,7 @@ export class Examples {
     this.files.push({name: "Series and Arrays", data: series_and_arrays});
     this.files.push({name: "Complex Numbers", data: complex_numbers});
     this.files.push({name: "Arithmetic Operators for Complex Numbers", data: arithmetic_operators_for_complex_numbers});
+    this.files.push({name: "Vectors", data: vectors});
     this.files.push({name: "Workers", data: workers});
     this.files.push({name: "Toggle Switch vs. Momentary Switch", data: toggle_vs_momentary_switch});
     this.files.push({name: "Turnout Switch", data: turnout_switch});

@@ -12,10 +12,12 @@ export class VectorBlock extends Block {
   private portI: Port[];
   private readonly portO: Port;
   private vector: Vector;
+  private fractionDigits: number = 3;
 
   static State = class {
     readonly name: string;
     readonly values: number[];
+    readonly fractionDigits: number;
     readonly uid: string;
     readonly x: number;
     readonly y: number;
@@ -25,6 +27,7 @@ export class VectorBlock extends Block {
     constructor(block: VectorBlock) {
       this.name = block.name;
       this.values = block.vector.getValues();
+      this.fractionDigits = block.fractionDigits;
       this.uid = block.uid;
       this.x = block.x;
       this.y = block.y;
@@ -48,7 +51,7 @@ export class VectorBlock extends Block {
   }
 
   private setInputPorts(): void {
-    if (this.portI == undefined || this.portI.length !== this.vector.length()) {
+    if (this.portI == undefined || this.portI.length !== this.vector.size()) {
       if (this.portI) {
         for (let p of this.portI) { // disconnect all the port connectors as the ports will be recreated
           flowchart.removeAllConnectors(p);
@@ -57,9 +60,9 @@ export class VectorBlock extends Block {
           this.ports.pop();
         }
       }
-      this.portI = new Array(this.vector.length());
-      let dh = this.height / (this.vector.length() + 1);
-      for (let i = 0; i < this.vector.length(); i++) {
+      this.portI = new Array(this.vector.size());
+      let dh = this.height / (this.vector.size() + 1);
+      for (let i = 0; i < this.vector.size(); i++) {
         this.portI[i] = new Port(this, true, String.fromCharCode("A".charCodeAt(0) + i), 0, (i + 1) * dh, false);
         this.ports.push(this.portI[i]);
       }
@@ -73,6 +76,14 @@ export class VectorBlock extends Block {
   }
 
   destroy(): void {
+  }
+
+  getFractionDigits(): number {
+    return this.fractionDigits;
+  }
+
+  setFractionDigits(fractionDigits: number): void {
+    this.fractionDigits = fractionDigits;
   }
 
   getValues(): number[] {
@@ -96,8 +107,8 @@ export class VectorBlock extends Block {
     super.refreshView();
     this.portO.setX(this.width);
     this.portO.setY(this.height / 2);
-    let dh = this.height / (this.vector.length() + 1);
-    for (let i = 0; i < this.vector.length(); i++) {
+    let dh = this.height / (this.vector.size() + 1);
+    for (let i = 0; i < this.vector.size(); i++) {
       this.portI[i].setY((i + 1) * dh);
     }
   }
@@ -122,13 +133,13 @@ export class VectorBlock extends Block {
       let s;
       let offset = -this.getHeight() / 2;
       for (let i = 0; i < this.portI.length; i++) {
-        s = this.vector.getValue(i).toPrecision(3);
+        s = this.vector.getValue(i).toPrecision(this.fractionDigits);
         this.drawTextAt(s, 0, this.portI[i].getY() + offset, ctx);
       }
       // the coordinates are no longer relative to the block below
       let textWidth = ctx.measureText(s).width;
-      let x = this.getX() + this.getWidth() / 2 - 6 - textWidth / 2;
-      let y1 = this.getY() + this.portI[0].getY() - 6;
+      let x = this.getX() + this.getWidth() / 2 - 16 - textWidth / 2;
+      let y1 = this.getY() + this.portI[0].getY() - 10;
       let y2 = this.getY() + this.portI[this.portI.length - 1].getY() + 10;
       ctx.strokeStyle = "black";
       // left square bracket
@@ -138,7 +149,7 @@ export class VectorBlock extends Block {
       ctx.lineTo(x, y2);
       ctx.lineTo(x + 5, y2);
       ctx.stroke();
-      x = this.getX() + this.getWidth() / 2 + 10 + textWidth / 2;
+      x = this.getX() + this.getWidth() / 2 + 16 + textWidth / 2;
       ctx.beginPath();
       ctx.moveTo(x - 5, y1);
       ctx.lineTo(x, y1);

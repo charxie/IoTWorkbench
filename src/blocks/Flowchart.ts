@@ -40,6 +40,7 @@ import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
 import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
 import {FunctionBlock} from "./FunctionBlock";
 import {VectorBlock} from "./VectorBlock";
+import {NormalizationBlock} from "./NormalizationBlock";
 
 export class Flowchart {
 
@@ -662,6 +663,12 @@ export class Flowchart {
         break;
       case "Exponentiation Block":
         block = new ArithmeticBlock(uid, name, "^", x, y, 60, 60);
+        break;
+      case "Dot Product Block":
+        block = new ArithmeticBlock(uid, name, "•", x, y, 60, 60);
+        break;
+      case "Normalization Block":
+        block = new NormalizationBlock(uid, x, y, 60, 60);
         break;
       case "Global Variable Block":
         block = new GlobalVariableBlock(uid, name, "var", x, y, 80, 80);

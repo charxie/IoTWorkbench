@@ -30,6 +30,7 @@ import {BundledFunctionsBlock} from "../BundledFunctionsBlock";
 import {BitwiseOperatorBlock} from "../BitwiseOperatorBlock";
 import {FunctionDeclarationBlock} from "../FunctionDeclarationBlock";
 import {VectorBlock} from "../VectorBlock";
+import {NormalizationBlock} from "../NormalizationBlock";
 
 export class BlockElementsPanel {
 
@@ -45,6 +46,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="bitwise-operator-and-block" title="Bitwise Operator" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="logic-and-block" title="Logic Operator" width="45px" height="60px" style="left: 10px; cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="logic-not-block" title="Not Operator" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="normalization-block" title="Vector Normalization" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="unary-function-block" title="Unary Function" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="binary-function-block" title="Binary Function" width="45px" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="multivariable-function-block" title="Multivariable Function" width="45px" height="80px" style="cursor: pointer;"/></td>
@@ -109,6 +111,7 @@ export class BlockElementsPanel {
     this.drawBundledFunctionsBlock("bundled-functions-block");
     this.drawLogicBlock("AND Block", "AND", "logic-and-block");
     this.drawNegationBlock("logic-not-block");
+    this.drawNormalizationBlock("normalization-block");
     this.drawArithmeticBlock("Add Block", "+", "arithmetic-add-block");
     this.drawBitwiseOperatorBlock("AND Block", "&", "bitwise-operator-and-block");
     this.drawToggleSwitch("Switch", "toggle-switch-block");
@@ -315,6 +318,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new NegationBlock("Negation Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawNormalizationBlock(canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new NormalizationBlock("Normalization Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

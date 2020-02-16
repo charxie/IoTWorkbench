@@ -5,6 +5,7 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Complex} from "../math/Complex";
+import {Vector} from "../math/Vector";
 
 export class ArithmeticBlock extends Block {
 
@@ -70,6 +71,15 @@ export class ArithmeticBlock extends Block {
         if (b instanceof Complex) {
           return b.plus(new Complex(a, 0));
         }
+        if (a instanceof Vector && b instanceof Vector) {
+          return a.add(b);
+        }
+        if (a instanceof Vector && typeof b == "number") {
+          return a.shift(b);
+        }
+        if (b instanceof Vector && typeof a == "number") {
+          return b.shift(a);
+        }
         return a + b;
       case "Subtract Block":
         if (a instanceof Complex && b instanceof Complex) {
@@ -80,6 +90,15 @@ export class ArithmeticBlock extends Block {
         }
         if (b instanceof Complex) {
           return new Complex(a, 0).minus(b);
+        }
+        if (a instanceof Vector && b instanceof Vector) {
+          return a.subtract(b);
+        }
+        if (a instanceof Vector && typeof b == "number") {
+          return a.shift(-b);
+        }
+        if (b instanceof Vector && typeof a == "number") {
+          return b.negate().shift(a);
         }
         return a - b;
       case "Multiply Block":
@@ -92,6 +111,15 @@ export class ArithmeticBlock extends Block {
         if (b instanceof Complex) {
           return b.times(new Complex(a, 0));
         }
+        if (a instanceof Vector && b instanceof Vector) {
+          return a.cross(b);
+        }
+        if (a instanceof Vector && typeof b == "number") {
+          return a.scale(b);
+        }
+        if (b instanceof Vector && typeof a == "number") {
+          return b.scale(a);
+        }
         return a * b;
       case "Divide Block":
         if (a instanceof Complex && b instanceof Complex) {
@@ -103,11 +131,25 @@ export class ArithmeticBlock extends Block {
         if (b instanceof Complex) {
           return new Complex(a, 0).divides(b);
         }
+        if (a instanceof Vector && typeof b == "number") {
+          return a.scale(1 / b);
+        }
         return a / b;
       case "Modulus Block":
         return a % b;
       case "Exponentiation Block":
         return a ** b;
+      case "Dot Product Block":
+        if (a instanceof Vector && b instanceof Vector) {
+          return a.dot(b);
+        }
+        if (a instanceof Vector && typeof b == "number") {
+          return a.scale(b);
+        }
+        if (b instanceof Vector && typeof a == "number") {
+          return b.scale(a);
+        }
+        return a * b;
       default:
         return NaN;
     }

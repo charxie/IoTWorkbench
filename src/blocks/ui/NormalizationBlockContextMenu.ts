@@ -6,33 +6,25 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
-import {VectorBlock} from "../VectorBlock";
+import {NormalizationBlock} from "../NormalizationBlock";
 
-export class VectorBlockContextMenu extends BlockContextMenu {
+export class NormalizationBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "vector-block-context-menu";
+    this.id = "normalization-block-context-menu";
   }
 
   getPropertiesUI(): string {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Values:<div style="font-size: 70%">(e.g., [1, 0, 0])</div></td>
-                  <td><textarea id="vector-block-values-field" rows="5" style="width: 100%"></textarea></td>
-                </tr>
-                <tr>
-                  <td>Fraction Digits:</td>
-                  <td><input type="text" id="vector-block-fraction-digits-field" style="width: 100%"></td>
-                </tr>
-                <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="vector-block-width-field" style="width: 100%"></td>
+                  <td><input type="text" id="normalization-block-width-field"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="vector-block-height-field" style="width: 100%"></td>
+                  <td><input type="text" id="normalization-block-height-field"></td>
                 </tr>
               </table>
             </div>`;
@@ -41,18 +33,15 @@ export class VectorBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof VectorBlock) {
+    if (this.block instanceof NormalizationBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let valuesInputElement = document.getElementById("vector-block-values-field") as HTMLTextAreaElement;
-      valuesInputElement.value = JSON.stringify(block.getValues());
-      let fractionDigitsInputElement = document.getElementById("vector-block-fraction-digits-field") as HTMLInputElement;
-      fractionDigitsInputElement.value = block.getFractionDigits().toString();
-      let widthInputElement = document.getElementById("vector-block-width-field") as HTMLInputElement;
+      let widthInputElement = document.getElementById("normalization-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("vector-block-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("normalization-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
+        block.setUid(block.getName() + " #" + Date.now().toString(16));
         let success = true;
         let message;
         // set width
@@ -71,26 +60,11 @@ export class VectorBlockContextMenu extends BlockContextMenu {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
-        // set fraction digits
-        let fractionDigits = parseInt(fractionDigitsInputElement.value);
-        if (isNumber(fractionDigits)) {
-          block.setFractionDigits(Math.max(0, fractionDigits));
-        } else {
-          success = false;
-          message = fractionDigitsInputElement.value + " is not valid for fraction digits.";
-        }
-        // set values
-        try {
-          block.setValues(JSON.parse(valuesInputElement.value));
-        } catch (err) {
-          success = false;
-          message = valuesInputElement.value + " is not a valid vector.";
-        }
         // finish
         if (success) {
           block.refreshView();
-          flowchart.updateResultsForBlock(block);
           flowchart.blockView.requestDraw();
+          flowchart.updateResultsForBlock(block);
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');
@@ -103,15 +77,14 @@ export class VectorBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
-      fractionDigitsInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 360,
-        width: 360,
+        height: 300,
+        width: 300,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

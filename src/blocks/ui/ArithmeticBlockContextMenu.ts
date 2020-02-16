@@ -29,6 +29,7 @@ export class ArithmeticBlockContextMenu extends BlockContextMenu {
                       <option value="Divide Block">÷</option>
                       <option value="Modulus Block">%</option>
                       <option value="Exponentiation Block">^</option>
+                      <option value="Dot Product Block">•</option>
                     </select>
                     <div class='horizontal-divider'></div>B
                   </td>

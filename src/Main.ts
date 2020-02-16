@@ -67,6 +67,7 @@ import {BundledFunctionsBlockContextMenu} from "./blocks/ui/BundledFunctionsBloc
 import {BitwiseOperatorBlockContextMenu} from "./blocks/ui/BitwiseOperatorBlockContextMenu";
 import {FunctionDeclarationBlockContextMenu} from "./blocks/ui/FunctionDeclarationBlockContextMenu";
 import {VectorBlockContextMenu} from "./blocks/ui/VectorBlockContextMenu";
+import {NormalizationBlockContextMenu} from "./blocks/ui/NormalizationBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -304,6 +305,11 @@ function setupContextMenuForBlock() {
   vectorBlockContextMenu.render("vector-block-context-menu-placeholder");
   vectorBlockContextMenu.addListeners();
   contextMenus.vectorBlock = vectorBlockContextMenu;
+
+  let normalizationBlockContextMenu = new NormalizationBlockContextMenu();
+  normalizationBlockContextMenu.render("normalization-block-context-menu-placeholder");
+  normalizationBlockContextMenu.addListeners();
+  contextMenus.normalizationBlock = normalizationBlockContextMenu;
 
   let workerBlockContextMenu = new WorkerBlockContextMenu();
   workerBlockContextMenu.render("worker-block-context-menu-placeholder");

@@ -178,7 +178,7 @@ export class SliderContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: slider.getUid(),
-        height: 500,
+        height: 510,
         width: 360,
         buttons: {
           'OK': okFunction,

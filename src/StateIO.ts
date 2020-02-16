@@ -103,6 +103,7 @@ export class StateIO {
           block.setImaginary(state.imaginary);
         } else if (block instanceof VectorBlock) {
           block.setName(state.name);
+          block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
           block.setValues(state.values != undefined ? state.values : [1, 0]);
         } else if (block instanceof WorkerBlock) {
           block.setName(state.name);

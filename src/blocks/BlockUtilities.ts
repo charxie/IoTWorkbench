@@ -34,6 +34,7 @@ import {Block} from "./Block";
 import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
 import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
 import {VectorBlock} from "./VectorBlock";
+import {NormalizationBlock} from "./NormalizationBlock";
 
 export class BlockUtilities {
 
@@ -61,6 +62,9 @@ export class BlockUtilities {
     }
     if (block instanceof NegationBlock) {
       return contextMenus.notBlock;
+    }
+    if (block instanceof NormalizationBlock) {
+      return contextMenus.normalizationBlock;
     }
     if (block instanceof LogicBlock) {
       return contextMenus.logicBlock;
@@ -160,6 +164,10 @@ export class BlockUtilities {
     if (block instanceof NegationBlock) {
       contextMenus.notBlock.block = block;
       return document.getElementById("not-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof NormalizationBlock) {
+      contextMenus.normalizationBlock.block = block;
+      return document.getElementById("normalization-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof LogicBlock) {
       contextMenus.logicBlock.block = block;
