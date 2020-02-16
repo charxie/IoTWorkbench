@@ -158,7 +158,7 @@ export class BlockView {
             b = that.addBlockUndoable(new ComplexNumberBlock("Complex Number Block #" + timestamp, "Complex Number Block", "a+b*i", x - 30, y - 40, 60, 80));
             break;
           case "vector-block":
-            b = that.addBlockUndoable(new VectorBlock("Vector Block #" + timestamp, "Vector Block", "V", x - 30, y - 40, 60, 80));
+            b = that.addBlockUndoable(new VectorBlock("Vector Block #" + timestamp, "Vector Block", "V", x - 50, y - 80, 100, 160));
             break;
           case "worker-block":
             b = that.addBlockUndoable(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));

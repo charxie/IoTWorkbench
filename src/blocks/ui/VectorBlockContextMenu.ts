@@ -19,7 +19,7 @@ export class VectorBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Values:<div style="font-size: 70%"><br>(e.g., [1, 0, 0])</div></td>
+                  <td>Values:<div style="font-size: 70%">(e.g., [1, 0, 0])</div></td>
                   <td><textarea id="vector-block-values-field" rows="5" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>
@@ -65,7 +65,7 @@ export class VectorBlockContextMenu extends BlockContextMenu {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
-        // set items
+        // set values
         try {
           block.setValues(JSON.parse(valuesInputElement.value));
         } catch (err) {

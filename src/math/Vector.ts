@@ -30,14 +30,16 @@ export class Vector {
     return this.values.length;
   }
 
-  public getCopy(): Vector {
-    let v = new Vector(this.values.length);
-    v.values = this.values.slice();
-    return v;
-  }
-
   public toString(): string {
     return JSON.stringify(this.values);
+  }
+
+  public toFixed(fractionDigits: number): string {
+    let s: string = "(";
+    for (let x of this.values) {
+      s += x.toFixed(fractionDigits) + ", ";
+    }
+    return s.substring(0, s.length - 2) + ")";
   }
 
 }

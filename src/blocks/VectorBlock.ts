@@ -68,7 +68,7 @@ export class VectorBlock extends Block {
 
   getCopy(): Block {
     let copy = new VectorBlock("Vector Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
-    copy.vector = this.vector.getCopy();
+    copy.setValues(this.vector.getValues());
     return copy;
   }
 
@@ -81,6 +81,7 @@ export class VectorBlock extends Block {
 
   setValues(values: number[]): void {
     this.vector.setValues(values);
+    this.setInputPorts();
   }
 
   getValue(index: number): number {
@@ -114,12 +115,36 @@ export class VectorBlock extends Block {
 
   protected drawLabel(ctx: CanvasRenderingContext2D): void {
     if (this.iconic) {
-      ctx.font = "9px Times";
+      ctx.font = "9px Times New Roman";
       this.drawText(this.symbol ? this.symbol : this.name, ctx);
     } else {
-      ctx.font = "16px Times";
-      let s = this.symbol ? this.symbol : this.name;
-      this.drawText(s, ctx);
+      ctx.font = "16px Times New Roman";
+      let s;
+      let offset = -this.getHeight() / 2;
+      for (let i = 0; i < this.portI.length; i++) {
+        s = this.vector.getValue(i).toPrecision(3);
+        this.drawTextAt(s, 0, this.portI[i].getY() + offset, ctx);
+      }
+      // the coordinates are no longer relative to the block below
+      let textWidth = ctx.measureText(s).width;
+      let x = this.getX() + this.getWidth() / 2 - 6 - textWidth / 2;
+      let y1 = this.getY() + this.portI[0].getY() - 6;
+      let y2 = this.getY() + this.portI[this.portI.length - 1].getY() + 10;
+      ctx.strokeStyle = "black";
+      // left square bracket
+      ctx.beginPath();
+      ctx.moveTo(x + 5, y1);
+      ctx.lineTo(x, y1);
+      ctx.lineTo(x, y2);
+      ctx.lineTo(x + 5, y2);
+      ctx.stroke();
+      x = this.getX() + this.getWidth() / 2 + 10 + textWidth / 2;
+      ctx.beginPath();
+      ctx.moveTo(x - 5, y1);
+      ctx.lineTo(x, y1);
+      ctx.lineTo(x, y2);
+      ctx.lineTo(x - 5, y2);
+      ctx.stroke();
     }
   }
 
