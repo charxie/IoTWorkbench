@@ -72,7 +72,7 @@ export class VectorBlock extends Block {
 
   getCopy(): Block {
     let copy = new VectorBlock("Vector Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
-    copy.setValues(this.vector.getValues());
+    copy.setValues(this.vector.getValues().slice());
     copy.fractionDigits = this.fractionDigits;
     return copy;
   }

@@ -72,6 +72,7 @@ import {MatrixBlockContextMenu} from "./blocks/ui/MatrixBlockContextMenu";
 import {DeterminantBlockContextMenu} from "./blocks/ui/DeterminantBlockContextMenu";
 import {MatrixInversionBlock} from "./blocks/MatrixInversionBlock";
 import {MatrixInversionBlockContextMenu} from "./blocks/ui/MatrixInversionBlockContextMenu";
+import {MatrixTranspositionBlockContextMenu} from "./blocks/ui/MatrixTranspositionBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -324,6 +325,11 @@ function setupContextMenuForBlock() {
   determinantBlockContextMenu.render("matrix-determinant-block-context-menu-placeholder");
   determinantBlockContextMenu.addListeners();
   contextMenus.determinantBlock = determinantBlockContextMenu;
+
+  let matrixTranspositionBlockContextMenu = new MatrixTranspositionBlockContextMenu();
+  matrixTranspositionBlockContextMenu.render("matrix-transposition-block-context-menu-placeholder");
+  matrixTranspositionBlockContextMenu.addListeners();
+  contextMenus.matrixTranspositionBlock = matrixTranspositionBlockContextMenu;
 
   let matrixInversionBlockContextMenu = new MatrixInversionBlockContextMenu();
   matrixInversionBlockContextMenu.render("matrix-inversion-block-context-menu-placeholder");

@@ -38,6 +38,7 @@ import {NormalizationBlock} from "./NormalizationBlock";
 import {MatrixBlock} from "./MatrixBlock";
 import {DeterminantBlock} from "./DeterminantBlock";
 import {MatrixInversionBlock} from "./MatrixInversionBlock";
+import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 
 export class BlockUtilities {
 
@@ -134,6 +135,9 @@ export class BlockUtilities {
     }
     if (block instanceof DeterminantBlock) {
       return contextMenus.determinantBlock;
+    }
+    if (block instanceof MatrixTranspositionBlock) {
+      return contextMenus.matrixTranspositionBlock;
     }
     if (block instanceof MatrixInversionBlock) {
       return contextMenus.matrixInversionBlock;
@@ -272,6 +276,10 @@ export class BlockUtilities {
     if (block instanceof MatrixInversionBlock) {
       contextMenus.matrixInversionBlock.block = block;
       return document.getElementById("matrix-inversion-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof MatrixTranspositionBlock) {
+      contextMenus.matrixTranspositionBlock.block = block;
+      return document.getElementById("matrix-transposition-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof RainbowHatBlock) {
       contextMenus.rainbowHatBlock.block = block;

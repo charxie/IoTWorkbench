@@ -75,7 +75,7 @@ export class MatrixBlock extends Block {
 
   getCopy(): Block {
     let copy = new MatrixBlock("Matrix Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
-    copy.setValues(this.matrix.getValues());
+    copy.setValues(JSON.parse(JSON.stringify(this.matrix.getValues())));
     copy.fractionDigits = this.fractionDigits;
     return copy;
   }

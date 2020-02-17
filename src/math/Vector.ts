@@ -46,10 +46,18 @@ export class Vector {
     return p;
   }
 
-  public shift(factor: number): Vector {
+  public shift(x: number): Vector {
     let p = new Vector(this.values.length);
     for (let i = 0; i < p.size(); i++) {
-      p.values[i] = this.values[i] + factor;
+      p.values[i] = this.values[i] + x;
+    }
+    return p;
+  }
+
+  public modulus(x: number): Vector {
+    let p = new Vector(this.values.length);
+    for (let i = 0; i < p.size(); i++) {
+      p.values[i] = this.values[i] % x;
     }
     return p;
   }
@@ -62,10 +70,10 @@ export class Vector {
     return p;
   }
 
-  public scale(factor: number): Vector {
+  public scale(x: number): Vector {
     let p = new Vector(this.values.length);
     for (let i = 0; i < p.size(); i++) {
-      p.values[i] = this.values[i] * factor;
+      p.values[i] = this.values[i] * x;
     }
     return p;
   }

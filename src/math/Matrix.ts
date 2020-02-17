@@ -24,6 +24,77 @@ export class Matrix {
     return this.values[0].length;
   }
 
+  public transpose(): Matrix {
+    let that = this;
+    let t = new Matrix(this.getRows(), this.getColumns());
+    t.setValues(Object.keys(this.values[0]).map(function (c) {
+      return that.values.map(function (r) {
+        return r[c];
+      });
+    }));
+    return t;
+  }
+
+  public addMatrix(m: Matrix): Matrix {
+    let result = new Matrix(this.getRows(), this.getColumns());
+    for (let i = 0; i < this.getRows(); i++) {
+      for (let j = 0; j < this.getColumns(); j++) {
+        result.values[i][j] = this.values[i][j] + m.values[i][j];
+      }
+    }
+    return result;
+  }
+
+  public subtractMatrix(m: Matrix): Matrix {
+    let result = new Matrix(this.getRows(), this.getColumns());
+    for (let i = 0; i < this.getRows(); i++) {
+      for (let j = 0; j < this.getColumns(); j++) {
+        result.values[i][j] = this.values[i][j] - m.values[i][j];
+      }
+    }
+    return result;
+  }
+
+  public negateMatrix(): Matrix {
+    let result = new Matrix(this.getRows(), this.getColumns());
+    for (let i = 0; i < this.getRows(); i++) {
+      for (let j = 0; j < this.getColumns(); j++) {
+        result.values[i][j] = -this.values[i][j];
+      }
+    }
+    return result;
+  }
+
+  public modulusMatrix(x: number): Matrix {
+    let result = new Matrix(this.getRows(), this.getColumns());
+    for (let i = 0; i < this.getRows(); i++) {
+      for (let j = 0; j < this.getColumns(); j++) {
+        result.values[i][j] = this.values[i][j] % x;
+      }
+    }
+    return result;
+  }
+
+  public scaleMatrix(s: number): Matrix {
+    let result = new Matrix(this.getRows(), this.getColumns());
+    for (let i = 0; i < this.getRows(); i++) {
+      for (let j = 0; j < this.getColumns(); j++) {
+        result.values[i][j] = this.values[i][j] * s;
+      }
+    }
+    return result;
+  }
+
+  public shiftMatrix(s: number): Matrix {
+    let result = new Matrix(this.getRows(), this.getColumns());
+    for (let i = 0; i < this.getRows(); i++) {
+      for (let j = 0; j < this.getColumns(); j++) {
+        result.values[i][j] = this.values[i][j] + s;
+      }
+    }
+    return result;
+  }
+
   public multiplyMatrix(m: Matrix): Matrix {
     let result = new Matrix(this.getRows(), this.getColumns());
     result.setValues(math.multiply(this.values, m.values));
@@ -87,17 +158,6 @@ export class Matrix {
 
   public toString(): string {
     return JSON.stringify(this.values);
-  }
-
-  public transpose(): Matrix {
-    let that = this;
-    let newMatrix = new Matrix(this.getRows(), this.getColumns());
-    newMatrix.setValues(Object.keys(this.values[0]).map(function (c) {
-      return that.values.map(function (r) {
-        return r[c];
-      });
-    }));
-    return newMatrix;
   }
 
 }

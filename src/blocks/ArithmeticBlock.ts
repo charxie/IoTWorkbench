@@ -7,6 +7,7 @@ import {Port} from "./Port";
 import {Complex} from "../math/Complex";
 import {Vector} from "../math/Vector";
 import {Matrix} from "../math/Matrix";
+import {Util} from "../Util";
 
 export class ArithmeticBlock extends Block {
 
@@ -44,6 +45,7 @@ export class ArithmeticBlock extends Block {
   }
 
   updateModel(): void {
+    this.hasError = false;
     let a = this.portA.getValue();
     let b = this.portB.getValue();
     if (Array.isArray(a) && Array.isArray(b)) {
@@ -53,9 +55,15 @@ export class ArithmeticBlock extends Block {
       }
       this.portR.setValue(c);
     } else {
-      if (a === undefined) a = 0;
-      if (b === undefined) b = 0;
-      this.portR.setValue(this.getResult(a, b));
+      if (a !== undefined && b !== undefined) {
+        try {
+          this.portR.setValue(this.getResult(a, b));
+        } catch (e) {
+          console.log(e.stack);
+          Util.showBlockError(e.toString());
+          this.hasError = true;
+        }
+      }
     }
     this.updateConnectors();
   }
@@ -63,62 +71,89 @@ export class ArithmeticBlock extends Block {
   private getResult(a, b): any {
     switch (this.name) {
       case "Add Block":
+        if (typeof a === "number" && typeof b === "number") {
+          return a + b;
+        }
         if (a instanceof Complex && b instanceof Complex) {
           return a.plus(b);
         }
-        if (a instanceof Complex) {
+        if (a instanceof Complex && typeof b === "number") {
           return a.plus(new Complex(b, 0));
         }
-        if (b instanceof Complex) {
+        if (b instanceof Complex && typeof a === "number") {
           return b.plus(new Complex(a, 0));
         }
         if (a instanceof Vector && b instanceof Vector) {
           return a.add(b);
         }
-        if (a instanceof Vector && typeof b == "number") {
+        if (a instanceof Vector && typeof b === "number") {
           return a.shift(b);
         }
-        if (b instanceof Vector && typeof a == "number") {
+        if (b instanceof Vector && typeof a === "number") {
           return b.shift(a);
         }
-        return a + b;
+        if (a instanceof Matrix && b instanceof Matrix) {
+          return a.addMatrix(b);
+        }
+        if (a instanceof Matrix && typeof b === "number") {
+          return a.shiftMatrix(b);
+        }
+        if (b instanceof Matrix && typeof a === "number") {
+          return b.shiftMatrix(a);
+        }
+        throw new Error("Cannot add " + b + " to " + a);
       case "Subtract Block":
+        if (typeof a === "number" && typeof b === "number") {
+          return a - b;
+        }
         if (a instanceof Complex && b instanceof Complex) {
           return a.minus(b);
         }
-        if (a instanceof Complex) {
+        if (a instanceof Complex && typeof b === "number") {
           return a.minus(new Complex(b, 0));
         }
-        if (b instanceof Complex) {
+        if (b instanceof Complex && typeof a === "number") {
           return new Complex(a, 0).minus(b);
         }
         if (a instanceof Vector && b instanceof Vector) {
           return a.subtract(b);
         }
-        if (a instanceof Vector && typeof b == "number") {
+        if (a instanceof Vector && typeof b === "number") {
           return a.shift(-b);
         }
-        if (b instanceof Vector && typeof a == "number") {
+        if (b instanceof Vector && typeof a === "number") {
           return b.negate().shift(a);
         }
-        return a - b;
+        if (a instanceof Matrix && b instanceof Matrix) {
+          return a.subtractMatrix(b);
+        }
+        if (a instanceof Matrix && typeof b === "number") {
+          return a.shiftMatrix(-b);
+        }
+        if (b instanceof Matrix && typeof a === "number") {
+          return b.negateMatrix().shiftMatrix(a);
+        }
+        throw new Error("Cannot subtract " + b + " from " + a);
       case "Multiply Block":
+        if (typeof a === "number" && typeof b === "number") {
+          return a * b;
+        }
         if (a instanceof Complex && b instanceof Complex) {
           return a.times(b);
         }
-        if (a instanceof Complex) {
+        if (a instanceof Complex && typeof b === "number") {
           return a.times(new Complex(b, 0));
         }
-        if (b instanceof Complex) {
+        if (b instanceof Complex && typeof a === "number") {
           return b.times(new Complex(a, 0));
         }
         if (a instanceof Vector && b instanceof Vector) {
           return a.cross(b);
         }
-        if (a instanceof Vector && typeof b == "number") {
+        if (a instanceof Vector && typeof b === "number") {
           return a.scale(b);
         }
-        if (b instanceof Vector && typeof a == "number") {
+        if (b instanceof Vector && typeof a === "number") {
           return b.scale(a);
         }
         if (a instanceof Matrix && b instanceof Vector) {
@@ -127,36 +162,60 @@ export class ArithmeticBlock extends Block {
         if (a instanceof Matrix && b instanceof Matrix) {
           return a.multiplyMatrix(b);
         }
-        return a * b;
+        if (a instanceof Matrix && typeof b === "number") {
+          return a.scaleMatrix(b);
+        }
+        if (b instanceof Matrix && typeof a === "number") {
+          return b.scaleMatrix(a);
+        }
+        throw new Error("Cannot multiply " + a + " by " + b);
       case "Divide Block":
+        if (typeof a === "number" && typeof b === "number") {
+          return a / b;
+        }
         if (a instanceof Complex && b instanceof Complex) {
           return a.divides(b);
         }
-        if (a instanceof Complex) {
+        if (a instanceof Complex && typeof b === "number") {
           return a.divides(new Complex(b, 0));
         }
-        if (b instanceof Complex) {
+        if (b instanceof Complex && typeof a === "number") {
           return new Complex(a, 0).divides(b);
         }
-        if (a instanceof Vector && typeof b == "number") {
+        if (a instanceof Vector && typeof b === "number") {
           return a.scale(1 / b);
         }
-        return a / b;
+        if (b instanceof Vector) {
+          throw new Error("A vector cannot be divided.");
+        }
+        if (a instanceof Matrix && typeof b === "number") {
+          return a.scaleMatrix(1 / b);
+        }
+        if (b instanceof Matrix) {
+          throw new Error("A matrix cannot be divided.");
+        }
+        throw new Error("Cannot divide " + a + " by " + b);
       case "Modulus Block":
-        return a % b;
+        if (typeof a === "number" && typeof b === "number") {
+          return a % b;
+        }
+        if (a instanceof Vector && typeof b === "number") {
+          return a.modulus(b);
+        }
+        if (a instanceof Matrix && typeof b === "number") {
+          return a.modulusMatrix(b);
+        }
+        throw new Error("Modulus of " + a + " and " + b + " is not supported");
       case "Exponentiation Block":
-        return a ** b;
+        if (typeof a === "number" && typeof b === "number") {
+          return a ** b;
+        }
+        throw new Error("Expoentiaation of " + a + " by " + b + " is not supported");
       case "Dot Product Block":
         if (a instanceof Vector && b instanceof Vector) {
           return a.dot(b);
         }
-        if (a instanceof Vector && typeof b == "number") {
-          return a.scale(b);
-        }
-        if (b instanceof Vector && typeof a == "number") {
-          return b.scale(a);
-        }
-        return a * b;
+        throw new Error("Dot product of " + a + " and " + b + " is not supported");
       default:
         return NaN;
     }

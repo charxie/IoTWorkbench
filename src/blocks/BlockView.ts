@@ -44,6 +44,7 @@ import {NormalizationBlock} from "./NormalizationBlock";
 import {MatrixBlock} from "./MatrixBlock";
 import {DeterminantBlock} from "./DeterminantBlock";
 import {MatrixInversionBlock} from "./MatrixInversionBlock";
+import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 
 export class BlockView {
 
@@ -172,6 +173,9 @@ export class BlockView {
             break;
           case "determinant-block":
             b = that.addBlockUndoable(new DeterminantBlock("Determinant Block #" + timestamp, x - 30, y - 30, 60, 60));
+            break;
+          case "matrix-transposition-block":
+            b = that.addBlockUndoable(new MatrixTranspositionBlock("Matrix Transposition Block #" + timestamp, x - 30, y - 30, 60, 60));
             break;
           case "matrix-inversion-block":
             b = that.addBlockUndoable(new MatrixInversionBlock("Matrix Inversion Block #" + timestamp, x - 30, y - 30, 60, 60));

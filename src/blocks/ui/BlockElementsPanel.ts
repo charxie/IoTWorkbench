@@ -34,6 +34,7 @@ import {NormalizationBlock} from "../NormalizationBlock";
 import {MatrixBlock} from "../MatrixBlock";
 import {DeterminantBlock} from "../DeterminantBlock";
 import {MatrixInversionBlock} from "../MatrixInversionBlock";
+import {MatrixTranspositionBlock} from "../MatrixTranspositionBlock";
 
 export class BlockElementsPanel {
 
@@ -56,6 +57,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="bundled-functions-block" title="Bundled Functions" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="normalization-block" title="Vector Normalization" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="determinant-block" title="Matrix Determinant" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="matrix-transposition-block" title="Matrix Transposition" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="matrix-inversion-block" title="Matrix Inversion" width="45px" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
@@ -137,6 +139,7 @@ export class BlockElementsPanel {
     this.drawNormalizationBlock("normalization-block");
     this.drawMatrixBlock("Matrix Block", "M", "matrix-block");
     this.drawDeterminantBlock("determinant-block");
+    this.drawMatrixTranspositionBlock("matrix-transposition-block");
     this.drawMatrixInversionBlock("matrix-inversion-block");
     this.drawTurnoutSwitch("Turnout Switch", "Turnout", "turnout-switch-block");
     this.drawSwitchStatementBlock("Switch Statement Block", "Switch", "switch-statement-block");
@@ -236,6 +239,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new DeterminantBlock("Determinant Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawMatrixTranspositionBlock(canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new MatrixTranspositionBlock("Matrix Transposition Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

@@ -44,6 +44,7 @@ import {NormalizationBlock} from "./NormalizationBlock";
 import {MatrixBlock} from "./MatrixBlock";
 import {DeterminantBlock} from "./DeterminantBlock";
 import {MatrixInversionBlock} from "./MatrixInversionBlock";
+import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 
 export class Flowchart {
 
@@ -696,6 +697,9 @@ export class Flowchart {
         break;
       case "Determinant Block":
         block = new DeterminantBlock(uid, x, y, 60, 60);
+        break;
+      case "Matrix Transposition Block":
+        block = new MatrixTranspositionBlock(uid, x, y, 60, 60);
         break;
       case "Matrix Inversion Block":
         block = new MatrixInversionBlock(uid, x, y, 60, 60);
