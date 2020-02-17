@@ -31,6 +31,9 @@ import {BitwiseOperatorBlock} from "../BitwiseOperatorBlock";
 import {FunctionDeclarationBlock} from "../FunctionDeclarationBlock";
 import {VectorBlock} from "../VectorBlock";
 import {NormalizationBlock} from "../NormalizationBlock";
+import {MatrixBlock} from "../MatrixBlock";
+import {DeterminantBlock} from "../DeterminantBlock";
+import {MatrixInversionBlock} from "../MatrixInversionBlock";
 
 export class BlockElementsPanel {
 
@@ -46,12 +49,14 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="bitwise-operator-and-block" title="Bitwise Operator" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="logic-and-block" title="Logic Operator" width="45px" height="60px" style="left: 10px; cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="logic-not-block" title="Not Operator" width="45px" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="normalization-block" title="Vector Normalization" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="unary-function-block" title="Unary Function" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="binary-function-block" title="Binary Function" width="45px" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="multivariable-function-block" title="Multivariable Function" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="parametric-equation-block" title="Parametric Equations" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="bundled-functions-block" title="Bundled Functions" width="45px" height="80px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="normalization-block" title="Vector Normalization" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="determinant-block" title="Matrix Determinant" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="matrix-inversion-block" title="Matrix Inversion" width="45px" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -83,6 +88,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="rgba-color-block" title="RGBA Color" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="complex-number-block" title="Complex Number" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="vector-block" title="Vector" width="45x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="matrix-block" title="Matrix" width="60x" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -111,7 +117,6 @@ export class BlockElementsPanel {
     this.drawBundledFunctionsBlock("bundled-functions-block");
     this.drawLogicBlock("AND Block", "AND", "logic-and-block");
     this.drawNegationBlock("logic-not-block");
-    this.drawNormalizationBlock("normalization-block");
     this.drawArithmeticBlock("Add Block", "+", "arithmetic-add-block");
     this.drawBitwiseOperatorBlock("AND Block", "&", "bitwise-operator-and-block");
     this.drawToggleSwitch("Switch", "toggle-switch-block");
@@ -129,6 +134,10 @@ export class BlockElementsPanel {
     this.drawRgbaColorBlock("Rgba Color Block", "RGBA", "rgba-color-block");
     this.drawComplexNumberBlock("Complext Number Block", "a+b*i", "complex-number-block");
     this.drawVectorBlock("Vector Block", "V", "vector-block");
+    this.drawNormalizationBlock("normalization-block");
+    this.drawMatrixBlock("Matrix Block", "M", "matrix-block");
+    this.drawDeterminantBlock("determinant-block");
+    this.drawMatrixInversionBlock("matrix-inversion-block");
     this.drawTurnoutSwitch("Turnout Switch", "Turnout", "turnout-switch-block");
     this.drawSwitchStatementBlock("Switch Statement Block", "Switch", "switch-statement-block");
     this.drawWorkerBlock("Worker Block", "Worker", "worker-block");
@@ -203,6 +212,38 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new VectorBlock("Vector Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawNormalizationBlock(canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new NormalizationBlock("Normalization Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawMatrixBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new MatrixBlock("Matrix Block Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawDeterminantBlock(canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new DeterminantBlock("Determinant Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawMatrixInversionBlock(canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new MatrixInversionBlock("Matrix Inversion Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }
@@ -318,14 +359,6 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new NegationBlock("Negation Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setIconic(true);
-    block.draw(ctx);
-  }
-
-  private drawNormalizationBlock(canvasId: string): void {
-    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-    let ctx = canvas.getContext('2d');
-    let block = new NormalizationBlock("Normalization Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

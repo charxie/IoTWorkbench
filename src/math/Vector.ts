@@ -113,11 +113,11 @@ export class Vector {
   }
 
   public toFixed(fractionDigits: number): string {
-    let s: string = "(";
+    let s: string = "[";
     for (let x of this.values) {
       s += x.toFixed(fractionDigits) + ", ";
     }
-    return s.substring(0, s.length - 2) + ")";
+    return s.substring(0, s.length - 2) + "]";
   }
 
 }

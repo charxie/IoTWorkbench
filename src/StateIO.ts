@@ -33,6 +33,7 @@ import {ComplexNumberBlock} from "./blocks/ComplexNumberBlock";
 import {BundledFunctionsBlock} from "./blocks/BundledFunctionsBlock";
 import {FunctionDeclarationBlock} from "./blocks/FunctionDeclarationBlock";
 import {VectorBlock} from "./blocks/VectorBlock";
+import {MatrixBlock} from "./blocks/MatrixBlock";
 
 export class StateIO {
 
@@ -105,6 +106,10 @@ export class StateIO {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
           block.setValues(state.values != undefined ? state.values : [1, 0]);
+        } else if (block instanceof MatrixBlock) {
+          block.setName(state.name);
+          block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
+          block.setValues(state.values != undefined ? state.values : [[1, 0], [1, 0]]);
         } else if (block instanceof WorkerBlock) {
           block.setName(state.name);
           block.setOutputType(state.outputType ? state.outputType : "Natural Number");

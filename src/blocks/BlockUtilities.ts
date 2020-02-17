@@ -35,6 +35,9 @@ import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
 import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
 import {VectorBlock} from "./VectorBlock";
 import {NormalizationBlock} from "./NormalizationBlock";
+import {MatrixBlock} from "./MatrixBlock";
+import {DeterminantBlock} from "./DeterminantBlock";
+import {MatrixInversionBlock} from "./MatrixInversionBlock";
 
 export class BlockUtilities {
 
@@ -62,9 +65,6 @@ export class BlockUtilities {
     }
     if (block instanceof NegationBlock) {
       return contextMenus.notBlock;
-    }
-    if (block instanceof NormalizationBlock) {
-      return contextMenus.normalizationBlock;
     }
     if (block instanceof LogicBlock) {
       return contextMenus.logicBlock;
@@ -126,6 +126,18 @@ export class BlockUtilities {
     if (block instanceof VectorBlock) {
       return contextMenus.vectorBlock;
     }
+    if (block instanceof NormalizationBlock) {
+      return contextMenus.normalizationBlock;
+    }
+    if (block instanceof MatrixBlock) {
+      return contextMenus.matrixBlock;
+    }
+    if (block instanceof DeterminantBlock) {
+      return contextMenus.determinantBlock;
+    }
+    if (block instanceof MatrixInversionBlock) {
+      return contextMenus.matrixInversionBlock;
+    }
     if (block instanceof RainbowHatBlock) {
       return contextMenus.rainbowHatBlock;
     }
@@ -164,10 +176,6 @@ export class BlockUtilities {
     if (block instanceof NegationBlock) {
       contextMenus.notBlock.block = block;
       return document.getElementById("not-block-context-menu") as HTMLMenuElement;
-    }
-    if (block instanceof NormalizationBlock) {
-      contextMenus.normalizationBlock.block = block;
-      return document.getElementById("normalization-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof LogicBlock) {
       contextMenus.logicBlock.block = block;
@@ -248,6 +256,22 @@ export class BlockUtilities {
     if (block instanceof VectorBlock) {
       contextMenus.vectorBlock.block = block;
       return document.getElementById("vector-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof NormalizationBlock) {
+      contextMenus.normalizationBlock.block = block;
+      return document.getElementById("normalization-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof MatrixBlock) {
+      contextMenus.matrixBlock.block = block;
+      return document.getElementById("matrix-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof DeterminantBlock) {
+      contextMenus.determinantBlock.block = block;
+      return document.getElementById("matrix-determinant-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof MatrixInversionBlock) {
+      contextMenus.matrixInversionBlock.block = block;
+      return document.getElementById("matrix-inversion-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof RainbowHatBlock) {
       contextMenus.rainbowHatBlock.block = block;

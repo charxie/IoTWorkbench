@@ -41,6 +41,9 @@ import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
 import {FunctionBlock} from "./FunctionBlock";
 import {VectorBlock} from "./VectorBlock";
 import {NormalizationBlock} from "./NormalizationBlock";
+import {MatrixBlock} from "./MatrixBlock";
+import {DeterminantBlock} from "./DeterminantBlock";
+import {MatrixInversionBlock} from "./MatrixInversionBlock";
 
 export class Flowchart {
 
@@ -667,9 +670,6 @@ export class Flowchart {
       case "Dot Product Block":
         block = new ArithmeticBlock(uid, name, "•", x, y, 60, 60);
         break;
-      case "Normalization Block":
-        block = new NormalizationBlock(uid, x, y, 60, 60);
-        break;
       case "Global Variable Block":
         block = new GlobalVariableBlock(uid, name, "var", x, y, 80, 80);
         break;
@@ -687,6 +687,18 @@ export class Flowchart {
         break;
       case "Vector Block":
         block = new VectorBlock(uid, name, "V", x, y, 80, 80);
+        break;
+      case "Normalization Block":
+        block = new NormalizationBlock(uid, x, y, 60, 60);
+        break;
+      case "Matrix Block":
+        block = new MatrixBlock(uid, name, "M", x, y, 60, 60);
+        break;
+      case "Determinant Block":
+        block = new DeterminantBlock(uid, x, y, 60, 60);
+        break;
+      case "Matrix Inversion Block":
+        block = new MatrixInversionBlock(uid, x, y, 60, 60);
         break;
       case "Worker Block":
         block = new WorkerBlock(uid, name, x, y, 80, 60);
@@ -787,6 +799,8 @@ export class Flowchart {
         blockStates.push(new ComplexNumberBlock.State(b));
       } else if (b instanceof VectorBlock) {
         blockStates.push(new VectorBlock.State(b));
+      } else if (b instanceof MatrixBlock) {
+        blockStates.push(new MatrixBlock.State(b));
       } else if (b instanceof WorkerBlock) {
         blockStates.push(new WorkerBlock.State(b));
       } else if (b instanceof ActionBlock) {

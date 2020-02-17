@@ -68,6 +68,10 @@ import {BitwiseOperatorBlockContextMenu} from "./blocks/ui/BitwiseOperatorBlockC
 import {FunctionDeclarationBlockContextMenu} from "./blocks/ui/FunctionDeclarationBlockContextMenu";
 import {VectorBlockContextMenu} from "./blocks/ui/VectorBlockContextMenu";
 import {NormalizationBlockContextMenu} from "./blocks/ui/NormalizationBlockContextMenu";
+import {MatrixBlockContextMenu} from "./blocks/ui/MatrixBlockContextMenu";
+import {DeterminantBlockContextMenu} from "./blocks/ui/DeterminantBlockContextMenu";
+import {MatrixInversionBlock} from "./blocks/MatrixInversionBlock";
+import {MatrixInversionBlockContextMenu} from "./blocks/ui/MatrixInversionBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -310,6 +314,21 @@ function setupContextMenuForBlock() {
   normalizationBlockContextMenu.render("normalization-block-context-menu-placeholder");
   normalizationBlockContextMenu.addListeners();
   contextMenus.normalizationBlock = normalizationBlockContextMenu;
+
+  let matrixBlockContextMenu = new MatrixBlockContextMenu();
+  matrixBlockContextMenu.render("matrix-block-context-menu-placeholder");
+  matrixBlockContextMenu.addListeners();
+  contextMenus.matrixBlock = matrixBlockContextMenu;
+
+  let determinantBlockContextMenu = new DeterminantBlockContextMenu();
+  determinantBlockContextMenu.render("matrix-determinant-block-context-menu-placeholder");
+  determinantBlockContextMenu.addListeners();
+  contextMenus.determinantBlock = determinantBlockContextMenu;
+
+  let matrixInversionBlockContextMenu = new MatrixInversionBlockContextMenu();
+  matrixInversionBlockContextMenu.render("matrix-inversion-block-context-menu-placeholder");
+  matrixInversionBlockContextMenu.addListeners();
+  contextMenus.matrixInversionBlock = matrixInversionBlockContextMenu;
 
   let workerBlockContextMenu = new WorkerBlockContextMenu();
   workerBlockContextMenu.render("worker-block-context-menu-placeholder");

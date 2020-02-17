@@ -41,6 +41,9 @@ import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
 import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
 import {VectorBlock} from "./VectorBlock";
 import {NormalizationBlock} from "./NormalizationBlock";
+import {MatrixBlock} from "./MatrixBlock";
+import {DeterminantBlock} from "./DeterminantBlock";
+import {MatrixInversionBlock} from "./MatrixInversionBlock";
 
 export class BlockView {
 
@@ -162,7 +165,16 @@ export class BlockView {
             b = that.addBlockUndoable(new VectorBlock("Vector Block #" + timestamp, "Vector Block", "V", x - 50, y - 80, 100, 160));
             break;
           case "normalization-block":
-            b = that.addBlockUndoable(new NormalizationBlock("Normalization Block #" + timestamp, x - 30, y - 40, 60, 80));
+            b = that.addBlockUndoable(new NormalizationBlock("Normalization Block #" + timestamp, x - 30, y - 30, 60, 60));
+            break;
+          case "matrix-block":
+            b = that.addBlockUndoable(new MatrixBlock("Matrix Block #" + timestamp, "Matrix Block", "M", x - 80, y - 80, 160, 160));
+            break;
+          case "determinant-block":
+            b = that.addBlockUndoable(new DeterminantBlock("Determinant Block #" + timestamp, x - 30, y - 30, 60, 60));
+            break;
+          case "matrix-inversion-block":
+            b = that.addBlockUndoable(new MatrixInversionBlock("Matrix Inversion Block #" + timestamp, x - 30, y - 30, 60, 60));
             break;
           case "worker-block":
             b = that.addBlockUndoable(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));

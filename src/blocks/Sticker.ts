@@ -8,6 +8,7 @@ import {Util} from "../Util";
 import {flowchart} from "../Main";
 import {Complex} from "../math/Complex";
 import {Vector} from "../math/Vector";
+import {Matrix} from "../math/Matrix";
 
 export class Sticker extends Block {
 
@@ -197,6 +198,8 @@ export class Sticker extends Block {
         if (v instanceof Complex) {
           this.text = v.toFixed(this.decimals);
         } else if (v instanceof Vector) {
+          this.text = v.toFixed(this.decimals);
+        } else if (v instanceof Matrix) {
           this.text = v.toFixed(this.decimals);
         } else {
           try {

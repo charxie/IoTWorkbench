@@ -2,23 +2,73 @@
  * @author Charles Xie
  */
 
+import {math} from "../Main";
+import {Vector} from "./Vector";
+
 export class Matrix {
 
   private values: number[][];
 
-  constructor(m: number, n: number) {
-    this.values = new Array(m);
-    for (let i = 0; i < m; i++) {
-      this.values[i] = new Array(n);
+  public constructor(rows: number, cols: number) {
+    this.values = new Array(rows);
+    for (let i = 0; i < rows; i++) {
+      this.values[i] = new Array(cols);
     }
   }
 
-  setValue(i: number, j: number, value: number) {
-    this.values[i][j] = value;
+  public getRows(): number {
+    return this.values.length;
   }
 
-  getValue(i: number, j: number) {
-    return this.values[i][j];
+  public getColumns(): number {
+    return this.values[0].length;
+  }
+
+  public det(): number {
+    return math.det(this.values);
+  }
+
+  public inv(): Matrix {
+    let result = math.inv(this.values) as number[][];
+    let m = new Matrix(result.length, result[0].length);
+    m.setValues(result);
+    return m;
+  }
+
+  public setValues(values: number[][]) {
+    this.values = values;
+  }
+
+  public getValues(): number[][] {
+    return this.values;
+  }
+
+  public setValue(row: number, col: number, value: number) {
+    this.values[row][col] = value;
+  }
+
+  public getValue(row: number, col: number) {
+    return this.values[row][col];
+  }
+
+  public setRowValues(row: number, v: Vector): void {
+    for (let col = 0; col < this.getColumns(); col++) {
+      if (v.getValue(col) !== undefined) {
+        this.values[row][col] = v.getValue(col);
+      }
+    }
+  }
+
+  public toFixed(fractionDigits: number): string {
+    let s: string = "[";
+    for (let x of this.values) {
+      s += "[";
+      for (let y of x) {
+        s += y.toFixed(fractionDigits) + ", ";
+      }
+      s = s.substring(0, s.length - 2) + "], ";
+    }
+    return s.substring(0, s.length - 2) + "]";
   }
 
   public toString(): string {

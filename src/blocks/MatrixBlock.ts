@@ -4,19 +4,20 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
-import {Vector} from "../math/Vector";
 import {flowchart} from "../Main";
+import {Matrix} from "../math/Matrix";
+import {Vector} from "../math/Vector";
 
-export class VectorBlock extends Block {
+export class MatrixBlock extends Block {
 
   private portI: Port[];
   private readonly portO: Port;
-  private vector: Vector;
+  private matrix: Matrix;
   private fractionDigits: number = 3;
 
   static State = class {
     readonly name: string;
-    readonly values: number[];
+    readonly values: number[][];
     readonly fractionDigits: number;
     readonly uid: string;
     readonly x: number;
@@ -24,9 +25,9 @@ export class VectorBlock extends Block {
     readonly width: number;
     readonly height: number;
 
-    constructor(block: VectorBlock) {
+    constructor(block: MatrixBlock) {
       this.name = block.name;
-      this.values = block.vector.getValues();
+      this.values = block.matrix.getValues();
       this.fractionDigits = block.fractionDigits;
       this.uid = block.uid;
       this.x = block.x;
@@ -40,19 +41,21 @@ export class VectorBlock extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.symbol = symbol;
-    this.color = "#669";
+    this.color = "#C66";
     this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
     this.ports.push(this.portO);
     this.margin = 15;
-    this.vector = new Vector(2);
-    this.vector.setValue(0, 1);
-    this.vector.setValue(1, 0);
+    this.matrix = new Matrix(2, 2);
+    this.matrix.setValue(0, 0, 1);
+    this.matrix.setValue(0, 1, 0);
+    this.matrix.setValue(1, 0, 0);
+    this.matrix.setValue(1, 1, 1);
     this.setInputPorts();
   }
 
   private setInputPorts(): void {
-    let size = this.vector.size();
-    if (this.portI == undefined || this.portI.length !== size) {
+    let rows = this.matrix.getRows();
+    if (this.portI == undefined || this.portI.length !== rows) {
       if (this.portI) {
         for (let p of this.portI) { // disconnect all the port connectors as the ports will be recreated
           flowchart.removeAllConnectors(p);
@@ -61,9 +64,9 @@ export class VectorBlock extends Block {
           this.ports.pop();
         }
       }
-      this.portI = new Array(size);
-      let dh = this.height / (size + 1);
-      for (let i = 0; i < size; i++) {
+      this.portI = new Array(rows);
+      let dh = this.height / (rows + 1);
+      for (let i = 0; i < rows; i++) {
         this.portI[i] = new Port(this, true, String.fromCharCode("A".charCodeAt(0) + i), 0, (i + 1) * dh, false);
         this.ports.push(this.portI[i]);
       }
@@ -71,8 +74,8 @@ export class VectorBlock extends Block {
   }
 
   getCopy(): Block {
-    let copy = new VectorBlock("Vector Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
-    copy.setValues(this.vector.getValues());
+    let copy = new MatrixBlock("Matrix Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
+    copy.setValues(this.matrix.getValues());
     return copy;
   }
 
@@ -87,29 +90,29 @@ export class VectorBlock extends Block {
     this.fractionDigits = fractionDigits;
   }
 
-  getValues(): number[] {
-    return this.vector.getValues();
+  getValues(): number[][] {
+    return this.matrix.getValues();
   }
 
-  setValues(values: number[]): void {
-    this.vector.setValues(values);
+  setValues(values: number[][]): void {
+    this.matrix.setValues(values);
     this.setInputPorts();
   }
 
-  getValue(index: number): number {
-    return this.vector.getValue(index);
+  getValue(row: number, col: number): number {
+    return this.matrix.getValue(row, col);
   }
 
-  setValue(index: number, value: number): void {
-    this.vector.setValue(index, value);
+  setValue(row: number, col: number, value: number): void {
+    this.matrix.setValue(row, col, value);
   }
 
   refreshView(): void {
     super.refreshView();
     this.portO.setX(this.width);
     this.portO.setY(this.height / 2);
-    let dh = this.height / (this.vector.size() + 1);
-    for (let i = 0; i < this.vector.size(); i++) {
+    let dh = this.height / (this.matrix.getRows() + 1);
+    for (let i = 0; i < this.matrix.getRows(); i++) {
       this.portI[i].setY((i + 1) * dh);
     }
   }
@@ -117,11 +120,11 @@ export class VectorBlock extends Block {
   updateModel(): void {
     for (let i = 0; i < this.portI.length; i++) {
       let x = this.portI[i].getValue();
-      if (x != undefined) {
-        this.vector.setValue(i, x);
+      if (x instanceof Vector) {
+        this.matrix.setRowValues(i, x);
       }
     }
-    this.portO.setValue(this.vector);
+    this.portO.setValue(this.matrix);
     this.updateConnectors();
   }
 
@@ -133,15 +136,21 @@ export class VectorBlock extends Block {
       ctx.font = "16px Times New Roman";
       let s;
       let offset = -this.getHeight() / 2;
-      for (let i = 0; i < this.portI.length; i++) {
-        s = this.vector.getValue(i).toPrecision(this.fractionDigits);
-        this.drawTextAt(s, 0, this.portI[i].getY() + offset, ctx);
+      let gap = 10;
+      let textWidth = ctx.measureText(1.0.toPrecision(this.fractionDigits)).width;
+      let cols = this.matrix.getColumns();
+      let rows = this.portI.length;
+      for (let col = 0; col < cols; col++) {
+        for (let row = 0; row < rows; row++) {
+          s = this.matrix.getValue(row, col).toPrecision(this.fractionDigits);
+          this.drawTextAt(s, (col + 0.5 - cols / 2) * (textWidth + gap), this.portI[row].getY() + offset, ctx);
+        }
       }
+      textWidth = textWidth * cols + gap * (cols - 2);
       // the coordinates are no longer relative to the block below
-      let textWidth = ctx.measureText(s).width;
       let x = this.getX() + this.getWidth() / 2 - 16 - textWidth / 2;
       let y1 = this.getY() + this.portI[0].getY() - 10;
-      let y2 = this.getY() + this.portI[this.portI.length - 1].getY() + 10;
+      let y2 = this.getY() + this.portI[rows - 1].getY() + 10;
       ctx.strokeStyle = "black";
       // left square bracket
       ctx.beginPath();
