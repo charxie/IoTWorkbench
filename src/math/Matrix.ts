@@ -24,6 +24,21 @@ export class Matrix {
     return this.values[0].length;
   }
 
+  public multiplyMatrix(m: Matrix): Matrix {
+    let result = new Matrix(this.getRows(), this.getColumns());
+    result.setValues(math.multiply(this.values, m.values));
+    return result;
+  }
+
+  public multiplyVector(v: Vector): Vector {
+    let result = new Vector(v.size());
+    let tmp = math.multiply(this.values, v.getValues());
+    for (let i = 0; i < tmp.length; i++) {
+      result.setValue(i, JSON.parse(JSON.stringify(tmp[i])));
+    }
+    return result;
+  }
+
   public det(): number {
     return math.det(this.values);
   }
@@ -72,6 +87,17 @@ export class Matrix {
 
   public toString(): string {
     return JSON.stringify(this.values);
+  }
+
+  public transpose(): Matrix {
+    let that = this;
+    let newMatrix = new Matrix(this.getRows(), this.getColumns());
+    newMatrix.setValues(Object.keys(this.values[0]).map(function (c) {
+      return that.values.map(function (r) {
+        return r[c];
+      });
+    }));
+    return newMatrix;
   }
 
 }

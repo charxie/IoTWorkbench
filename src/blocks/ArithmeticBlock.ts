@@ -6,6 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {Complex} from "../math/Complex";
 import {Vector} from "../math/Vector";
+import {Matrix} from "../math/Matrix";
 
 export class ArithmeticBlock extends Block {
 
@@ -119,6 +120,12 @@ export class ArithmeticBlock extends Block {
         }
         if (b instanceof Vector && typeof a == "number") {
           return b.scale(a);
+        }
+        if (a instanceof Matrix && b instanceof Vector) {
+          return a.multiplyVector(b);
+        }
+        if (a instanceof Matrix && b instanceof Matrix) {
+          return a.multiplyMatrix(b);
         }
         return a * b;
       case "Divide Block":
