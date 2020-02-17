@@ -60,15 +60,14 @@ export class Matrix {
   }
 
   public toFixed(fractionDigits: number): string {
-    let s: string = "[";
+    let s: string = "";
     for (let x of this.values) {
-      s += "[";
       for (let y of x) {
-        s += y.toFixed(fractionDigits) + ", ";
+        s += y.toFixed(fractionDigits) + "   ";
       }
-      s = s.substring(0, s.length - 2) + "], ";
+      s = s.substring(0, s.length - 3) + ",";
     }
-    return s.substring(0, s.length - 2) + "]";
+    return s.substring(0, s.length - 1);
   }
 
   public toString(): string {

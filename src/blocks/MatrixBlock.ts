@@ -76,6 +76,7 @@ export class MatrixBlock extends Block {
   getCopy(): Block {
     let copy = new MatrixBlock("Matrix Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
     copy.setValues(this.matrix.getValues());
+    copy.fractionDigits = this.fractionDigits;
     return copy;
   }
 
@@ -136,8 +137,8 @@ export class MatrixBlock extends Block {
       ctx.font = "16px Times New Roman";
       let s;
       let offset = -this.getHeight() / 2;
-      let gap = 10;
-      let textWidth = ctx.measureText(1.0.toPrecision(this.fractionDigits)).width;
+      let gap = 20;
+      let textWidth = ctx.measureText(Math.PI.toPrecision(this.fractionDigits)).width;
       let cols = this.matrix.getColumns();
       let rows = this.portI.length;
       for (let col = 0; col < cols; col++) {
@@ -146,7 +147,7 @@ export class MatrixBlock extends Block {
           this.drawTextAt(s, (col + 0.5 - cols / 2) * (textWidth + gap), this.portI[row].getY() + offset, ctx);
         }
       }
-      textWidth = textWidth * cols + gap * (cols - 2);
+      textWidth = textWidth * cols + gap * (cols - 1);
       // the coordinates are no longer relative to the block below
       let x = this.getX() + this.getWidth() / 2 - 16 - textWidth / 2;
       let y1 = this.getY() + this.portI[0].getY() - 10;

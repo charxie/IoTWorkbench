@@ -201,6 +201,7 @@ export class Sticker extends Block {
           this.text = v.toFixed(this.decimals);
         } else if (v instanceof Matrix) {
           this.text = v.toFixed(this.decimals);
+          this.isArray = true;
         } else {
           try {
             this.text = v.toFixed(this.decimals);

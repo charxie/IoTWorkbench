@@ -73,6 +73,7 @@ export class VectorBlock extends Block {
   getCopy(): Block {
     let copy = new VectorBlock("Vector Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
     copy.setValues(this.vector.getValues());
+    copy.fractionDigits = this.fractionDigits;
     return copy;
   }
 
@@ -133,12 +134,12 @@ export class VectorBlock extends Block {
       ctx.font = "16px Times New Roman";
       let s;
       let offset = -this.getHeight() / 2;
+      let textWidth = ctx.measureText(Math.PI.toPrecision(this.fractionDigits)).width;
       for (let i = 0; i < this.portI.length; i++) {
         s = this.vector.getValue(i).toPrecision(this.fractionDigits);
         this.drawTextAt(s, 0, this.portI[i].getY() + offset, ctx);
       }
       // the coordinates are no longer relative to the block below
-      let textWidth = ctx.measureText(s).width;
       let x = this.getX() + this.getWidth() / 2 - 16 - textWidth / 2;
       let y1 = this.getY() + this.portI[0].getY() - 10;
       let y2 = this.getY() + this.portI[this.portI.length - 1].getY() + 10;

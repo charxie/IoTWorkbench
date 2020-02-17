@@ -5,6 +5,7 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Matrix} from "../math/Matrix";
+import {Util} from "../Util";
 
 export class MatrixInversionBlock extends Block {
 
@@ -38,9 +39,16 @@ export class MatrixInversionBlock extends Block {
   }
 
   updateModel(): void {
+    this.hasError = false;
     let x = this.portI.getValue();
     if (x instanceof Matrix) {
-      this.portO.setValue(x.inv());
+      try {
+        this.portO.setValue(x.inv());
+      } catch (e) {
+        console.log(e.stack);
+        Util.showBlockError(e.toString());
+        this.hasError = true;
+      }
     } else {
       this.portO.setValue(undefined);
     }
