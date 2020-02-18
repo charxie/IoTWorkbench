@@ -40,6 +40,7 @@ import {DeterminantBlock} from "./DeterminantBlock";
 import {MatrixInversionBlock} from "./MatrixInversionBlock";
 import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 import {IntegralBlock} from "./IntegralBlock";
+import {FFTBlock} from "./FFTBlock";
 
 export class BlockUtilities {
 
@@ -109,6 +110,9 @@ export class BlockUtilities {
     }
     if (block instanceof IntegralBlock) {
       return contextMenus.integralBlock;
+    }
+    if (block instanceof FFTBlock) {
+      return contextMenus.FFTBlock;
     }
     if (block instanceof Space2D) {
       return contextMenus.space2d;
@@ -240,6 +244,10 @@ export class BlockUtilities {
     if (block instanceof IntegralBlock) {
       contextMenus.integralBlock.block = block;
       return document.getElementById("integral-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof FFTBlock) {
+      contextMenus.fftBlock.block = block;
+      return document.getElementById("fft-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof Space2D) {
       contextMenus.space2d.block = block;

@@ -18,6 +18,7 @@
     "html2canvas": "^1.0.0-rc.5",
     "jquery": "^3.4.1",
     "jquery-ui-bundle": "^1.12.1-migrate",
+    "jsfft": "0.0.4",
     "mathjs": "^6.6.0",
     "parcel": "^1.12.4",
     "three-js": "^79.0.0",

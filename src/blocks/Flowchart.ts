@@ -46,6 +46,7 @@ import {DeterminantBlock} from "./DeterminantBlock";
 import {MatrixInversionBlock} from "./MatrixInversionBlock";
 import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 import {IntegralBlock} from "./IntegralBlock";
+import {FFTBlock} from "./FFTBlock";
 
 export class Flowchart {
 
@@ -741,6 +742,9 @@ export class Flowchart {
       case "Integral Block":
         block = new IntegralBlock(uid, x, y, 200, 160);
         break;
+      case "FFT Block":
+        block = new FFTBlock(uid, x, y, 200, 160);
+        break;
       case "Space2D":
         block = new Space2D(uid, name, x, y, 200, 220);
         break;
@@ -827,6 +831,8 @@ export class Flowchart {
         blockStates.push(new Grapher.State(b));
       } else if (b instanceof IntegralBlock) {
         blockStates.push(new IntegralBlock.State(b));
+      } else if (b instanceof FFTBlock) {
+        blockStates.push(new FFTBlock.State(b));
       } else if (b instanceof Space2D) {
         blockStates.push(new Space2D.State(b));
       } else if (b instanceof TurnoutSwitch) {

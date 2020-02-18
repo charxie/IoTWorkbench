@@ -35,6 +35,7 @@ import {FunctionDeclarationBlock} from "./blocks/FunctionDeclarationBlock";
 import {VectorBlock} from "./blocks/VectorBlock";
 import {MatrixBlock} from "./blocks/MatrixBlock";
 import {IntegralBlock} from "./blocks/IntegralBlock";
+import {FFTBlock} from "./blocks/FFTBlock";
 
 export class StateIO {
 
@@ -156,6 +157,9 @@ export class StateIO {
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
+        } else if (block instanceof FFTBlock) {
+          block.setName(state.name);
+          block.setInverse(state.inverse != undefined ? state.inverse : false);
         } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);

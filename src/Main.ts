@@ -70,10 +70,10 @@ import {VectorBlockContextMenu} from "./blocks/ui/VectorBlockContextMenu";
 import {NormalizationBlockContextMenu} from "./blocks/ui/NormalizationBlockContextMenu";
 import {MatrixBlockContextMenu} from "./blocks/ui/MatrixBlockContextMenu";
 import {DeterminantBlockContextMenu} from "./blocks/ui/DeterminantBlockContextMenu";
-import {MatrixInversionBlock} from "./blocks/MatrixInversionBlock";
 import {MatrixInversionBlockContextMenu} from "./blocks/ui/MatrixInversionBlockContextMenu";
 import {MatrixTranspositionBlockContextMenu} from "./blocks/ui/MatrixTranspositionBlockContextMenu";
 import {IntegralBlockContextMenu} from "./blocks/ui/IntegralBlockContextMenu";
+import {FFTBlockContextMenu} from "./blocks/ui/FFTBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -431,6 +431,11 @@ function setupContextMenuForBlock() {
   integralBlockContextMenu.render("integral-block-context-menu-placeholder");
   integralBlockContextMenu.addListeners();
   contextMenus.integralBlock = integralBlockContextMenu;
+
+  let fftBlockContextMenu = new FFTBlockContextMenu();
+  fftBlockContextMenu.render("fft-block-context-menu-placeholder");
+  fftBlockContextMenu.addListeners();
+  contextMenus.fftBlock = fftBlockContextMenu;
 
   let space2dContextMenu = new Space2DContextMenu();
   space2dContextMenu.render("space2d-context-menu-placeholder");
