@@ -105,7 +105,7 @@ export class IntegralBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 300,
+        height: 310,
         width: 360,
         buttons: {
           'OK': okFunction,

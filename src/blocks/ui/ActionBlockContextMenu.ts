@@ -51,7 +51,6 @@ export class ActionBlockContextMenu extends BlockContextMenu {
       let heightInputElement = document.getElementById("action-block-height-field") as HTMLInputElement;
       heightInputElement.value = act.getHeight().toString();
       const okFunction = function () {
-        act.setType(typeSelectElement.value);
         let success = true;
         let message;
         // set width
@@ -72,6 +71,7 @@ export class ActionBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          act.setType(typeSelectElement.value);
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(act);
           flowchart.storeBlockStates();

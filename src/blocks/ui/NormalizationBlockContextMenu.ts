@@ -83,7 +83,7 @@ export class NormalizationBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 300,
-        width: 300,
+        width: 360,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

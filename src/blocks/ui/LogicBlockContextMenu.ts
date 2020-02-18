@@ -34,11 +34,11 @@ export class LogicBlockContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="logic-block-width-field"></td>
+                  <td><input type="text" id="logic-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="logic-block-height-field"></td>
+                  <td><input type="text" id="logic-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -57,9 +57,6 @@ export class LogicBlockContextMenu extends BlockContextMenu {
       let heightInputElement = document.getElementById("logic-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
-        block.setName(selectElement.options[selectElement.selectedIndex].value);
-        block.setSymbol(selectElement.options[selectElement.selectedIndex].text);
-        block.setUid(block.getName() + " #" + Date.now().toString(16));
         let success = true;
         let message;
         // set width
@@ -80,6 +77,12 @@ export class LogicBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          let name = selectElement.options[selectElement.selectedIndex].value;
+          if (name !== block.getName()) {
+            block.setName(name);
+            block.setSymbol(selectElement.options[selectElement.selectedIndex].text);
+            block.setUid(block.getName() + " #" + Date.now().toString(16));
+          }
           block.refreshView();
           flowchart.updateResultsForBlock(block);
           flowchart.blockView.requestDraw();
@@ -102,7 +105,7 @@ export class LogicBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 300,
-        width: 300,
+        width: 360,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

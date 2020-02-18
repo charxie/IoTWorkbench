@@ -111,7 +111,7 @@ export class VectorBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 400,
-        width: 360,
+        width: 400,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

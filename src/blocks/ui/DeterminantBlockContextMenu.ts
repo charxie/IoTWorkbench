@@ -20,11 +20,11 @@ export class DeterminantBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="determinant-block-width-field"></td>
+                  <td><input type="text" id="determinant-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="determinant-block-height-field"></td>
+                  <td><input type="text" id="determinant-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -83,7 +83,7 @@ export class DeterminantBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 300,
-        width: 300,
+        width: 360,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

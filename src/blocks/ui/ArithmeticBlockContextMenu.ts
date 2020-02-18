@@ -36,11 +36,11 @@ export class ArithmeticBlockContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="arithmetic-block-width-field"></td>
+                  <td><input type="text" id="arithmetic-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="arithmetic-block-height-field"></td>
+                  <td><input type="text" id="arithmetic-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -59,9 +59,6 @@ export class ArithmeticBlockContextMenu extends BlockContextMenu {
       let heightInputElement = document.getElementById("arithmetic-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
-        block.setName(selectElement.options[selectElement.selectedIndex].value);
-        block.setSymbol(selectElement.options[selectElement.selectedIndex].text);
-        block.setUid(block.getName() + " #" + Date.now().toString(16));
         let success = true;
         let message;
         // set width
@@ -82,6 +79,12 @@ export class ArithmeticBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          let name = selectElement.options[selectElement.selectedIndex].value;
+          if (name !== block.getName()) {
+            block.setName(name);
+            block.setSymbol(selectElement.options[selectElement.selectedIndex].text);
+            block.setUid(block.getName() + " #" + Date.now().toString(16));
+          }
           block.refreshView();
           flowchart.updateResultsForBlock(block);
           flowchart.blockView.requestDraw();

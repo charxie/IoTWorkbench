@@ -100,7 +100,7 @@ export class MomentarySwitchContextMenu extends BlockContextMenu {
         modal: true,
         title: s.getUid(),
         height: 300,
-        width: 300,
+        width: 360,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {
