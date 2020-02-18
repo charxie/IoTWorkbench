@@ -35,6 +35,7 @@ import {MatrixBlock} from "../MatrixBlock";
 import {DeterminantBlock} from "../DeterminantBlock";
 import {MatrixInversionBlock} from "../MatrixInversionBlock";
 import {MatrixTranspositionBlock} from "../MatrixTranspositionBlock";
+import {IntegralBlock} from "../IntegralBlock";
 
 export class BlockElementsPanel {
 
@@ -55,6 +56,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="multivariable-function-block" title="Multivariable Function" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="parametric-equation-block" title="Parametric Equations" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="bundled-functions-block" title="Bundled Functions" width="45px" height="80px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="integral-block" title="Integration" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="normalization-block" title="Vector Normalization" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="determinant-block" title="Matrix Determinant" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="matrix-transposition-block" title="Matrix Transposition" width="45px" height="60px" style="cursor: pointer;"/></td>
@@ -128,6 +130,7 @@ export class BlockElementsPanel {
     this.drawSticker("Sticker", "sticker-block");
     this.drawBeeper("Beeper", "beeper-block");
     this.drawGrapher("Grapher", "grapher-block");
+    this.drawIntegralBlock("Integral Block", "integral-block");
     this.drawSpace2D("Space2D", "space2d-block");
     this.drawGlobalVariableBlock("Global Variable Block", "var", "global-variable-block");
     this.drawGlobalObjectBlock("Global Object Block", "obj", "global-object-block");
@@ -295,6 +298,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new Grapher("Grapher Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawIntegralBlock(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new IntegralBlock("Integral Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

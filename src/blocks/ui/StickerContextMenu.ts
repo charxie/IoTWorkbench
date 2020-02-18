@@ -75,8 +75,6 @@ export class StickerContextMenu extends BlockContextMenu {
       heightInputElement.value = sticker.getHeight().toString();
       let that = this;
       const okFunction = function () {
-        sticker.setName(nameInputElement.value);
-        sticker.setUserText(userTextInputElement.value.trim() == "" ? undefined : userTextInputElement.value);
         let success = true;
         let message;
         // set panel color
@@ -121,6 +119,8 @@ export class StickerContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          sticker.setName(nameInputElement.value);
+          sticker.setUserText(userTextInputElement.value.trim() == "" ? undefined : userTextInputElement.value);
           sticker.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();

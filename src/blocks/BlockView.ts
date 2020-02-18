@@ -45,6 +45,7 @@ import {MatrixBlock} from "./MatrixBlock";
 import {DeterminantBlock} from "./DeterminantBlock";
 import {MatrixInversionBlock} from "./MatrixInversionBlock";
 import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
+import {IntegralBlock} from "./IntegralBlock";
 
 export class BlockView {
 
@@ -224,6 +225,9 @@ export class BlockView {
             break;
           case "grapher-block":
             b = that.addBlockUndoable(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));
+            break;
+          case "integral-block":
+            b = that.addBlockUndoable(new IntegralBlock("Integral Block #" + timestamp, x - 50, y - 40, 100, 80));
             break;
           case "space2d-block":
             b = that.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));

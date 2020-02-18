@@ -41,7 +41,6 @@ export class NotBlockContextMenu extends BlockContextMenu {
       let heightInputElement = document.getElementById("not-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
-        block.setUid(block.getName() + " #" + Date.now().toString(16));
         let success = true;
         let message;
         // set width

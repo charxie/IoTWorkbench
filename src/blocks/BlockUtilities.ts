@@ -39,6 +39,7 @@ import {MatrixBlock} from "./MatrixBlock";
 import {DeterminantBlock} from "./DeterminantBlock";
 import {MatrixInversionBlock} from "./MatrixInversionBlock";
 import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
+import {IntegralBlock} from "./IntegralBlock";
 
 export class BlockUtilities {
 
@@ -105,6 +106,9 @@ export class BlockUtilities {
     }
     if (block instanceof Grapher) {
       return contextMenus.grapher;
+    }
+    if (block instanceof IntegralBlock) {
+      return contextMenus.integralBlock;
     }
     if (block instanceof Space2D) {
       return contextMenus.space2d;
@@ -232,6 +236,10 @@ export class BlockUtilities {
     if (block instanceof Grapher) {
       contextMenus.grapher.block = block;
       return document.getElementById("grapher-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof IntegralBlock) {
+      contextMenus.integralBlock.block = block;
+      return document.getElementById("integral-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof Space2D) {
       contextMenus.space2d.block = block;

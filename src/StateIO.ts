@@ -34,6 +34,7 @@ import {BundledFunctionsBlock} from "./blocks/BundledFunctionsBlock";
 import {FunctionDeclarationBlock} from "./blocks/FunctionDeclarationBlock";
 import {VectorBlock} from "./blocks/VectorBlock";
 import {MatrixBlock} from "./blocks/MatrixBlock";
+import {IntegralBlock} from "./blocks/IntegralBlock";
 
 export class StateIO {
 
@@ -152,6 +153,9 @@ export class StateIO {
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
           if (state.graphSymbols != undefined) block.setGraphSymbols(state.graphSymbols);
           if (state.graphSymbolColors != undefined) block.setGraphSymbolColors(state.graphSymbolColors);
+        } else if (block instanceof IntegralBlock) {
+          block.setName(state.name);
+          block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
         } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);
