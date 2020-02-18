@@ -79,6 +79,8 @@ import arithmetic_operators_for_complex_numbers from "./examples/arithmetic-oper
 // @ts-ignore
 import derivatives from "./examples/derivatives.json";
 // @ts-ignore
+import integration from "./examples/integration.json";
+// @ts-ignore
 import unary_functions from "./examples/unary-functions.json";
 // @ts-ignore
 import heart_function from "./examples/heart-function.json";
@@ -145,6 +147,7 @@ export class Examples {
     this.files.push({name: "Heart Function", data: heart_function});
     this.files.push({name: "Declared Functions", data: declared_functions});
     this.files.push({name: "Derivatives", data: derivatives});
+    this.files.push({name: "Integration", data: integration});
     this.files.push({name: "Root-Finding: Bisection Method", data: root_finding_bisection_method});
     this.files.push({name: "Root-Finding: Newton-Raphson Method", data: root_finding_newton_raphson});
     this.files.push({name: "Make Sound with Beepers", data: make_sound_with_beepers});

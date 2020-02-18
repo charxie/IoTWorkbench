@@ -49,7 +49,7 @@ export class IntegralBlock extends Block {
   constructor(uid: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = "Integral Block";
-    this.color = "#33F";
+    this.color = "#3FF";
     this.symbol = "∫";
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 4;
@@ -65,6 +65,8 @@ export class IntegralBlock extends Block {
 
   getCopy(): Block {
     let copy = new IntegralBlock("Integral Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    copy.name = this.name;
+    copy.fractionDigits = this.fractionDigits;
     return copy;
   }
 
@@ -111,12 +113,11 @@ export class IntegralBlock extends Block {
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
 
-    ctx.beginPath();
     let x = this.x + this.windowMargin.left;
     let y = this.y + this.barHeight + this.windowMargin.top;
     let w = this.width - this.windowMargin.left - this.windowMargin.right;
     let h = this.height - this.barHeight - this.windowMargin.top - this.windowMargin.bottom;
-    ctx.rect(x, y, w, h);
+    ctx.drawRoundedRect(x, y, w, h, this.iconic ? 2 : 8);
     ctx.fillStyle = "white";
     ctx.fill();
     ctx.strokeStyle = "black";
