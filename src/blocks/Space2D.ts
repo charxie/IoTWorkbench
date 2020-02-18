@@ -25,6 +25,7 @@ export class Space2D extends Block {
   private yAxisLabel: string = "y";
   private spaceWindowColor: string = "white";
   private endSymbolRadius: number = 0;
+  private endSymbolsConnection: string = "None";
   private spaceWindow: Rectangle;
   private barHeight: number;
   private readonly spaceMargin = {
@@ -51,6 +52,7 @@ export class Space2D extends Block {
     readonly yAxisLabel: string;
     readonly spaceWindowColor: string;
     readonly endSymbolRadius: number;
+    readonly endSymbolsConnection: string;
     readonly autoscale: boolean;
     readonly minimumXValue: number;
     readonly maximumXValue: number;
@@ -78,6 +80,7 @@ export class Space2D extends Block {
       this.dataSymbols = g.dataSymbols;
       this.dataSymbolColors = g.dataSymbolColors;
       this.endSymbolRadius = g.endSymbolRadius;
+      this.endSymbolsConnection = g.endSymbolsConnection;
       this.autoscale = g.autoscale;
       this.minimumXValue = g.minimumXValue;
       this.maximumXValue = g.maximumXValue;
@@ -120,6 +123,8 @@ export class Space2D extends Block {
     copy.lineTypes = JSON.parse(JSON.stringify(this.lineTypes));
     copy.dataSymbols = JSON.parse(JSON.stringify(this.dataSymbols));
     copy.dataSymbolColors = JSON.parse(JSON.stringify(this.dataSymbolColors));
+    copy.endSymbolRadius = this.endSymbolRadius;
+    copy.endSymbolsConnection = this.endSymbolsConnection;
     copy.setPointInput(this.pointInput);
     copy.setNumberOfPoints(this.getNumberOfPoints());
     return copy;
@@ -332,6 +337,14 @@ export class Space2D extends Block {
     return this.endSymbolRadius;
   }
 
+  setEndSymbolsConnection(endSymbolsConnection: string): void {
+    this.endSymbolsConnection = endSymbolsConnection;
+  }
+
+  getEndSymbolsConnection(): string {
+    return this.endSymbolsConnection;
+  }
+
   draw(ctx: CanvasRenderingContext2D): void {
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
@@ -478,8 +491,31 @@ export class Space2D extends Block {
       }
     }
 
+    switch (this.endSymbolsConnection) {
+      case "Line":
+        let xi, yi, xj, yj;
+        ctx.lineWidth = 5;
+        for (let i = 0; i < this.points.length; i++) {
+          xi = (this.points[i].getLatestX() - xmin) * dx;
+          yi = -(this.points[i].getLatestY() - ymin) * dy;
+          ctx.strokeStyle = this.dataSymbolColors[i];
+          for (let j = i + 1; j < this.points.length; j++) {
+            xj = (this.points[j].getLatestX() - xmin) * dx;
+            yj = -(this.points[j].getLatestY() - ymin) * dy;
+            ctx.beginPath();
+            ctx.moveTo(xi, yi);
+            ctx.lineTo(xj, yj);
+            ctx.stroke();
+          }
+        }
+        break;
+      case "Wave":
+        break;
+    }
+
     // draw axis tick marks and labels
     if (!this.iconic) {
+      ctx.lineWidth = 1;
       ctx.font = "10px Arial";
       ctx.fillStyle = "black";
       let inx = (xmax - xmin) / 10;

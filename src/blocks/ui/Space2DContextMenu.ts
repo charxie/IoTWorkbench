@@ -129,6 +129,14 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td><input type="text" id="space2d-end-symbol-radius-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>End Symbols Connection:</td>
+                  <td>
+                    <select id="space2d-end-symbols-connection-selector" style="width: 100%">
+                      <option value="None" selected>None</option>
+                      <option value="Line">Line</option>
+                    </select>
+                </tr>
+                <tr>
                   <td>X-Axis Label:</td>
                   <td><input type="text" id="space2d-x-axis-label-field" style="width: 100%"></td>
                 </tr>
@@ -176,6 +184,8 @@ export class Space2DContextMenu extends BlockContextMenu {
       symbolColorInputElement.value = g.getDataSymbolColor();
       let endSymbolRadiusInputElement = document.getElementById("space2d-end-symbol-radius-field") as HTMLInputElement;
       endSymbolRadiusInputElement.value = g.getEndSymbolRadius().toString();
+      let endSymbolsConnectionSelectElement = document.getElementById("space2d-end-symbols-connection-selector") as HTMLSelectElement;
+      endSymbolsConnectionSelectElement.value=g.getEndSymbolsConnection();
       let autoScaleRadioButton = document.getElementById("space2d-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("space2d-fixed-scale-radio-button") as HTMLInputElement;
@@ -199,16 +209,6 @@ export class Space2DContextMenu extends BlockContextMenu {
       let heightInputElement = document.getElementById("space2d-height-field") as HTMLInputElement;
       heightInputElement.value = g.getHeight().toString();
       const okFunction = function () {
-        g.setName(nameInputElement.value);
-        g.setLineType(lineTypeSelectElement.value);
-        g.setLineColor(lineColorInputElement.value);
-        g.setDataSymbol(symbolSelectElement.value);
-        g.setDataSymbolColor(symbolColorInputElement.value);
-        g.setXAxisLabel(xAxisLableInputElement.value);
-        g.setYAxisLabel(yAxisLableInputElement.value);
-        g.setSpaceWindowColor(windowColorInputElement.value);
-        g.setAutoScale(autoScaleRadioButton.checked);
-        g.setPointInput(pointInputRadioButton.checked);
         let success = true;
         let message;
         // set number of points
@@ -282,6 +282,17 @@ export class Space2DContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          g.setName(nameInputElement.value);
+          g.setLineType(lineTypeSelectElement.value);
+          g.setLineColor(lineColorInputElement.value);
+          g.setDataSymbol(symbolSelectElement.value);
+          g.setDataSymbolColor(symbolColorInputElement.value);
+          g.setXAxisLabel(xAxisLableInputElement.value);
+          g.setYAxisLabel(yAxisLableInputElement.value);
+          g.setSpaceWindowColor(windowColorInputElement.value);
+          g.setAutoScale(autoScaleRadioButton.checked);
+          g.setPointInput(pointInputRadioButton.checked);
+          g.setEndSymbolsConnection(endSymbolsConnectionSelectElement.value);
           g.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();
@@ -314,7 +325,7 @@ export class Space2DContextMenu extends BlockContextMenu {
         modal: true,
         title: g.getUid(),
         height: 550,
-        width: 400,
+        width: 450,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

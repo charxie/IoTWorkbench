@@ -168,6 +168,7 @@ export class StateIO {
           block.setSpaceWindowColor(state.spaceWindowColor);
           block.setPointInput(state.pointInput);
           block.setEndSymbolRadius(state.endSymbolRadius == undefined ? 0 : state.endSymbolRadius);
+          block.setEndSymbolsConnection(state.endSymbolsConnection === undefined ? "None" : state.endSymbolsConnection);
           if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
           if (state.dataSymbols != undefined) block.setDataSymbols(state.dataSymbols);
