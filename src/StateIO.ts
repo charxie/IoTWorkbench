@@ -104,6 +104,7 @@ export class StateIO {
           block.setName(state.name);
           block.setReal(state.real);
           block.setImaginary(state.imaginary);
+          block.setInverse(state.inverse !== undefined ? state.inverse : false);
         } else if (block instanceof VectorBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
@@ -158,8 +159,9 @@ export class StateIO {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
         } else if (block instanceof FFTBlock) {
-          block.setName(state.name);
+          block.setSeparate(state.separate != undefined ? state.separate : true);
           block.setInverse(state.inverse != undefined ? state.inverse : false);
+          block.setupPorts();
         } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);

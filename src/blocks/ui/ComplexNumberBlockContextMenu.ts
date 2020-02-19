@@ -19,6 +19,13 @@ export class ComplexNumberBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
+                  <td>Direction:</td>
+                  <td>
+                    <input type="radio" name="direction" id="complex-number-block-forward-radio-button" checked> Forward
+                    <input type="radio" name="direction" id="complex-number-block-inverse-radio-button"> Inverse
+                  </td>
+                </tr>
+                <tr>
                   <td>Real Part:</td>
                   <td><input type="text" id="complex-number-block-real-field" style="width: 100%"></td>
                 </tr>
@@ -44,6 +51,10 @@ export class ComplexNumberBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof ComplexNumberBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let forwardRadioButton = document.getElementById("complex-number-block-forward-radio-button") as HTMLInputElement;
+      forwardRadioButton.checked = !block.isInverse();
+      let inverseRadioButton = document.getElementById("complex-number-block-inverse-radio-button") as HTMLInputElement;
+      inverseRadioButton.checked = block.isInverse();
       let realInputElement = document.getElementById("complex-number-block-real-field") as HTMLInputElement;
       realInputElement.value = block.getReal().toString();
       let imaginaryInputElement = document.getElementById("complex-number-block-imaginary-field") as HTMLInputElement;
@@ -89,6 +100,7 @@ export class ComplexNumberBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          block.setInverse(inverseRadioButton.checked);
           block.refreshView();
           flowchart.updateResultsForBlock(block);
           flowchart.blockView.requestDraw();
@@ -112,7 +124,7 @@ export class ComplexNumberBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 320,
+        height: 360,
         width: 360,
         buttons: {
           'OK': okFunction,

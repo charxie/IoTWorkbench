@@ -19,11 +19,14 @@ export class FFTBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Name:</td>
-                  <td><input type="text" id="fft-block-name-field" style="width: 100%"></td>
+                  <td>Separate Real & Imaginary:</td>
+                  <td>
+                    <input type="radio" name="ports" id="fft-block-separate-radio-button" checked> Yes
+                    <input type="radio" name="ports" id="fft-block-not-separate-radio-button"> No
+                  </td>
                 </tr>
                 <tr>
-                  <td>Direction:</td>
+                  <td>Direction of Transform:</td>
                   <td>
                     <input type="radio" name="direction" id="fft-block-forward-radio-button" checked> Forward
                     <input type="radio" name="direction" id="fft-block-inverse-radio-button"> Inverse
@@ -47,12 +50,14 @@ export class FFTBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof FFTBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let separateRadioButton = document.getElementById("fft-block-separate-radio-button") as HTMLInputElement;
+      separateRadioButton.checked = block.isSeparate();
+      let notSeparateRadioButton = document.getElementById("fft-block-not-separate-radio-button") as HTMLInputElement;
+      notSeparateRadioButton.checked = !block.isSeparate();
       let forwardRadioButton = document.getElementById("fft-block-forward-radio-button") as HTMLInputElement;
       forwardRadioButton.checked = !block.isInverse();
       let inverseRadioButton = document.getElementById("fft-block-inverse-radio-button") as HTMLInputElement;
       inverseRadioButton.checked = block.isInverse();
-      let nameInputElement = document.getElementById("fft-block-name-field") as HTMLInputElement;
-      nameInputElement.value = block.getName();
       let widthInputElement = document.getElementById("fft-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("fft-block-height-field") as HTMLInputElement;
@@ -78,8 +83,9 @@ export class FFTBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
-          block.setName(nameInputElement.value);
+          block.setSeparate(separateRadioButton.checked);
           block.setInverse(inverseRadioButton.checked);
+          block.setupPorts();
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(block);
@@ -95,15 +101,14 @@ export class FFTBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 310,
-        width: 360,
+        height: 300,
+        width: 450,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {
