@@ -83,9 +83,12 @@ export class FFTBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          let changed = block.isSeparate() !== separateRadioButton.checked || block.isInverse() !== inverseRadioButton.checked;
           block.setSeparate(separateRadioButton.checked);
           block.setInverse(inverseRadioButton.checked);
-          block.setupPorts();
+          if (changed) {
+            block.setupPorts();
+          }
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(block);

@@ -100,7 +100,9 @@ export class ComplexNumberBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
-          block.setInverse(inverseRadioButton.checked);
+          if (block.isInverse() !== inverseRadioButton.checked) {
+            block.setInverse(inverseRadioButton.checked);
+          }
           block.refreshView();
           flowchart.updateResultsForBlock(block);
           flowchart.blockView.requestDraw();
