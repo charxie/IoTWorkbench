@@ -112,7 +112,7 @@ export class BlockUtilities {
       return contextMenus.integralBlock;
     }
     if (block instanceof FFTBlock) {
-      return contextMenus.FFTBlock;
+      return contextMenus.fftBlock;
     }
     if (block instanceof Space2D) {
       return contextMenus.space2d;

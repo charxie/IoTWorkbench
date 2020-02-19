@@ -231,7 +231,7 @@ export class BlockView {
             b = that.addBlockUndoable(new IntegralBlock("Integral Block #" + timestamp, x - 50, y - 40, 100, 80));
             break;
           case "fft-block":
-            b = that.addBlockUndoable(new FFTBlock("FFT Block #" + timestamp, x - 50, y - 40, 100, 80));
+            b = that.addBlockUndoable(new FFTBlock("FFT Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "space2d-block":
             b = that.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));

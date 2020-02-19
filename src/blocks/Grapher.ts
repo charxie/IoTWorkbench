@@ -294,9 +294,13 @@ export class Grapher extends Block {
     ctx.fill();
     ctx.strokeStyle = "black";
     ctx.stroke();
+    let maxLength = 0;
+    for (let da of this.dataArrays) {
+      if (da.length() > maxLength) maxLength = da.length();
+    }
     if (!this.iconic) {
       this.drawAxisLabels(ctx);
-      if (this.dataArrays[0].length() > 1) {
+      if (maxLength > 1) {
         this.drawLineCharts(ctx);
       }
     }
@@ -335,8 +339,11 @@ export class Grapher extends Block {
     }
 
     // determine the graph window
-
-    let dx = this.graphWindow.width / (this.dataArrays[0].length() - 1);
+    let maxLength = 2;
+    for (let da of this.dataArrays) {
+      if (da.length() > maxLength) maxLength = da.length();
+    }
+    let dx = this.graphWindow.width / (maxLength - 1);
     let yOffset = 0.1 * this.graphWindow.height;
     let dy = (this.graphWindow.height - 2 * yOffset) / (max - min);
     let tmpX;
@@ -351,7 +358,6 @@ export class Grapher extends Block {
         case "Solid":
           ctx.strokeStyle = this.lineColors[i];
           ctx.font = "10px Arial";
-          ctx.fillStyle = "black";
           ctx.beginPath();
           tmpX = this.graphWindow.x;
           tmpY = yOffset + (arr.data[0] - min) * dy;
@@ -401,18 +407,18 @@ export class Grapher extends Block {
 
     // draw x-axis tick marks
     ctx.fillStyle = "black";
-    let spacing = Math.pow(10, Util.countDigits(this.dataArrays[0].length()) - 1);
-    if (spacing === this.dataArrays[0].length()) {
+    let spacing = Math.pow(10, Util.countDigits(maxLength) - 1);
+    if (spacing === maxLength) {
       spacing /= 10;
     }
     let precision: number;
     if (this.x0 != undefined && this.dx != undefined) {
-      let xmax = this.x0 + this.dataArrays[0].length() * this.dx;
+      let xmax = this.x0 + maxLength * this.dx;
       precision = xmax < 1 ? 2 : (1 + Math.round(xmax).toString().length);
     } else {
-      precision = this.dataArrays[0].data.length.toString().length;
+      precision = maxLength.toString().length;
     }
-    for (let i = 0; i <= this.dataArrays[0].length(); i++) {
+    for (let i = 0; i <= maxLength; i++) {
       if (i % spacing == 0) {
         tmpX = this.graphWindow.x + dx * i;
         ctx.beginPath();
@@ -431,7 +437,7 @@ export class Grapher extends Block {
     // draw y-axis tick marks
     precision = min < 1 ? 2 : Math.round(min).toString().length;
     tmpY = yOffset;
-    let minString = (Math.abs(min) < 0.000001 ? 0 : min).toPrecision(precision);
+    let minString = (Math.abs(min) < 0.0001 ? 0 : min).toPrecision(precision);
     ctx.beginPath();
     ctx.moveTo(this.graphWindow.x, horizontalAxisY - tmpY);
     ctx.lineTo(this.graphWindow.x + 4, horizontalAxisY - tmpY);
@@ -440,7 +446,7 @@ export class Grapher extends Block {
 
     precision = max < 1 ? 2 : Math.round(max).toString().length;
     tmpY = yOffset + (max - min) * dy;
-    let maxString = (Math.abs(max) < 0.000001 ? 0 : max).toPrecision(precision);
+    let maxString = (Math.abs(max) < 0.0001 ? 0 : max).toPrecision(precision);
     ctx.beginPath();
     ctx.moveTo(this.graphWindow.x, horizontalAxisY - tmpY);
     ctx.lineTo(this.graphWindow.x + 4, horizontalAxisY - tmpY);
