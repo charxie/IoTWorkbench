@@ -27,6 +27,8 @@ import logistic_population_equation from "./examples/logistic-population-equatio
 // @ts-ignore
 import predator_prey_equations from "./examples/predator-prey-equations.json";
 // @ts-ignore
+import epidemics_sir_model from "./examples/epidemics-sir-model.json";
+// @ts-ignore
 import competitive_lotka_volterra_equations from "./examples/competitive-lotka-volterra-equations.json";
 // @ts-ignore
 import chemical_kinetics_irreversible_reaction from "./examples/chemical-kinetics-irreversible-reaction.json";
@@ -170,6 +172,7 @@ export class Examples {
     this.files.push({name: "Chemical Kinetics: Irreversible Reaction", data: chemical_kinetics_irreversible_reaction});
     this.files.push({name: "Chemical Kinetics: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
     this.files.push({name: "Chemical Kinetics: Brusselator", data: brusselator});
+    this.files.push({name: "Epidemics: The SIR Model", data: epidemics_sir_model});
     this.files.push({name: "Projectile Motion: Implementation 1", data: projectile_motion_1});
     this.files.push({name: "Projectile Motion: Implementation 2", data: projectile_motion_2});
     this.files.push({name: "Harmonic Oscillator", data: harmonic_oscillator});
