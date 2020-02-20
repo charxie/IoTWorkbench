@@ -98,20 +98,60 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
+        // parse keys
+        let keys;
+        try {
+          keys = JSON.parse(keysInputElement.value);
+        } catch (e) {
+          console.log(e.stack);
+          success = false;
+          message = keysInputElement.value + " is not valid: " + e.message;
+        }
+        if (success && !Array.isArray(keys)) {
+          success = false;
+          message = "Keys must be an array. Cannot accept " + keysInputElement.value;
+        }
+        // parse values
+        let values;
+        try {
+          values = JSON.parse(valuesInputElement.value);
+        } catch (e) {
+          console.log(e.stack);
+          success = false;
+          message = valuesInputElement.value + " is not valid: " + e.message;
+        }
+        if (success && !Array.isArray(values)) {
+          success = false;
+          message = "Values must be an array. Cannot accept " + valuesInputElement.value;
+        }
+        // parse initial values
+        let initialValues;
+        try {
+          initialValues = JSON.parse(initialValuesInputElement.value);
+        } catch (e) {
+          console.log(e.stack);
+          success = false;
+          message = initialValuesInputElement.value + " is not valid: " + e.message;
+        }
+        if (success && !Array.isArray(initialValues)) {
+          success = false;
+          message = "Initial values must be an array. Cannot accept " + initialValuesInputElement.value;
+        }
         // finish
         if (success) {
           block.setSymbol(nameInputElement.value);
-          let keys = JSON.parse(keysInputElement.value);
-          if (block.getKeys() !== keys) {
-            block.setKeys(keys);
+          if (keys !== undefined && values !== undefined) {
+            if (block.getKeys() !== keys) {
+              block.setKeys(keys);
+            }
+            block.setValues(values);
+            for (let i = 0; i < keys.length; i++) {
+              flowchart.updateGlobalVariable(keys[i], values[i]);
+            }
           }
-          let values = JSON.parse(valuesInputElement.value);
-          block.setValues(values);
-          for (let i = 0; i < keys.length; i++) {
-            flowchart.updateGlobalVariable(keys[i], values[i]);
+          if (initialValues !== undefined) {
+            block.setInitialValues(initialValues);
           }
-          let initialValues = JSON.parse(initialValuesInputElement.value);
-          block.setInitialValues(initialValues);
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.updateResults(); // global variable must update the results globally

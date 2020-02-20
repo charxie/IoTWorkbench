@@ -80,14 +80,23 @@ export class VectorBlockContextMenu extends BlockContextMenu {
           message = fractionDigitsInputElement.value + " is not valid for fraction digits.";
         }
         // set values
+        let values;
         try {
-          block.setValues(JSON.parse(valuesInputElement.value));
+          values = JSON.parse(valuesInputElement.value);
         } catch (err) {
+          console.log(err.stack);
           success = false;
           message = valuesInputElement.value + " is not a valid vector.";
         }
+        if (success && !Array.isArray(values)) {
+          success = false;
+          message = "Values must be an array. Cannot accept " + valuesInputElement.value;
+        }
         // finish
         if (success) {
+          if (values !== undefined) {
+            block.setValues(values);
+          }
           block.refreshView();
           flowchart.updateResultsForBlock(block);
           flowchart.blockView.requestDraw();

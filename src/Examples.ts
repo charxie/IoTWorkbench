@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import chua_circuit from "./examples/chua-circuit.json";
+// @ts-ignore
 import lorenz_attractor from "./examples/lorenz-attractor.json";
 // @ts-ignore
 import fourier_transform from "./examples/fourier-transform.json";
@@ -181,6 +183,7 @@ export class Examples {
     this.files.push({name: "Harmonic Oscillator", data: harmonic_oscillator});
     this.files.push({name: "Pendulum", data: pendulum});
     this.files.push({name: "RLC Circuit", data: rlc_circuit});
+    this.files.push({name: "Chua Circuit", data: chua_circuit});
     this.files.push({name: "Lorentz Force", data: lorentz_force});
     this.files.push({name: "The Runge-Kutta Method", data: runge_kutta_method});
     this.files.push({name: "Random Walk", data: random_walk});
