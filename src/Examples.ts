@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import lorenz_attractor from "./examples/lorenz-attractor.json";
+// @ts-ignore
 import fourier_transform from "./examples/fourier-transform.json";
 // @ts-ignore
 import convolution_theorem from "./examples/convolution-theorem.json";
@@ -27,7 +29,7 @@ import logistic_population_equation from "./examples/logistic-population-equatio
 // @ts-ignore
 import predator_prey_equations from "./examples/predator-prey-equations.json";
 // @ts-ignore
-import epidemics_sir_model from "./examples/epidemics-sir-model.json";
+import epidemiology_sir_model from "./examples/epidemiology-sir-model.json";
 // @ts-ignore
 import competitive_lotka_volterra_equations from "./examples/competitive-lotka-volterra-equations.json";
 // @ts-ignore
@@ -172,7 +174,8 @@ export class Examples {
     this.files.push({name: "Chemical Kinetics: Irreversible Reaction", data: chemical_kinetics_irreversible_reaction});
     this.files.push({name: "Chemical Kinetics: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
     this.files.push({name: "Chemical Kinetics: Brusselator", data: brusselator});
-    this.files.push({name: "Epidemics: The SIR Model", data: epidemics_sir_model});
+    this.files.push({name: "Lorenz Attractor", data: lorenz_attractor});
+    this.files.push({name: "Epidemiology: The SIR Model", data: epidemiology_sir_model});
     this.files.push({name: "Projectile Motion: Implementation 1", data: projectile_motion_1});
     this.files.push({name: "Projectile Motion: Implementation 2", data: projectile_motion_2});
     this.files.push({name: "Harmonic Oscillator", data: harmonic_oscillator});
