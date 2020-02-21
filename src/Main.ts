@@ -74,6 +74,7 @@ import {MatrixInversionBlockContextMenu} from "./blocks/ui/MatrixInversionBlockC
 import {MatrixTranspositionBlockContextMenu} from "./blocks/ui/MatrixTranspositionBlockContextMenu";
 import {IntegralBlockContextMenu} from "./blocks/ui/IntegralBlockContextMenu";
 import {FFTBlockContextMenu} from "./blocks/ui/FFTBlockContextMenu";
+import {ODESolverBlockContextMenu} from "./blocks/ui/ODESolverBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -230,7 +231,7 @@ window.onload = function () {
   StateIO.restoreGlobalVariables();
   StateIO.restoreWorkbench(localStorage.getItem("Workbench State"));
   StateIO.restoreConnectors(localStorage.getItem("Connector States")); // connectors must be restored after loading HATs
-  flowchart.updateResultsExcludingWorkerBlocks();
+  flowchart.updateResultsExcludingAllWorkerBlocks();
   // flowchart.reset(); // FIXME: why did I call this?
 
   setTimeout(function () { // call this to refresh after inserting canvases
@@ -436,6 +437,11 @@ function setupContextMenuForBlock() {
   fftBlockContextMenu.render("fft-block-context-menu-placeholder");
   fftBlockContextMenu.addListeners();
   contextMenus.fftBlock = fftBlockContextMenu;
+
+  let odeSolverBlockContextMenu = new ODESolverBlockContextMenu();
+  odeSolverBlockContextMenu.render("ode-solver-block-context-menu-placeholder");
+  odeSolverBlockContextMenu.addListeners();
+  contextMenus.odeSolverBlock = odeSolverBlockContextMenu;
 
   let space2dContextMenu = new Space2DContextMenu();
   space2dContextMenu.render("space2d-context-menu-placeholder");

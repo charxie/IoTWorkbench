@@ -226,7 +226,7 @@ export class WorkerBlock extends Block {
         that.updateConnectors();
         // FIXME: potential deadlock
         if (that.connectedToGlobalVariable) {
-          flowchart.updateResults();
+          flowchart.updateResultsForAffectedSources(that);
         } else {
           flowchart.updateResultsForBlock(that);
         }

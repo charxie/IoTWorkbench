@@ -36,6 +36,7 @@ import {VectorBlock} from "./blocks/VectorBlock";
 import {MatrixBlock} from "./blocks/MatrixBlock";
 import {IntegralBlock} from "./blocks/IntegralBlock";
 import {FFTBlock} from "./blocks/FFTBlock";
+import {ODESolverBlock} from "./blocks/ODESolverBlock";
 
 export class StateIO {
 
@@ -162,6 +163,9 @@ export class StateIO {
           block.setSeparate(state.separate != undefined ? state.separate : true);
           block.setInverse(state.inverse != undefined ? state.inverse : false);
           block.setupPorts();
+        } else if (block instanceof ODESolverBlock) {
+          block.setVariableName(state.variableName != undefined ? state.variableName : "t");
+          block.setEquations(state.equations != undefined ? state.equations : ["x'=x"]);
         } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);

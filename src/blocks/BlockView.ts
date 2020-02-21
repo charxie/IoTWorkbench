@@ -47,6 +47,7 @@ import {MatrixInversionBlock} from "./MatrixInversionBlock";
 import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 import {IntegralBlock} from "./IntegralBlock";
 import {FFTBlock} from "./FFTBlock";
+import {ODESolverBlock} from "./ODESolverBlock";
 
 export class BlockView {
 
@@ -232,6 +233,9 @@ export class BlockView {
             break;
           case "fft-block":
             b = that.addBlockUndoable(new FFTBlock("FFT Block #" + timestamp, x - 30, y - 40, 60, 80));
+            break;
+          case "ode-solver-block":
+            b = that.addBlockUndoable(new ODESolverBlock("ODE Solver Block #" + timestamp, x - 100, y - 40, 200, 80));
             break;
           case "space2d-block":
             b = that.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));

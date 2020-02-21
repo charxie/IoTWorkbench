@@ -248,7 +248,7 @@ export class ItemSelector extends Block {
   private updateAll(): void {
     flowchart.traverse(this);
     if (flowchart.isConnectedToGlobalBlock(this)) {
-      flowchart.updateResultsExcludingWorkerBlocks();
+      flowchart.updateResultsExcludingAllWorkerBlocks();
     }
     flowchart.storeBlockStates();
   }

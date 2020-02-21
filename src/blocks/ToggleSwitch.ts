@@ -192,7 +192,7 @@ export class ToggleSwitch extends Block {
     if (moveOn) {
       flowchart.traverse(this);
       if (flowchart.isConnectedToGlobalBlock(this)) {
-        flowchart.updateResultsExcludingWorkerBlocks();
+        flowchart.updateResultsExcludingAllWorkerBlocks();
       }
     }
     flowchart.storeBlockStates();

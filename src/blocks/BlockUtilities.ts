@@ -41,6 +41,7 @@ import {MatrixInversionBlock} from "./MatrixInversionBlock";
 import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 import {IntegralBlock} from "./IntegralBlock";
 import {FFTBlock} from "./FFTBlock";
+import {ODESolverBlock} from "./ODESolverBlock";
 
 export class BlockUtilities {
 
@@ -113,6 +114,9 @@ export class BlockUtilities {
     }
     if (block instanceof FFTBlock) {
       return contextMenus.fftBlock;
+    }
+    if (block instanceof ODESolverBlock) {
+      return contextMenus.odeSolverBlock;
     }
     if (block instanceof Space2D) {
       return contextMenus.space2d;
@@ -248,6 +252,10 @@ export class BlockUtilities {
     if (block instanceof FFTBlock) {
       contextMenus.fftBlock.block = block;
       return document.getElementById("fft-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof ODESolverBlock) {
+      contextMenus.odeSolverBlock.block = block;
+      return document.getElementById("ode-solver-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof Space2D) {
       contextMenus.space2d.block = block;

@@ -47,6 +47,7 @@ import {MatrixInversionBlock} from "./MatrixInversionBlock";
 import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 import {IntegralBlock} from "./IntegralBlock";
 import {FFTBlock} from "./FFTBlock";
+import {ODESolverBlock} from "./ODESolverBlock";
 
 export class Flowchart {
 
@@ -61,6 +62,7 @@ export class Flowchart {
   private blockConnectionFlag: boolean; // temporary flag
   private globalBlockFlag: boolean; // temporary flag
   private workerBlockFlag: boolean; // temporary flag
+  private connectedGlobalVariables: string[] = []; // temporay storage
 
   constructor() {
     this.blockView = new BlockView("block-view", this);
@@ -119,7 +121,7 @@ export class Flowchart {
     this.blockView.requestDraw();
   }
 
-  updateResultsExcludingWorkerBlocks(): void {
+  updateResultsExcludingAllWorkerBlocks(): void {
     for (let b of this.blocks) {
       // if the source block is connected to a worker, it is expected to rely on the worker to update all blocks that are connected to it
       if (b.isSource() && !this.isConnectedToWorkerBlock(b)) {
@@ -279,7 +281,7 @@ export class Flowchart {
 
   useDeclaredFunctions() {
     for (let b of this.blocks) {
-      if (b instanceof FunctionBlock || b instanceof BundledFunctionsBlock || b instanceof ParametricEquationBlock) {
+      if (b instanceof FunctionBlock || b instanceof BundledFunctionsBlock || b instanceof ParametricEquationBlock || b instanceof ODESolverBlock) {
         b.useDeclaredFunctions();
       }
     }
@@ -397,6 +399,48 @@ export class Flowchart {
         return;
       }
       this.findGlobalBlock(next);
+    }
+  }
+
+  updateResultsForAffectedSources(a: Block): void {
+    const agv = this.getConnectedGlobalVariables(a).slice();
+    if (agv.length > 0) {
+      for (let b of this.blocks) {
+        if (b.isSource()) {
+          const bgv = this.getConnectedGlobalVariables(b);
+          let overlap = agv.filter(x => -1 !== bgv.indexOf(x));
+          if (overlap !== null && overlap.length > 0) {
+            this.traverse(b);
+          }
+        }
+      }
+      this.blockView.requestDraw();
+    }
+  }
+
+  private getConnectedGlobalVariables(block: Block): string[] {
+    this.connectedGlobalVariables.length = 0;
+    this.findGlobalVariables(block);
+    return this.connectedGlobalVariables;
+  }
+
+  // we cannot use a return function in this recursion as there is an array iteration inside
+  // (add return will cause only the first case of the array to be executed)
+  private findGlobalVariables(block: Block): void {
+    let outputTo = block.outputTo();
+    for (let next of outputTo) {
+      if (next instanceof GlobalVariableBlock) {
+        if (this.connectedGlobalVariables.indexOf(next.getKey()) === -1) {
+          this.connectedGlobalVariables.push(next.getKey());
+        }
+      } else if (next instanceof GlobalObjectBlock) {
+        for (let key of next.getKeys()) {
+          if (this.connectedGlobalVariables.indexOf(key) === -1) {
+            this.connectedGlobalVariables.push(key);
+          }
+        }
+      }
+      this.findGlobalVariables(next);
     }
   }
 
@@ -745,6 +789,9 @@ export class Flowchart {
       case "FFT Block":
         block = new FFTBlock(uid, x, y, 200, 160);
         break;
+      case "ODE Solver Block":
+        block = new ODESolverBlock(uid, x, y, 200, 160);
+        break;
       case "Space2D":
         block = new Space2D(uid, name, x, y, 200, 220);
         break;
@@ -833,6 +880,8 @@ export class Flowchart {
         blockStates.push(new IntegralBlock.State(b));
       } else if (b instanceof FFTBlock) {
         blockStates.push(new FFTBlock.State(b));
+      } else if (b instanceof ODESolverBlock) {
+        blockStates.push(new ODESolverBlock.State(b));
       } else if (b instanceof Space2D) {
         blockStates.push(new Space2D.State(b));
       } else if (b instanceof TurnoutSwitch) {

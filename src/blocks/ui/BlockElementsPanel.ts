@@ -37,6 +37,7 @@ import {MatrixInversionBlock} from "../MatrixInversionBlock";
 import {MatrixTranspositionBlock} from "../MatrixTranspositionBlock";
 import {IntegralBlock} from "../IntegralBlock";
 import {FFTBlock} from "../FFTBlock";
+import {ODESolverBlock} from "../ODESolverBlock";
 
 export class BlockElementsPanel {
 
@@ -58,6 +59,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="parametric-equation-block" title="Parametric Equations" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="bundled-functions-block" title="Bundled Functions" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="fft-block" title="Fourier Transform" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="ode-solver-block" title="ODE Solver" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="integral-block" title="Integration" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="normalization-block" title="Vector Normalization" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="determinant-block" title="Matrix Determinant" width="45px" height="60px" style="cursor: pointer;"/></td>
@@ -134,6 +136,7 @@ export class BlockElementsPanel {
     this.drawGrapher("Grapher", "grapher-block");
     this.drawIntegralBlock("Integral Block", "integral-block");
     this.drawFFTBlock("FFT Block", "fft-block");
+    this.drawODESolverBlock("ODE Solver Block", "ode-solver-block");
     this.drawSpace2D("Space2D", "space2d-block");
     this.drawGlobalVariableBlock("Global Variable Block", "var", "global-variable-block");
     this.drawGlobalObjectBlock("Global Object Block", "obj", "global-object-block");
@@ -317,6 +320,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new FFTBlock("FFT Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawODESolverBlock(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new ODESolverBlock("ODE Solver Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }
