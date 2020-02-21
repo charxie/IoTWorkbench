@@ -70,6 +70,7 @@ export class StateIO {
           block.setMaximum(state.maximum);
           block.setSteps(state.steps);
           block.setValue(state.value);
+          block.setSource(state.source !== undefined ? state.source : true);
           block.setSnapToTick(state.snapToTick);
           if (state.valuePrecision != undefined) block.setValuePrecision(state.valuePrecision);
         } else if (block instanceof FunctionDeclarationBlock) {
@@ -126,6 +127,7 @@ export class StateIO {
           block.setName(state.name);
           block.setItems(state.items);
           block.setSelectedIndex(state.selectedIndex);
+          block.setSource(state.source !== undefined ? state.source : true);
         } else if (block instanceof ToggleSwitch) {
           block.setName(state.name);
           block.setChecked(state.checked);

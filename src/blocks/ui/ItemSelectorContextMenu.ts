@@ -23,6 +23,11 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
                   <td><input type="text" id="item-selector-name-field"></td>
                 </tr>
                 <tr>
+                  <td>Source:</td>
+                  <td><input type="radio" name="source" id="item-selector-source-radio-button" checked> Yes
+                      <input type="radio" name="source" id="item-selector-not-source-radio-button"> No</td>
+                </tr>
+                <tr>
                   <td>Items:<div style="font-size: 70%">(e.g., [1, 2, 3]<br>or ["a", "b", "c"])</div></td>
                   <td><textarea id="item-selector-block-items-field" rows="5" style="width: 100%"></textarea></td>
                 </tr>
@@ -46,6 +51,10 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("item-selector-name-field") as HTMLInputElement;
       nameInputElement.value = itemSelector.getName();
+      let sourceRadioButton = document.getElementById("item-selector-source-radio-button") as HTMLInputElement;
+      sourceRadioButton.checked = itemSelector.isSource();
+      let notSourceRadioButton = document.getElementById("item-selector-not-source-radio-button") as HTMLInputElement;
+      notSourceRadioButton.checked = !itemSelector.isSource();
       let itemsInputElement = document.getElementById("item-selector-block-items-field") as HTMLTextAreaElement;
       itemsInputElement.value = JSON.stringify(itemSelector.getItems());
       itemsInputElement.disabled = itemSelector.hasInput();
@@ -54,7 +63,6 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
       let heightInputElement = document.getElementById("item-selector-block-height-field") as HTMLInputElement;
       heightInputElement.value = itemSelector.getHeight().toString();
       const okFunction = function () {
-        itemSelector.setName(nameInputElement.value);
         let success = true;
         let message;
         // set width
@@ -82,6 +90,8 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
         }
         // finish up
         if (success) {
+          itemSelector.setName(nameInputElement.value);
+          itemSelector.setSource(sourceRadioButton.checked);
           itemSelector.updateModel();
           itemSelector.refreshView();
           flowchart.blockView.requestDraw();

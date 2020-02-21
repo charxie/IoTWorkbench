@@ -40,6 +40,7 @@ export class Slider extends Block {
     readonly maximum: number;
     readonly steps: number;
     readonly value: number;
+    readonly source: boolean;
     readonly snapToTick: boolean;
     readonly valuePrecision: number;
 
@@ -54,6 +55,7 @@ export class Slider extends Block {
       this.maximum = slider.maximum;
       this.steps = slider.steps;
       this.value = slider.value;
+      this.source = slider.source;
       this.snapToTick = slider.snapToTick;
       this.valuePrecision = slider.valuePrecision;
     }
@@ -78,6 +80,7 @@ export class Slider extends Block {
     copy.steps = this.steps;
     copy.value = this.value;
     copy.snapToTick = this.snapToTick;
+    copy.source = this.source;
     copy.valuePrecision = this.valuePrecision;
     return copy;
   }

@@ -23,6 +23,11 @@ export class SliderContextMenu extends BlockContextMenu {
                   <td><input type="text" id="slider-name-field" style="width: 130px"></td>
                 </tr>
                 <tr>
+                  <td>Source:</td>
+                  <td><input type="radio" name="source" id="slider-source-radio-button" checked> Yes
+                      <input type="radio" name="source" id="slider-not-source-radio-button"> No</td>
+                </tr>
+                <tr>
                   <td>Snap:</td>
                   <td><input type="radio" name="snap" id="slider-snap-to-tick-radio-button"> Tick
                       <input type="radio" name="snap" id="slider-no-snap-radio-button" checked> None</td>
@@ -67,6 +72,10 @@ export class SliderContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("slider-name-field") as HTMLInputElement;
       nameInputElement.value = slider.getName();
+      let sourceRadioButton = document.getElementById("slider-source-radio-button") as HTMLInputElement;
+      sourceRadioButton.checked = slider.isSource();
+      let notSourceRadioButton = document.getElementById("slider-not-source-radio-button") as HTMLInputElement;
+      notSourceRadioButton.checked = !slider.isSource();
       let snapRadioButton = document.getElementById("slider-snap-to-tick-radio-button") as HTMLInputElement;
       snapRadioButton.checked = slider.getSnapToTick();
       let noSnapRadioButton = document.getElementById("slider-no-snap-radio-button") as HTMLInputElement;
@@ -86,8 +95,6 @@ export class SliderContextMenu extends BlockContextMenu {
       let heightInputElement = document.getElementById("slider-height-field") as HTMLInputElement;
       heightInputElement.value = slider.getHeight().toString();
       const okFunction = function () {
-        slider.setName(nameInputElement.value);
-        slider.setSnapToTick(snapRadioButton.checked);
         let success = true;
         let message;
         // set width
@@ -153,6 +160,9 @@ export class SliderContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          slider.setName(nameInputElement.value);
+          slider.setSnapToTick(snapRadioButton.checked);
+          slider.setSource(sourceRadioButton.checked);
           slider.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();
@@ -178,7 +188,7 @@ export class SliderContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: slider.getUid(),
-        height: 510,
+        height: 550,
         width: 360,
         buttons: {
           'OK': okFunction,

@@ -6,13 +6,13 @@ import {Port} from "./Port";
 import {Block} from "./Block";
 import {Util} from "../Util";
 import {flowchart, math} from "../Main";
-import {GlobalBlock} from "./GlobalBlock";
 
 export class ODESolverBlock extends Block {
 
   private variableName: string = "t";
   private equations: string[] = ["x'=y", "y'=x"];
   private expressions: string[] = []; // store the right-hand-side expressions
+  private values: number[];
   private readonly portN: Port;
   private readonly portH: Port;
   private readonly portT: Port;
@@ -93,7 +93,7 @@ export class ODESolverBlock extends Block {
     return this.variableName;
   }
 
-  setEquations(equations: any[]): void {
+  setEquations(equations: string[]): void {
     this.equations = JSON.parse(JSON.stringify(equations));
     this.expressions.length = 0;
     for (let i = 0; i < this.equations.length; i++) {
@@ -102,6 +102,9 @@ export class ODESolverBlock extends Block {
       let lhs = this.equations[i].substring(0, equalSignIndex);
       let rhs = this.equations[i].substring(equalSignIndex + 1);
       this.expressions.push(rhs);
+    }
+    if (this.values === undefined || this.values.length !== this.equations.length) {
+      this.values = new Array(this.equations.length);
     }
     this.createParsers();
     this.setOutputPorts();
@@ -132,7 +135,9 @@ export class ODESolverBlock extends Block {
 
   reset(): void {
     super.reset();
-    this.result = undefined;
+    for (let i = 0; i < this.values.length; i++) {
+      this.values[i] = undefined;
+    }
   }
 
   refreshView(): void {
@@ -148,21 +153,21 @@ export class ODESolverBlock extends Block {
     }
   }
 
-  private result: number;
-
   updateModel(): void {
     this.hasError = false;
     let n = this.portN.getValue();
-    let h = this.portH.getValue() === undefined ? 0.04 : this.portH.getValue();
+    let h = this.portH.getValue();
     if (this.equations && n != undefined && h != undefined) {
       this.portT.setValue(n * h);
       let param = {...flowchart.globalVariables};
       param[this.variableName] = n * h;
-      if (this.result === undefined) this.result = param['x'];
       try {
         for (let i = 0; i < this.portO.length; i++) {
-          this.result += h * this.codes[i].evaluate(param);
-          this.portO[i].setValue(this.result);
+          if (this.values[i] === undefined) {
+            this.values[i] = param['x'];
+          }
+          this.values[i] += h * this.codes[i].evaluate(param);
+          this.portO[i].setValue(this.values[i]);
         }
       } catch (e) {
         console.log(e.stack);

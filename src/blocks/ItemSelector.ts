@@ -35,6 +35,7 @@ export class ItemSelector extends Block {
     readonly height: number;
     readonly items: any[];
     readonly selectedIndex: number;
+    readonly source: boolean;
 
     constructor(itemSelector: ItemSelector) {
       this.name = itemSelector.name;
@@ -45,6 +46,7 @@ export class ItemSelector extends Block {
       this.height = itemSelector.height;
       this.items = JSON.parse(JSON.stringify(itemSelector.items));
       this.selectedIndex = itemSelector.selectedIndex;
+      this.source = itemSelector.source;
     }
   };
 
@@ -98,8 +100,6 @@ export class ItemSelector extends Block {
     if (input != undefined) {
       this.items = Array.isArray(input) ? JSON.parse(JSON.stringify(input)) : [input];
       this.source = false;
-    } else {
-      this.source = true;
     }
     if (this.items.length > 0) {
       this.selectedIndex = Math.min(this.selectedIndex, this.items.length - 1);
