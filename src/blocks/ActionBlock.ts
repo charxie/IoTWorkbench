@@ -60,6 +60,16 @@ export class ActionBlock extends Block {
   setType(type: string): void {
     this.type = type;
     this.symbol = type;
+    this.ports.length = 0;
+    switch (this.type) {
+      case "Stop":
+      case "Repaint":
+        this.ports.push(this.portI);
+        break;
+      case "Reset":
+        this.ports.push(this.portO);
+        break;
+    }
   }
 
   getType(): string {
@@ -125,6 +135,7 @@ export class ActionBlock extends Block {
     ctx.font = "bold 12px Times";
     switch (this.type) {
       case "Stop":
+      case "Repaint":
         this.portI.draw(ctx, this.iconic);
         break;
       case "Reset":
@@ -168,6 +179,11 @@ export class ActionBlock extends Block {
       case "Stop":
         if (this.portI.getValue()) {
           flowchart.stopWorker(this);
+        }
+        break;
+      case "Repaint":
+        if (this.portI.getValue() !== undefined) {
+          flowchart.updateResultsForNotConnectedSources(this);
         }
         break;
     }

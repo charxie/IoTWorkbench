@@ -24,6 +24,7 @@ export class ActionBlockContextMenu extends BlockContextMenu {
                     <select id="action-type-selector" style="width: 100%">
                       <option value="Reset" selected>Reset</option>
                       <option value="Stop">Stop</option>
+                      <option value="Repaint">Repaint</option>
                     </select>
                 </tr>
                 <tr>

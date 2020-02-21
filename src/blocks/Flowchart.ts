@@ -59,6 +59,7 @@ export class Flowchart {
   readonly blockView: BlockView;
 
   private connectedSources: Block[]; // temporary storage
+  private notConnectedSources: Block[]; // temporary storage
   private blockConnectionFlag: boolean; // temporary flag
   private globalBlockFlag: boolean; // temporary flag
   private workerBlockFlag: boolean; // temporary flag
@@ -114,8 +115,17 @@ export class Flowchart {
   }
 
   private updateResultsForConnectedSources(): void {
-    if (this.connectedSources == undefined || this.connectedSources.length == 0) return;
+    if (this.connectedSources === undefined || this.connectedSources.length === 0) return;
     for (let b of this.connectedSources) {
+      this.traverse(b);
+    }
+    this.blockView.requestDraw();
+  }
+
+  updateResultsForNotConnectedSources(block: Block): void {
+    this.findNotConnectedSources(block);
+    if (this.notConnectedSources === undefined || this.notConnectedSources.length === 0) return;
+    for (let b of this.notConnectedSources) {
       this.traverse(b);
     }
     this.blockView.requestDraw();
@@ -201,6 +211,19 @@ export class Flowchart {
         this.findConnection(b, block);
         if (this.blockConnectionFlag) {
           this.connectedSources.push(b);
+        }
+      }
+    }
+  }
+
+  private findNotConnectedSources(block: Block): void {
+    this.notConnectedSources = [];
+    for (let b of this.blocks) {
+      if (b.isSource()) {
+        this.blockConnectionFlag = false;
+        this.findConnection(b, block);
+        if (!this.blockConnectionFlag) {
+          this.notConnectedSources.push(b);
         }
       }
     }
