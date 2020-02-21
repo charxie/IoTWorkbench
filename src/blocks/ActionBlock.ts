@@ -175,6 +175,7 @@ export class ActionBlock extends Block {
         flowchart.reset(this);
         flowchart.updateResults();
         flowchart.erase();
+        flowchart.storeBlockStates();
         break;
       case "Stop":
         if (this.portI.getValue()) {

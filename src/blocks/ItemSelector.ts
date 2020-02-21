@@ -53,6 +53,7 @@ export class ItemSelector extends Block {
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.source = true;
+    this.initiator = true;
     this.halfHeight = this.height / 2;
     this.name = name;
     this.color = "#A0522D";
@@ -100,6 +101,7 @@ export class ItemSelector extends Block {
     if (input != undefined) {
       this.items = Array.isArray(input) ? JSON.parse(JSON.stringify(input)) : [input];
       this.source = false;
+      this.initiator = false;
     }
     if (this.items.length > 0) {
       this.selectedIndex = Math.min(this.selectedIndex, this.items.length - 1);

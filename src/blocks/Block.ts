@@ -12,6 +12,7 @@ export abstract class Block implements Movable {
 
   protected ports: Port[] = [];
   protected source: boolean = false;
+  protected initiator: boolean = false;
   protected uid: string;
   protected x: number;
   protected y: number;
@@ -72,7 +73,7 @@ export abstract class Block implements Movable {
     return this.selected;
   }
 
-  abstract getCopy(): Block;
+   abstract getCopy(): Block;
 
   refreshView(): void {
     this.resizeRects.upperLeft.x = this.x - this.handleOffset - this.handleSize / 2;
@@ -110,6 +111,10 @@ export abstract class Block implements Movable {
 
   isSource(): boolean {
     return this.source;
+  }
+
+  isInitiator(): boolean {
+    return this.initiator;
   }
 
   // scan all the connectors to find out those whose output port is from this block.

@@ -64,6 +64,7 @@ export class Slider extends Block {
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.source = true;
+    this.initiator = true;
     this.halfHeight = this.height / 2;
     this.name = name;
     this.color = "#483D8B";

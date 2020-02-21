@@ -134,7 +134,7 @@ export class Flowchart {
   updateResultsExcludingAllWorkerBlocks(): void {
     for (let b of this.blocks) {
       // if the source block is connected to a worker, it is expected to rely on the worker to update all blocks that are connected to it
-      if (b.isSource() && !this.isConnectedToWorkerBlock(b)) {
+      if (b.isInitiator() && !this.isConnectedToWorkerBlock(b)) {
         this.traverse(b);
       }
     }
