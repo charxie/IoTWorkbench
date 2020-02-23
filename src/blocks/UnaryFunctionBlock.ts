@@ -53,9 +53,6 @@ export class UnaryFunctionBlock extends FunctionBlock {
     return block;
   }
 
-  destroy(): void {
-  }
-
   getPortName(uid: string): string {
     switch (uid) {
       case "X":
@@ -81,8 +78,8 @@ export class UnaryFunctionBlock extends FunctionBlock {
   }
 
   updateModel(): void {
-    this.hasError = false;
     let x = this.portX.getValue();
+    this.hasError = this.hasParserError || this.hasDeclarationError;
     if (this.expression && x != undefined) {
       try {
         if (this.code == undefined) this.createParser();

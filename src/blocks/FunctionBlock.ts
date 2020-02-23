@@ -10,6 +10,8 @@ export abstract class FunctionBlock extends Block {
 
   protected expression: string = "x";
   protected code;
+  protected hasParserError: boolean = false;
+  protected hasDeclarationError: boolean = false;
 
   setExpression(expression: string): void {
     this.expression = expression.replace(/\s/g, "");
@@ -21,6 +23,7 @@ export abstract class FunctionBlock extends Block {
   }
 
   useDeclaredFunctions() {
+    this.hasDeclarationError = false;
     let exp = flowchart.replaceWithDeclaredFunctions(this.expression);
     if (exp != this.expression) {
       try {
@@ -28,19 +31,24 @@ export abstract class FunctionBlock extends Block {
       } catch (e) {
         console.log(e.stack);
         Util.showBlockError(e.toString());
-        this.hasError = true;
+        this.hasDeclarationError = true;
       }
     }
   }
 
   protected createParser(): void {
+    this.hasParserError = false;
     try {
       this.code = math.parse(this.expression).compile();
     } catch (e) {
       console.log(e.stack);
       Util.showBlockError(e.toString());
-      this.hasError = true;
+      this.hasParserError = true;
     }
+  }
+
+  destroy(): void {
+    this.code = null;
   }
 
   protected drawLabel(ctx: CanvasRenderingContext2D): void {

@@ -73,7 +73,11 @@ export abstract class Block implements Movable {
     return this.selected;
   }
 
-   abstract getCopy(): Block;
+  setHasError(hasError: boolean): void {
+    this.hasError = hasError;
+  }
+
+  abstract getCopy(): Block;
 
   refreshView(): void {
     this.resizeRects.upperLeft.x = this.x - this.handleOffset - this.handleSize / 2;

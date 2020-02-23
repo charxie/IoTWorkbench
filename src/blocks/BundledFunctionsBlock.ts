@@ -13,9 +13,10 @@ export class BundledFunctionsBlock extends Block {
   private inputName: string = "x";
   private expressions: string[] = ["cos(x)", "sin(x)", "tan(x)"];
   private codes;
-
   private readonly portI: Port;
   private portO: Port[];
+  private hasParserError: boolean = false;
+  private hasDeclarationError: boolean = false;
 
   static State = class {
     readonly uid: string;
@@ -125,6 +126,7 @@ export class BundledFunctionsBlock extends Block {
   }
 
   useDeclaredFunctions() {
+    this.hasDeclarationError = false;
     for (let i = 0; i < this.expressions.length; i++) {
       let exp = flowchart.replaceWithDeclaredFunctions(this.expressions[i]);
       if (exp != this.expressions[i]) {
@@ -133,7 +135,7 @@ export class BundledFunctionsBlock extends Block {
         } catch (e) {
           console.log(e.stack);
           Util.showBlockError(e.toString());
-          this.hasError = true;
+          this.hasDeclarationError = true;
         }
       }
     }
@@ -143,6 +145,7 @@ export class BundledFunctionsBlock extends Block {
     if (this.codes === undefined || this.codes.length !== this.expressions.length) {
       this.codes = new Array(this.expressions.length);
     }
+    this.hasParserError = false;
     try {
       for (let i = 0; i < this.expressions.length; i++) {
         this.codes[i] = math.parse(this.expressions[i]).compile();
@@ -150,12 +153,12 @@ export class BundledFunctionsBlock extends Block {
     } catch (e) {
       console.log(e.stack);
       Util.showBlockError(e.toString());
-      this.hasError = true;
+      this.hasParserError = true;
     }
   }
 
   updateModel(): void {
-    this.hasError = false;
+    this.hasError = this.hasParserError || this.hasDeclarationError;
     let x = this.portI.getValue();
     if (this.expressions && this.inputName && x != undefined) {
       try {

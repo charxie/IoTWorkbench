@@ -267,7 +267,9 @@ export class Flowchart {
 
   /* function declarations */
 
-  updateFunctionDeclaration(name: string, expression: string): void {
+  updateFunctionDeclaration(block: FunctionDeclarationBlock): void {
+    let name = block.getKey();
+    let expression = block.getExpression();
     if (this.isFunctionExpressionDeclared(name, expression) && this.isFunctionNameDeclared(name)) return;
     let i = name.indexOf("(");
     let functionName = name.substring(0, i);
@@ -278,7 +280,14 @@ export class Flowchart {
       }
     }
     this.declaredFunctions[name] = expression;
-    this.declaredFunctionCodes[name] = math.parse(expression).compile();
+    if (block) block.setHasError(false);
+    try {
+      this.declaredFunctionCodes[name] = math.parse(expression).compile();
+    } catch (e) {
+      console.log(e.stack);
+      Util.showBlockError(e.toString());
+      if (block) block.setHasError(true);
+    }
   }
 
   isFunctionNameDeclared(name: string): boolean {

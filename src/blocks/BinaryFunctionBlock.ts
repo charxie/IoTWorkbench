@@ -61,9 +61,6 @@ export class BinaryFunctionBlock extends FunctionBlock {
     return block;
   }
 
-  destroy(): void {
-  }
-
   setVariable1Name(variable1Name: string): void {
     this.variable1Name = variable1Name;
   }
@@ -100,7 +97,7 @@ export class BinaryFunctionBlock extends FunctionBlock {
   }
 
   updateModel(): void {
-    this.hasError = false;
+    this.hasError = this.hasParserError || this.hasDeclarationError;
     let x = this.portX.getValue();
     let y = this.portY.getValue();
     if (this.expression && x != undefined && y != undefined) {

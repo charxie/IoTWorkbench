@@ -97,7 +97,7 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
           block.setVariableName(variableNameInputElement.value);
           block.setFunctionName(functionNameInputElement.value);
           block.setExpression(expression);
-          flowchart.updateFunctionDeclaration(block.getKey(), block.getExpression());
+          flowchart.updateFunctionDeclaration(block);
           flowchart.useDeclaredFunctions();
           block.refreshView();
           flowchart.updateResults(); // global variable must update the results globally

@@ -81,9 +81,6 @@ export class MultivariableFunctionBlock extends FunctionBlock {
     return block;
   }
 
-  destroy(): void {
-  }
-
   setVariables(variables: string[]): void {
     this.variables = JSON.parse(JSON.stringify(variables));
     this.setInputPorts();
@@ -105,7 +102,7 @@ export class MultivariableFunctionBlock extends FunctionBlock {
   }
 
   updateModel(): void {
-    this.hasError = false;
+    this.hasError = this.hasParserError || this.hasDeclarationError;
     let x = new Array(this.variables.length);
     let allSet = true;
     for (let i = 0; i < x.length; i++) {

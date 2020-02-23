@@ -258,7 +258,7 @@ export class StateIO {
     Util.clearObject(flowchart.declaredFunctionCodes);
     for (let b of flowchart.blocks) {
       if (b instanceof FunctionDeclarationBlock) {
-        flowchart.updateFunctionDeclaration(b.getKey(), b.getExpression());
+        flowchart.updateFunctionDeclaration(b);
       }
     }
     flowchart.useDeclaredFunctions();

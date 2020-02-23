@@ -57,9 +57,6 @@ export class TurnoutSwitch extends FunctionBlock {
     return turnoutSwitch;
   }
 
-  destroy(): void {
-  }
-
   getPortName(uid: string): string {
     switch (uid) {
       case "X":
@@ -117,6 +114,7 @@ export class TurnoutSwitch extends FunctionBlock {
 
   updateModel(): void {
     let x = this.portX.getValue();
+    this.hasError = this.hasParserError || this.hasDeclarationError;
     if (typeof x == "boolean") {
       if (x) { // evaluate the expression only when the input is true
         if (this.expression && this.expression.length > 0) {

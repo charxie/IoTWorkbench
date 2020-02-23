@@ -14,10 +14,12 @@ export class ParametricEquationBlock extends Block {
   private expressionY: string = "sin(t)";
   private codeX;
   private codeY;
-
   private readonly portT: Port;
   private readonly portX: Port;
   private readonly portY: Port;
+  private hasParserXError: boolean = false;
+  private hasParserYError: boolean = false;
+  private hasDeclarationError: boolean = false;
 
   static State = class {
     readonly uid: string;
@@ -96,6 +98,7 @@ export class ParametricEquationBlock extends Block {
   }
 
   useDeclaredFunctions() {
+    this.hasDeclarationError = false;
     let exp = flowchart.replaceWithDeclaredFunctions(this.expressionX);
     if (exp != this.expressionX) {
       try {
@@ -103,7 +106,7 @@ export class ParametricEquationBlock extends Block {
       } catch (e) {
         console.log(e.stack);
         Util.showBlockError(e.toString());
-        this.hasError = true;
+        this.hasDeclarationError = true;
       }
     }
     exp = flowchart.replaceWithDeclaredFunctions(this.expressionY);
@@ -113,28 +116,30 @@ export class ParametricEquationBlock extends Block {
       } catch (e) {
         console.log(e.stack);
         Util.showBlockError(e.toString());
-        this.hasError = true;
+        this.hasDeclarationError = true;
       }
     }
   }
 
   private createParserX(): void {
+    this.hasParserXError = false;
     try {
       this.codeX = math.parse(this.expressionX).compile();
     } catch (e) {
       console.log(e.stack);
       Util.showBlockError(e.toString());
-      this.hasError = true;
+      this.hasParserXError = true;
     }
   }
 
   private createParserY(): void {
+    this.hasParserYError = false;
     try {
       this.codeY = math.parse(this.expressionY).compile();
     } catch (e) {
       console.log(e.stack);
       Util.showBlockError(e.toString());
-      this.hasError = true;
+      this.hasParserYError = true;
     }
   }
 
@@ -159,7 +164,7 @@ export class ParametricEquationBlock extends Block {
   }
 
   updateModel(): void {
-    this.hasError = false;
+    this.hasError = this.hasParserXError || this.hasParserYError || this.hasDeclarationError;
     let t = this.portT.getValue();
     if (this.expressionX && this.expressionY && this.parameterName && t != undefined) {
       try {
