@@ -20,12 +20,6 @@ export class ODESolverBlock extends Block {
   private portO: Port[];
   private codes;
   private method: string = "RK4";
-  // RK4 temporary arrays
-  private f0: number[];
-  private k1: number[];
-  private k2: number[];
-  private k3: number[];
-  private k4: number[];
 
   static State = class {
     readonly uid: string;
@@ -174,25 +168,6 @@ export class ODESolverBlock extends Block {
     }
   }
 
-  private initRK4Arrays() {
-    let count = this.portO.length;
-    if (this.f0 === undefined || this.f0.length !== count) {
-      this.f0 = new Array(count);
-    }
-    if (this.k1 === undefined || this.k1.length !== count) {
-      this.k1 = new Array(count);
-    }
-    if (this.k2 === undefined || this.k2.length !== count) {
-      this.k2 = new Array(count);
-    }
-    if (this.k3 === undefined || this.k3.length !== count) {
-      this.k3 = new Array(count);
-    }
-    if (this.k4 === undefined || this.k4.length !== count) {
-      this.k4 = new Array(count);
-    }
-  }
-
   updateModel(): void {
     this.hasError = false;
     let n = this.portN.getValue();
@@ -213,29 +188,25 @@ export class ODESolverBlock extends Block {
           case "Euler":
             for (let i = 0; i < count; i++) {
               this.values[i] += h * this.codes[i].evaluate(param);
+              param[this.functions[i]] = this.values[i];
             }
             break;
           case "RK4":
-            this.initRK4Arrays();
             let h2 = h / 2;
+            let f0, k1, k2, k3, k4;
             for (let i = 0; i < count; i++) {
-              this.f0[i] = this.values[i];
-              this.k1[i] = this.codes[i].evaluate(param);
-            }
-            param[this.variableName] = t + h2;
-            for (let i = 0; i < count; i++) {
-              param[this.functions[i]] = this.f0[i] + this.k1[i] * h2;
-              this.k2[i] = this.codes[i].evaluate(param);
-            }
-            for (let i = 0; i < count; i++) {
-              param[this.functions[i]] = this.f0[i] + this.k2[i] * h2;
-              this.k3[i] = this.codes[i].evaluate(param);
-            }
-            param[this.variableName] = t + h;
-            for (let i = 0; i < count; i++) {
-              param[this.functions[i]] = this.f0[i] + this.k3[i] * h;
-              this.k4[i] = this.codes[i].evaluate(param);
-              this.values[i] += h * (this.k1[i] + 2 * this.k2[i] + 2 * this.k3[i] + this.k4[i]) / 6;
+              f0 = this.values[i];
+              k1 = this.codes[i].evaluate(param);
+              param[this.variableName] = t + h2;
+              param[this.functions[i]] = f0 + k1 * h2;
+              k2 = this.codes[i].evaluate(param);
+              param[this.functions[i]] = f0 + k2 * h2;
+              k3 = this.codes[i].evaluate(param);
+              param[this.variableName] = t + h;
+              param[this.functions[i]] = f0 + k3 * h;
+              k4 = this.codes[i].evaluate(param);
+              this.values[i] += h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+              param[this.functions[i]] = this.values[i];
             }
             break;
         }
