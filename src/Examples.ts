@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import rossler_attactor from "./examples/rossler-attractor.json";
+// @ts-ignore
 import ode_solver from "./examples/ode-solver.json";
 // @ts-ignore
 import chua_circuit from "./examples/chua-circuit.json";
@@ -192,6 +194,7 @@ export class Examples {
     this.files.push({name: "Lorentz Force", data: lorentz_force});
     this.files.push({name: "The Runge-Kutta Method", data: runge_kutta_method});
     this.files.push({name: "ODE Solver", data: ode_solver});
+    this.files.push({name: "Rössler Attactor Using ODE Solver", data: rossler_attactor});
     this.files.push({name: "Random Walk", data: random_walk});
     this.files.push({name: "Brownian Motion: Single Particle", data: brownian_motion_single_particle});
     this.files.push({name: "Brownian Motion: Multiple Particles", data: brownian_motion_multiple_particles});
