@@ -159,11 +159,6 @@ export class GrapherContextMenu extends BlockContextMenu {
       let heightInputElement = document.getElementById("grapher-height-field") as HTMLInputElement;
       heightInputElement.value = g.getHeight().toString();
       const okFunction = function () {
-        g.setName(nameInputElement.value);
-        g.setXAxisLabel(xAxisLableInputElement.value);
-        g.setYAxisLabel(yAxisLableInputElement.value);
-        g.setGraphWindowColor(windowColorInputElement.value);
-        g.setAutoScale(autoScaleRadioButton.checked);
         let success = true;
         let message;
         // set data port number
@@ -213,6 +208,11 @@ export class GrapherContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          g.setName(nameInputElement.value);
+          g.setXAxisLabel(xAxisLableInputElement.value);
+          g.setYAxisLabel(yAxisLableInputElement.value);
+          g.setGraphWindowColor(windowColorInputElement.value);
+          g.setAutoScale(autoScaleRadioButton.checked);
           g.setLineType(lineTypeSelectElement.value);
           g.setLineColor(lineColorInputElement.value);
           g.setGraphSymbol(symbolSelectElement.value);

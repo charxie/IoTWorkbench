@@ -173,6 +173,7 @@ export class ActionBlock extends Block {
     switch (this.type) {
       case "Reset":
         flowchart.reset(this);
+        //flowchart.resetGlobalBlocks();
         flowchart.updateResults();
         flowchart.erase();
         flowchart.storeBlockStates();

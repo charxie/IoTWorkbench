@@ -168,6 +168,7 @@ export class StateIO {
         } else if (block instanceof ODESolverBlock) {
           block.setVariableName(state.variableName != undefined ? state.variableName : "t");
           block.setEquations(state.equations != undefined ? state.equations : ["x'=x"]);
+          block.setMethod(state.method != undefined ? state.method : "Euler");
         } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);

@@ -11,6 +11,7 @@ export class ODESolverBlock extends Block {
 
   private variableName: string = "t";
   private equations: string[] = ["x'=y", "y'=x"];
+  private functions: string[] = []; // store the left-hand-side function names
   private expressions: string[] = []; // store the right-hand-side expressions
   private values: number[];
   private readonly portN: Port;
@@ -18,11 +19,13 @@ export class ODESolverBlock extends Block {
   private readonly portT: Port;
   private portO: Port[];
   private codes;
+  private method: string = "RK4";
 
   static State = class {
     readonly uid: string;
     readonly variableName: string;
     readonly equations: string[];
+    readonly method: string;
     readonly x: number;
     readonly y: number;
     readonly width: number;
@@ -32,6 +35,7 @@ export class ODESolverBlock extends Block {
       this.uid = block.uid;
       this.variableName = block.variableName;
       this.equations = block.equations;
+      this.method = block.method;
       this.x = block.x;
       this.y = block.y;
       this.width = block.width;
@@ -79,10 +83,19 @@ export class ODESolverBlock extends Block {
     let block = new ODESolverBlock("ODE Solver Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.variableName = this.variableName;
     block.equations = this.equations.slice();
+    block.method = this.method;
     return block;
   }
 
   destroy(): void {
+  }
+
+  setMethod(method: string): void {
+    this.method = method;
+  }
+
+  getMethod(): string {
+    return this.method;
   }
 
   setVariableName(variableName: string): void {
@@ -101,6 +114,8 @@ export class ODESolverBlock extends Block {
       let equalSignIndex = this.equations[i].indexOf("=");
       let lhs = this.equations[i].substring(0, equalSignIndex);
       let rhs = this.equations[i].substring(equalSignIndex + 1);
+      let derivativeSignIndex = this.equations[i].indexOf("'");
+      this.functions.push(lhs.substring(0, derivativeSignIndex));
       this.expressions.push(rhs);
     }
     if (this.values === undefined || this.values.length !== this.equations.length) {
@@ -161,18 +176,41 @@ export class ODESolverBlock extends Block {
       this.portT.setValue(n * h);
       let param = {...flowchart.globalVariables};
       param[this.variableName] = n * h;
+      for (let i = 0; i < this.portO.length; i++) {
+        if (this.values[i] === undefined) {
+          this.values[i] = param[this.functions[i]];
+        }
+      }
       try {
-        for (let i = 0; i < this.portO.length; i++) {
-          if (this.values[i] === undefined) {
-            this.values[i] = param['x'];
-          }
-          this.values[i] += h * this.codes[i].evaluate(param);
-          this.portO[i].setValue(this.values[i]);
+        switch (this.method) {
+          case "Euler":
+            for (let i = 0; i < this.codes.length; i++) {
+              this.values[i] += h * this.codes[i].evaluate(param);
+            }
+            break;
+          case "RK4":
+            for (let i = 0; i < this.codes.length; i++) {
+              let f0 = this.values[i];
+              let k1 = this.codes[i].evaluate(param);
+              param[this.variableName] = n * h + 0.5 * h;
+              param[this.functions[i]] = f0 + k1 * 0.5 * h;
+              let k2 = this.codes[i].evaluate(param);
+              param[this.functions[i]] = f0 + k2 * 0.5 * h;
+              let k3 = this.codes[i].evaluate(param);
+              param[this.variableName] = n * h + h;
+              param[this.functions[i]] = f0 + k3 * h;
+              let k4 = this.codes[i].evaluate(param);
+              this.values[i] += h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+            }
+            break;
         }
       } catch (e) {
         console.log(e.stack);
         Util.showBlockError(e.toString());
         this.hasError = true;
+      }
+      for (let i = 0; i < this.portO.length; i++) {
+        this.portO[i].setValue(this.values[i]);
       }
       this.updateConnectors();
     } else {

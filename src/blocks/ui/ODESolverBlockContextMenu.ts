@@ -27,6 +27,15 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
                   <td><textarea id="ode-solver-block-equations-field" rows="5" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>
+                  <td>Method:</td>
+                  <td>
+                    <select id="ode-solver-block-method-selector" style="width: 100%">
+                      <option value="Euler" selected>Euler</option>
+                      <option value="RK4">Runge-Kutta (RK4)</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="ode-solver-block-width-field" style="width: 100%"></td>
                 </tr>
@@ -44,6 +53,8 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof ODESolverBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let methodSelectElement = document.getElementById("ode-solver-block-method-selector") as HTMLSelectElement;
+      methodSelectElement.value = block.getMethod();
       let variableNameInputElement = document.getElementById("ode-solver-block-variable-name-field") as HTMLInputElement;
       variableNameInputElement.value = block.getVariableName() ? block.getVariableName() : "x";
       let equationsInputElement = document.getElementById("ode-solver-block-equations-field") as HTMLTextAreaElement;
@@ -90,6 +101,7 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
         }
         // finish up
         if (success) {
+          block.setMethod(methodSelectElement.value);
           block.setVariableName(variableNameInputElement.value);
           block.refreshView();
           flowchart.blockView.requestDraw();
@@ -112,7 +124,7 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 400,
+        height: 430,
         width: 450,
         buttons: {
           'OK': okFunction,

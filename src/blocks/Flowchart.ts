@@ -98,6 +98,14 @@ export class Flowchart {
     }
   }
 
+  resetGlobalBlocks(): void {
+    for (let b of this.blocks) {
+      if (b instanceof GlobalBlock) {
+        b.reset();
+      }
+    }
+  }
+
   // less efficient: this updates all the sources
   updateResults(): void {
     for (let b of this.blocks) {

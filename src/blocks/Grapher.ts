@@ -446,7 +446,7 @@ export class Grapher extends Block {
 
     precision = max < 1 ? 2 : Math.round(max).toString().length;
     tmpY = yOffset + (max - min) * dy;
-    let maxString = (Math.abs(max) < 0.0001 ? 0 : max).toPrecision(precision);
+    let maxString = (Math.abs(max) < 0.0001 ? 0 : max).toPrecision(precision + 1);
     ctx.beginPath();
     ctx.moveTo(this.graphWindow.x, horizontalAxisY - tmpY);
     ctx.lineTo(this.graphWindow.x + 4, horizontalAxisY - tmpY);
