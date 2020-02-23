@@ -23,12 +23,24 @@ export abstract class FunctionBlock extends Block {
   useDeclaredFunctions() {
     let exp = flowchart.replaceWithDeclaredFunctions(this.expression);
     if (exp != this.expression) {
-      this.code = math.parse(exp).compile();
+      try {
+        this.code = math.parse(exp).compile();
+      } catch (e) {
+        console.log(e.stack);
+        Util.showBlockError(e.toString());
+        this.hasError = true;
+      }
     }
   }
 
   protected createParser(): void {
-    this.code = math.parse(this.expression).compile();
+    try {
+      this.code = math.parse(this.expression).compile();
+    } catch (e) {
+      console.log(e.stack);
+      Util.showBlockError(e.toString());
+      this.hasError = true;
+    }
   }
 
   protected drawLabel(ctx: CanvasRenderingContext2D): void {

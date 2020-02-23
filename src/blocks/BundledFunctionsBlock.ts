@@ -128,7 +128,13 @@ export class BundledFunctionsBlock extends Block {
     for (let i = 0; i < this.expressions.length; i++) {
       let exp = flowchart.replaceWithDeclaredFunctions(this.expressions[i]);
       if (exp != this.expressions[i]) {
-        this.codes[i] = math.parse(exp).compile();
+        try {
+          this.codes[i] = math.parse(exp).compile();
+        } catch (e) {
+          console.log(e.stack);
+          Util.showBlockError(e.toString());
+          this.hasError = true;
+        }
       }
     }
   }
@@ -137,8 +143,14 @@ export class BundledFunctionsBlock extends Block {
     if (this.codes === undefined || this.codes.length !== this.expressions.length) {
       this.codes = new Array(this.expressions.length);
     }
-    for (let i = 0; i < this.expressions.length; i++) {
-      this.codes[i] = math.parse(this.expressions[i]).compile();
+    try {
+      for (let i = 0; i < this.expressions.length; i++) {
+        this.codes[i] = math.parse(this.expressions[i]).compile();
+      }
+    } catch (e) {
+      console.log(e.stack);
+      Util.showBlockError(e.toString());
+      this.hasError = true;
     }
   }
 

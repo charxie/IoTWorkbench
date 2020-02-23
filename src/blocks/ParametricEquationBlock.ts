@@ -98,20 +98,44 @@ export class ParametricEquationBlock extends Block {
   useDeclaredFunctions() {
     let exp = flowchart.replaceWithDeclaredFunctions(this.expressionX);
     if (exp != this.expressionX) {
-      this.codeX = math.parse(exp).compile();
+      try {
+        this.codeX = math.parse(exp).compile();
+      } catch (e) {
+        console.log(e.stack);
+        Util.showBlockError(e.toString());
+        this.hasError = true;
+      }
     }
     exp = flowchart.replaceWithDeclaredFunctions(this.expressionY);
     if (exp != this.expressionY) {
-      this.codeY = math.parse(exp).compile();
+      try {
+        this.codeY = math.parse(exp).compile();
+      } catch (e) {
+        console.log(e.stack);
+        Util.showBlockError(e.toString());
+        this.hasError = true;
+      }
     }
   }
 
   private createParserX(): void {
-    this.codeX = math.parse(this.expressionX).compile();
+    try {
+      this.codeX = math.parse(this.expressionX).compile();
+    } catch (e) {
+      console.log(e.stack);
+      Util.showBlockError(e.toString());
+      this.hasError = true;
+    }
   }
 
   private createParserY(): void {
-    this.codeY = math.parse(this.expressionY).compile();
+    try {
+      this.codeY = math.parse(this.expressionY).compile();
+    } catch (e) {
+      console.log(e.stack);
+      Util.showBlockError(e.toString());
+      this.hasError = true;
+    }
   }
 
   refreshView(): void {

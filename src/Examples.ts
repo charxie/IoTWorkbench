@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import box_muller_transform from "./examples/box-muller-transform.json";
+// @ts-ignore
 import rossler_attactor from "./examples/rossler-attractor.json";
 // @ts-ignore
 import ode_solver from "./examples/ode-solver.json";
@@ -170,6 +172,7 @@ export class Examples {
     this.files.push({name: "Root-Finding: Newton-Raphson Method", data: root_finding_newton_raphson});
     this.files.push({name: "Make Sound with Beepers", data: make_sound_with_beepers});
     this.files.push({name: "Synthesizing Sound", data: synthesizing_sound});
+    this.files.push({name: "Box-Muller Transform", data: box_muller_transform});
     this.files.push({name: "Parametric Equations 1", data: parametric_equations_1});
     this.files.push({name: "Parametric Equations 2", data: parametric_equations_2});
     this.files.push({name: "Parametric Generator 1", data: parametric_generator_1});
