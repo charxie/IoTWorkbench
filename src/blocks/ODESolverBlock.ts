@@ -222,8 +222,8 @@ export class ODESolverBlock extends Block {
               this.f0[i] = this.values[i];
               this.k1[i] = this.codes[i].evaluate(param);
             }
+            param[this.variableName] = t + h2;
             for (let i = 0; i < count; i++) {
-              param[this.variableName] = t + h2;
               param[this.functions[i]] = this.f0[i] + this.k1[i] * h2;
               this.k2[i] = this.codes[i].evaluate(param);
             }
@@ -231,8 +231,8 @@ export class ODESolverBlock extends Block {
               param[this.functions[i]] = this.f0[i] + this.k2[i] * h2;
               this.k3[i] = this.codes[i].evaluate(param);
             }
+            param[this.variableName] = t + h;
             for (let i = 0; i < count; i++) {
-              param[this.variableName] = t + h;
               param[this.functions[i]] = this.f0[i] + this.k3[i] * h;
               this.k4[i] = this.codes[i].evaluate(param);
               this.values[i] += h * (this.k1[i] + 2 * this.k2[i] + 2 * this.k3[i] + this.k4[i]) / 6;

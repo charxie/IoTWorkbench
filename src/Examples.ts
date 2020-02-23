@@ -176,6 +176,8 @@ export class Examples {
     this.files.push({name: "Parametric Generator 2", data: parametric_generator_2});
     this.files.push({name: "Spirals", data: spirals});
     this.files.push({name: "Sunflower Pattern", data: sunflower_vogel_model});
+    this.files.push({name: "The Runge-Kutta Method", data: runge_kutta_method});
+    this.files.push({name: "ODE Solver", data: ode_solver});
     this.files.push({name: "Logistic Population Model", data: logistic_population_equation});
     this.files.push({name: "Predator-Prey Equations", data: predator_prey_equations});
     this.files.push({name: "Competitive Lotka-Volterra Equations", data: competitive_lotka_volterra_equations});
@@ -183,6 +185,7 @@ export class Examples {
     this.files.push({name: "Chemical Kinetics: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
     this.files.push({name: "Chemical Kinetics: Brusselator", data: brusselator});
     this.files.push({name: "Lorenz Attractor", data: lorenz_attractor});
+    this.files.push({name: "Rössler Attactor", data: rossler_attactor});
     this.files.push({name: "Epidemiology: The SIR Model", data: epidemiology_sir_model});
     this.files.push({name: "Projectile Motion: Implementation 1", data: projectile_motion_1});
     this.files.push({name: "Projectile Motion: Implementation 2", data: projectile_motion_2});
@@ -192,9 +195,6 @@ export class Examples {
     this.files.push({name: "RLC Circuit", data: rlc_circuit});
     this.files.push({name: "Chua Circuit", data: chua_circuit});
     this.files.push({name: "Lorentz Force", data: lorentz_force});
-    this.files.push({name: "The Runge-Kutta Method", data: runge_kutta_method});
-    this.files.push({name: "ODE Solver", data: ode_solver});
-    this.files.push({name: "Rössler Attactor Using ODE Solver", data: rossler_attactor});
     this.files.push({name: "Random Walk", data: random_walk});
     this.files.push({name: "Brownian Motion: Single Particle", data: brownian_motion_single_particle});
     this.files.push({name: "Brownian Motion: Multiple Particles", data: brownian_motion_multiple_particles});
