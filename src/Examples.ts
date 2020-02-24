@@ -67,6 +67,8 @@ import brownian_motion_single_particle from "./examples/brownian-motion-single-p
 // @ts-ignore
 import brownian_motion_multiple_particles from "./examples/brownian-motion-multiple-particles.json";
 // @ts-ignore
+import langevin_equation from "./examples/langevin-equation.json";
+// @ts-ignore
 import random_walk from "./examples/random-walk.json";
 // @ts-ignore
 import spirals from "./examples/spirals.json";
@@ -203,6 +205,7 @@ export class Examples {
     this.files.push({name: "Lorentz Force", data: lorentz_force});
     this.files.push({name: "Random Walk", data: random_walk});
     this.files.push({name: "Brownian Motion: Single Particle", data: brownian_motion_single_particle});
+    this.files.push({name: "Brownian Motion: Langevin Equation", data: langevin_equation});
     this.files.push({name: "Brownian Motion: Multiple Particles", data: brownian_motion_multiple_particles});
     this.files.push({name: "Fern Generator: Implementation 1", data: fern_generator_1});
     this.files.push({name: "Fern Generator: Implementation 2", data: fern_generator_2});
