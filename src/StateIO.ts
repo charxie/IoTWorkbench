@@ -37,6 +37,7 @@ import {MatrixBlock} from "./blocks/MatrixBlock";
 import {IntegralBlock} from "./blocks/IntegralBlock";
 import {FFTBlock} from "./blocks/FFTBlock";
 import {ODESolverBlock} from "./blocks/ODESolverBlock";
+import {RandomNumberGeneratorBlock} from "./blocks/RandomNumberGeneratorBlock";
 
 export class StateIO {
 
@@ -216,6 +217,10 @@ export class StateIO {
           block.setName(state.name);
           block.setInputName(state.inputName ? state.inputName : "t");
           block.setExpressions(state.expressions);
+        } else if (block instanceof RandomNumberGeneratorBlock) {
+          block.setName(state.name);
+          block.setNumberOfOutputs(state.numberOfOutputs);
+          block.setType(state.type);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }
@@ -387,7 +392,7 @@ export class StateIO {
         reader.onload = function (e) {
           let s = JSON.parse(reader.result.toString());
           that.restore(s);
-          flowchart.updateResults();
+          flowchart.updateResultsExcludingAllWorkerBlocks();
           flowchart.updateLocalStorage();
           system.updateLocalStorage();
           target.value = "";

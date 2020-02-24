@@ -48,6 +48,7 @@ import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 import {IntegralBlock} from "./IntegralBlock";
 import {FFTBlock} from "./FFTBlock";
 import {ODESolverBlock} from "./ODESolverBlock";
+import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 
 export class BlockView {
 
@@ -239,6 +240,9 @@ export class BlockView {
             break;
           case "space2d-block":
             b = that.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));
+            break;
+          case "random-number-generator-block":
+            b = that.addBlockUndoable(new RandomNumberGeneratorBlock("Random Number Generator Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
         }
         that.canvas.focus();

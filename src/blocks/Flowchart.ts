@@ -48,6 +48,7 @@ import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 import {IntegralBlock} from "./IntegralBlock";
 import {FFTBlock} from "./FFTBlock";
 import {ODESolverBlock} from "./ODESolverBlock";
+import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 
 export class Flowchart {
 
@@ -835,6 +836,9 @@ export class Flowchart {
       case "Space2D":
         block = new Space2D(uid, name, x, y, 200, 220);
         break;
+      case "Random Number Generator Block":
+        block = new RandomNumberGeneratorBlock(uid, x, y, 200, 220);
+        break;
       case "Rainbow HAT Block":
         block = new RainbowHatBlock(uid, x, y);
         break;
@@ -938,6 +942,8 @@ export class Flowchart {
         blockStates.push(new ParametricEquationBlock.State(b));
       } else if (b instanceof BundledFunctionsBlock) {
         blockStates.push(new BundledFunctionsBlock.State(b));
+      } else if (b instanceof RandomNumberGeneratorBlock) {
+        blockStates.push(new RandomNumberGeneratorBlock.State(b));
       } else {
         blockStates.push(new Block.State(b));
       }

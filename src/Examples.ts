@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import normal_distributions from "./examples/normal-distributions.json";
+// @ts-ignore
 import box_muller_transform from "./examples/box-muller-transform.json";
 // @ts-ignore
 import rossler_attactor from "./examples/rossler-attractor.json";
@@ -172,12 +174,13 @@ export class Examples {
     this.files.push({name: "Root-Finding: Newton-Raphson Method", data: root_finding_newton_raphson});
     this.files.push({name: "Make Sound with Beepers", data: make_sound_with_beepers});
     this.files.push({name: "Synthesizing Sound", data: synthesizing_sound});
-    this.files.push({name: "Box-Muller Transform", data: box_muller_transform});
     this.files.push({name: "Parametric Equations 1", data: parametric_equations_1});
     this.files.push({name: "Parametric Equations 2", data: parametric_equations_2});
     this.files.push({name: "Parametric Generator 1", data: parametric_generator_1});
     this.files.push({name: "Parametric Generator 2", data: parametric_generator_2});
     this.files.push({name: "Spirals", data: spirals});
+    this.files.push({name: "Box-Muller Transform", data: box_muller_transform});
+    this.files.push({name: "Normal Distributions", data: normal_distributions});
     this.files.push({name: "Sunflower Pattern", data: sunflower_vogel_model});
     this.files.push({name: "The Runge-Kutta Method", data: runge_kutta_method});
     this.files.push({name: "ODE Solver", data: ode_solver});
@@ -236,7 +239,7 @@ export class Examples {
   load(s): void {
     flowchart.destroy();
     StateIO.restore(s);
-    flowchart.updateResults();
+    flowchart.updateResultsExcludingAllWorkerBlocks();
     flowchart.updateLocalStorage();
     system.updateLocalStorage();
   }

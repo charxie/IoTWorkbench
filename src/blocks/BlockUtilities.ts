@@ -42,6 +42,7 @@ import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 import {IntegralBlock} from "./IntegralBlock";
 import {FFTBlock} from "./FFTBlock";
 import {ODESolverBlock} from "./ODESolverBlock";
+import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 
 export class BlockUtilities {
 
@@ -153,6 +154,9 @@ export class BlockUtilities {
     }
     if (block instanceof MatrixInversionBlock) {
       return contextMenus.matrixInversionBlock;
+    }
+    if (block instanceof RandomNumberGeneratorBlock) {
+      return contextMenus.randomNumberGeneratorBlock;
     }
     if (block instanceof RainbowHatBlock) {
       return contextMenus.rainbowHatBlock;
@@ -304,6 +308,10 @@ export class BlockUtilities {
     if (block instanceof MatrixTranspositionBlock) {
       contextMenus.matrixTranspositionBlock.block = block;
       return document.getElementById("matrix-transposition-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof RandomNumberGeneratorBlock) {
+      contextMenus.randomNumberGeneratorBlock.block = block;
+      return document.getElementById("random-number-generator-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof RainbowHatBlock) {
       contextMenus.rainbowHatBlock.block = block;

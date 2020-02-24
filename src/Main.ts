@@ -75,6 +75,7 @@ import {MatrixTranspositionBlockContextMenu} from "./blocks/ui/MatrixTranspositi
 import {IntegralBlockContextMenu} from "./blocks/ui/IntegralBlockContextMenu";
 import {FFTBlockContextMenu} from "./blocks/ui/FFTBlockContextMenu";
 import {ODESolverBlockContextMenu} from "./blocks/ui/ODESolverBlockContextMenu";
+import {RandomNumberGeneratorBlockContextMenu} from "./blocks/ui/RandomNumberGeneratorBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -447,6 +448,11 @@ function setupContextMenuForBlock() {
   space2dContextMenu.render("space2d-context-menu-placeholder");
   space2dContextMenu.addListeners();
   contextMenus.space2d = space2dContextMenu;
+
+  let randomNumberGeneratorBlockContextMenu = new RandomNumberGeneratorBlockContextMenu();
+  randomNumberGeneratorBlockContextMenu.render("random-number-generator-block-context-menu-placeholder");
+  randomNumberGeneratorBlockContextMenu.addListeners();
+  contextMenus.randomNumberGeneratorBlock = randomNumberGeneratorBlockContextMenu;
 
   let rainbowHatBlockContextMenu = new RainbowHatBlockContextMenu();
   rainbowHatBlockContextMenu.render("rainbow-hat-block-context-menu-placeholder");

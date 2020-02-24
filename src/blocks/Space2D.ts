@@ -8,6 +8,7 @@ import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
 import {Point2DArray} from "./Point2DArray";
+import {Vector} from "../math/Vector";
 
 export class Space2D extends Block {
 
@@ -595,6 +596,9 @@ export class Space2D extends Block {
         for (let i = 0; i < this.portPoints.length; i++) {
           let vp = this.portPoints[i].getValue();
           if (vp != undefined) {
+            if (vp instanceof Vector) {
+              vp = vp.getValues();
+            }
             if (Array.isArray(vp) && vp.length > 1) {
               if (vp[0] != this.points[i].getLatestX() || vp[1] != this.points[i].getLatestY()) {
                 this.tempX = vp[0];
