@@ -54,13 +54,13 @@ export class BlockView {
 
   readonly canvas: HTMLCanvasElement;
 
-  private selectedMovable: Movable;
+  private selectedMovable: Movable = null;
   private selectedMovableMoved: boolean = false;
   private selectedMovablePreviousX: number;
   private selectedMovablePreviousY: number;
   private keyDownCount: number = 0; // keyDown events are fired continuously when the key is held down. To undo, we need to know the first time it is down.
   private selectedResizeName: string;
-  private selectedBlock: Block;
+  private selectedBlock: Block = null;
   private selectedBlockPreviousRect: Rectangle;
   private selectedBlockResized: boolean = false;
   private copiedBlock: Block;
@@ -552,25 +552,30 @@ export class BlockView {
   }
 
   private touchStart(e: TouchEvent): void {
-    e.preventDefault();
+    //e.preventDefault();
     let touch = e.touches[0];
     this.canvas.dispatchEvent(new MouseEvent("mousedown", {clientX: touch.clientX, clientY: touch.clientY}));
     this.touchStartTime = Date.now();
   }
 
   private touchMove(e: TouchEvent): void {
-    e.preventDefault();
+    if (this.selectedBlock !== null) {
+      e.preventDefault();
+    }
     let touch = e.touches[0];
     this.canvas.dispatchEvent(new MouseEvent("mousemove", {clientX: touch.clientX, clientY: touch.clientY}));
   }
 
   private touchEnd(e: TouchEvent): void {
-    e.preventDefault();
+    if (this.selectedBlock !== null) {
+      e.preventDefault();
+    }
     let touch = e.changedTouches[0];
     if (Date.now() - this.touchStartTime > BlockView.longPressTime) {
       this.canvas.dispatchEvent(new MouseEvent("contextmenu", {clientX: touch.clientX, clientY: touch.clientY}));
     } else {
-      this.canvas.dispatchEvent(new MouseEvent("mouseup", {}));
+      // for some reason, in Chrome on Android, touch.clientX and touch.clientY return 0 here.
+      this.canvas.dispatchEvent(new MouseEvent("mouseup", {clientX: touch.pageX, clientY: touch.pageY}));
     }
   }
 
