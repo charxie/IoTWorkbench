@@ -224,11 +224,13 @@ export class Examples {
     option.innerHTML = "Select";
     selectElement.appendChild(option);
 
+    let i = 1;
     for (let a of this.files) {
       option = document.createElement('option') as HTMLOptionElement;
       option.value = a.name;
-      option.innerHTML = a.name;
+      option.innerHTML = i++ + ". " + a.name;
       selectElement.appendChild(option);
+
     }
 
     let that = this;

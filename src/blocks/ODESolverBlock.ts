@@ -14,12 +14,14 @@ export class ODESolverBlock extends Block {
   private functions: string[] = []; // store the left-hand-side function names
   private expressions: string[] = []; // store the right-hand-side expressions
   private values: number[];
+  private derivativeOrders: number[];
   private readonly portN: Port;
   private readonly portH: Port;
   private readonly portT: Port;
   private portO: Port[];
   private codes;
   private method: string = "RK4";
+  private hasEquationError: boolean = false;
   private hasParserError: boolean = false;
   private hasDeclarationError: boolean = false;
 
@@ -110,18 +112,33 @@ export class ODESolverBlock extends Block {
 
   setEquations(equations: string[]): void {
     this.equations = JSON.parse(JSON.stringify(equations));
+    let n = this.equations.length;
+    if (this.derivativeOrders === undefined || this.derivativeOrders.length !== n) {
+      this.derivativeOrders = new Array(n);
+    }
     this.expressions.length = 0;
-    for (let i = 0; i < this.equations.length; i++) {
+    for (let i = 0; i < n; i++) {
       this.equations[i] = this.equations[i].replace(/\s/g, "");
       let equalSignIndex = this.equations[i].indexOf("=");
-      let lhs = this.equations[i].substring(0, equalSignIndex);
-      let rhs = this.equations[i].substring(equalSignIndex + 1);
-      let derivativeSignIndex = this.equations[i].indexOf("'");
-      this.functions.push(lhs.substring(0, derivativeSignIndex));
-      this.expressions.push(rhs);
+      if (equalSignIndex < 0) {
+        Util.showBlockError("The equation you input " + this.equations[i] + " misses an equation sign (=).");
+        this.hasEquationError = true;
+      } else {
+        let lhs = this.equations[i].substring(0, equalSignIndex);
+        let rhs = this.equations[i].substring(equalSignIndex + 1);
+        let derivativeSignIndex = this.equations[i].indexOf("'");
+        if (derivativeSignIndex < 0) {
+          this.derivativeOrders[i] = 0;
+          this.functions.push(lhs);
+        } else {
+          this.derivativeOrders[i] = 1;
+          this.functions.push(lhs.substring(0, derivativeSignIndex));
+        }
+        this.expressions.push(rhs);
+      }
     }
-    if (this.values === undefined || this.values.length !== this.equations.length) {
-      this.values = new Array(this.equations.length);
+    if (this.values === undefined || this.values.length !== n) {
+      this.values = new Array(n);
     }
     this.createParsers();
     this.setOutputPorts();
@@ -187,7 +204,7 @@ export class ODESolverBlock extends Block {
   updateModel(): void {
     let n = this.portN.getValue();
     let h = this.portH.getValue();
-    this.hasError = this.hasParserError || this.hasDeclarationError;
+    this.hasError = this.hasEquationError || this.hasParserError || this.hasDeclarationError;
     if (this.equations && n != undefined && h != undefined) {
       let t = n * h;
       this.portT.setValue(t);
@@ -203,7 +220,11 @@ export class ODESolverBlock extends Block {
         switch (this.method) {
           case "Euler":
             for (let i = 0; i < count; i++) {
-              this.values[i] += h * this.codes[i].evaluate(param);
+              if (this.derivativeOrders[i] === 1) {
+                this.values[i] += h * this.codes[i].evaluate(param);
+              } else if (this.derivativeOrders[i] === 0) {
+                this.values[i] = this.codes[i].evaluate(param);
+              }
               param[this.functions[i]] = this.values[i];
             }
             break;
@@ -211,17 +232,21 @@ export class ODESolverBlock extends Block {
             let h2 = h / 2;
             let f0, k1, k2, k3, k4;
             for (let i = 0; i < count; i++) {
-              f0 = this.values[i];
-              k1 = this.codes[i].evaluate(param);
-              param[this.variableName] = t + h2;
-              param[this.functions[i]] = f0 + k1 * h2;
-              k2 = this.codes[i].evaluate(param);
-              param[this.functions[i]] = f0 + k2 * h2;
-              k3 = this.codes[i].evaluate(param);
-              param[this.variableName] = t + h;
-              param[this.functions[i]] = f0 + k3 * h;
-              k4 = this.codes[i].evaluate(param);
-              this.values[i] += h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+              if (this.derivativeOrders[i] === 1) {
+                f0 = this.values[i];
+                k1 = this.codes[i].evaluate(param);
+                param[this.variableName] = t + h2;
+                param[this.functions[i]] = f0 + k1 * h2;
+                k2 = this.codes[i].evaluate(param);
+                param[this.functions[i]] = f0 + k2 * h2;
+                k3 = this.codes[i].evaluate(param);
+                param[this.variableName] = t + h;
+                param[this.functions[i]] = f0 + k3 * h;
+                k4 = this.codes[i].evaluate(param);
+                this.values[i] += h * (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+              } else if (this.derivativeOrders[i] === 0) {
+                this.values[i] = this.codes[i].evaluate(param);
+              }
               param[this.functions[i]] = this.values[i];
             }
             break;

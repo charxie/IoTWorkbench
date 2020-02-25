@@ -10,6 +10,9 @@ import {ODESolverBlock} from "../ODESolverBlock";
 
 export class ODESolverBlockContextMenu extends BlockContextMenu {
 
+  private dialogWidth: number = 450;
+  private dialogHeight: number = 450;
+
   constructor() {
     super();
     this.id = "ode-solver-block-context-menu";
@@ -121,12 +124,19 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
       variableNameInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
+      let that = this;
       d.dialog({
-        resizable: false,
+        resizable: true,
         modal: true,
         title: block.getUid(),
-        height: 430,
-        width: 450,
+        height: that.dialogHeight,
+        width: that.dialogWidth,
+        resize: function (e, ui) {
+          // @ts-ignore
+          that.dialogWidth = ui.size.width;
+          // @ts-ignore
+          that.dialogHeight = ui.size.height;
+        },
         buttons: {
           'OK': okFunction,
           'Cancel': function () {
