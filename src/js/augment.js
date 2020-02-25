@@ -83,6 +83,10 @@ if (typeof String.prototype.startsWith !== 'function') { // do not call this, do
   };
 }
 
+String.prototype.endsWith = function (s) {
+  return this.lastIndexOf(s) === this.length - s.length;
+};
+
 String.prototype.replaceFromTo = function (start, end, replacement) {
   return this.substr(0, start) + replacement + this.substr(end);
 };

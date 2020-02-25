@@ -93,6 +93,8 @@ declare global {
   interface String {
     startsWith(s);
 
+    endsWith(s);
+
     replaceFromTo(start, end, replacement);
   }
 

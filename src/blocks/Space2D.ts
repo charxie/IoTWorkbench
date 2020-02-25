@@ -25,6 +25,7 @@ export class Space2D extends Block {
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private spaceWindowColor: string = "white";
+  private showGridLines: boolean = false;
   private endSymbolRadius: number = 0;
   private endSymbolsConnection: string = "None";
   private spaceWindow: Rectangle;
@@ -52,6 +53,7 @@ export class Space2D extends Block {
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly spaceWindowColor: string;
+    readonly showGridLines: boolean;
     readonly endSymbolRadius: number;
     readonly endSymbolsConnection: string;
     readonly autoscale: boolean;
@@ -76,6 +78,7 @@ export class Space2D extends Block {
       this.xAxisLabel = g.xAxisLabel;
       this.yAxisLabel = g.yAxisLabel;
       this.spaceWindowColor = g.spaceWindowColor;
+      this.showGridLines = g.showGridLines;
       this.lineColors = g.lineColors;
       this.lineTypes = g.lineTypes;
       this.dataSymbols = g.dataSymbols;
@@ -120,6 +123,7 @@ export class Space2D extends Block {
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.spaceWindowColor = this.spaceWindowColor;
+    copy.showGridLines = this.showGridLines;
     copy.lineColors = JSON.parse(JSON.stringify(this.lineColors));
     copy.lineTypes = JSON.parse(JSON.stringify(this.lineTypes));
     copy.dataSymbols = JSON.parse(JSON.stringify(this.dataSymbols));
@@ -274,6 +278,14 @@ export class Space2D extends Block {
     return this.spaceWindowColor;
   }
 
+  setShowGridLines(showGridLines: boolean): void {
+    this.showGridLines = showGridLines;
+  }
+
+  getShowGridLines(): boolean {
+    return this.showGridLines;
+  }
+
   setLineColors(lineColors: string[]): void {
     this.lineColors = lineColors;
   }
@@ -390,6 +402,9 @@ export class Space2D extends Block {
     ctx.stroke();
     if (!this.iconic) {
       this.drawAxisLabels(ctx);
+      if (this.showGridLines) {
+        this.drawGridLines(ctx);
+      }
     }
 
     // detect minimum and maximum of x and y values from all inputs and calculate the scale factor
@@ -529,9 +544,13 @@ export class Space2D extends Block {
         ctx.stroke();
         let xtick = xmin + i * inx;
         let precision = 2;
-        if (Math.abs(xtick) > 1) {
+        if (Math.abs(xtick) >= 1) {
           let diff = Math.abs(xtick - Math.round(xtick));
-          precision = Math.round(xtick).toString().length + (diff < 0.1 ? 0 : 1);
+          precision = Math.round(Math.abs(xtick)).toString().length + (diff < 0.1 ? 0 : 1);
+        } else {
+          if (xtick.toPrecision(precision).endsWith("0")) {
+            precision--;
+          }
         }
         let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
         ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
@@ -546,9 +565,13 @@ export class Space2D extends Block {
         ctx.stroke();
         let ytick = ymin + i * iny;
         let precision = 2;
-        if (Math.abs(ytick) > 1) {
+        if (Math.abs(ytick) >= 1) {
           let diff = Math.abs(ytick - Math.round(ytick));
-          precision = Math.round(ytick).toString().length + (diff < 0.1 ? 0 : 1);
+          precision = Math.round(Math.abs(ytick)).toString().length + (diff < 0.1 ? 0 : 1);
+        } else {
+          if (ytick.toPrecision(precision).endsWith("0")) {
+            precision--;
+          }
         }
         let iString = Math.abs(ytick) < 0.01 ? "0" : ytick.toPrecision(precision);
         ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
@@ -572,6 +595,29 @@ export class Space2D extends Block {
       this.highlightSelection(ctx);
     }
 
+  }
+
+  private drawGridLines(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    ctx.translate(this.spaceWindow.x, this.spaceWindow.y + this.spaceWindow.height);
+    ctx.strokeStyle = "lightgray";
+    let dx = this.spaceWindow.width / 10;
+    for (let i = 1; i < 10; i++) {
+      let tmpX = dx * i;
+      ctx.beginPath();
+      ctx.moveTo(tmpX, 0);
+      ctx.lineTo(tmpX, -this.spaceWindow.height);
+      ctx.stroke();
+    }
+    let dy = this.spaceWindow.height / 10;
+    for (let i = 1; i < 10; i++) {
+      let tmpY = -dy * i;
+      ctx.beginPath();
+      ctx.moveTo(0, tmpY);
+      ctx.lineTo(this.spaceWindow.width, tmpY);
+      ctx.stroke();
+    }
+    ctx.restore();
   }
 
   private drawAxisLabels(ctx: CanvasRenderingContext2D): void {

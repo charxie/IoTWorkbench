@@ -559,7 +559,7 @@ export class BlockView {
   }
 
   private touchMove(e: TouchEvent): void {
-    if (this.selectedBlock !== null) {
+    if (this.selectedBlock !== null) { // distable default scrolling when a block is selected
       e.preventDefault();
     }
     let touch = e.touches[0];
@@ -567,7 +567,7 @@ export class BlockView {
   }
 
   private touchEnd(e: TouchEvent): void {
-    if (this.selectedBlock !== null) {
+    if (this.selectedBlock !== null) { // distable default scrolling when a block is selected
       e.preventDefault();
     }
     let touch = e.changedTouches[0];

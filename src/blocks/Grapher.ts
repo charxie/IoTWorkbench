@@ -414,7 +414,7 @@ export class Grapher extends Block {
     let precision: number;
     if (this.x0 != undefined && this.dx != undefined) {
       let xmax = this.x0 + maxLength * this.dx;
-      precision = xmax < 1 ? 2 : (1 + Math.round(xmax).toString().length);
+      precision = Math.abs(xmax) < 1 ? 2 : (1 + Math.round(Math.abs(xmax)).toString().length);
     } else {
       precision = maxLength.toString().length;
     }
@@ -430,6 +430,19 @@ export class Grapher extends Block {
           x = this.x0 + i * this.dx;
         }
         let xString = x.toPrecision(precision);
+        if (precision > 1) {
+          if (Math.abs(x) < 1 && xString.endsWith("0")) {
+            if (Math.abs(x) < 0.000001) {
+              xString = "0";
+            } else {
+              xString = x.toPrecision(precision - 1);
+            }
+          } else if (Math.abs(x) >= 1 && xString.endsWith(".0")) {
+            xString = x.toPrecision(precision - 1);
+          } else if (Math.abs(x) >= 1 && xString.endsWith(".00")) {
+            xString = x.toPrecision(precision - 2);
+          }
+        }
         ctx.fillText(xString, tmpX - 4 - ctx.measureText(xString).width / 2, horizontalAxisY + 10);
       }
     }

@@ -181,6 +181,7 @@ export class StateIO {
           block.setYAxisLabel(state.yAxisLabel);
           block.setSpaceWindowColor(state.spaceWindowColor);
           block.setPointInput(state.pointInput);
+          block.setShowGridLines(state.showGridLines == undefined ? false : state.showGridLines);
           block.setEndSymbolRadius(state.endSymbolRadius == undefined ? 0 : state.endSymbolRadius);
           block.setEndSymbolsConnection(state.endSymbolsConnection === undefined ? "None" : state.endSymbolsConnection);
           if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);

@@ -149,6 +149,13 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td><input type="text" id="space2d-window-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Grid Lines:</td>
+                  <td>
+                    <input type="radio" name="grid-lines" id="space2d-no-grid-lines-radio-button" checked> No
+                    <input type="radio" name="grid-lines" id="space2d-grid-lines-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="space2d-width-field" style="width: 100%"></td>
                 </tr>
@@ -185,7 +192,7 @@ export class Space2DContextMenu extends BlockContextMenu {
       let endSymbolRadiusInputElement = document.getElementById("space2d-end-symbol-radius-field") as HTMLInputElement;
       endSymbolRadiusInputElement.value = g.getEndSymbolRadius().toString();
       let endSymbolsConnectionSelectElement = document.getElementById("space2d-end-symbols-connection-selector") as HTMLSelectElement;
-      endSymbolsConnectionSelectElement.value=g.getEndSymbolsConnection();
+      endSymbolsConnectionSelectElement.value = g.getEndSymbolsConnection();
       let autoScaleRadioButton = document.getElementById("space2d-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("space2d-fixed-scale-radio-button") as HTMLInputElement;
@@ -204,6 +211,10 @@ export class Space2DContextMenu extends BlockContextMenu {
       yAxisLableInputElement.value = g.getYAxisLabel();
       let windowColorInputElement = document.getElementById("space2d-window-color-field") as HTMLInputElement;
       windowColorInputElement.value = g.getSpaceWindowColor();
+      let noGridLinesRadioButton = document.getElementById("space2d-no-grid-lines-radio-button") as HTMLInputElement;
+      noGridLinesRadioButton.checked = !g.getShowGridLines();
+      let gridLinesRadioButton = document.getElementById("space2d-grid-lines-radio-button") as HTMLInputElement;
+      gridLinesRadioButton.checked = g.getShowGridLines();
       let widthInputElement = document.getElementById("space2d-width-field") as HTMLInputElement;
       widthInputElement.value = g.getWidth().toString();
       let heightInputElement = document.getElementById("space2d-height-field") as HTMLInputElement;
@@ -290,6 +301,7 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setXAxisLabel(xAxisLableInputElement.value);
           g.setYAxisLabel(yAxisLableInputElement.value);
           g.setSpaceWindowColor(windowColorInputElement.value);
+          g.setShowGridLines(gridLinesRadioButton.checked);
           g.setAutoScale(autoScaleRadioButton.checked);
           g.setPointInput(pointInputRadioButton.checked);
           g.setEndSymbolsConnection(endSymbolsConnectionSelectElement.value);
