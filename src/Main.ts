@@ -76,6 +76,7 @@ import {IntegralBlockContextMenu} from "./blocks/ui/IntegralBlockContextMenu";
 import {FFTBlockContextMenu} from "./blocks/ui/FFTBlockContextMenu";
 import {ODESolverBlockContextMenu} from "./blocks/ui/ODESolverBlockContextMenu";
 import {RandomNumberGeneratorBlockContextMenu} from "./blocks/ui/RandomNumberGeneratorBlockContextMenu";
+import {FDMSolverBlockContextMenu} from "./blocks/ui/FDMSolverBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -445,6 +446,11 @@ function setupContextMenuForBlock() {
   odeSolverBlockContextMenu.render("ode-solver-block-context-menu-placeholder");
   odeSolverBlockContextMenu.addListeners();
   contextMenus.odeSolverBlock = odeSolverBlockContextMenu;
+
+  let fdmSolverBlockContextMenu = new FDMSolverBlockContextMenu();
+  fdmSolverBlockContextMenu.render("fdm-solver-block-context-menu-placeholder");
+  fdmSolverBlockContextMenu.addListeners();
+  contextMenus.fdmSolverBlock = fdmSolverBlockContextMenu;
 
   let space2dContextMenu = new Space2DContextMenu();
   space2dContextMenu.render("space2d-context-menu-placeholder");

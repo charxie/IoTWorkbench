@@ -51,7 +51,6 @@ export class GlobalVariableBlock extends GlobalBlock {
     this.ports.push(this.portX);
     this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
     this.ports.push(this.portO);
-    this.margin = 15;
   }
 
   getCopy(): Block {

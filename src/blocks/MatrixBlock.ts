@@ -44,7 +44,6 @@ export class MatrixBlock extends Block {
     this.color = "#C66";
     this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
     this.ports.push(this.portO);
-    this.margin = 15;
     this.matrix = new Matrix(2, 2);
     this.matrix.setValue(0, 0, 1);
     this.matrix.setValue(0, 1, 0);

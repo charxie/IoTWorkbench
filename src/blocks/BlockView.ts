@@ -48,6 +48,7 @@ import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 import {IntegralBlock} from "./IntegralBlock";
 import {FFTBlock} from "./FFTBlock";
 import {ODESolverBlock} from "./ODESolverBlock";
+import {FDMSolverBlock} from "./FDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 
 export class BlockView {
@@ -237,6 +238,9 @@ export class BlockView {
             break;
           case "ode-solver-block":
             b = that.addBlockUndoable(new ODESolverBlock("ODE Solver Block #" + timestamp, x - 100, y - 40, 200, 80));
+            break;
+          case "fdm-solver-block":
+            b = that.addBlockUndoable(new FDMSolverBlock("FDM Solver Block #" + timestamp, x - 100, y - 40, 200, 80));
             break;
           case "space2d-block":
             b = that.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));

@@ -38,6 +38,7 @@ import {MatrixTranspositionBlock} from "../MatrixTranspositionBlock";
 import {IntegralBlock} from "../IntegralBlock";
 import {FFTBlock} from "../FFTBlock";
 import {ODESolverBlock} from "../ODESolverBlock";
+import {FDMSolverBlock} from "../FDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "../RandomNumberGeneratorBlock";
 
 export class BlockElementsPanel {
@@ -106,6 +107,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="random-number-generator-block" title="Random Number Generator" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="function-declaration-block" title="Function Declaration" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="ode-solver-block" title="ODE Solver" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="fdm-solver-block" title="FDM Solver" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="integral-block" title="Integration" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="normalization-block" title="Vector Normalization" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="determinant-block" title="Matrix Determinant" width="45px" height="60px" style="cursor: pointer;"/></td>
@@ -139,6 +141,7 @@ export class BlockElementsPanel {
     this.drawIntegralBlock("Integral Block", "integral-block");
     this.drawFFTBlock("FFT Block", "fft-block");
     this.drawODESolverBlock("ODE Solver Block", "ode-solver-block");
+    this.drawFDMSolverBlock("FDM Solver Block", "fdm-solver-block");
     this.drawSpace2D("Space2D", "space2d-block");
     this.drawGlobalVariableBlock("Global Variable Block", "var", "global-variable-block");
     this.drawGlobalObjectBlock("Global Object Block", "obj", "global-object-block");
@@ -339,6 +342,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new ODESolverBlock("ODE Solver Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawFDMSolverBlock(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new FDMSolverBlock("FDM Solver Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

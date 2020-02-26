@@ -58,7 +58,6 @@ export class RgbaColorBlock extends Block {
     this.ports.push(this.portB);
     this.ports.push(this.portA);
     this.ports.push(this.portC);
-    this.margin = 15;
     this.portC.setValue([this.red, this.green, this.blue, this.alpha]);
   }
 

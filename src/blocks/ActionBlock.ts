@@ -41,7 +41,6 @@ export class ActionBlock extends Block {
     this.type = "Reset";
     this.symbol = this.type;
     this.color = "#CD5C5C";
-    this.margin = 15;
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 2;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false);

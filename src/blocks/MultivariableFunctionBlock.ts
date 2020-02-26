@@ -22,6 +22,7 @@ export class MultivariableFunctionBlock extends FunctionBlock {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly marginX: number;
 
     constructor(block: MultivariableFunctionBlock) {
       this.uid = block.uid;
@@ -31,6 +32,7 @@ export class MultivariableFunctionBlock extends FunctionBlock {
       this.y = block.y;
       this.width = block.width;
       this.height = block.height;
+      this.marginX = block.marginX;
     }
   };
 
@@ -43,7 +45,6 @@ export class MultivariableFunctionBlock extends FunctionBlock {
     this.portR = new Port(this, false, "F", this.width, this.height / 2, true);
     this.ports.push(this.portR);
     this.setInputPorts();
-    this.margin = 15;
   }
 
   private setInputPorts(): void {
@@ -78,6 +79,7 @@ export class MultivariableFunctionBlock extends FunctionBlock {
     let block = new MultivariableFunctionBlock("Multivariable Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.expression = this.expression;
     block.variables = JSON.parse(JSON.stringify(this.variables));
+    block.marginX = this.marginX;
     return block;
   }
 

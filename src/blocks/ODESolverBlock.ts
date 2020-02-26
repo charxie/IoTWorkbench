@@ -6,8 +6,9 @@ import {Port} from "./Port";
 import {Block} from "./Block";
 import {Util} from "../Util";
 import {flowchart, math} from "../Main";
+import {SolverBlock} from "./SolverBlock";
 
-export class ODESolverBlock extends Block {
+export class ODESolverBlock extends SolverBlock {
 
   private variableName: string = "t";
   private equations: string[] = ["x'=y", "y'=x"];
@@ -20,7 +21,6 @@ export class ODESolverBlock extends Block {
   private readonly portT: Port;
   private portO: Port[];
   private codes;
-  private method: string = "RK4";
   private hasEquationError: boolean = false;
   private hasParserError: boolean = false;
   private hasDeclarationError: boolean = false;
@@ -51,6 +51,7 @@ export class ODESolverBlock extends Block {
     super(uid, x, y, width, height);
     this.symbol = "ODE";
     this.name = "ODE Solver Block";
+    this.method = "RK4";
     this.color = "#3CB371";
     this.portN = new Port(this, true, "N", 0, this.height / 3, false);
     this.portH = new Port(this, true, "H", 0, this.height * 2 / 3, false);
@@ -60,7 +61,6 @@ export class ODESolverBlock extends Block {
     this.portT = new Port(this, false, "T", this.width, dh, true);
     this.ports.push(this.portT);
     this.setOutputPorts();
-    this.margin = 15;
   }
 
   private setOutputPorts(): void {
@@ -89,17 +89,6 @@ export class ODESolverBlock extends Block {
     block.equations = this.equations.slice();
     block.method = this.method;
     return block;
-  }
-
-  destroy(): void {
-  }
-
-  setMethod(method: string): void {
-    this.method = method;
-  }
-
-  getMethod(): string {
-    return this.method;
   }
 
   setVariableName(variableName: string): void {

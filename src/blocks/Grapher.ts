@@ -440,7 +440,7 @@ export class Grapher extends Block {
           } else if (Math.abs(x) >= 1 && xString.endsWith(".0")) {
             xString = x.toPrecision(precision - 1);
           } else if (Math.abs(x) >= 1 && xString.endsWith(".00")) {
-            xString = x.toPrecision(precision - 2);
+            xString = x.toPrecision(precision > 2 ? precision - 2 : 1);
           }
         }
         ctx.fillText(xString, tmpX - 4 - ctx.measureText(xString).width / 2, horizontalAxisY + 10);

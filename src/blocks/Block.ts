@@ -22,7 +22,8 @@ export abstract class Block implements Movable {
   protected name: string = "TBD";
   protected symbol: string;
   protected radius: number = 5;
-  protected margin: number = 30; // margin for inset
+  protected marginX: number = 15; // margin X for inset
+  protected marginY: number = 15; // margin Y for inset
   protected iconic: boolean; // true when used for small icons
   protected selected: boolean;
   protected hasError: boolean = false;
@@ -251,16 +252,17 @@ export abstract class Block implements Movable {
   setIconic(iconic: boolean): void {
     this.iconic = iconic;
     if (iconic) {
-      this.margin = 6;
+      this.marginX = 6;
+      this.marginY = 6;
     }
   }
 
-  setMargin(margin: number): void {
-    this.margin = margin;
+  setMarginX(marginX: number): void {
+    this.marginX = marginX;
   }
 
-  getMargin(): number {
-    return this.margin;
+  getMarginX(): number {
+    return this.marginX;
   }
 
   contains(x: number, y: number): boolean {
@@ -310,7 +312,7 @@ export abstract class Block implements Movable {
     // draw the inset
     ctx.fillStyle = "white";
     ctx.beginPath();
-    ctx.rect(this.x + this.margin, this.y + this.margin, this.width - 2 * this.margin, this.height - 2 * this.margin);
+    ctx.rect(this.x + this.marginX, this.y + this.marginY, this.width - 2 * this.marginX, this.height - 2 * this.marginY);
     ctx.closePath();
     ctx.fill();
     ctx.strokeStyle = "black";
@@ -369,7 +371,7 @@ export abstract class Block implements Movable {
     ctx.strokeStyle = "black";
     ctx.lineWidth = this.iconic ? 0.75 : 1;
     let textWidth = ctx.measureText(s).width;
-    if (textWidth < this.width - 2 * this.margin - 10) {
+    if (textWidth < this.width - 2 * this.marginX - 10) {
       ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + this.height / 2 + (this.iconic ? 3 : 5));
     } else {
       ctx.translate(this.x + this.width / 2 + 3.25, this.y + this.height / 2 + textWidth / 2);

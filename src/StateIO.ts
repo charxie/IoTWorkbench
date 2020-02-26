@@ -38,6 +38,7 @@ import {IntegralBlock} from "./blocks/IntegralBlock";
 import {FFTBlock} from "./blocks/FFTBlock";
 import {ODESolverBlock} from "./blocks/ODESolverBlock";
 import {RandomNumberGeneratorBlock} from "./blocks/RandomNumberGeneratorBlock";
+import {FDMSolverBlock} from "./blocks/FDMSolverBlock";
 
 export class StateIO {
 
@@ -91,7 +92,7 @@ export class StateIO {
           block.setKeys(state.keys);
           block.setValues(state.values);
           block.setInitialValues(state.initialValues);
-          block.setMargin(state.margin == undefined ? 15 : state.margin);
+          block.setMarginX(state.marginX == undefined ? 15 : state.marginX);
         } else if (block instanceof SeriesBlock) {
           block.setName(state.name);
           block.setStart(state.start);
@@ -170,6 +171,10 @@ export class StateIO {
           block.setVariableName(state.variableName != undefined ? state.variableName : "t");
           block.setEquations(state.equations != undefined ? state.equations : ["x'=x"]);
           block.setMethod(state.method != undefined ? state.method : "Euler");
+        } else if (block instanceof FDMSolverBlock) {
+          block.setVariables(state.variables != undefined ? state.variables : ["t", "x"]);
+          block.setEquations(state.equations != undefined ? state.equations : ["Tt=Txx"]);
+          block.setMethod(state.method != undefined ? state.method : "Explicit");
         } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);
@@ -209,6 +214,7 @@ export class StateIO {
           block.setName(state.name);
           block.setVariables(state.variables ? state.variables : "['x', 'y', 'z']");
           block.setExpression(state.expression ? state.expression : "x+y+z");
+          block.setMarginX(state.marginX === undefined ? 15 : state.marginX);
         } else if (block instanceof ParametricEquationBlock) {
           block.setName(state.name);
           block.setParameterName(state.parameterName ? state.parameterName : "t");

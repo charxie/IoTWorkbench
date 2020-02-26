@@ -44,7 +44,6 @@ export class RandomNumberGeneratorBlock extends Block {
     this.color = "#99C";
     this.portI = new Port(this, true, "I", 0, this.height / 2, false);
     this.ports.push(this.portI);
-    this.margin = 15;
     this.setOutputPorts();
   }
 

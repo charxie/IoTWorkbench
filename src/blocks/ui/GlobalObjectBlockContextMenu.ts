@@ -66,7 +66,7 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
       let initialValuesInputElement = document.getElementById("global-object-initial-values-field") as HTMLInputElement;
       initialValuesInputElement.value = block.getInitialValues() == undefined ? "" : JSON.stringify(block.getInitialValues());
       let insetMarginInputElement = document.getElementById("global-object-inset-margin-field") as HTMLInputElement;
-      insetMarginInputElement.value = block.getMargin().toString();
+      insetMarginInputElement.value = block.getMarginX().toString();
       let widthInputElement = document.getElementById("global-object-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("global-object-block-height-field") as HTMLInputElement;
@@ -77,7 +77,7 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
         // set inset margin
         let margin = parseInt(insetMarginInputElement.value);
         if (isNumber(margin)) {
-          block.setMargin(Math.max(15, margin));
+          block.setMarginX(Math.max(15, margin));
         } else {
           success = false;
           message = insetMarginInputElement.value + " is not a valid margin.";

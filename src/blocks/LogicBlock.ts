@@ -22,7 +22,6 @@ export class LogicBlock extends Block {
     this.ports.push(this.portA);
     this.ports.push(this.portB);
     this.ports.push(this.portR);
-    this.margin = 15;
   }
 
   getCopy(): Block {

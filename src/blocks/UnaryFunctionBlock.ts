@@ -43,7 +43,6 @@ export class UnaryFunctionBlock extends FunctionBlock {
     this.portR = new Port(this, false, "R", this.width, this.height / 2, true);
     this.ports.push(this.portX);
     this.ports.push(this.portR);
-    this.margin = 15;
   }
 
   getCopy(): Block {

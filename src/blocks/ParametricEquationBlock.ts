@@ -57,7 +57,6 @@ export class ParametricEquationBlock extends Block {
     this.ports.push(this.portT);
     this.ports.push(this.portX);
     this.ports.push(this.portY);
-    this.margin = 15;
   }
 
   getCopy(): Block {

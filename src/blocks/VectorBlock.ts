@@ -43,7 +43,6 @@ export class VectorBlock extends Block {
     this.color = "#669";
     this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
     this.ports.push(this.portO);
-    this.margin = 15;
     this.vector = new Vector(2);
     this.vector.setValue(0, 1);
     this.vector.setValue(1, 0);

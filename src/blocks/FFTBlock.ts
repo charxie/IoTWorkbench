@@ -47,7 +47,6 @@ export class FFTBlock extends Block {
     this.name = "FFT Block";
     this.symbol = "ℱ";
     this.color = "#999";
-    this.margin = 15;
     this.setupPorts();
   }
 

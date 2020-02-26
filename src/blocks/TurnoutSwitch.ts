@@ -47,7 +47,6 @@ export class TurnoutSwitch extends FunctionBlock {
     this.ports.push(this.portX);
     this.ports.push(this.portT);
     this.ports.push(this.portF);
-    this.margin = 15;
   }
 
   getCopy(): Block {

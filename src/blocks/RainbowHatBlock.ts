@@ -28,6 +28,7 @@ export class RainbowHatBlock extends HatBlock {
     super(uid, x, y, 125, 250);
     this.name = "Rainbow HAT";
     this.color = "#A9A9A9";
+    this.marginX = 30;
 
     let dy = this.height / 14;
     this.portRedLed = new Port(this, true, "RL", 0, dy, false); // coordinates relative to this block

@@ -47,7 +47,6 @@ export class BundledFunctionsBlock extends Block {
     this.portI = new Port(this, true, "I", 0, this.height / 2, false);
     this.ports.push(this.portI);
     this.setOutputPorts();
-    this.margin = 15;
   }
 
   private setOutputPorts(): void {

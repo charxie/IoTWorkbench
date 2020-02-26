@@ -22,7 +22,7 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Variables:<div style="font-size: 70%">(e.g., ["x", "y", "z"])</div></td>
-                  <td><textarea id="multivariable-function-block-cases-field" rows="5" style="width: 100%"></textarea></td>
+                  <td><textarea id="multivariable-function-block-cases-field" rows="3" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>
                   <td>Expression (e.g. x+y+z):</td>
@@ -55,7 +55,7 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
       let expressionInputElement = document.getElementById("multivariable-function-block-expression-field") as HTMLInputElement;
       expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x+y+z";
       let insetMarginInputElement = document.getElementById("multivariable-function-inset-margin-field") as HTMLInputElement;
-      insetMarginInputElement.value = block.getMargin().toString();
+      insetMarginInputElement.value = block.getMarginX().toString();
       let widthInputElement = document.getElementById("multivariable-function-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("multivariable-function-block-height-field") as HTMLInputElement;
@@ -66,7 +66,7 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
         // set inset margin
         let margin = parseInt(insetMarginInputElement.value);
         if (isNumber(margin)) {
-          block.setMargin(Math.max(15, margin));
+          block.setMarginX(Math.max(15, margin));
         } else {
           success = false;
           message = insetMarginInputElement.value + " is not a valid margin.";

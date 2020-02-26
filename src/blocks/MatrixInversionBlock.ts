@@ -21,7 +21,6 @@ export class MatrixInversionBlock extends Block {
     this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
     this.ports.push(this.portI);
     this.ports.push(this.portO);
-    this.margin = 15;
   }
 
   getCopy(): Block {

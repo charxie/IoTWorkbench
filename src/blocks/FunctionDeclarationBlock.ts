@@ -41,7 +41,6 @@ export class FunctionDeclarationBlock extends Block {
     this.name = name;
     this.symbol = symbol;
     this.color = "#FCF";
-    this.margin = 15;
   }
 
   getCopy(): Block {

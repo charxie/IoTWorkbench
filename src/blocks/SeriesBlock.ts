@@ -53,7 +53,6 @@ export class SeriesBlock extends Block {
     this.ports.push(this.portD);
     this.ports.push(this.portN);
     this.ports.push(this.portS);
-    this.margin = 15;
     let output = [];
     for (let i = 0; i < this.count; i++) {
       output.push(this.start + i * this.increment);

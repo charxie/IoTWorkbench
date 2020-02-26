@@ -45,7 +45,6 @@ export class ComplexNumberBlock extends Block {
     this.name = name;
     this.symbol = symbol;
     this.color = "#BDB76B";
-    this.margin = 15;
     this.setupPorts();
   }
 

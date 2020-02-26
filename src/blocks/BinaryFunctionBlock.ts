@@ -50,7 +50,6 @@ export class BinaryFunctionBlock extends FunctionBlock {
     this.ports.push(this.portX);
     this.ports.push(this.portY);
     this.ports.push(this.portR);
-    this.margin = 15;
   }
 
   getCopy(): Block {

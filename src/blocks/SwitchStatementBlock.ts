@@ -41,7 +41,6 @@ export class SwitchStatementBlock extends Block {
     this.portI = new Port(this, true, "I", 0, this.height / 2, false);
     this.ports.push(this.portI);
     this.setOutputPorts();
-    this.margin = 15;
   }
 
   private setOutputPorts(): void {
@@ -149,7 +148,7 @@ export class SwitchStatementBlock extends Block {
     // draw the inset
     ctx.fillStyle = "white";
     ctx.beginPath();
-    ctx.rect(this.x + this.margin, this.y + this.margin, this.width - 2 * this.margin, this.height - 2 * this.margin);
+    ctx.rect(this.x + this.marginX, this.y + this.marginY, this.width - 2 * this.marginX, this.height - 2 * this.marginY);
     ctx.closePath();
     ctx.fill();
     ctx.strokeStyle = "black";

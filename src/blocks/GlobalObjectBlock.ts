@@ -26,7 +26,7 @@ export class GlobalObjectBlock extends GlobalBlock {
     readonly y: number;
     readonly width: number;
     readonly height: number;
-    readonly margin: number;
+    readonly marginX: number;
 
     constructor(block: GlobalObjectBlock) {
       this.name = block.name;
@@ -39,7 +39,7 @@ export class GlobalObjectBlock extends GlobalBlock {
       this.y = block.y;
       this.width = block.width;
       this.height = block.height;
-      this.margin = block.margin;
+      this.marginX = block.marginX;
     }
   };
 
@@ -51,7 +51,6 @@ export class GlobalObjectBlock extends GlobalBlock {
     this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
     this.ports.push(this.portO);
     this.setInputPorts();
-    this.margin = 15;
   }
 
   private setInputPorts(): void {
@@ -88,7 +87,7 @@ export class GlobalObjectBlock extends GlobalBlock {
     copy.keys = this.keys;
     copy.values = JSON.parse(JSON.stringify(this.values));
     copy.initialValues = JSON.parse(JSON.stringify(this.initialValues));
-    copy.margin = this.margin;
+    copy.marginX = this.marginX;
     return copy;
   }
 
