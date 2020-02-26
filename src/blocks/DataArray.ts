@@ -8,6 +8,9 @@ export class DataArray {
 
   data: number[] = [];
 
+  constructor() {
+  }
+
   getMinMax(): MinMax {
     let min = Number.MAX_VALUE;
     let max = -min;

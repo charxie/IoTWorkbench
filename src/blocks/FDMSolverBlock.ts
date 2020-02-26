@@ -14,10 +14,13 @@ export class FDMSolverBlock extends SolverBlock {
   private variables: string[] = ["t", "x"];
   private equations: string[] = ["Tt=Txx"];
   private values: DataArray[];
+  private initialValues: DataArray[];
   private readonly portN: Port; // port for number of space steps
+  private readonly portX0: Port; // port for starting point
   private readonly portDx: Port; // port for space step
   private readonly portDt: Port; // port for time step
-  private portO: Port[]; // ports for export results (unknown functions)
+  private portI: Port[]; // ports for importing the initial results
+  private portO: Port[]; // ports for exporting the final results
   private hasEquationError: boolean = false;
 
   static State = class {
@@ -48,15 +51,39 @@ export class FDMSolverBlock extends SolverBlock {
     this.name = "FDM Solver Block";
     this.method = "Explicit";
     this.color = "#B0E0E6";
-    this.portN = new Port(this, true, "N", 0, this.height / 4, false);
-    this.portDx = new Port(this, true, "DX", 0, this.height / 2, false);
-    this.portDt = new Port(this, true, "DT", 0, this.height * 3 / 4, false);
+    let dh = this.height / (this.equations.length + 5);
+    this.portN = new Port(this, true, "N", 0, dh, false);
+    this.portX0 = new Port(this, true, "X0", 0, 2 * dh, false);
+    this.portDx = new Port(this, true, "DX", 0, 3 * dh, false);
+    this.portDt = new Port(this, true, "DT", 0, 4 * dh, false);
     this.ports.push(this.portN);
+    this.ports.push(this.portX0);
     this.ports.push(this.portDx);
     this.ports.push(this.portDt);
+    this.setInputPorts();
     this.setOutputPorts();
     this.marginX = 25;
     this.marginY = 15;
+  }
+
+  private setInputPorts(): void {
+    if (this.portI == undefined || this.portI.length != this.equations.length) {
+      if (this.portI) {
+        for (let p of this.portI) { // disconnect all the port connectors as the ports will be recreated
+          flowchart.removeAllConnectors(p);
+        }
+        for (let p of this.portI) {
+          this.ports.pop();
+        }
+      }
+      this.portI = new Array(this.equations.length);
+      let dh = this.height / (this.equations.length + 5);
+      const firstPortName = "A";
+      for (let i = 0; i < this.equations.length; i++) {
+        this.portI[i] = new Port(this, true, String.fromCharCode(firstPortName.charCodeAt(0) + i) + "I", 0, (i + 5) * dh, false);
+        this.ports.push(this.portI[i]);
+      }
+    }
   }
 
   private setOutputPorts(): void {
@@ -71,9 +98,9 @@ export class FDMSolverBlock extends SolverBlock {
       }
       this.portO = new Array(this.equations.length);
       let dh = this.height / (this.equations.length + 1);
-      let nm = "F";
+      const firstPortName = "A";
       for (let i = 0; i < this.equations.length; i++) {
-        this.portO[i] = new Port(this, false, "F" + (i + 1), this.width, (i + 2) * dh, true);
+        this.portO[i] = new Port(this, false, String.fromCharCode(firstPortName.charCodeAt(0) + i) + "F", this.width, (i + 1) * dh, true);
         this.ports.push(this.portO[i]);
       }
     }
@@ -112,7 +139,11 @@ export class FDMSolverBlock extends SolverBlock {
     if (this.values === undefined || this.values.length !== n) {
       this.values = new Array(n);
     }
+    if (this.initialValues === undefined || this.initialValues.length !== n) {
+      this.initialValues = new Array(n);
+    }
     this.createParsers();
+    this.setInputPorts();
     this.setOutputPorts();
     this.refreshView();
   }
@@ -136,27 +167,40 @@ export class FDMSolverBlock extends SolverBlock {
 
   refreshView(): void {
     super.refreshView();
-    this.portN.setY(this.height / 4);
-    this.portDx.setY(this.height / 2);
-    this.portDt.setY(this.height * 3 / 4);
-    let dh = this.height / (this.equations.length + 1);
-    for (let i = 0; i < this.equations.length; i++) {
+    let n = this.equations.length;
+    let dh = this.height / (n + 5);
+    this.portN.setY(dh);
+    this.portX0.setY(2 * dh);
+    this.portDx.setY(3 * dh);
+    this.portDt.setY(4 * dh);
+    for (let i = 0; i < n; i++) {
+      this.portI[i].setY((i + 5) * dh);
+    }
+    dh = this.height / (n + 1);
+    for (let i = 0; i < n; i++) {
       this.portO[i].setX(this.width);
       this.portO[i].setY((i + 1) * dh);
     }
   }
 
   updateModel(): void {
+    let count = this.portO.length;
     let n = this.portN.getValue();
-    let h = this.portDx.getValue();
-    let k = this.portDt.getValue();
+    let x0 = this.portX0.getValue();
+    let dx = this.portDx.getValue();
+    let dt = this.portDt.getValue();
+    for (let i = 0; i < count; i++) {
+      if (this.initialValues[i] === undefined) {
+        this.initialValues[i] = new DataArray();
+      }
+      this.initialValues[i].data = this.portI[i].getValue();
+    }
     this.hasError = this.hasEquationError;
-    if (this.equations && n != undefined && h != undefined && k != undefined) {
+    if (this.equations && n != undefined && dx != undefined && dt != undefined) {
       let param = {...flowchart.globalVariables};
       for (let v of this.variables) {
         //param[v] = t;
       }
-      let count = this.portO.length;
       for (let i = 0; i < count; i++) {
         if (this.values[i] === undefined) {
           //this.values[i] = param[this.functions[i]];

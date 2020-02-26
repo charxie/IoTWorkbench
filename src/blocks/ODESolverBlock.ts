@@ -75,9 +75,9 @@ export class ODESolverBlock extends SolverBlock {
       }
       this.portO = new Array(this.equations.length);
       let dh = this.height / (this.equations.length + 2);
-      let nm = "A";
+      const firstPortName = "A";
       for (let i = 0; i < this.equations.length; i++) {
-        this.portO[i] = new Port(this, false, String.fromCharCode(nm.charCodeAt(0) + i), this.width, (i + 2) * dh, true);
+        this.portO[i] = new Port(this, false, String.fromCharCode(firstPortName.charCodeAt(0) + i), this.width, (i + 2) * dh, true);
         this.ports.push(this.portO[i]);
       }
     }
