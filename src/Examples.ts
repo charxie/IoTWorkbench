@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import wave_equation from "./examples/wave-equation.json";
+// @ts-ignore
 import heat_equation from "./examples/heat-equation.json";
 // @ts-ignore
 import normal_distributions from "./examples/normal-distributions.json";
@@ -213,7 +215,8 @@ export class Examples {
     this.files.push({name: "Fern Generator: Implementation 2", data: fern_generator_2});
     this.files.push({name: "Fourier Transform", data: fourier_transform});
     this.files.push({name: "Convolution Theorem", data: convolution_theorem});
-    this.files.push({name: "PDE Solver: Heat Equation", data: heat_equation});
+    this.files.push({name: "PDE: Heat Equation", data: heat_equation});
+    this.files.push({name: "PDE: Wave Equation", data: wave_equation});
     this.files.push({name: "Rainbow HAT: RGB LED Array", data: rainbow_hat_rgb_led_array});
     this.files.push({name: "Rainbow HAT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
     this.files.push({name: "Rainbow HAT: Fading LED Array", data: rainbow_hat_fading_led_array});

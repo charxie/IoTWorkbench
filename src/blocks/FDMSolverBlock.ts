@@ -13,7 +13,11 @@ export class FDMSolverBlock extends SolverBlock {
 
   private variables: string[] = ["t", "x"];
   private equations: string[] = ["T_(t)=T_(xx)"];
+  private functions: string[] = []; // store the left-hand-side function names
+  private lhsDerivativeOrders: number[];
+  private rhsExpressions: string[] = [];
   private values: DataArray[];
+  private prevValues: DataArray[];
   private nextValues: DataArray[];
   private initialValues: DataArray[];
   private readonly portNt: Port; // port for number of time steps
@@ -78,7 +82,7 @@ export class FDMSolverBlock extends SolverBlock {
           flowchart.removeAllConnectors(p);
         }
         for (let p of this.portI) {
-          this.ports.pop();
+          Util.deleteArrayElement(p, this.ports);
         }
       }
       this.portI = new Array(this.equations.length);
@@ -98,7 +102,7 @@ export class FDMSolverBlock extends SolverBlock {
           flowchart.removeAllConnectors(p);
         }
         for (let p of this.portO) {
-          this.ports.pop();
+          Util.deleteArrayElement(p, this.ports);
         }
       }
       this.portO = new Array(this.equations.length);
@@ -130,6 +134,11 @@ export class FDMSolverBlock extends SolverBlock {
   setEquations(equations: string[]): void {
     this.equations = JSON.parse(JSON.stringify(equations));
     let n = this.equations.length;
+    this.functions.length = 0;
+    if (this.lhsDerivativeOrders === undefined || this.lhsDerivativeOrders.length !== n) {
+      this.lhsDerivativeOrders = new Array(n);
+    }
+    this.rhsExpressions.length = 0;
     for (let i = 0; i < n; i++) {
       this.equations[i] = this.equations[i].replace(/\s/g, "");
       let equalSignIndex = this.equations[i].indexOf("=");
@@ -139,10 +148,21 @@ export class FDMSolverBlock extends SolverBlock {
       } else {
         let lhs = this.equations[i].substring(0, equalSignIndex);
         let rhs = this.equations[i].substring(equalSignIndex + 1);
+        this.rhsExpressions.push(rhs);
+        let derivativeSignIndex = lhs.indexOf("_(");
+        if (derivativeSignIndex < 0) {
+          this.lhsDerivativeOrders[i] = 0;
+          this.functions.push(lhs);
+        } else {
+          let order = lhs.substring(derivativeSignIndex + 2, lhs.indexOf(")"));
+          this.lhsDerivativeOrders[i] = order.length;
+          this.functions.push(lhs.substring(0, derivativeSignIndex));
+        }
       }
     }
     if (this.values === undefined || this.values.length !== n) {
       this.values = new Array(n);
+      this.prevValues = new Array(n);
       this.nextValues = new Array(n);
     }
     if (this.initialValues === undefined || this.initialValues.length !== n) {
@@ -197,11 +217,11 @@ export class FDMSolverBlock extends SolverBlock {
     let nx = this.portNX.getValue();
     let x0 = this.portX0.getValue();
     let dx = this.portDx.getValue();
-    for (let i = 0; i < count; i++) {
-      if (this.initialValues[i] === undefined) {
-        this.initialValues[i] = new DataArray();
+    for (let n = 0; n < count; n++) {
+      if (this.initialValues[n] === undefined) {
+        this.initialValues[n] = new DataArray();
       }
-      this.initialValues[i].data = this.portI[i].getValue();
+      this.initialValues[n].data = this.portI[n].getValue();
     }
     this.hasError = this.hasEquationError;
     if (this.equations && nx != undefined && dx != undefined && nt != undefined && dt != undefined) {
@@ -209,10 +229,11 @@ export class FDMSolverBlock extends SolverBlock {
       for (let v of this.variables) {
         //param[v] = t;
       }
-      for (let i = 0; i < count; i++) {
-        if (this.values[i] === undefined) {
-          this.values[i] = this.initialValues[i].copy();
-          this.nextValues[i] = this.initialValues[i].copy();
+      for (let n = 0; n < count; n++) {
+        if (this.values[n] === undefined) {
+          this.values[n] = this.initialValues[n].copy();
+          this.prevValues[n] = this.initialValues[n].copy();
+          this.nextValues[n] = this.initialValues[n].copy();
         }
       }
       try {
@@ -220,12 +241,31 @@ export class FDMSolverBlock extends SolverBlock {
           case "Explicit":
             for (let n = 0; n < count; n++) {
               let len = this.values[n].data.length - 1;
+              let exp = this.rhsExpressions[n];
+              let rhs;
               for (let j = 1; j < len; j++) {
-                //let lhs = (this.nextValues[n].data[j] - this.values[n].data[j]) / dt;
-                let rhs = (this.values[n].data[j - 1] + this.values[n].data[j + 1] - 2 * this.values[n].data[j]) / (dx * dx);
-                this.nextValues[n].data[j] = this.values[n].data[j] + rhs * dt;
+                switch (this.lhsDerivativeOrders[n]) {
+                  case 0:
+                    // lhs = this.nextValues[n].data[j];
+                    rhs = (this.values[n].data[j - 1] + this.values[n].data[j + 1] - 2 * this.values[n].data[j]) / (dx * dx);
+                    this.nextValues[n].data[j] = rhs;
+                    break;
+                  case 1:
+                    // lhs = (this.nextValues[n].data[j] - this.values[n].data[j]) / dt;
+                    rhs = (this.values[n].data[j - 1] + this.values[n].data[j + 1] - 2 * this.values[n].data[j]) / (dx * dx);
+                    this.nextValues[n].data[j] = this.values[n].data[j] + rhs * dt;
+                    break;
+                  case 2:
+                    // lhs = (this.prevValues[n].data[j] + this.nextValues[n].data[j] - 2 * this.values[n].data[j]) / (dt * dt);
+                    rhs = (this.values[n].data[j - 1] + this.values[n].data[j + 1] - 2 * this.values[n].data[j]) / (dx * dx);
+                    this.nextValues[n].data[j] = 2 * this.values[n].data[j] - this.prevValues[n].data[j] + rhs * dt * dt;
+                    break;
+                }
               }
+              this.values[n].data[0] = 0;
+              this.values[n].data[len] = 0;
               for (let j = 1; j < len; j++) {
+                this.prevValues[n].data[j] = this.values[n].data[j];
                 this.values[n].data[j] = this.nextValues[n].data[j];
               }
             }
@@ -233,14 +273,33 @@ export class FDMSolverBlock extends SolverBlock {
           case "Implicit":
             for (let n = 0; n < count; n++) {
               let len = this.values[n].data.length - 1;
+              let rhs;
               for (let k = 0; k < this.relaxationSteps; k++) {
                 for (let j = 1; j < len; j++) {
-                  //let lhs = this.nextValues[n].data[j] * (1 / dt + 2 / (dx * dx)) - this.values[n].data[j] / dt;
-                  let rhs = (this.nextValues[n].data[j - 1] + this.nextValues[n].data[j + 1]) / (dx * dx);
-                  this.nextValues[n].data[j] = (this.values[n].data[j] / dt + rhs) / (1 / dt + 2 / (dx * dx));
+                  switch (this.lhsDerivativeOrders[n]) {
+                    case 0:
+                      break;
+                    case 1:
+                      // lhs = this.nextValues[n].data[j] * (1 / dt + 2 / (dx * dx)) - this.values[n].data[j] / dt;
+                      rhs = (this.nextValues[n].data[j - 1] + this.nextValues[n].data[j + 1]) / (dx * dx);
+                      this.nextValues[n].data[j] = (this.values[n].data[j] + rhs * dt) / (1 + 2 * dt / (dx * dx));
+                      break;
+                    case 2:
+                      // lhs = (this.prevValues[n].data[j] + this.nextValues[n].data[j] - 2 * this.values[n].data[j]) / (dt * dt);
+                      // rhs = (this.prevValues[n].data[j - 1] + this.prevValues[n].data[j + 1] - 2 * this.prevValues[n].data[j]
+                      //      + this.nextValues[n].data[j - 1] + this.nextValues[n].data[j + 1] - 2 * this.nextValues[n].data[j]) / (2 * dx * dx);
+                      rhs = this.prevValues[n].data[j - 1] + this.prevValues[n].data[j + 1] - 2 * this.prevValues[n].data[j]
+                        + this.nextValues[n].data[j - 1] + this.nextValues[n].data[j + 1];
+                      rhs /= 2 * dx * dx;
+                      this.nextValues[n].data[j] = (2 * this.values[n].data[j] - this.prevValues[n].data[j] + rhs * dt * dt) / (1 + dt * dt / (dx * dx));
+                      break;
+                  }
                 }
               }
+              this.values[n].data[0] = 0;
+              this.values[n].data[len] = 0;
               for (let j = 1; j < len; j++) {
+                this.prevValues[n].data[j] = this.values[n].data[j];
                 this.values[n].data[j] = this.nextValues[n].data[j];
               }
             }

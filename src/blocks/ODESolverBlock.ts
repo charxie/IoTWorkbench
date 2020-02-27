@@ -106,6 +106,7 @@ export class ODESolverBlock extends SolverBlock {
       this.derivativeOrders = new Array(n);
     }
     this.expressions.length = 0;
+    this.functions.length = 0;
     for (let i = 0; i < n; i++) {
       this.equations[i] = this.equations[i].replace(/\s/g, "");
       let equalSignIndex = this.equations[i].indexOf("=");
@@ -115,7 +116,7 @@ export class ODESolverBlock extends SolverBlock {
       } else {
         let lhs = this.equations[i].substring(0, equalSignIndex);
         let rhs = this.equations[i].substring(equalSignIndex + 1);
-        let derivativeSignIndex = this.equations[i].indexOf("'");
+        let derivativeSignIndex = lhs.indexOf("'");
         if (derivativeSignIndex < 0) {
           this.derivativeOrders[i] = 0;
           this.functions.push(lhs);

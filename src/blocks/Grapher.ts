@@ -431,10 +431,10 @@ export class Grapher extends Block {
         }
         let xString = x.toPrecision(precision);
         if (precision > 1) {
-          if (Math.abs(x) < 1 && xString.endsWith("0")) {
+          if (Math.abs(x) < 1) {
             if (Math.abs(x) < 0.000001) {
               xString = "0";
-            } else {
+            } else if (xString.endsWith("0")) {
               xString = x.toPrecision(precision - 1);
             }
           } else if (Math.abs(x) >= 1 && xString.endsWith(".0")) {
@@ -443,23 +443,37 @@ export class Grapher extends Block {
             xString = x.toPrecision(precision > 2 ? precision - 2 : 1);
           }
         }
-        ctx.fillText(xString, tmpX - 4 - ctx.measureText(xString).width / 2, horizontalAxisY + 10);
+        ctx.fillText(xString, tmpX - ctx.measureText(xString).width / 2, horizontalAxisY + 10);
       }
     }
 
     // draw y-axis tick marks
-    precision = min < 1 ? 2 : Math.round(min).toString().length;
+    precision = Math.abs(min) < 1 ? 2 : Math.round(Math.abs(min)).toString().length + 1;
     tmpY = yOffset;
     let minString = (Math.abs(min) < 0.0001 ? 0 : min).toPrecision(precision);
+    if (Math.abs(min) >= 1) {
+      if (minString.endsWith(".0")) {
+        minString = min.toPrecision(precision - 1);
+      } else if (minString.endsWith(".00")) {
+        minString = min.toPrecision(precision > 2 ? precision - 2 : 1);
+      }
+    }
     ctx.beginPath();
     ctx.moveTo(this.graphWindow.x, horizontalAxisY - tmpY);
     ctx.lineTo(this.graphWindow.x + 4, horizontalAxisY - tmpY);
     ctx.stroke();
     ctx.fillText(minString, this.graphWindow.x - ctx.measureText(minString).width - 5, horizontalAxisY - tmpY);
 
-    precision = max < 1 ? 2 : Math.round(max).toString().length;
+    precision = Math.abs(max) < 1 ? 2 : Math.round(Math.abs(max)).toString().length + 1;
     tmpY = yOffset + (max - min) * dy;
-    let maxString = (Math.abs(max) < 0.0001 ? 0 : max).toPrecision(precision + 1);
+    let maxString = (Math.abs(max) < 0.0001 ? 0 : max).toPrecision(precision);
+    if (Math.abs(max) >= 1) {
+      if (maxString.endsWith(".0")) {
+        maxString = max.toPrecision(precision - 1);
+      } else if (maxString.endsWith(".00")) {
+        maxString = max.toPrecision(precision > 2 ? precision - 2 : 1);
+      }
+    }
     ctx.beginPath();
     ctx.moveTo(this.graphWindow.x, horizontalAxisY - tmpY);
     ctx.lineTo(this.graphWindow.x + 4, horizontalAxisY - tmpY);

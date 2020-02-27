@@ -6,6 +6,14 @@ import $ from "jquery";
 
 export class Util {
 
+  static deleteArrayElement(e: any, a: any[]): any[] {
+    let index = a.indexOf(e);
+    if (index >= 0) {
+      a.splice(index, 1);
+    }
+    return a;
+  }
+
   static isEmptyObject(o): boolean {
     return Object.keys(o).length === 0 && o.constructor === Object;
   }
