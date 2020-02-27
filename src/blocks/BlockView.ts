@@ -79,8 +79,8 @@ export class BlockView {
   private contextMenuClickX: number;
   private contextMenuClickY: number;
   private preventMainMouseEvent: boolean = false; // when a block is handling its own mouse events such as dragging a knob, set this flag true
-  private touchStartTime: number;
-  private static readonly longPressTime: number = 2000;
+  private longPressStartTime: number;
+  private static readonly longPressTime: number = 1000;
   private static readonly resizeNames: string[] = ["upperLeft", "upperRight", "lowerLeft", "lowerRight", "upperMid", "lowerMid", "leftMid", "rightMid"];
   private drawFunc;
 
@@ -559,7 +559,7 @@ export class BlockView {
     //e.preventDefault();
     let touch = e.touches[0];
     this.canvas.dispatchEvent(new MouseEvent("mousedown", {clientX: touch.clientX, clientY: touch.clientY}));
-    this.touchStartTime = Date.now();
+    this.longPressStartTime = Date.now();
   }
 
   private touchMove(e: TouchEvent): void {
@@ -568,6 +568,7 @@ export class BlockView {
     }
     let touch = e.touches[0];
     this.canvas.dispatchEvent(new MouseEvent("mousemove", {clientX: touch.clientX, clientY: touch.clientY}));
+    this.longPressStartTime = Date.now();
   }
 
   private touchEnd(e: TouchEvent): void {
@@ -575,7 +576,7 @@ export class BlockView {
       e.preventDefault();
     }
     let touch = e.changedTouches[0];
-    if (Date.now() - this.touchStartTime > BlockView.longPressTime) {
+    if (Date.now() - this.longPressStartTime > BlockView.longPressTime) {
       this.canvas.dispatchEvent(new MouseEvent("contextmenu", {clientX: touch.clientX, clientY: touch.clientY}));
     } else {
       // for some reason, in Chrome on Android, touch.clientX and touch.clientY return 0 here.

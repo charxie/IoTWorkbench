@@ -12,9 +12,9 @@ import {SolverBlock} from "./SolverBlock";
 export class FDMSolverBlock extends SolverBlock {
 
   private variables: string[] = ["t", "x"];
-  private equations: string[] = ["Tt=Txx"];
+  private equations: string[] = ["T_(t)=T_(xx)"];
   private values: DataArray[];
-  private intermediateValues: DataArray[];
+  private nextValues: DataArray[];
   private initialValues: DataArray[];
   private readonly portNt: Port; // port for number of time steps
   private readonly portDt: Port; // port for length of time step
@@ -24,6 +24,7 @@ export class FDMSolverBlock extends SolverBlock {
   private portI: Port[]; // ports for importing the initial results
   private portO: Port[]; // ports for exporting the final results
   private hasEquationError: boolean = false;
+  private relaxationSteps: number = 5;
 
   static State = class {
     readonly uid: string;
@@ -142,7 +143,7 @@ export class FDMSolverBlock extends SolverBlock {
     }
     if (this.values === undefined || this.values.length !== n) {
       this.values = new Array(n);
-      this.intermediateValues = new Array(n);
+      this.nextValues = new Array(n);
     }
     if (this.initialValues === undefined || this.initialValues.length !== n) {
       this.initialValues = new Array(n);
@@ -211,34 +212,36 @@ export class FDMSolverBlock extends SolverBlock {
       for (let i = 0; i < count; i++) {
         if (this.values[i] === undefined) {
           this.values[i] = this.initialValues[i].copy();
-          this.intermediateValues[i] = this.initialValues[i].copy();
+          this.nextValues[i] = this.initialValues[i].copy();
         }
       }
       try {
         switch (this.method) {
           case "Explicit":
             for (let n = 0; n < count; n++) {
-              let r = dt / (dx * dx);
-              for (let j = 1; j < this.values[n].data.length - 1; j++) {
-                this.intermediateValues[n].data[j] = (1 - 2 * r) * this.values[n].data[j] + r * (this.values[n].data[j - 1] + this.values[n].data[j + 1]);
+              let len = this.values[n].data.length - 1;
+              for (let j = 1; j < len; j++) {
+                //let lhs = (this.nextValues[n].data[j] - this.values[n].data[j]) / dt;
+                let rhs = (this.values[n].data[j - 1] + this.values[n].data[j + 1] - 2 * this.values[n].data[j]) / (dx * dx);
+                this.nextValues[n].data[j] = this.values[n].data[j] + rhs * dt;
               }
-              for (let j = 1; j < this.values[n].data.length - 1; j++) {
-                this.values[n].data[j] = this.intermediateValues[n].data[j];
+              for (let j = 1; j < len; j++) {
+                this.values[n].data[j] = this.nextValues[n].data[j];
               }
             }
             break;
           case "Implicit":
-            let relaxationSteps = 5;
-            let r = dt / (dx * dx);
             for (let n = 0; n < count; n++) {
-              for (let k = 0; k < relaxationSteps; k++) {
-                for (let j = 1; j < this.values[n].data.length - 1; j++) {
-                  this.intermediateValues[n].data[j] = this.values[n].data[j] + r * (this.intermediateValues[n].data[j - 1] + this.intermediateValues[n].data[j + 1]);
-                  this.intermediateValues[n].data[j] /= (1 + 2 * r);
+              let len = this.values[n].data.length - 1;
+              for (let k = 0; k < this.relaxationSteps; k++) {
+                for (let j = 1; j < len; j++) {
+                  //let lhs = this.nextValues[n].data[j] * (1 / dt + 2 / (dx * dx)) - this.values[n].data[j] / dt;
+                  let rhs = (this.nextValues[n].data[j - 1] + this.nextValues[n].data[j + 1]) / (dx * dx);
+                  this.nextValues[n].data[j] = (this.values[n].data[j] / dt + rhs) / (1 / dt + 2 / (dx * dx));
                 }
               }
-              for (let j = 1; j < this.values[n].data.length - 1; j++) {
-                this.values[n].data[j] = this.intermediateValues[n].data[j];
+              for (let j = 1; j < len; j++) {
+                this.values[n].data[j] = this.nextValues[n].data[j];
               }
             }
             break;
