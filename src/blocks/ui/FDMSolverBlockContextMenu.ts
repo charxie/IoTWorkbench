@@ -33,8 +33,8 @@ export class FDMSolverBlockContextMenu extends BlockContextMenu {
                   <td>Method:</td>
                   <td>
                     <select id="fdm-solver-block-method-selector" style="width: 100%">
-                      <option value="Explicit" selected>Explicit</option>
-                      <option value="Implicit">Implicit</option>
+                      <option value="Explicit">Explicit</option>
+                      <option value="Implicit" selected>Implicit</option>
                     </select>
                   </td>
                 </tr>

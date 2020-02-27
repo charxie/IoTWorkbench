@@ -240,7 +240,7 @@ export class BlockView {
             b = that.addBlockUndoable(new ODESolverBlock("ODE Solver Block #" + timestamp, x - 100, y - 40, 200, 80));
             break;
           case "fdm-solver-block":
-            b = that.addBlockUndoable(new FDMSolverBlock("FDM Solver Block #" + timestamp, x - 100, y - 60, 200, 120));
+            b = that.addBlockUndoable(new FDMSolverBlock("FDM Solver Block #" + timestamp, x - 100, y - 80, 200, 160));
             break;
           case "space2d-block":
             b = that.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));

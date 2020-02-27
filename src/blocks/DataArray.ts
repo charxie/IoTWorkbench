@@ -11,6 +11,12 @@ export class DataArray {
   constructor() {
   }
 
+  copy(): DataArray {
+    let a = new DataArray();
+    a.data = this.data.slice();
+    return a;
+  }
+
   getMinMax(): MinMax {
     let min = Number.MAX_VALUE;
     let max = -min;
