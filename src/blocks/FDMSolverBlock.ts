@@ -280,17 +280,14 @@ export class FDMSolverBlock extends SolverBlock {
       let len = this.values[n].data.length - 1;
       let exp = this.rhsExpressions[n];
       let rhs;
+      let matches = exp.match(this.partialDerivativePattern);
       for (let k = 0; k < this.relaxationSteps; k++) {
         for (let j = 1; j < len; j++) {
           switch (this.lhsDerivativeOrders[n]) {
-            case 0:
-              break;
             case 1:
-              let derivativeSignIndex = exp.indexOf("_(");
-              if (derivativeSignIndex < 0) {
-              } else {
-                let order = exp.substring(derivativeSignIndex + 2, exp.indexOf(")"));
-                switch (order.length) {
+              for (let match of matches) {
+                let order = match.substring(match.indexOf("_") + 1).length;
+                switch (order) {
                   case 1: // transport equation
                     // lhs = (this.nextValues[n].data[j] - this.values[n].data[j]) / dt + this.nextValues[n].data[j] / dx;
                     rhs = this.nextValues[n].data[j - 1] / dx;
