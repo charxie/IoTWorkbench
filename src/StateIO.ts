@@ -160,6 +160,8 @@ export class StateIO {
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
           if (state.graphSymbols != undefined) block.setGraphSymbols(state.graphSymbols);
           if (state.graphSymbolColors != undefined) block.setGraphSymbolColors(state.graphSymbolColors);
+          if (state.fillOptions != undefined) block.setFillOptions(state.fillOptions);
+          if (state.fillColors != undefined) block.setFillColors(state.fillColors);
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);

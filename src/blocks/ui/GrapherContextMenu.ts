@@ -86,6 +86,17 @@ export class GrapherContextMenu extends BlockContextMenu {
                   <td><input type="text" id="grapher-line-color-field" style="width: 120px"></td>
                 </tr>
                 <tr>
+                  <td>Fill:</td>
+                  <td>
+                    <input type="radio" name="fill" id="grapher-no-fill-radio-button" checked> No
+                    <input type="radio" name="fill" id="grapher-fill-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
+                  <td>Fill Color:</td>
+                  <td><input type="text" id="grapher-fill-color-field" style="width: 120px"></td>
+                </tr>
+                <tr>
                   <td>Symbol Type:</td>
                   <td>
                     <select id="grapher-symbol-selector" style="width: 120px">
@@ -152,6 +163,12 @@ export class GrapherContextMenu extends BlockContextMenu {
       windowColorInputElement.value = g.getGraphWindowColor();
       let lineColorInputElement = document.getElementById("grapher-line-color-field") as HTMLInputElement;
       lineColorInputElement.value = g.getLineColor();
+      let noFillRadioButton = document.getElementById("grapher-no-fill-radio-button") as HTMLInputElement;
+      noFillRadioButton.checked = !g.getFillOption();
+      let fillRadioButton = document.getElementById("grapher-fill-radio-button") as HTMLInputElement;
+      fillRadioButton.checked = g.getFillOption();
+      let fillColorInputElement = document.getElementById("grapher-fill-color-field") as HTMLInputElement;
+      fillColorInputElement.value = g.getFillColor();
       let symbolColorInputElement = document.getElementById("grapher-symbol-color-field") as HTMLInputElement;
       symbolColorInputElement.value = g.getGraphSymbolColor();
       let widthInputElement = document.getElementById("grapher-width-field") as HTMLInputElement;
@@ -215,6 +232,8 @@ export class GrapherContextMenu extends BlockContextMenu {
           g.setAutoScale(autoScaleRadioButton.checked);
           g.setLineType(lineTypeSelectElement.value);
           g.setLineColor(lineColorInputElement.value);
+          g.setFillOption(fillRadioButton.checked);
+          g.setFillColor(fillColorInputElement.value);
           g.setGraphSymbol(symbolSelectElement.value);
           g.setGraphSymbolColor(symbolColorInputElement.value);
           g.refreshView();
@@ -238,6 +257,7 @@ export class GrapherContextMenu extends BlockContextMenu {
       yAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       windowColorInputElement.addEventListener("keyup", enterKeyUp);
       lineColorInputElement.addEventListener("keyup", enterKeyUp);
+      fillColorInputElement.addEventListener("keyup", enterKeyUp);
       symbolColorInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);

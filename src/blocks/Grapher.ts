@@ -33,6 +33,8 @@ export class Grapher extends Block {
   };
   private lineTypes: string[] = [];
   private lineColors: string[] = [];
+  private fillOptions: boolean[] = [];
+  private fillColors: string[] = [];
   private graphSymbols: string[] = [];
   private graphSymbolColors: string[] = [];
 
@@ -52,6 +54,8 @@ export class Grapher extends Block {
     readonly maximumValue: number;
     readonly lineTypes: string[];
     readonly lineColors: string[];
+    readonly fillOptions: boolean[];
+    readonly fillColors: string[];
     readonly graphSymbols: string[];
     readonly graphSymbolColors: string[];
 
@@ -71,6 +75,8 @@ export class Grapher extends Block {
       this.maximumValue = grapher.maximumValue;
       this.lineTypes = grapher.lineTypes;
       this.lineColors = grapher.lineColors;
+      this.fillOptions = grapher.fillOptions;
+      this.fillColors = grapher.fillColors;
       this.graphSymbols = grapher.graphSymbols;
       this.graphSymbolColors = grapher.graphSymbolColors;
     }
@@ -93,6 +99,8 @@ export class Grapher extends Block {
     this.dataArrays.push(new DataArray());
     this.lineTypes.push("Solid");
     this.lineColors.push("black");
+    this.fillOptions.push(false);
+    this.fillColors.push("lightgray");
     this.graphSymbols.push("Circle");
     this.graphSymbolColors.push("white");
   }
@@ -105,10 +113,12 @@ export class Grapher extends Block {
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.graphWindowColor = this.graphWindowColor;
-    copy.graphSymbols = JSON.parse(JSON.stringify(this.graphSymbols));
-    copy.graphSymbolColors = JSON.parse(JSON.stringify(this.graphSymbolColors));
-    copy.lineTypes = JSON.parse(JSON.stringify(this.lineTypes));
-    copy.lineColors = JSON.parse(JSON.stringify(this.lineColors));
+    copy.graphSymbols = this.graphSymbols.slice();
+    copy.graphSymbolColors = this.graphSymbolColors.slice();
+    copy.lineTypes = this.lineTypes.slice();
+    copy.lineColors = this.lineColors.slice();
+    copy.fillOptions = this.fillOptions.slice();
+    copy.fillColors = this.fillColors.slice();
     copy.setDataPortNumber(this.getDataPortNumber());
     return copy;
   }
@@ -126,6 +136,8 @@ export class Grapher extends Block {
           this.dataArrays.push(new DataArray());
           this.lineTypes.push("Solid");
           this.lineColors.push("black");
+          this.fillOptions.push(false);
+          this.fillColors.push("lightgray");
           this.graphSymbols.push("Circle");
           this.graphSymbolColors.push("white");
         }
@@ -137,6 +149,8 @@ export class Grapher extends Block {
         this.dataArrays.pop();
         this.lineTypes.pop();
         this.lineColors.pop();
+        this.fillOptions.pop();
+        this.fillColors.pop();
         this.graphSymbols.pop();
         this.graphSymbolColors.pop();
       }
@@ -208,6 +222,34 @@ export class Grapher extends Block {
 
   getLineColor(): string {
     return this.lineColors[0];
+  }
+
+  setFillOptions(fillOptions: boolean[]): void {
+    this.fillOptions = fillOptions;
+  }
+
+  setFillOption(fill: boolean): void {
+    for (let i = 0; i < this.fillOptions.length; i++) {
+      this.fillOptions[i] = fill;
+    }
+  }
+
+  getFillOption(): boolean {
+    return this.fillOptions[0];
+  }
+
+  setFillColors(fillColors: string[]): void {
+    this.fillColors = fillColors;
+  }
+
+  setFillColor(fillColor: string): void {
+    for (let i = 0; i < this.fillColors.length; i++) {
+      this.fillColors[i] = fillColor;
+    }
+  }
+
+  getFillColor(): string {
+    return this.fillColors[0];
   }
 
   setLineTypes(lineTypes: string[]): void {
@@ -366,6 +408,11 @@ export class Grapher extends Block {
             tmpX = this.graphWindow.x + dx * i;
             tmpY = yOffset + (arr.data[i] - min) * dy;
             ctx.lineTo(tmpX, horizontalAxisY - tmpY);
+          }
+          if (this.fillOptions[i]) {
+            ctx.fillStyle = this.fillColors[i];
+            ctx.closePath();
+            ctx.fill();
           }
           ctx.stroke();
           break;
