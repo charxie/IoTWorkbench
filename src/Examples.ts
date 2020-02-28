@@ -11,6 +11,8 @@ import heat_equation from "./examples/heat-equation.json";
 // @ts-ignore
 import transport_equation from "./examples/transport-equation.json";
 // @ts-ignore
+import pde_numerical_stability from "./examples/pde-numerical-stability.json";
+// @ts-ignore
 import normal_distributions from "./examples/normal-distributions.json";
 // @ts-ignore
 import box_muller_transform from "./examples/box-muller-transform.json";
@@ -222,6 +224,7 @@ export class Examples {
     this.files.push({name: "PDE: Heat Equation", data: heat_equation});
     this.files.push({name: "PDE: Wave Equation", data: wave_equation});
     this.files.push({name: "PDE: Transport Equation", data: transport_equation});
+    this.files.push({name: "PDE: Numerical Stability", data: pde_numerical_stability});
     this.files.push({name: "Standing Waves", data: standing_waves});
     this.files.push({name: "Rainbow HAT: RGB LED Array", data: rainbow_hat_rgb_led_array});
     this.files.push({name: "Rainbow HAT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});

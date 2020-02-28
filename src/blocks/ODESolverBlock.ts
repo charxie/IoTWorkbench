@@ -86,7 +86,7 @@ export class ODESolverBlock extends SolverBlock {
   getCopy(): Block {
     let block = new ODESolverBlock("ODE Solver Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.variableName = this.variableName;
-    block.equations = this.equations.slice();
+    block.setEquations(this.equations.slice());
     block.method = this.method;
     return block;
   }

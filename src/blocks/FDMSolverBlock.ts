@@ -118,7 +118,7 @@ export class FDMSolverBlock extends SolverBlock {
   getCopy(): Block {
     let block = new FDMSolverBlock("FDM Solver Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.variables = this.variables.slice();
-    block.equations = this.equations.slice();
+    block.setEquations(this.equations.slice());
     block.method = this.method;
     return block;
   }
