@@ -13,6 +13,7 @@ import {Matrix} from "../math/Matrix";
 export class Sticker extends Block {
 
   private text: string;
+  private arrayLength: number;
   private userText: string;
   protected textColor: string = "black";
   private isArray: boolean;
@@ -113,8 +114,9 @@ export class Sticker extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = this.textColor;
-      let titleWidth = ctx.measureText(this.name).width;
-      ctx.fillText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
+      let name2 = this.arrayLength !== undefined ? this.name + " (" + this.arrayLength + ")" : this.name;
+      let titleWidth = ctx.measureText(name2).width;
+      ctx.fillText(name2, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
 
     // draw the text area
@@ -181,6 +183,7 @@ export class Sticker extends Block {
     if (v != undefined) {
       this.isArray = Array.isArray(v);
       if (this.isArray) {
+        this.arrayLength = v.length;
         this.text = "";
         for (let i of v) {
           if (i instanceof Complex) {

@@ -12,6 +12,7 @@ export class BinaryFunctionBlock extends FunctionBlock {
 
   private variable1Name: string = "x";
   private variable2Name: string = "y";
+  private outputArrayType: string = "1D";
   private readonly portX: Port;
   private readonly portY: Port;
   private readonly portR: Port;
@@ -21,6 +22,7 @@ export class BinaryFunctionBlock extends FunctionBlock {
     readonly variable1Name: string;
     readonly variable2Name: string;
     readonly expression: string;
+    readonly outputArrayType: string;
     readonly x: number;
     readonly y: number;
     readonly width: number;
@@ -31,6 +33,7 @@ export class BinaryFunctionBlock extends FunctionBlock {
       this.variable1Name = block.variable1Name;
       this.variable2Name = block.variable2Name;
       this.expression = block.expression;
+      this.outputArrayType = block.outputArrayType;
       this.x = block.x;
       this.y = block.y;
       this.width = block.width;
@@ -57,6 +60,7 @@ export class BinaryFunctionBlock extends FunctionBlock {
     block.expression = this.expression;
     block.variable1Name = this.variable1Name;
     block.variable2Name = this.variable2Name;
+    block.outputArrayType = this.outputArrayType;
     return block;
   }
 
@@ -74,6 +78,14 @@ export class BinaryFunctionBlock extends FunctionBlock {
 
   getVariable2Name(): string {
     return this.variable2Name;
+  }
+
+  setOutputArrayType(outputArrayType: string): void {
+    this.outputArrayType = outputArrayType;
+  }
+
+  getOutputArrayType(): string {
+    return this.outputArrayType;
   }
 
   getPortName(uid: string): string {
@@ -104,17 +116,38 @@ export class BinaryFunctionBlock extends FunctionBlock {
         if (this.code == undefined) this.createParser();
         let param = {...flowchart.globalVariables};
         if (Array.isArray(x) && Array.isArray(y)) {
-          let r = new Array(Math.max(x.length, y.length));
-          for (let i = 0; i < r.length; i++) {
-            param[this.variable1Name] = i < x.length ? x[i] : 0;
-            param[this.variable2Name] = i < y.length ? y[i] : 0;
-            r[i] = this.code.evaluate(param);
-            // TODO: if the output is complex, only take the real part. I don't know what else to do at this point
-            if (r[i].re) {
-              r[i] = r[i].re;
-            }
+          switch (this.outputArrayType) {
+            case "1D":
+              let r = new Array(Math.max(x.length, y.length));
+              for (let i = 0; i < r.length; i++) {
+                param[this.variable1Name] = i < x.length ? x[i] : 0;
+                param[this.variable2Name] = i < y.length ? y[i] : 0;
+                r[i] = this.code.evaluate(param);
+                // TODO: if the output is complex, only take the real part. I don't know what else to do at this point
+                if (r[i].re) {
+                  r[i] = r[i].re;
+                }
+              }
+              this.portR.setValue(r);
+              break;
+            case "2D":
+              r = new Array(x.length * y.length);
+              let k = 0;
+              for (let i = 0; i < x.length; i++) {
+                param[this.variable1Name] = x[i];
+                for (let j = 0; j < y.length; j++) {
+                  param[this.variable2Name] = y[j];
+                  r[k] = this.code.evaluate(param);
+                  // TODO: if the output is complex, only take the real part. I don't know what else to do at this point
+                  if (r[k].re) {
+                    r[k] = r[k].re;
+                  }
+                  k++;
+                }
+              }
+              this.portR.setValue(r);
+              break;
           }
-          this.portR.setValue(r);
         } else if (Array.isArray(x)) {
           param[this.variable2Name] = y;
           let r = new Array(x.length);

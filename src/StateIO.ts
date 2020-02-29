@@ -226,6 +226,7 @@ export class StateIO {
           block.setVariable1Name(state.variable1Name ? state.variable1Name : "x");
           block.setVariable2Name(state.variable2Name ? state.variable2Name : "y");
           block.setExpression(state.expression ? state.expression : "x+y");
+          block.setOutputArrayType(state.outputArrayType === undefined ? "1D" : state.outputArrayType);
         } else if (block instanceof MultivariableFunctionBlock) {
           block.setName(state.name);
           block.setVariables(state.variables ? state.variables : "['x', 'y', 'z']");

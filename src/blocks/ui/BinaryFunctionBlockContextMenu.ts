@@ -31,6 +31,13 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="binary-function-block-expression-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Output Array:</td>
+                  <td>
+                    <input type="radio" name="output-array" id="binary-function-block-output-1d-radio-button" checked> 1D
+                    <input type="radio" name="output-array" id="binary-function-block-output-2d-radio-button"> 2D
+                  </td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="binary-function-block-width-field" style="width: 100%"></td>
                 </tr>
@@ -54,6 +61,10 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
       variable2NameInputElement.value = block.getVariable2Name() ? block.getVariable2Name() : "y";
       let expressionInputElement = document.getElementById("binary-function-block-expression-field") as HTMLInputElement;
       expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x+y";
+      let output1DRadioButton = document.getElementById("binary-function-block-output-1d-radio-button") as HTMLInputElement;
+      output1DRadioButton.checked = block.getOutputArrayType() === "1D";
+      let output2DRadioButton = document.getElementById("binary-function-block-output-2d-radio-button") as HTMLInputElement;
+      output2DRadioButton.checked = block.getOutputArrayType() === "2D";
       let widthInputElement = document.getElementById("binary-function-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("binary-function-block-height-field") as HTMLInputElement;
@@ -89,6 +100,8 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
         }
         // finish up
         if (success) {
+          if (output1DRadioButton.checked) block.setOutputArrayType("1D");
+          if (output2DRadioButton.checked) block.setOutputArrayType("2D");
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.storeBlockStates();
@@ -112,7 +125,7 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 360,
+        height: 400,
         width: 450,
         buttons: {
           'OK': okFunction,

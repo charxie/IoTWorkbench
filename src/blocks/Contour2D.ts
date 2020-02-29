@@ -9,11 +9,12 @@ import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
 import {Point2DArray} from "./Point2DArray";
+import {TestFunctions} from "../math/TestFunctions";
 
 export class Contour2D extends Block {
 
   private portI: Port;
-  private points: Point2DArray[] = [];
+  private data: number[];
   private autoscale: boolean = true;
   private minimumXValue: number = 0;
   private maximumXValue: number = 1;
@@ -83,7 +84,6 @@ export class Contour2D extends Block {
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false)
     this.ports.push(this.portI);
     this.spaceWindow = new Rectangle(0, 0, 1, 1);
-    this.points.push(new Point2DArray());
     this.lineType = "Solid";
     this.lineColor = "black";
   }
@@ -112,10 +112,6 @@ export class Contour2D extends Block {
   }
 
   erase(): void {
-    for (let p of this.points) {
-      p.clear();
-    }
-    flowchart.blockView.requestDraw();
   }
 
   setAutoScale(autoscale: boolean): void {
@@ -227,7 +223,7 @@ export class Contour2D extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "white";
-      let title = this.name + " (" + this.points[0].length() + " points)";
+      let title = this.name + (this.data === undefined ? "" : " (" + this.data.length + " points)");
       let titleWidth = ctx.measureText(title).width;
       ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
@@ -256,77 +252,65 @@ export class Contour2D extends Block {
     }
 
     // detect minimum and maximum of x and y values from all inputs and calculate the scale factor
-    let xmin = Number.MAX_VALUE;
-    let xmax = -xmin;
-    let ymin = Number.MAX_VALUE;
-    let ymax = -ymin;
-    if (this.autoscale) {
-      for (let p of this.points) {
-        let length = p.length();
-        if (length > 1) {
-          let xminxmax = p.getXminXmax();
-          if (xmin > xminxmax.min) {
-            xmin = xminxmax.min;
-          }
-          if (xmax < xminxmax.max) {
-            xmax = xminxmax.max;
-          }
-          let yminymax = p.getYminYmax();
-          if (ymin > yminymax.min) {
-            ymin = yminymax.min;
-          }
-          if (ymax < yminymax.max) {
-            ymax = yminymax.max;
-          }
-        }
-      }
-      if (xmin == Number.MAX_VALUE) xmin = 0;
-      if (xmax == -Number.MAX_VALUE) xmax = 1;
-      if (ymin == Number.MAX_VALUE) ymin = 0;
-      if (ymax == -Number.MAX_VALUE) ymax = 1;
-    } else {
-      xmin = this.minimumXValue;
-      xmax = this.maximumXValue;
-      ymin = this.minimumYValue;
-      ymax = this.maximumYValue;
-    }
+    let xmin = this.minimumXValue;
+    let xmax = this.maximumXValue;
+    let ymin = this.minimumYValue;
+    let ymax = this.maximumYValue;
     let dx = xmax === xmin ? 1 : this.spaceWindow.width / (xmax - xmin);
     let dy = ymax === ymin ? 1 : this.spaceWindow.height / (ymax - ymin);
 
     // draw contour plot
     ctx.save();
     ctx.translate(this.spaceWindow.x, this.spaceWindow.y);
-    for (let p of this.points) {
-      let length = p.length();
-      let index = this.points.indexOf(p);
+
+    if (this.data !== undefined) {
+      let n = Math.round(Math.sqrt(this.data.length));
+      let m = n;
+      // Compute the contour polygons at log-spaced intervals; returns an array of MultiPolygon.
+      let contours = d3.contours().size([n, m]).thresholds(d3.range(0, 100, 5))(this.data);
+      let projection = d3.geoIdentity().scale(this.spaceWindow.width / n, this.spaceWindow.height / m);
+      let path = d3.geoPath(projection, ctx);
+      let index = 0;
+      contours.forEach(c => {
+        if (c.coordinates.length == 0) return;
+        ctx.beginPath();
+        path(c);
+        let i2 = Math.min(255, index);
+        ctx.fillStyle = Util.rgbToHex(i2, i2, i2);
+        ctx.fill();
+        ctx.strokeStyle = "gray";
+        ctx.stroke();
+        index++;
+      });
     }
 
-    // Populate a grid of n×m values where -2 ≤ x ≤ 2 and -2 ≤ y ≤ 1.
-    let n = 256, m = 256, values = new Array(n * m);
-    for (var j = 0.5, k = 0; j < m; ++j) {
-      for (var i = 0.5; i < n; ++i, ++k) {
-        values[k] = Util.goldsteinPrice(i / n * 4 - 2, 1 - j / m * 3);
-      }
-    }
 
-    // Compute the contour polygons at log-spaced intervals; returns an array of MultiPolygon.
-    let contours = d3.contours()
-      .size([n, m])
-      .thresholds(d3.range(2, 21).map(p => Math.pow(2, p)))
-      (values);
-    let projection = d3.geoIdentity().scale(this.spaceWindow.width / n, this.spaceWindow.height / m);
-    let path = d3.geoPath(projection, ctx);
-    let index = 0;
-    contours.forEach(c => {
-      if (c.coordinates.length == 0) return;
-      ctx.beginPath();
-      path(c);
-      ctx.fillStyle = Util.rgbToHex(index * 25, index * 25, 255 - index * 25);
-      ctx.fill();
-      ctx.strokeStyle = "gray";
-      ctx.stroke();
-      index++;
-    });
+    // // Populate a grid of n×m values where -2 ≤ x ≤ 2 and -2 ≤ y ≤ 1.
+    // let n = 256, m = 256, values = new Array(n * m);
+    // for (var j = 0.5, k = 0; j < m; ++j) {
+    //   for (var i = 0.5; i < n; ++i, ++k) {
+    //     values[k] = TestFunctions.goldsteinPrice(i / n * 4 - 2, 1 - j / m * 3);
+    //   }
+    // }
+    //
+    // // Compute the contour polygons at log-spaced intervals; returns an array of MultiPolygon.
+    // let contours = d3.contours()
+    //   .size([n, m])
+    //   .thresholds(d3.range(2, 21).map(p => Math.pow(2, p)))
+    //   (values);
+    // let projection = d3.geoIdentity().scale(this.spaceWindow.width / n, this.spaceWindow.height / m);
+    // let path = d3.geoPath(projection, ctx);
+    // let index = 0;
+    // contours.forEach(c => {
+    //   if (c.coordinates.length == 0) return;
+    //   ctx.beginPath();
+    //   path(c);
+    //   ctx.fillStyle = Util.rgbToHex(index * 25, index * 25, 255 - index * 25);
+    //   ctx.fill();
+    //   ctx.strokeStyle = "gray";
+    //   ctx.stroke();
+    //   index++;
+    // });
 
     ctx.translate(0, this.spaceWindow.height);
 
@@ -431,6 +415,10 @@ export class Contour2D extends Block {
   }
 
   updateModel(): void {
+    let array = this.portI.getValue();
+    if (Array.isArray(array)) {
+      this.data = array;
+    }
   }
 
   refreshView(): void {
