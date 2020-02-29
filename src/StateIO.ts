@@ -39,6 +39,7 @@ import {FFTBlock} from "./blocks/FFTBlock";
 import {ODESolverBlock} from "./blocks/ODESolverBlock";
 import {RandomNumberGeneratorBlock} from "./blocks/RandomNumberGeneratorBlock";
 import {FDMSolverBlock} from "./blocks/FDMSolverBlock";
+import {Contour2D} from "./blocks/Contour2D";
 
 export class StateIO {
 
@@ -196,6 +197,19 @@ export class StateIO {
           if (state.dataSymbols != undefined) block.setDataSymbols(state.dataSymbols);
           if (state.dataSymbolColors != undefined) block.setDataSymbolColors(state.dataSymbolColors);
           if (state.numberOfPoints != undefined) block.setNumberOfPoints(state.numberOfPoints);
+        } else if (block instanceof Contour2D) {
+          block.setName(state.name);
+          block.setMinimumXValue(state.minimumXValue);
+          block.setMaximumXValue(state.maximumXValue);
+          block.setMinimumYValue(state.minimumYValue);
+          block.setMaximumYValue(state.maximumYValue);
+          block.setAutoScale(state.autoscale);
+          block.setXAxisLabel(state.xAxisLabel);
+          block.setYAxisLabel(state.yAxisLabel);
+          block.setSpaceWindowColor(state.spaceWindowColor);
+          block.setShowGridLines(state.showGridLines);
+          block.setLineType(state.lineType);
+          block.setLineColor(state.lineColor);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");

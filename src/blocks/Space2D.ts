@@ -124,10 +124,10 @@ export class Space2D extends Block {
     copy.yAxisLabel = this.yAxisLabel;
     copy.spaceWindowColor = this.spaceWindowColor;
     copy.showGridLines = this.showGridLines;
-    copy.lineColors = JSON.parse(JSON.stringify(this.lineColors));
-    copy.lineTypes = JSON.parse(JSON.stringify(this.lineTypes));
-    copy.dataSymbols = JSON.parse(JSON.stringify(this.dataSymbols));
-    copy.dataSymbolColors = JSON.parse(JSON.stringify(this.dataSymbolColors));
+    copy.lineColors = this.lineColors.slice();
+    copy.lineTypes = this.lineTypes.slice();
+    copy.dataSymbols = this.dataSymbols.slice();
+    copy.dataSymbolColors = this.dataSymbolColors.slice();
     copy.endSymbolRadius = this.endSymbolRadius;
     copy.endSymbolsConnection = this.endSymbolsConnection;
     copy.setPointInput(this.pointInput);
@@ -707,15 +707,6 @@ export class Space2D extends Block {
       this.portY.setY(this.barHeight + 2 * dh);
     }
     //this.updateModel();
-  }
-
-  toCanvas(): HTMLCanvasElement {
-    let c = document.createElement('canvas');
-    c.width = this.width;
-    c.height = this.height;
-    let newContext = c.getContext('2d');
-    newContext.drawImage(flowchart.blockView.canvas, this.x, this.y, this.width, this.height, 0, 0, c.width, c.height);
-    return c;
   }
 
 }

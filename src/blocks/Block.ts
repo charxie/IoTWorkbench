@@ -404,4 +404,13 @@ export abstract class Block implements Movable {
   mouseLeave(e: MouseEvent): void {
   }
 
+  toCanvas(): HTMLCanvasElement {
+    let c = document.createElement('canvas');
+    c.width = this.width;
+    c.height = this.height;
+    let newContext = c.getContext('2d');
+    newContext.drawImage(flowchart.blockView.canvas, this.x, this.y, this.width, this.height, 0, 0, c.width, c.height);
+    return c;
+  }
+
 }

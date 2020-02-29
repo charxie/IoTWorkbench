@@ -77,6 +77,7 @@ import {FFTBlockContextMenu} from "./blocks/ui/FFTBlockContextMenu";
 import {ODESolverBlockContextMenu} from "./blocks/ui/ODESolverBlockContextMenu";
 import {RandomNumberGeneratorBlockContextMenu} from "./blocks/ui/RandomNumberGeneratorBlockContextMenu";
 import {FDMSolverBlockContextMenu} from "./blocks/ui/FDMSolverBlockContextMenu";
+import {Contour2DContextMenu} from "./blocks/ui/Contour2DContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -456,6 +457,11 @@ function setupContextMenuForBlock() {
   space2dContextMenu.render("space2d-context-menu-placeholder");
   space2dContextMenu.addListeners();
   contextMenus.space2d = space2dContextMenu;
+
+  let contour2dContextMenu = new Contour2DContextMenu();
+  contour2dContextMenu.render("contour2d-context-menu-placeholder");
+  contour2dContextMenu.addListeners();
+  contextMenus.contour2d = contour2dContextMenu;
 
   let randomNumberGeneratorBlockContextMenu = new RandomNumberGeneratorBlockContextMenu();
   randomNumberGeneratorBlockContextMenu.render("random-number-generator-block-context-menu-placeholder");
