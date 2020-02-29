@@ -12,7 +12,7 @@ import {SolverBlock} from "./SolverBlock";
 export class FDMSolverBlock extends SolverBlock {
 
   private variables: string[] = ["t", "x"];
-  private equations: string[] = ["T_(t)=T_(xx)"];
+  private equations: string[] = ["T_t=T_xx"];
   private functions: string[] = []; // store the left-hand-side function names
   private lhsDerivativeOrders: number[];
   private rhsExpressions: string[] = [];
@@ -234,23 +234,58 @@ export class FDMSolverBlock extends SolverBlock {
     let count = this.portO.length;
     let dt = this.portDt.getValue();
     let dx = this.portDx.getValue();
+    let x0 = this.portX0.getValue();
     for (let n = 0; n < count; n++) {
       let len = this.values[n].data.length - 1;
       let exp = this.rhsExpressions[n];
-      let matches = exp.match(this.partialDerivativePattern);
+      let functionMatches = [];
+      for (let fun of this.functions) {
+        let found = false;
+        let regex = new RegExp(fun, "g");
+        let match: RegExpExecArray = regex.exec(exp);
+        while (match != null) {
+          if (exp.substr(match.index + 1, 1) !== "_") { // not partial derivative
+            found = true;
+            break;
+          }
+          regex.lastIndex = match.index + 1;
+          match = regex.exec(exp);
+        }
+        if (found) {
+          functionMatches.push(fun);
+        }
+      }
+      // evaluate the right-hand-side of the n-th PDE
+      let derivativeMatches = exp.match(this.partialDerivativePattern);
       for (let j = 1; j < len; j++) {
-        for (let match of matches) {
-          let order = match.substring(match.indexOf("_") + 1).length;
-          switch (order) {
-            case 1: // e.g., transport equation
-              param[match] = (this.values[n].data[j] - this.values[n].data[j - 1]) / dx;
-              break;
-            case 2: // e.g., heat equation
-              param[match] = (this.values[n].data[j - 1] + this.values[n].data[j + 1] - 2 * this.values[n].data[j]) / (dx * dx);
-              break;
+        param["x"] = x0 + j * dx;
+        for (let match of functionMatches) { // this is where we support coupled equations
+          param[match] = this.values[this.functions.indexOf(match)].data[j];
+        }
+        if (derivativeMatches != null && derivativeMatches.length > 0) {
+          for (let match of derivativeMatches) {
+            let index = match.indexOf("_");
+            let order = match.substring(index + 1).length;
+            let m = this.functions.indexOf(match.substring(0, index)); // this is where we support coupled equations
+            switch (order) {
+              case 1: // e.g., transport equation
+                param[match] = (this.values[m].data[j] - this.values[m].data[j - 1]) / dx;
+                break;
+              case 2: // e.g., heat equation
+                param[match] = (this.values[m].data[j + 1] + this.values[m].data[j - 1] - 2 * this.values[m].data[j]) / (dx * dx);
+                break;
+              case 3: // e.g., KdV equation
+                if (j > 1 && j < len - 1) {
+                  param[match] = (this.values[m].data[j + 2] - 2 * this.values[m].data[j + 1] + 2 * this.values[m].data[j - 1] - this.values[m].data[j - 2]) / (2 * dx * dx * dx);
+                } else {
+                  param[match] = 0;
+                }
+                break;
+            }
           }
         }
         let rhsResult = this.codes[n].evaluate(param);
+        // obtain the next values by shifting the current and previous values to the rhs result
         switch (this.lhsDerivativeOrders[n]) {
           case 0: // TODO: Let's deal with this later
             break;
@@ -281,40 +316,41 @@ export class FDMSolverBlock extends SolverBlock {
       let exp = this.rhsExpressions[n];
       let rhs;
       let matches = exp.match(this.partialDerivativePattern);
-      for (let k = 0; k < this.relaxationSteps; k++) {
-        for (let j = 1; j < len; j++) {
-          switch (this.lhsDerivativeOrders[n]) {
-            case 1:
-              for (let match of matches) {
-                let order = match.substring(match.indexOf("_") + 1).length;
-                switch (order) {
-                  case 1: // transport equation
-                    // lhs = (this.nextValues[n].data[j] - this.values[n].data[j]) / dt + this.nextValues[n].data[j] / dx;
-                    rhs = this.nextValues[n].data[j - 1] / dx;
-                    this.nextValues[n].data[j] = (this.values[n].data[j] + rhs * dt) / (1 + dt / dx);
-                    break;
-                  case 2: // heat equation
-                    // lhs = this.nextValues[n].data[j] * (1 / dt + 2 / (dx * dx)) - this.values[n].data[j] / dt;
-                    rhs = (this.nextValues[n].data[j - 1] + this.nextValues[n].data[j + 1]) / (dx * dx);
-                    this.nextValues[n].data[j] = (this.values[n].data[j] + rhs * dt) / (1 + 2 * dt / (dx * dx));
-                    break;
+      if (matches != null && matches.length > 0) {
+        for (let k = 0; k < this.relaxationSteps; k++) {
+          for (let j = 1; j < len; j++) {
+            switch (this.lhsDerivativeOrders[n]) {
+              case 1:
+                for (let match of matches) {
+                  let order = match.substring(match.indexOf("_") + 1).length;
+                  switch (order) {
+                    case 1: // transport equation
+                      // lhs = (this.nextValues[n].data[j] - this.values[n].data[j]) / dt + this.nextValues[n].data[j] / dx;
+                      rhs = this.nextValues[n].data[j - 1] / dx;
+                      this.nextValues[n].data[j] = (this.values[n].data[j] + rhs * dt) / (1 + dt / dx);
+                      break;
+                    case 2: // heat equation
+                      // lhs = this.nextValues[n].data[j] * (1 / dt + 2 / (dx * dx)) - this.values[n].data[j] / dt;
+                      rhs = (this.nextValues[n].data[j - 1] + this.nextValues[n].data[j + 1]) / (dx * dx);
+                      this.nextValues[n].data[j] = (this.values[n].data[j] + rhs * dt) / (1 + 2 * dt / (dx * dx));
+                      break;
+                  }
                 }
-              }
-              break;
-            case 2: // wave equation
-              // lhs = (this.prevValues[n].data[j] + this.nextValues[n].data[j] - 2 * this.values[n].data[j]) / (dt * dt);
-              // rhs = (this.prevValues[n].data[j - 1] + this.prevValues[n].data[j + 1] - 2 * this.prevValues[n].data[j]
-              //      + this.nextValues[n].data[j - 1] + this.nextValues[n].data[j + 1] - 2 * this.nextValues[n].data[j]) / (2 * dx * dx);
-              rhs = this.prevValues[n].data[j - 1] + this.prevValues[n].data[j + 1] - 2 * this.prevValues[n].data[j]
-                + this.nextValues[n].data[j - 1] + this.nextValues[n].data[j + 1];
-              rhs /= 2 * dx * dx;
-              this.nextValues[n].data[j] = (2 * this.values[n].data[j] - this.prevValues[n].data[j] + rhs * dt * dt) / (1 + dt * dt / (dx * dx));
-              break;
+                break;
+              case 2: // wave equation
+                // lhs = (this.prevValues[n].data[j] + this.nextValues[n].data[j] - 2 * this.values[n].data[j]) / (dt * dt);
+                // rhs = (this.prevValues[n].data[j - 1] + this.prevValues[n].data[j + 1] - 2 * this.prevValues[n].data[j]
+                //      + this.nextValues[n].data[j - 1] + this.nextValues[n].data[j + 1] - 2 * this.nextValues[n].data[j]) / (2 * dx * dx);
+                rhs = this.prevValues[n].data[j - 1] + this.prevValues[n].data[j + 1] - 2 * this.prevValues[n].data[j]
+                  + this.nextValues[n].data[j - 1] + this.nextValues[n].data[j + 1];
+                rhs /= 2 * dx * dx;
+                this.nextValues[n].data[j] = (2 * this.values[n].data[j] - this.prevValues[n].data[j] + rhs * dt * dt) / (1 + dt * dt / (dx * dx));
+                break;
+            }
           }
         }
       }
-      this.values[n].data[0] = 0;
-      this.values[n].data[len] = 0;
+      this.values[n].data[0] = this.values[n].data[len] = 0;
       for (let j = 1; j < len; j++) {
         this.prevValues[n].data[j] = this.values[n].data[j];
         this.values[n].data[j] = this.nextValues[n].data[j];
@@ -337,8 +373,9 @@ export class FDMSolverBlock extends SolverBlock {
     this.hasError = this.hasEquationError;
     if (this.equations && nx != undefined && dx != undefined && nt != undefined && dt != undefined) {
       let param = {...flowchart.globalVariables};
+      param["t"] = nt * dt;
       for (let n = 0; n < count; n++) {
-        if (this.values[n] === undefined) {
+        if (this.values[n] === undefined && this.initialValues[n] !== undefined) {
           this.values[n] = this.initialValues[n].copy();
           this.prevValues[n] = this.initialValues[n].copy();
           this.nextValues[n] = this.initialValues[n].copy();

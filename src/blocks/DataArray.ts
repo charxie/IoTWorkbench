@@ -13,7 +13,9 @@ export class DataArray {
 
   copy(): DataArray {
     let a = new DataArray();
-    a.data = this.data.slice();
+    if (this.data !== undefined) { // data could be undefined as this may be set to the value of an input port
+      a.data = this.data.slice();
+    }
     return a;
   }
 

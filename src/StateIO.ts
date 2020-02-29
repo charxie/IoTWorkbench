@@ -175,7 +175,7 @@ export class StateIO {
           block.setMethod(state.method != undefined ? state.method : "Euler");
         } else if (block instanceof FDMSolverBlock) {
           block.setVariables(state.variables != undefined ? state.variables : ["t", "x"]);
-          block.setEquations(state.equations != undefined ? state.equations : ["T_(t)=T_(xx)"]);
+          block.setEquations(state.equations != undefined ? state.equations : ["T_t=T_xx"]);
           block.setMethod(state.method != undefined ? state.method : "Explicit");
         } else if (block instanceof Space2D) {
           block.setName(state.name);
