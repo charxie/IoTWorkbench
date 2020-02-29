@@ -2,6 +2,7 @@
  * @author Charles Xie
  */
 
+import * as d3 from 'd3';
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
@@ -292,13 +293,42 @@ export class Contour2D extends Block {
     let dx = xmax === xmin ? 1 : this.spaceWindow.width / (xmax - xmin);
     let dy = ymax === ymin ? 1 : this.spaceWindow.height / (ymax - ymin);
 
-    // draw X-Y plot
+    // draw contour plot
     ctx.save();
-    ctx.translate(this.spaceWindow.x, this.spaceWindow.y + this.spaceWindow.height);
+    ctx.translate(this.spaceWindow.x, this.spaceWindow.y);
     for (let p of this.points) {
       let length = p.length();
       let index = this.points.indexOf(p);
     }
+
+    // Populate a grid of n×m values where -2 ≤ x ≤ 2 and -2 ≤ y ≤ 1.
+    let n = 256, m = 256, values = new Array(n * m);
+    for (var j = 0.5, k = 0; j < m; ++j) {
+      for (var i = 0.5; i < n; ++i, ++k) {
+        values[k] = Util.goldsteinPrice(i / n * 4 - 2, 1 - j / m * 3);
+      }
+    }
+
+    // Compute the contour polygons at log-spaced intervals; returns an array of MultiPolygon.
+    let contours = d3.contours()
+      .size([n, m])
+      .thresholds(d3.range(2, 21).map(p => Math.pow(2, p)))
+      (values);
+    let projection = d3.geoIdentity().scale(this.spaceWindow.width / n, this.spaceWindow.height / m);
+    let path = d3.geoPath(projection, ctx);
+    let index = 0;
+    contours.forEach(c => {
+      if (c.coordinates.length == 0) return;
+      ctx.beginPath();
+      path(c);
+      ctx.fillStyle = Util.rgbToHex(index * 25, index * 25, 255 - index * 25);
+      ctx.fill();
+      ctx.strokeStyle = "gray";
+      ctx.stroke();
+      index++;
+    });
+
+    ctx.translate(0, this.spaceWindow.height);
 
     // draw axis tick marks and labels
     if (!this.iconic) {
