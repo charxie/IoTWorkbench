@@ -54,10 +54,16 @@ export class Contour2DContextMenu extends BlockContextMenu {
                   <td><input type="text" id="contour2d-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Line Number:</td>
+                  <td><input type="text" id="contour2d-line-number-field" style="width: 100%"></td>
+                </tr>
+               <tr>
                   <td>Scale:</td>
                   <td>
-                    <input type="radio" name="scale" id="contour2d-auto-scale-radio-button" checked> Auto
-                    <input type="radio" name="scale" id="contour2d-fixed-scale-radio-button"> Fixed
+                    <select id="contour2d-scale-type-selector" style="width: 100%">
+                      <option value="Linear" selected>Linear</option>
+                      <option value="Logarithmic">Logarithmic</option>
+                    </select>
                   </td>
                 </tr>
                 <tr>
@@ -111,14 +117,14 @@ export class Contour2DContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("contour2d-name-field") as HTMLInputElement;
       nameInputElement.value = g.getName();
+      let lineNumberInputElement = document.getElementById("contour2d-line-number-field") as HTMLInputElement;
+      lineNumberInputElement.value = g.getLineNumber().toString();
+      let scaleTypeSelectElement = document.getElementById("contour2d-scale-type-selector") as HTMLSelectElement;
+      scaleTypeSelectElement.value = g.getScaleType();
       let lineTypeSelectElement = document.getElementById("contour2d-line-type-selector") as HTMLSelectElement;
       lineTypeSelectElement.value = g.getLineType();
       let lineColorInputElement = document.getElementById("contour2d-line-color-field") as HTMLInputElement;
       lineColorInputElement.value = g.getLineColor();
-      let autoScaleRadioButton = document.getElementById("contour2d-auto-scale-radio-button") as HTMLInputElement;
-      autoScaleRadioButton.checked = g.getAutoScale();
-      let fixedScaleRadioButton = document.getElementById("contour2d-fixed-scale-radio-button") as HTMLInputElement;
-      fixedScaleRadioButton.checked = !g.getAutoScale();
       let xAxisLableInputElement = document.getElementById("contour2d-x-axis-label-field") as HTMLInputElement;
       xAxisLableInputElement.value = g.getXAxisLabel();
       let yAxisLableInputElement = document.getElementById("contour2d-y-axis-label-field") as HTMLInputElement;
@@ -136,6 +142,14 @@ export class Contour2DContextMenu extends BlockContextMenu {
       const okFunction = function () {
         let success = true;
         let message;
+        // set line number
+        let lineNumber = parseInt(lineNumberInputElement.value);
+        if (isNumber(lineNumber)) {
+          g.setWidth(Math.max(10, lineNumber));
+        } else {
+          success = false;
+          message = lineNumberInputElement.value + " is not a valid line number.";
+        }
         // set width
         let w = parseInt(widthInputElement.value);
         if (isNumber(w)) {
@@ -155,13 +169,14 @@ export class Contour2DContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           g.setName(nameInputElement.value);
+          g.setLineNumber(lineNumber);
+          g.setScaleType(scaleTypeSelectElement.value);
           g.setLineType(lineTypeSelectElement.value);
           g.setLineColor(lineColorInputElement.value);
           g.setXAxisLabel(xAxisLableInputElement.value);
           g.setYAxisLabel(yAxisLableInputElement.value);
           g.setSpaceWindowColor(windowColorInputElement.value);
           g.setShowGridLines(gridLinesRadioButton.checked);
-          g.setAutoScale(autoScaleRadioButton.checked);
           g.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();
@@ -176,6 +191,7 @@ export class Contour2DContextMenu extends BlockContextMenu {
         }
       };
       nameInputElement.addEventListener("keyup", enterKeyUp);
+      lineNumberInputElement.addEventListener("keyup", enterKeyUp);
       xAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       yAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       windowColorInputElement.addEventListener("keyup", enterKeyUp);

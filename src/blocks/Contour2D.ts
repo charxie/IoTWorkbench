@@ -25,7 +25,6 @@ export class Contour2D extends Block {
   private y0: number;
   private dy: number;
   private ny: number;
-  private autoscale: boolean = true;
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private spaceWindowColor: string = "white";
@@ -40,6 +39,8 @@ export class Contour2D extends Block {
   };
   private lineType: string;
   private lineColor: string;
+  private lineNumber: number = 20;
+  private scaleType: string = "Linear";
 
   static State = class {
     readonly name: string;
@@ -52,9 +53,10 @@ export class Contour2D extends Block {
     readonly yAxisLabel: string;
     readonly spaceWindowColor: string;
     readonly showGridLines: boolean;
-    readonly autoscale: boolean;
     readonly lineType: string;
     readonly lineColor: string;
+    readonly lineNumber: number;
+    readonly scaleType: string;
 
     constructor(g: Contour2D) {
       this.name = g.name;
@@ -69,7 +71,8 @@ export class Contour2D extends Block {
       this.showGridLines = g.showGridLines;
       this.lineColor = g.lineColor;
       this.lineType = g.lineType;
-      this.autoscale = g.autoscale;
+      this.lineNumber = g.lineNumber;
+      this.scaleType = g.scaleType;
     }
   };
 
@@ -107,6 +110,8 @@ export class Contour2D extends Block {
     copy.showGridLines = this.showGridLines;
     copy.lineColor = this.lineColor;
     copy.lineType = this.lineType;
+    copy.lineNumber = this.lineNumber;
+    copy.scaleType = this.scaleType;
     return copy;
   }
 
@@ -121,12 +126,12 @@ export class Contour2D extends Block {
   erase(): void {
   }
 
-  setAutoScale(autoscale: boolean): void {
-    this.autoscale = autoscale;
+  setScaleType(scaleType: string): void {
+    this.scaleType = scaleType;
   }
 
-  getAutoScale(): boolean {
-    return this.autoscale;
+  getScaleType(): string {
+    return this.scaleType;
   }
 
   setXAxisLabel(xAxisLabel: string): void {
@@ -175,6 +180,14 @@ export class Contour2D extends Block {
 
   getLineType(): string {
     return this.lineType;
+  }
+
+  setLineNumber(lineNumber: number): void {
+    this.lineNumber = lineNumber;
+  }
+
+  getLineNumber(): number {
+    return this.lineNumber;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -226,21 +239,35 @@ export class Contour2D extends Block {
     if (this.data !== undefined && Array.isArray(this.data)) {
       if (this.nx === undefined) this.nx = Math.round(Math.sqrt(this.data.length));
       if (this.ny === undefined) this.ny = this.nx;
-      // Compute the contour polygons at log-spaced intervals; returns an array of MultiPolygon.
-      let contours = d3.contours().size([this.nx, this.ny]).thresholds(d3.range(2, 21, 1).map(p => Math.pow(2, p)))(this.data);
+      let min = Number.MAX_VALUE;
+      let max = -min;
+      for (let d of this.data) {
+        if (d > max) max = d;
+        if (d < min) min = d;
+      }
+      // Compute the contour polygons at specified intervals; return an array of MultiPolygon.
+      let contours;
+      if (this.scaleType === "Logarithmic") {
+        max = max - min + 1;
+        min = 1;
+        let ncon = Math.log(max);
+        contours = d3.contours().size([this.nx, this.ny]).thresholds(d3.range(0, ncon, ncon / this.lineNumber).map(p => Math.exp(p)))(this.data);
+      } else {
+        contours = d3.contours().size([this.nx, this.ny]).thresholds(d3.range(min, max, (max - min) / this.lineNumber))(this.data);
+      }
       let projection = d3.geoIdentity().reflectY(true).scale(this.spaceWindow.width / this.nx, this.spaceWindow.height / this.ny).translate([0, this.spaceWindow.height]);
       let path = d3.geoPath(projection, ctx);
-      let index = 0;
+      let lineIndex = 0;
       contours.forEach(c => {
         if (c.coordinates.length == 0) return;
         ctx.beginPath();
         path(c);
-        let i2 = Math.min(255, index * 20);
+        let i2 = Math.min(255, lineIndex * 255 / this.lineNumber);
         ctx.fillStyle = Util.rgbToHex(i2, i2, 0);
         ctx.fill();
         ctx.strokeStyle = "gray";
         ctx.stroke();
-        index++;
+        lineIndex++;
       });
     }
     ctx.translate(0, this.spaceWindow.height);

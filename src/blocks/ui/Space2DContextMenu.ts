@@ -105,6 +105,7 @@ export class Space2DContextMenu extends BlockContextMenu {
                       <option value="None">None</option>
                       <option value="Solid" selected>Solid</option>
                     </select>
+                  </td>
                 </tr>
                 <tr>
                   <td>Line Color:</td>
@@ -119,6 +120,7 @@ export class Space2DContextMenu extends BlockContextMenu {
                       <option value="Square">Square</option>
                       <option value="Dot">Dot</option>
                     </select>
+                  </td>
                 </tr>
                 <tr>
                   <td>Symbol Color:</td>
@@ -135,6 +137,7 @@ export class Space2DContextMenu extends BlockContextMenu {
                       <option value="None" selected>None</option>
                       <option value="Line">Line</option>
                     </select>
+                  </td>
                 </tr>
                 <tr>
                   <td>X-Axis Label:</td>

@@ -199,13 +199,14 @@ export class StateIO {
           if (state.numberOfPoints != undefined) block.setNumberOfPoints(state.numberOfPoints);
         } else if (block instanceof Contour2D) {
           block.setName(state.name);
-          block.setAutoScale(state.autoscale);
+          block.setScaleType(state.scaleType === undefined ? "Linear" : state.scaleType);
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
           block.setSpaceWindowColor(state.spaceWindowColor);
           block.setShowGridLines(state.showGridLines);
           block.setLineType(state.lineType);
           block.setLineColor(state.lineColor);
+          block.setLineNumber(state.lineNumber === undefined ? 20 : state.lineNumber);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");
