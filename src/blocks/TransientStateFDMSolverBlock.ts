@@ -9,7 +9,7 @@ import {flowchart, math} from "../Main";
 import {DataArray} from "./DataArray";
 import {SolverBlock} from "./SolverBlock";
 
-export class FDMSolverBlock extends SolverBlock {
+export class TransientStateFDMSolverBlock extends SolverBlock {
 
   private variables: string[] = ["t", "x"];
   private equations: string[] = ["T_t=T_xx"];
@@ -44,7 +44,7 @@ export class FDMSolverBlock extends SolverBlock {
     readonly width: number;
     readonly height: number;
 
-    constructor(block: FDMSolverBlock) {
+    constructor(block: TransientStateFDMSolverBlock) {
       this.uid = block.uid;
       this.variables = block.variables;
       this.equations = block.equations;
@@ -59,7 +59,7 @@ export class FDMSolverBlock extends SolverBlock {
   constructor(uid: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.symbol = "FDM";
-    this.name = "FDM Solver Block";
+    this.name = "Transient State FDM Solver Block";
     this.method = "Implicit";
     this.color = "#B0E0E6";
     let dh = this.height / (this.equations.length + 6);
@@ -120,7 +120,7 @@ export class FDMSolverBlock extends SolverBlock {
   }
 
   getCopy(): Block {
-    let block = new FDMSolverBlock("FDM Solver Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    let block = new TransientStateFDMSolverBlock("Transient State FDM Solver Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.variables = this.variables.slice();
     block.setEquations(this.equations.slice());
     block.method = this.method;

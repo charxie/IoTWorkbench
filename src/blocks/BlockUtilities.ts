@@ -42,7 +42,7 @@ import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 import {IntegralBlock} from "./IntegralBlock";
 import {FFTBlock} from "./FFTBlock";
 import {ODESolverBlock} from "./ODESolverBlock";
-import {FDMSolverBlock} from "./FDMSolverBlock";
+import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 import {Contour2D} from "./Contour2D";
 
@@ -121,8 +121,8 @@ export class BlockUtilities {
     if (block instanceof ODESolverBlock) {
       return contextMenus.odeSolverBlock;
     }
-    if (block instanceof FDMSolverBlock) {
-      return contextMenus.fdmSolverBlock;
+    if (block instanceof TransientStateFDMSolverBlock) {
+      return contextMenus.transientStateFDMSolverBlock;
     }
     if (block instanceof Space2D) {
       return contextMenus.space2d;
@@ -269,9 +269,9 @@ export class BlockUtilities {
       contextMenus.odeSolverBlock.block = block;
       return document.getElementById("ode-solver-block-context-menu") as HTMLMenuElement;
     }
-    if (block instanceof FDMSolverBlock) {
-      contextMenus.fdmSolverBlock.block = block;
-      return document.getElementById("fdm-solver-block-context-menu") as HTMLMenuElement;
+    if (block instanceof TransientStateFDMSolverBlock) {
+      contextMenus.transientStateFDMSolverBlock.block = block;
+      return document.getElementById("transient-state-fdm-solver-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof Space2D) {
       contextMenus.space2d.block = block;

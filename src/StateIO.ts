@@ -38,7 +38,7 @@ import {IntegralBlock} from "./blocks/IntegralBlock";
 import {FFTBlock} from "./blocks/FFTBlock";
 import {ODESolverBlock} from "./blocks/ODESolverBlock";
 import {RandomNumberGeneratorBlock} from "./blocks/RandomNumberGeneratorBlock";
-import {FDMSolverBlock} from "./blocks/FDMSolverBlock";
+import {TransientStateFDMSolverBlock} from "./blocks/TransientStateFDMSolverBlock";
 import {Contour2D} from "./blocks/Contour2D";
 
 export class StateIO {
@@ -174,7 +174,7 @@ export class StateIO {
           block.setVariableName(state.variableName != undefined ? state.variableName : "t");
           block.setEquations(state.equations != undefined ? state.equations : ["x'=x"]);
           block.setMethod(state.method != undefined ? state.method : "Euler");
-        } else if (block instanceof FDMSolverBlock) {
+        } else if (block instanceof TransientStateFDMSolverBlock) {
           block.setVariables(state.variables != undefined ? state.variables : ["t", "x"]);
           block.setEquations(state.equations != undefined ? state.equations : ["T_t=T_xx"]);
           block.setMethod(state.method != undefined ? state.method : "Explicit");

@@ -48,7 +48,7 @@ import {MatrixTranspositionBlock} from "./MatrixTranspositionBlock";
 import {IntegralBlock} from "./IntegralBlock";
 import {FFTBlock} from "./FFTBlock";
 import {ODESolverBlock} from "./ODESolverBlock";
-import {FDMSolverBlock} from "./FDMSolverBlock";
+import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 import {Contour2D} from "./Contour2D";
 
@@ -240,8 +240,8 @@ export class BlockView {
           case "ode-solver-block":
             b = that.addBlockUndoable(new ODESolverBlock("ODE Solver Block #" + timestamp, x - 100, y - 40, 200, 80));
             break;
-          case "fdm-solver-block":
-            b = that.addBlockUndoable(new FDMSolverBlock("FDM Solver Block #" + timestamp, x - 100, y - 80, 200, 160));
+          case "transient-state-fdm-solver-block":
+            b = that.addBlockUndoable(new TransientStateFDMSolverBlock("Transient State FDM Solver Block #" + timestamp, x - 100, y - 80, 200, 160));
             break;
           case "space2d-block":
             b = that.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));
