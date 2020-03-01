@@ -8,18 +8,24 @@ import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
-import {Point2DArray} from "./Point2DArray";
-import {TestFunctions} from "../math/TestFunctions";
 
 export class Contour2D extends Block {
 
   private portI: Port;
+  private portX0: Port;
+  private portDX: Port;
+  private portNX: Port;
+  private portY0: Port;
+  private portDY: Port;
+  private portNY: Port;
   private data: number[];
+  private x0: number;
+  private dx: number;
+  private nx: number;
+  private y0: number;
+  private dy: number;
+  private ny: number;
   private autoscale: boolean = true;
-  private minimumXValue: number = 0;
-  private maximumXValue: number = 1;
-  private minimumYValue: number = 0;
-  private maximumYValue: number = 1;
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private spaceWindowColor: string = "white";
@@ -46,10 +52,6 @@ export class Contour2D extends Block {
     readonly yAxisLabel: string;
     readonly spaceWindowColor: string;
     readonly showGridLines: boolean;
-    readonly minimumXValue: number;
-    readonly maximumXValue: number;
-    readonly minimumYValue: number;
-    readonly maximumYValue: number;
     readonly autoscale: boolean;
     readonly lineType: string;
     readonly lineColor: string;
@@ -68,10 +70,6 @@ export class Contour2D extends Block {
       this.lineColor = g.lineColor;
       this.lineType = g.lineType;
       this.autoscale = g.autoscale;
-      this.minimumXValue = g.minimumXValue;
-      this.maximumXValue = g.maximumXValue;
-      this.minimumYValue = g.minimumYValue;
-      this.maximumYValue = g.maximumYValue;
     }
   };
 
@@ -80,20 +78,29 @@ export class Contour2D extends Block {
     this.name = name;
     this.color = "#66EE66";
     this.barHeight = Math.min(30, this.height / 3);
-    let dh = (this.height - this.barHeight) / 2;
+    let dh = (this.height - this.barHeight) / 8;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false)
+    this.portX0 = new Port(this, true, "X0", 0, this.barHeight + 2 * dh, false);
+    this.portDX = new Port(this, true, "DX", 0, this.barHeight + 3 * dh, false);
+    this.portNX = new Port(this, true, "NX", 0, this.barHeight + 4 * dh, false);
+    this.portY0 = new Port(this, true, "Y0", 0, this.barHeight + 5 * dh, false);
+    this.portDY = new Port(this, true, "DY", 0, this.barHeight + 6 * dh, false);
+    this.portNY = new Port(this, true, "NY", 0, this.barHeight + 7 * dh, false);
     this.ports.push(this.portI);
+    this.ports.push(this.portX0);
+    this.ports.push(this.portDX);
+    this.ports.push(this.portNX);
+    this.ports.push(this.portY0);
+    this.ports.push(this.portDY);
+    this.ports.push(this.portNY);
     this.spaceWindow = new Rectangle(0, 0, 1, 1);
     this.lineType = "Solid";
     this.lineColor = "black";
+    this.marginX = 25;
   }
 
   getCopy(): Block {
     let copy = new Contour2D("Contour2D #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    copy.minimumXValue = this.minimumXValue;
-    copy.maximumXValue = this.maximumXValue;
-    copy.minimumYValue = this.minimumYValue;
-    copy.maximumYValue = this.maximumYValue;
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.spaceWindowColor = this.spaceWindowColor;
@@ -120,38 +127,6 @@ export class Contour2D extends Block {
 
   getAutoScale(): boolean {
     return this.autoscale;
-  }
-
-  setMinimumXValue(minimumXValue: number): void {
-    this.minimumXValue = minimumXValue;
-  }
-
-  getMinimumXValue(): number {
-    return this.minimumXValue;
-  }
-
-  setMaximumXValue(maximumXValue: number): void {
-    this.maximumXValue = maximumXValue;
-  }
-
-  getMaximumXValue(): number {
-    return this.maximumXValue;
-  }
-
-  setMinimumYValue(minimumYValue: number): void {
-    this.minimumYValue = minimumYValue;
-  }
-
-  getMinimumYValue(): number {
-    return this.minimumYValue;
-  }
-
-  setMaximumYValue(maximumYValue: number): void {
-    this.maximumYValue = maximumYValue;
-  }
-
-  getMaximumYValue(): number {
-    return this.maximumYValue;
   }
 
   setXAxisLabel(xAxisLabel: string): void {
@@ -244,90 +219,45 @@ export class Contour2D extends Block {
     ctx.fill();
     ctx.strokeStyle = "black";
     ctx.stroke();
-    if (!this.iconic) {
-      this.drawAxisLabels(ctx);
-      if (this.showGridLines) {
-        this.drawGridLines(ctx);
-      }
-    }
-
-    // detect minimum and maximum of x and y values from all inputs and calculate the scale factor
-    let xmin = this.minimumXValue;
-    let xmax = this.maximumXValue;
-    let ymin = this.minimumYValue;
-    let ymax = this.maximumYValue;
-    let dx = xmax === xmin ? 1 : this.spaceWindow.width / (xmax - xmin);
-    let dy = ymax === ymin ? 1 : this.spaceWindow.height / (ymax - ymin);
 
     // draw contour plot
     ctx.save();
     ctx.translate(this.spaceWindow.x, this.spaceWindow.y);
-
-    if (this.data !== undefined) {
-      let n = Math.round(Math.sqrt(this.data.length));
-      let m = n;
+    if (this.data !== undefined && Array.isArray(this.data)) {
+      if (this.nx === undefined) this.nx = Math.round(Math.sqrt(this.data.length));
+      if (this.ny === undefined) this.ny = this.nx;
       // Compute the contour polygons at log-spaced intervals; returns an array of MultiPolygon.
-      let contours = d3.contours().size([n, m]).thresholds(d3.range(0, 100, 5))(this.data);
-      let projection = d3.geoIdentity().scale(this.spaceWindow.width / n, this.spaceWindow.height / m);
+      let contours = d3.contours().size([this.nx, this.ny]).thresholds(d3.range(2, 21, 1).map(p => Math.pow(2, p)))(this.data);
+      let projection = d3.geoIdentity().reflectY(true).scale(this.spaceWindow.width / this.nx, this.spaceWindow.height / this.ny).translate([0, this.spaceWindow.height]);
       let path = d3.geoPath(projection, ctx);
       let index = 0;
       contours.forEach(c => {
         if (c.coordinates.length == 0) return;
         ctx.beginPath();
         path(c);
-        let i2 = Math.min(255, index);
-        ctx.fillStyle = Util.rgbToHex(i2, i2, i2);
+        let i2 = Math.min(255, index * 20);
+        ctx.fillStyle = Util.rgbToHex(i2, i2, 0);
         ctx.fill();
         ctx.strokeStyle = "gray";
         ctx.stroke();
         index++;
       });
     }
-
-
-    // // Populate a grid of n×m values where -2 ≤ x ≤ 2 and -2 ≤ y ≤ 1.
-    // let n = 256, m = 256, values = new Array(n * m);
-    // for (var j = 0.5, k = 0; j < m; ++j) {
-    //   for (var i = 0.5; i < n; ++i, ++k) {
-    //     values[k] = TestFunctions.goldsteinPrice(i / n * 4 - 2, 1 - j / m * 3);
-    //   }
-    // }
-    //
-    // // Compute the contour polygons at log-spaced intervals; returns an array of MultiPolygon.
-    // let contours = d3.contours()
-    //   .size([n, m])
-    //   .thresholds(d3.range(2, 21).map(p => Math.pow(2, p)))
-    //   (values);
-    // let projection = d3.geoIdentity().scale(this.spaceWindow.width / n, this.spaceWindow.height / m);
-    // let path = d3.geoPath(projection, ctx);
-    // let index = 0;
-    // contours.forEach(c => {
-    //   if (c.coordinates.length == 0) return;
-    //   ctx.beginPath();
-    //   path(c);
-    //   ctx.fillStyle = Util.rgbToHex(index * 25, index * 25, 255 - index * 25);
-    //   ctx.fill();
-    //   ctx.strokeStyle = "gray";
-    //   ctx.stroke();
-    //   index++;
-    // });
-
     ctx.translate(0, this.spaceWindow.height);
-
     // draw axis tick marks and labels
     if (!this.iconic) {
       ctx.lineWidth = 1;
       ctx.font = "10px Arial";
       ctx.fillStyle = "black";
-      let inx = (xmax - xmin) / 10;
-      dx = this.spaceWindow.width / 10;
+      let inx = (this.dx === undefined || this.nx === undefined) ? 1 : this.dx * this.nx / 10;
+      let dex = this.spaceWindow.width / 10;
       for (let i = 0; i < 11; i++) {
-        let tmpX = dx * i;
+        let tmpX = dex * i;
         ctx.beginPath();
         ctx.moveTo(tmpX, 0);
         ctx.lineTo(tmpX, -4);
         ctx.stroke();
-        let xtick = xmin + i * inx;
+        let xtick = (this.x0 === undefined ? 0 : this.x0) + i * inx;
         let precision = 2;
         if (Math.abs(xtick) >= 1) {
           let diff = Math.abs(xtick - Math.round(xtick));
@@ -340,15 +270,15 @@ export class Contour2D extends Block {
         let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
         ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
       }
-      let iny = (ymax - ymin) / 10;
-      dy = this.spaceWindow.height / 10;
+      let iny = (this.dy === undefined || this.ny === undefined) ? 1 : this.dy * this.ny / 10;
+      let dey = this.spaceWindow.height / 10;
       for (let i = 0; i < 11; i++) {
-        let tmpY = -dy * i;
+        let tmpY = -dey * i;
         ctx.beginPath();
         ctx.moveTo(0, tmpY);
         ctx.lineTo(4, tmpY);
         ctx.stroke();
-        let ytick = ymin + i * iny;
+        let ytick = (this.y0 === undefined ? 0 : this.y0) + i * iny;
         let precision = 2;
         if (Math.abs(ytick) >= 1) {
           let diff = Math.abs(ytick - Math.round(ytick));
@@ -364,10 +294,19 @@ export class Contour2D extends Block {
     }
     ctx.restore();
 
+    if (!this.iconic) {
+      this.drawAxisLabels(ctx);
+      if (this.showGridLines) {
+        this.drawGridLines(ctx);
+      }
+    }
+
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
-    this.portI.draw(ctx, this.iconic);
+    for (let p of this.ports) {
+      p.draw(ctx, this.iconic);
+    }
 
     if (this.selected) {
       this.highlightSelection(ctx);
@@ -404,7 +343,7 @@ export class Contour2D extends Block {
     let horizontalAxisY = this.height - this.spaceMargin.bottom;
     ctx.fillText(this.xAxisLabel, this.spaceWindow.x + (this.spaceWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 30);
     ctx.save();
-    ctx.translate(this.x + 25, this.spaceWindow.y + (this.spaceWindow.height + ctx.measureText(this.yAxisLabel).width) / 2 + 10);
+    ctx.translate(this.x + 35, this.spaceWindow.y + (this.spaceWindow.height + ctx.measureText(this.yAxisLabel).width) / 2 + 10);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(this.yAxisLabel, 0, 0);
     ctx.restore();
@@ -415,20 +354,29 @@ export class Contour2D extends Block {
   }
 
   updateModel(): void {
-    let array = this.portI.getValue();
-    if (Array.isArray(array)) {
-      this.data = array;
-    }
+    this.data = this.portI.getValue();
+    this.x0 = this.portX0.getValue();
+    this.dx = this.portDX.getValue();
+    this.nx = this.portNX.getValue();
+    this.y0 = this.portY0.getValue();
+    this.dy = this.portDY.getValue();
+    this.ny = this.portNY.getValue();
   }
 
   refreshView(): void {
     super.refreshView();
     this.spaceMargin.top = 10;
     this.spaceMargin.bottom = 40;
-    this.spaceMargin.left = 60;
+    this.spaceMargin.left = 70;
     this.spaceMargin.right = 16;
-    let dh = (this.height - this.barHeight) / 2;
+    let dh = (this.height - this.barHeight) / 8;
     this.portI.setY(this.barHeight + dh);
+    this.portX0.setY(this.barHeight + 2 * dh);
+    this.portDX.setY(this.barHeight + 3 * dh);
+    this.portNX.setY(this.barHeight + 4 * dh);
+    this.portY0.setY(this.barHeight + 5 * dh);
+    this.portDY.setY(this.barHeight + 6 * dh);
+    this.portNY.setY(this.barHeight + 7 * dh);
   }
 
 }

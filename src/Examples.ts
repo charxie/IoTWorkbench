@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import contour_plot from "./examples/contour-plot.json";
+// @ts-ignore
 import standing_waves from "./examples/standing-waves.json";
 // @ts-ignore
 import wave_equation from "./examples/wave-equation.json";
@@ -175,6 +177,7 @@ export class Examples {
     this.files.push({name: "Math: Unary Functions", data: unary_functions});
     this.files.push({name: "Math: Bundled Functions", data: bundled_functions});
     this.files.push({name: "Math: Binary Functions", data: binary_functions});
+    this.files.push({name: "Math: Contour Plot", data: contour_plot});
     this.files.push({name: "Math: Multivariable Functions", data: multivariable_functions});
     this.files.push({name: "Math: Heart Function", data: heart_function});
     this.files.push({name: "Math: Declared Functions", data: declared_functions});

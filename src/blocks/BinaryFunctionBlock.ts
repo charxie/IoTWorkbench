@@ -133,10 +133,10 @@ export class BinaryFunctionBlock extends FunctionBlock {
             case "2D":
               r = new Array(x.length * y.length);
               let k = 0;
-              for (let i = 0; i < x.length; i++) {
-                param[this.variable1Name] = x[i];
-                for (let j = 0; j < y.length; j++) {
-                  param[this.variable2Name] = y[j];
+              for (let i = 0; i < y.length; i++) {
+                param[this.variable2Name] = y[i];
+                for (let j = 0; j < x.length; j++) {
+                  param[this.variable1Name] = x[j];
                   r[k] = this.code.evaluate(param);
                   // TODO: if the output is complex, only take the real part. I don't know what else to do at this point
                   if (r[k].re) {

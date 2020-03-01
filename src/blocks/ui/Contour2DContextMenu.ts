@@ -61,22 +61,6 @@ export class Contour2DContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
-                  <td>Minimum X Value:</td>
-                  <td><input type="text" id="contour2d-minimum-x-value-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Maximum X Value:</td>
-                  <td><input type="text" id="contour2d-maximum-x-value-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Minimum Y Value:</td>
-                  <td><input type="text" id="contour2d-minimum-y-value-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Maximum Y Value:</td>
-                  <td><input type="text" id="contour2d-maximum-y-value-field" style="width: 100%"></td>
-                </tr>
-                <tr>
                   <td>Line Type:</td>
                   <td>
                     <select id="contour2d-line-type-selector" style="width: 100%">
@@ -135,14 +119,6 @@ export class Contour2DContextMenu extends BlockContextMenu {
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("contour2d-fixed-scale-radio-button") as HTMLInputElement;
       fixedScaleRadioButton.checked = !g.getAutoScale();
-      let minimumXValueInputElement = document.getElementById("contour2d-minimum-x-value-field") as HTMLInputElement;
-      minimumXValueInputElement.value = g.getMinimumXValue().toString();
-      let maximumXValueInputElement = document.getElementById("contour2d-maximum-x-value-field") as HTMLInputElement;
-      maximumXValueInputElement.value = g.getMaximumXValue().toString();
-      let minimumYValueInputElement = document.getElementById("contour2d-minimum-y-value-field") as HTMLInputElement;
-      minimumYValueInputElement.value = g.getMinimumYValue().toString();
-      let maximumYValueInputElement = document.getElementById("contour2d-maximum-y-value-field") as HTMLInputElement;
-      maximumYValueInputElement.value = g.getMaximumYValue().toString();
       let xAxisLableInputElement = document.getElementById("contour2d-x-axis-label-field") as HTMLInputElement;
       xAxisLableInputElement.value = g.getXAxisLabel();
       let yAxisLableInputElement = document.getElementById("contour2d-y-axis-label-field") as HTMLInputElement;
@@ -160,38 +136,6 @@ export class Contour2DContextMenu extends BlockContextMenu {
       const okFunction = function () {
         let success = true;
         let message;
-        // set minimum X value
-        let minimumXValue = parseFloat(minimumXValueInputElement.value);
-        if (isNumber(minimumXValue)) {
-          g.setMinimumXValue(minimumXValue);
-        } else {
-          success = false;
-          message = minimumXValueInputElement.value + " is not a valid value for minimum X.";
-        }
-        // set maximum X value
-        let maximumXValue = parseFloat(maximumXValueInputElement.value);
-        if (isNumber(maximumXValue)) {
-          g.setMaximumXValue(maximumXValue);
-        } else {
-          success = false;
-          message = maximumXValueInputElement.value + " is not a valid value for maximum X.";
-        }
-        // set minimum Y value
-        let minimumYValue = parseFloat(minimumYValueInputElement.value);
-        if (isNumber(minimumYValue)) {
-          g.setMinimumYValue(minimumYValue);
-        } else {
-          success = false;
-          message = minimumYValueInputElement.value + " is not a valid value for minimum Y.";
-        }
-        // set maximum Y value
-        let maximumYValue = parseFloat(maximumYValueInputElement.value);
-        if (isNumber(maximumYValue)) {
-          g.setMaximumYValue(maximumYValue);
-        } else {
-          success = false;
-          message = maximumYValueInputElement.value + " is not a valid value for maximum Y.";
-        }
         // set width
         let w = parseInt(widthInputElement.value);
         if (isNumber(w)) {
@@ -232,10 +176,6 @@ export class Contour2DContextMenu extends BlockContextMenu {
         }
       };
       nameInputElement.addEventListener("keyup", enterKeyUp);
-      minimumXValueInputElement.addEventListener("keyup", enterKeyUp);
-      maximumXValueInputElement.addEventListener("keyup", enterKeyUp);
-      minimumYValueInputElement.addEventListener("keyup", enterKeyUp);
-      maximumYValueInputElement.addEventListener("keyup", enterKeyUp);
       xAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       yAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       windowColorInputElement.addEventListener("keyup", enterKeyUp);
