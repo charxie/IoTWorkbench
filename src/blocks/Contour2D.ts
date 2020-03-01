@@ -41,6 +41,10 @@ export class Contour2D extends Block {
   private lineColor: string;
   private lineNumber: number = 20;
   private scaleType: string = "Linear";
+  private minimumColor: string = "rgb(0, 0, 0)";
+  private maximumColor: string = "rgb(255, 255, 255)";
+  private minimumRgb: number[] = [0, 0, 0];
+  private maximumRgb: number[] = [255, 255, 255];
 
   static State = class {
     readonly name: string;
@@ -57,6 +61,8 @@ export class Contour2D extends Block {
     readonly lineColor: string;
     readonly lineNumber: number;
     readonly scaleType: string;
+    readonly minimumColor: string;
+    readonly maximumColor: string;
 
     constructor(g: Contour2D) {
       this.name = g.name;
@@ -73,6 +79,8 @@ export class Contour2D extends Block {
       this.lineType = g.lineType;
       this.lineNumber = g.lineNumber;
       this.scaleType = g.scaleType;
+      this.minimumColor = g.minimumColor;
+      this.maximumColor = g.maximumColor;
     }
   };
 
@@ -112,6 +120,10 @@ export class Contour2D extends Block {
     copy.lineType = this.lineType;
     copy.lineNumber = this.lineNumber;
     copy.scaleType = this.scaleType;
+    copy.minimumColor = this.minimumColor;
+    copy.maximumColor = this.maximumColor;
+    copy.minimumRgb = this.minimumRgb.slice();
+    copy.maximumRgb = this.maximumRgb.slice()
     return copy;
   }
 
@@ -132,6 +144,32 @@ export class Contour2D extends Block {
 
   getScaleType(): string {
     return this.scaleType;
+  }
+
+  setMinimumColor(minimumColor: string): void {
+    this.minimumColor = minimumColor;
+    let a = minimumColor.match(/\d+/g);
+    this.minimumRgb.length = 0;
+    for (let x of a) {
+      this.minimumRgb.push(parseInt(x));
+    }
+  }
+
+  getMinimumColor(): string {
+    return this.minimumColor;
+  }
+
+  setMaximumColor(maximumColor: string): void {
+    this.maximumColor = maximumColor;
+    let a = maximumColor.match(/\d+/g);
+    this.maximumRgb.length = 0;
+    for (let x of a) {
+      this.maximumRgb.push(parseInt(x));
+    }
+  }
+
+  getMaximumColor(): string {
+    return this.maximumColor;
   }
 
   setXAxisLabel(xAxisLabel: string): void {
@@ -262,8 +300,11 @@ export class Contour2D extends Block {
         if (c.coordinates.length == 0) return;
         ctx.beginPath();
         path(c);
-        let i2 = Math.min(255, lineIndex * 255 / this.lineNumber);
-        ctx.fillStyle = Util.rgbToHex(i2, i2, 0);
+        let scale = Math.min(1, lineIndex / this.lineNumber);
+        let r = this.minimumRgb[0] + scale * (this.maximumRgb[0] - this.minimumRgb[0]);
+        let g = this.minimumRgb[1] + scale * (this.maximumRgb[1] - this.minimumRgb[1]);
+        let b = this.minimumRgb[2] + scale * (this.maximumRgb[2] - this.minimumRgb[2]);
+        ctx.fillStyle = Util.rgbToHex(r, g, b);
         ctx.fill();
         ctx.strokeStyle = "gray";
         ctx.stroke();

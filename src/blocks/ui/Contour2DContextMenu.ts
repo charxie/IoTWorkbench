@@ -67,6 +67,14 @@ export class Contour2DContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
+                  <td>Minimum Color:</td>
+                  <td><input type="text" id="contour2d-minimum-color-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Maximum Color:</td>
+                  <td><input type="text" id="contour2d-maximum-color-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Line Type:</td>
                   <td>
                     <select id="contour2d-line-type-selector" style="width: 100%">
@@ -121,6 +129,10 @@ export class Contour2DContextMenu extends BlockContextMenu {
       lineNumberInputElement.value = g.getLineNumber().toString();
       let scaleTypeSelectElement = document.getElementById("contour2d-scale-type-selector") as HTMLSelectElement;
       scaleTypeSelectElement.value = g.getScaleType();
+      let minimumColorInputElement = document.getElementById("contour2d-minimum-color-field") as HTMLInputElement;
+      minimumColorInputElement.value = g.getMinimumColor();
+      let maximumColorInputElement = document.getElementById("contour2d-maximum-color-field") as HTMLInputElement;
+      maximumColorInputElement.value = g.getMaximumColor();
       let lineTypeSelectElement = document.getElementById("contour2d-line-type-selector") as HTMLSelectElement;
       lineTypeSelectElement.value = g.getLineType();
       let lineColorInputElement = document.getElementById("contour2d-line-color-field") as HTMLInputElement;
@@ -171,6 +183,8 @@ export class Contour2DContextMenu extends BlockContextMenu {
           g.setName(nameInputElement.value);
           g.setLineNumber(lineNumber);
           g.setScaleType(scaleTypeSelectElement.value);
+          g.setMinimumColor(minimumColorInputElement.value);
+          g.setMaximumColor(maximumColorInputElement.value);
           g.setLineType(lineTypeSelectElement.value);
           g.setLineColor(lineColorInputElement.value);
           g.setXAxisLabel(xAxisLableInputElement.value);
@@ -192,6 +206,8 @@ export class Contour2DContextMenu extends BlockContextMenu {
       };
       nameInputElement.addEventListener("keyup", enterKeyUp);
       lineNumberInputElement.addEventListener("keyup", enterKeyUp);
+      minimumColorInputElement.addEventListener("keyup", enterKeyUp);
+      maximumColorInputElement.addEventListener("keyup", enterKeyUp);
       xAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       yAxisLableInputElement.addEventListener("keyup", enterKeyUp);
       windowColorInputElement.addEventListener("keyup", enterKeyUp);

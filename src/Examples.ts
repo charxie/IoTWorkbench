@@ -3,7 +3,9 @@
  */
 
 // @ts-ignore
-import contour_plot from "./examples/contour-plot.json";
+import binary_functions_contour_plots from "./examples/binary-functions-contour-plots.json";
+// @ts-ignore
+import contour_plot_himmelblau_function from "./examples/contour-plot-himmelblau-function.json";
 // @ts-ignore
 import standing_waves from "./examples/standing-waves.json";
 // @ts-ignore
@@ -176,8 +178,9 @@ export class Examples {
     this.files.push({name: "Basics: Switch Statements", data: switch_statements});
     this.files.push({name: "Math: Unary Functions", data: unary_functions});
     this.files.push({name: "Math: Bundled Functions", data: bundled_functions});
-    this.files.push({name: "Math: Binary Functions", data: binary_functions});
-    this.files.push({name: "Math: Contour Plot", data: contour_plot});
+    this.files.push({name: "Math: Binary Function 1D Output", data: binary_functions});
+    this.files.push({name: "Math: Binary Function 2D Output", data: contour_plot_himmelblau_function});
+    this.files.push({name: "Math: Binary Function Contour Plots", data: binary_functions_contour_plots});
     this.files.push({name: "Math: Multivariable Functions", data: multivariable_functions});
     this.files.push({name: "Math: Heart Function", data: heart_function});
     this.files.push({name: "Math: Declared Functions", data: declared_functions});

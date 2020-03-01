@@ -207,6 +207,8 @@ export class StateIO {
           block.setLineType(state.lineType);
           block.setLineColor(state.lineColor);
           block.setLineNumber(state.lineNumber === undefined ? 20 : state.lineNumber);
+          block.setMinimumColor(state.minimumColor === undefined ? "rgb(0,0,0)" : state.minimumColor);
+          block.setMaximumColor(state.maximumColor === undefined ? "rgb(255,255,255)" : state.maximumColor);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");
