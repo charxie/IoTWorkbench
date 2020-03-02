@@ -300,14 +300,20 @@ export class Contour2D extends Block {
         if (c.coordinates.length == 0) return;
         ctx.beginPath();
         path(c);
-        let scale = Math.min(1, lineIndex / this.lineNumber);
-        let r = this.minimumRgb[0] + scale * (this.maximumRgb[0] - this.minimumRgb[0]);
-        let g = this.minimumRgb[1] + scale * (this.maximumRgb[1] - this.minimumRgb[1]);
-        let b = this.minimumRgb[2] + scale * (this.maximumRgb[2] - this.minimumRgb[2]);
-        ctx.fillStyle = Util.rgbToHex(r, g, b);
-        ctx.fill();
-        ctx.strokeStyle = "gray";
-        ctx.stroke();
+        if (this.minimumColor !== this.maximumColor) {
+          let scale = Math.min(1, lineIndex / this.lineNumber);
+          let r = this.minimumRgb[0] + scale * (this.maximumRgb[0] - this.minimumRgb[0]);
+          let g = this.minimumRgb[1] + scale * (this.maximumRgb[1] - this.minimumRgb[1]);
+          let b = this.minimumRgb[2] + scale * (this.maximumRgb[2] - this.minimumRgb[2]);
+          ctx.fillStyle = Util.rgbToHex(r, g, b);
+          ctx.fill();
+        }
+        switch (this.lineType) {
+          case "Solid":
+            ctx.strokeStyle = this.lineColor;
+            ctx.stroke();
+            break;
+        }
         lineIndex++;
       });
     }
