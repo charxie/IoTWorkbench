@@ -64,13 +64,13 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
       let typeSelectElement = document.getElementById("boundary-condition-block-type-selector") as HTMLSelectElement;
       typeSelectElement.value = block.getType();
       let northValueInputElement = document.getElementById("boundary-condition-block-north-value-field") as HTMLInputElement;
-      northValueInputElement.value = block.getNorthValue().toString();
+      northValueInputElement.value = block.getNorthValue() != undefined ? block.getNorthValue().toString() : "0";
       let eastValueInputElement = document.getElementById("boundary-condition-block-east-value-field") as HTMLInputElement;
-      eastValueInputElement.value = block.getEastValue().toString();
+      eastValueInputElement.value = block.getEastValue() != undefined ? block.getEastValue().toString() : "0";
       let southValueInputElement = document.getElementById("boundary-condition-block-south-value-field") as HTMLInputElement;
-      southValueInputElement.value = block.getSouthValue().toString();
+      southValueInputElement.value = block.getSouthValue() != undefined ? block.getSouthValue().toString() : "0";
       let westValueInputElement = document.getElementById("boundary-condition-block-west-value-field") as HTMLInputElement;
-      westValueInputElement.value = block.getWestValue().toString();
+      westValueInputElement.value = block.getWestValue() != undefined ? block.getWestValue().toString() : "0";
       let widthInputElement = document.getElementById("boundary-condition-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("boundary-condition-block-height-field") as HTMLInputElement;
@@ -128,6 +128,7 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          block.setType(typeSelectElement.value);
           block.refreshView();
           flowchart.updateResultsForBlock(block);
           flowchart.blockView.requestDraw();

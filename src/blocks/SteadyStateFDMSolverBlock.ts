@@ -8,6 +8,7 @@ import {Util} from "../Util";
 import {flowchart, math} from "../Main";
 import {DataArray} from "./DataArray";
 import {SolverBlock} from "./SolverBlock";
+import {BoundaryCondition} from "./BoundaryCondition";
 
 export class SteadyStateFDMSolverBlock extends SolverBlock {
 
@@ -18,7 +19,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   private values: DataArray[];
   private prevValues: DataArray[];
   private initialValues: DataArray[];
-  private boundaryValues: DataArray[];
+  private boundaryValues: BoundaryCondition[];
   private readonly portRN: Port; // port for running
   private readonly portNX: Port; // port for number of steps in x direction
   private readonly portX0: Port; // port for starting point in x direction
@@ -61,7 +62,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     super(uid, x, y, width, height);
     this.symbol = "FDM";
     this.name = "Steady State FDM Solver Block";
-    this.method = "Relaxation";
+    this.method = "Jacobi";
     this.color = "#E0C0B6";
     let dh = this.height / (this.equations.length + 8);
     this.portRN = new Port(this, true, "RN", 0, dh, false);
@@ -246,10 +247,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
         this.initialValues[n] = new DataArray(0);
       }
       this.initialValues[n].data = this.portI[n].getValue();
-      if (this.boundaryValues[n] === undefined) {
-        this.boundaryValues[n] = new DataArray(0);
-      }
-      this.boundaryValues[n].data = this.portB[n].getValue();
+      this.boundaryValues[n] = this.portB[n].getValue();
     }
     this.hasError = this.hasEquationError;
     if (this.equations && x0 != undefined && nx != undefined && dx != undefined && y0 != undefined && ny != undefined && dy != undefined) {
@@ -267,14 +265,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
       }
       try {
         for (let n = 0; n < count; n++) {
-          for (let j = 0; j < ny; j++) {
-            this.prevValues[n].data[j] = this.boundaryValues[n].data[2]; // south
-            this.prevValues[n].data[(nx - 1) * ny + j] = this.boundaryValues[n].data[0]; // north
-          }
-          for (let i = 0; i < nx; i++) {
-            this.prevValues[n].data[i * ny] = this.boundaryValues[n].data[3]; // west
-            this.prevValues[n].data[i * ny + ny - 1] = this.boundaryValues[n].data[1]; // east
-          }
+          this.applyBoundaryCondition(n, nx, ny, dx, dy);
           for (let r = 0; r < this.relaxationSteps; r++) {
             for (let i = 1; i < nx - 1; i++) {
               for (let j = 1; j < ny - 1; j++) {
@@ -298,6 +289,31 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
       for (let p of this.portO) {
         p.setValue(undefined);
       }
+    }
+  }
+
+  private applyBoundaryCondition(n: number, nx: number, ny: number, dx: number, dy: number): void {
+    switch (this.boundaryValues[n].type) {
+      case "Dirichlet":
+        for (let j = 0; j < ny; j++) {
+          this.prevValues[n].data[j] = this.boundaryValues[n].southValue;
+          this.prevValues[n].data[(nx - 1) * ny + j] = this.boundaryValues[n].northValue;
+        }
+        for (let i = 0; i < nx; i++) {
+          this.prevValues[n].data[i * ny] = this.boundaryValues[n].westValue;
+          this.prevValues[n].data[i * ny + ny - 1] = this.boundaryValues[n].eastValue;
+        }
+        break;
+      case "Neumann":
+        for (let j = 0; j < ny; j++) {
+          this.prevValues[n].data[j] = this.prevValues[n].data[ny + j] - this.boundaryValues[n].southValue * dy;
+          this.prevValues[n].data[(nx - 1) * ny + j] = this.prevValues[n].data[(nx - 2) * ny + j] + this.boundaryValues[n].northValue * dy;
+        }
+        for (let i = 0; i < nx; i++) {
+          this.prevValues[n].data[i * ny] = this.prevValues[n].data[i * ny + 1] - this.boundaryValues[n].westValue * dx;
+          this.prevValues[n].data[i * ny + ny - 1] = this.prevValues[n].data[i * ny + ny - 2] + this.boundaryValues[n].eastValue * dx;
+        }
+        break;
     }
   }
 

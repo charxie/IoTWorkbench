@@ -9,6 +9,7 @@ import {flowchart} from "../Main";
 import {Complex} from "../math/Complex";
 import {Vector} from "../math/Vector";
 import {Matrix} from "../math/Matrix";
+import {BoundaryCondition} from "./BoundaryCondition";
 
 export class Sticker extends Block {
 
@@ -205,6 +206,8 @@ export class Sticker extends Block {
         } else if (v instanceof Matrix) {
           this.text = v.toFixed(this.decimals);
           this.isArray = true;
+        } else if (v instanceof BoundaryCondition) {
+          this.text = v.toString();
         } else {
           try {
             this.text = v.toFixed(this.decimals);

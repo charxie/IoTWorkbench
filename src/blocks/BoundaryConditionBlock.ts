@@ -4,6 +4,8 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
+import {BoundaryCondition} from "./BoundaryCondition";
+import {Util} from "../Util";
 
 export class BoundaryConditionBlock extends Block {
 
@@ -132,7 +134,7 @@ export class BoundaryConditionBlock extends Block {
     this.eastValue = this.portE.getValue();
     this.southValue = this.portS.getValue();
     this.westValue = this.portW.getValue();
-    this.portO.setValue([this.northValue, this.eastValue, this.southValue, this.westValue]);
+    this.portO.setValue(new BoundaryCondition(this.type, this.northValue, this.eastValue, this.southValue, this.westValue));
     this.updateConnectors();
   }
 

@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import boundary_value_problems from "./examples/boundary-value-problems.json";
+// @ts-ignore
 import laplace_equation from "./examples/laplace-equation.json";
 // @ts-ignore
 import contour_plot_settings from "./examples/contour-plot-settings.json";
@@ -241,6 +243,7 @@ export class Examples {
     this.files.push({name: "Numerical Simulation: Transport Equation", data: transport_equation});
     this.files.push({name: "Numerical Simulation: Standing Waves", data: standing_waves});
     this.files.push({name: "Numerical Simulation: Laplace Equation", data: laplace_equation});
+    this.files.push({name: "Numerical Simulation: Boundary Value Problems", data: boundary_value_problems});
     this.files.push({name: "Rainbow HAT: RGB LED Array", data: rainbow_hat_rgb_led_array});
     this.files.push({name: "Rainbow HAT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
     this.files.push({name: "Rainbow HAT: Fading LED Array", data: rainbow_hat_fading_led_array});
