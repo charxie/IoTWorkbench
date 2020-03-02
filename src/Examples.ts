@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import laplace_equation from "./examples/laplace-equation.json";
+// @ts-ignore
 import binary_functions_contour_plots from "./examples/binary-functions-contour-plots.json";
 // @ts-ignore
 import contour_plot_himmelblau_function from "./examples/contour-plot-himmelblau-function.json";
@@ -235,6 +237,7 @@ export class Examples {
     this.files.push({name: "Numerical Simulation: Wave Equation", data: wave_equation});
     this.files.push({name: "Numerical Simulation: Transport Equation", data: transport_equation});
     this.files.push({name: "Numerical Simulation: Standing Waves", data: standing_waves});
+    this.files.push({name: "Numerical Simulation: Laplace Equation", data: laplace_equation});
     this.files.push({name: "Rainbow HAT: RGB LED Array", data: rainbow_hat_rgb_led_array});
     this.files.push({name: "Rainbow HAT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
     this.files.push({name: "Rainbow HAT: Fading LED Array", data: rainbow_hat_fading_led_array});

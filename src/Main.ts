@@ -79,6 +79,7 @@ import {RandomNumberGeneratorBlockContextMenu} from "./blocks/ui/RandomNumberGen
 import {TransientStateFDMSolverBlockContextMenu} from "./blocks/ui/TransientStateFDMSolverBlockContextMenu";
 import {Contour2DContextMenu} from "./blocks/ui/Contour2DContextMenu";
 import {SteadyStateFDMSolverBlockContextMenu} from "./blocks/ui/SteadyStateFDMSolverBlockContextMenu";
+import {BoundaryConditionBlockContextMenu} from "./blocks/ui/BoundaryConditionBlockContextMenu";
 
 declare global {
   interface CanvasRenderingContext2D {
@@ -458,6 +459,11 @@ function setupContextMenuForBlock() {
   steadyStateFDMSolverBlockContextMenu.render("steady-state-fdm-solver-block-context-menu-placeholder");
   steadyStateFDMSolverBlockContextMenu.addListeners();
   contextMenus.steadyStateFDMSolverBlock = steadyStateFDMSolverBlockContextMenu;
+
+  let boundaryConditionBlockContextMenu = new BoundaryConditionBlockContextMenu();
+  boundaryConditionBlockContextMenu.render("boundary-condition-block-context-menu-placeholder");
+  boundaryConditionBlockContextMenu.addListeners();
+  contextMenus.boundaryConditionBlock = boundaryConditionBlockContextMenu;
 
   let space2dContextMenu = new Space2DContextMenu();
   space2dContextMenu.render("space2d-context-menu-placeholder");

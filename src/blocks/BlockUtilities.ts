@@ -46,6 +46,7 @@ import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 import {Contour2D} from "./Contour2D";
 import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
+import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
 
 export class BlockUtilities {
 
@@ -127,6 +128,9 @@ export class BlockUtilities {
     }
     if (block instanceof SteadyStateFDMSolverBlock) {
       return contextMenus.steadyStateFDMSolverBlock;
+    }
+    if (block instanceof BoundaryConditionBlock) {
+      return contextMenus.boundaryConditionBlock;
     }
     if (block instanceof Space2D) {
       return contextMenus.space2d;
@@ -280,6 +284,10 @@ export class BlockUtilities {
     if (block instanceof SteadyStateFDMSolverBlock) {
       contextMenus.steadyStateFDMSolverBlock.block = block;
       return document.getElementById("steady-state-fdm-solver-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof BoundaryConditionBlock) {
+      contextMenus.boundaryConditionBlock.block = block;
+      return document.getElementById("boundary-condition-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof Space2D) {
       contextMenus.space2d.block = block;

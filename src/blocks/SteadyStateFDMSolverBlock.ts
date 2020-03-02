@@ -18,6 +18,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   private values: DataArray[];
   private prevValues: DataArray[];
   private initialValues: DataArray[];
+  private boundaryValues: DataArray[];
   private readonly portRN: Port; // port for running
   private readonly portNX: Port; // port for number of steps in x direction
   private readonly portX0: Port; // port for starting point in x direction
@@ -25,8 +26,9 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   private readonly portNY: Port; // port for number of steps in y direction
   private readonly portY0: Port; // port for starting point in y direction
   private readonly portDY: Port; // port for steplength in y direction
-  private portI: Port[]; // ports for importing the initial results
-  private portO: Port[]; // ports for exporting the final results
+  private portI: Port[]; // ports for importing the initial values
+  private portB: Port[]; // ports for importing the boundary conditions
+  private portO: Port[]; // ports for exporting the final values
   private hasEquationError: boolean = false;
   private hasParserError: boolean = false;
   private hasDeclarationError: boolean = false;
@@ -93,11 +95,15 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
         }
       }
       this.portI = new Array(this.equations.length);
-      let dh = this.height / (this.equations.length + 7);
+      this.portB = new Array(this.equations.length);
+      let dh = this.height / (2 * this.equations.length + 7);
       const firstPortName = "A";
       for (let i = 0; i < this.equations.length; i++) {
-        this.portI[i] = new Port(this, true, String.fromCharCode(firstPortName.charCodeAt(0) + i) + "I", 0, (i + 6) * dh, false);
+        let portName = String.fromCharCode(firstPortName.charCodeAt(0) + i);
+        this.portI[i] = new Port(this, true, portName + "I", 0, (2 * i + 6) * dh, false);
         this.ports.push(this.portI[i]);
+        this.portB[i] = new Port(this, true, portName + "B", 0, (2 * i + 7) * dh, false);
+        this.ports.push(this.portB[i]);
       }
     }
   }
@@ -160,6 +166,9 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     if (this.initialValues === undefined || this.initialValues.length !== n) {
       this.initialValues = new Array(n);
     }
+    if (this.boundaryValues === undefined || this.boundaryValues.length !== n) {
+      this.boundaryValues = new Array(n);
+    }
     this.createParsers();
     this.setInputPorts();
     this.setOutputPorts();
@@ -203,7 +212,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   refreshView(): void {
     super.refreshView();
     let n = this.equations.length;
-    let dh = this.height / (n + 8);
+    let dh = this.height / (2 * n + 8);
     this.portRN.setY(dh);
     this.portX0.setY(2 * dh);
     this.portDX.setY(3 * dh);
@@ -212,7 +221,8 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     this.portDY.setY(6 * dh);
     this.portNY.setY(7 * dh);
     for (let i = 0; i < n; i++) {
-      this.portI[i].setY((i + 8) * dh);
+      this.portI[i].setY((2 * i + 8) * dh);
+      this.portB[i].setY((2 * i + 9) * dh);
     }
     dh = this.height / (n + 1);
     for (let i = 0; i < n; i++) {
@@ -236,6 +246,10 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
         this.initialValues[n] = new DataArray(0);
       }
       this.initialValues[n].data = this.portI[n].getValue();
+      if (this.boundaryValues[n] === undefined) {
+        this.boundaryValues[n] = new DataArray(0);
+      }
+      this.boundaryValues[n].data = this.portB[n].getValue();
     }
     this.hasError = this.hasEquationError;
     if (this.equations && x0 != undefined && nx != undefined && dx != undefined && y0 != undefined && ny != undefined && dy != undefined) {
@@ -254,8 +268,12 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
       try {
         for (let n = 0; n < count; n++) {
           for (let j = 0; j < ny; j++) {
-            this.prevValues[n].data[j] = 60;
-            this.prevValues[n].data[(nx - 1) * ny + j] = 20;
+            this.prevValues[n].data[j] = this.boundaryValues[n].data[2]; // south
+            this.prevValues[n].data[(nx - 1) * ny + j] = this.boundaryValues[n].data[0]; // north
+          }
+          for (let i = 0; i < nx; i++) {
+            this.prevValues[n].data[i * ny] = this.boundaryValues[n].data[3]; // west
+            this.prevValues[n].data[i * ny + ny - 1] = this.boundaryValues[n].data[1]; // east
           }
           for (let r = 0; r < this.relaxationSteps; r++) {
             for (let i = 1; i < nx - 1; i++) {

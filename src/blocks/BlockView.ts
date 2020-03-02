@@ -52,6 +52,7 @@ import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
 import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 import {Contour2D} from "./Contour2D";
+import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
 
 export class BlockView {
 
@@ -246,6 +247,9 @@ export class BlockView {
             break;
           case "steady-state-fdm-solver-block":
             b = that.addBlockUndoable(new SteadyStateFDMSolverBlock("Steady State FDM Solver Block #" + timestamp, x - 100, y - 100, 200, 200));
+            break;
+          case "boundary-condition-block":
+            b = that.addBlockUndoable(new BoundaryConditionBlock("Boundary Condition Block #" + timestamp, x - 50, y - 50, 100, 100));
             break;
           case "space2d-block":
             b = that.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));

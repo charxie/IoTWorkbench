@@ -42,6 +42,7 @@ import {ODESolverBlock} from "../ODESolverBlock";
 import {TransientStateFDMSolverBlock} from "../TransientStateFDMSolverBlock";
 import {SteadyStateFDMSolverBlock} from "../SteadyStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "../RandomNumberGeneratorBlock";
+import {BoundaryConditionBlock} from "../BoundaryConditionBlock";
 
 export class BlockElementsPanel {
 
@@ -112,6 +113,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="ode-solver-block" title="ODE Solver" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="transient-state-fdm-solver-block" title="Transient State FDM Solver" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="steady-state-fdm-solver-block" title="Steady State FDM Solver" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="boundary-condition-block" title="Boundary Condition" width="45px" height="75px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="integral-block" title="Integration" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="normalization-block" title="Vector Normalization" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="determinant-block" title="Matrix Determinant" width="45px" height="60px" style="cursor: pointer;"/></td>
@@ -147,6 +149,7 @@ export class BlockElementsPanel {
     this.drawODESolverBlock("ODE Solver Block", "ode-solver-block");
     this.drawTransientStateFDMSolverBlock("Transient State FDM Solver Block", "transient-state-fdm-solver-block");
     this.drawSteadyStateFDMSolverBlock("Steady State FDM Solver Block", "steady-state-fdm-solver-block");
+    this.drawBoundaryConditionBlock("Boundary Condition Block", "boundary-condition-block");
     this.drawSpace2D("Space2D", "space2d-block");
     this.drawContour2D("Contour2D", "contour2d-block");
     this.drawGlobalVariableBlock("Global Variable Block", "var", "global-variable-block");
@@ -364,6 +367,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new SteadyStateFDMSolverBlock("Steady State FDM Solver Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawBoundaryConditionBlock(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new BoundaryConditionBlock("Boundary Condition Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }
