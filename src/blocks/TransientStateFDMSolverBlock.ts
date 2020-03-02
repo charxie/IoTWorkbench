@@ -366,7 +366,7 @@ export class TransientStateFDMSolverBlock extends SolverBlock {
     let dx = this.portDx.getValue();
     for (let n = 0; n < count; n++) {
       if (this.initialValues[n] === undefined) {
-        this.initialValues[n] = new DataArray();
+        this.initialValues[n] = new DataArray(0);
       }
       this.initialValues[n].data = this.portI[n].getValue();
     }

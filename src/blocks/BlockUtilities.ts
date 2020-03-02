@@ -45,6 +45,7 @@ import {ODESolverBlock} from "./ODESolverBlock";
 import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 import {Contour2D} from "./Contour2D";
+import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 
 export class BlockUtilities {
 
@@ -123,6 +124,9 @@ export class BlockUtilities {
     }
     if (block instanceof TransientStateFDMSolverBlock) {
       return contextMenus.transientStateFDMSolverBlock;
+    }
+    if (block instanceof SteadyStateFDMSolverBlock) {
+      return contextMenus.steadyStateFDMSolverBlock;
     }
     if (block instanceof Space2D) {
       return contextMenus.space2d;
@@ -272,6 +276,10 @@ export class BlockUtilities {
     if (block instanceof TransientStateFDMSolverBlock) {
       contextMenus.transientStateFDMSolverBlock.block = block;
       return document.getElementById("transient-state-fdm-solver-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof SteadyStateFDMSolverBlock) {
+      contextMenus.steadyStateFDMSolverBlock.block = block;
+      return document.getElementById("steady-state-fdm-solver-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof Space2D) {
       contextMenus.space2d.block = block;

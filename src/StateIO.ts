@@ -40,6 +40,7 @@ import {ODESolverBlock} from "./blocks/ODESolverBlock";
 import {RandomNumberGeneratorBlock} from "./blocks/RandomNumberGeneratorBlock";
 import {TransientStateFDMSolverBlock} from "./blocks/TransientStateFDMSolverBlock";
 import {Contour2D} from "./blocks/Contour2D";
+import {SteadyStateFDMSolverBlock} from "./blocks/SteadyStateFDMSolverBlock";
 
 export class StateIO {
 
@@ -178,6 +179,9 @@ export class StateIO {
           block.setVariables(state.variables != undefined ? state.variables : ["t", "x"]);
           block.setEquations(state.equations != undefined ? state.equations : ["T_t=T_xx"]);
           block.setMethod(state.method != undefined ? state.method : "Explicit");
+        } else if (block instanceof SteadyStateFDMSolverBlock) {
+          block.setVariables(state.variables != undefined ? state.variables : ["x", "y"]);
+          block.setEquations(state.equations != undefined ? state.equations : ["T_xx+T_yy=0"]);
         } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);

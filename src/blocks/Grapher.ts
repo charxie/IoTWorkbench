@@ -96,7 +96,7 @@ export class Grapher extends Block {
     this.ports.push(this.portX);
     this.ports.push(this.portD);
     this.graphWindow = new Rectangle(0, 0, 1, 1);
-    this.dataArrays.push(new DataArray());
+    this.dataArrays.push(new DataArray(0));
     this.lineTypes.push("Solid");
     this.lineColors.push("black");
     this.fillOptions.push(false);
@@ -133,7 +133,7 @@ export class Grapher extends Block {
           let p = new Port(this, true, String.fromCharCode("I".charCodeAt(0) + i), 0, 0, false);
           this.portI.push(p);
           this.ports.push(p);
-          this.dataArrays.push(new DataArray());
+          this.dataArrays.push(new DataArray(0));
           this.lineTypes.push("Solid");
           this.lineColors.push("black");
           this.fillOptions.push(false);

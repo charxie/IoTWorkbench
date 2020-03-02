@@ -50,6 +50,7 @@ import {FFTBlock} from "./FFTBlock";
 import {SolverBlock} from "./SolverBlock";
 import {ODESolverBlock} from "./ODESolverBlock";
 import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
+import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 import {Contour2D} from "./Contour2D";
 
@@ -839,6 +840,9 @@ export class Flowchart {
       case "Transient State FDM Solver Block":
         block = new TransientStateFDMSolverBlock(uid, x, y, 200, 160);
         break;
+      case "Steady State FDM Solver Block":
+        block = new SteadyStateFDMSolverBlock(uid, x, y, 200, 160);
+        break;
       case "Space2D":
         block = new Space2D(uid, name, x, y, 200, 220);
         break;
@@ -937,6 +941,8 @@ export class Flowchart {
         blockStates.push(new ODESolverBlock.State(b));
       } else if (b instanceof TransientStateFDMSolverBlock) {
         blockStates.push(new TransientStateFDMSolverBlock.State(b));
+      } else if (b instanceof SteadyStateFDMSolverBlock) {
+        blockStates.push(new SteadyStateFDMSolverBlock.State(b));
       } else if (b instanceof Space2D) {
         blockStates.push(new Space2D.State(b));
       } else if (b instanceof Contour2D) {

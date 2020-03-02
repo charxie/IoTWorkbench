@@ -6,45 +6,36 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
-import {TransientStateFDMSolverBlock} from "../TransientStateFDMSolverBlock";
+import {SteadyStateFDMSolverBlock} from "../SteadyStateFDMSolverBlock";
 
-export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
+export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
 
   private dialogWidth: number = 450;
   private dialogHeight: number = 450;
 
   constructor() {
     super();
-    this.id = "transient-state-fdm-solver-block-context-menu";
+    this.id = "steady-state-fdm-solver-block-context-menu";
   }
 
   getPropertiesUI(): string {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Variables (e.g. ["t","x"]):</td>
-                  <td><input type="text" id="transient-state-fdm-solver-block-variables-field" style="width: 100%"></td>
+                  <td>Variables (e.g. ["x","y"]):</td>
+                  <td><input type="text" id="steady-state-fdm-solver-block-variables-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Equations:<div style="font-size: 70%">(e.g., ["T_t=T_xx"])</div></td>
-                  <td><textarea id="transient-state-fdm-solver-block-equations-field" rows="6" style="width: 100%"></textarea></td>
-                </tr>
-                <tr>
-                  <td>Method:</td>
-                  <td>
-                    <select id="transient-state-fdm-solver-block-method-selector" style="width: 100%">
-                      <option value="Explicit">Explicit</option>
-                      <option value="Implicit" selected>Implicit</option>
-                    </select>
-                  </td>
+                  <td>Equations:<div style="font-size: 70%">(e.g., ["T_xx+T_yy=0"])</div></td>
+                  <td><textarea id="steady-state-fdm-solver-block-equations-field" rows="6" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="transient-state-fdm-solver-block-width-field" style="width: 100%"></td>
+                  <td><input type="text" id="steady-state-fdm-solver-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="transient-state-fdm-solver-block-height-field" style="width: 100%"></td>
+                  <td><input type="text" id="steady-state-fdm-solver-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -53,18 +44,16 @@ export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof TransientStateFDMSolverBlock) {
+    if (this.block instanceof SteadyStateFDMSolverBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let methodSelectElement = document.getElementById("transient-state-fdm-solver-block-method-selector") as HTMLSelectElement;
-      methodSelectElement.value = block.getMethod();
-      let variablesInputElement = document.getElementById("transient-state-fdm-solver-block-variables-field") as HTMLInputElement;
-      variablesInputElement.value = block.getVariables() ? JSON.stringify(block.getVariables()) : "['t', 'x']";
-      let equationsInputElement = document.getElementById("transient-state-fdm-solver-block-equations-field") as HTMLTextAreaElement;
+      let variablesInputElement = document.getElementById("steady-state-fdm-solver-block-variables-field") as HTMLInputElement;
+      variablesInputElement.value = block.getVariables() ? JSON.stringify(block.getVariables()) : "['x', 'y']";
+      let equationsInputElement = document.getElementById("steady-state-fdm-solver-block-equations-field") as HTMLTextAreaElement;
       equationsInputElement.value = JSON.stringify(block.getEquations());
-      let widthInputElement = document.getElementById("transient-state-fdm-solver-block-width-field") as HTMLInputElement;
+      let widthInputElement = document.getElementById("steady-state-fdm-solver-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("transient-state-fdm-solver-block-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("steady-state-fdm-solver-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
         let success = true;
@@ -114,7 +103,6 @@ export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
         }
         // finish up
         if (success) {
-          block.setMethod(methodSelectElement.value);
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.storeBlockStates();
