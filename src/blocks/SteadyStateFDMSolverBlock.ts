@@ -9,7 +9,6 @@ import {flowchart, math} from "../Main";
 import {DataArray} from "./DataArray";
 import {SolverBlock} from "./SolverBlock";
 import {BoundaryCondition} from "./BoundaryCondition";
-import {TestFunctions} from "../math/TestFunctions";
 
 export class SteadyStateFDMSolverBlock extends SolverBlock {
 
@@ -198,6 +197,19 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   }
 
   useDeclaredFunctions() {
+    this.hasDeclarationError = false;
+    try {
+      for (let i = 0; i < this.expressions.length; i++) {
+        let exp = flowchart.replaceWithDeclaredFunctions(this.expressions[i]);
+        if (exp != this.expressions[i]) {
+          this.codes[i] = math.parse(exp).compile();
+        }
+      }
+    } catch (e) {
+      console.log(e.stack);
+      Util.showBlockError(e.toString());
+      this.hasDeclarationError = true;
+    }
   }
 
   reset(): void {
@@ -280,10 +292,10 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
           for (let r = 0; r < this.relaxationSteps; r++) {
             for (let i = 1; i < nx - 1; i++) {
               x = x0 + i * dx;
-              param["x"] = x;
+              param["y"] = x;
               for (let j = 1; j < ny - 1; j++) {
                 y = y0 + j * dy;
-                param["y"] = y;
+                param["x"] = y;
                 factor = 0;
                 for (let match of derivativeMatches) {
                   let index = match.indexOf("_");

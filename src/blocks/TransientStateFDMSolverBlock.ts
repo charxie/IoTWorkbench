@@ -202,6 +202,19 @@ export class TransientStateFDMSolverBlock extends SolverBlock {
   }
 
   useDeclaredFunctions() {
+    this.hasDeclarationError = false;
+    try {
+      for (let i = 0; i < this.rhsExpressions.length; i++) {
+        let exp = flowchart.replaceWithDeclaredFunctions(this.rhsExpressions[i]);
+        if (exp != this.rhsExpressions[i]) {
+          this.codes[i] = math.parse(exp).compile();
+        }
+      }
+    } catch (e) {
+      console.log(e.stack);
+      Util.showBlockError(e.toString());
+      this.hasDeclarationError = true;
+    }
   }
 
   reset(): void {

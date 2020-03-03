@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import poisson_equation from "./examples/poisson-equation.json";
+// @ts-ignore
 import mixed_boundary_condition from "./examples/mixed-boundary-condition.json";
 // @ts-ignore
 import boundary_value_problems from "./examples/boundary-value-problems.json";
@@ -245,6 +247,7 @@ export class Examples {
     this.files.push({name: "Simulation: Transport Equation", data: transport_equation});
     this.files.push({name: "Simulation: Standing Waves", data: standing_waves});
     this.files.push({name: "Simulation: Laplace Equation", data: laplace_equation});
+    this.files.push({name: "Simulation: Possion Equation", data: poisson_equation});
     this.files.push({name: "Simulation: Boundary Value Problems", data: boundary_value_problems});
     this.files.push({name: "Simulation: Mixed Boundary Condition", data: mixed_boundary_condition});
     this.files.push({name: "Rainbow HAT: RGB LED Array", data: rainbow_hat_rgb_led_array});

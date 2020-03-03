@@ -48,8 +48,8 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof FunctionDeclarationBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let variableNameInputElement = document.getElementById("function-declaration-block-variable-name-field") as HTMLInputElement;
-      variableNameInputElement.value = block.getVariableName() ? block.getVariableName() : "x";
+      let variableNamesInputElement = document.getElementById("function-declaration-block-variable-name-field") as HTMLInputElement;
+      variableNamesInputElement.value = block.getVariableNames() !== undefined ? JSON.stringify(block.getVariableNames()) : "[x]";
       let functionNameInputElement = document.getElementById("function-declaration-block-function-name-field") as HTMLInputElement;
       functionNameInputElement.value = block.getFunctionName() ? block.getFunctionName() : "f";
       let expressionInputElement = document.getElementById("function-declaration-block-expression-field") as HTMLInputElement;
@@ -79,7 +79,7 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
         }
         // set function name and expression
         let redefine = false;
-        let fun = functionNameInputElement.value + "(" + variableNameInputElement.value + ")";
+        let fun = functionNameInputElement.value + "(" + variableNamesInputElement.value + ")";
         if (functionNameInputElement.value !== block.getFunctionName()) {
           if (flowchart.isFunctionNameDeclared(fun)) {
             success = false;
@@ -95,9 +95,19 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
             message = "The function expression " + expression + " is already declared.";
           }
         }
+        // set variables
+        if (JSON.stringify(block.getVariableNames()) !== variableNamesInputElement.value) {
+          try {
+            block.setVariableNames(JSON.parse(variableNamesInputElement.value));
+          } catch (err) {
+            console.log(err.stack);
+            success = false;
+            message = variableNamesInputElement.value + " is not a valid array for variable names.";
+          }
+        }
         // finish
         if (success) {
-          block.setVariableName(variableNameInputElement.value);
+          block.setVariableNames(JSON.parse(variableNamesInputElement.value));
           block.setFunctionName(functionNameInputElement.value);
           block.setExpression(expression);
           flowchart.updateFunctionDeclaration(block);
@@ -117,7 +127,7 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
-      variableNameInputElement.addEventListener("keyup", enterKeyUp);
+      variableNamesInputElement.addEventListener("keyup", enterKeyUp);
       functionNameInputElement.addEventListener("keyup", enterKeyUp);
       expressionInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);

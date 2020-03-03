@@ -8,7 +8,7 @@ import {Util} from "../Util";
 
 export class FunctionDeclarationBlock extends Block {
 
-  private variableName: string = "x";
+  private variableNames: string[] = ["x"];
   private functionName: string = "f";
   private expression: string = "x";
 
@@ -19,7 +19,7 @@ export class FunctionDeclarationBlock extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
-    readonly variableName: string;
+    readonly variableNames: string[];
     readonly functionName: string;
     readonly expression: any;
 
@@ -30,7 +30,7 @@ export class FunctionDeclarationBlock extends Block {
       this.y = block.y;
       this.width = block.width;
       this.height = block.height;
-      this.variableName = block.variableName;
+      this.variableNames = block.variableNames;
       this.functionName = block.functionName;
       this.expression = block.expression;
     }
@@ -45,7 +45,7 @@ export class FunctionDeclarationBlock extends Block {
 
   getCopy(): Block {
     let copy = new FunctionDeclarationBlock("Function Declaration Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
-    copy.variableName = this.variableName;
+    copy.variableNames = this.variableNames.slice();
     copy.functionName = this.functionName;
     copy.expression = this.expression;
     return copy;
@@ -55,12 +55,12 @@ export class FunctionDeclarationBlock extends Block {
     flowchart.removeGlobalVariable(this.functionName);
   }
 
-  getVariableName(): string {
-    return this.variableName;
+  getVariableNames(): string[] {
+    return this.variableNames;
   }
 
-  setVariableName(variableName: string): void {
-    this.variableName = variableName;
+  setVariableNames(variableNames: string[]): void {
+    this.variableNames = variableNames;
   }
 
   getFunctionName(): string {
@@ -73,7 +73,7 @@ export class FunctionDeclarationBlock extends Block {
   }
 
   getKey(): string {
-    return this.functionName + "(" + this.variableName + ")";
+    return this.functionName + "(" + this.variableNames + ")";
   }
 
   getExpression(): string {
@@ -98,7 +98,12 @@ export class FunctionDeclarationBlock extends Block {
         ctx.font = this.iconic ? "italic 9px Times New Roman" : "italic 16px Times New Roman";
       }
       let s = this.symbol ? this.symbol : this.name;
-      this.drawText(s + "(" + this.variableName + ")" + " = " + this.expression, ctx);
+      let t = "";
+      for (let v of this.variableNames) {
+        t += v + ",";
+      }
+      t = t.substring(0, t.length - 1);
+      this.drawText(s + "(" + t + ")" + " = " + this.expression, ctx);
     }
   }
 

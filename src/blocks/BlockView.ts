@@ -138,7 +138,7 @@ export class BlockView {
         let b = null;
         switch (that.draggedElementId) {
           case "function-declaration-block":
-            b = that.addBlockUndoable(new FunctionDeclarationBlock("Function Declaration Block #" + timestamp, "Function Declaration Block", "f", x - 30, y - 40, 60, 80));
+            b = that.addBlockUndoable(new FunctionDeclarationBlock("Function Declaration Block #" + timestamp, "Function Declaration Block", "f", x - 80, y - 30, 160, 60));
             break;
           case "unary-function-block":
             b = that.addBlockUndoable(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x - 30, y - 40, 60, 80));

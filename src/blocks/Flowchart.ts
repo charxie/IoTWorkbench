@@ -397,7 +397,7 @@ export class Flowchart {
 
   replaceWithDeclaredFunctions(expression: string): string {
     let exp = expression;
-    const pattern = /[A-Za-z][\w]*[']*\([A-Za-z0-9]+\)/g;
+    const pattern = /[A-Za-z][\w]*[']*\([A-Za-z0-9]+(,[A-Za-z0-9]+)*\)/g;
     const result = exp.match(pattern);
     if (result == null || result.length == 0) return exp; // no declared function found in the expression
     exp = this.replaceWithDeclaredFunctionsAndDerivatives(exp, result, 0);
@@ -410,7 +410,6 @@ export class Flowchart {
         }
       }
     }
-    // console.log(expression + "," + exp)
     return exp;
   }
 

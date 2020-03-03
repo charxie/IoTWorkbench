@@ -80,7 +80,11 @@ export class StateIO {
           if (state.valuePrecision != undefined) block.setValuePrecision(state.valuePrecision);
         } else if (block instanceof FunctionDeclarationBlock) {
           block.setName(state.name);
-          block.setVariableName(state.variableName);
+          if (state.variableNames !== undefined) {
+            block.setVariableNames(state.variableNames);
+          } else {
+            block.setVariableNames([state.variableName]);
+          }
           block.setFunctionName(state.functionName);
           block.setExpression(state.expression);
         } else if (block instanceof GlobalVariableBlock) {
