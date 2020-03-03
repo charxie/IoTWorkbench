@@ -9,6 +9,7 @@ import {flowchart, math} from "../Main";
 import {DataArray} from "./DataArray";
 import {SolverBlock} from "./SolverBlock";
 import {BoundaryCondition} from "./BoundaryCondition";
+import {TestFunctions} from "../math/TestFunctions";
 
 export class SteadyStateFDMSolverBlock extends SolverBlock {
 
@@ -264,13 +265,20 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
         }
       }
       try {
+        const invdx2 = 1 / (dx * dx);
+        const invdy2 = 1 / (dy * dy);
+        const a = 0.5 / (invdx2 + invdy2);
+        let x, y;
         for (let n = 0; n < count; n++) {
           this.applyBoundaryCondition(n, nx, ny, dx, dy);
           for (let r = 0; r < this.relaxationSteps; r++) {
             for (let i = 1; i < nx - 1; i++) {
+              x = x0 + i * dx;
               for (let j = 1; j < ny - 1; j++) {
-                this.values[n].data[i * ny + j] = 0.25 * (this.prevValues[n].data[(i + 1) * ny + j] + this.prevValues[n].data[i * ny + j + 1]
-                  + this.prevValues[n].data[(i - 1) * ny + j] + this.prevValues[n].data[i * ny + j - 1]);
+                y = y0 + j * dy;
+                this.values[n].data[i * ny + j] = a * ((this.prevValues[n].data[(i - 1) * ny + j] + this.prevValues[n].data[(i + 1) * ny + j]) * invdy2 +
+                  +(this.prevValues[n].data[i * ny + j - 1] + this.prevValues[n].data[i * ny + j + 1]) * invdx2);
+                //+ (TestFunctions.gaussian(y, x, -3, 0, 1) + TestFunctions.gaussian(y, x, 3, 0, 1)));
                 this.prevValues[n].data[i * ny + j] = this.values[n].data[i * ny + j];
               }
             }

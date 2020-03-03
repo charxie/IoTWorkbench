@@ -22,6 +22,7 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
                   <td>North:</td>
                   <td>
                     <select id="boundary-condition-block-north-type-selector" style="width: 100px">
+                      <option value="None">None</option>
                       <option value="Dirichlet" selected>Dirichlet</option>
                       <option value="Neumann">Neumann</option>
                     </select>
@@ -32,6 +33,7 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
                   <td>East:</td>
                   <td>
                     <select id="boundary-condition-block-east-type-selector" style="width: 100px">
+                      <option value="None">None</option>
                       <option value="Dirichlet" selected>Dirichlet</option>
                       <option value="Neumann">Neumann</option>
                     </select>
@@ -42,6 +44,7 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
                   <td>South:</td>
                   <td>
                     <select id="boundary-condition-block-south-type-selector" style="width: 100px">
+                      <option value="None">None</option>
                       <option value="Dirichlet" selected>Dirichlet</option>
                       <option value="Neumann">Neumann</option>
                     </select>
@@ -52,6 +55,7 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
                   <td>West:</td>
                   <td>
                     <select id="boundary-condition-block-west-type-selector" style="width: 100px">
+                      <option value="None">None</option>
                       <option value="Dirichlet" selected>Dirichlet</option>
                       <option value="Neumann">Neumann</option>
                     </select>

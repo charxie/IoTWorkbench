@@ -18,4 +18,8 @@ export class TestFunctions {
     return (x + 2 * y - 7) * (x + 2 * y - 7) + (2 * x + y - 5) * (2 * x + y - 5);
   }
 
+  static gaussian(x: number, y: number, a: number, b: number, r: number): number {
+    return Math.exp(-((x - a) * (x - a) + (y - b) * (y - b)) / (r * r));
+  }
+
 }
