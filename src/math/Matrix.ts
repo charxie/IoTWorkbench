@@ -155,7 +155,8 @@ export class Matrix {
     for (let x of this.values) {
       for (let y of x) {
         t = y.toFixed(fractionDigits);
-        if (t === "-0." + zeros) t = "0." + zeros; // get rid of this negative sign if this number is rounded to zero
+        if (t === "-0") t = "0";
+        else if (t === "-0." + zeros) t = "0." + zeros; // get rid of this negative sign if this number is rounded to zero
         s += t + " ";
       }
       s = s.substring(0, s.length - 1) + ",";

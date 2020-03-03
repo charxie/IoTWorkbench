@@ -264,21 +264,57 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
           this.prevValues[n] = this.values[n].copy();
         }
       }
+      const invdx = 1 / (2 * dx);
+      const invdy = 1 / (2 * dy);
+      const invdx2 = 1 / (dx * dx);
+      const invdy2 = 1 / (dy * dy);
+      const invdxdy = 1 / (4 * dx * dy);
+      const a = 0.5 / (invdx2 + invdy2);
+      let x, y;
+      let factor;
       try {
-        const invdx2 = 1 / (dx * dx);
-        const invdy2 = 1 / (dy * dy);
-        const a = 0.5 / (invdx2 + invdy2);
-        let x, y;
         for (let n = 0; n < count; n++) {
+          let derivativeMatches = this.expressions[n].match(this.partialDerivativePattern);
+          if (derivativeMatches === null || derivativeMatches.length === 0) continue;
           this.applyBoundaryCondition(n, nx, ny, dx, dy);
           for (let r = 0; r < this.relaxationSteps; r++) {
             for (let i = 1; i < nx - 1; i++) {
               x = x0 + i * dx;
+              param["x"] = x;
               for (let j = 1; j < ny - 1; j++) {
                 y = y0 + j * dy;
-                this.values[n].data[i * ny + j] = a * ((this.prevValues[n].data[(i - 1) * ny + j] + this.prevValues[n].data[(i + 1) * ny + j]) * invdy2 +
-                  +(this.prevValues[n].data[i * ny + j - 1] + this.prevValues[n].data[i * ny + j + 1]) * invdx2);
-                //+ (TestFunctions.gaussian(y, x, -3, 0, 1) + TestFunctions.gaussian(y, x, 3, 0, 1)));
+                param["y"] = y;
+                factor = 0;
+                for (let match of derivativeMatches) {
+                  let index = match.indexOf("_");
+                  let variable = match.substring(index + 1);
+                  switch (variable) {
+                    case "x":
+                      param[match] = (this.prevValues[n].data[i * ny + j + 1] - this.prevValues[n].data[i * ny + j - 1]) * invdx;
+                      break;
+                    case "y":
+                      param[match] = (this.prevValues[n].data[(i + 1) * ny + j] - this.prevValues[n].data[(i - 1) * ny + j]) * invdy;
+                      break;
+                    case "xx":
+                      param[match] = (this.prevValues[n].data[i * ny + j + 1] + this.prevValues[n].data[i * ny + j - 1]) * invdx2;
+                      factor += 2 * invdx2;
+                      break;
+                    case "yy":
+                      param[match] = (this.prevValues[n].data[(i + 1) * ny + j] + this.prevValues[n].data[(i - 1) * ny + j]) * invdy2;
+                      factor += 2 * invdy2;
+                      break;
+                    case "xy":
+                      param[match] = (this.prevValues[n].data[(i + 1) * ny + j + 1] + this.prevValues[n].data[(i - 1) * ny + j - 1]
+                        - this.prevValues[n].data[(i + 1) * ny + j - 1] - this.prevValues[n].data[(i - 1) * ny + j + 1]) * invdxdy;
+                      break;
+                  }
+                }
+                if (factor > 0) {
+                  this.values[n].data[i * ny + j] = this.codes[n].evaluate(param) / factor;
+                }
+                // this.values[n].data[i * ny + j] = a * ((this.prevValues[n].data[(i - 1) * ny + j] + this.prevValues[n].data[(i + 1) * ny + j]) * invdy2 +
+                // + (this.prevValues[n].data[i * ny + j - 1] + this.prevValues[n].data[i * ny + j + 1]) * invdx2);
+                // + (TestFunctions.gaussian(y, x, -3, 0, 1) + TestFunctions.gaussian(y, x, 3, 0, 1)));
                 this.prevValues[n].data[i * ny + j] = this.values[n].data[i * ny + j];
               }
             }
