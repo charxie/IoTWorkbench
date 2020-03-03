@@ -127,14 +127,14 @@ export class Sticker extends Block {
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
-    ctx.font = Util.getOS() == "Android" ? "13px Noto Serif" : "14px Times New Roman";
     ctx.fillStyle = this.textColor;
     if (this.text != undefined) {
+      ctx.font = "12px Courier New";
       if (this.isArray) {
-        let lineHeight = ctx.measureText("M").width * 1.2;
+        let lineHeight = ctx.measureText("M").width * 2;
         let lines = this.text.split(",");
         for (let i = 0; i < lines.length; ++i) {
-          let yi = this.y + this.barHeight + 20 + i * lineHeight;
+          let yi = this.y + this.barHeight + 10 + i * lineHeight;
           if (yi < this.y + this.height - lineHeight / 2) {
             if (i % 2 == 0) {
               ctx.fillStyle = "lightgreen";
@@ -150,6 +150,7 @@ export class Sticker extends Block {
         ctx.fillText(this.text, this.x + 10, this.y + this.barHeight + 20);
       }
     } else if (this.userText != undefined) {
+      ctx.font = Util.getOS() == "Android" ? "13px Noto Serif" : "14px Times New Roman";
       let lineHeight = ctx.measureText("M").width * 1.2;
       let lines = this.userText.split("\n");
       ctx.fillStyle = this.textColor;

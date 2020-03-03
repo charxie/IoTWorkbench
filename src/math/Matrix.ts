@@ -147,11 +147,18 @@ export class Matrix {
 
   public toFixed(fractionDigits: number): string {
     let s: string = "";
+    let t: string;
+    let zeros = "";
+    for (let i = 0; i < fractionDigits; i++) {
+      zeros += "0";
+    }
     for (let x of this.values) {
       for (let y of x) {
-        s += y.toFixed(fractionDigits) + "   ";
+        t = y.toFixed(fractionDigits);
+        if (t === "-0." + zeros) t = "0." + zeros; // get rid of this negative sign if this number is rounded to zero
+        s += t + " ";
       }
-      s = s.substring(0, s.length - 3) + ",";
+      s = s.substring(0, s.length - 1) + ",";
     }
     return s.substring(0, s.length - 1);
   }

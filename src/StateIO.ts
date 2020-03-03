@@ -39,7 +39,7 @@ import {FFTBlock} from "./blocks/FFTBlock";
 import {ODESolverBlock} from "./blocks/ODESolverBlock";
 import {RandomNumberGeneratorBlock} from "./blocks/RandomNumberGeneratorBlock";
 import {TransientStateFDMSolverBlock} from "./blocks/TransientStateFDMSolverBlock";
-import {Contour2D} from "./blocks/Contour2D";
+import {Field2D} from "./blocks/Field2D";
 import {SteadyStateFDMSolverBlock} from "./blocks/SteadyStateFDMSolverBlock";
 import {BoundaryConditionBlock} from "./blocks/BoundaryConditionBlock";
 
@@ -168,6 +168,7 @@ export class StateIO {
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
+          block.setMethod(state.method !== undefined ? state.method : "Trapezoidal Rule");
         } else if (block instanceof FFTBlock) {
           block.setSeparate(state.separate != undefined ? state.separate : true);
           block.setInverse(state.inverse != undefined ? state.inverse : false);
@@ -211,7 +212,7 @@ export class StateIO {
           if (state.dataSymbols != undefined) block.setDataSymbols(state.dataSymbols);
           if (state.dataSymbolColors != undefined) block.setDataSymbolColors(state.dataSymbolColors);
           if (state.numberOfPoints != undefined) block.setNumberOfPoints(state.numberOfPoints);
-        } else if (block instanceof Contour2D) {
+        } else if (block instanceof Field2D) {
           block.setName(state.name);
           block.setScaleType(state.scaleType === undefined ? "Linear" : state.scaleType);
           block.setXAxisLabel(state.xAxisLabel);

@@ -51,7 +51,7 @@ import {ODESolverBlock} from "./ODESolverBlock";
 import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
 import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
-import {Contour2D} from "./Contour2D";
+import {Field2D} from "./Field2D";
 import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
 
 export class BlockView {
@@ -254,8 +254,8 @@ export class BlockView {
           case "space2d-block":
             b = that.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));
             break;
-          case "contour2d-block":
-            b = that.addBlockUndoable(new Contour2D("Contour2D #" + timestamp, "Contour", x - 100, y - 110, 200, 220));
+          case "field2d-block":
+            b = that.addBlockUndoable(new Field2D("Field2D #" + timestamp, "Field", x - 100, y - 110, 200, 220));
             break;
           case "random-number-generator-block":
             b = that.addBlockUndoable(new RandomNumberGeneratorBlock("Random Number Generator Block #" + timestamp, x - 30, y - 40, 60, 80));

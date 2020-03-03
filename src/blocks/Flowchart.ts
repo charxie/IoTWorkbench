@@ -52,7 +52,7 @@ import {ODESolverBlock} from "./ODESolverBlock";
 import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
 import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
-import {Contour2D} from "./Contour2D";
+import {Field2D} from "./Field2D";
 import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
 
 export class Flowchart {
@@ -850,8 +850,8 @@ export class Flowchart {
       case "Space2D":
         block = new Space2D(uid, name, x, y, 200, 220);
         break;
-      case "Contour2D":
-        block = new Contour2D(uid, name, x, y, 200, 220);
+      case "Field2D":
+        block = new Field2D(uid, name, x, y, 200, 220);
         break;
       case "Random Number Generator Block":
         block = new RandomNumberGeneratorBlock(uid, x, y, 200, 220);
@@ -951,8 +951,8 @@ export class Flowchart {
         blockStates.push(new BoundaryConditionBlock.State(b));
       } else if (b instanceof Space2D) {
         blockStates.push(new Space2D.State(b));
-      } else if (b instanceof Contour2D) {
-        blockStates.push(new Contour2D.State(b));
+      } else if (b instanceof Field2D) {
+        blockStates.push(new Field2D.State(b));
       } else if (b instanceof TurnoutSwitch) {
         blockStates.push(new TurnoutSwitch.State(b));
       } else if (b instanceof SwitchStatementBlock) {

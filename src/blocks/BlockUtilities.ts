@@ -44,7 +44,7 @@ import {FFTBlock} from "./FFTBlock";
 import {ODESolverBlock} from "./ODESolverBlock";
 import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
-import {Contour2D} from "./Contour2D";
+import {Field2D} from "./Field2D";
 import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
 
@@ -135,8 +135,8 @@ export class BlockUtilities {
     if (block instanceof Space2D) {
       return contextMenus.space2d;
     }
-    if (block instanceof Contour2D) {
-      return contextMenus.contour2d;
+    if (block instanceof Field2D) {
+      return contextMenus.field2d;
     }
     if (block instanceof GlobalVariableBlock) {
       return contextMenus.globalVariableBlock;
@@ -293,9 +293,9 @@ export class BlockUtilities {
       contextMenus.space2d.block = block;
       return document.getElementById("space2d-context-menu") as HTMLMenuElement;
     }
-    if (block instanceof Contour2D) {
-      contextMenus.contour2d.block = block;
-      return document.getElementById("contour2d-context-menu") as HTMLMenuElement;
+    if (block instanceof Field2D) {
+      contextMenus.field2d.block = block;
+      return document.getElementById("field2d-context-menu") as HTMLMenuElement;
     }
     if (block instanceof GlobalVariableBlock) {
       contextMenus.globalVariableBlock.block = block;

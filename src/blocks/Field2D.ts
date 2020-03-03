@@ -9,7 +9,7 @@ import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
 
-export class Contour2D extends Block {
+export class Field2D extends Block {
 
   private portI: Port;
   private portX0: Port;
@@ -64,7 +64,7 @@ export class Contour2D extends Block {
     readonly minimumColor: string;
     readonly maximumColor: string;
 
-    constructor(g: Contour2D) {
+    constructor(g: Field2D) {
       this.name = g.name;
       this.uid = g.uid;
       this.x = g.x;
@@ -111,7 +111,7 @@ export class Contour2D extends Block {
   }
 
   getCopy(): Block {
-    let copy = new Contour2D("Contour2D #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    let copy = new Field2D("Field2D #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.spaceWindowColor = this.spaceWindowColor;

@@ -17,7 +17,7 @@ import {Grapher} from "../Grapher";
 import {WorkerBlock} from "../WorkerBlock";
 import {ParametricEquationBlock} from "../ParametricEquationBlock";
 import {Space2D} from "../Space2D";
-import {Contour2D} from "../Contour2D";
+import {Field2D} from "../Field2D";
 import {GlobalVariableBlock} from "../GlobalVariableBlock";
 import {MomentarySwitch} from "../MomentarySwitch";
 import {Beeper} from "../Beeper";
@@ -79,7 +79,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="sticker-block" title="Text Display" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="grapher-block" title="Grapher" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="space2d-block" title="Space2D" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="contour2d-block" title="Contour2D" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="field2d-block" title="Field2D" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="beeper-block" title="Beeper" width="45px" height="45px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
@@ -151,7 +151,7 @@ export class BlockElementsPanel {
     this.drawSteadyStateFDMSolverBlock("Steady State FDM Solver Block", "steady-state-fdm-solver-block");
     this.drawBoundaryConditionBlock("Boundary Condition Block", "boundary-condition-block");
     this.drawSpace2D("Space2D", "space2d-block");
-    this.drawContour2D("Contour2D", "contour2d-block");
+    this.drawField2D("Field2D", "field2d-block");
     this.drawGlobalVariableBlock("Global Variable Block", "var", "global-variable-block");
     this.drawGlobalObjectBlock("Global Object Block", "obj", "global-object-block");
     this.drawFunctionDeclarationBlock("Function Declaration Block", "obj", "function-declaration-block");
@@ -387,10 +387,10 @@ export class BlockElementsPanel {
     block.draw(ctx);
   }
 
-  private drawContour2D(name: string, canvasId: string): void {
+  private drawField2D(name: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new Contour2D("Contour2D Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    let block = new Field2D("Field2D Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

@@ -13,7 +13,7 @@ import contour_plot_settings from "./examples/contour-plot-settings.json";
 // @ts-ignore
 import binary_functions_contour_plots from "./examples/binary-functions-contour-plots.json";
 // @ts-ignore
-import contour_plot_himmelblau_function from "./examples/contour-plot-himmelblau-function.json";
+import himmelblau_function from "./examples/himmelblau-function.json";
 // @ts-ignore
 import standing_waves from "./examples/standing-waves.json";
 // @ts-ignore
@@ -187,7 +187,7 @@ export class Examples {
     this.files.push({name: "Math: Unary Functions", data: unary_functions});
     this.files.push({name: "Math: Bundled Functions", data: bundled_functions});
     this.files.push({name: "Math: Binary Function 1D Output", data: binary_functions});
-    this.files.push({name: "Math: Binary Function 2D Output", data: contour_plot_himmelblau_function});
+    this.files.push({name: "Math: Binary Function 2D Output", data: himmelblau_function});
     this.files.push({name: "Math: Binary Function Contour Plots", data: binary_functions_contour_plots});
     this.files.push({name: "Math: Contour Plot Settings", data: contour_plot_settings});
     this.files.push({name: "Math: Multivariable Functions", data: multivariable_functions});

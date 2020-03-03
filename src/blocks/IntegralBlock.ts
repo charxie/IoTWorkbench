@@ -19,6 +19,7 @@ export class IntegralBlock extends Block {
   private result: number;
   private barHeight: number;
   private fractionDigits: number = 3;
+  private method: string = "Trapezoidal Rule";
   private readonly windowMargin = {
     left: <number>4,
     right: <number>3,
@@ -34,6 +35,7 @@ export class IntegralBlock extends Block {
     readonly width: number;
     readonly height: number;
     readonly fractionDigits: number;
+    readonly method: string;
 
     constructor(block: IntegralBlock) {
       this.name = block.name;
@@ -43,6 +45,7 @@ export class IntegralBlock extends Block {
       this.width = block.width;
       this.height = block.height;
       this.fractionDigits = block.fractionDigits;
+      this.method = block.method;
     }
   };
 
@@ -67,7 +70,16 @@ export class IntegralBlock extends Block {
     let copy = new IntegralBlock("Integral Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     copy.name = this.name;
     copy.fractionDigits = this.fractionDigits;
+    copy.method = this.method;
     return copy;
+  }
+
+  setMethod(method: string): void {
+    this.method = method;
+  }
+
+  getMethod(): string {
+    return this.method;
   }
 
   getFractionDigits(): number {

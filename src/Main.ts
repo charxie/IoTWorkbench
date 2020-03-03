@@ -77,7 +77,7 @@ import {FFTBlockContextMenu} from "./blocks/ui/FFTBlockContextMenu";
 import {ODESolverBlockContextMenu} from "./blocks/ui/ODESolverBlockContextMenu";
 import {RandomNumberGeneratorBlockContextMenu} from "./blocks/ui/RandomNumberGeneratorBlockContextMenu";
 import {TransientStateFDMSolverBlockContextMenu} from "./blocks/ui/TransientStateFDMSolverBlockContextMenu";
-import {Contour2DContextMenu} from "./blocks/ui/Contour2DContextMenu";
+import {Field2DContextMenu} from "./blocks/ui/Field2DContextMenu";
 import {SteadyStateFDMSolverBlockContextMenu} from "./blocks/ui/SteadyStateFDMSolverBlockContextMenu";
 import {BoundaryConditionBlockContextMenu} from "./blocks/ui/BoundaryConditionBlockContextMenu";
 
@@ -470,10 +470,10 @@ function setupContextMenuForBlock() {
   space2dContextMenu.addListeners();
   contextMenus.space2d = space2dContextMenu;
 
-  let contour2dContextMenu = new Contour2DContextMenu();
-  contour2dContextMenu.render("contour2d-context-menu-placeholder");
-  contour2dContextMenu.addListeners();
-  contextMenus.contour2d = contour2dContextMenu;
+  let field2dContextMenu = new Field2DContextMenu();
+  field2dContextMenu.render("field2d-context-menu-placeholder");
+  field2dContextMenu.addListeners();
+  contextMenus.field2d = field2dContextMenu;
 
   let randomNumberGeneratorBlockContextMenu = new RandomNumberGeneratorBlockContextMenu();
   randomNumberGeneratorBlockContextMenu.render("random-number-generator-block-context-menu-placeholder");

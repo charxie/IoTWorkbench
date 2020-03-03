@@ -23,6 +23,14 @@ export class IntegralBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="integral-block-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Method:</td>
+                  <td>
+                    <select id="integral-block-method-selector" style="width: 100%">
+                      <option value="Trapezoidal Rule" selected>Trapezoidal Rule</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
                   <td>Fraction Digits:</td>
                   <td><input type="text" id="integral-block-fraction-digits-field" style="width: 100%"></td>
                 </tr>
@@ -46,6 +54,8 @@ export class IntegralBlockContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameInputElement = document.getElementById("integral-block-name-field") as HTMLInputElement;
       nameInputElement.value = block.getName();
+      let methodSelectElement = document.getElementById("integral-block-method-selector") as HTMLSelectElement;
+      methodSelectElement.value = block.getMethod();
       let fractionDigitsInputElement = document.getElementById("integral-block-fraction-digits-field") as HTMLInputElement;
       fractionDigitsInputElement.value = block.getFractionDigits().toString();
       let widthInputElement = document.getElementById("integral-block-width-field") as HTMLInputElement;
@@ -81,6 +91,7 @@ export class IntegralBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          block.setMethod(methodSelectElement.value);
           block.setName(nameInputElement.value);
           block.refreshView();
           flowchart.blockView.requestDraw();
@@ -105,7 +116,7 @@ export class IntegralBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 310,
+        height: 350,
         width: 360,
         buttons: {
           'OK': okFunction,
