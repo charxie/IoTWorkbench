@@ -30,6 +30,14 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
                   <td><textarea id="steady-state-fdm-solver-block-equations-field" rows="6" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>
+                  <td>Method:</td>
+                  <td>
+                    <select id="steady-state-fdm-solver-block-method-selector" style="width: 100%">
+                      <option value="Jacobi" selected>Jacobi</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="steady-state-fdm-solver-block-width-field" style="width: 100%"></td>
                 </tr>
@@ -47,6 +55,8 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof SteadyStateFDMSolverBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let methodSelectElement = document.getElementById("steady-state-fdm-solver-block-method-selector") as HTMLSelectElement;
+      methodSelectElement.value = block.getMethod();
       let variablesInputElement = document.getElementById("steady-state-fdm-solver-block-variables-field") as HTMLInputElement;
       variablesInputElement.value = block.getVariables() ? JSON.stringify(block.getVariables()) : "['x', 'y']";
       let equationsInputElement = document.getElementById("steady-state-fdm-solver-block-equations-field") as HTMLTextAreaElement;
@@ -103,6 +113,7 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
         }
         // finish up
         if (success) {
+          block.setMethod(methodSelectElement.value);
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.storeBlockStates();

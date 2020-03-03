@@ -293,25 +293,51 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   }
 
   private applyBoundaryCondition(n: number, nx: number, ny: number, dx: number, dy: number): void {
-    switch (this.boundaryValues[n].type) {
+    switch (this.boundaryValues[n].north.type) {
       case "Dirichlet":
         for (let j = 0; j < ny; j++) {
-          this.prevValues[n].data[j] = this.boundaryValues[n].southValue;
-          this.prevValues[n].data[(nx - 1) * ny + j] = this.boundaryValues[n].northValue;
-        }
-        for (let i = 0; i < nx; i++) {
-          this.prevValues[n].data[i * ny] = this.boundaryValues[n].westValue;
-          this.prevValues[n].data[i * ny + ny - 1] = this.boundaryValues[n].eastValue;
+          this.prevValues[n].data[(nx - 1) * ny + j] = this.boundaryValues[n].north.value;
         }
         break;
       case "Neumann":
         for (let j = 0; j < ny; j++) {
-          this.prevValues[n].data[j] = this.prevValues[n].data[ny + j] - this.boundaryValues[n].southValue * dy;
-          this.prevValues[n].data[(nx - 1) * ny + j] = this.prevValues[n].data[(nx - 2) * ny + j] + this.boundaryValues[n].northValue * dy;
+          this.prevValues[n].data[(nx - 1) * ny + j] = this.prevValues[n].data[(nx - 2) * ny + j] + this.boundaryValues[n].north.value * dy;
         }
+        break;
+    }
+    switch (this.boundaryValues[n].east.type) {
+      case "Dirichlet":
         for (let i = 0; i < nx; i++) {
-          this.prevValues[n].data[i * ny] = this.prevValues[n].data[i * ny + 1] - this.boundaryValues[n].westValue * dx;
-          this.prevValues[n].data[i * ny + ny - 1] = this.prevValues[n].data[i * ny + ny - 2] + this.boundaryValues[n].eastValue * dx;
+          this.prevValues[n].data[i * ny + ny - 1] = this.boundaryValues[n].east.value;
+        }
+        break;
+      case "Neumann":
+        for (let i = 0; i < nx; i++) {
+          this.prevValues[n].data[i * ny + ny - 1] = this.prevValues[n].data[i * ny + ny - 2] + this.boundaryValues[n].east.value * dx;
+        }
+        break;
+    }
+    switch (this.boundaryValues[n].south.type) {
+      case "Dirichlet":
+        for (let j = 0; j < ny; j++) {
+          this.prevValues[n].data[j] = this.boundaryValues[n].south.value;
+        }
+        break;
+      case "Neumann":
+        for (let j = 0; j < ny; j++) {
+          this.prevValues[n].data[j] = this.prevValues[n].data[ny + j] - this.boundaryValues[n].south.value * dy;
+        }
+        break;
+    }
+    switch (this.boundaryValues[n].west.type) {
+      case "Dirichlet":
+        for (let i = 0; i < nx; i++) {
+          this.prevValues[n].data[i * ny] = this.boundaryValues[n].west.value;
+        }
+        break;
+      case "Neumann":
+        for (let i = 0; i < nx; i++) {
+          this.prevValues[n].data[i * ny] = this.prevValues[n].data[i * ny + 1] - this.boundaryValues[n].west.value * dx;
         }
         break;
     }

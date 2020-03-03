@@ -184,11 +184,14 @@ export class StateIO {
           block.setVariables(state.variables != undefined ? state.variables : ["x", "y"]);
           block.setEquations(state.equations != undefined ? state.equations : ["T_xx+T_yy=0"]);
         } else if (block instanceof BoundaryConditionBlock) {
-          block.setType(state.type);
-          block.setNorthValue(state.northValue);
-          block.setEastValue(state.eastValue);
-          block.setSouthValue(state.southValue);
-          block.setWestValue(state.westValue);
+          block.boundaryCondition.north.type = state.northType !== undefined ? state.northType : "Dirichlet";
+          block.boundaryCondition.north.value = state.northValue;
+          block.boundaryCondition.east.type = state.eastType !== undefined ? state.eastType : "Dirichlet";
+          block.boundaryCondition.east.value = state.eastValue;
+          block.boundaryCondition.south.type = state.southType !== undefined ? state.southType : "Dirichlet";
+          block.boundaryCondition.south.value = state.southValue;
+          block.boundaryCondition.west.type = state.westType !== undefined ? state.westType : "Dirichlet";
+          block.boundaryCondition.west.value = state.westValue;
         } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);

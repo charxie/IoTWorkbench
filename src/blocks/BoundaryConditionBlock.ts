@@ -5,7 +5,6 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {BoundaryCondition} from "./BoundaryCondition";
-import {Util} from "../Util";
 
 export class BoundaryConditionBlock extends Block {
 
@@ -14,11 +13,7 @@ export class BoundaryConditionBlock extends Block {
   private readonly portS: Port;
   private readonly portW: Port;
   private readonly portO: Port;
-  private type: string = "Dirichlet";
-  private northValue: number = 0;
-  private eastValue: number = 0;
-  private southValue: number = 0;
-  private westValue: number = 0;
+  boundaryCondition: BoundaryCondition;
 
   static State = class {
     readonly name: string;
@@ -31,7 +26,10 @@ export class BoundaryConditionBlock extends Block {
     readonly eastValue: number;
     readonly southValue: number;
     readonly westValue: number;
-    readonly type: string;
+    readonly northType: string;
+    readonly eastType: string;
+    readonly southType: string;
+    readonly westType: string;
 
     constructor(block: BoundaryConditionBlock) {
       this.name = block.name;
@@ -40,11 +38,14 @@ export class BoundaryConditionBlock extends Block {
       this.y = block.y;
       this.width = block.width;
       this.height = block.height;
-      this.northValue = block.northValue;
-      this.eastValue = block.eastValue;
-      this.southValue = block.southValue;
-      this.westValue = block.westValue;
-      this.type = block.type;
+      this.northValue = block.boundaryCondition.north.value;
+      this.eastValue = block.boundaryCondition.east.value;
+      this.southValue = block.boundaryCondition.south.value;
+      this.westValue = block.boundaryCondition.west.value;
+      this.northType = block.boundaryCondition.north.type;
+      this.eastType = block.boundaryCondition.east.type;
+      this.southType = block.boundaryCondition.south.type;
+      this.westType = block.boundaryCondition.west.type;
     }
   };
 
@@ -64,59 +65,16 @@ export class BoundaryConditionBlock extends Block {
     this.ports.push(this.portW);
     this.ports.push(this.portO);
     this.marginX = 20;
+    this.boundaryCondition = new BoundaryCondition("Dirichlet", 0, "Dirichlet", 0, "Dirichlet", 0, "Dirichlet", 0);
   }
 
   getCopy(): Block {
     let block = new BoundaryConditionBlock("Boundary Condition Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
-    block.type = this.type;
-    block.northValue = this.northValue;
-    block.eastValue = this.eastValue;
-    block.southValue = this.southValue;
-    block.westValue = this.westValue;
+    block.boundaryCondition = this.boundaryCondition.copy();
     return block;
   }
 
   destroy(): void {
-  }
-
-  getType(): string {
-    return this.type;
-  }
-
-  setType(type: string): void {
-    this.type = type;
-  }
-
-  getNorthValue(): number {
-    return this.northValue;
-  }
-
-  setNorthValue(northValue: number): void {
-    this.northValue = northValue;
-  }
-
-  getEastValue(): number {
-    return this.eastValue;
-  }
-
-  setEastValue(eastValue: number): void {
-    this.eastValue = eastValue;
-  }
-
-  getSouthValue(): number {
-    return this.southValue;
-  }
-
-  setSouthValue(southValue: number): void {
-    this.southValue = southValue;
-  }
-
-  getWestValue(): number {
-    return this.westValue;
-  }
-
-  setWestValue(westValue: number): void {
-    this.westValue = westValue;
   }
 
   refreshView(): void {
@@ -130,11 +88,11 @@ export class BoundaryConditionBlock extends Block {
   }
 
   updateModel(): void {
-    this.northValue = this.portN.getValue();
-    this.eastValue = this.portE.getValue();
-    this.southValue = this.portS.getValue();
-    this.westValue = this.portW.getValue();
-    this.portO.setValue(new BoundaryCondition(this.type, this.northValue, this.eastValue, this.southValue, this.westValue));
+    this.boundaryCondition.north.value = this.portN.getValue();
+    this.boundaryCondition.east.value = this.portE.getValue();
+    this.boundaryCondition.south.value = this.portS.getValue();
+    this.boundaryCondition.west.value = this.portW.getValue();
+    this.portO.setValue(this.boundaryCondition);
     this.updateConnectors();
   }
 

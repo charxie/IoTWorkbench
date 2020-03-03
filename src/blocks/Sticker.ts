@@ -208,6 +208,7 @@ export class Sticker extends Block {
           this.isArray = true;
         } else if (v instanceof BoundaryCondition) {
           this.text = v.toString();
+          this.isArray = true;
         } else {
           try {
             this.text = v.toFixed(this.decimals);
