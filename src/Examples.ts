@@ -180,7 +180,10 @@ export class Examples {
     this.files.push({name: "Basics: Global Variables", data: global_variables});
     this.files.push({name: "Basics: Series and Arrays", data: series_and_arrays});
     this.files.push({name: "Basics: Complex Numbers", data: complex_numbers});
-    this.files.push({name: "Basics: Arithmetic Operators for Complex Numbers", data: arithmetic_operators_for_complex_numbers});
+    this.files.push({
+      name: "Basics: Arithmetic Operators for Complex Numbers",
+      data: arithmetic_operators_for_complex_numbers
+    });
     this.files.push({name: "Basics: Workers", data: workers});
     this.files.push({name: "Basics: Toggle Switch vs. Momentary Switch", data: toggle_vs_momentary_switch});
     this.files.push({name: "Basics: Turnout Switch", data: turnout_switch});
@@ -218,7 +221,10 @@ export class Examples {
     this.files.push({name: "Statistics: Random Walk", data: random_walk});
     this.files.push({name: "Ecology: Logistic Population Model", data: logistic_population_equation});
     this.files.push({name: "Ecology: Predator-Prey Equations", data: predator_prey_equations});
-    this.files.push({name: "Ecology: Competitive Lotka-Volterra Equations", data: competitive_lotka_volterra_equations});
+    this.files.push({
+      name: "Ecology: Competitive Lotka-Volterra Equations",
+      data: competitive_lotka_volterra_equations
+    });
     this.files.push({name: "Epidemiology: The SIR Model", data: epidemiology_sir_model});
     this.files.push({name: "Chemistry: Irreversible Reaction", data: chemical_kinetics_irreversible_reaction});
     this.files.push({name: "Chemistry: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
@@ -237,7 +243,10 @@ export class Examples {
     this.files.push({name: "Electromagnetism: Lorentz Force", data: lorentz_force});
     this.files.push({name: "Biology: Brownian Motion", data: brownian_motion_single_particle});
     this.files.push({name: "Biology: Langevin Equation", data: langevin_equation});
-    this.files.push({name: "Biology: Brownian Motion with Multiple Particles", data: brownian_motion_multiple_particles});
+    this.files.push({
+      name: "Biology: Brownian Motion with Multiple Particles",
+      data: brownian_motion_multiple_particles
+    });
     this.files.push({name: "Signal Processing: Fourier Transform", data: fourier_transform});
     this.files.push({name: "Signal Processing: Convolution Theorem", data: convolution_theorem});
     this.files.push({name: "Simulation: Transient State Finite Difference Method", data: pde_fdm_solver});
@@ -260,7 +269,7 @@ export class Examples {
 
     let option = document.createElement('option') as HTMLOptionElement;
     option.value = "select";
-    option.innerHTML = "Select";
+    option.innerHTML = "Select Tutorial";
     selectElement.appendChild(option);
 
     let i = 1;
@@ -278,6 +287,22 @@ export class Examples {
         that.load(that.files[selectElement.selectedIndex - 1].data);
       }
     };
+  }
+
+  loadPrevious(): void {
+    let selectElement = document.getElementById("example-list") as HTMLSelectElement;
+    if (selectElement.selectedIndex > 1) {
+      selectElement.selectedIndex--;
+      this.load(this.files[selectElement.selectedIndex - 1].data);
+    }
+  }
+
+  loadNext(): void {
+    let selectElement = document.getElementById("example-list") as HTMLSelectElement;
+    if (selectElement.selectedIndex < selectElement.length - 1) {
+      selectElement.selectedIndex++;
+      this.load(this.files[selectElement.selectedIndex - 1].data);
+    }
   }
 
   load(s): void {

@@ -162,6 +162,12 @@ window.onload = function () {
     + ", created by <a href='https://charxie.github.io/' style='text-decoration: none;'>Dr. Charles Xie</a>, " + new Date().getFullYear();
 
   let examples = new Examples();
+  document.getElementById("main-page-previous-tutorial-button").onclick = function () {
+    examples.loadPrevious();
+  };
+  document.getElementById("main-page-next-tutorial-button").onclick = function () {
+    examples.loadNext();
+  };
 
   document.getElementById("main-page-new-file-button").onclick = function () {
     flowchart.askToClear();
