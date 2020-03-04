@@ -306,6 +306,8 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
                 factor = 0;
                 for (let match of derivativeMatches) {
                   let index = match.indexOf("_");
+                  let fun = match.substring(0, index);
+                  param[fun] = this.prevValues[n].data[i * ny + j];
                   let variable = match.substring(index + 1);
                   switch (variable) {
                     case "x":

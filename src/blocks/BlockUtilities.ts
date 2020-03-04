@@ -85,7 +85,7 @@ export class BlockUtilities {
       return contextMenus.binaryFunctionBlock;
     }
     if (block instanceof MultivariableFunctionBlock) {
-      return contextMenus.multivariableFunctionBlock;
+      return contextMenus.multivariateFunctionBlock;
     }
     if (block instanceof ParametricEquationBlock) {
       return contextMenus.parametricEquationBlock;
@@ -226,8 +226,8 @@ export class BlockUtilities {
       return document.getElementById("binary-function-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof MultivariableFunctionBlock) {
-      contextMenus.multivariableFunctionBlock.block = block;
-      return document.getElementById("multivariable-function-block-context-menu") as HTMLMenuElement;
+      contextMenus.multivariateFunctionBlock.block = block;
+      return document.getElementById("multivariate-function-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof ParametricEquationBlock) {
       contextMenus.parametricEquationBlock.block = block;

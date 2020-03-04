@@ -13,7 +13,7 @@ import laplace_equation from "./examples/laplace-equation.json";
 // @ts-ignore
 import contour_plot_settings from "./examples/contour-plot-settings.json";
 // @ts-ignore
-import binary_functions_contour_plots from "./examples/binary-functions-contour-plots.json";
+import bivariate_functions_contour_plots from "./examples/bivariate-functions-contour-plots.json";
 // @ts-ignore
 import himmelblau_function from "./examples/himmelblau-function.json";
 // @ts-ignore
@@ -131,15 +131,15 @@ import derivatives from "./examples/derivatives.json";
 // @ts-ignore
 import integration from "./examples/integration.json";
 // @ts-ignore
-import unary_functions from "./examples/unary-functions.json";
+import univariate_functions from "./examples/univariate-functions.json";
 // @ts-ignore
 import heart_function from "./examples/heart-function.json";
 // @ts-ignore
 import bundled_functions from "./examples/bundled-functions.json";
 // @ts-ignore
-import binary_functions from "./examples/binary-functions.json";
+import bivariate_functions from "./examples/bivariate-functions.json";
 // @ts-ignore
-import multivariable_functions from "./examples/multivariable-functions.json";
+import multivariate_functions from "./examples/multivariate-functions.json";
 // @ts-ignore
 import declared_functions from "./examples/declared-functions.json";
 // @ts-ignore
@@ -186,13 +186,13 @@ export class Examples {
     this.files.push({name: "Basics: Turnout Switch", data: turnout_switch});
     this.files.push({name: "Basics: If-Else Statements", data: if_else_statements});
     this.files.push({name: "Basics: Switch Statements", data: switch_statements});
-    this.files.push({name: "Math: Unary Functions", data: unary_functions});
+    this.files.push({name: "Math: Univariate Functions", data: univariate_functions});
     this.files.push({name: "Math: Bundled Functions", data: bundled_functions});
-    this.files.push({name: "Math: Binary Function 1D Output", data: binary_functions});
-    this.files.push({name: "Math: Binary Function 2D Output", data: himmelblau_function});
-    this.files.push({name: "Math: Binary Function Contour Plots", data: binary_functions_contour_plots});
+    this.files.push({name: "Math: Bivariate Function 1D Output", data: bivariate_functions});
+    this.files.push({name: "Math: Bivariate Function 2D Output", data: himmelblau_function});
+    this.files.push({name: "Math: Bivariate Function Contour Plots", data: bivariate_functions_contour_plots});
     this.files.push({name: "Math: Contour Plot Settings", data: contour_plot_settings});
-    this.files.push({name: "Math: Multivariable Functions", data: multivariable_functions});
+    this.files.push({name: "Math: Multivariate Functions", data: multivariate_functions});
     this.files.push({name: "Math: Heart Function", data: heart_function});
     this.files.push({name: "Math: Declared Functions", data: declared_functions});
     this.files.push({name: "Math: Parametric Equations 1", data: parametric_equations_1});

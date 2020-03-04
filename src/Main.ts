@@ -58,7 +58,7 @@ import {GlobalVariableBlockContextMenu} from "./blocks/ui/GlobalVariableBlockCon
 import {MomentarySwitchContextMenu} from "./blocks/ui/MomentarySwitchContextMenu";
 import {BeeperContextMenu} from "./blocks/ui/BeeperContextMenu";
 import {SwitchStatementBlockContextMenu} from "./blocks/ui/SwitchStatementBlockContextMenu";
-import {MultivariableFunctionBlockContextMenu} from "./blocks/ui/MultivariableFunctionBlockContextMenu";
+import {MultivariateFunctionBlockContextMenu} from "./blocks/ui/MultivariateFunctionBlockContextMenu";
 import {GlobalObjectBlockContextMenu} from "./blocks/ui/GlobalObjectBlockContextMenu";
 import {RgbaColorBlockContextMenu} from "./blocks/ui/RgbaColorBlockContextMenu";
 import {ComplexNumberBlockContextMenu} from "./blocks/ui/ComplexNumberBlockContextMenu";
@@ -385,10 +385,10 @@ function setupContextMenuForBlock() {
   binaryFunctionBlockContextMenu.addListeners();
   contextMenus.binaryFunctionBlock = binaryFunctionBlockContextMenu;
 
-  let multivariableFunctionBlockContextMenu = new MultivariableFunctionBlockContextMenu();
-  multivariableFunctionBlockContextMenu.render("multivariable-function-block-context-menu-placeholder");
-  multivariableFunctionBlockContextMenu.addListeners();
-  contextMenus.multivariableFunctionBlock = multivariableFunctionBlockContextMenu;
+  let multivariateFunctionBlockContextMenu = new MultivariateFunctionBlockContextMenu();
+  multivariateFunctionBlockContextMenu.render("multivariate-function-block-context-menu-placeholder");
+  multivariateFunctionBlockContextMenu.addListeners();
+  contextMenus.multivariateFunctionBlock = multivariateFunctionBlockContextMenu;
 
   let parametricEquationBlockContextMenu = new ParametricEquationBlockContextMenu();
   parametricEquationBlockContextMenu.render("parametric-equation-block-context-menu-placeholder");

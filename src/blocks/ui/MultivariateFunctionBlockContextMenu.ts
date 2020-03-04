@@ -10,11 +10,11 @@ import {TurnoutSwitch} from "../TurnoutSwitch";
 import {SwitchStatementBlock} from "../SwitchStatementBlock";
 import {MultivariableFunctionBlock} from "../MultivariableFunctionBlock";
 
-export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
+export class MultivariateFunctionBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "multivariable-function-block-context-menu";
+    this.id = "multivariate-function-block-context-menu";
   }
 
   getPropertiesUI(): string {
@@ -22,23 +22,23 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Variables:<div style="font-size: 70%">(e.g., ["x", "y", "z"])</div></td>
-                  <td><textarea id="multivariable-function-block-cases-field" rows="3" style="width: 100%"></textarea></td>
+                  <td><textarea id="multivariate-function-block-cases-field" rows="3" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>
                   <td>Expression (e.g. x+y+z):</td>
-                  <td><input type="text" id="multivariable-function-block-expression-field" style="width: 100%"></td>
+                  <td><input type="text" id="multivariate-function-block-expression-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Inset Margin:</td>
-                  <td><input type="text" id="multivariable-function-inset-margin-field" style="width: 100%"></td>
+                  <td><input type="text" id="multivariate-function-inset-margin-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="multivariable-function-block-width-field" style="width: 100%"></td>
+                  <td><input type="text" id="multivariate-function-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="multivariable-function-block-height-field" style="width: 100%"></td>
+                  <td><input type="text" id="multivariate-function-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -50,15 +50,15 @@ export class MultivariableFunctionBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof MultivariableFunctionBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let variablesInputElement = document.getElementById("multivariable-function-block-cases-field") as HTMLTextAreaElement;
+      let variablesInputElement = document.getElementById("multivariate-function-block-cases-field") as HTMLTextAreaElement;
       variablesInputElement.value = JSON.stringify(block.getVariables());
-      let expressionInputElement = document.getElementById("multivariable-function-block-expression-field") as HTMLInputElement;
+      let expressionInputElement = document.getElementById("multivariate-function-block-expression-field") as HTMLInputElement;
       expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x+y+z";
-      let insetMarginInputElement = document.getElementById("multivariable-function-inset-margin-field") as HTMLInputElement;
+      let insetMarginInputElement = document.getElementById("multivariate-function-inset-margin-field") as HTMLInputElement;
       insetMarginInputElement.value = block.getMarginX().toString();
-      let widthInputElement = document.getElementById("multivariable-function-block-width-field") as HTMLInputElement;
+      let widthInputElement = document.getElementById("multivariate-function-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("multivariable-function-block-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("multivariate-function-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
         let success = true;

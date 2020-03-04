@@ -26,7 +26,7 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="steady-state-fdm-solver-block-variables-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Equations:<div style="font-size: 70%">(e.g., ["A*T_xx+2*B*T_xy+C*T_yy<br>+D*T_x+E*T_y+F=0"])</div></td>
+                  <td>Equations:<div style="font-size: 70%">(e.g., ["A*T_xx+2*B*T_xy+C*T_yy<br>+D*T_x+E*T_y+F*T+G=0"])</div></td>
                   <td><textarea id="steady-state-fdm-solver-block-equations-field" rows="6" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>

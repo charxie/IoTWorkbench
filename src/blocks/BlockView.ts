@@ -146,7 +146,7 @@ export class BlockView {
           case "binary-function-block":
             b = that.addBlockUndoable(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
             break;
-          case "multivariable-function-block":
+          case "multivariate-function-block":
             b = that.addBlockUndoable(new MultivariableFunctionBlock("Multivariable Function Block #" + timestamp, x - 30, y - 60, 60, 120));
             break;
           case "parametric-equation-block":
