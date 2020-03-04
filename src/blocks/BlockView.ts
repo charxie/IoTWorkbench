@@ -140,10 +140,10 @@ export class BlockView {
           case "function-declaration-block":
             b = that.addBlockUndoable(new FunctionDeclarationBlock("Function Declaration Block #" + timestamp, "Function Declaration Block", "f", x - 80, y - 30, 160, 60));
             break;
-          case "unary-function-block":
+          case "univariate-function-block":
             b = that.addBlockUndoable(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
-          case "binary-function-block":
+          case "bivariate-function-block":
             b = that.addBlockUndoable(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
             break;
           case "multivariate-function-block":

@@ -42,8 +42,9 @@ import {TurnoutSwitchContextMenu} from "./blocks/ui/TurnoutSwitchContextMenu";
 import {NotBlockContextMenu} from "./blocks/ui/NotBlockContextMenu";
 import {LogicBlockContextMenu} from "./blocks/ui/LogicBlockContextMenu";
 import {ArithmeticBlockContextMenu} from "./blocks/ui/ArithmeticBlockContextMenu";
-import {UnaryFunctionBlockContextMenu} from "./blocks/ui/UnaryFunctionBlockContextMenu";
-import {BinaryFunctionBlockContextMenu} from "./blocks/ui/BinaryFunctionBlockContextMenu";
+import {UnivariateFunctionBlockContextMenu} from "./blocks/ui/UnivariateFunctionBlockContextMenu";
+import {BivariateFunctionBlockContextMenu} from "./blocks/ui/BivariateFunctionBlockContextMenu";
+import {MultivariateFunctionBlockContextMenu} from "./blocks/ui/MultivariateFunctionBlockContextMenu";
 import {RainbowHatBlockContextMenu} from "./blocks/ui/RainbowHatBlockContextMenu";
 import {ToggleSwitchContextMenu} from "./blocks/ui/ToggleSwitchContextMenu";
 import {SliderContextMenu} from "./blocks/ui/SliderContextMenu";
@@ -54,11 +55,11 @@ import {GrapherContextMenu} from "./blocks/ui/GrapherContextMenu";
 import {WorkerBlockContextMenu} from "./blocks/ui/WorkerBlockContextMenu";
 import {ParametricEquationBlockContextMenu} from "./blocks/ui/ParametricEquationBlockContextMenu";
 import {Space2DContextMenu} from "./blocks/ui/Space2DContextMenu";
+import {Field2DContextMenu} from "./blocks/ui/Field2DContextMenu";
 import {GlobalVariableBlockContextMenu} from "./blocks/ui/GlobalVariableBlockContextMenu";
 import {MomentarySwitchContextMenu} from "./blocks/ui/MomentarySwitchContextMenu";
 import {BeeperContextMenu} from "./blocks/ui/BeeperContextMenu";
 import {SwitchStatementBlockContextMenu} from "./blocks/ui/SwitchStatementBlockContextMenu";
-import {MultivariateFunctionBlockContextMenu} from "./blocks/ui/MultivariateFunctionBlockContextMenu";
 import {GlobalObjectBlockContextMenu} from "./blocks/ui/GlobalObjectBlockContextMenu";
 import {RgbaColorBlockContextMenu} from "./blocks/ui/RgbaColorBlockContextMenu";
 import {ComplexNumberBlockContextMenu} from "./blocks/ui/ComplexNumberBlockContextMenu";
@@ -77,7 +78,6 @@ import {FFTBlockContextMenu} from "./blocks/ui/FFTBlockContextMenu";
 import {ODESolverBlockContextMenu} from "./blocks/ui/ODESolverBlockContextMenu";
 import {RandomNumberGeneratorBlockContextMenu} from "./blocks/ui/RandomNumberGeneratorBlockContextMenu";
 import {TransientStateFDMSolverBlockContextMenu} from "./blocks/ui/TransientStateFDMSolverBlockContextMenu";
-import {Field2DContextMenu} from "./blocks/ui/Field2DContextMenu";
 import {SteadyStateFDMSolverBlockContextMenu} from "./blocks/ui/SteadyStateFDMSolverBlockContextMenu";
 import {BoundaryConditionBlockContextMenu} from "./blocks/ui/BoundaryConditionBlockContextMenu";
 
@@ -375,15 +375,15 @@ function setupContextMenuForBlock() {
   logicBlockContextMenu.addListeners();
   contextMenus.logicBlock = logicBlockContextMenu;
 
-  let unaryFunctionBlockContextMenu = new UnaryFunctionBlockContextMenu();
-  unaryFunctionBlockContextMenu.render("unary-function-block-context-menu-placeholder");
-  unaryFunctionBlockContextMenu.addListeners();
-  contextMenus.unaryFunctionBlock = unaryFunctionBlockContextMenu;
+  let univariateFunctionBlockContextMenu = new UnivariateFunctionBlockContextMenu();
+  univariateFunctionBlockContextMenu.render("univariate-function-block-context-menu-placeholder");
+  univariateFunctionBlockContextMenu.addListeners();
+  contextMenus.univariateFunctionBlock = univariateFunctionBlockContextMenu;
 
-  let binaryFunctionBlockContextMenu = new BinaryFunctionBlockContextMenu();
-  binaryFunctionBlockContextMenu.render("binary-function-block-context-menu-placeholder");
-  binaryFunctionBlockContextMenu.addListeners();
-  contextMenus.binaryFunctionBlock = binaryFunctionBlockContextMenu;
+  let bivariateFunctionBlockContextMenu = new BivariateFunctionBlockContextMenu();
+  bivariateFunctionBlockContextMenu.render("bivariate-function-block-context-menu-placeholder");
+  bivariateFunctionBlockContextMenu.addListeners();
+  contextMenus.bivariateFunctionBlock = bivariateFunctionBlockContextMenu;
 
   let multivariateFunctionBlockContextMenu = new MultivariateFunctionBlockContextMenu();
   multivariateFunctionBlockContextMenu.render("multivariate-function-block-context-menu-placeholder");

@@ -8,11 +8,11 @@ import {BlockContextMenu} from "./BlockContextMenu";
 import {UnaryFunctionBlock} from "../UnaryFunctionBlock";
 import {Util} from "../../Util";
 
-export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
+export class UnivariateFunctionBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "unary-function-block-context-menu";
+    this.id = "univariate-function-block-context-menu";
   }
 
   getPropertiesUI(): string {
@@ -20,19 +20,19 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Variable Name (e.g. x):</td>
-                  <td><input type="text" id="unary-function-block-variable-name-field" style="width: 100%"></td>
+                  <td><input type="text" id="univariate-function-block-variable-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Expression (e.g. sin(x)):</td>
-                  <td><input type="text" id="unary-function-block-expression-field" style="width: 100%"></td>
+                  <td><input type="text" id="univariate-function-block-expression-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="unary-function-block-width-field" style="width: 100%"></td>
+                  <td><input type="text" id="univariate-function-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="unary-function-block-height-field" style="width: 100%"></td>
+                  <td><input type="text" id="univariate-function-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -44,13 +44,13 @@ export class UnaryFunctionBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof UnaryFunctionBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let variableNameInputElement = document.getElementById("unary-function-block-variable-name-field") as HTMLInputElement;
+      let variableNameInputElement = document.getElementById("univariate-function-block-variable-name-field") as HTMLInputElement;
       variableNameInputElement.value = block.getVariableName() ? block.getVariableName() : "x";
-      let expressionInputElement = document.getElementById("unary-function-block-expression-field") as HTMLInputElement;
+      let expressionInputElement = document.getElementById("univariate-function-block-expression-field") as HTMLInputElement;
       expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x";
-      let widthInputElement = document.getElementById("unary-function-block-width-field") as HTMLInputElement;
+      let widthInputElement = document.getElementById("univariate-function-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("unary-function-block-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("univariate-function-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
         let success = true;

@@ -8,11 +8,11 @@ import {BlockContextMenu} from "./BlockContextMenu";
 import {BinaryFunctionBlock} from "../BinaryFunctionBlock";
 import {Util} from "../../Util";
 
-export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
+export class BivariateFunctionBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "binary-function-block-context-menu";
+    this.id = "bivariate-function-block-context-menu";
   }
 
   getPropertiesUI(): string {
@@ -20,30 +20,30 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Variable 1 Name (e.g. x):</td>
-                  <td><input type="text" id="binary-function-block-variable1-name-field" style="width: 100%"></td>
+                  <td><input type="text" id="bivariate-function-block-variable1-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Variable 2 Name (e.g. y):</td>
-                  <td><input type="text" id="binary-function-block-variable2-name-field" style="width: 100%"></td>
+                  <td><input type="text" id="bivariate-function-block-variable2-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Expression (e.g. sin(x+y)):</td>
-                  <td><input type="text" id="binary-function-block-expression-field" style="width: 100%"></td>
+                  <td><input type="text" id="bivariate-function-block-expression-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Output Array:</td>
                   <td>
-                    <input type="radio" name="output-array" id="binary-function-block-output-1d-radio-button" checked> 1D
-                    <input type="radio" name="output-array" id="binary-function-block-output-2d-radio-button"> 2D
+                    <input type="radio" name="output-array" id="bivariate-function-block-output-1d-radio-button" checked> 1D
+                    <input type="radio" name="output-array" id="bivariate-function-block-output-2d-radio-button"> 2D
                   </td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="binary-function-block-width-field" style="width: 100%"></td>
+                  <td><input type="text" id="bivariate-function-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="binary-function-block-height-field" style="width: 100%"></td>
+                  <td><input type="text" id="bivariate-function-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -55,19 +55,19 @@ export class BinaryFunctionBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof BinaryFunctionBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let variable1NameInputElement = document.getElementById("binary-function-block-variable1-name-field") as HTMLInputElement;
+      let variable1NameInputElement = document.getElementById("bivariate-function-block-variable1-name-field") as HTMLInputElement;
       variable1NameInputElement.value = block.getVariable1Name() ? block.getVariable1Name() : "x";
-      let variable2NameInputElement = document.getElementById("binary-function-block-variable2-name-field") as HTMLInputElement;
+      let variable2NameInputElement = document.getElementById("bivariate-function-block-variable2-name-field") as HTMLInputElement;
       variable2NameInputElement.value = block.getVariable2Name() ? block.getVariable2Name() : "y";
-      let expressionInputElement = document.getElementById("binary-function-block-expression-field") as HTMLInputElement;
+      let expressionInputElement = document.getElementById("bivariate-function-block-expression-field") as HTMLInputElement;
       expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x+y";
-      let output1DRadioButton = document.getElementById("binary-function-block-output-1d-radio-button") as HTMLInputElement;
+      let output1DRadioButton = document.getElementById("bivariate-function-block-output-1d-radio-button") as HTMLInputElement;
       output1DRadioButton.checked = block.getOutputArrayType() === "1D";
-      let output2DRadioButton = document.getElementById("binary-function-block-output-2d-radio-button") as HTMLInputElement;
+      let output2DRadioButton = document.getElementById("bivariate-function-block-output-2d-radio-button") as HTMLInputElement;
       output2DRadioButton.checked = block.getOutputArrayType() === "2D";
-      let widthInputElement = document.getElementById("binary-function-block-width-field") as HTMLInputElement;
+      let widthInputElement = document.getElementById("bivariate-function-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("binary-function-block-height-field") as HTMLInputElement;
+      let heightInputElement = document.getElementById("bivariate-function-block-height-field") as HTMLInputElement;
       heightInputElement.value = block.getHeight().toString();
       const okFunction = function () {
         let success = true;

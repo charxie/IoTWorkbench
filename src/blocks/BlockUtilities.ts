@@ -79,10 +79,10 @@ export class BlockUtilities {
       return contextMenus.logicBlock;
     }
     if (block instanceof UnaryFunctionBlock) {
-      return contextMenus.unaryFunctionBlock;
+      return contextMenus.univariateFunctionBlock;
     }
     if (block instanceof BinaryFunctionBlock) {
-      return contextMenus.binaryFunctionBlock;
+      return contextMenus.bivariateFunctionBlock;
     }
     if (block instanceof MultivariableFunctionBlock) {
       return contextMenus.multivariateFunctionBlock;
@@ -218,12 +218,12 @@ export class BlockUtilities {
       return document.getElementById("logic-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof UnaryFunctionBlock) {
-      contextMenus.unaryFunctionBlock.block = block;
-      return document.getElementById("unary-function-block-context-menu") as HTMLMenuElement;
+      contextMenus.univariateFunctionBlock.block = block;
+      return document.getElementById("univariate-function-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof BinaryFunctionBlock) {
-      contextMenus.binaryFunctionBlock.block = block;
-      return document.getElementById("binary-function-block-context-menu") as HTMLMenuElement;
+      contextMenus.bivariateFunctionBlock.block = block;
+      return document.getElementById("bivariate-function-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof MultivariableFunctionBlock) {
       contextMenus.multivariateFunctionBlock.block = block;

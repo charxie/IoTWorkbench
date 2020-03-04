@@ -58,8 +58,8 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="bitwise-operator-and-block" title="Bitwise Operator" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="logic-and-block" title="Logic Operator" width="45px" height="60px" style="left: 10px; cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="logic-not-block" title="Not Operator" width="45px" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="unary-function-block" title="Univariate Function" width="45px" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="binary-function-block" title="Bivariate Function" width="45px" height="70px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="univariate-function-block" title="Univariate Function" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="bivariate-function-block" title="Bivariate Function" width="45px" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="multivariate-function-block" title="Multivariate Function" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="parametric-equation-block" title="Parametric Equations" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="bundled-functions-block" title="Bundled Functions" width="45px" height="80px" style="cursor: pointer;"/></td>
@@ -128,8 +128,8 @@ export class BlockElementsPanel {
   render(selectorId: string): void {
     let element = document.getElementById(selectorId);
     element.innerHTML = this.getUi();
-    this.drawUnaryFunctionBlock("unary-function-block");
-    this.drawBinaryFunctionBlock("binary-function-block");
+    this.drawUnivariateFunctionBlock("univariate-function-block");
+    this.drawBivariateFunctionBlock("bivariate-function-block");
     this.drawMultivariateFunctionBlock("multivariate-function-block");
     this.drawParametricEquationBlock("parametric-equation-block");
     this.drawBundledFunctionsBlock("bundled-functions-block");
@@ -462,7 +462,7 @@ export class BlockElementsPanel {
     block.draw(ctx);
   }
 
-  private drawUnaryFunctionBlock(canvasId: string): void {
+  private drawUnivariateFunctionBlock(canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new UnaryFunctionBlock("Unary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
@@ -472,7 +472,7 @@ export class BlockElementsPanel {
     }
   }
 
-  private drawBinaryFunctionBlock(canvasId: string): void {
+  private drawBivariateFunctionBlock(canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new BinaryFunctionBlock("Binary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
