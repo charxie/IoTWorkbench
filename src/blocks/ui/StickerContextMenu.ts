@@ -31,7 +31,7 @@ export class StickerContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>User Text:</td>
-                  <td><textarea id="sticker-user-text-area" rows="5" style="width: 100%"></textarea>
+                  <td><textarea id="sticker-user-text-area" rows="8" style="width: 100%"></textarea>
                 </tr>
                 <tr>
                   <td>Panel Color:</td>

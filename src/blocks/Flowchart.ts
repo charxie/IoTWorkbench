@@ -691,13 +691,13 @@ export class Flowchart {
       case "Function Declaration Block":
         block = new FunctionDeclarationBlock(uid, name, "f", x, y, 60, 80);
         break;
-      case "Unary Function Block":
+      case "Univariate Function Block":
         block = new UnivariateFunctionBlock(uid, x, y, 60, 80);
         break;
-      case "Binary Function Block":
+      case "Bivariate Function Block":
         block = new BivariateFunctionBlock(uid, x, y, 60, 100);
         break;
-      case "Multivariable Function Block":
+      case "Multivariate Function Block":
         block = new MultivariateFunctionBlock(uid, x, y, 60, 120);
         break;
       case "Parametric Equation Block":
