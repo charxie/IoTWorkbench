@@ -2,7 +2,7 @@
  * @author Charles Xie
  */
 
-import {addPlaceholder} from "./BlockContextMenus";
+import {addPlaceholder} from "./BlockContextMenusMaker";
 import {WorkbenchContextMenu} from "./components/ui/WorkbenchContextMenu";
 import {RaspberryPiContextMenu} from "./components/ui/RaspberryPiContextMenu";
 import {RainbowHatContextMenu} from "./components/ui/RainbowHatContextMenu";

@@ -263,15 +263,22 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     let y0 = this.portY0.getValue();
     let dy = this.portDY.getValue();
     let ny = this.portNY.getValue();
-    for (let n = 0; n < count; n++) {
-      if (this.initialValues[n] === undefined) {
-        this.initialValues[n] = new DataArray(0);
-      }
-      this.initialValues[n].data = this.portI[n].getValue();
-      this.boundaryValues[n] = this.portB[n].getValue();
-    }
     this.hasError = this.hasEquationError;
     if (this.equations && x0 != undefined && nx != undefined && dx != undefined && y0 != undefined && ny != undefined && dy != undefined) {
+      for (let n = 0; n < count; n++) {
+        if (this.initialValues[n] === undefined) {
+          this.initialValues[n] = new DataArray(0);
+        }
+        if (this.portI[n].getValue() !== undefined) {
+          this.initialValues[n].data = this.portI[n].getValue();
+        } else {
+          if (this.initialValues[n].data.length !== nx * ny) {
+            this.initialValues[n].data = new Array(nx * ny);
+          }
+          this.initialValues[n].fill(0);
+        }
+        this.boundaryValues[n] = this.portB[n].getValue();
+      }
       let param = {...flowchart.globalVariables};
       for (let n = 0; n < count; n++) {
         if (this.values[n] === undefined) {
@@ -333,9 +340,6 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
                 if (factor > 0) {
                   this.values[n].data[i * ny + j] = this.codes[n].evaluate(param) / factor;
                 }
-                // this.values[n].data[i * ny + j] = a * ((this.prevValues[n].data[(i - 1) * ny + j] + this.prevValues[n].data[(i + 1) * ny + j]) * invdy2 +
-                // + (this.prevValues[n].data[i * ny + j - 1] + this.prevValues[n].data[i * ny + j + 1]) * invdx2);
-                // + (TestFunctions.gaussian(y, x, -3, 0, 1) + TestFunctions.gaussian(y, x, 3, 0, 1)));
                 this.prevValues[n].data[i * ny + j] = this.values[n].data[i * ny + j];
               }
             }
@@ -358,6 +362,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   }
 
   private applyBoundaryCondition(n: number, nx: number, ny: number, dx: number, dy: number): void {
+    if (this.boundaryValues[n] === undefined) return;
     switch (this.boundaryValues[n].north.type) {
       case "Dirichlet":
         for (let j = 0; j < ny; j++) {
