@@ -2,8 +2,9 @@
  * @author Charles Xie
  */
 
-import {UnaryFunctionBlock} from "../UnaryFunctionBlock";
-import {BinaryFunctionBlock} from "../BinaryFunctionBlock";
+import {UnivariateFunctionBlock} from "../UnivariateFunctionBlock";
+import {BivariateFunctionBlock} from "../BivariateFunctionBlock";
+import {MultivariateFunctionBlock} from "../MultivariateFunctionBlock";
 import {NegationBlock} from "../NegationBlock";
 import {LogicBlock} from "../LogicBlock";
 import {ArithmeticBlock} from "../ArithmeticBlock";
@@ -22,7 +23,6 @@ import {GlobalVariableBlock} from "../GlobalVariableBlock";
 import {MomentarySwitch} from "../MomentarySwitch";
 import {Beeper} from "../Beeper";
 import {SwitchStatementBlock} from "../SwitchStatementBlock";
-import {MultivariableFunctionBlock} from "../MultivariableFunctionBlock";
 import {GlobalObjectBlock} from "../GlobalObjectBlock";
 import {RgbaColorBlock} from "../RgbaColorBlock";
 import {ComplexNumberBlock} from "../ComplexNumberBlock";
@@ -465,7 +465,7 @@ export class BlockElementsPanel {
   private drawUnivariateFunctionBlock(canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new UnaryFunctionBlock("Unary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    let block = new UnivariateFunctionBlock("Univariate Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     if (block != null) {
       block.setIconic(true);
       block.draw(ctx);
@@ -475,7 +475,7 @@ export class BlockElementsPanel {
   private drawBivariateFunctionBlock(canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new BinaryFunctionBlock("Binary Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    let block = new BivariateFunctionBlock("Bivariate Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     if (block != null) {
       block.setIconic(true);
       block.draw(ctx);
@@ -485,7 +485,7 @@ export class BlockElementsPanel {
   private drawMultivariateFunctionBlock(canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new MultivariableFunctionBlock("Multivariable Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    let block = new MultivariateFunctionBlock("Multivariate Function Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     if (block != null) {
       block.setIconic(true);
       block.draw(ctx);

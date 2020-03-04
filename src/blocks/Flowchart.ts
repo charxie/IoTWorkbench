@@ -3,16 +3,20 @@
  */
 
 import $ from "jquery";
+import {closeAllContextMenus, flowchart, math, system} from "../Main";
+import {Util} from "../Util";
 import {BlockView} from "./BlockView";
 import {Block} from "./Block";
-import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
-import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
+import {Port} from "./Port";
+import {PortConnector} from "./PortConnector";
+import {UnivariateFunctionBlock} from "./UnivariateFunctionBlock";
+import {BivariateFunctionBlock} from "./BivariateFunctionBlock";
+import {MultivariateFunctionBlock} from "./MultivariateFunctionBlock";
+import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {NegationBlock} from "./NegationBlock";
 import {LogicBlock} from "./LogicBlock";
 import {ArithmeticBlock} from "./ArithmeticBlock";
 import {RainbowHatBlock} from "./RainbowHatBlock";
-import {Port} from "./Port";
-import {PortConnector} from "./PortConnector";
 import {Sticker} from "./Sticker";
 import {Beeper} from "./Beeper";
 import {Slider} from "./Slider";
@@ -23,15 +27,12 @@ import {SeriesBlock} from "./SeriesBlock";
 import {ItemSelector} from "./ItemSelector";
 import {Grapher} from "./Grapher";
 import {Space2D} from "./Space2D";
-import {ParametricEquationBlock} from "./ParametricEquationBlock";
+import {Field2D} from "./Field2D";
 import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
-import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
-import {closeAllContextMenus, flowchart, math, system} from "../Main";
 import {GlobalObjectBlock} from "./GlobalObjectBlock";
 import {RgbaColorBlock} from "./RgbaColorBlock";
-import {Util} from "../Util";
 import {ComplexNumberBlock} from "./ComplexNumberBlock";
 import {ActionBlock} from "./ActionBlock";
 import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
@@ -52,7 +53,6 @@ import {ODESolverBlock} from "./ODESolverBlock";
 import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
 import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
-import {Field2D} from "./Field2D";
 import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
 
 export class Flowchart {
@@ -692,13 +692,13 @@ export class Flowchart {
         block = new FunctionDeclarationBlock(uid, name, "f", x, y, 60, 80);
         break;
       case "Unary Function Block":
-        block = new UnaryFunctionBlock(uid, x, y, 60, 80);
+        block = new UnivariateFunctionBlock(uid, x, y, 60, 80);
         break;
       case "Binary Function Block":
-        block = new BinaryFunctionBlock(uid, x, y, 60, 100);
+        block = new BivariateFunctionBlock(uid, x, y, 60, 100);
         break;
       case "Multivariable Function Block":
-        block = new MultivariableFunctionBlock(uid, x, y, 60, 120);
+        block = new MultivariateFunctionBlock(uid, x, y, 60, 120);
         break;
       case "Parametric Equation Block":
         block = new ParametricEquationBlock(uid, x, y, 60, 100);
@@ -960,12 +960,12 @@ export class Flowchart {
         blockStates.push(new TurnoutSwitch.State(b));
       } else if (b instanceof SwitchStatementBlock) {
         blockStates.push(new SwitchStatementBlock.State(b));
-      } else if (b instanceof UnaryFunctionBlock) {
-        blockStates.push(new UnaryFunctionBlock.State(b));
-      } else if (b instanceof BinaryFunctionBlock) {
-        blockStates.push(new BinaryFunctionBlock.State(b));
-      } else if (b instanceof MultivariableFunctionBlock) {
-        blockStates.push(new MultivariableFunctionBlock.State(b));
+      } else if (b instanceof UnivariateFunctionBlock) {
+        blockStates.push(new UnivariateFunctionBlock.State(b));
+      } else if (b instanceof BivariateFunctionBlock) {
+        blockStates.push(new BivariateFunctionBlock.State(b));
+      } else if (b instanceof MultivariateFunctionBlock) {
+        blockStates.push(new MultivariateFunctionBlock.State(b));
       } else if (b instanceof ParametricEquationBlock) {
         blockStates.push(new ParametricEquationBlock.State(b));
       } else if (b instanceof BundledFunctionsBlock) {

@@ -8,7 +8,7 @@ import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
 import {TurnoutSwitch} from "../TurnoutSwitch";
 import {SwitchStatementBlock} from "../SwitchStatementBlock";
-import {MultivariableFunctionBlock} from "../MultivariableFunctionBlock";
+import {MultivariateFunctionBlock} from "../MultivariateFunctionBlock";
 
 export class MultivariateFunctionBlockContextMenu extends BlockContextMenu {
 
@@ -47,7 +47,7 @@ export class MultivariateFunctionBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof MultivariableFunctionBlock) {
+    if (this.block instanceof MultivariateFunctionBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let variablesInputElement = document.getElementById("multivariate-function-block-cases-field") as HTMLTextAreaElement;

@@ -5,7 +5,7 @@
 import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
-import {UnaryFunctionBlock} from "../UnaryFunctionBlock";
+import {UnivariateFunctionBlock} from "../UnivariateFunctionBlock";
 import {Util} from "../../Util";
 
 export class UnivariateFunctionBlockContextMenu extends BlockContextMenu {
@@ -41,7 +41,7 @@ export class UnivariateFunctionBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof UnaryFunctionBlock) {
+    if (this.block instanceof UnivariateFunctionBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let variableNameInputElement = document.getElementById("univariate-function-block-variable-name-field") as HTMLInputElement;

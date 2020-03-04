@@ -8,7 +8,7 @@ import {Block} from "./Block";
 import {Util} from "../Util";
 import {flowchart} from "../Main";
 
-export class BinaryFunctionBlock extends FunctionBlock {
+export class BivariateFunctionBlock extends FunctionBlock {
 
   private variable1Name: string = "x";
   private variable2Name: string = "y";
@@ -28,7 +28,7 @@ export class BinaryFunctionBlock extends FunctionBlock {
     readonly width: number;
     readonly height: number;
 
-    constructor(block: BinaryFunctionBlock) {
+    constructor(block: BivariateFunctionBlock) {
       this.uid = block.uid;
       this.variable1Name = block.variable1Name;
       this.variable2Name = block.variable2Name;
@@ -56,7 +56,7 @@ export class BinaryFunctionBlock extends FunctionBlock {
   }
 
   getCopy(): Block {
-    let block = new BinaryFunctionBlock("Binary Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    let block = new BivariateFunctionBlock("Binary Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.expression = this.expression;
     block.variable1Name = this.variable1Name;
     block.variable2Name = this.variable2Name;

@@ -5,7 +5,7 @@
 import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
-import {BinaryFunctionBlock} from "../BinaryFunctionBlock";
+import {BivariateFunctionBlock} from "../BivariateFunctionBlock";
 import {Util} from "../../Util";
 
 export class BivariateFunctionBlockContextMenu extends BlockContextMenu {
@@ -52,7 +52,7 @@ export class BivariateFunctionBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof BinaryFunctionBlock) {
+    if (this.block instanceof BivariateFunctionBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let variable1NameInputElement = document.getElementById("bivariate-function-block-variable1-name-field") as HTMLInputElement;

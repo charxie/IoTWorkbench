@@ -8,7 +8,7 @@ import {Block} from "./Block";
 import {Util} from "../Util";
 import {flowchart} from "../Main";
 
-export class UnaryFunctionBlock extends FunctionBlock {
+export class UnivariateFunctionBlock extends FunctionBlock {
 
   private variableName: string = "x";
   private readonly portX: Port;
@@ -23,7 +23,7 @@ export class UnaryFunctionBlock extends FunctionBlock {
     readonly width: number;
     readonly height: number;
 
-    constructor(block: UnaryFunctionBlock) {
+    constructor(block: UnivariateFunctionBlock) {
       this.uid = block.uid;
       this.variableName = block.variableName;
       this.expression = block.expression;
@@ -46,7 +46,7 @@ export class UnaryFunctionBlock extends FunctionBlock {
   }
 
   getCopy(): Block {
-    let block = new UnaryFunctionBlock("Unary Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    let block = new UnivariateFunctionBlock("Unary Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.expression = this.expression;
     block.variableName = this.variableName;
     return block;

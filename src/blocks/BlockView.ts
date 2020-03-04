@@ -11,8 +11,9 @@ import {Port} from "./Port";
 import {Connector} from "./Connector";
 import {PortConnector} from "./PortConnector";
 import {Block} from "./Block";
-import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
-import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
+import {UnivariateFunctionBlock} from "./UnivariateFunctionBlock";
+import {BivariateFunctionBlock} from "./BivariateFunctionBlock";
+import {MultivariateFunctionBlock} from "./MultivariateFunctionBlock";
 import {NegationBlock} from "./NegationBlock";
 import {LogicBlock} from "./LogicBlock";
 import {ArithmeticBlock} from "./ArithmeticBlock";
@@ -32,7 +33,6 @@ import {ActionBlock} from "./ActionBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {GlobalObjectBlock} from "./GlobalObjectBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
-import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
 import {RgbaColorBlock} from "./RgbaColorBlock";
 import {ComplexNumberBlock} from "./ComplexNumberBlock";
 import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
@@ -141,13 +141,13 @@ export class BlockView {
             b = that.addBlockUndoable(new FunctionDeclarationBlock("Function Declaration Block #" + timestamp, "Function Declaration Block", "f", x - 80, y - 30, 160, 60));
             break;
           case "univariate-function-block":
-            b = that.addBlockUndoable(new UnaryFunctionBlock("Unary Function Block #" + timestamp, x - 30, y - 40, 60, 80));
+            b = that.addBlockUndoable(new UnivariateFunctionBlock("Unary Function Block #" + timestamp, x - 30, y - 40, 60, 80));
             break;
           case "bivariate-function-block":
-            b = that.addBlockUndoable(new BinaryFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
+            b = that.addBlockUndoable(new BivariateFunctionBlock("Binary Function Block #" + timestamp, x - 30, y - 50, 60, 100));
             break;
           case "multivariate-function-block":
-            b = that.addBlockUndoable(new MultivariableFunctionBlock("Multivariable Function Block #" + timestamp, x - 30, y - 60, 60, 120));
+            b = that.addBlockUndoable(new MultivariateFunctionBlock("Multivariable Function Block #" + timestamp, x - 30, y - 60, 60, 120));
             break;
           case "parametric-equation-block":
             b = that.addBlockUndoable(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 40, y - 50, 80, 100));

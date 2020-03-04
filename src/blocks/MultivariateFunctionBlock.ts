@@ -8,7 +8,7 @@ import {Block} from "./Block";
 import {Util} from "../Util";
 import {flowchart} from "../Main";
 
-export class MultivariableFunctionBlock extends FunctionBlock {
+export class MultivariateFunctionBlock extends FunctionBlock {
 
   private variables: string[] = ["x", "y", "z"];
   private portI: Port[];
@@ -24,7 +24,7 @@ export class MultivariableFunctionBlock extends FunctionBlock {
     readonly height: number;
     readonly marginX: number;
 
-    constructor(block: MultivariableFunctionBlock) {
+    constructor(block: MultivariateFunctionBlock) {
       this.uid = block.uid;
       this.variables = JSON.parse(JSON.stringify(block.variables));
       this.expression = block.expression;
@@ -76,7 +76,7 @@ export class MultivariableFunctionBlock extends FunctionBlock {
   }
 
   getCopy(): Block {
-    let block = new MultivariableFunctionBlock("Multivariable Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    let block = new MultivariateFunctionBlock("Multivariable Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.expression = this.expression;
     block.variables = JSON.parse(JSON.stringify(this.variables));
     block.marginX = this.marginX;

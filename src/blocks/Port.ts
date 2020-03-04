@@ -5,9 +5,7 @@
 import {Block} from "./Block";
 import {Arc} from "../math/Arc";
 import {Point} from "../math/Point";
-import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
 import {flowchart} from "../Main";
-import {GlobalVariableBlock} from "./GlobalVariableBlock";
 
 export class Port {
 

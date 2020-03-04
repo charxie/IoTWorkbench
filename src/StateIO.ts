@@ -13,16 +13,17 @@ import {SeriesBlock} from "./blocks/SeriesBlock";
 import {Grapher} from "./blocks/Grapher";
 import {WorkerBlock} from "./blocks/WorkerBlock";
 import {ActionBlock} from "./blocks/ActionBlock";
-import {UnaryFunctionBlock} from "./blocks/UnaryFunctionBlock";
-import {BinaryFunctionBlock} from "./blocks/BinaryFunctionBlock";
+import {UnivariateFunctionBlock} from "./blocks/UnivariateFunctionBlock";
+import {BivariateFunctionBlock} from "./blocks/BivariateFunctionBlock";
+import {MultivariateFunctionBlock} from "./blocks/MultivariateFunctionBlock";
 import {TurnoutSwitch} from "./blocks/TurnoutSwitch";
 import {ParametricEquationBlock} from "./blocks/ParametricEquationBlock";
 import {Space2D} from "./blocks/Space2D";
+import {Field2D} from "./blocks/Field2D";
 import {GlobalVariableBlock} from "./blocks/GlobalVariableBlock";
 import {MomentarySwitch} from "./blocks/MomentarySwitch";
 import {Beeper} from "./blocks/Beeper";
 import {SwitchStatementBlock} from "./blocks/SwitchStatementBlock";
-import {MultivariableFunctionBlock} from "./blocks/MultivariableFunctionBlock";
 import {GlobalObjectBlock} from "./blocks/GlobalObjectBlock";
 import {RainbowHat} from "./components/RainbowHat";
 import {SensorLineChart} from "./components/SensorLineChart";
@@ -39,7 +40,6 @@ import {FFTBlock} from "./blocks/FFTBlock";
 import {ODESolverBlock} from "./blocks/ODESolverBlock";
 import {RandomNumberGeneratorBlock} from "./blocks/RandomNumberGeneratorBlock";
 import {TransientStateFDMSolverBlock} from "./blocks/TransientStateFDMSolverBlock";
-import {Field2D} from "./blocks/Field2D";
 import {SteadyStateFDMSolverBlock} from "./blocks/SteadyStateFDMSolverBlock";
 import {BoundaryConditionBlock} from "./blocks/BoundaryConditionBlock";
 
@@ -235,17 +235,17 @@ export class StateIO {
         } else if (block instanceof SwitchStatementBlock) {
           block.setName(state.name);
           block.setCases(state.cases);
-        } else if (block instanceof UnaryFunctionBlock) {
+        } else if (block instanceof UnivariateFunctionBlock) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");
           block.setExpression(state.expression ? state.expression : "x");
-        } else if (block instanceof BinaryFunctionBlock) {
+        } else if (block instanceof BivariateFunctionBlock) {
           block.setName(state.name);
           block.setVariable1Name(state.variable1Name ? state.variable1Name : "x");
           block.setVariable2Name(state.variable2Name ? state.variable2Name : "y");
           block.setExpression(state.expression ? state.expression : "x+y");
           block.setOutputArrayType(state.outputArrayType === undefined ? "1D" : state.outputArrayType);
-        } else if (block instanceof MultivariableFunctionBlock) {
+        } else if (block instanceof MultivariateFunctionBlock) {
           block.setName(state.name);
           block.setVariables(state.variables ? state.variables : "['x', 'y', 'z']");
           block.setExpression(state.expression ? state.expression : "x+y+z");

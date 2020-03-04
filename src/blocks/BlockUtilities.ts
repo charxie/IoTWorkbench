@@ -9,9 +9,9 @@ import {TurnoutSwitch} from "./TurnoutSwitch";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
 import {NegationBlock} from "./NegationBlock";
 import {LogicBlock} from "./LogicBlock";
-import {UnaryFunctionBlock} from "./UnaryFunctionBlock";
-import {BinaryFunctionBlock} from "./BinaryFunctionBlock";
-import {MultivariableFunctionBlock} from "./MultivariableFunctionBlock";
+import {UnivariateFunctionBlock} from "./UnivariateFunctionBlock";
+import {BivariateFunctionBlock} from "./BivariateFunctionBlock";
+import {MultivariateFunctionBlock} from "./MultivariateFunctionBlock";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
 import {Slider} from "./Slider";
@@ -78,13 +78,13 @@ export class BlockUtilities {
     if (block instanceof LogicBlock) {
       return contextMenus.logicBlock;
     }
-    if (block instanceof UnaryFunctionBlock) {
+    if (block instanceof UnivariateFunctionBlock) {
       return contextMenus.univariateFunctionBlock;
     }
-    if (block instanceof BinaryFunctionBlock) {
+    if (block instanceof BivariateFunctionBlock) {
       return contextMenus.bivariateFunctionBlock;
     }
-    if (block instanceof MultivariableFunctionBlock) {
+    if (block instanceof MultivariateFunctionBlock) {
       return contextMenus.multivariateFunctionBlock;
     }
     if (block instanceof ParametricEquationBlock) {
@@ -217,15 +217,15 @@ export class BlockUtilities {
       contextMenus.logicBlock.block = block;
       return document.getElementById("logic-block-context-menu") as HTMLMenuElement;
     }
-    if (block instanceof UnaryFunctionBlock) {
+    if (block instanceof UnivariateFunctionBlock) {
       contextMenus.univariateFunctionBlock.block = block;
       return document.getElementById("univariate-function-block-context-menu") as HTMLMenuElement;
     }
-    if (block instanceof BinaryFunctionBlock) {
+    if (block instanceof BivariateFunctionBlock) {
       contextMenus.bivariateFunctionBlock.block = block;
       return document.getElementById("bivariate-function-block-context-menu") as HTMLMenuElement;
     }
-    if (block instanceof MultivariableFunctionBlock) {
+    if (block instanceof MultivariateFunctionBlock) {
       contextMenus.multivariateFunctionBlock.block = block;
       return document.getElementById("multivariate-function-block-context-menu") as HTMLMenuElement;
     }
