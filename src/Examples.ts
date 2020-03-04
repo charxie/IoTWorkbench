@@ -240,13 +240,13 @@ export class Examples {
     this.files.push({name: "Biology: Brownian Motion with Multiple Particles", data: brownian_motion_multiple_particles});
     this.files.push({name: "Signal Processing: Fourier Transform", data: fourier_transform});
     this.files.push({name: "Signal Processing: Convolution Theorem", data: convolution_theorem});
-    this.files.push({name: "Simulation: Finite Difference Method", data: pde_fdm_solver});
+    this.files.push({name: "Simulation: Transient State Finite Difference Method", data: pde_fdm_solver});
     this.files.push({name: "Simulation: Numerical Stability", data: pde_numerical_stability});
     this.files.push({name: "Simulation: Heat Equation", data: heat_equation});
     this.files.push({name: "Simulation: Wave Equation", data: wave_equation});
     this.files.push({name: "Simulation: Transport Equation", data: transport_equation});
     this.files.push({name: "Simulation: Standing Waves", data: standing_waves});
-    this.files.push({name: "Simulation: Laplace Equation", data: laplace_equation});
+    this.files.push({name: "Simulation: Steady State Finite Difference Method", data: laplace_equation});
     this.files.push({name: "Simulation: Poisson Equation", data: poisson_equation});
     this.files.push({name: "Simulation: Boundary Value Problems", data: boundary_value_problems});
     this.files.push({name: "Simulation: Mixed Boundary Condition", data: mixed_boundary_condition});
