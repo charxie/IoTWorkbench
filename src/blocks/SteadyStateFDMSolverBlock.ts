@@ -9,6 +9,7 @@ import {flowchart, math} from "../Main";
 import {DataArray} from "./DataArray";
 import {SolverBlock} from "./SolverBlock";
 import {BoundaryCondition} from "./BoundaryCondition";
+import {WorkerBlock} from "./WorkerBlock";
 
 export class SteadyStateFDMSolverBlock extends SolverBlock {
 
@@ -246,8 +247,15 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   }
 
   updateModel(): void {
-    let run = this.portRN.getValue();
-    if (run === undefined || run === 0) return;
+    let connector = flowchart.getConnectorWithInput(this.portRN);
+    if (connector !== null) {
+      let stepWorker = connector.getOutput().getBlock();
+      if (stepWorker instanceof WorkerBlock) {
+        if (stepWorker.isPaused()) return;
+      }
+    }
+    let steps = this.portRN.getValue();
+    if (steps === undefined || steps === 0) return;
     let count = this.portO.length;
     let x0 = this.portX0.getValue();
     let dx = this.portDX.getValue();
@@ -281,7 +289,6 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
       const invdx2 = 1 / (dx * dx);
       const invdy2 = 1 / (dy * dy);
       const invdxdy = 1 / (4 * dx * dy);
-      const a = 0.5 / (invdx2 + invdy2);
       let x, y;
       let factor;
       try {

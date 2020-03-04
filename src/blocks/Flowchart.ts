@@ -344,50 +344,54 @@ export class Flowchart {
           functionName1 += "'";
         }
       }
-      let variableName1 = e.substring(i + 1, j);
+      let variableNames1 = e.substring(i + 1, j).split(",");
       for (let fun2 of result) {
         i = fun2.indexOf("(");
         let functionName2 = fun2.substring(0, i);
         if (functionName1 === functionName2) {
           j = fun2.indexOf(")");
-          let variableName2 = fun2.substring(i + 1, j);
-          let fun1 = this.declaredFunctions[e] as string;
-          if (variableName2 !== variableName1) { // use the variable found in the actual function for the declared function before replacement
-            let regex = new RegExp(variableName1, "g");
-            let match: RegExpExecArray = regex.exec(fun1);
-            while (match != null) {
-              let c1 = match.index > 0 ? fun1.charAt(match.index - 1) : null;
-              let c2 = match.index + variableName1.length < fun1.length ? fun1.charAt(match.index + variableName1.length) : null;
-              let realVariable = true;
-              if ((c1 != null && c1.match(wordPattern) != null) || (c2 != null && c2.match(wordPattern) != null)) {
-                realVariable = false;
+          let variableNames2 = fun2.substring(i + 1, j).split(",");
+          if (variableNames2.length === variableNames1.length) { // the numbers of arguments of the functions with the same name must be equal
+            let fun1 = this.declaredFunctions[e] as string;
+            for (let nvar = 0; nvar < variableNames1.length; nvar++) {
+              if (variableNames2[nvar] !== variableNames1[nvar]) { // use the variable found in the actual function for the declared function before replacement
+                let regex = new RegExp(variableNames1[nvar], "g");
+                let match: RegExpExecArray = regex.exec(fun1);
+                while (match != null) {
+                  let c1 = match.index > 0 ? fun1.charAt(match.index - 1) : null;
+                  let c2 = match.index + variableNames1[nvar].length < fun1.length ? fun1.charAt(match.index + variableNames1[nvar].length) : null;
+                  let realVariable = true;
+                  if ((c1 != null && c1.match(wordPattern) != null) || (c2 != null && c2.match(wordPattern) != null)) {
+                    realVariable = false;
+                  }
+                  if (realVariable) {
+                    fun1 = fun1.replaceFromTo(match.index, match.index + variableNames1[nvar].length, variableNames2[nvar]);
+                  }
+                  regex.lastIndex = match.index + 1;
+                  match = regex.exec(fun1);
+                }
               }
-              if (realVariable) {
-                fun1 = fun1.replaceFromTo(match.index, match.index + variableName1.length, variableName2);
-              }
-              regex.lastIndex = match.index + 1;
-              match = regex.exec(fun1);
             }
-          }
-          switch (order) {
-            case 0:
-              exp = exp.replace(fun2, "(" + fun1 + ")");
-              break;
-            case 1:
-              let derivative = math.derivative(fun1, variableName2).toString();
-              exp = exp.replace(fun2, "(" + derivative + ")");
-              break;
-            case 2:
-              let firstOrderDerivative = math.derivative(fun1, variableName2).toString();
-              let secondOrderDerivative = math.derivative(firstOrderDerivative, variableName2).toString();
-              exp = exp.replace(fun2, "(" + secondOrderDerivative + ")");
-              break;
-            case 3:
-              let firstOrderDerivative3 = math.derivative(fun1, variableName2).toString();
-              let secondOrderDerivative3 = math.derivative(firstOrderDerivative3, variableName2).toString();
-              let thirdOrderDerivative = math.derivative(secondOrderDerivative3, variableName2).toString();
-              exp = exp.replace(fun2, "(" + thirdOrderDerivative + ")");
-              break;
+            switch (order) {
+              case 0:
+                exp = exp.replace(fun2, "(" + fun1 + ")");
+                break;
+              case 1: // WARNING: I cannot handle the derivative of a multivariable function now
+                let derivative = math.derivative(fun1, variableNames2[0]).toString();
+                exp = exp.replace(fun2, "(" + derivative + ")");
+                break;
+              case 2:
+                let firstOrderDerivative = math.derivative(fun1, variableNames2[0]).toString();
+                let secondOrderDerivative = math.derivative(firstOrderDerivative, variableNames2[0]).toString();
+                exp = exp.replace(fun2, "(" + secondOrderDerivative + ")");
+                break;
+              case 3:
+                let firstOrderDerivative3 = math.derivative(fun1, variableNames2[0]).toString();
+                let secondOrderDerivative3 = math.derivative(firstOrderDerivative3, variableNames2[0]).toString();
+                let thirdOrderDerivative = math.derivative(secondOrderDerivative3, variableNames2[0]).toString();
+                exp = exp.replace(fun2, "(" + thirdOrderDerivative + ")");
+                break;
+            }
           }
         }
       }

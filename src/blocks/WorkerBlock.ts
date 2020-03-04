@@ -74,6 +74,10 @@ export class WorkerBlock extends Block {
     return copy;
   }
 
+  isPaused(): boolean {
+    return this.paused;
+  }
+
   setOutputType(output: string): void {
     this.outputType = output;
   }
