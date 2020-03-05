@@ -35,6 +35,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   private hasParserError: boolean = false;
   private hasDeclarationError: boolean = false;
   private relaxationSteps: number = 10;
+  private relaxationFactor: number = 1.5;
   private readonly partialDerivativePattern = /[a-zA-Z]+_[a-zA-Z]+/g;
 
   static State = class {
@@ -42,6 +43,8 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     readonly variables: string[];
     readonly equations: string[];
     readonly method: string;
+    readonly relaxationSteps: number;
+    readonly relaxationFactor: number;
     readonly x: number;
     readonly y: number;
     readonly width: number;
@@ -52,6 +55,8 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
       this.variables = block.variables;
       this.equations = block.equations;
       this.method = block.method;
+      this.relaxationSteps = block.relaxationSteps;
+      this.relaxationFactor = block.relaxationFactor;
       this.x = block.x;
       this.y = block.y;
       this.width = block.width;
@@ -63,7 +68,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     super(uid, x, y, width, height);
     this.symbol = "FDM";
     this.name = "Steady State FDM Solver Block";
-    this.method = "Jacobi";
+    this.method = "Gauss-Seidel";
     this.color = "#E0C0B6";
     let dh = this.height / (this.equations.length + 8);
     this.portRN = new Port(this, true, "RN", 0, dh, false);
@@ -135,7 +140,25 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     block.variables = this.variables.slice();
     block.setEquations(this.equations.slice());
     block.method = this.method;
+    block.relaxationSteps = this.relaxationSteps;
+    block.relaxationFactor = this.relaxationFactor;
     return block;
+  }
+
+  setRelaxationSteps(relaxationSteps: number): void {
+    this.relaxationSteps = relaxationSteps;
+  }
+
+  getRelaxationSteps(): number {
+    return this.relaxationSteps;
+  }
+
+  setRelaxationFactor(relaxationFactor: number): void {
+    this.relaxationFactor = relaxationFactor;
+  }
+
+  getRelaxationFactor(): number {
+    return this.relaxationFactor;
   }
 
   setVariables(variables: string[]): void {
@@ -388,6 +411,49 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
                     }
                     if (factor > 0) {
                       this.values[n].data[i * ny + j] = this.codes[n].evaluate(param) / factor;
+                    }
+                  }
+                }
+                this.applyBoundaryConditionToCurrentValues(n, nx, ny, dx, dy);
+              }
+              break;
+            case "Successive Over-Relaxation":
+              for (let r = 0; r < this.relaxationSteps; r++) {
+                for (let i = 1; i < nx - 1; i++) {
+                  x = x0 + i * dx;
+                  param["y"] = x;
+                  for (let j = 1; j < ny - 1; j++) {
+                    y = y0 + j * dy;
+                    param["x"] = y;
+                    factor = 0;
+                    for (let match of derivativeMatches) {
+                      let index = match.indexOf("_");
+                      let fun = match.substring(0, index);
+                      param[fun] = this.values[n].data[i * ny + j];
+                      let variable = match.substring(index + 1);
+                      switch (variable) {
+                        case "x":
+                          param[match] = (this.values[n].data[i * ny + j + 1] - this.values[n].data[i * ny + j - 1]) * invdx;
+                          break;
+                        case "y":
+                          param[match] = (this.values[n].data[(i + 1) * ny + j] - this.values[n].data[(i - 1) * ny + j]) * invdy;
+                          break;
+                        case "xx":
+                          param[match] = (this.values[n].data[i * ny + j + 1] + this.values[n].data[i * ny + j - 1]) * invdx2;
+                          factor += 2 * invdx2;
+                          break;
+                        case "yy":
+                          param[match] = (this.values[n].data[(i + 1) * ny + j] + this.values[n].data[(i - 1) * ny + j]) * invdy2;
+                          factor += 2 * invdy2;
+                          break;
+                        case "xy":
+                          param[match] = (this.values[n].data[(i + 1) * ny + j + 1] + this.values[n].data[(i - 1) * ny + j - 1]
+                            - this.values[n].data[(i + 1) * ny + j - 1] - this.values[n].data[(i - 1) * ny + j + 1]) * invdxdy;
+                          break;
+                      }
+                    }
+                    if (factor > 0) {
+                      this.values[n].data[i * ny + j] = (1 - this.relaxationFactor) * this.values[n].data[i * ny + j] + this.relaxationFactor * this.codes[n].evaluate(param) / factor;
                     }
                   }
                 }

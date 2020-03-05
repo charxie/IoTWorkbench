@@ -60,7 +60,7 @@ export class TransientStateFDMSolverBlock extends SolverBlock {
     super(uid, x, y, width, height);
     this.symbol = "FDM";
     this.name = "Transient State FDM Solver Block";
-    this.method = "Implicit";
+    this.method = "Explicit";
     this.color = "#B0E0E6";
     let dh = this.height / (this.equations.length + 6);
     this.portNt = new Port(this, true, "NT", 0, dh, false);

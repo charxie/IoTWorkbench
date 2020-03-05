@@ -33,8 +33,8 @@ export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
                   <td>Method:</td>
                   <td>
                     <select id="transient-state-fdm-solver-block-method-selector" style="width: 100%">
-                      <option value="Explicit">Explicit</option>
-                      <option value="Implicit" selected>Implicit</option>
+                      <option value="Explicit" selected>Explicit</option>
+                      <option value="Implicit">Implicit</option>
                     </select>
                   </td>
                 </tr>

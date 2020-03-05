@@ -192,6 +192,8 @@ export class StateIO {
           block.setVariables(state.variables != undefined ? state.variables : ["x", "y"]);
           block.setEquations(state.equations != undefined ? state.equations : ["T_xx+T_yy=0"]);
           block.setMethod(state.method);
+          block.setRelaxationSteps(state.relaxationSteps !== undefined ? state.relaxationSteps : 10);
+          block.setRelaxationFactor(state.relaxationFactor !== undefined ? state.relaxationFactor : 1.5);
         } else if (block instanceof BoundaryConditionBlock) {
           block.boundaryCondition.north.type = state.northType !== undefined ? state.northType : "Dirichlet";
           block.boundaryCondition.north.value = state.northValue;

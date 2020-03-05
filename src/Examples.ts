@@ -3,7 +3,7 @@
  */
 
 // @ts-ignore
-import jacobi_vs_gauss_seidel from "./examples/jacobi-vs-gauss-seidel.json";
+import compare_iterative_methods from "./examples/compare-iterative-methods.json";
 // @ts-ignore
 import poisson_equation from "./examples/poisson-equation.json";
 // @ts-ignore
@@ -258,7 +258,7 @@ export class Examples {
     this.files.push({name: "Simulation: Transport Equation", data: transport_equation});
     this.files.push({name: "Simulation: Standing Waves", data: standing_waves});
     this.files.push({name: "Simulation: Steady State Finite Difference Method", data: laplace_equation});
-    this.files.push({name: "Simulation: Jacobi vs. Gauss-Seidel", data: jacobi_vs_gauss_seidel});
+    this.files.push({name: "Simulation: Compare Iterative Methods", data: compare_iterative_methods});
     this.files.push({name: "Simulation: Poisson Equation", data: poisson_equation});
     this.files.push({name: "Simulation: Boundary Value Problems", data: boundary_value_problems});
     this.files.push({name: "Simulation: Mixed Boundary Condition", data: mixed_boundary_condition});

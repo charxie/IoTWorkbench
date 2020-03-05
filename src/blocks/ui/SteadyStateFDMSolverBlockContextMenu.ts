@@ -35,8 +35,17 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
                     <select id="steady-state-fdm-solver-block-method-selector" style="width: 100%">
                       <option value="Jacobi">Jacobi</option>
                       <option value="Gauss-Seidel" selected>Gauss-Seidel</option>
+                      <option value="Successive Over-Relaxation">Successive Over-Relaxation</option>
                     </select>
                   </td>
+                </tr>
+                <tr>
+                  <td>Relaxation Steps:</td>
+                  <td><input type="text" id="steady-state-fdm-solver-block-relaxation-steps-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Relaxation Factor (0, 2):</td>
+                  <td><input type="text" id="steady-state-fdm-solver-block-relaxation-factor-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
@@ -62,6 +71,10 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
       variablesInputElement.value = block.getVariables() ? JSON.stringify(block.getVariables()) : "['x', 'y']";
       let equationsInputElement = document.getElementById("steady-state-fdm-solver-block-equations-field") as HTMLTextAreaElement;
       equationsInputElement.value = JSON.stringify(block.getEquations());
+      let relaxationStepsInputElement = document.getElementById("steady-state-fdm-solver-block-relaxation-steps-field") as HTMLInputElement;
+      relaxationStepsInputElement.value = block.getRelaxationSteps().toString();
+      let relaxationFactorInputElement = document.getElementById("steady-state-fdm-solver-block-relaxation-factor-field") as HTMLInputElement;
+      relaxationFactorInputElement.value = block.getRelaxationFactor().toString();
       let widthInputElement = document.getElementById("steady-state-fdm-solver-block-width-field") as HTMLInputElement;
       widthInputElement.value = block.getWidth().toString();
       let heightInputElement = document.getElementById("steady-state-fdm-solver-block-height-field") as HTMLInputElement;
@@ -69,6 +82,22 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
       const okFunction = function () {
         let success = true;
         let message;
+        // set relaxation steps
+        let relaxationSteps = parseInt(relaxationStepsInputElement.value);
+        if (isNumber(relaxationSteps)) {
+          block.setRelaxationSteps(Math.max(5, relaxationSteps));
+        } else {
+          success = false;
+          message = relaxationStepsInputElement.value + " is not a valid relaxation step.";
+        }
+        // set relaxation factor
+        let relaxationFactor = parseFloat(relaxationFactorInputElement.value);
+        if (isNumber(relaxationFactor)) {
+          block.setRelaxationFactor(Math.min(1.99, Math.max(0.1, relaxationFactor)));
+        } else {
+          success = false;
+          message = relaxationFactorInputElement.value + " is not a valid relaxation factor.";
+        }
         // set width
         let w = parseInt(widthInputElement.value);
         if (isNumber(w)) {
@@ -130,6 +159,8 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
         }
       };
       variablesInputElement.addEventListener("keyup", enterKeyUp);
+      relaxationStepsInputElement.addEventListener("keyup", enterKeyUp);
+      relaxationFactorInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       let that = this;
