@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import jacobi_vs_gauss_seidel from "./examples/jacobi-vs-gauss-seidel.json";
+// @ts-ignore
 import poisson_equation from "./examples/poisson-equation.json";
 // @ts-ignore
 import mixed_boundary_condition from "./examples/mixed-boundary-condition.json";
@@ -256,14 +258,15 @@ export class Examples {
     this.files.push({name: "Simulation: Transport Equation", data: transport_equation});
     this.files.push({name: "Simulation: Standing Waves", data: standing_waves});
     this.files.push({name: "Simulation: Steady State Finite Difference Method", data: laplace_equation});
+    this.files.push({name: "Simulation: Jacobi vs. Gauss-Seidel", data: jacobi_vs_gauss_seidel});
     this.files.push({name: "Simulation: Poisson Equation", data: poisson_equation});
     this.files.push({name: "Simulation: Boundary Value Problems", data: boundary_value_problems});
     this.files.push({name: "Simulation: Mixed Boundary Condition", data: mixed_boundary_condition});
-    this.files.push({name: "Rainbow HAT: RGB LED Array", data: rainbow_hat_rgb_led_array});
-    this.files.push({name: "Rainbow HAT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
-    this.files.push({name: "Rainbow HAT: Fading LED Array", data: rainbow_hat_fading_led_array});
-    this.files.push({name: "Rainbow HAT: Sensor Data", data: rainbow_hat_sensor_data});
-    this.files.push({name: "Rainbow HAT: Mixed-Reality Brownian Motion", data: rainbow_hat_brownian_motion});
+    this.files.push({name: "IoT: RGB LED Array", data: rainbow_hat_rgb_led_array});
+    this.files.push({name: "IoT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
+    this.files.push({name: "IoT: Fading LED Array", data: rainbow_hat_fading_led_array});
+    this.files.push({name: "IoT: Sensor Data", data: rainbow_hat_sensor_data});
+    this.files.push({name: "IoT: Mixed-Reality Brownian Motion", data: rainbow_hat_brownian_motion});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 

@@ -11,7 +11,7 @@ import {Util} from "../../Util";
 export class StickerContextMenu extends BlockContextMenu {
 
   private dialogWidth: number = 400;
-  private dialogHeight: number = 550;
+  private dialogHeight: number = 600;
 
   constructor() {
     super();

@@ -33,7 +33,8 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
                   <td>Method:</td>
                   <td>
                     <select id="steady-state-fdm-solver-block-method-selector" style="width: 100%">
-                      <option value="Jacobi" selected>Jacobi</option>
+                      <option value="Jacobi">Jacobi</option>
+                      <option value="Gauss-Seidel" selected>Gauss-Seidel</option>
                     </select>
                   </td>
                 </tr>
