@@ -104,12 +104,11 @@ let social = `<span style="font-size: 2em; vertical-align: middle; cursor: point
 
 window.onload = function () {
 
-  document.getElementById("sign-in-label").innerHTML = "Hello, " + user.firstName;
+  document.getElementById("sign-in-label").innerHTML = "Hi, " + user.firstName;
   document.getElementById("name-label").innerHTML = Constants.Software.name;
   document.getElementById("tagline-label").innerHTML = Constants.Software.tagline;
-  document.getElementById("version-label").innerHTML = Constants.Software.version;
   document.getElementById('credit').innerHTML = social + "<div class='horizontal-divider'></div>"
-    + Constants.Software.name + " " + Constants.Software.version
+    + Constants.Software.name + " Version " + Constants.Software.version
     + ", created by <a href='https://charxie.github.io/' style='text-decoration: none;'>Dr. Charles Xie</a>, " + new Date().getFullYear();
 
   let examples = new Examples();
