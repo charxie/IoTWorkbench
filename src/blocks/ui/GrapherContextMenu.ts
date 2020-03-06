@@ -51,31 +51,39 @@ export class GrapherContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="grapher-name-field" style="width: 120px"></td>
+                  <td colspan="2"><input type="text" id="grapher-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Scale:</td>
-                  <td>
+                  <td colspan="2">
                     <input type="radio" name="scale" id="grapher-auto-scale-radio-button" checked> Auto
                     <input type="radio" name="scale" id="grapher-fixed-scale-radio-button"> Fixed
                   </td>
                 </tr>
                 <tr>
                   <td>Data Ports:</td>
-                  <td><input type="text" id="grapher-data-ports-field" style="width: 120px"></td>
+                  <td colspan="2"><input type="text" id="grapher-data-ports-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>X-Axis Label:</td>
+                  <td colspan="2"><input type="text" id="grapher-x-axis-label-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Y-Axis Label:</td>
+                  <td colspan="2"><input type="text" id="grapher-y-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Minimum Value:</td>
-                  <td><input type="text" id="grapher-minimum-value-field" style="width: 120px"></td>
+                  <td colspan="2"><input type="text" id="grapher-minimum-value-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Maximum Value:</td>
-                  <td><input type="text" id="grapher-maximum-value-field" style="width: 120px"></td>
+                  <td colspan="2"><input type="text" id="grapher-maximum-value-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Line Type:</td>
-                  <td>
-                    <select id="grapher-line-type-selector" style="width: 120px">
+                  <td colspan="2">
+                    <select id="grapher-line-type-selector" style="width: 100%">
                       <option value="None">None</option>
                       <option value="Solid" selected>Solid</option>
                     </select>
@@ -83,51 +91,48 @@ export class GrapherContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Line Color:</td>
-                  <td><input type="text" id="grapher-line-color-field" style="width: 120px"></td>
+                  <td><input type="color" id="grapher-line-color-chooser" style="width: 50px"></td>
+                  <td><input type="text" id="grapher-line-color-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Symbol Type:</td>
+                  <td colspan="2">
+                    <select id="grapher-symbol-selector" style="width: 100%">
+                      <option value="None">None</option>
+                      <option value="Circle" selected>Circle</option>
+                      <option value="Square">Square</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Symbol Color:</td>
+                  <td><input type="color" id="grapher-symbol-color-chooser" style="width: 50px"></td>
+                  <td><input type="text" id="grapher-symbol-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Fill:</td>
-                  <td>
+                  <td colspan="2">
                     <input type="radio" name="fill" id="grapher-no-fill-radio-button" checked> No
                     <input type="radio" name="fill" id="grapher-fill-radio-button"> Yes
                   </td>
                 </tr>
                 <tr>
                   <td>Fill Color:</td>
-                  <td><input type="text" id="grapher-fill-color-field" style="width: 120px"></td>
-                </tr>
-                <tr>
-                  <td>Symbol Type:</td>
-                  <td>
-                    <select id="grapher-symbol-selector" style="width: 120px">
-                      <option value="None">None</option>
-                      <option value="Circle" selected>Circle</option>
-                      <option value="Square">Square</option>
-                    </select>
-                </tr>
-                <tr>
-                  <td>Symbol Color:</td>
-                  <td><input type="text" id="grapher-symbol-color-field" style="width: 120px"></td>
-                </tr>
-                <tr>
-                  <td>X-Axis Label:</td>
-                  <td><input type="text" id="grapher-x-axis-label-field" style="width: 120px"></td>
-                </tr>
-                <tr>
-                  <td>Y-Axis Label:</td>
-                  <td><input type="text" id="grapher-y-axis-label-field" style="width: 120px"></td>
+                  <td><input type="color" id="grapher-fill-color-chooser" style="width: 50px"></td>
+                  <td><input type="text" id="grapher-fill-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Window Color:</td>
-                  <td><input type="text" id="grapher-window-color-field" style="width: 120px"></td>
+                  <td><input type="color" id="grapher-window-color-chooser" style="width: 50px"></td>
+                  <td><input type="text" id="grapher-window-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="grapher-width-field" style="width: 120px"></td>
+                  <td colspan="2"><input type="text" id="grapher-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="grapher-height-field" style="width: 120px"></td>
+                  <td colspan="2"><input type="text" id="grapher-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -161,20 +166,32 @@ export class GrapherContextMenu extends BlockContextMenu {
       yAxisLableInputElement.value = g.getYAxisLabel();
       let windowColorInputElement = document.getElementById("grapher-window-color-field") as HTMLInputElement;
       windowColorInputElement.value = g.getGraphWindowColor();
+      let windowColorChooser = document.getElementById("grapher-window-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(windowColorChooser, g.getGraphWindowColor());
       let lineColorInputElement = document.getElementById("grapher-line-color-field") as HTMLInputElement;
       lineColorInputElement.value = g.getLineColor();
+      let lineColorChooser = document.getElementById("grapher-line-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(lineColorChooser, g.getLineColor());
       let noFillRadioButton = document.getElementById("grapher-no-fill-radio-button") as HTMLInputElement;
       noFillRadioButton.checked = !g.getFillOption();
       let fillRadioButton = document.getElementById("grapher-fill-radio-button") as HTMLInputElement;
       fillRadioButton.checked = g.getFillOption();
       let fillColorInputElement = document.getElementById("grapher-fill-color-field") as HTMLInputElement;
       fillColorInputElement.value = g.getFillColor();
+      let fillColorChooser = document.getElementById("grapher-fill-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(fillColorChooser, g.getFillColor());
       let symbolColorInputElement = document.getElementById("grapher-symbol-color-field") as HTMLInputElement;
       symbolColorInputElement.value = g.getGraphSymbolColor();
+      let symbolColorChooser = document.getElementById("grapher-symbol-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(symbolColorChooser, g.getGraphSymbolColor());
       let widthInputElement = document.getElementById("grapher-width-field") as HTMLInputElement;
       widthInputElement.value = g.getWidth().toString();
       let heightInputElement = document.getElementById("grapher-height-field") as HTMLInputElement;
       heightInputElement.value = g.getHeight().toString();
+      Util.hookupColorInputs(windowColorInputElement, windowColorChooser);
+      Util.hookupColorInputs(lineColorInputElement, lineColorChooser);
+      Util.hookupColorInputs(fillColorInputElement, fillColorChooser);
+      Util.hookupColorInputs(symbolColorInputElement, symbolColorChooser);
       const okFunction = function () {
         let success = true;
         let message;
@@ -266,7 +283,7 @@ export class GrapherContextMenu extends BlockContextMenu {
         modal: true,
         title: g.getUid(),
         height: 550,
-        width: 320,
+        width: 450,
         buttons: {
           'OK': okFunction,
           'Cancel': function () {

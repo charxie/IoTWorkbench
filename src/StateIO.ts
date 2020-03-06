@@ -227,13 +227,13 @@ export class StateIO {
           block.setScaleType(state.scaleType === undefined ? "Linear" : state.scaleType);
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
-          block.setSpaceWindowColor(state.spaceWindowColor);
           block.setShowGridLines(state.showGridLines);
           block.setLineType(state.lineType);
           block.setLineColor(state.lineColor);
           block.setLineNumber(state.lineNumber === undefined ? 20 : state.lineNumber);
           block.setMinimumColor(state.minimumColor === undefined ? "rgb(0,0,0)" : state.minimumColor);
           block.setMaximumColor(state.maximumColor === undefined ? "rgb(255,255,255)" : state.maximumColor);
+          block.setFieldWindowColor(state.fieldWindowColor === undefined ? "white" : state.fieldWindowColor);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");
@@ -430,8 +430,8 @@ export class StateIO {
   static open(): void {
     let that = this;
     flowchart.destroy();
-    let fileInput = document.getElementById('state-file-dialog') as HTMLInputElement;
-    fileInput.onchange = function (event: Event) {
+    let fileDialog = document.getElementById('state-file-dialog') as HTMLInputElement;
+    fileDialog.onchange = e => {
       let target = <HTMLInputElement>event.target;
       if (target.files.length) {
         let reader: FileReader = new FileReader();
@@ -447,7 +447,18 @@ export class StateIO {
         };
       }
     };
-    fileInput.click();
+    fileDialog.click();
+  }
+
+  // HTML input file doesn't seem to accept the file name typed in the text field -- one must select a file
+  static saveAs2(data: string): void {
+    let fileDialog = document.getElementById('state-file-dialog') as HTMLInputElement;
+    fileDialog.onchange = e => {
+      let file = Util.getFileNameFromPath(fileDialog.value);
+      Util.saveText(data, file);
+      this.lastFileName = file;
+    };
+    fileDialog.click();
   }
 
   static saveAs(data: string): void {

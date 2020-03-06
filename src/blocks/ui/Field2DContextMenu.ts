@@ -51,15 +51,15 @@ export class Field2DContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="field2d-name-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="field2d-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Line Number:</td>
-                  <td><input type="text" id="field2d-line-number-field" style="width: 100%"></td>
+                  <td>Contour Lines:</td>
+                  <td colspan="2"><input type="text" id="field2d-line-number-field" style="width: 100%"></td>
                 </tr>
                <tr>
                   <td>Scale:</td>
-                  <td>
+                  <td colspan="2">
                     <select id="field2d-scale-type-selector" style="width: 100%">
                       <option value="Linear" selected>Linear</option>
                       <option value="Logarithmic">Logarithmic</option>
@@ -68,15 +68,17 @@ export class Field2DContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Minimum Color:</td>
+                  <td><input type="color" id="field2d-minimum-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="field2d-minimum-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Maximum Color:</td>
+                  <td><input type="color" id="field2d-maximum-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="field2d-maximum-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Line Type:</td>
-                  <td>
+                  <td colspan="2">
                     <select id="field2d-line-type-selector" style="width: 100%">
                       <option value="None">None</option>
                       <option value="Solid" selected>Solid</option>
@@ -84,34 +86,36 @@ export class Field2DContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Line Color:</td>
+                  <td><input type="color" id="field2d-line-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="field2d-line-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>X-Axis Label:</td>
-                  <td><input type="text" id="field2d-x-axis-label-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="field2d-x-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Y-Axis Label:</td>
-                  <td><input type="text" id="field2d-y-axis-label-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="field2d-y-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Window Color:</td>
+                  <td><input type="color" id="field2d-window-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="field2d-window-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Grid Lines:</td>
-                  <td>
+                  <td colspan="2">
                     <input type="radio" name="grid-lines" id="field2d-no-grid-lines-radio-button" checked> No
                     <input type="radio" name="grid-lines" id="field2d-grid-lines-radio-button"> Yes
                   </td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="field2d-width-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="field2d-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="field2d-height-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="field2d-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -131,18 +135,26 @@ export class Field2DContextMenu extends BlockContextMenu {
       scaleTypeSelectElement.value = g.getScaleType();
       let minimumColorInputElement = document.getElementById("field2d-minimum-color-field") as HTMLInputElement;
       minimumColorInputElement.value = g.getMinimumColor();
+      let minimumColorChooser = document.getElementById("field2d-minimum-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(minimumColorChooser, g.getMinimumColor());
       let maximumColorInputElement = document.getElementById("field2d-maximum-color-field") as HTMLInputElement;
       maximumColorInputElement.value = g.getMaximumColor();
+      let maximumColorChooser = document.getElementById("field2d-maximum-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(maximumColorChooser, g.getMaximumColor());
       let lineTypeSelectElement = document.getElementById("field2d-line-type-selector") as HTMLSelectElement;
       lineTypeSelectElement.value = g.getLineType();
       let lineColorInputElement = document.getElementById("field2d-line-color-field") as HTMLInputElement;
       lineColorInputElement.value = g.getLineColor();
+      let lineColorChooser = document.getElementById("field2d-line-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(lineColorChooser, g.getLineColor());
       let xAxisLableInputElement = document.getElementById("field2d-x-axis-label-field") as HTMLInputElement;
       xAxisLableInputElement.value = g.getXAxisLabel();
       let yAxisLableInputElement = document.getElementById("field2d-y-axis-label-field") as HTMLInputElement;
       yAxisLableInputElement.value = g.getYAxisLabel();
       let windowColorInputElement = document.getElementById("field2d-window-color-field") as HTMLInputElement;
-      windowColorInputElement.value = g.getSpaceWindowColor();
+      windowColorInputElement.value = g.getFieldWindowColor();
+      let windowColorChooser = document.getElementById("field2d-window-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(windowColorChooser, g.getFieldWindowColor());
       let noGridLinesRadioButton = document.getElementById("field2d-no-grid-lines-radio-button") as HTMLInputElement;
       noGridLinesRadioButton.checked = !g.getShowGridLines();
       let gridLinesRadioButton = document.getElementById("field2d-grid-lines-radio-button") as HTMLInputElement;
@@ -151,6 +163,10 @@ export class Field2DContextMenu extends BlockContextMenu {
       widthInputElement.value = g.getWidth().toString();
       let heightInputElement = document.getElementById("field2d-height-field") as HTMLInputElement;
       heightInputElement.value = g.getHeight().toString();
+      Util.hookupColorInputs(minimumColorInputElement, minimumColorChooser);
+      Util.hookupColorInputs(maximumColorInputElement, maximumColorChooser);
+      Util.hookupColorInputs(lineColorInputElement, lineColorChooser);
+      Util.hookupColorInputs(windowColorInputElement, windowColorChooser);
       const okFunction = function () {
         let success = true;
         let message;
@@ -189,7 +205,7 @@ export class Field2DContextMenu extends BlockContextMenu {
           g.setLineColor(lineColorInputElement.value);
           g.setXAxisLabel(xAxisLableInputElement.value);
           g.setYAxisLabel(yAxisLableInputElement.value);
-          g.setSpaceWindowColor(windowColorInputElement.value);
+          g.setFieldWindowColor(windowColorInputElement.value);
           g.setShowGridLines(gridLinesRadioButton.checked);
           g.refreshView();
           flowchart.storeBlockStates();

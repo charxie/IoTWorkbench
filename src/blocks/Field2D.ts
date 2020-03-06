@@ -27,16 +27,10 @@ export class Field2D extends Block {
   private ny: number;
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
-  private spaceWindowColor: string = "white";
+  private fieldWindowColor: string = "white";
   private showGridLines: boolean = false;
-  private spaceWindow: Rectangle;
+  private fieldWindow: Rectangle;
   private barHeight: number;
-  private readonly spaceMargin = {
-    left: <number>4,
-    right: <number>3,
-    top: <number>4,
-    bottom: <number>4
-  };
   private lineType: string;
   private lineColor: string;
   private lineNumber: number = 20;
@@ -45,6 +39,12 @@ export class Field2D extends Block {
   private maximumColor: string = "rgb(255, 255, 255)";
   private minimumRgb: number[] = [0, 0, 0];
   private maximumRgb: number[] = [255, 255, 255];
+  private readonly spaceMargin = {
+    left: <number>4,
+    right: <number>3,
+    top: <number>4,
+    bottom: <number>4
+  };
 
   static State = class {
     readonly name: string;
@@ -55,7 +55,7 @@ export class Field2D extends Block {
     readonly height: number;
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
-    readonly spaceWindowColor: string;
+    readonly fieldWindowColor: string;
     readonly showGridLines: boolean;
     readonly lineType: string;
     readonly lineColor: string;
@@ -73,7 +73,7 @@ export class Field2D extends Block {
       this.height = g.height;
       this.xAxisLabel = g.xAxisLabel;
       this.yAxisLabel = g.yAxisLabel;
-      this.spaceWindowColor = g.spaceWindowColor;
+      this.fieldWindowColor = g.fieldWindowColor;
       this.showGridLines = g.showGridLines;
       this.lineColor = g.lineColor;
       this.lineType = g.lineType;
@@ -104,7 +104,7 @@ export class Field2D extends Block {
     this.ports.push(this.portY0);
     this.ports.push(this.portDY);
     this.ports.push(this.portNY);
-    this.spaceWindow = new Rectangle(0, 0, 1, 1);
+    this.fieldWindow = new Rectangle(0, 0, 1, 1);
     this.lineType = "Solid";
     this.lineColor = "black";
     this.marginX = 25;
@@ -114,7 +114,7 @@ export class Field2D extends Block {
     let copy = new Field2D("Field2D #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
-    copy.spaceWindowColor = this.spaceWindowColor;
+    copy.fieldWindowColor = this.fieldWindowColor;
     copy.showGridLines = this.showGridLines;
     copy.lineColor = this.lineColor;
     copy.lineType = this.lineType;
@@ -148,10 +148,27 @@ export class Field2D extends Block {
 
   setMinimumColor(minimumColor: string): void {
     this.minimumColor = minimumColor;
-    let a = minimumColor.match(/\d+/g);
     this.minimumRgb.length = 0;
-    for (let x of a) {
-      this.minimumRgb.push(parseInt(x));
+    if (Util.isHexColor(minimumColor)) {
+      let c = Util.hexToRgb(minimumColor);
+      this.minimumRgb.push(c.r);
+      this.minimumRgb.push(c.g);
+      this.minimumRgb.push(c.b);
+    } else {
+      let c = minimumColor.match(/\d+/g);
+      if (c !== null) {
+        for (let x of c) {
+          this.minimumRgb.push(parseInt(x));
+        }
+      } else {
+        let hex = Util.getHexColor(minimumColor);
+        if (hex) {
+          let a = Util.hexToRgb(hex);
+          this.minimumRgb.push(a.r);
+          this.minimumRgb.push(a.g);
+          this.minimumRgb.push(a.b);
+        }
+      }
     }
   }
 
@@ -161,10 +178,27 @@ export class Field2D extends Block {
 
   setMaximumColor(maximumColor: string): void {
     this.maximumColor = maximumColor;
-    let a = maximumColor.match(/\d+/g);
     this.maximumRgb.length = 0;
-    for (let x of a) {
-      this.maximumRgb.push(parseInt(x));
+    if (Util.isHexColor(maximumColor)) {
+      let c = Util.hexToRgb(maximumColor);
+      this.maximumRgb.push(c.r);
+      this.maximumRgb.push(c.g);
+      this.maximumRgb.push(c.b);
+    } else {
+      let c = maximumColor.match(/\d+/g);
+      if (c !== null) {
+        for (let x of c) {
+          this.maximumRgb.push(parseInt(x));
+        }
+      } else {
+        let hex = Util.getHexColor(maximumColor);
+        if (hex) {
+          let a = Util.hexToRgb(hex);
+          this.maximumRgb.push(a.r);
+          this.maximumRgb.push(a.g);
+          this.maximumRgb.push(a.b);
+        }
+      }
     }
   }
 
@@ -188,12 +222,12 @@ export class Field2D extends Block {
     return this.yAxisLabel;
   }
 
-  setSpaceWindowColor(spaceWindowColor: string): void {
-    this.spaceWindowColor = spaceWindowColor;
+  setFieldWindowColor(fieldWindowColor: string): void {
+    this.fieldWindowColor = fieldWindowColor;
   }
 
-  getSpaceWindowColor(): string {
-    return this.spaceWindowColor;
+  getFieldWindowColor(): string {
+    return this.fieldWindowColor;
   }
 
   setShowGridLines(showGridLines: boolean): void {
@@ -261,19 +295,19 @@ export class Field2D extends Block {
     ctx.lineWidth = 1;
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
     ctx.beginPath();
-    this.spaceWindow.x = this.x + this.spaceMargin.left;
-    this.spaceWindow.y = this.y + this.barHeight + this.spaceMargin.top;
-    this.spaceWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
-    this.spaceWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
-    ctx.rect(this.spaceWindow.x, this.spaceWindow.y, this.spaceWindow.width, this.spaceWindow.height);
-    ctx.fillStyle = this.spaceWindowColor;
+    this.fieldWindow.x = this.x + this.spaceMargin.left;
+    this.fieldWindow.y = this.y + this.barHeight + this.spaceMargin.top;
+    this.fieldWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
+    this.fieldWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
+    ctx.rect(this.fieldWindow.x, this.fieldWindow.y, this.fieldWindow.width, this.fieldWindow.height);
+    ctx.fillStyle = this.fieldWindowColor;
     ctx.fill();
     ctx.strokeStyle = "black";
     ctx.stroke();
 
     // draw contour plot
     ctx.save();
-    ctx.translate(this.spaceWindow.x, this.spaceWindow.y);
+    ctx.translate(this.fieldWindow.x, this.fieldWindow.y);
     if (this.data !== undefined && Array.isArray(this.data)) {
       if (this.nx === undefined) this.nx = Math.round(Math.sqrt(this.data.length));
       if (this.ny === undefined) this.ny = this.nx;
@@ -293,7 +327,7 @@ export class Field2D extends Block {
       } else {
         contours = d3.contours().size([this.nx, this.ny]).thresholds(d3.range(min, max, (max - min) / this.lineNumber))(this.data);
       }
-      let projection = d3.geoIdentity().reflectY(true).scale(this.spaceWindow.width / this.nx, this.spaceWindow.height / this.ny).translate([0, this.spaceWindow.height]);
+      let projection = d3.geoIdentity().reflectY(true).scale(this.fieldWindow.width / this.nx, this.fieldWindow.height / this.ny).translate([0, this.fieldWindow.height]);
       let path = d3.geoPath(projection, ctx);
       let lineIndex = 0;
       contours.forEach(c => {
@@ -317,14 +351,14 @@ export class Field2D extends Block {
         lineIndex++;
       });
     }
-    ctx.translate(0, this.spaceWindow.height);
+    ctx.translate(0, this.fieldWindow.height);
     // draw axis tick marks and labels
     if (!this.iconic) {
       ctx.lineWidth = 1;
       ctx.font = "10px Arial";
       ctx.fillStyle = "black";
       let inx = (this.dx === undefined || this.nx === undefined) ? 1 : this.dx * this.nx / 10;
-      let dex = this.spaceWindow.width / 10;
+      let dex = this.fieldWindow.width / 10;
       for (let i = 0; i < 11; i++) {
         let tmpX = dex * i;
         ctx.beginPath();
@@ -345,7 +379,7 @@ export class Field2D extends Block {
         ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
       }
       let iny = (this.dy === undefined || this.ny === undefined) ? 1 : this.dy * this.ny / 10;
-      let dey = this.spaceWindow.height / 10;
+      let dey = this.fieldWindow.height / 10;
       for (let i = 0; i < 11; i++) {
         let tmpY = -dey * i;
         ctx.beginPath();
@@ -390,22 +424,22 @@ export class Field2D extends Block {
 
   private drawGridLines(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    ctx.translate(this.spaceWindow.x, this.spaceWindow.y + this.spaceWindow.height);
+    ctx.translate(this.fieldWindow.x, this.fieldWindow.y + this.fieldWindow.height);
     ctx.strokeStyle = "lightgray";
-    let dx = this.spaceWindow.width / 10;
+    let dx = this.fieldWindow.width / 10;
     for (let i = 1; i < 10; i++) {
       let tmpX = dx * i;
       ctx.beginPath();
       ctx.moveTo(tmpX, 0);
-      ctx.lineTo(tmpX, -this.spaceWindow.height);
+      ctx.lineTo(tmpX, -this.fieldWindow.height);
       ctx.stroke();
     }
-    let dy = this.spaceWindow.height / 10;
+    let dy = this.fieldWindow.height / 10;
     for (let i = 1; i < 10; i++) {
       let tmpY = -dy * i;
       ctx.beginPath();
       ctx.moveTo(0, tmpY);
-      ctx.lineTo(this.spaceWindow.width, tmpY);
+      ctx.lineTo(this.fieldWindow.width, tmpY);
       ctx.stroke();
     }
     ctx.restore();
@@ -415,9 +449,9 @@ export class Field2D extends Block {
     ctx.font = "italic 15px Times New Roman";
     ctx.fillStyle = "black";
     let horizontalAxisY = this.height - this.spaceMargin.bottom;
-    ctx.fillText(this.xAxisLabel, this.spaceWindow.x + (this.spaceWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 30);
+    ctx.fillText(this.xAxisLabel, this.fieldWindow.x + (this.fieldWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 30);
     ctx.save();
-    ctx.translate(this.x + 35, this.spaceWindow.y + (this.spaceWindow.height + ctx.measureText(this.yAxisLabel).width) / 2 + 10);
+    ctx.translate(this.x + 35, this.fieldWindow.y + (this.fieldWindow.height + ctx.measureText(this.yAxisLabel).width) / 2 + 10);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(this.yAxisLabel, 0, 0);
     ctx.restore();

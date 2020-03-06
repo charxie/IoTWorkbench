@@ -10,8 +10,8 @@ import {Util} from "../../Util";
 
 export class StickerContextMenu extends BlockContextMenu {
 
-  private dialogWidth: number = 400;
-  private dialogHeight: number = 600;
+  private dialogWidth: number = 450;
+  private dialogHeight: number = 580;
 
   constructor() {
     super();
@@ -23,31 +23,33 @@ export class StickerContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="sticker-name-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="sticker-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Fraction Digits:</td>
-                  <td><input type="text" id="sticker-decimals-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="sticker-decimals-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>User Text:</td>
-                  <td><textarea id="sticker-user-text-area" rows="8" style="width: 100%"></textarea>
+                  <td colspan="2"><textarea id="sticker-user-text-area" rows="8" style="width: 100%"></textarea>
                 </tr>
                 <tr>
                   <td>Panel Color:</td>
+                  <td><input type="color" id="sticker-panel-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="sticker-panel-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Text Color:</td>
+                  <td><input type="color" id="sticker-text-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="sticker-text-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="sticker-width-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="sticker-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="sticker-height-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="sticker-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -67,12 +69,18 @@ export class StickerContextMenu extends BlockContextMenu {
       userTextInputElement.value = sticker.getUserText() != undefined ? sticker.getUserText() : "";
       let panelColorInputElement = document.getElementById("sticker-panel-color-field") as HTMLInputElement;
       panelColorInputElement.value = sticker.getColor();
+      let panelColorChooser = document.getElementById("sticker-panel-color-chooser") as HTMLInputElement;
+      panelColorChooser.value = sticker.getColor();
       let textColorInputElement = document.getElementById("sticker-text-color-field") as HTMLInputElement;
       textColorInputElement.value = sticker.getTextColor();
+      let textColorChooser = document.getElementById("sticker-text-color-chooser") as HTMLInputElement;
+      textColorChooser.value = sticker.getTextColor();
       let widthInputElement = document.getElementById("sticker-width-field") as HTMLInputElement;
       widthInputElement.value = sticker.getWidth().toString();
       let heightInputElement = document.getElementById("sticker-height-field") as HTMLInputElement;
       heightInputElement.value = sticker.getHeight().toString();
+      Util.hookupColorInputs(panelColorInputElement, panelColorChooser);
+      Util.hookupColorInputs(textColorInputElement, textColorChooser);
       let that = this;
       const okFunction = function () {
         let success = true;

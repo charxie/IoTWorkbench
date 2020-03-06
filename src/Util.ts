@@ -6,6 +6,30 @@ import $ from "jquery";
 
 export class Util {
 
+  static hookupColorInputs(textInput: HTMLInputElement, colorPicker: HTMLInputElement) {
+    colorPicker.onchange = e => {
+      textInput.value = colorPicker.value;
+    };
+    textInput.onkeyup = e => {
+      if (Util.isHexColor(textInput.value)) {
+        colorPicker.value = textInput.value;
+      }
+    };
+  }
+
+  static setColorPicker(colorPicker: HTMLInputElement, color: string): void {
+    if (Util.isHexColor(color)) {
+      colorPicker.value = color;
+    } else {
+      let hex = Util.nameToHexColor(color);
+      if (hex) colorPicker.value = hex;
+    }
+  }
+
+  static getFileNameFromPath(path: string): string {
+    return path.replace(/^.*[\\\/]/, '');
+  }
+
   static deleteArrayElement(e: any, a: any[]): any[] {
     let index = a.indexOf(e);
     if (index >= 0) {
@@ -100,6 +124,20 @@ export class Util {
 
   static countDigits(x: number): number {
     return x.toString().length;
+  }
+
+  static nameToHexColor(name: string): string | false {
+    let a = document.createElement('div');
+    a.style.color = name;
+    let colors = window.getComputedStyle(document.body.appendChild(a)).color.match(/\d+/g).map(function (a) {
+      return parseInt(a, 10);
+    });
+    document.body.removeChild(a);
+    return (colors.length >= 3) ? '#' + (((1 << 24) + (colors[0] << 16) + (colors[1] << 8) + colors[2]).toString(16).substr(1)) : false;
+  }
+
+  static isHexColor(s: string): boolean {
+    return /^#[0-9A-F]{6}$/i.test(s);
   }
 
   static getHexColor(colorName: string): string | false {

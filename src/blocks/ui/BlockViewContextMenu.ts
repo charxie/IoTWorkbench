@@ -9,6 +9,7 @@ import {MyContextMenu} from "../../MyContextMenu";
 import {BlockView} from "../BlockView";
 import {PngSaver} from "../../tools/PngSaver";
 import {State} from "../../State";
+import {Util} from "../../Util";
 
 export class BlockViewContextMenu extends MyContextMenu {
 
@@ -110,24 +111,26 @@ export class BlockViewContextMenu extends MyContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Background Color:</td>
-                  <td><input type="text" id="block-view-background-color-field" style="width: 120px"></td>
+                  <td>Background:</td>
+                  <td><input type="color" id="block-view-background-color-chooser" style="width: 50px"></td>
+                  <td><input type="text" id="block-view-background-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Block Style:</td>
-                  <td>
-                    <select id="block-view-block-style-selector" style="width: 120px">
+                  <td colspan="2">
+                    <select id="block-view-block-style-selector" style="width: 100%">
                       <option value="Plain">Plain</option>
                       <option value="Shade" selected>Shade</option>
                     </select>
+                  </td>
                 </tr>
                 <tr>
                   <td>Canvas Width:</td>
-                  <td><input type="text" id="block-view-width-field" style="width: 120px"></td>
+                  <td colspan="2"><input type="text" id="block-view-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Canvas Height:</td>
-                  <td><input type="text" id="block-view-height-field" style="width: 120px"></td>
+                  <td colspan="2"><input type="text" id="block-view-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -140,12 +143,16 @@ export class BlockViewContextMenu extends MyContextMenu {
     let d = $("#modal-dialog").html(this.getSettingsUI());
     let backgroundColorInputElement = document.getElementById("block-view-background-color-field") as HTMLInputElement;
     backgroundColorInputElement.value = view.getBackgroundColor();
+    let backgroundColorChooser = document.getElementById("block-view-background-color-chooser") as HTMLInputElement;
+    let bgColor = Util.getHexColor(view.getBackgroundColor());
+    if (bgColor) backgroundColorChooser.value = bgColor;
     let blockStyleSelectElement = document.getElementById("block-view-block-style-selector") as HTMLSelectElement;
     blockStyleSelectElement.value = view.getBlockStyle();
     let widthInputElement = document.getElementById("block-view-width-field") as HTMLInputElement;
     widthInputElement.value = view.canvas.width.toString();
     let heightInputElement = document.getElementById("block-view-height-field") as HTMLInputElement;
     heightInputElement.value = view.canvas.height.toString();
+    Util.hookupColorInputs(backgroundColorInputElement, backgroundColorChooser);
     const okFunction = function () {
       view.setBackgroundColor(backgroundColorInputElement.value);
       view.setBlockStyle(blockStyleSelectElement.value);
@@ -164,7 +171,7 @@ export class BlockViewContextMenu extends MyContextMenu {
       modal: true,
       title: "Flow View Settings",
       height: 300,
-      width: 320,
+      width: 420,
       buttons: {
         'OK': okFunction,
         'Cancel': function () {

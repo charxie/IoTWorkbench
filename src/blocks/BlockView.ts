@@ -53,6 +53,8 @@ import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 import {Field2D} from "./Field2D";
 import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
+import {StateIO} from "../StateIO";
+import {State} from "../State";
 
 export class BlockView {
 
@@ -483,6 +485,11 @@ export class BlockView {
           }
         }
         break;
+      case "s": // ctrl+S for save
+        if (e.ctrlKey || e.metaKey) {
+          StateIO.saveAs(JSON.stringify(new State()));
+        }
+        break;
       case "Backspace": // alt+backspace for undo
         if (e.altKey) {
           if (undoManager.hasUndo()) {
@@ -495,8 +502,8 @@ export class BlockView {
   }
 
   private keyDown(e: KeyboardEvent): void {
+    e.preventDefault();
     if (this.selectedBlock != null) {
-      e.preventDefault();
       if (Util.isArrowKey(e)) {
         if (this.keyDownCount == 0) {
           this.selectedMovablePreviousX = this.selectedBlock.getX();
