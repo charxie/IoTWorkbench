@@ -3,6 +3,7 @@
  */
 
 import $ from "jquery";
+import FileSaver from "file-saver";
 import {Util} from "./Util";
 import {Slider} from "./blocks/Slider";
 import {Sticker} from "./blocks/Sticker";
@@ -455,7 +456,7 @@ export class StateIO {
     let fileDialog = document.getElementById('state-file-dialog') as HTMLInputElement;
     fileDialog.onchange = e => {
       let file = Util.getFileNameFromPath(fileDialog.value);
-      Util.saveText(data, file);
+      FileSaver.saveAs(new Blob([data], {type: "text/plain;charset=utf-8"}), file);
       this.lastFileName = file;
     };
     fileDialog.click();

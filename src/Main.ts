@@ -46,6 +46,8 @@ declare global {
   }
 
   interface String {
+    replaceAll(s, t);
+
     startsWith(s);
 
     endsWith(s);

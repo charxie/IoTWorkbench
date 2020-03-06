@@ -143,28 +143,28 @@ export class BlockView {
             b = that.addBlockUndoable(new FunctionDeclarationBlock("Function Declaration Block #" + timestamp, "Function Declaration Block", "f", x - 80, y - 30, 160, 60));
             break;
           case "univariate-function-block":
-            b = that.addBlockUndoable(new UnivariateFunctionBlock("Univariate Function Block #" + timestamp, x - 30, y - 40, 60, 80));
+            b = that.addBlockUndoable(new UnivariateFunctionBlock("Univariate Function Block #" + timestamp, x - 50, y - 30, 100, 60));
             break;
           case "bivariate-function-block":
-            b = that.addBlockUndoable(new BivariateFunctionBlock("Bivariate Function Block #" + timestamp, x - 30, y - 50, 60, 100));
+            b = that.addBlockUndoable(new BivariateFunctionBlock("Bivariate Function Block #" + timestamp, x - 50, y - 30, 100, 60));
             break;
           case "multivariate-function-block":
-            b = that.addBlockUndoable(new MultivariateFunctionBlock("Multivariate Function Block #" + timestamp, x - 30, y - 60, 60, 120));
+            b = that.addBlockUndoable(new MultivariateFunctionBlock("Multivariate Function Block #" + timestamp, x - 50, y - 30, 100, 60));
             break;
           case "parametric-equation-block":
-            b = that.addBlockUndoable(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 40, y - 50, 80, 100));
+            b = that.addBlockUndoable(new ParametricEquationBlock("Parametric Equation Block #" + timestamp, x - 60, y - 40, 120, 80));
             break;
           case "bundled-functions-block":
-            b = that.addBlockUndoable(new BundledFunctionsBlock("Bundled Functions Block #" + timestamp, x - 40, y - 50, 80, 100));
+            b = that.addBlockUndoable(new BundledFunctionsBlock("Bundled Functions Block #" + timestamp, x - 50, y - 60, 100, 120));
             break;
           case "global-variable-block":
-            b = that.addBlockUndoable(new GlobalVariableBlock("Global Variable Block #" + timestamp, "Global Variable Block", "var", x - 30, y - 40, 60, 80));
+            b = that.addBlockUndoable(new GlobalVariableBlock("Global Variable Block #" + timestamp, "Global Variable Block", "var", x - 40, y - 30, 80, 60));
             break;
           case "global-object-block":
-            b = that.addBlockUndoable(new GlobalObjectBlock("Global Object Block #" + timestamp, "Global Object Block", "obj", x - 30, y - 60, 60, 120));
+            b = that.addBlockUndoable(new GlobalObjectBlock("Global Object Block #" + timestamp, "Global Object Block", "obj", x - 50, y - 30, 100, 60));
             break;
           case "series-block":
-            b = that.addBlockUndoable(new SeriesBlock("Series Block #" + timestamp, "Series Block", "Series", x - 30, y - 40, 60, 80));
+            b = that.addBlockUndoable(new SeriesBlock("Series Block #" + timestamp, "Series Block", "Series", x - 30, y - 50, 60, 100));
             break;
           case "rgba-color-block":
             b = that.addBlockUndoable(new RgbaColorBlock("Rgba Color Block #" + timestamp, "Rgba Color Block", "RGBA", x - 30, y - 40, 60, 80));
@@ -182,13 +182,13 @@ export class BlockView {
             b = that.addBlockUndoable(new MatrixBlock("Matrix Block #" + timestamp, "Matrix Block", "M", x - 80, y - 80, 160, 160));
             break;
           case "determinant-block":
-            b = that.addBlockUndoable(new DeterminantBlock("Determinant Block #" + timestamp, x - 30, y - 30, 60, 60));
+            b = that.addBlockUndoable(new DeterminantBlock("Determinant Block #" + timestamp, x - 40, y - 30, 80, 60));
             break;
           case "matrix-transposition-block":
-            b = that.addBlockUndoable(new MatrixTranspositionBlock("Matrix Transposition Block #" + timestamp, x - 30, y - 30, 60, 60));
+            b = that.addBlockUndoable(new MatrixTranspositionBlock("Matrix Transposition Block #" + timestamp, x - 40, y - 30, 80, 60));
             break;
           case "matrix-inversion-block":
-            b = that.addBlockUndoable(new MatrixInversionBlock("Matrix Inversion Block #" + timestamp, x - 30, y - 30, 60, 60));
+            b = that.addBlockUndoable(new MatrixInversionBlock("Matrix Inversion Block #" + timestamp, x - 40, y - 30, 80, 60));
             break;
           case "worker-block":
             b = that.addBlockUndoable(new WorkerBlock("Worker Block #" + timestamp, "Worker", x - 40, y - 30, 80, 60));
@@ -197,7 +197,7 @@ export class BlockView {
             b = that.addBlockUndoable(new ActionBlock("Action Block #" + timestamp, "Action", x - 40, y - 30, 80, 60));
             break;
           case "turnout-switch-block":
-            b = that.addBlockUndoable(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 30, y - 50, 60, 100));
+            b = that.addBlockUndoable(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 50, y - 30, 100, 60));
             break;
           case "switch-statement-block":
             b = that.addBlockUndoable(new SwitchStatementBlock("Switch Statement Block #" + timestamp, "Switch Statement Block", "Switch", x - 30, y - 50, 60, 100));
@@ -488,6 +488,16 @@ export class BlockView {
       case "s": // ctrl+S for save
         if (e.ctrlKey || e.metaKey) {
           StateIO.saveAs(JSON.stringify(new State()));
+        }
+        break;
+      case "o": // ctrl+O for open
+        if (e.ctrlKey || e.metaKey) {
+          StateIO.open();
+        }
+        break;
+      case "n": // ctrl+N for new file (not working in Chrome as it cannot be overridden)
+        if (e.ctrlKey || e.metaKey) {
+          flowchart.askToClear();
         }
         break;
       case "Backspace": // alt+backspace for undo
