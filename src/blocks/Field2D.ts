@@ -39,6 +39,9 @@ export class Field2D extends Block {
   private maximumColor: string = "rgb(255, 255, 255)";
   private minimumRgb: number[] = [0, 0, 0];
   private maximumRgb: number[] = [255, 255, 255];
+  private mouseOverX: number;
+  private mouseOverY: number;
+  private mouseOverValue: number;
   private readonly spaceMargin = {
     left: <number>4,
     right: <number>3,
@@ -400,6 +403,14 @@ export class Field2D extends Block {
         ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
       }
     }
+    if (this.mouseOverValue !== undefined) {
+      ctx.fillStyle = "white";
+      //let reading = "(" + this.mouseOverX.toPrecision(2) + "," + this.mouseOverY.toPrecision(2) + "): " + this.mouseOverValue.toPrecision(3);
+      let reading = this.mouseOverValue.toPrecision(3);
+      let rx = (this.mouseOverX - this.x0) / (this.nx * this.dx) * this.fieldWindow.width;
+      let ry = -(this.mouseOverY - this.y0) / (this.ny * this.dy) * this.fieldWindow.height;
+      ctx.fillText(reading, rx - ctx.measureText(reading).width / 2, ry);
+    }
     ctx.restore();
 
     if (!this.iconic) {
@@ -485,6 +496,25 @@ export class Field2D extends Block {
     this.portY0.setY(this.barHeight + 5 * dh);
     this.portDY.setY(this.barHeight + 6 * dh);
     this.portNY.setY(this.barHeight + 7 * dh);
+  }
+
+  mouseMove(e: MouseEvent): void {
+    if (e.which == 3 || e.button == 2) return; // if this is a right-click event
+    this.mouseOverX = undefined;
+    this.mouseOverY = undefined;
+    this.mouseOverValue = undefined;
+    if (this.data !== undefined) {
+      // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+      let rect = flowchart.blockView.canvas.getBoundingClientRect();
+      let kx = Math.round((e.clientX - rect.left - this.fieldWindow.x) / this.fieldWindow.width * this.nx);
+      let ky = this.ny - Math.round((e.clientY - rect.top - this.fieldWindow.y) / this.fieldWindow.height * this.ny);
+      if (kx >= 0 && kx < this.nx && ky >= 0 && ky < this.ny) {
+        this.mouseOverValue = this.data[this.nx * ky + kx];
+        this.mouseOverX = this.x0 + kx * this.dx;
+        this.mouseOverY = this.y0 + ky * this.dy;
+      }
+    }
+    flowchart.blockView.requestDraw();
   }
 
 }

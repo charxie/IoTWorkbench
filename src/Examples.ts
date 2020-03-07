@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import fdm_stabilization from "./examples/fdm-stabilization.json";
+// @ts-ignore
 import convection_diffusion_equation from "./examples/convection-diffusion-equation.json";
 // @ts-ignore
 import compare_iterative_methods from "./examples/compare-iterative-methods.json";
@@ -210,6 +212,11 @@ export class Examples {
     this.files.push({name: "Math: Sunflower Pattern", data: sunflower_vogel_model});
     this.files.push({name: "Sound: Make Sound with Beepers", data: make_sound_with_beepers});
     this.files.push({name: "Sound: Synthesizing Sound", data: synthesizing_sound});
+    this.files.push({name: "IoT: RGB LED Array", data: rainbow_hat_rgb_led_array});
+    this.files.push({name: "IoT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
+    this.files.push({name: "IoT: Fading LED Array", data: rainbow_hat_fading_led_array});
+    this.files.push({name: "IoT: Sensor Data", data: rainbow_hat_sensor_data});
+    this.files.push({name: "IoT: Mixed-Reality Brownian Motion", data: rainbow_hat_brownian_motion});
     this.files.push({name: "Root Finding: Bisection Method", data: root_finding_bisection_method});
     this.files.push({name: "Root Finding: Newton-Raphson Method", data: root_finding_newton_raphson});
     this.files.push({name: "Linear Algebra: Vectors", data: vectors});
@@ -260,16 +267,12 @@ export class Examples {
     this.files.push({name: "Simulation: Transport Equation", data: transport_equation});
     this.files.push({name: "Simulation: Standing Waves", data: standing_waves});
     this.files.push({name: "Simulation: Steady State Finite Difference Method", data: laplace_equation});
+    this.files.push({name: "Simulation: Numerical Stabilization", data: fdm_stabilization});
     this.files.push({name: "Simulation: Compare Iterative Methods", data: compare_iterative_methods});
     this.files.push({name: "Simulation: Poisson Equation", data: poisson_equation});
     this.files.push({name: "Simulation: Boundary Value Problems", data: boundary_value_problems});
     this.files.push({name: "Simulation: Mixed Boundary Condition", data: mixed_boundary_condition});
     this.files.push({name: "Simulation: Convection-Diffusion Equation", data: convection_diffusion_equation});
-    this.files.push({name: "IoT: RGB LED Array", data: rainbow_hat_rgb_led_array});
-    this.files.push({name: "IoT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
-    this.files.push({name: "IoT: Fading LED Array", data: rainbow_hat_fading_led_array});
-    this.files.push({name: "IoT: Sensor Data", data: rainbow_hat_sensor_data});
-    this.files.push({name: "IoT: Mixed-Reality Brownian Motion", data: rainbow_hat_brownian_motion});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 
