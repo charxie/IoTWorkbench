@@ -19,7 +19,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   private codes;
   private values: DataArray[];
   private prevValues: DataArray[];
-  private initialValues: DataArray[];
+  private initValues: DataArray[];
   private boundaryValues: BoundaryCondition[];
   private readonly portRN: Port; // port for running
   private readonly portNX: Port; // port for number of steps in x direction
@@ -175,22 +175,21 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     let n = this.equations.length;
     this.expressions.length = 0;
     for (let i = 0; i < n; i++) {
-      this.equations[i] = this.equations[i].removeAllSpaces();
+      this.equations[i] = this.equations[i].removeAllSpaces(); // no space is allowed before parsing
       let equalSignIndex = this.equations[i].indexOf("=");
       if (equalSignIndex < 0) {
         Util.showBlockError("The equation you input " + this.equations[i] + " misses an equation sign (=).");
         this.hasEquationError = true;
       } else {
-        let lhs = this.equations[i].substring(0, equalSignIndex);
-        this.expressions.push(lhs);
+        this.expressions.push(this.equations[i].substring(0, equalSignIndex)); // store the right-hand-side expression
       }
     }
     if (this.values === undefined || this.values.length !== n) {
       this.values = new Array(n);
-      this.prevValues = new Array(n);
+      this.prevValues = new Array(n); // this is needed for the Jacobi method
     }
-    if (this.initialValues === undefined || this.initialValues.length !== n) {
-      this.initialValues = new Array(n);
+    if (this.initValues === undefined || this.initValues.length !== n) {
+      this.initValues = new Array(n);
     }
     if (this.boundaryValues === undefined || this.boundaryValues.length !== n) {
       this.boundaryValues = new Array(n);
@@ -205,7 +204,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   findCoefficients(): void {
     let param = {...flowchart.globalVariables};
     for (let i = 0; i < this.expressions.length; i++) {
-      let terms = this.expressions[i].split(/[+-]/g);
+      let terms = this.expressions[i].split(/(?=[+-])/g);
       let functionNames = [];
       try {
         for (let term of terms) {
@@ -251,7 +250,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     }
     this.hasParserError = false;
     try {
-      for (let i = 0; i < this.expressions.length; i++) {
+      for (let i = 0; i < this.codes.length; i++) {
         this.codes[i] = math.parse(this.expressions[i]).compile();
       }
     } catch (e) {
@@ -281,8 +280,8 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     super.reset();
     for (let i = 0; i < this.values.length; i++) {
       this.values[i] = undefined;
-      if (this.initialValues[i] != undefined) {
-        this.portO[i].setValue(this.initialValues[i].data);
+      if (this.initValues[i] != undefined) {
+        this.portO[i].setValue(this.initValues[i].data);
       }
     }
     this.updateConnectors();
@@ -327,19 +326,19 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     let y0 = this.portY0.getValue();
     let dy = this.portDY.getValue();
     let ny = this.portNY.getValue();
-    this.hasError = this.hasEquationError;
+    this.hasError = this.hasEquationError || this.hasDeclarationError;
     if (this.equations && x0 != undefined && nx != undefined && dx != undefined && y0 != undefined && ny != undefined && dy != undefined) {
       for (let n = 0; n < count; n++) {
-        if (this.initialValues[n] === undefined) {
-          this.initialValues[n] = new DataArray(0);
+        if (this.initValues[n] === undefined) {
+          this.initValues[n] = new DataArray(0);
         }
         if (this.portI[n].getValue() !== undefined) {
-          this.initialValues[n].data = this.portI[n].getValue();
+          this.initValues[n].data = this.portI[n].getValue();
         } else {
-          if (this.initialValues[n].data.length !== nx * ny) {
-            this.initialValues[n].data = new Array(nx * ny);
+          if (this.initValues[n].data.length !== nx * ny) {
+            this.initValues[n].data = new Array(nx * ny);
           }
-          this.initialValues[n].fill(0);
+          this.initValues[n].fill(0);
         }
         this.boundaryValues[n] = this.portB[n].getValue();
       }
@@ -347,8 +346,8 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
       for (let n = 0; n < count; n++) {
         if (this.values[n] === undefined) {
           this.values[n] = new DataArray(nx * ny);
-          if (this.initialValues[n] !== undefined) {
-            this.values[n] = this.initialValues[n].copy();
+          if (this.initValues[n] !== undefined) {
+            this.values[n] = this.initValues[n].copy();
           } else {
             this.values[n].fill(0);
           }

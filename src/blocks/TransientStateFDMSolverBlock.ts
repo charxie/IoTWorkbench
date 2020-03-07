@@ -383,7 +383,7 @@ export class TransientStateFDMSolverBlock extends SolverBlock {
       }
       this.initialValues[n].data = this.portI[n].getValue();
     }
-    this.hasError = this.hasEquationError;
+    this.hasError = this.hasEquationError || this.hasDeclarationError;
     if (this.equations && nx != undefined && dx != undefined && nt != undefined && dt != undefined) {
       let param = {...flowchart.globalVariables};
       param["t"] = nt * dt;
