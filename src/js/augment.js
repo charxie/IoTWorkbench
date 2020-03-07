@@ -84,8 +84,11 @@ if (typeof String.prototype.startsWith !== 'function') { // do not call this, do
 }
 
 String.prototype.replaceAll = function (search, replacement) {
-  let target = this;
-  return target.replace(new RegExp(search, 'g'), replacement);
+  return this.replace(new RegExp(search, 'g'), replacement);
+};
+
+String.prototype.removeAllSpaces = function () {
+  return this.replace(/\s/g, "");
 };
 
 String.prototype.endsWith = function (s) {

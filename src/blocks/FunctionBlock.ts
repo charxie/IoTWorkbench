@@ -14,7 +14,8 @@ export abstract class FunctionBlock extends Block {
   protected hasDeclarationError: boolean = false;
 
   setExpression(expression: string): void {
-    this.expression = expression.replace(/\s/g, "");
+    //this.expression = expression.replace(/\s/g, "");
+    this.expression = expression.removeAllSpaces();
     this.createParser();
   }
 

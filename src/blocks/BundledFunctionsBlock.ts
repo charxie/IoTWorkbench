@@ -72,7 +72,7 @@ export class BundledFunctionsBlock extends Block {
   getCopy(): Block {
     let block = new BundledFunctionsBlock("Bundled Functions Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.inputName = this.inputName;
-    block.setExpressions(JSON.parse(JSON.stringify(this.expressions)));
+    block.setExpressions(this.expressions);
     return block;
   }
 
@@ -88,7 +88,7 @@ export class BundledFunctionsBlock extends Block {
   }
 
   setExpressions(expressions: any[]): void {
-    this.expressions = JSON.parse(JSON.stringify(expressions));
+    this.expressions = expressions.slice();
     for (let i = 0; i < this.expressions.length; i++) {
       this.expressions[i] = this.expressions[i].replace(/\s/g, "");
     }
@@ -98,7 +98,7 @@ export class BundledFunctionsBlock extends Block {
   }
 
   getExpressions(): any[] {
-    return JSON.parse(JSON.stringify(this.expressions));
+    return this.expressions.slice();
   }
 
   refreshView(): void {

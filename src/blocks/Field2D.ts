@@ -403,13 +403,15 @@ export class Field2D extends Block {
         ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
       }
     }
-    if (this.mouseOverValue !== undefined) {
-      ctx.fillStyle = "white";
-      //let reading = "(" + this.mouseOverX.toPrecision(2) + "," + this.mouseOverY.toPrecision(2) + "): " + this.mouseOverValue.toPrecision(3);
-      let reading = this.mouseOverValue.toPrecision(3);
-      let rx = (this.mouseOverX - this.x0) / (this.nx * this.dx) * this.fieldWindow.width;
-      let ry = -(this.mouseOverY - this.y0) / (this.ny * this.dy) * this.fieldWindow.height;
-      ctx.fillText(reading, rx - ctx.measureText(reading).width / 2, ry);
+    if (this.selected) {
+      if (this.mouseOverValue !== undefined) {
+        ctx.fillStyle = "white";
+        //let reading = "(" + this.mouseOverX.toPrecision(2) + "," + this.mouseOverY.toPrecision(2) + "): " + this.mouseOverValue.toPrecision(3);
+        let reading = this.mouseOverValue.toPrecision(3);
+        let rx = (this.mouseOverX - this.x0) / (this.nx * this.dx) * this.fieldWindow.width;
+        let ry = -(this.mouseOverY - this.y0) / (this.ny * this.dy) * this.fieldWindow.height;
+        ctx.fillText(reading, rx - ctx.measureText(reading).width / 2, ry);
+      }
     }
     ctx.restore();
 

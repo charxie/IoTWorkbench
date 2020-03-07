@@ -86,7 +86,7 @@ export class ODESolverBlock extends SolverBlock {
   getCopy(): Block {
     let block = new ODESolverBlock("ODE Solver Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.variableName = this.variableName;
-    block.setEquations(this.equations.slice());
+    block.setEquations(this.equations);
     block.method = this.method;
     return block;
   }
@@ -100,7 +100,7 @@ export class ODESolverBlock extends SolverBlock {
   }
 
   setEquations(equations: string[]): void {
-    this.equations = JSON.parse(JSON.stringify(equations));
+    this.equations = equations.slice();
     let n = this.equations.length;
     if (this.derivativeOrders === undefined || this.derivativeOrders.length !== n) {
       this.derivativeOrders = new Array(n);
@@ -108,7 +108,7 @@ export class ODESolverBlock extends SolverBlock {
     this.expressions.length = 0;
     this.functions.length = 0;
     for (let i = 0; i < n; i++) {
-      this.equations[i] = this.equations[i].replace(/\s/g, "");
+      this.equations[i] = this.equations[i].removeAllSpaces();
       let equalSignIndex = this.equations[i].indexOf("=");
       if (equalSignIndex < 0) {
         Util.showBlockError("The equation you input " + this.equations[i] + " misses an equation sign (=).");

@@ -46,6 +46,8 @@ declare global {
   }
 
   interface String {
+    removeAllSpaces();
+
     replaceAll(s, t);
 
     startsWith(s);
