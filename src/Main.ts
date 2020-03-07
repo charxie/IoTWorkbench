@@ -196,6 +196,7 @@ window.onload = function () {
   StateIO.restoreGlobalVariables();
   StateIO.restoreWorkbench(localStorage.getItem("Workbench State"));
   StateIO.restoreConnectors(localStorage.getItem("Connector States")); // connectors must be restored after loading HATs
+  StateIO.finishLoading();
   flowchart.updateResultsExcludingAllWorkerBlocks();
   // flowchart.reset(); // FIXME: why did I call this?
 

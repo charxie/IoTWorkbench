@@ -37,6 +37,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   private relaxationSteps: number = 10;
   private relaxationFactor: number = 1.5;
   private readonly partialDerivativePattern = /[a-zA-Z]+_[a-zA-Z]+/g;
+  private readonly coefficientMap = {};
 
   static State = class {
     readonly uid: string;
@@ -200,6 +201,46 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     this.refreshView();
   }
 
+  // coefficients may use global variables and declared functions
+  findCoefficients(): void {
+    let param = {...flowchart.globalVariables};
+    for (let i = 0; i < this.expressions.length; i++) {
+      let terms = this.expressions[i].split(/[+-]/g);
+      let functionNames = [];
+      try {
+        for (let term of terms) {
+          let deriv = term.match(this.partialDerivativePattern);
+          if (deriv !== null) {
+            let s = deriv.toString();
+            let coeff = term.replaceAll(s, "1");
+            this.coefficientMap[s] = math.parse(coeff).compile().evaluate(param);
+            let index = s.indexOf("_");
+            let name = s.substring(0, index);
+            if (functionNames.indexOf(name) === -1) {
+              functionNames.push(name);
+            }
+          }
+        }
+        for (let term of terms) {
+          let t = term.match(this.partialDerivativePattern);
+          if (t === null) {
+            for (let name of functionNames) {
+              if (term.indexOf(name) !== -1) {
+                let coeff = term.replaceAll(name, "1");
+                this.coefficientMap[name] = math.parse(coeff).compile().evaluate(param);
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.log(e.stack);
+        Util.showBlockError(e.toString());
+        this.hasEquationError = true;
+      }
+    }
+    //console.log(this.coefficientMap)
+  }
+
   getEquations(): string[] {
     return this.equations.slice();
   }
@@ -320,7 +361,8 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
       const invdy2 = 1 / (dy * dy);
       const invdxdy = 1 / (4 * dx * dy);
       let x, y;
-      let factor;
+      let fun;
+      let divider;
       try {
         for (let n = 0; n < count; n++) {
           let derivativeMatches = this.expressions[n].match(this.partialDerivativePattern);
@@ -334,11 +376,12 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
                   for (let j = 1; j < ny - 1; j++) {
                     y = y0 + j * dy;
                     param["x"] = y;
-                    factor = 0;
+                    divider = 0;
                     for (let match of derivativeMatches) {
                       let index = match.indexOf("_");
-                      let fun = match.substring(0, index);
-                      param[fun] = this.prevValues[n].data[i * ny + j];
+                      fun = match.substring(0, index);
+                      param[fun] = 0;
+                      let prefactor = this.coefficientMap[match.toString()];
                       let variable = match.substring(index + 1);
                       switch (variable) {
                         case "x":
@@ -349,11 +392,11 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
                           break;
                         case "xx":
                           param[match] = (this.prevValues[n].data[i * ny + j + 1] + this.prevValues[n].data[i * ny + j - 1]) * invdx2;
-                          factor += 2 * invdx2;
+                          divider += prefactor * 2 * invdx2;
                           break;
                         case "yy":
                           param[match] = (this.prevValues[n].data[(i + 1) * ny + j] + this.prevValues[n].data[(i - 1) * ny + j]) * invdy2;
-                          factor += 2 * invdy2;
+                          divider += prefactor * 2 * invdy2;
                           break;
                         case "xy":
                           param[match] = (this.prevValues[n].data[(i + 1) * ny + j + 1] + this.prevValues[n].data[(i - 1) * ny + j - 1]
@@ -361,8 +404,12 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
                           break;
                       }
                     }
-                    if (factor > 0) {
-                      this.values[n].data[i * ny + j] = this.codes[n].evaluate(param) / factor;
+                    if (this.coefficientMap[fun]) {
+                      divider -= this.coefficientMap[fun];
+                    }
+                    if (divider !== 0) {
+                      //if (i == 1 && j == 1) console.log( param)
+                      this.values[n].data[i * ny + j] = this.codes[n].evaluate(param) / divider;
                     }
                   }
                 }
@@ -382,11 +429,12 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
                   for (let j = 1; j < ny - 1; j++) {
                     y = y0 + j * dy;
                     param["x"] = y;
-                    factor = 0;
+                    divider = 0;
                     for (let match of derivativeMatches) {
                       let index = match.indexOf("_");
                       let fun = match.substring(0, index);
-                      param[fun] = this.values[n].data[i * ny + j];
+                      param[fun] = 0;
+                      let prefactor = this.coefficientMap[match.toString()];
                       let variable = match.substring(index + 1);
                       switch (variable) {
                         case "x":
@@ -397,11 +445,11 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
                           break;
                         case "xx":
                           param[match] = (this.values[n].data[i * ny + j + 1] + this.values[n].data[i * ny + j - 1]) * invdx2;
-                          factor += 2 * invdx2;
+                          divider += prefactor * 2 * invdx2;
                           break;
                         case "yy":
                           param[match] = (this.values[n].data[(i + 1) * ny + j] + this.values[n].data[(i - 1) * ny + j]) * invdy2;
-                          factor += 2 * invdy2;
+                          divider += prefactor * 2 * invdy2;
                           break;
                         case "xy":
                           param[match] = (this.values[n].data[(i + 1) * ny + j + 1] + this.values[n].data[(i - 1) * ny + j - 1]
@@ -409,8 +457,11 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
                           break;
                       }
                     }
-                    if (factor > 0) {
-                      this.values[n].data[i * ny + j] = this.codes[n].evaluate(param) / factor;
+                    if (this.coefficientMap[fun]) {
+                      divider -= this.coefficientMap[fun];
+                    }
+                    if (divider !== 0) {
+                      this.values[n].data[i * ny + j] = this.codes[n].evaluate(param) / divider;
                     }
                   }
                 }
@@ -425,11 +476,12 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
                   for (let j = 1; j < ny - 1; j++) {
                     y = y0 + j * dy;
                     param["x"] = y;
-                    factor = 0;
+                    divider = 0;
                     for (let match of derivativeMatches) {
                       let index = match.indexOf("_");
                       let fun = match.substring(0, index);
-                      param[fun] = this.values[n].data[i * ny + j];
+                      param[fun] = 0;
+                      let prefactor = this.coefficientMap[match.toString()];
                       let variable = match.substring(index + 1);
                       switch (variable) {
                         case "x":
@@ -440,11 +492,11 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
                           break;
                         case "xx":
                           param[match] = (this.values[n].data[i * ny + j + 1] + this.values[n].data[i * ny + j - 1]) * invdx2;
-                          factor += 2 * invdx2;
+                          divider += prefactor * 2 * invdx2;
                           break;
                         case "yy":
                           param[match] = (this.values[n].data[(i + 1) * ny + j] + this.values[n].data[(i - 1) * ny + j]) * invdy2;
-                          factor += 2 * invdy2;
+                          divider += prefactor * 2 * invdy2;
                           break;
                         case "xy":
                           param[match] = (this.values[n].data[(i + 1) * ny + j + 1] + this.values[n].data[(i - 1) * ny + j - 1]
@@ -452,8 +504,11 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
                           break;
                       }
                     }
-                    if (factor > 0) {
-                      this.values[n].data[i * ny + j] = (1 - this.relaxationFactor) * this.values[n].data[i * ny + j] + this.relaxationFactor * this.codes[n].evaluate(param) / factor;
+                    if (this.coefficientMap[fun]) {
+                      divider -= this.coefficientMap[fun];
+                    }
+                    if (divider > 0) {
+                      this.values[n].data[i * ny + j] = (1 - this.relaxationFactor) * this.values[n].data[i * ny + j] + this.relaxationFactor * this.codes[n].evaluate(param) / divider;
                     }
                   }
                 }

@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import convection_diffusion_equation from "./examples/convection-diffusion-equation.json";
+// @ts-ignore
 import compare_iterative_methods from "./examples/compare-iterative-methods.json";
 // @ts-ignore
 import poisson_equation from "./examples/poisson-equation.json";
@@ -262,6 +264,7 @@ export class Examples {
     this.files.push({name: "Simulation: Poisson Equation", data: poisson_equation});
     this.files.push({name: "Simulation: Boundary Value Problems", data: boundary_value_problems});
     this.files.push({name: "Simulation: Mixed Boundary Condition", data: mixed_boundary_condition});
+    this.files.push({name: "Simulation: Convection-Diffusion Equation", data: convection_diffusion_equation});
     this.files.push({name: "IoT: RGB LED Array", data: rainbow_hat_rgb_led_array});
     this.files.push({name: "IoT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
     this.files.push({name: "IoT: Fading LED Array", data: rainbow_hat_fading_led_array});

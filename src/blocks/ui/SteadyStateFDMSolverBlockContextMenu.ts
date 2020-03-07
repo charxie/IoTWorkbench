@@ -128,6 +128,7 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
         if (JSON.stringify(block.getEquations()) !== equationsInputElement.value) {
           try {
             block.setEquations(JSON.parse(equationsInputElement.value));
+            block.findCoefficients();
             block.useDeclaredFunctions();
           } catch (err) {
             console.log(err.stack);

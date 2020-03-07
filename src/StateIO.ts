@@ -59,9 +59,6 @@ export class StateIO {
     if (states.length > 0) {
       for (let state of states) {
         let type = state.uid.substring(0, state.uid.indexOf("#") - 1);
-        // if (type === "Unary Function Block") type = "Univariate Function Block";
-        // else if (type === "Binary Function Block") type = "Bivariate Function Block";
-        // else if (type === "Multivariable Function Block") type = "Multivariate Function Block";
         let block = flowchart.addBlock(type, state.x, state.y, state.uid);
         if (block == null) {
           console.log("ERROR: " + type + " not recognized");
@@ -426,6 +423,16 @@ export class StateIO {
     this.restoreFunctionDeclarations();
     this.restoreGlobalVariables();
     this.restoreConnectors(JSON.stringify(s.connectorStates));
+    this.finishLoading();
+  }
+
+  // some blocks need to use the global variables so we have to serve them after restoring globla variables
+  static finishLoading() {
+    for (let b of flowchart.blocks) {
+      if (b instanceof SteadyStateFDMSolverBlock) {
+        b.findCoefficients();
+      }
+    }
   }
 
   static open(): void {
