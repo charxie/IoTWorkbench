@@ -211,6 +211,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
           if (deriv !== null) {
             let s = deriv.toString();
             let coeff = term.replaceAll(s, "1");
+            coeff = flowchart.replaceWithDeclaredFunctions(coeff);
             this.coefficientCodeMap[s] = math.parse(coeff).compile();
             let index = s.indexOf("_");
             let name = s.substring(0, index);
@@ -225,6 +226,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
             for (let name of functionNames) {
               if (term.indexOf(name) !== -1) {
                 let coeff = term.replaceAll(name, "1");
+                coeff = flowchart.replaceWithDeclaredFunctions(coeff);
                 this.coefficientCodeMap[name] = math.parse(coeff).compile();
               }
             }

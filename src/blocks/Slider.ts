@@ -67,7 +67,7 @@ export class Slider extends Block {
     this.initiator = true;
     this.halfHeight = this.height / 2;
     this.name = name;
-    this.color = "#483D8B";
+    this.color = "#A8BBAB";
     this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
     this.knob = new Rectangle(this.x + this.width / 2 - this.knobHalfSize / 2, this.y + this.halfHeight + 4, this.knobHalfSize, this.halfHeight - 8);
     this.trackLeft = this.x + 8;
@@ -182,7 +182,7 @@ export class Slider extends Block {
     // draw the name in the upper area if this is not an icon
     if (!this.iconic) {
       ctx.save();
-      ctx.fillStyle = "white";
+      ctx.fillStyle = "dimgray";
       ctx.strokeStyle = "black";
       ctx.lineWidth = this.iconic ? 0.75 : 1;
       ctx.font = this.iconic ? "10px Arial" : "11px Arial";
@@ -229,7 +229,7 @@ export class Slider extends Block {
 
     // draw the knob
     ctx.save();
-    ctx.fillStyle = "gray";
+    ctx.fillStyle = "lightgray";
     ctx.shadowOffsetX = 2;
     ctx.shadowOffsetY = 1;
     ctx.shadowBlur = 2;

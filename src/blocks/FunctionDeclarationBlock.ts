@@ -40,7 +40,7 @@ export class FunctionDeclarationBlock extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.symbol = symbol;
-    this.color = "#FCF";
+    this.color = "#38AD8B";
   }
 
   getCopy(): Block {

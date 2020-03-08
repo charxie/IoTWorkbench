@@ -52,7 +52,7 @@ export class IntegralBlock extends Block {
   constructor(uid: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = "Integral Block";
-    this.color = "#3FF";
+    this.color = "#483D8B";
     this.symbol = "∫";
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 4;
@@ -98,8 +98,8 @@ export class IntegralBlock extends Block {
       case "Shade":
         let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
         shade.addColorStop(0, "white");
-        shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
-        shade.addColorStop(1, Util.adjust(this.color, -100));
+        shade.addColorStop(this.iconic ? 0.4 : 0.2, Util.adjust(this.color, 100));
+        shade.addColorStop(1, this.color);
         ctx.fillStyle = shade;
         break;
       case "Plain":
