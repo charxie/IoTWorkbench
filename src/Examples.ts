@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import rayleigh_benard_convection from "./examples/rayleigh-benard-convection.json";
+// @ts-ignore
 import fdm_stabilization from "./examples/fdm-stabilization.json";
 // @ts-ignore
 import convection_diffusion_equation from "./examples/convection-diffusion-equation.json";
@@ -273,6 +275,7 @@ export class Examples {
     this.files.push({name: "2D Simulation: Boundary Value Problems", data: boundary_value_problems});
     this.files.push({name: "2D Simulation: Mixed Boundary Condition", data: mixed_boundary_condition});
     this.files.push({name: "2D Simulation: Convection-Diffusion Equation", data: convection_diffusion_equation});
+    this.files.push({name: "2D Simulation: Rayleigh–Bénard Convection", data: rayleigh_benard_convection});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 
