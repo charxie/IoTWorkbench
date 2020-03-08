@@ -37,7 +37,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
   private relaxationSteps: number = 10;
   private relaxationFactor: number = 1.5;
   private readonly partialDerivativePattern = /[a-zA-Z]+_[a-zA-Z]+/g;
-  private readonly coefficientMap = {};
+  private readonly coefficientCodeMap = {};
 
   static State = class {
     readonly uid: string;
@@ -202,7 +202,6 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
 
   // coefficients may use global variables and declared functions
   findCoefficients(): void {
-    let param = {...flowchart.globalVariables};
     for (let i = 0; i < this.expressions.length; i++) {
       let terms = this.expressions[i].split(/(?=[+-])/g);
       let functionNames = [];
@@ -212,7 +211,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
           if (deriv !== null) {
             let s = deriv.toString();
             let coeff = term.replaceAll(s, "1");
-            this.coefficientMap[s] = math.parse(coeff).compile().evaluate(param);
+            this.coefficientCodeMap[s] = math.parse(coeff).compile();
             let index = s.indexOf("_");
             let name = s.substring(0, index);
             if (functionNames.indexOf(name) === -1) {
@@ -226,7 +225,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
             for (let name of functionNames) {
               if (term.indexOf(name) !== -1) {
                 let coeff = term.replaceAll(name, "1");
-                this.coefficientMap[name] = math.parse(coeff).compile().evaluate(param);
+                this.coefficientCodeMap[name] = math.parse(coeff).compile();
               }
             }
           }
@@ -237,7 +236,7 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
         this.hasEquationError = true;
       }
     }
-    //console.log(this.coefficientMap)
+    //console.log(this.coefficientCodeMap)
   }
 
   getEquations(): string[] {
@@ -367,55 +366,55 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
           let derivativeMatches = this.expressions[n].match(this.partialDerivativePattern);
           if (derivativeMatches === null || derivativeMatches.length === 0) continue;
           switch (this.method) {
-            case "Jacobi": // maybe more intuitive, but slower convergence and smaller memory footprint
+            case "Jacobi": // maybe more intuitive, but slower convergence and larger memory footprint
               for (let r = 0; r < this.relaxationSteps; r++) {
                 for (let i = 1; i < nx - 1; i++) {
                   x = x0 + i * dx;
-                  param["y"] = x;
+                  param["x"] = x;
                   for (let j = 1; j < ny - 1; j++) {
                     y = y0 + j * dy;
-                    param["x"] = y;
+                    param["y"] = y;
                     divider = 0;
                     for (let match of derivativeMatches) {
                       let index = match.indexOf("_");
                       fun = match.substring(0, index);
                       param[fun] = 0;
-                      let prefactor = this.coefficientMap[match.toString()];
+                      let prefactor = this.coefficientCodeMap[match.toString()].evaluate(param);
                       let variable = match.substring(index + 1);
                       switch (variable) {
                         case "x":
-                          param[match] = (this.prevValues[n].data[i * ny + j + 1] - this.prevValues[n].data[i * ny + j - 1]) * invdx;
+                          param[match] = (this.prevValues[n].data[j * nx + i + 1] - this.prevValues[n].data[j * nx + i - 1]) * invdx;
                           break;
                         case "y":
-                          param[match] = (this.prevValues[n].data[(i + 1) * ny + j] - this.prevValues[n].data[(i - 1) * ny + j]) * invdy;
+                          param[match] = (this.prevValues[n].data[(j + 1) * nx + i] - this.prevValues[n].data[(j - 1) * nx + i]) * invdy;
                           break;
                         case "xx":
-                          param[match] = (this.prevValues[n].data[i * ny + j + 1] + this.prevValues[n].data[i * ny + j - 1]) * invdx2;
+                          param[match] = (this.prevValues[n].data[j * nx + i + 1] + this.prevValues[n].data[j * nx + i - 1]) * invdx2;
                           divider += prefactor * 2 * invdx2;
                           break;
                         case "yy":
-                          param[match] = (this.prevValues[n].data[(i + 1) * ny + j] + this.prevValues[n].data[(i - 1) * ny + j]) * invdy2;
+                          param[match] = (this.prevValues[n].data[(j + 1) * nx + i] + this.prevValues[n].data[(j - 1) * nx + i]) * invdy2;
                           divider += prefactor * 2 * invdy2;
                           break;
                         case "xy":
-                          param[match] = (this.prevValues[n].data[(i + 1) * ny + j + 1] + this.prevValues[n].data[(i - 1) * ny + j - 1]
-                            - this.prevValues[n].data[(i + 1) * ny + j - 1] - this.prevValues[n].data[(i - 1) * ny + j + 1]) * invdxdy;
+                          param[match] = (this.prevValues[n].data[(j + 1) * nx + i + 1] + this.prevValues[n].data[(j - 1) * nx + i - 1]
+                            - this.prevValues[n].data[(j + 1) * nx + i - 1] - this.prevValues[n].data[(j - 1) * nx + i + 1]) * invdxdy;
                           break;
                       }
                     }
-                    if (this.coefficientMap[fun]) {
-                      divider -= this.coefficientMap[fun];
+                    if (this.coefficientCodeMap[fun]) {
+                      divider -= this.coefficientCodeMap[fun].evaluate(param);
                     }
                     if (divider !== 0) {
-                      //if (i == 1 && j == 1) console.log( param)
-                      this.values[n].data[i * ny + j] = this.codes[n].evaluate(param) / divider;
+                      //if (i == 1 && j == 1) console.log(param)
+                      this.values[n].data[j * nx + i] = this.codes[n].evaluate(param) / divider;
                     }
                   }
                 }
                 this.applyBoundaryConditionToCurrentValues(n, nx, ny, dx, dy);
                 for (let i = 0; i < nx; i++) {
                   for (let j = 0; j < ny; j++) {
-                    this.prevValues[n].data[i * ny + j] = this.values[n].data[i * ny + j];
+                    this.prevValues[n].data[j * nx + i] = this.values[n].data[j * nx + i];
                   }
                 }
               }
@@ -424,43 +423,43 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
               for (let r = 0; r < this.relaxationSteps; r++) {
                 for (let i = 1; i < nx - 1; i++) {
                   x = x0 + i * dx;
-                  param["y"] = x;
+                  param["x"] = x;
                   for (let j = 1; j < ny - 1; j++) {
                     y = y0 + j * dy;
-                    param["x"] = y;
+                    param["y"] = y;
                     divider = 0;
                     for (let match of derivativeMatches) {
                       let index = match.indexOf("_");
                       let fun = match.substring(0, index);
                       param[fun] = 0;
-                      let prefactor = this.coefficientMap[match.toString()];
+                      let prefactor = this.coefficientCodeMap[match.toString()].evaluate(param);
                       let variable = match.substring(index + 1);
                       switch (variable) {
                         case "x":
-                          param[match] = (this.values[n].data[i * ny + j + 1] - this.values[n].data[i * ny + j - 1]) * invdx;
+                          param[match] = (this.values[n].data[j * nx + i + 1] - this.values[n].data[j * nx + i - 1]) * invdx;
                           break;
                         case "y":
-                          param[match] = (this.values[n].data[(i + 1) * ny + j] - this.values[n].data[(i - 1) * ny + j]) * invdy;
+                          param[match] = (this.values[n].data[(j + 1) * nx + i] - this.values[n].data[(j - 1) * nx + i]) * invdy;
                           break;
                         case "xx":
-                          param[match] = (this.values[n].data[i * ny + j + 1] + this.values[n].data[i * ny + j - 1]) * invdx2;
+                          param[match] = (this.values[n].data[j * nx + i + 1] + this.values[n].data[j * nx + i - 1]) * invdx2;
                           divider += prefactor * 2 * invdx2;
                           break;
                         case "yy":
-                          param[match] = (this.values[n].data[(i + 1) * ny + j] + this.values[n].data[(i - 1) * ny + j]) * invdy2;
+                          param[match] = (this.values[n].data[(j + 1) * nx + i] + this.values[n].data[(j - 1) * nx + i]) * invdy2;
                           divider += prefactor * 2 * invdy2;
                           break;
                         case "xy":
-                          param[match] = (this.values[n].data[(i + 1) * ny + j + 1] + this.values[n].data[(i - 1) * ny + j - 1]
-                            - this.values[n].data[(i + 1) * ny + j - 1] - this.values[n].data[(i - 1) * ny + j + 1]) * invdxdy;
+                          param[match] = (this.values[n].data[(j + 1) * nx + i + 1] + this.values[n].data[(j - 1) * nx + i - 1]
+                            - this.values[n].data[(j + 1) * nx + i - 1] - this.values[n].data[(j - 1) * nx + i + 1]) * invdxdy;
                           break;
                       }
                     }
-                    if (this.coefficientMap[fun]) {
-                      divider -= this.coefficientMap[fun];
+                    if (this.coefficientCodeMap[fun]) {
+                      divider -= this.coefficientCodeMap[fun].evaluate(param);
                     }
                     if (divider !== 0) {
-                      this.values[n].data[i * ny + j] = this.codes[n].evaluate(param) / divider;
+                      this.values[n].data[j * nx + i] = this.codes[n].evaluate(param) / divider;
                     }
                   }
                 }
@@ -471,43 +470,43 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
               for (let r = 0; r < this.relaxationSteps; r++) {
                 for (let i = 1; i < nx - 1; i++) {
                   x = x0 + i * dx;
-                  param["y"] = x;
+                  param["x"] = x;
                   for (let j = 1; j < ny - 1; j++) {
                     y = y0 + j * dy;
-                    param["x"] = y;
+                    param["y"] = y;
                     divider = 0;
                     for (let match of derivativeMatches) {
                       let index = match.indexOf("_");
                       let fun = match.substring(0, index);
                       param[fun] = 0;
-                      let prefactor = this.coefficientMap[match.toString()];
+                      let prefactor = this.coefficientCodeMap[match.toString()].evaluate(param);
                       let variable = match.substring(index + 1);
                       switch (variable) {
                         case "x":
-                          param[match] = (this.values[n].data[i * ny + j + 1] - this.values[n].data[i * ny + j - 1]) * invdx;
+                          param[match] = (this.values[n].data[j * nx + i + 1] - this.values[n].data[j * nx + i - 1]) * invdx;
                           break;
                         case "y":
-                          param[match] = (this.values[n].data[(i + 1) * ny + j] - this.values[n].data[(i - 1) * ny + j]) * invdy;
+                          param[match] = (this.values[n].data[(j + 1) * nx + i] - this.values[n].data[(j - 1) * nx + i]) * invdy;
                           break;
                         case "xx":
-                          param[match] = (this.values[n].data[i * ny + j + 1] + this.values[n].data[i * ny + j - 1]) * invdx2;
+                          param[match] = (this.values[n].data[j * nx + i + 1] + this.values[n].data[j * nx + i - 1]) * invdx2;
                           divider += prefactor * 2 * invdx2;
                           break;
                         case "yy":
-                          param[match] = (this.values[n].data[(i + 1) * ny + j] + this.values[n].data[(i - 1) * ny + j]) * invdy2;
+                          param[match] = (this.values[n].data[(j + 1) * nx + i] + this.values[n].data[(j - 1) * nx + i]) * invdy2;
                           divider += prefactor * 2 * invdy2;
                           break;
                         case "xy":
-                          param[match] = (this.values[n].data[(i + 1) * ny + j + 1] + this.values[n].data[(i - 1) * ny + j - 1]
-                            - this.values[n].data[(i + 1) * ny + j - 1] - this.values[n].data[(i - 1) * ny + j + 1]) * invdxdy;
+                          param[match] = (this.values[n].data[(j + 1) * nx + i + 1] + this.values[n].data[(j - 1) * nx + i - 1]
+                            - this.values[n].data[(j + 1) * nx + i - 1] - this.values[n].data[(j - 1) * nx + i + 1]) * invdxdy;
                           break;
                       }
                     }
-                    if (this.coefficientMap[fun]) {
-                      divider -= this.coefficientMap[fun];
+                    if (this.coefficientCodeMap[fun]) {
+                      divider -= this.coefficientCodeMap[fun].evaluate(param);
                     }
                     if (divider > 0) {
-                      this.values[n].data[i * ny + j] = (1 - this.relaxationFactor) * this.values[n].data[i * ny + j] + this.relaxationFactor * this.codes[n].evaluate(param) / divider;
+                      this.values[n].data[j * nx + i] = (1 - this.relaxationFactor) * this.values[n].data[j * nx + i] + this.relaxationFactor * this.codes[n].evaluate(param) / divider;
                     }
                   }
                 }
@@ -536,49 +535,49 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
     if (this.boundaryValues[n] === undefined) return;
     switch (this.boundaryValues[n].north.type) {
       case "Dirichlet":
-        for (let j = 0; j < ny; j++) {
-          this.values[n].data[(nx - 1) * ny + j] = this.boundaryValues[n].north.value;
+        for (let i = 0; i < nx; i++) {
+          this.values[n].data[(ny - 1) * nx + i] = this.boundaryValues[n].north.value;
         }
         break;
       case "Neumann":
-        for (let j = 0; j < ny; j++) {
-          this.values[n].data[(nx - 1) * ny + j] = this.values[n].data[(nx - 2) * ny + j] + this.boundaryValues[n].north.value * dy;
+        for (let i = 0; i < nx; i++) {
+          this.values[n].data[(ny - 1) * nx + i] = this.values[n].data[(ny - 2) * nx + i] + this.boundaryValues[n].north.value * dy;
         }
         break;
     }
     switch (this.boundaryValues[n].east.type) {
       case "Dirichlet":
-        for (let i = 0; i < nx; i++) {
-          this.values[n].data[i * ny + ny - 1] = this.boundaryValues[n].east.value;
+        for (let j = 0; j < ny; j++) {
+          this.values[n].data[j * nx + nx - 1] = this.boundaryValues[n].east.value;
         }
         break;
       case "Neumann":
-        for (let i = 0; i < nx; i++) {
-          this.values[n].data[i * ny + ny - 1] = this.values[n].data[i * ny + ny - 2] + this.boundaryValues[n].east.value * dx;
+        for (let j = 0; j < ny; j++) {
+          this.values[n].data[j * nx + nx - 1] = this.values[n].data[j * nx + nx - 2] + this.boundaryValues[n].east.value * dx;
         }
         break;
     }
     switch (this.boundaryValues[n].south.type) {
       case "Dirichlet":
-        for (let j = 0; j < ny; j++) {
-          this.values[n].data[j] = this.boundaryValues[n].south.value;
+        for (let i = 0; i < nx; i++) {
+          this.values[n].data[i] = this.boundaryValues[n].south.value;
         }
         break;
       case "Neumann":
-        for (let j = 0; j < ny; j++) {
-          this.values[n].data[j] = this.values[n].data[ny + j] - this.boundaryValues[n].south.value * dy;
+        for (let i = 0; i < nx; i++) {
+          this.values[n].data[i] = this.values[n].data[nx + i] - this.boundaryValues[n].south.value * dy;
         }
         break;
     }
     switch (this.boundaryValues[n].west.type) {
       case "Dirichlet":
-        for (let i = 0; i < nx; i++) {
-          this.values[n].data[i * ny] = this.boundaryValues[n].west.value;
+        for (let j = 0; j < ny; j++) {
+          this.values[n].data[j * nx] = this.boundaryValues[n].west.value;
         }
         break;
       case "Neumann":
-        for (let i = 0; i < nx; i++) {
-          this.values[n].data[i * ny] = this.values[n].data[i * ny + 1] - this.boundaryValues[n].west.value * dx;
+        for (let j = 0; j < ny; j++) {
+          this.values[n].data[j * nx] = this.values[n].data[j * nx + 1] - this.boundaryValues[n].west.value * dx;
         }
         break;
     }
