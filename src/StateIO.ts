@@ -44,6 +44,7 @@ import {TransientStateFDMSolverBlock} from "./blocks/TransientStateFDMSolverBloc
 import {SteadyStateFDMSolverBlock} from "./blocks/SteadyStateFDMSolverBlock";
 import {BoundaryConditionBlock} from "./blocks/BoundaryConditionBlock";
 import {ImageBlock} from "./blocks/ImageBlock";
+import {AudioBlock} from "./blocks/AudioBlock";
 
 export class StateIO {
 
@@ -272,6 +273,10 @@ export class StateIO {
           block.setName(state.name);
           block.setData(state.data);
           block.setTransparent(state.transparent !== undefined ? state.transparent : false);
+        } else if (block instanceof AudioBlock) {
+          block.setName(state.name);
+          block.setData(state.data);
+          block.setInterruptible(state.interruptible);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

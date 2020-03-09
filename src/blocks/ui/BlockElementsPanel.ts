@@ -44,6 +44,7 @@ import {SteadyStateFDMSolverBlock} from "../SteadyStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "../RandomNumberGeneratorBlock";
 import {BoundaryConditionBlock} from "../BoundaryConditionBlock";
 import {ImageBlock} from "../ImageBlock";
+import {AudioBlock} from "../AudioBlock";
 
 export class BlockElementsPanel {
 
@@ -98,6 +99,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="vector-block" title="Vector" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="matrix-block" title="Matrix" width="60x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="image-block" title="Image" width="60x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="audio-block" title="Audio" width="60x" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -171,6 +173,7 @@ export class BlockElementsPanel {
     this.drawWorkerBlock("Worker Block", "Worker", "worker-block");
     this.drawActionBlock("Action Block", "Action", "action-block");
     this.drawImageBlock("Image Block", "⛱", "image-block");
+    this.drawAudioBlock("Audio Block", "♬", "audio-block");
     this.drawRandomNumberGeneratorBlock("Random Number Generator Block", "Random", "random-number-generator-block");
   }
 
@@ -202,6 +205,15 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new ImageBlock("Image Block Icon", "Image", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setSymbol(symbol);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawAudioBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new AudioBlock("Audio Block Icon", "Audio", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setSymbol(symbol);
     block.setIconic(true);
     block.draw(ctx);

@@ -47,6 +47,7 @@ import {RandomNumberGeneratorBlockContextMenu} from "./blocks/ui/RandomNumberGen
 import {RainbowHatBlockContextMenu} from "./blocks/ui/RainbowHatBlockContextMenu";
 import {contextMenus} from "./Main";
 import {ImageBlockContextMenu} from "./blocks/ui/ImageBlockContextMenu";
+import {AudioBlockContextMenu} from "./blocks/ui/AudioBlockContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -95,6 +96,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("space2d-context-menu-placeholder", blockPlayground);
   addPlaceholder("field2d-context-menu-placeholder", blockPlayground);
   addPlaceholder("image-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("audio-block-context-menu-placeholder", blockPlayground);
 
   setupContextMenuForBlocks();
 
@@ -321,6 +323,11 @@ function setupContextMenuForBlocks() {
   imageBlockContextMenu.render("image-block-context-menu-placeholder");
   imageBlockContextMenu.addListeners();
   contextMenus.imageBlock = imageBlockContextMenu;
+
+  let audioBlockContextMenu = new AudioBlockContextMenu();
+  audioBlockContextMenu.render("audio-block-context-menu-placeholder");
+  audioBlockContextMenu.addListeners();
+  contextMenus.audioBlock = audioBlockContextMenu;
 
 }
 

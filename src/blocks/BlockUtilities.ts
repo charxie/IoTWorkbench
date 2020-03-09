@@ -2,6 +2,8 @@
  * @author Charles Xie
  */
 
+import {contextMenus} from "../Main";
+import {Block} from "./Block";
 import {ArithmeticBlock} from "./ArithmeticBlock";
 import {WorkerBlock} from "./WorkerBlock";
 import {ActionBlock} from "./ActionBlock";
@@ -15,7 +17,6 @@ import {MultivariateFunctionBlock} from "./MultivariateFunctionBlock";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {BundledFunctionsBlock} from "./BundledFunctionsBlock";
 import {Slider} from "./Slider";
-import {contextMenus} from "../Main";
 import {ItemSelector} from "./ItemSelector";
 import {ToggleSwitch} from "./ToggleSwitch";
 import {MomentarySwitch} from "./MomentarySwitch";
@@ -30,7 +31,6 @@ import {RgbaColorBlock} from "./RgbaColorBlock";
 import {ComplexNumberBlock} from "./ComplexNumberBlock";
 import {RainbowHatBlock} from "./RainbowHatBlock";
 import {BlockContextMenu} from "./ui/BlockContextMenu";
-import {Block} from "./Block";
 import {BitwiseOperatorBlock} from "./BitwiseOperatorBlock";
 import {FunctionDeclarationBlock} from "./FunctionDeclarationBlock";
 import {VectorBlock} from "./VectorBlock";
@@ -48,6 +48,7 @@ import {Field2D} from "./Field2D";
 import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
 import {ImageBlock} from "./ImageBlock";
+import {AudioBlock} from "./AudioBlock";
 
 export class BlockUtilities {
 
@@ -177,6 +178,9 @@ export class BlockUtilities {
     }
     if (block instanceof ImageBlock) {
       return contextMenus.imageBlock;
+    }
+    if (block instanceof AudioBlock) {
+      return contextMenus.audioBlock;
     }
     if (block instanceof RainbowHatBlock) {
       return contextMenus.rainbowHatBlock;
@@ -356,6 +360,10 @@ export class BlockUtilities {
     if (block instanceof ImageBlock) {
       contextMenus.imageBlock.block = block;
       return document.getElementById("image-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof AudioBlock) {
+      contextMenus.audioBlock.block = block;
+      return document.getElementById("audio-block-context-menu") as HTMLMenuElement;
     }
     return null;
   }

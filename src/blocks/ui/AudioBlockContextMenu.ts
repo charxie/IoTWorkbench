@@ -6,13 +6,13 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
-import {ImageBlock} from "../ImageBlock";
+import {AudioBlock} from "../AudioBlock";
 
-export class ImageBlockContextMenu extends BlockContextMenu {
+export class AudioBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "image-block-context-menu";
+    this.id = "audio-block-context-menu";
   }
 
   getPropertiesUI(): string {
@@ -20,25 +20,25 @@ export class ImageBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td colspan="2"><input type="text" id="image-block-name-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="audio-block-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>File:</td>
-                  <td><button type="button" id="image-block-file-button">Open</button></td>
-                  <td><label id="image-block-file-name-label" style="width: 100%"></label></label></td>
+                  <td><button type="button" id="audio-block-file-button">Open</button></td>
+                  <td><label id="audio-block-file-name-label" style="width: 100%"></label></label></td>
                 </tr>
                 <tr>
-                  <td>Transparency:</td>
-                  <td><input type="radio" name="transparency" id="image-block-not-transparent-radio-button" checked> No
-                      <input type="radio" name="transparency" id="image-block-transparent-radio-button"> Yes</td>
+                  <td>Interruptible:</td>
+                  <td><input type="radio" name="short" id="audio-block-interruptible-radio-button" checked> Yes
+                      <input type="radio" name="short" id="audio-block-not-interruptible-radio-button"> No</td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td colspan="2"><input type="text" id="image-block-width-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="audio-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td colspan="2"><input type="text" id="image-block-height-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="audio-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -46,17 +46,17 @@ export class ImageBlockContextMenu extends BlockContextMenu {
 
   open(): void {
     let that = this;
-    let fileDialog = document.getElementById('image-file-dialog') as HTMLInputElement;
+    let fileDialog = document.getElementById('audio-file-dialog') as HTMLInputElement;
     fileDialog.onchange = e => {
       let target = <HTMLInputElement>event.target;
       if (target.files.length) {
         let reader: FileReader = new FileReader();
         reader.readAsDataURL(target.files[0]); // base64 string
         reader.onload = function (e) {
-          (<ImageBlock>that.block).setData(reader.result.toString());
+          (<AudioBlock>that.block).setData(reader.result.toString());
           target.value = "";
         };
-        document.getElementById("image-block-file-name-label").innerHTML = target.files[0].name;
+        document.getElementById("audio-block-file-name-label").innerHTML = target.files[0].name;
       }
     };
     fileDialog.click();
@@ -65,31 +65,31 @@ export class ImageBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof ImageBlock) {
+    if (this.block instanceof AudioBlock) {
       let that = this;
-      const imageBlock = this.block;
+      const audioBlock = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let fileOpenButton = document.getElementById("image-block-file-button") as HTMLButtonElement;
+      let fileOpenButton = document.getElementById("audio-block-file-button") as HTMLButtonElement;
       fileOpenButton.onclick = function () {
         that.open();
       };
-      let nameInputElement = document.getElementById("image-block-name-field") as HTMLInputElement;
-      nameInputElement.value = imageBlock.getName();
-      let notTransparentRadioButton = document.getElementById("image-block-not-transparent-radio-button") as HTMLInputElement;
-      notTransparentRadioButton.checked = !imageBlock.isTransparent();
-      let transparentRadioButton = document.getElementById("image-block-transparent-radio-button") as HTMLInputElement;
-      transparentRadioButton.checked = imageBlock.isTransparent();
-      let widthInputElement = document.getElementById("image-block-width-field") as HTMLInputElement;
-      widthInputElement.value = imageBlock.getWidth().toString();
-      let heightInputElement = document.getElementById("image-block-height-field") as HTMLInputElement;
-      heightInputElement.value = imageBlock.getHeight().toString();
+      let interruptibleRadioButton = document.getElementById("audio-block-interruptible-radio-button") as HTMLInputElement;
+      interruptibleRadioButton.checked = audioBlock.isInterruptible();
+      let notInterruptibleRadioButton = document.getElementById("audio-block-not-interruptible-radio-button") as HTMLInputElement;
+      notInterruptibleRadioButton.checked = !audioBlock.isInterruptible();
+      let nameInputElement = document.getElementById("audio-block-name-field") as HTMLInputElement;
+      nameInputElement.value = audioBlock.getName();
+      let widthInputElement = document.getElementById("audio-block-width-field") as HTMLInputElement;
+      widthInputElement.value = audioBlock.getWidth().toString();
+      let heightInputElement = document.getElementById("audio-block-height-field") as HTMLInputElement;
+      heightInputElement.value = audioBlock.getHeight().toString();
       const okFunction = function () {
         let success = true;
         let message;
         // set width
         let w = parseInt(widthInputElement.value);
         if (isNumber(w)) {
-          imageBlock.setWidth(Math.max(20, w));
+          audioBlock.setWidth(Math.max(20, w));
         } else {
           success = false;
           message = widthInputElement.value + " is not a valid width.";
@@ -97,17 +97,17 @@ export class ImageBlockContextMenu extends BlockContextMenu {
         // set height
         let h = parseInt(heightInputElement.value);
         if (isNumber(h)) {
-          imageBlock.setHeight(Math.max(20, h));
+          audioBlock.setHeight(Math.max(20, h));
         } else {
           success = false;
           message = heightInputElement.value + " is not a valid height.";
         }
         // finish
         if (success) {
-          imageBlock.setName(nameInputElement.value);
-          imageBlock.setTransparent(transparentRadioButton.checked);
+          audioBlock.setName(nameInputElement.value);
+          audioBlock.setInterruptible(interruptibleRadioButton.checked);
           flowchart.blockView.requestDraw();
-          flowchart.updateResultsForBlock(imageBlock);
+          flowchart.updateResultsForBlock(audioBlock);
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');
@@ -126,8 +126,8 @@ export class ImageBlockContextMenu extends BlockContextMenu {
       d.dialog({
         resizable: false,
         modal: true,
-        title: imageBlock.getUid(),
-        height: 400,
+        title: audioBlock.getUid(),
+        height: 350,
         width: 350,
         buttons: {
           'OK': okFunction,

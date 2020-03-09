@@ -137,10 +137,6 @@ export class ImageBlock extends Block {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
   }
 
-  onButton(x: number, y: number): boolean {
-    return x > this.x && x < this.x + this.width && y > this.y + this.barHeight && y < this.y + this.height;
-  }
-
   destroy(): void {
   }
 
