@@ -15,6 +15,7 @@ export class Space2D extends Block {
   private portX: Port; // x and y ports are only used in the dual mode (which is the default)
   private portY: Port;
   private portPoints: Port[]; // only used in the point mode (multiple point streams are supported only in this mode)
+  private portImages: Port[];
   private pointInput: boolean = false;
   private points: Point2DArray[] = [];
   private minimumXValue: number = 0;
@@ -42,6 +43,7 @@ export class Space2D extends Block {
   private lineColors: string[] = [];
   private dataSymbols: string[] = [];
   private dataSymbolColors: string[] = [];
+  private images = [];
 
   static State = class {
     readonly name: string;
@@ -158,14 +160,22 @@ export class Space2D extends Block {
     }
     this.ports.length = 0;
     if (this.pointInput) {
+      let dh = (this.height - this.barHeight) / 3;
       if (this.portPoints == undefined) {
         this.portPoints = [];
-        let dh = (this.height - this.barHeight) / 2;
         this.portPoints.push(new Port(this, true, "A", 0, this.barHeight + dh, false));
       }
       for (let p of this.portPoints) {
         this.ports.push(p);
       }
+      if (this.portImages == undefined) {
+        this.portImages = [];
+        this.portImages.push(new Port(this, true, "AI", 0, this.barHeight + 2 * dh, false));
+      }
+      for (let p of this.portImages) {
+        this.ports.push(p);
+      }
+      this.images = new Array(this.portImages.length);
     } else {
       this.ports.push(this.portX);
       this.ports.push(this.portY);
@@ -187,6 +197,9 @@ export class Space2D extends Block {
             this.portPoints.push(p);
             this.ports.push(p);
             this.points.push(new Point2DArray());
+            p = new Port(this, true, String.fromCharCode("A".charCodeAt(0) + i) + "I", 0, 0, false);
+            this.portImages.push(p);
+            this.ports.push(p);
             if (notSet) {
               this.lineTypes.push("Solid");
               this.lineColors.push("black");
@@ -199,6 +212,8 @@ export class Space2D extends Block {
         for (let i = this.portPoints.length - 1; i >= numberOfPoints; i--) {
           this.portPoints.pop();
           this.points.pop();
+          flowchart.removeConnectorsToPort(this.ports.pop());
+          this.portImages.pop();
           flowchart.removeConnectorsToPort(this.ports.pop());
           this.lineTypes.pop();
           this.lineColors.pop();
@@ -498,11 +513,20 @@ export class Space2D extends Block {
         let i = length - 1;
         if (i >= 0) {
           ctx.beginPath();
-          ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.endSymbolRadius, 0, 2 * Math.PI);
-          ctx.fillStyle = this.dataSymbolColors[index];
-          ctx.fill();
-          ctx.strokeStyle = this.lineColors[index];
-          ctx.stroke();
+          if (this.portImages !== undefined && this.portImages[index].getValue() !== undefined) {
+            if (this.images[index] === undefined) {
+              this.images[index] = new Image();
+            }
+            this.images[index].src = this.portImages[index].getValue();
+            ctx.drawImage(this.images[index], (p.getX(i) - xmin) * dx - this.endSymbolRadius, -(p.getY(i) - ymin) * dy - this.endSymbolRadius,
+              2 * this.endSymbolRadius, 2 * this.endSymbolRadius * this.images[index].height / this.images[index].width);
+          } else {
+            ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.endSymbolRadius, 0, 2 * Math.PI);
+            ctx.fillStyle = this.dataSymbolColors[index];
+            ctx.fill();
+            ctx.strokeStyle = this.lineColors[index];
+            ctx.stroke();
+          }
         }
       }
     }
@@ -582,13 +606,8 @@ export class Space2D extends Block {
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
-    if (this.pointInput) {
-      for (let p of this.portPoints) {
-        p.draw(ctx, this.iconic);
-      }
-    } else {
-      this.portX.draw(ctx, this.iconic);
-      this.portY.draw(ctx, this.iconic);
+    for (let p of this.ports) {
+      p.draw(ctx, this.iconic);
     }
 
     if (this.selected) {
@@ -697,9 +716,10 @@ export class Space2D extends Block {
     this.spaceMargin.left = 60;
     this.spaceMargin.right = 16;
     if (this.pointInput) {
-      let dh = (this.height - this.barHeight) / (this.portPoints.length + 1);
+      let dh = (this.height - this.barHeight) / (2 * this.portPoints.length + 1);
       for (let i = 0; i < this.portPoints.length; i++) {
-        this.portPoints[i].setY(this.barHeight + dh * (i + 1));
+        this.portPoints[i].setY(this.barHeight + dh * (2 * i + 1));
+        this.portImages[i].setY(this.barHeight + dh * (2 * i + 2));
       }
     } else {
       let dh = (this.height - this.barHeight) / 3;

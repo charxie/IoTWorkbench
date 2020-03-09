@@ -43,6 +43,7 @@ import {TransientStateFDMSolverBlock} from "../TransientStateFDMSolverBlock";
 import {SteadyStateFDMSolverBlock} from "../SteadyStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "../RandomNumberGeneratorBlock";
 import {BoundaryConditionBlock} from "../BoundaryConditionBlock";
+import {ImageBlock} from "../ImageBlock";
 
 export class BlockElementsPanel {
 
@@ -96,6 +97,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="complex-number-block" title="Complex Number" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="vector-block" title="Vector" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="matrix-block" title="Matrix" width="60x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="image-block" title="Image" width="60x" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -168,6 +170,7 @@ export class BlockElementsPanel {
     this.drawSwitchStatementBlock("Switch Statement Block", "Switch", "switch-statement-block");
     this.drawWorkerBlock("Worker Block", "Worker", "worker-block");
     this.drawActionBlock("Action Block", "Action", "action-block");
+    this.drawImageBlock("Image Block", "⛱", "image-block");
     this.drawRandomNumberGeneratorBlock("Random Number Generator Block", "Random", "random-number-generator-block");
   }
 
@@ -191,6 +194,15 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new ActionBlock("Action Block Icon", "Action", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawImageBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new ImageBlock("Image Block Icon", "Image", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setSymbol(symbol);
     block.setIconic(true);
     block.draw(ctx);
   }

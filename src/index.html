@@ -74,15 +74,15 @@
 
 <!-- Tab links -->
 <div id="tabs" class="tab">
-  <button id="model-tab-button" class="tablinks active" title="Model Editor">
-    <span style="font-size: 1.2em; color: teal; vertical-align: middle;"><i class="fas fa-clone"></i></span>
-    <span style="display:inline-block; width:10px;"></span>
-    Model
-  </button>
   <button id="block-tab-button" class="tablinks" title="Block Editor">
     <span style="font-size: 1.2em; color: teal; vertical-align: middle;"><i class="fas fa-project-diagram"></i></span>
     <span style="display:inline-block; width:10px;"></span>
     Flow
+  </button>
+  <button id="model-tab-button" class="tablinks active" title="Model Editor">
+    <span style="font-size: 1.2em; color: teal; vertical-align: middle;"><i class="fas fa-clone"></i></span>
+    <span style="display:inline-block; width:10px;"></span>
+    Model
   </button>
   <button id="code-tab-button" class="tablinks" title="Code Editor">
     <span style="font-size: 1.2em; color: teal; vertical-align: middle;"><i class="fas fa-code"></i></span>
@@ -100,12 +100,6 @@
   </div>
 </div>
 
-<div id="model-playground" style="position: absolute;" class="tabcontent">
-  <canvas id="workbench" width="800" height="600" tabindex="1"
-          style="display: block; border: 2px solid #009999; margin: 10px 10px 10px 210px; position: absolute; z-index: 0;"></canvas>
-  <div id="model-playground-components-panel"></div>
-</div>
-
 <div id="block-playground" style="position: absolute; display: none;" class="tabcontent">
   <div id="block-view-wrapper"
        style="width: 1000px; height: 500px; margin: 10px 10px 10px 210px; position: absolute; overflow: auto">
@@ -115,12 +109,19 @@
   <div id="block-elements-panel"></div>
 </div>
 
+<div id="model-playground" style="position: absolute;" class="tabcontent">
+  <canvas id="workbench" width="800" height="600" tabindex="1"
+          style="display: block; border: 2px solid #009999; margin: 10px 10px 10px 210px; position: absolute; z-index: 0;"></canvas>
+  <div id="model-playground-components-panel"></div>
+</div>
+
 <div id="code-playground" style="position: absolute; display: none;" class="tabcontent">
 </div>
 
 <div id="modal-dialog"></div>
 <div id="error-dialog"></div>
 <input type="file" id="state-file-dialog" accept=".json" style="display: none"/>
+<input type="file" id="image-file-dialog" accept="image/gif, image/png, image/jpeg" style="display: none"/>
 
 </body>
 

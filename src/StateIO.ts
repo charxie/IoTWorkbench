@@ -43,6 +43,7 @@ import {RandomNumberGeneratorBlock} from "./blocks/RandomNumberGeneratorBlock";
 import {TransientStateFDMSolverBlock} from "./blocks/TransientStateFDMSolverBlock";
 import {SteadyStateFDMSolverBlock} from "./blocks/SteadyStateFDMSolverBlock";
 import {BoundaryConditionBlock} from "./blocks/BoundaryConditionBlock";
+import {ImageBlock} from "./blocks/ImageBlock";
 
 export class StateIO {
 
@@ -267,6 +268,10 @@ export class StateIO {
           block.setName(state.name);
           block.setNumberOfOutputs(state.numberOfOutputs);
           block.setType(state.type);
+        } else if (block instanceof ImageBlock) {
+          block.setName(state.name);
+          block.setData(state.data);
+          block.setTransparent(state.transparent !== undefined ? state.transparent : false);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }
@@ -431,6 +436,8 @@ export class StateIO {
     for (let b of flowchart.blocks) {
       if (b instanceof SteadyStateFDMSolverBlock) {
         b.findCoefficients();
+      } else if (b instanceof ImageBlock) {
+        b.updateModel();
       }
     }
   }

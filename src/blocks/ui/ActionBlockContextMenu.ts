@@ -26,6 +26,7 @@ export class ActionBlockContextMenu extends BlockContextMenu {
                       <option value="Stop">Stop</option>
                       <option value="Repaint">Repaint</option>
                     </select>
+                  </td>
                 </tr>
                 <tr>
                   <td>Width:</td>

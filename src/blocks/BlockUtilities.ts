@@ -47,6 +47,7 @@ import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 import {Field2D} from "./Field2D";
 import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
+import {ImageBlock} from "./ImageBlock";
 
 export class BlockUtilities {
 
@@ -173,6 +174,9 @@ export class BlockUtilities {
     }
     if (block instanceof RandomNumberGeneratorBlock) {
       return contextMenus.randomNumberGeneratorBlock;
+    }
+    if (block instanceof ImageBlock) {
+      return contextMenus.imageBlock;
     }
     if (block instanceof RainbowHatBlock) {
       return contextMenus.rainbowHatBlock;
@@ -348,6 +352,10 @@ export class BlockUtilities {
     if (block instanceof RainbowHatBlock) {
       contextMenus.rainbowHatBlock.block = block;
       return document.getElementById("rainbow-hat-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof ImageBlock) {
+      contextMenus.imageBlock.block = block;
+      return document.getElementById("image-block-context-menu") as HTMLMenuElement;
     }
     return null;
   }

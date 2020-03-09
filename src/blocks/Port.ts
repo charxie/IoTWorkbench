@@ -6,6 +6,8 @@ import {Block} from "./Block";
 import {Arc} from "../math/Arc";
 import {Point} from "../math/Point";
 import {flowchart} from "../Main";
+import {ItemSelector} from "./ItemSelector";
+import {GlobalVariableBlock} from "./GlobalVariableBlock";
 
 export class Port {
 
@@ -136,17 +138,19 @@ export class Port {
     ctx.arc(ax, ay, this.arc.radius, this.arc.startAngle, this.arc.endAngle, this.arc.anticlockwise);
     ctx.fill();
     ctx.stroke();
-    if (!iconic && this.block.getPorts().length > 2) {
-      ctx.lineWidth = 0.75;
-      ctx.fillStyle = "black";
-      let t = this.block.getPortName(this.uid);
-      if (this.arc.anticlockwise) {
-        ctx.fillText(t, ax - ctx.measureText(t).width - (iconic ? 2 : 4), ay + 4);
-      } else {
-        ctx.fillText(t, ax + (iconic ? 2 : 4), ay + 4)
+    if (!iconic && this.block.getPorts().length > 1) {
+      if (!(this.block instanceof ItemSelector) && !(this.block instanceof GlobalVariableBlock)) { // exceptions
+        ctx.lineWidth = 0.75;
+        ctx.fillStyle = "black";
+        let t = this.block.getPortName(this.uid);
+        if (this.arc.anticlockwise) {
+          ctx.fillText(t, ax - ctx.measureText(t).width - (iconic ? 2 : 4), ay + 4);
+        } else {
+          ctx.fillText(t, ax + (iconic ? 2 : 4), ay + 4)
+        }
       }
-      ctx.restore();
     }
+    ctx.restore();
   }
 
   public toString(): string {

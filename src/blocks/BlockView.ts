@@ -55,6 +55,7 @@ import {Field2D} from "./Field2D";
 import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
 import {StateIO} from "../StateIO";
 import {State} from "../State";
+import {ImageBlock} from "./ImageBlock";
 
 export class BlockView {
 
@@ -195,6 +196,9 @@ export class BlockView {
             break;
           case "action-block":
             b = that.addBlockUndoable(new ActionBlock("Action Block #" + timestamp, "Action", x - 40, y - 30, 80, 60));
+            break;
+          case "image-block":
+            b = that.addBlockUndoable(new ImageBlock("Image Block #" + timestamp, "Image", x - 50, y - 60, 100, 120));
             break;
           case "turnout-switch-block":
             b = that.addBlockUndoable(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 50, y - 30, 100, 60));

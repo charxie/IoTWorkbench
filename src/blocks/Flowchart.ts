@@ -54,6 +54,7 @@ import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
 import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
+import {ImageBlock} from "./ImageBlock";
 
 export class Flowchart {
 
@@ -805,6 +806,9 @@ export class Flowchart {
       case "Action Block":
         block = new ActionBlock(uid, name, x, y, 80, 60);
         break;
+      case "Image Block":
+        block = new ImageBlock(uid, name, x, y, 80, 60);
+        break;
       case "Turnout Switch":
         block = new TurnoutSwitch(uid, name, "Turnout", x, y, 60, 100);
         break;
@@ -928,6 +932,8 @@ export class Flowchart {
         blockStates.push(new WorkerBlock.State(b));
       } else if (b instanceof ActionBlock) {
         blockStates.push(new ActionBlock.State(b));
+      } else if (b instanceof ImageBlock) {
+        blockStates.push(new ImageBlock.State(b));
       } else if (b instanceof ItemSelector) {
         blockStates.push(new ItemSelector.State(b));
       } else if (b instanceof ToggleSwitch) {

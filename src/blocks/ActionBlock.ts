@@ -94,7 +94,7 @@ export class ActionBlock extends Block {
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
 
-    // draw the lower area
+    // draw the title bar
     ctx.fillStyle = "#FFFFFF";
     ctx.fillHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
     ctx.lineWidth = 1;

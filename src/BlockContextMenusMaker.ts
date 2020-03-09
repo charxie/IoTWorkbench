@@ -46,6 +46,7 @@ import {Field2DContextMenu} from "./blocks/ui/Field2DContextMenu";
 import {RandomNumberGeneratorBlockContextMenu} from "./blocks/ui/RandomNumberGeneratorBlockContextMenu";
 import {RainbowHatBlockContextMenu} from "./blocks/ui/RainbowHatBlockContextMenu";
 import {contextMenus} from "./Main";
+import {ImageBlockContextMenu} from "./blocks/ui/ImageBlockContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -93,6 +94,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("grapher-context-menu-placeholder", blockPlayground);
   addPlaceholder("space2d-context-menu-placeholder", blockPlayground);
   addPlaceholder("field2d-context-menu-placeholder", blockPlayground);
+  addPlaceholder("image-block-context-menu-placeholder", blockPlayground);
 
   setupContextMenuForBlocks();
 
@@ -314,6 +316,11 @@ function setupContextMenuForBlocks() {
   rainbowHatBlockContextMenu.render("rainbow-hat-block-context-menu-placeholder");
   rainbowHatBlockContextMenu.addListeners();
   contextMenus.rainbowHatBlock = rainbowHatBlockContextMenu;
+
+  let imageBlockContextMenu = new ImageBlockContextMenu();
+  imageBlockContextMenu.render("image-block-context-menu-placeholder");
+  imageBlockContextMenu.addListeners();
+  contextMenus.imageBlock = imageBlockContextMenu;
 
 }
 
