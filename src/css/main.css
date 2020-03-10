@@ -80,6 +80,17 @@ body {
   box-sizing: border-box;
 }
 
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: white;
+  text-align: center;
+  font-size: 60%;
+  color: gray;
+}
+
 /* Create two equal columns that floats next to each other */
 .column {
   float: left;
