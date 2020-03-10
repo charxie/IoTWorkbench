@@ -154,7 +154,7 @@ export class BlockView {
     playground.addEventListener("touchstart", function (e) {
       clientX = e.targetTouches[0].clientX;
       clientY = e.targetTouches[0].clientY;
-      if (!that.containsInRect(clientX, clientY, that.canvas.getBoundingClientRect())) {
+      if (!Util.containsInRect(clientX, clientY, that.canvas.getBoundingClientRect())) {
         if (that.selectedBlock) {
           that.selectedBlock.setSelected(false);
           that.selectedBlock = null;
@@ -162,15 +162,15 @@ export class BlockView {
       }
     });
     playground.addEventListener("touchmove", function (e) {
-      e.preventDefault();
+      //e.preventDefault(); // do not call this as it will disable the zoom and move features
       clientX = e.targetTouches[0].clientX;
       clientY = e.targetTouches[0].clientY;
     }, false);
     playground.addEventListener("touchend", function (e) {
-      e.preventDefault();
+      //e.preventDefault(); // do not call this as it will disable the zoom and move features
       that.draggedElementId = (<HTMLElement>e.target).id;
       let rect = that.canvas.getBoundingClientRect();
-      if (that.containsInRect(clientX, clientY, rect)) {
+      if (Util.containsInRect(clientX, clientY, rect)) {
         let b = that.dropBlock(clientX - rect.x, clientY - rect.y);
         if (b != null) {
           b.setSelected(true);
@@ -179,10 +179,6 @@ export class BlockView {
       }
     }, false);
 
-  }
-
-  private containsInRect(x: number, y: number, rect: DOMRect): boolean {
-    return x > rect.x && x < rect.x + rect.width && y > rect.y && y < rect.y + rect.height;
   }
 
   private dropBlock(x: number, y: number): Block {

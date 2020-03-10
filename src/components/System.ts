@@ -19,6 +19,7 @@ import {closeAllContextMenus, flowchart} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
 import {SensorLineChart} from "./SensorLineChart";
+import {Util} from "../Util";
 
 declare var firebase;
 
@@ -37,6 +38,9 @@ export class System {
   private mouseDownRelativeX: number;
   private mouseDownRelativeY: number;
   private draggedElementId: string;
+  private touchStartInWorkbench: boolean;
+  private longPressStartTime: number;
+  private static readonly longPressTime: number = 1000;
 
   constructor() {
 
@@ -59,6 +63,9 @@ export class System {
     this.playground.addEventListener("mousedown", this.mouseDown, false);
     this.playground.addEventListener("mouseup", this.mouseUp, false);
     this.playground.addEventListener("mousemove", this.mouseMove, false);
+    this.playground.addEventListener("touchstart", this.touchStart.bind(this), false);
+    this.playground.addEventListener("touchend", this.touchEnd.bind(this), false);
+    this.playground.addEventListener("touchmove", this.touchMove.bind(this), false);
     document.addEventListener("mouseleave", this.mouseLeave, false);
 
     // drag and drop support
@@ -76,50 +83,51 @@ export class System {
     this.playground.addEventListener("dragover", function (e) {
       e.preventDefault();
     }, false);
-
     this.playground.addEventListener("drop", function (e) {
       e.preventDefault();
-      // console.log("drop: " + that.draggedElementId + ", " + (<HTMLElement>e.target).id);
-      let id = (<HTMLElement>e.target).id;
-      switch (that.draggedElementId) {
-        case "raspberry-pi-image":
-          if (id == "workbench") {
-            that.addRaspberryPi("Raspberry Pi #" + Date.now().toString(16), e.clientX, e.offsetY, true);
-            that.storeMcuStates();
-          }
-          break;
-        case "rainbow-hat-image":
-          if (id == "workbench" || id.startsWith("raspberry-pi")) {
-            that.addHatByAction("Rainbow HAT", e.clientX, e.offsetY);
-          }
-          break;
-        case "sense-hat-image":
-          if (id == "workbench" || id.startsWith("raspberry-pi")) {
-            that.addHatByAction("Sense HAT", e.clientX, e.offsetY);
-          }
-          break;
-        case "capacitive-touch-hat-image":
-          if (id == "workbench" || id.startsWith("raspberry-pi")) {
-            that.addHatByAction("Capacitive Touch HAT", e.clientX, e.offsetY);
-          }
-          break;
-        case "unicorn-hat-image":
-          if (id == "workbench" || id.startsWith("raspberry-pi")) {
-            that.addHatByAction("Unicorn HAT", e.clientX, e.offsetY);
-          }
-          break;
-        case "crickit-hat-image":
-          if (id == "workbench" || id.startsWith("raspberry-pi")) {
-            that.addHatByAction("Crickit HAT", e.clientX, e.offsetY);
-          }
-          break;
-        case "pan-tilt-hat-image":
-          if (id == "workbench" || id.startsWith("raspberry-pi")) {
-            that.addHatByAction("Pan-Tilt HAT", e.clientX, e.offsetY);
-          }
-          break;
-      }
+      that.drop((<HTMLElement>e.target).id, e.clientX, e.clientY);
     }, false);
+  }
+
+  private drop(id: string, x: number, y: number): void {
+    switch (this.draggedElementId) {
+      case "raspberry-pi-image":
+        if (id === "workbench") {
+          this.addRaspberryPi("Raspberry Pi #" + Date.now().toString(16), x, y, true);
+          this.storeMcuStates();
+        }
+        break;
+      case "rainbow-hat-image":
+        if (id === "workbench" || id.startsWith("raspberry-pi")) {
+          this.addHatByAction("Rainbow HAT", x, y);
+        }
+        break;
+      case "sense-hat-image":
+        if (id === "workbench" || id.startsWith("raspberry-pi")) {
+          this.addHatByAction("Sense HAT", x, y);
+        }
+        break;
+      case "capacitive-touch-hat-image":
+        if (id === "workbench" || id.startsWith("raspberry-pi")) {
+          this.addHatByAction("Capacitive Touch HAT", x, y);
+        }
+        break;
+      case "unicorn-hat-image":
+        if (id === "workbench" || id.startsWith("raspberry-pi")) {
+          this.addHatByAction("Unicorn HAT", x, y);
+        }
+        break;
+      case "crickit-hat-image":
+        if (id === "workbench" || id.startsWith("raspberry-pi")) {
+          this.addHatByAction("Crickit HAT", x, y);
+        }
+        break;
+      case "pan-tilt-hat-image":
+        if (id === "workbench" || id.startsWith("raspberry-pi")) {
+          this.addHatByAction("Pan-Tilt HAT", x, y);
+        }
+        break;
+    }
   }
 
   clear(): void {
@@ -383,6 +391,50 @@ export class System {
     }
     for (let h of this.hats) {
       h.draw();
+    }
+  }
+
+  private touchStart(e: TouchEvent): void {
+    //e.preventDefault();
+    let touch = e.touches[0];
+    this.touchStartInWorkbench = Util.containsInRect(touch.clientX, touch.clientY, this.workbench.canvas.getBoundingClientRect());
+    if (this.touchStartInWorkbench) {
+      this.playground.dispatchEvent(new MouseEvent("mousedown", {clientX: touch.clientX, clientY: touch.clientY}));
+      this.longPressStartTime = Date.now();
+    } else {
+      this.selectedMovable = null;
+    }
+  }
+
+  private touchMove(e: TouchEvent): void {
+    if (this.selectedMovable !== null) { // distable default scrolling when a component is selected
+      e.preventDefault();
+    }
+    let touch = e.touches[0];
+    if (Util.containsInRect(touch.clientX, touch.clientY, this.workbench.canvas.getBoundingClientRect())) {
+      this.playground.dispatchEvent(new MouseEvent("mousemove", {clientX: touch.clientX, clientY: touch.clientY}));
+      this.longPressStartTime = Date.now();
+    }
+  }
+
+  private touchEnd(e: TouchEvent): void {
+    if (this.selectedMovable !== null) { // distable default scrolling when a component is selected
+      e.preventDefault();
+    }
+    let touch = e.changedTouches[0];
+    if (this.touchStartInWorkbench) {
+      if (Date.now() - this.longPressStartTime > System.longPressTime) {
+        this.playground.dispatchEvent(new MouseEvent("contextmenu", {clientX: touch.clientX, clientY: touch.clientY}));
+      } else {
+        // for some reason, in Chrome on Android, touch.clientX and touch.clientY return 0 here.
+        this.playground.dispatchEvent(new MouseEvent("mouseup", {clientX: touch.pageX, clientY: touch.pageY}));
+      }
+    } else {
+      this.draggedElementId = (<HTMLElement>e.target).id;
+      let rect = this.workbench.canvas.getBoundingClientRect();
+      if (Util.containsInRect(touch.clientX, touch.clientY, rect)) {
+        this.drop("workbench", touch.clientX, touch.clientY);
+      }
     }
   }
 

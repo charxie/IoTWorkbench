@@ -69,6 +69,10 @@ export class Util {
     };
   }
 
+  static containsInRect(x: number, y:number, rect: DOMRect): boolean{
+    return x > rect.x && x < rect.x + rect.width && y > rect.y && y < rect.y + rect.height;
+  }
+
   static setColorPicker(colorPicker: HTMLInputElement, color: string): void {
     if (Util.isHexColor(color)) {
       colorPicker.value = color;
