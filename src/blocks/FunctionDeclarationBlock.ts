@@ -30,7 +30,7 @@ export class FunctionDeclarationBlock extends Block {
       this.y = block.y;
       this.width = block.width;
       this.height = block.height;
-      this.variableNames = block.variableNames;
+      this.variableNames = block.variableNames.slice();
       this.functionName = block.functionName;
       this.expression = block.expression;
     }

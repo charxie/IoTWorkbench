@@ -57,6 +57,7 @@ import {StateIO} from "../StateIO";
 import {State} from "../State";
 import {ImageBlock} from "./ImageBlock";
 import {AudioBlock} from "./AudioBlock";
+import {DataBlock} from "./DataBlock";
 
 export class BlockView {
 
@@ -203,6 +204,9 @@ export class BlockView {
             break;
           case "audio-block":
             b = that.addBlockUndoable(new AudioBlock("Audio Block #" + timestamp, "Audio", x - 30, y - 30, 60, 60));
+            break;
+          case "data-block":
+            b = that.addBlockUndoable(new DataBlock("Data Block #" + timestamp, "Name", x - 40, y - 40, 80, 80));
             break;
           case "turnout-switch-block":
             b = that.addBlockUndoable(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 50, y - 30, 100, 60));

@@ -110,7 +110,7 @@ export class ImageBlock extends Block {
     ctx.save();
     if (this.iconic) {
       ctx.fillStyle = "black";
-      ctx.font = this.iconic ? "8px Arial" : "14px Arial";
+      ctx.font = "12px Arial";
       let textWidth = ctx.measureText(this.symbol).width;
       ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + (this.height + this.barHeight) / 2 + 4);
       ctx.fillText(this.symbol, 0, 0);

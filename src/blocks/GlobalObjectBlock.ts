@@ -31,9 +31,9 @@ export class GlobalObjectBlock extends GlobalBlock {
     constructor(block: GlobalObjectBlock) {
       this.name = block.name;
       this.symbol = block.symbol;
-      this.keys = block.keys;
-      this.values = block.values;
-      this.initialValues = block.initialValues;
+      this.keys = block.keys.slice();
+      this.values = block.values.slice();
+      this.initialValues = block.initialValues.slice();
       this.uid = block.uid;
       this.x = block.x;
       this.y = block.y;

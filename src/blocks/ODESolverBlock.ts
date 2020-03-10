@@ -38,7 +38,7 @@ export class ODESolverBlock extends SolverBlock {
     constructor(block: ODESolverBlock) {
       this.uid = block.uid;
       this.variableName = block.variableName;
-      this.equations = block.equations;
+      this.equations = block.equations.slice();
       this.method = block.method;
       this.x = block.x;
       this.y = block.y;

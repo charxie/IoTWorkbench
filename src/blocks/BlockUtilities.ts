@@ -49,6 +49,7 @@ import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
 import {ImageBlock} from "./ImageBlock";
 import {AudioBlock} from "./AudioBlock";
+import {DataBlock} from "./DataBlock";
 
 export class BlockUtilities {
 
@@ -181,6 +182,9 @@ export class BlockUtilities {
     }
     if (block instanceof AudioBlock) {
       return contextMenus.audioBlock;
+    }
+    if (block instanceof DataBlock) {
+      return contextMenus.dataBlock;
     }
     if (block instanceof RainbowHatBlock) {
       return contextMenus.rainbowHatBlock;
@@ -364,6 +368,10 @@ export class BlockUtilities {
     if (block instanceof AudioBlock) {
       contextMenus.audioBlock.block = block;
       return document.getElementById("audio-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof DataBlock) {
+      contextMenus.dataBlock.block = block;
+      return document.getElementById("data-block-context-menu") as HTMLMenuElement;
     }
     return null;
   }

@@ -44,7 +44,7 @@ export class AudioBlockContextMenu extends BlockContextMenu {
             </div>`;
   }
 
-  open(): void {
+  private open(): void {
     let that = this;
     let fileDialog = document.getElementById('audio-file-dialog') as HTMLInputElement;
     fileDialog.onchange = e => {

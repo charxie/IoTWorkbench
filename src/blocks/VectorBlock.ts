@@ -26,7 +26,7 @@ export class VectorBlock extends Block {
 
     constructor(block: VectorBlock) {
       this.name = block.name;
-      this.values = block.vector.getValues();
+      this.values = block.vector.getValues().slice();
       this.fractionDigits = block.fractionDigits;
       this.uid = block.uid;
       this.x = block.x;

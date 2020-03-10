@@ -44,7 +44,7 @@ export class ItemSelector extends Block {
       this.y = itemSelector.y;
       this.width = itemSelector.width;
       this.height = itemSelector.height;
-      this.items = JSON.parse(JSON.stringify(itemSelector.items));
+      this.items = itemSelector.items.slice();
       this.selectedIndex = itemSelector.selectedIndex;
       this.source = itemSelector.source;
     }

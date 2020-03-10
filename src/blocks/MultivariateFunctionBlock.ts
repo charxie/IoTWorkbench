@@ -26,7 +26,7 @@ export class MultivariateFunctionBlock extends FunctionBlock {
 
     constructor(block: MultivariateFunctionBlock) {
       this.uid = block.uid;
-      this.variables = JSON.parse(JSON.stringify(block.variables));
+      this.variables = block.variables.slice();
       this.expression = block.expression;
       this.x = block.x;
       this.y = block.y;

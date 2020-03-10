@@ -73,12 +73,12 @@ export class Grapher extends Block {
       this.autoscale = grapher.autoscale;
       this.minimumValue = grapher.minimumValue;
       this.maximumValue = grapher.maximumValue;
-      this.lineTypes = grapher.lineTypes;
-      this.lineColors = grapher.lineColors;
-      this.fillOptions = grapher.fillOptions;
-      this.fillColors = grapher.fillColors;
-      this.graphSymbols = grapher.graphSymbols;
-      this.graphSymbolColors = grapher.graphSymbolColors;
+      this.lineTypes = grapher.lineTypes.slice();
+      this.lineColors = grapher.lineColors.slice();
+      this.fillOptions = grapher.fillOptions.slice();
+      this.fillColors = grapher.fillColors.slice();
+      this.graphSymbols = grapher.graphSymbols.slice();
+      this.graphSymbolColors = grapher.graphSymbolColors.slice();
     }
   };
 
@@ -563,7 +563,7 @@ export class Grapher extends Block {
   refreshView(): void {
     super.refreshView();
     this.graphMargin.top = 10;
-    this.graphMargin.bottom = 30;
+    this.graphMargin.bottom = 36;
     this.graphMargin.left = 40;
     this.graphMargin.right = 10;
     let dh = (this.height - this.barHeight) / (this.portI.length + 3);
@@ -572,7 +572,6 @@ export class Grapher extends Block {
     }
     this.portX.setY(this.barHeight + (this.portI.length + 1) * dh);
     this.portD.setY(this.barHeight + (this.portI.length + 2) * dh);
-    this.updateModel();
   }
 
 }

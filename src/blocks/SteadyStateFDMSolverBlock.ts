@@ -53,8 +53,8 @@ export class SteadyStateFDMSolverBlock extends SolverBlock {
 
     constructor(block: SteadyStateFDMSolverBlock) {
       this.uid = block.uid;
-      this.variables = block.variables;
-      this.equations = block.equations;
+      this.variables = block.variables.slice();
+      this.equations = block.equations.slice();
       this.method = block.method;
       this.relaxationSteps = block.relaxationSteps;
       this.relaxationFactor = block.relaxationFactor;

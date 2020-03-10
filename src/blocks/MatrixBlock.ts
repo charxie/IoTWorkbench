@@ -27,13 +27,15 @@ export class MatrixBlock extends Block {
 
     constructor(block: MatrixBlock) {
       this.name = block.name;
-      this.values = block.matrix.getValues();
       this.fractionDigits = block.fractionDigits;
       this.uid = block.uid;
       this.x = block.x;
       this.y = block.y;
       this.width = block.width;
       this.height = block.height;
+      this.values = block.matrix.getValues().map(function (arr) {
+        return arr.slice();
+      });
     }
   };
 

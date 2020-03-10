@@ -45,6 +45,7 @@ import {SteadyStateFDMSolverBlock} from "./blocks/SteadyStateFDMSolverBlock";
 import {BoundaryConditionBlock} from "./blocks/BoundaryConditionBlock";
 import {ImageBlock} from "./blocks/ImageBlock";
 import {AudioBlock} from "./blocks/AudioBlock";
+import {DataBlock} from "./blocks/DataBlock";
 
 export class StateIO {
 
@@ -277,6 +278,10 @@ export class StateIO {
           block.setName(state.name);
           block.setData(state.data);
           block.setInterruptible(state.interruptible);
+        } else if (block instanceof DataBlock) {
+          block.setName(state.name);
+          block.setData(state.data);
+          block.setFormat(state.format);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }
@@ -443,6 +448,8 @@ export class StateIO {
         b.findCoefficients();
       } else if (b instanceof ImageBlock) {
         b.updateModel();
+      } else if (b instanceof DataBlock) {
+        flowchart.traverse(b);
       }
     }
   }

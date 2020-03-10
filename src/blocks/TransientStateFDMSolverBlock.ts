@@ -46,8 +46,8 @@ export class TransientStateFDMSolverBlock extends SolverBlock {
 
     constructor(block: TransientStateFDMSolverBlock) {
       this.uid = block.uid;
-      this.variables = block.variables;
-      this.equations = block.equations;
+      this.variables = block.variables.slice();
+      this.equations = block.equations.slice();
       this.method = block.method;
       this.x = block.x;
       this.y = block.y;

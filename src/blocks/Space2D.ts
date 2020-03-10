@@ -81,10 +81,6 @@ export class Space2D extends Block {
       this.yAxisLabel = g.yAxisLabel;
       this.spaceWindowColor = g.spaceWindowColor;
       this.showGridLines = g.showGridLines;
-      this.lineColors = g.lineColors;
-      this.lineTypes = g.lineTypes;
-      this.dataSymbols = g.dataSymbols;
-      this.dataSymbolColors = g.dataSymbolColors;
       this.endSymbolRadius = g.endSymbolRadius;
       this.endSymbolsConnection = g.endSymbolsConnection;
       this.autoscale = g.autoscale;
@@ -94,6 +90,10 @@ export class Space2D extends Block {
       this.maximumYValue = g.maximumYValue;
       this.pointInput = g.pointInput;
       this.numberOfPoints = g.getNumberOfPoints();
+      this.lineTypes = g.lineTypes.slice();
+      this.lineColors = g.lineColors.slice();
+      this.dataSymbols = g.dataSymbols.slice();
+      this.dataSymbolColors = g.dataSymbolColors.slice();
     }
   };
 

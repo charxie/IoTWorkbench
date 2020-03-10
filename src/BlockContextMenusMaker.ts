@@ -48,6 +48,7 @@ import {RainbowHatBlockContextMenu} from "./blocks/ui/RainbowHatBlockContextMenu
 import {contextMenus} from "./Main";
 import {ImageBlockContextMenu} from "./blocks/ui/ImageBlockContextMenu";
 import {AudioBlockContextMenu} from "./blocks/ui/AudioBlockContextMenu";
+import {DataBlockContextMenu} from "./blocks/ui/DataBlockContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -97,6 +98,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("field2d-context-menu-placeholder", blockPlayground);
   addPlaceholder("image-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("audio-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("data-block-context-menu-placeholder", blockPlayground);
 
   setupContextMenuForBlocks();
 
@@ -328,6 +330,11 @@ function setupContextMenuForBlocks() {
   audioBlockContextMenu.render("audio-block-context-menu-placeholder");
   audioBlockContextMenu.addListeners();
   contextMenus.audioBlock = audioBlockContextMenu;
+
+  let dataBlockContextMenu = new DataBlockContextMenu();
+  dataBlockContextMenu.render("data-block-context-menu-placeholder");
+  dataBlockContextMenu.addListeners();
+  contextMenus.dataBlock = dataBlockContextMenu;
 
 }
 
