@@ -282,6 +282,7 @@ export class StateIO {
           block.setName(state.name);
           block.setData(state.data);
           block.setFormat(state.format);
+          if (state.imageSrc !== undefined) block.setImageSrc(state.imageSrc);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

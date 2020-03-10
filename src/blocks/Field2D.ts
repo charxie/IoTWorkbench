@@ -41,7 +41,6 @@ export class Field2D extends Block {
   private maximumRgb: number[] = [255, 255, 255];
   private mouseOverX: number;
   private mouseOverY: number;
-  private mouseOverValue: number;
   private readonly spaceMargin = {
     left: <number>4,
     right: <number>3,
@@ -404,12 +403,13 @@ export class Field2D extends Block {
       }
     }
     if (this.selected) {
-      if (this.mouseOverValue !== undefined) {
+      if (this.mouseOverX !== undefined && this.mouseOverY !== undefined) {
         ctx.fillStyle = "white";
-        //let reading = "(" + this.mouseOverX.toPrecision(2) + "," + this.mouseOverY.toPrecision(2) + "): " + this.mouseOverValue.toPrecision(3);
-        let reading = this.mouseOverValue.toPrecision(3);
-        let rx = (this.mouseOverX - this.x0) / (this.nx * this.dx) * this.fieldWindow.width;
-        let ry = -(this.mouseOverY - this.y0) / (this.ny * this.dy) * this.fieldWindow.height;
+        let kx = Math.round((this.mouseOverX - this.x0) / this.dx);
+        let ky = Math.round((this.mouseOverY - this.y0) / this.dy);
+        let reading = this.data[this.nx * ky + kx].toPrecision(3);
+        let rx = kx / this.nx * this.fieldWindow.width;
+        let ry = -ky / this.ny * this.fieldWindow.height;
         ctx.fillText(reading, rx - ctx.measureText(reading).width / 2, ry);
       }
     }
@@ -501,17 +501,21 @@ export class Field2D extends Block {
   }
 
   mouseMove(e: MouseEvent): void {
-    if (e.which == 3 || e.button == 2) return; // if this is a right-click event
-    this.mouseOverX = undefined;
-    this.mouseOverY = undefined;
-    this.mouseOverValue = undefined;
+    this.setToolTip(e);
+  }
+
+  mouseDown(e: MouseEvent): boolean {
+    this.setToolTip(e);
+    return false;
+  }
+
+  private setToolTip(e: MouseEvent): void {
     if (this.data !== undefined) {
       // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
       let rect = flowchart.blockView.canvas.getBoundingClientRect();
       let kx = Math.round((e.clientX - rect.left - this.fieldWindow.x) / this.fieldWindow.width * this.nx);
       let ky = this.ny - Math.round((e.clientY - rect.top - this.fieldWindow.y) / this.fieldWindow.height * this.ny);
       if (kx >= 0 && kx < this.nx && ky >= 0 && ky < this.ny) {
-        this.mouseOverValue = this.data[this.nx * ky + kx];
         this.mouseOverX = this.x0 + kx * this.dx;
         this.mouseOverY = this.y0 + ky * this.dy;
       }

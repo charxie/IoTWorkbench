@@ -14,6 +14,8 @@ export class DataBlock extends Block {
   private format: string = "CSV";
   private barHeight: number;
   private portO: Port[];
+  private image;
+  private margin: number = 8;
 
   static State = class {
     readonly name: string;
@@ -24,6 +26,7 @@ export class DataBlock extends Block {
     readonly height: number;
     readonly data: number[][];
     readonly format: string;
+    readonly imageSrc: string;
 
     constructor(block: DataBlock) {
       this.name = block.name;
@@ -39,6 +42,7 @@ export class DataBlock extends Block {
           this.data[i] = block.dataArray[i].data.slice();
         }
       }
+      this.imageSrc = block.image !== undefined ? block.image.src : undefined; // base64 image data
     }
   };
 
@@ -84,7 +88,18 @@ export class DataBlock extends Block {
       }
     }
     b.format = this.format;
+    b.image = this.image;
     return b;
+  }
+
+  setImageSrc(imageSrc: string) {
+    if (this.image === undefined) this.image = new Image();
+    this.image.src = imageSrc;
+  }
+
+  getImageSrc(): string {
+    if (this.image === undefined) return undefined;
+    return this.image.src;
   }
 
   setFormat(format: string): void {
@@ -160,11 +175,16 @@ export class DataBlock extends Block {
     }
 
     ctx.save();
-    ctx.fillStyle = "black";
-    ctx.font = this.iconic ? "10px Arial" : "16px Arial";
-    let textWidth = ctx.measureText(this.symbol).width;
-    ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + (this.height + this.barHeight) / 2 + 4);
-    ctx.fillText(this.symbol, 0, 0);
+    if (this.iconic || this.image === undefined) {
+      ctx.fillStyle = "black";
+      ctx.font = this.iconic ? "10px Arial" : "16px Arial";
+      let textWidth = ctx.measureText(this.symbol).width;
+      ctx.translate(this.x + this.width / 2 - textWidth / 2, this.y + (this.height + this.barHeight) / 2 + 4);
+      ctx.fillText(this.symbol, 0, 0);
+    } else {
+      let size = this.height - this.barHeight - 2 * this.margin;
+      ctx.drawImage(this.image, this.x + this.margin, this.y + this.barHeight + this.margin, size * this.image.width / this.image.height, size);
+    }
     ctx.restore();
 
     // draw the ports

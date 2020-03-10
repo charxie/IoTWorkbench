@@ -6,7 +6,6 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
-import {AudioBlock} from "../AudioBlock";
 import {DataBlock} from "../DataBlock";
 
 export class DataBlockContextMenu extends BlockContextMenu {
@@ -24,9 +23,9 @@ export class DataBlockContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="data-block-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>File:</td>
-                  <td><button type="button" id="data-block-file-button">Open</button></td>
-                  <td><label id="data-block-file-name-label" style="width: 100%"></label></label></td>
+                  <td>Source File:</td>
+                  <td><button type="button" id="data-block-source-file-button">Open</button></td>
+                  <td><label id="data-block-source-file-name-label" style="width: 100%"></label></label></td>
                 </tr>
                <tr>
                   <td>Format:</td>
@@ -35,6 +34,11 @@ export class DataBlockContextMenu extends BlockContextMenu {
                       <option value="CSV" selected>CSV</option>
                     </select>
                   </td>
+                </tr>
+                <tr>
+                  <td>Image:</td>
+                  <td><button type="button" id="data-block-image-file-button">Open</button></td>
+                  <td><label id="data-block-image-file-name-label" style="width: 100%"></label></label></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
@@ -48,7 +52,7 @@ export class DataBlockContextMenu extends BlockContextMenu {
             </div>`;
   }
 
-  private open(): void {
+  private openSourceFile(): void {
     let that = this;
     let fileDialog = document.getElementById('data-file-dialog') as HTMLInputElement;
     fileDialog.onchange = e => {
@@ -60,7 +64,25 @@ export class DataBlockContextMenu extends BlockContextMenu {
           (<DataBlock>that.block).setDataInput(reader.result.toString());
           target.value = "";
         };
-        document.getElementById("data-block-file-name-label").innerHTML = target.files[0].name;
+        document.getElementById("data-block-source-file-name-label").innerHTML = target.files[0].name;
+      }
+    };
+    fileDialog.click();
+  }
+
+  private openImageFile(): void {
+    let that = this;
+    let fileDialog = document.getElementById('image-file-dialog') as HTMLInputElement;
+    fileDialog.onchange = e => {
+      let target = <HTMLInputElement>event.target;
+      if (target.files.length) {
+        let reader: FileReader = new FileReader();
+        reader.readAsDataURL(target.files[0]); // base64 string
+        reader.onload = function (e) {
+          (<DataBlock>that.block).setImageSrc(reader.result.toString());
+          target.value = "";
+        };
+        document.getElementById("data-block-image-file-name-label").innerHTML = target.files[0].name;
       }
     };
     fileDialog.click();
@@ -73,9 +95,13 @@ export class DataBlockContextMenu extends BlockContextMenu {
       let that = this;
       const dataBlock = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let fileOpenButton = document.getElementById("data-block-file-button") as HTMLButtonElement;
-      fileOpenButton.onclick = function () {
-        that.open();
+      let sourceFileOpenButton = document.getElementById("data-block-source-file-button") as HTMLButtonElement;
+      sourceFileOpenButton.onclick = function () {
+        that.openSourceFile();
+      };
+      let imageFileOpenButton = document.getElementById("data-block-image-file-button") as HTMLButtonElement;
+      imageFileOpenButton.onclick = function () {
+        that.openImageFile();
       };
       let nameInputElement = document.getElementById("data-block-name-field") as HTMLInputElement;
       nameInputElement.value = dataBlock.getName();
@@ -129,7 +155,7 @@ export class DataBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: dataBlock.getUid(),
-        height: 350,
+        height: 400,
         width: 350,
         buttons: {
           'OK': okFunction,
