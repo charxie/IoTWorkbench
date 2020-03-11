@@ -222,7 +222,7 @@ export class StateIO {
           if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
           if (state.dataSymbols != undefined) block.setDataSymbols(state.dataSymbols);
-          if (state.dataSymbolRadii != undefined) block.setDataSymbolRadii(state.dataSymbolRadii);
+          if (state.dataSymbolRadii != undefined && state.dataSymbolRadii.length > 0) block.setDataSymbolRadii(state.dataSymbolRadii);
           if (state.dataSymbolColors != undefined) block.setDataSymbolColors(state.dataSymbolColors);
           if (state.numberOfPoints != undefined) block.setNumberOfPoints(state.numberOfPoints);
         } else if (block instanceof Field2D) {

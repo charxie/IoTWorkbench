@@ -89,6 +89,8 @@ import lorentz_force from "./examples/lorentz-force.json";
 // @ts-ignore
 import harmonic_oscillator from "./examples/harmonic-oscillator.json";
 // @ts-ignore
+import coupled_harmonic_oscillators from "./examples/coupled-harmonic-oscillators.json";
+// @ts-ignore
 import van_der_pol_oscillator from "./examples/van-der-pol-oscillator.json";
 // @ts-ignore
 import pendulum from "./examples/pendulum.json";
@@ -252,6 +254,7 @@ export class Examples {
     this.files.push({name: "Mechanics: Projectile Motion 1", data: projectile_motion_1});
     this.files.push({name: "Mechanics: Projectile Motion 2", data: projectile_motion_2});
     this.files.push({name: "Mechanics: Harmonic Oscillator", data: harmonic_oscillator});
+    this.files.push({name: "Mechanics: Coupled Harmonic Oscillators", data: coupled_harmonic_oscillators});
     this.files.push({name: "Mechanics: Pendulum", data: pendulum});
     this.files.push({name: "Electronics: RLC Circuit", data: rlc_circuit});
     this.files.push({name: "Electronics: Chua Circuit", data: chua_circuit});
