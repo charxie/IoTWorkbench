@@ -26,6 +26,7 @@ export class Space2D extends Block {
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private spaceWindowColor: string = "white";
+  private backgroundImage;
   private showGridLines: boolean = false;
   private endSymbolRadius: number = 0;
   private endSymbolsConnection: string = "None";
@@ -42,6 +43,7 @@ export class Space2D extends Block {
   private lineTypes: string[] = [];
   private lineColors: string[] = [];
   private dataSymbols: string[] = [];
+  private dataSymbolRadii: number[] = [];
   private dataSymbolColors: string[] = [];
   private images = [];
 
@@ -55,6 +57,7 @@ export class Space2D extends Block {
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly spaceWindowColor: string;
+    readonly backgroundImageSrc: string;
     readonly showGridLines: boolean;
     readonly endSymbolRadius: number;
     readonly endSymbolsConnection: string;
@@ -68,6 +71,7 @@ export class Space2D extends Block {
     readonly lineTypes: string[] = [];
     readonly lineColors: string[] = [];
     readonly dataSymbols: string[] = [];
+    readonly dataSymbolRadii: number[] = [];
     readonly dataSymbolColors: string[] = [];
 
     constructor(g: Space2D) {
@@ -80,6 +84,7 @@ export class Space2D extends Block {
       this.xAxisLabel = g.xAxisLabel;
       this.yAxisLabel = g.yAxisLabel;
       this.spaceWindowColor = g.spaceWindowColor;
+      this.backgroundImageSrc = g.backgroundImage !== undefined ? g.backgroundImage.src : undefined; // base64 image data
       this.showGridLines = g.showGridLines;
       this.endSymbolRadius = g.endSymbolRadius;
       this.endSymbolsConnection = g.endSymbolsConnection;
@@ -93,6 +98,7 @@ export class Space2D extends Block {
       this.lineTypes = g.lineTypes.slice();
       this.lineColors = g.lineColors.slice();
       this.dataSymbols = g.dataSymbols.slice();
+      this.dataSymbolRadii = g.dataSymbolRadii.slice();
       this.dataSymbolColors = g.dataSymbolColors.slice();
     }
   };
@@ -112,6 +118,7 @@ export class Space2D extends Block {
     this.lineTypes.push("Solid");
     this.lineColors.push("black");
     this.dataSymbols.push("Circle");
+    this.dataSymbolRadii.push(3);
     this.dataSymbolColors.push("white");
   }
 
@@ -129,6 +136,7 @@ export class Space2D extends Block {
     copy.lineColors = this.lineColors.slice();
     copy.lineTypes = this.lineTypes.slice();
     copy.dataSymbols = this.dataSymbols.slice();
+    copy.dataSymbolRadii = this.dataSymbolRadii.slice();
     copy.dataSymbolColors = this.dataSymbolColors.slice();
     copy.endSymbolRadius = this.endSymbolRadius;
     copy.endSymbolsConnection = this.endSymbolsConnection;
@@ -204,6 +212,7 @@ export class Space2D extends Block {
               this.lineTypes.push("Solid");
               this.lineColors.push("black");
               this.dataSymbols.push("Circle");
+              this.dataSymbolRadii.push(3);
               this.dataSymbolColors.push("white");
             }
           }
@@ -218,6 +227,7 @@ export class Space2D extends Block {
           this.lineTypes.pop();
           this.lineColors.pop();
           this.dataSymbols.pop();
+          this.dataSymbolRadii.pop();
           this.dataSymbolColors.pop();
         }
       }
@@ -293,6 +303,16 @@ export class Space2D extends Block {
     return this.spaceWindowColor;
   }
 
+  setBackgroundImageSrc(imageSrc: string) {
+    if (this.backgroundImage === undefined) this.backgroundImage = new Image();
+    this.backgroundImage.src = imageSrc;
+  }
+
+  getBackgroundImageSrc(): string {
+    if (this.backgroundImage === undefined) return undefined;
+    return this.backgroundImage.src;
+  }
+
   setShowGridLines(showGridLines: boolean): void {
     this.showGridLines = showGridLines;
   }
@@ -357,6 +377,20 @@ export class Space2D extends Block {
     return this.dataSymbolColors[0];
   }
 
+  setDataSymbolRadii(dataSymbolRadii: number[]): void {
+    this.dataSymbolRadii = dataSymbolRadii;
+  }
+
+  setDataSymbolRadius(dataSymbolRadius: number): void {
+    for (let i = 0; i < this.dataSymbolRadii.length; i++) {
+      this.dataSymbolRadii[i] = dataSymbolRadius;
+    }
+  }
+
+  getDataSymbolRadius(): number {
+    return this.dataSymbolRadii[0];
+  }
+
   setEndSymbolRadius(endSymbolRadius: number): void {
     this.endSymbolRadius = endSymbolRadius;
   }
@@ -413,6 +447,10 @@ export class Space2D extends Block {
     ctx.rect(this.spaceWindow.x, this.spaceWindow.y, this.spaceWindow.width, this.spaceWindow.height);
     ctx.fillStyle = this.spaceWindowColor;
     ctx.fill();
+    if (this.backgroundImage !== undefined) {
+      ctx.drawImage(this.backgroundImage, this.spaceWindow.x, this.spaceWindow.y,
+        this.spaceWindow.height * this.backgroundImage.width / this.backgroundImage.height, this.spaceWindow.height);
+    }
     ctx.strokeStyle = "black";
     ctx.stroke();
     if (!this.iconic) {
@@ -482,7 +520,7 @@ export class Space2D extends Block {
           case "Circle":
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
-              ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, 3, 0, 2 * Math.PI);
+              ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.dataSymbolRadii[index], 0, 2 * Math.PI);
               ctx.fillStyle = this.dataSymbolColors[index];
               ctx.fill();
               ctx.strokeStyle = this.lineColors[index];
@@ -490,9 +528,10 @@ export class Space2D extends Block {
             }
             break;
           case "Square":
+            let r = this.dataSymbolRadii[index];
             for (let i = 0; i < length; i++) {
               ctx.beginPath();
-              ctx.rect((p.getX(i) - xmin) * dx - 2, -(p.getY(i) - ymin) * dy - 2, 4, 4);
+              ctx.rect((p.getX(i) - xmin) * dx - r, -(p.getY(i) - ymin) * dy - r, 2 * r, 2 * r);
               ctx.fillStyle = this.dataSymbolColors[index];
               ctx.fill();
               ctx.strokeStyle = this.lineColors[index];

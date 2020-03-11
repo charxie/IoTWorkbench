@@ -129,6 +129,10 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td><input type="text" id="space2d-symbol-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Symbol Radius:</td>
+                  <td colspan="2"><input type="text" id="space2d-symbol-radius-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>End Symbol Radius:</td>
                   <td colspan="2"><input type="text" id="space2d-end-symbol-radius-field" style="width: 100%"></td>
                 </tr>
@@ -155,6 +159,11 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td><input type="text" id="space2d-window-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Window Background:</td>
+                  <td><button type="button" id="space2d-window-background-file-button">Open</button></td>
+                  <td><label id="space2d-window-background-file-name-label" style="width: 100%"></label></label></td>
+                </tr>
+                <tr>
                   <td>Grid Lines:</td>
                   <td colspan="2">
                     <input type="radio" name="grid-lines" id="space2d-no-grid-lines-radio-button" checked> No
@@ -173,12 +182,35 @@ export class Space2DContextMenu extends BlockContextMenu {
             </div>`;
   }
 
+  private openImageFile(): void {
+    let that = this;
+    let fileDialog = document.getElementById('image-file-dialog') as HTMLInputElement;
+    fileDialog.onchange = e => {
+      let target = <HTMLInputElement>event.target;
+      if (target.files.length) {
+        let reader: FileReader = new FileReader();
+        reader.readAsDataURL(target.files[0]); // base64 string
+        reader.onload = function (e) {
+          (<Space2D>that.block).setBackgroundImageSrc(reader.result.toString());
+          target.value = "";
+        };
+        document.getElementById("space2d-window-background-file-name-label").innerHTML = target.files[0].name;
+      }
+    };
+    fileDialog.click();
+  }
+
   protected propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof Space2D) {
       const g = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let that = this;
+      let imageFileOpenButton = document.getElementById("space2d-window-background-file-button") as HTMLButtonElement;
+      imageFileOpenButton.onclick = function () {
+        that.openImageFile();
+      };
       let nameInputElement = document.getElementById("space2d-name-field") as HTMLInputElement;
       nameInputElement.value = g.getName();
       let pointsInputElement = document.getElementById("space2d-points-field") as HTMLInputElement;
@@ -199,6 +231,8 @@ export class Space2DContextMenu extends BlockContextMenu {
       symbolColorInputElement.value = g.getDataSymbolColor();
       let symbolColorChooser = document.getElementById("space2d-symbol-color-chooser") as HTMLInputElement;
       Util.setColorPicker(symbolColorChooser, g.getDataSymbolColor());
+      let symbolRadiusInputElement = document.getElementById("space2d-symbol-radius-field") as HTMLInputElement;
+      symbolRadiusInputElement.value = g.getDataSymbolRadius().toString();
       let endSymbolRadiusInputElement = document.getElementById("space2d-end-symbol-radius-field") as HTMLInputElement;
       endSymbolRadiusInputElement.value = g.getEndSymbolRadius().toString();
       let endSymbolsConnectionSelectElement = document.getElementById("space2d-end-symbols-connection-selector") as HTMLSelectElement;
@@ -282,8 +316,16 @@ export class Space2DContextMenu extends BlockContextMenu {
           success = false;
           message = maximumYValueInputElement.value + " is not a valid value for maximum Y.";
         }
+        // set symbol radius
+        let r = parseInt(symbolRadiusInputElement.value);
+        if (isNumber(r)) {
+          g.setDataSymbolRadius(Math.max(0, r));
+        } else {
+          success = false;
+          message = endSymbolRadiusInputElement.value + " is not a valid radius for symbol.";
+        }
         // set end symbol radius
-        let r = parseInt(endSymbolRadiusInputElement.value);
+        r = parseInt(endSymbolRadiusInputElement.value);
         if (isNumber(r)) {
           g.setEndSymbolRadius(Math.max(0, r));
         } else {
@@ -344,6 +386,7 @@ export class Space2DContextMenu extends BlockContextMenu {
       windowColorInputElement.addEventListener("keyup", enterKeyUp);
       lineColorInputElement.addEventListener("keyup", enterKeyUp);
       symbolColorInputElement.addEventListener("keyup", enterKeyUp);
+      symbolRadiusInputElement.addEventListener("keyup", enterKeyUp);
       endSymbolRadiusInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);

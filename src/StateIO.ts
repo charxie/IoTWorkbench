@@ -218,9 +218,11 @@ export class StateIO {
           block.setShowGridLines(state.showGridLines == undefined ? false : state.showGridLines);
           block.setEndSymbolRadius(state.endSymbolRadius == undefined ? 0 : state.endSymbolRadius);
           block.setEndSymbolsConnection(state.endSymbolsConnection === undefined ? "None" : state.endSymbolsConnection);
+          if (state.backgroundImageSrc != undefined) block.setBackgroundImageSrc(state.backgroundImageSrc);
           if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
           if (state.dataSymbols != undefined) block.setDataSymbols(state.dataSymbols);
+          if (state.dataSymbolRadii != undefined) block.setDataSymbolRadii(state.dataSymbolRadii);
           if (state.dataSymbolColors != undefined) block.setDataSymbolColors(state.dataSymbolColors);
           if (state.numberOfPoints != undefined) block.setNumberOfPoints(state.numberOfPoints);
         } else if (block instanceof Field2D) {
