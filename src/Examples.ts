@@ -95,6 +95,8 @@ import van_der_pol_oscillator from "./examples/van-der-pol-oscillator.json";
 // @ts-ignore
 import pendulum from "./examples/pendulum.json";
 // @ts-ignore
+import double_pendulum from "./examples/double-pendulum.json";
+// @ts-ignore
 import rlc_circuit from "./examples/rlc-circuit.json";
 // @ts-ignore
 import projectile_motion_1 from "./examples/projectile-motion-1.json";
@@ -256,6 +258,7 @@ export class Examples {
     this.files.push({name: "Mechanics: Harmonic Oscillator", data: harmonic_oscillator});
     this.files.push({name: "Mechanics: Coupled Harmonic Oscillators", data: coupled_harmonic_oscillators});
     this.files.push({name: "Mechanics: Pendulum", data: pendulum});
+    this.files.push({name: "Mechanics: Double Pendulum", data: double_pendulum});
     this.files.push({name: "Electronics: RLC Circuit", data: rlc_circuit});
     this.files.push({name: "Electronics: Chua Circuit", data: chua_circuit});
     this.files.push({name: "Electronics: Van der Pol Oscillator", data: van_der_pol_oscillator});

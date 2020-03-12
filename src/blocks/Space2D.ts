@@ -574,18 +574,17 @@ export class Space2D extends Block {
       case "Line":
         let xi, yi, xj, yj;
         ctx.lineWidth = 5;
-        for (let i = 0; i < this.points.length; i++) {
+        for (let i = 0; i < this.points.length - 1; i++) {
           xi = (this.points[i].getLatestX() - xmin) * dx;
           yi = -(this.points[i].getLatestY() - ymin) * dy;
           ctx.strokeStyle = this.dataSymbolColors[i];
-          for (let j = i + 1; j < this.points.length; j++) {
-            xj = (this.points[j].getLatestX() - xmin) * dx;
-            yj = -(this.points[j].getLatestY() - ymin) * dy;
-            ctx.beginPath();
-            ctx.moveTo(xi, yi);
-            ctx.lineTo(xj, yj);
-            ctx.stroke();
-          }
+          let j = i + 1;
+          xj = (this.points[j].getLatestX() - xmin) * dx;
+          yj = -(this.points[j].getLatestY() - ymin) * dy;
+          ctx.beginPath();
+          ctx.moveTo(xi, yi);
+          ctx.lineTo(xj, yj);
+          ctx.stroke();
         }
         break;
       case "Wave":
