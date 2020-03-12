@@ -80,7 +80,7 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
           worker.setInterval(Math.max(100, interval)); // set the mininum interval to be 100 to avoid slowing down the UI
         } else {
           success = false;
-          message = intervalInputElement.value + " is not a valid interval.";
+          message = intervalInputElement.value + " is not a valid interval";
         }
         // set repeat times
         let repeatTimes = parseInt(repeatTimesInputElement.value);
@@ -88,7 +88,7 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
           worker.setRepeatTimes(Math.max(1, repeatTimes)); // must execute at least once
         } else {
           success = false;
-          message = repeatTimesInputElement.value + " is not a valid value for repeat times.";
+          message = repeatTimesInputElement.value + " is not a valid value for repeat times";
         }
         // set width
         let w = parseInt(widthInputElement.value);
@@ -96,7 +96,7 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
           worker.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -104,7 +104,7 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
           worker.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // finish
         if (success) {

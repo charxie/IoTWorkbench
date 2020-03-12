@@ -176,7 +176,7 @@ export class Field2DContextMenu extends BlockContextMenu {
           g.setWidth(Math.max(10, lineNumber));
         } else {
           success = false;
-          message = lineNumberInputElement.value + " is not a valid line number.";
+          message = lineNumberInputElement.value + " is not a valid line number";
         }
         // set width
         let w = parseInt(widthInputElement.value);
@@ -184,7 +184,7 @@ export class Field2DContextMenu extends BlockContextMenu {
           g.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -192,7 +192,7 @@ export class Field2DContextMenu extends BlockContextMenu {
           g.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // finish
         if (success) {

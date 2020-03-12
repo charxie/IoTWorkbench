@@ -147,7 +147,7 @@ export class TransientStateFDMSolverBlock extends SolverBlock {
       this.equations[i] = this.equations[i].removeAllSpaces();
       let equalSignIndex = this.equations[i].indexOf("=");
       if (equalSignIndex < 0) {
-        Util.showBlockError("The equation you input " + this.equations[i] + " misses an equation sign (=).");
+        Util.showBlockError("The equation you input " + this.equations[i] + " misses an equation sign (=)");
         this.hasEquationError = true;
       } else {
         let lhs = this.equations[i].substring(0, equalSignIndex);

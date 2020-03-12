@@ -82,7 +82,7 @@ export class BeeperContextMenu extends BlockContextMenu {
           beeper.setFrequency(Math.max(0.001, f));
         } else {
           success = false;
-          message = frequencyInputElement.value + " is not a valid frequency.";
+          message = frequencyInputElement.value + " is not a valid frequency";
         }
         // set volume
         let v = parseFloat(volumeInputElement.value);
@@ -90,7 +90,7 @@ export class BeeperContextMenu extends BlockContextMenu {
           beeper.setVolume(Math.max(0.000001, v));
         } else {
           success = false;
-          message = volumeInputElement.value + " is not a valid volume.";
+          message = volumeInputElement.value + " is not a valid volume";
         }
         // set width
         let w = parseInt(widthInputElement.value);
@@ -98,7 +98,7 @@ export class BeeperContextMenu extends BlockContextMenu {
           beeper.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -106,7 +106,7 @@ export class BeeperContextMenu extends BlockContextMenu {
           beeper.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         if (success) {
           beeper.refreshView();

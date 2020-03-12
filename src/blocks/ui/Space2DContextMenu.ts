@@ -142,6 +142,7 @@ export class Space2DContextMenu extends BlockContextMenu {
                     <select id="space2d-end-symbols-connection-selector" style="width: 100%">
                       <option value="None" selected>None</option>
                       <option value="Line">Line</option>
+                      <option value="Zigzag">Zigzag</option>
                     </select>
                   </td>
                 </tr>
@@ -290,7 +291,7 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setMinimumXValue(minimumXValue);
         } else {
           success = false;
-          message = minimumXValueInputElement.value + " is not a valid value for minimum X.";
+          message = minimumXValueInputElement.value + " is not a valid value for minimum X";
         }
         // set maximum X value
         let maximumXValue = parseFloat(maximumXValueInputElement.value);
@@ -298,7 +299,7 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setMaximumXValue(maximumXValue);
         } else {
           success = false;
-          message = maximumXValueInputElement.value + " is not a valid value for maximum X.";
+          message = maximumXValueInputElement.value + " is not a valid value for maximum X";
         }
         // set minimum Y value
         let minimumYValue = parseFloat(minimumYValueInputElement.value);
@@ -306,7 +307,7 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setMinimumYValue(minimumYValue);
         } else {
           success = false;
-          message = minimumYValueInputElement.value + " is not a valid value for minimum Y.";
+          message = minimumYValueInputElement.value + " is not a valid value for minimum Y";
         }
         // set maximum Y value
         let maximumYValue = parseFloat(maximumYValueInputElement.value);
@@ -314,7 +315,7 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setMaximumYValue(maximumYValue);
         } else {
           success = false;
-          message = maximumYValueInputElement.value + " is not a valid value for maximum Y.";
+          message = maximumYValueInputElement.value + " is not a valid value for maximum Y";
         }
         // set symbol radius
         let r = parseInt(symbolRadiusInputElement.value);
@@ -322,7 +323,7 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setDataSymbolRadius(Math.max(0, r));
         } else {
           success = false;
-          message = endSymbolRadiusInputElement.value + " is not a valid radius for symbol.";
+          message = endSymbolRadiusInputElement.value + " is not a valid radius for symbol";
         }
         // set end symbol radius
         r = parseInt(endSymbolRadiusInputElement.value);
@@ -330,7 +331,7 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setEndSymbolRadius(Math.max(0, r));
         } else {
           success = false;
-          message = endSymbolRadiusInputElement.value + " is not a valid radius for end symbol.";
+          message = endSymbolRadiusInputElement.value + " is not a valid radius for end symbol";
         }
         // set width
         let w = parseInt(widthInputElement.value);
@@ -338,7 +339,7 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -346,7 +347,7 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // finish
         if (success) {

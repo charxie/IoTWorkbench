@@ -103,7 +103,7 @@ export class SliderContextMenu extends BlockContextMenu {
           slider.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -111,7 +111,7 @@ export class SliderContextMenu extends BlockContextMenu {
           slider.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // set minimum
         let minimum = parseFloat(minimumInputElement.value);
@@ -119,23 +119,28 @@ export class SliderContextMenu extends BlockContextMenu {
           slider.setMinimum(minimum);
         } else {
           success = false;
-          message = minimumInputElement.value + " is not a valid minimum.";
+          message = minimumInputElement.value + " is not a valid minimum";
         }
         // set maximum
         let maximum = parseFloat(maximumInputElement.value);
         if (isNumber(maximum)) {
-          slider.setMaximum(maximum);
+          if (maximum > minimum) {
+            slider.setMaximum(maximum);
+          } else {
+            success = false;
+            message = "The set maximum " + maximumInputElement.value + " is not greater than the minimum " + minimum;
+          }
         } else {
           success = false;
-          message = maximumInputElement.value + " is not a valid maximum.";
+          message = maximumInputElement.value + " is not a valid maximum";
         }
         // set steps
         let steps = parseFloat(stepsInputElement.value);
         if (isNumber(steps)) {
-          slider.setSteps(steps);
+          slider.setSteps(Math.max(1, steps));
         } else {
           success = false;
-          message = stepsInputElement.value + " is not a valid number for steps.";
+          message = stepsInputElement.value + " is not a valid number for steps";
         }
         // set current value
         let value = parseFloat(valueInputElement.value);
@@ -148,7 +153,7 @@ export class SliderContextMenu extends BlockContextMenu {
           slider.setValue(value);
         } else {
           success = false;
-          message = valueInputElement.value + " is not a valid number for value.";
+          message = valueInputElement.value + " is not a valid number for value";
         }
         // set value precision
         let valuePrecision = parseInt(precisionInputElement.value);
@@ -156,7 +161,7 @@ export class SliderContextMenu extends BlockContextMenu {
           slider.setValuePrecision(Math.max(1, valuePrecision));
         } else {
           success = false;
-          message = valueInputElement.value + " is not a valid number for value precision.";
+          message = valueInputElement.value + " is not a valid number for value precision";
         }
         // finish
         if (success) {

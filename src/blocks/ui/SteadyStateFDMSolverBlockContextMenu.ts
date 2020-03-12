@@ -88,7 +88,7 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
           block.setRelaxationSteps(Math.max(5, relaxationSteps));
         } else {
           success = false;
-          message = relaxationStepsInputElement.value + " is not a valid relaxation step.";
+          message = relaxationStepsInputElement.value + " is not a valid relaxation step";
         }
         // set relaxation factor
         let relaxationFactor = parseFloat(relaxationFactorInputElement.value);
@@ -96,7 +96,7 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
           block.setRelaxationFactor(Math.min(1.99, Math.max(0.1, relaxationFactor)));
         } else {
           success = false;
-          message = relaxationFactorInputElement.value + " is not a valid relaxation factor.";
+          message = relaxationFactorInputElement.value + " is not a valid relaxation factor";
         }
         // set width
         let w = parseInt(widthInputElement.value);
@@ -104,7 +104,7 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -112,7 +112,7 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // set variables
         if (JSON.stringify(block.getVariables()) !== variablesInputElement.value) {
@@ -121,7 +121,7 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = equationsInputElement.value + " is not a valid array for variables.";
+            message = equationsInputElement.value + " is not a valid array for variables";
           }
         }
         // set equations
@@ -133,13 +133,13 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = equationsInputElement.value + " is not a valid array for equations.";
+            message = equationsInputElement.value + " is not a valid array for equations";
           }
           try {
             flowchart.updateResultsForBlock(block);
           } catch (err) {
             success = false;
-            message = JSON.stringify(equationsInputElement.value) + " are not valid equations.";
+            message = JSON.stringify(equationsInputElement.value) + " are not valid equations";
           }
         }
         // finish up

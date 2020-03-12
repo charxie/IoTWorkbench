@@ -81,7 +81,7 @@ export class RainbowHatContextMenu extends HatContextMenu {
           hat.setX(Math.max(20, x));
         } else {
           success = false;
-          message = xInputElement.value + " is not a valid x.";
+          message = xInputElement.value + " is not a valid x";
         }
         // set y
         let y = parseInt(yInputElement.value);
@@ -89,7 +89,7 @@ export class RainbowHatContextMenu extends HatContextMenu {
           hat.setY(Math.max(20, y));
         } else {
           success = false;
-          message = yInputElement.value + " is not a valid y.";
+          message = yInputElement.value + " is not a valid y";
         }
         // finish
         if (success) {
@@ -102,7 +102,7 @@ export class RainbowHatContextMenu extends HatContextMenu {
           system.storeHatStates();
           d.dialog('close');
         } else {
-          Util.showBlockError(message);
+          Util.showInputError(message);
         }
       };
       const enterKeyUp = function (e) {

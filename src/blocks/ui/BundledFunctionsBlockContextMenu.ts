@@ -64,13 +64,13 @@ export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = expressionsInputElement.value + " is not a valid array.";
+            message = expressionsInputElement.value + " is not a valid array";
           }
           try {
             flowchart.updateResultsForBlock(block);
           } catch (err) {
             success = false;
-            message = JSON.stringify(expressionsInputElement.value) + " are not valid expressions.";
+            message = JSON.stringify(expressionsInputElement.value) + " are not valid expressions";
           }
         }
         // set width
@@ -79,7 +79,7 @@ export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -87,7 +87,7 @@ export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // finish
         if (success) {

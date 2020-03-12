@@ -109,7 +109,7 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -117,7 +117,7 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // set north value
         let northValue = parseFloat(northValueInputElement.value);
@@ -125,7 +125,7 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
           block.boundaryCondition.north.value = northValue;
         } else {
           success = false;
-          message = northValueInputElement.value + " is not a valid number for north value.";
+          message = northValueInputElement.value + " is not a valid number for north value";
         }
         // set east value
         let eastValue = parseFloat(eastValueInputElement.value);
@@ -133,7 +133,7 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
           block.boundaryCondition.east.value = eastValue;
         } else {
           success = false;
-          message = eastValueInputElement.value + " is not a valid number for east value.";
+          message = eastValueInputElement.value + " is not a valid number for east value";
         }
         // set south value
         let southValue = parseFloat(southValueInputElement.value);
@@ -141,7 +141,7 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
           block.boundaryCondition.south.value = southValue;
         } else {
           success = false;
-          message = southValueInputElement.value + " is not a valid number for south value.";
+          message = southValueInputElement.value + " is not a valid number for south value";
         }
         // set west value
         let westValue = parseFloat(westValueInputElement.value);
@@ -149,7 +149,7 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
           block.boundaryCondition.west.value = westValue;
         } else {
           success = false;
-          message = westValueInputElement.value + " is not a valid number for west value.";
+          message = westValueInputElement.value + " is not a valid number for west value";
         }
         // finish
         if (success) {

@@ -76,7 +76,7 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -84,7 +84,7 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // set equations
         if (JSON.stringify(block.getEquations()) != equationsInputElement.value) {
@@ -94,13 +94,13 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = equationsInputElement.value + " is not a valid array.";
+            message = equationsInputElement.value + " is not a valid array";
           }
           try {
             flowchart.updateResultsForBlock(block);
           } catch (err) {
             success = false;
-            message = JSON.stringify(equationsInputElement.value) + " are not valid equations.";
+            message = JSON.stringify(equationsInputElement.value) + " are not valid equations";
           }
         }
         // finish up

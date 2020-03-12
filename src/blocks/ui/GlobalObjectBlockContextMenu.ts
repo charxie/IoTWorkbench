@@ -80,7 +80,7 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
           block.setMarginX(Math.max(15, margin));
         } else {
           success = false;
-          message = insetMarginInputElement.value + " is not a valid margin.";
+          message = insetMarginInputElement.value + " is not a valid margin";
         }
         // set width
         let w = parseInt(widthInputElement.value);
@@ -88,7 +88,7 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -96,7 +96,7 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // parse keys
         let keys;

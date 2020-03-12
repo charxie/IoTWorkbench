@@ -75,7 +75,7 @@ export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -83,7 +83,7 @@ export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // set variables
         if (JSON.stringify(block.getVariables()) !== variablesInputElement.value) {
@@ -92,7 +92,7 @@ export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = equationsInputElement.value + " is not a valid array for variables.";
+            message = equationsInputElement.value + " is not a valid array for variables";
           }
         }
         // set equations
@@ -103,13 +103,13 @@ export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = equationsInputElement.value + " is not a valid array for equations.";
+            message = equationsInputElement.value + " is not a valid array for equations";
           }
           try {
             flowchart.updateResultsForBlock(block);
           } catch (err) {
             success = false;
-            message = JSON.stringify(equationsInputElement.value) + " are not valid equations.";
+            message = JSON.stringify(equationsInputElement.value) + " are not valid equations";
           }
         }
         // finish up

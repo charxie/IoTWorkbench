@@ -71,7 +71,7 @@ export class RandomNumberGeneratorBlockContextMenu extends BlockContextMenu {
           block.setNumberOfOutputs(Math.max(1, n));
         } else {
           success = false;
-          message = numberOfOutputsInputElement.value + " is not a valid number of outputs.";
+          message = numberOfOutputsInputElement.value + " is not a valid number of outputs";
         }
         // set width
         let w = parseInt(widthInputElement.value);
@@ -79,7 +79,7 @@ export class RandomNumberGeneratorBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -87,7 +87,7 @@ export class RandomNumberGeneratorBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // finish
         if (success) {

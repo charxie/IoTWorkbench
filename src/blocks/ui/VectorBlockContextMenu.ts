@@ -61,7 +61,7 @@ export class VectorBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -69,7 +69,7 @@ export class VectorBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // set fraction digits
         let fractionDigits = parseInt(fractionDigitsInputElement.value);
@@ -77,7 +77,7 @@ export class VectorBlockContextMenu extends BlockContextMenu {
           block.setFractionDigits(Math.max(0, fractionDigits));
         } else {
           success = false;
-          message = fractionDigitsInputElement.value + " is not valid for fraction digits.";
+          message = fractionDigitsInputElement.value + " is not valid for fraction digits";
         }
         // set values
         let values;

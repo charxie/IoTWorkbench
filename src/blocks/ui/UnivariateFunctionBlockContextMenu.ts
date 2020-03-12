@@ -61,7 +61,7 @@ export class UnivariateFunctionBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -69,7 +69,7 @@ export class UnivariateFunctionBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         block.setVariableName(variableNameInputElement.value);
         block.setExpression(expressionInputElement.value);
@@ -78,7 +78,7 @@ export class UnivariateFunctionBlockContextMenu extends BlockContextMenu {
           flowchart.updateResultsForBlock(block);
         } catch (err) {
           success = false;
-          message = expressionInputElement.value + " is not a valid expression.";
+          message = expressionInputElement.value + " is not a valid expression";
         }
         // finish up
         if (success) {

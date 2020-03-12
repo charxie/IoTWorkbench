@@ -72,7 +72,7 @@ export class ComplexNumberBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -80,7 +80,7 @@ export class ComplexNumberBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // set real
         let real = parseFloat(realInputElement.value);
@@ -88,7 +88,7 @@ export class ComplexNumberBlockContextMenu extends BlockContextMenu {
           block.setReal(real);
         } else {
           success = false;
-          message = realInputElement.value + " is not a valid number for real.";
+          message = realInputElement.value + " is not a valid number for the real part";
         }
         // set imaginary
         let imaginary = parseFloat(imaginaryInputElement.value);
@@ -96,7 +96,7 @@ export class ComplexNumberBlockContextMenu extends BlockContextMenu {
           block.setImaginary(imaginary);
         } else {
           success = false;
-          message = imaginaryInputElement.value + " is not a valid number for imaginary.";
+          message = imaginaryInputElement.value + " is not a valid number for the imaginary part";
         }
         // finish
         if (success) {

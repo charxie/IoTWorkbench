@@ -91,7 +91,7 @@ export class StickerContextMenu extends BlockContextMenu {
           sticker.setColor(panelColor);
         } else {
           success = false;
-          message = panelColorInputElement.value + " is not a valid panel color.";
+          message = panelColorInputElement.value + " is not a valid panel color";
         }
         // set text color
         let textColor = Util.getHexColor(textColorInputElement.value);
@@ -99,7 +99,7 @@ export class StickerContextMenu extends BlockContextMenu {
           sticker.setTextColor(textColor);
         } else {
           success = false;
-          message = textColorInputElement.value + " is not a valid text color.";
+          message = textColorInputElement.value + " is not a valid text color";
         }
         // set width
         let w = parseInt(widthInputElement.value);
@@ -107,7 +107,7 @@ export class StickerContextMenu extends BlockContextMenu {
           sticker.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -115,7 +115,7 @@ export class StickerContextMenu extends BlockContextMenu {
           sticker.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // set decimals
         let decimals = parseInt(decimalsInputElement.value);
@@ -123,7 +123,7 @@ export class StickerContextMenu extends BlockContextMenu {
           sticker.setDecimals(Math.max(0, decimals));
         } else {
           success = false;
-          message = decimalsInputElement.value + " is not valid for decimals.";
+          message = decimalsInputElement.value + " is not valid for decimals";
         }
         // finish
         if (success) {

@@ -67,7 +67,7 @@ export class RaspberryPiContextMenu extends MyContextMenu {
           rpi.setX(Math.max(20, x));
         } else {
           success = false;
-          message = xInputElement.value + " is not a valid x.";
+          message = xInputElement.value + " is not a valid x";
         }
         // set y
         let y = parseInt(yInputElement.value);
@@ -75,7 +75,7 @@ export class RaspberryPiContextMenu extends MyContextMenu {
           rpi.setY(Math.max(20, y));
         } else {
           success = false;
-          message = yInputElement.value + " is not a valid y.";
+          message = yInputElement.value + " is not a valid y";
         }
         // finish
         if (success) {
@@ -88,7 +88,7 @@ export class RaspberryPiContextMenu extends MyContextMenu {
           system.storeMcuStates();
           d.dialog('close');
         } else {
-          Util.showBlockError(message);
+          Util.showInputError(message);
         }
       };
       const enterKeyUp = function (e) {

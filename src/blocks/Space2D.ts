@@ -46,6 +46,7 @@ export class Space2D extends Block {
   private dataSymbolRadii: number[] = [];
   private dataSymbolColors: string[] = [];
   private images = [];
+  private numberOfZigzags: number[] = [];
 
   static State = class {
     readonly name: string;
@@ -428,7 +429,11 @@ export class Space2D extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "white";
-      let title = this.name + " (" + this.points[0].length() + " points)";
+      let maxPoints = this.points[0].length();
+      for (let i = 1; i < this.points.length; i++) {
+        if (maxPoints < this.points[i].length()) maxPoints = this.points[i].length();
+      }
+      let title = this.name + " (" + maxPoints + " points)";
       let titleWidth = ctx.measureText(title).width;
       ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
@@ -503,8 +508,8 @@ export class Space2D extends Block {
     ctx.translate(this.spaceWindow.x, this.spaceWindow.y + this.spaceWindow.height);
     for (let p of this.points) {
       let length = p.length();
-      let index = this.points.indexOf(p);
       if (length > 1) {
+        let index = this.points.indexOf(p);
         ctx.strokeStyle = this.lineColors[index];
         if (this.lineTypes[index] === "Solid") {
           ctx.beginPath();
@@ -550,32 +555,57 @@ export class Space2D extends Block {
       }
     }
 
-    switch (this.endSymbolsConnection) {
-      case "Line":
-        let xi, yi, xj, yj;
-        ctx.lineWidth = 5;
-        for (let i = 0; i < this.points.length - 1; i++) {
-          xi = (this.points[i].getLatestX() - xmin) * dx;
-          yi = -(this.points[i].getLatestY() - ymin) * dy;
-          ctx.strokeStyle = this.dataSymbolColors[i];
-          let j = i + 1;
-          xj = (this.points[j].getLatestX() - xmin) * dx;
-          yj = -(this.points[j].getLatestY() - ymin) * dy;
-          ctx.beginPath();
-          ctx.moveTo(xi, yi);
-          ctx.lineTo(xj, yj);
-          ctx.stroke();
+    if (this.endSymbolsConnection !== "None") {
+      let xi, yi, xj, yj;
+      if (this.numberOfZigzags === undefined || this.numberOfZigzags.length !== this.points.length - 1) {
+        this.numberOfZigzags = new Array(this.points.length - 1);
+      }
+      for (let i = 0; i < this.points.length - 1; i++) {
+        xi = (this.points[i].getLatestX() - xmin) * dx;
+        yi = -(this.points[i].getLatestY() - ymin) * dy;
+        ctx.strokeStyle = this.dataSymbolColors[i];
+        xj = (this.points[i + 1].getLatestX() - xmin) * dx;
+        yj = -(this.points[i + 1].getLatestY() - ymin) * dy;
+        ctx.beginPath();
+        ctx.moveTo(xi, yi);
+        switch (this.endSymbolsConnection) {
+          case "Line":
+            ctx.lineWidth = 5;
+            ctx.lineTo(xj, yj);
+            break;
+          case "Zigzag":
+            ctx.lineWidth = 2;
+            if (this.numberOfZigzags[i] === undefined) {
+              this.numberOfZigzags[i] = Math.round(Math.hypot(xj - xi, yj - yi) / 8);
+            }
+            let dx = (xj - xi) / this.numberOfZigzags[i];
+            let dy = (yj - yi) / this.numberOfZigzags[i];
+            let dr = Math.hypot(dx, dy);
+            let cx = dy / dr;
+            let cy = -dx / dr;
+            for (let k = 0; k <= this.numberOfZigzags[i]; k++) {
+              let xk = xi + dx * k;
+              let yk = yi + dy * k;
+              if (k % 2 == 0) {
+                xk += cx * 5;
+                yk += cy * 5
+              } else {
+                xk -= cx * 5;
+                yk -= cy * 5
+              }
+              ctx.lineTo(xk, yk);
+            }
+            break;
         }
-        break;
-      case "Wave":
-        break;
+        ctx.stroke();
+      }
     }
 
     if (this.endSymbolRadius > 0) {
       for (let p of this.points) {
-        let i = length - 1;
-        let index = this.points.indexOf(p);
+        let i = p.length() - 1;
         if (i >= 0) {
+          let index = this.points.indexOf(p);
           ctx.beginPath();
           if (this.portImages !== undefined && this.portImages[index].getValue() !== undefined) {
             if (this.images[index] === undefined) {

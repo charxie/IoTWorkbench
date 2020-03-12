@@ -92,7 +92,7 @@ export class AudioBlockContextMenu extends BlockContextMenu {
           audioBlock.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -100,7 +100,7 @@ export class AudioBlockContextMenu extends BlockContextMenu {
           audioBlock.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // finish
         if (success) {

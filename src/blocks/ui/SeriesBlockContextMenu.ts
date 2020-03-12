@@ -67,7 +67,7 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -75,7 +75,7 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // set start
         let start = parseFloat(startInputElement.value);
@@ -83,7 +83,7 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
           block.setStart(start);
         } else {
           success = false;
-          message = startInputElement.value + " is not a valid number for Start.";
+          message = startInputElement.value + " is not a valid number for Start";
         }
         // set increment
         let increment = parseFloat(incrementInputElement.value);
@@ -91,7 +91,7 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
           block.setIncrement(increment);
         } else {
           success = false;
-          message = incrementInputElement.value + " is not a valid number for Increment.";
+          message = incrementInputElement.value + " is not a valid number for Increment";
         }
         // set count
         let count = parseInt(countInputElement.value);
@@ -99,7 +99,7 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
           block.setCount(count);
         } else {
           success = false;
-          message = countInputElement.value + " is not a valid number for Count.";
+          message = countInputElement.value + " is not a valid number for Count";
         }
         // finish
         if (success) {

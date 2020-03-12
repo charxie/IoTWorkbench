@@ -56,7 +56,7 @@ export class SwitchStatementBlockContextMenu extends BlockContextMenu {
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = casesInputElement.value + " is not a valid array.";
+            message = casesInputElement.value + " is not a valid array";
           }
         }
         // set width
@@ -65,7 +65,7 @@ export class SwitchStatementBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -73,7 +73,7 @@ export class SwitchStatementBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // finish
         if (success) {

@@ -71,7 +71,7 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
           itemSelector.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -79,14 +79,14 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
           itemSelector.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // set items
         try {
           itemSelector.setItems(JSON.parse(itemsInputElement.value));
         } catch (err) {
           success = false;
-          message = itemsInputElement.value + " is not a valid array.";
+          message = itemsInputElement.value + " is not a valid array";
         }
         // finish up
         if (success) {

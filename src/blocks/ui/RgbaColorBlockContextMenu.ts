@@ -73,7 +73,7 @@ export class RgbaColorBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -81,7 +81,7 @@ export class RgbaColorBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // set red
         let red = parseFloat(redInputElement.value);
@@ -89,7 +89,7 @@ export class RgbaColorBlockContextMenu extends BlockContextMenu {
           block.setRed(red);
         } else {
           success = false;
-          message = redInputElement.value + " is not a valid number for red.";
+          message = redInputElement.value + " is not a valid number for red";
         }
         // set green
         let green = parseFloat(greenInputElement.value);
@@ -97,7 +97,7 @@ export class RgbaColorBlockContextMenu extends BlockContextMenu {
           block.setGreen(green);
         } else {
           success = false;
-          message = greenInputElement.value + " is not a valid number for green.";
+          message = greenInputElement.value + " is not a valid number for green";
         }
         // set blue
         let blue = parseInt(blueInputElement.value);
@@ -105,7 +105,7 @@ export class RgbaColorBlockContextMenu extends BlockContextMenu {
           block.setBlue(blue);
         } else {
           success = false;
-          message = blueInputElement.value + " is not a valid number for blue.";
+          message = blueInputElement.value + " is not a valid number for blue";
         }
         // set alpha
         let alpha = parseInt(alphaInputElement.value);
@@ -113,7 +113,7 @@ export class RgbaColorBlockContextMenu extends BlockContextMenu {
           block.setAlpha(alpha);
         } else {
           success = false;
-          message = alphaInputElement.value + " is not a valid number for alpha.";
+          message = alphaInputElement.value + " is not a valid number for alpha";
         }
         // finish
         if (success) {

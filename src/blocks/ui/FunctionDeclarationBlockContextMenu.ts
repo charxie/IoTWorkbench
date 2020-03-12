@@ -67,7 +67,7 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width.";
+          message = widthInputElement.value + " is not a valid width";
         }
         // set height
         let h = parseInt(heightInputElement.value);
@@ -75,7 +75,7 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height.";
+          message = heightInputElement.value + " is not a valid height";
         }
         // set function name and expression
         let redefine = false;
@@ -83,7 +83,7 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
         if (functionNameInputElement.value !== block.getFunctionName()) {
           if (flowchart.isFunctionNameDeclared(fun)) {
             success = false;
-            message = "The function " + name + " is already declared.";
+            message = "The function " + name + " is already declared";
           }
         } else {
           redefine = true;
@@ -92,7 +92,7 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
         if (expression !== block.getExpression()) {
           if (!redefine && flowchart.isFunctionExpressionDeclared(fun, expression)) {
             success = false;
-            message = "The function expression " + expression + " is already declared.";
+            message = "The function expression " + expression + " is already declared";
           }
         }
         // set variables
@@ -102,7 +102,7 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = variableNamesInputElement.value + " is not a valid array for variable names.";
+            message = variableNamesInputElement.value + " is not a valid array for variable names";
           }
         }
         // finish
