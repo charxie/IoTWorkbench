@@ -37,7 +37,7 @@ export class UnivariateFunctionBlock extends FunctionBlock {
   constructor(uid: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.symbol = "F(X)";
-    this.name = "Unary Function Block";
+    this.name = "Univariate Function Block";
     this.color = "#DDA0DD";
     this.portX = new Port(this, true, "X", 0, this.height / 2, false);
     this.portR = new Port(this, false, "R", this.width, this.height / 2, true);
@@ -46,7 +46,7 @@ export class UnivariateFunctionBlock extends FunctionBlock {
   }
 
   getCopy(): Block {
-    let block = new UnivariateFunctionBlock("Unary Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    let block = new UnivariateFunctionBlock("Univariate Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.expression = this.expression;
     block.variableName = this.variableName;
     return block;

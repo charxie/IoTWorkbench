@@ -195,7 +195,7 @@ export class BundledFunctionsBlock extends Block {
         this.hasError = true;
       }
     } else {
-      for (let n = 0; n < this.expressions.length; n++) {
+      for (let n = 0; n < this.portO.length; n++) {
         this.portO[n].setValue(undefined);
       }
     }

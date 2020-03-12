@@ -39,7 +39,7 @@ export class MultivariateFunctionBlock extends FunctionBlock {
   constructor(uid: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.symbol = "F(X, Y, Z)";
-    this.name = "Multivariable Function Block";
+    this.name = "Multivariate Function Block";
     this.expression = "x+y+z";
     this.color = "#2E8B57";
     this.portR = new Port(this, false, "F", this.width, this.height / 2, true);
@@ -76,7 +76,7 @@ export class MultivariateFunctionBlock extends FunctionBlock {
   }
 
   getCopy(): Block {
-    let block = new MultivariateFunctionBlock("Multivariable Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    let block = new MultivariateFunctionBlock("Multivariate Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.expression = this.expression;
     block.variables = JSON.parse(JSON.stringify(this.variables));
     block.marginX = this.marginX;

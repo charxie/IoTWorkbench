@@ -44,7 +44,7 @@ export class BivariateFunctionBlock extends FunctionBlock {
   constructor(uid: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.symbol = "F(X, Y)";
-    this.name = "Binary Function Block";
+    this.name = "Bivariate Function Block";
     this.expression = "x+y";
     this.color = "#FF6347";
     this.portX = new Port(this, true, "X", 0, this.height / 3, false);
@@ -56,7 +56,7 @@ export class BivariateFunctionBlock extends FunctionBlock {
   }
 
   getCopy(): Block {
-    let block = new BivariateFunctionBlock("Binary Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    let block = new BivariateFunctionBlock("Bivariate Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.expression = this.expression;
     block.variable1Name = this.variable1Name;
     block.variable2Name = this.variable2Name;

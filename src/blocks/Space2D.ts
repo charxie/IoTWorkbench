@@ -548,26 +548,6 @@ export class Space2D extends Block {
             break;
         }
       }
-      if (this.endSymbolRadius > 0) {
-        let i = length - 1;
-        if (i >= 0) {
-          ctx.beginPath();
-          if (this.portImages !== undefined && this.portImages[index].getValue() !== undefined) {
-            if (this.images[index] === undefined) {
-              this.images[index] = new Image();
-            }
-            this.images[index].src = this.portImages[index].getValue();
-            ctx.drawImage(this.images[index], (p.getX(i) - xmin) * dx - this.endSymbolRadius, -(p.getY(i) - ymin) * dy - this.endSymbolRadius,
-              2 * this.endSymbolRadius, 2 * this.endSymbolRadius * this.images[index].height / this.images[index].width);
-          } else {
-            ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.endSymbolRadius, 0, 2 * Math.PI);
-            ctx.fillStyle = this.dataSymbolColors[index];
-            ctx.fill();
-            ctx.strokeStyle = this.lineColors[index];
-            ctx.stroke();
-          }
-        }
-      }
     }
 
     switch (this.endSymbolsConnection) {
@@ -589,6 +569,32 @@ export class Space2D extends Block {
         break;
       case "Wave":
         break;
+    }
+
+    if (this.endSymbolRadius > 0) {
+      for (let p of this.points) {
+        let i = length - 1;
+        let index = this.points.indexOf(p);
+        if (i >= 0) {
+          ctx.beginPath();
+          if (this.portImages !== undefined && this.portImages[index].getValue() !== undefined) {
+            if (this.images[index] === undefined) {
+              this.images[index] = new Image();
+            }
+            this.images[index].src = this.portImages[index].getValue();
+            let imageHeight = this.endSymbolRadius * this.images[index].height / this.images[index].width;
+            let imageX = p.getX(i) !== undefined ? (p.getX(i) - xmin) * dx : (p.getX(0) - xmin) * dx; // if the input is the same, the array will not grow
+            let imageY = p.getY(i) !== undefined ? -(p.getY(i) - ymin) * dy : -(p.getY(0) - ymin) * dy;
+            ctx.drawImage(this.images[index], imageX - this.endSymbolRadius, imageY - imageHeight, 2 * this.endSymbolRadius, 2 * imageHeight);
+          } else {
+            ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.endSymbolRadius, 0, 2 * Math.PI);
+            ctx.fillStyle = this.dataSymbolColors[index];
+            ctx.fill();
+            ctx.strokeStyle = this.lineColors[index];
+            ctx.stroke();
+          }
+        }
+      }
     }
 
     // draw axis tick marks and labels
