@@ -136,6 +136,7 @@ export class StateIO {
         } else if (block instanceof ActionBlock) {
           block.setName(state.name);
           block.setType(state.type ? state.type : "Reset");
+          if (state.symbol) block.setSymbol(state.symbol);
         } else if (block instanceof ItemSelector) {
           block.setName(state.name);
           block.setItems(state.items);

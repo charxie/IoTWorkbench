@@ -6,6 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {flowchart} from "../Main";
 import {GlobalBlock} from "./GlobalBlock";
+import {GlobalVariableBlock} from "./GlobalVariableBlock";
 
 export class GlobalObjectBlock extends GlobalBlock {
 
@@ -85,43 +86,65 @@ export class GlobalObjectBlock extends GlobalBlock {
   getCopy(): Block {
     let copy = new GlobalObjectBlock("Global Object Block #" + Date.now().toString(16), this.name, this.symbol, this.x, this.y, this.width, this.height);
     copy.keys = this.keys;
-    copy.values = JSON.parse(JSON.stringify(this.values));
-    copy.initialValues = JSON.parse(JSON.stringify(this.initialValues));
+    copy.values = this.values.slice();
+    copy.initialValues = this.initialValues.slice();
     copy.marginX = this.marginX;
     return copy;
   }
 
+  getOutputPort(): Port {
+    return this.portO;
+  }
+
   destroy(): void {
     for (let key of this.keys) {
-      flowchart.removeGlobalVariable(key);
+      let foundAnother = false;
+      for (let b of flowchart.blocks) {
+        if (b !== this) {
+          if (b instanceof GlobalVariableBlock) {
+            if (b.getKey() === key) {
+              foundAnother = true;
+              break;
+            }
+          } else if (b instanceof GlobalObjectBlock) {
+            if (b.getKeys().indexOf(key) !== -1) {
+              foundAnother = true;
+              break;
+            }
+          }
+        }
+      }
+      if (!foundAnother) {
+        flowchart.removeGlobalVariable(key);
+      }
     }
   }
 
   getKeys(): string[] {
-    return JSON.parse(JSON.stringify(this.keys));
+    return this.keys.slice();
   }
 
   setKeys(keys: string[]): void {
-    this.keys = JSON.parse(JSON.stringify(keys));
+    this.keys = keys.slice();
     this.setInputPorts();
     this.refreshView();
   }
 
   getValues(): number[] {
-    return JSON.parse(JSON.stringify(this.values));
+    return this.values.slice();
   }
 
   setValues(values: number[]): void {
-    this.values = JSON.parse(JSON.stringify(values));
+    this.values = values.slice();
   }
 
   getInitialValues(): number[] {
-    return JSON.parse(JSON.stringify(this.initialValues));
+    return this.initialValues.slice();
   }
 
   setInitialValues(initialValues: number[]): void {
     if (initialValues != undefined) {
-      this.initialValues = JSON.parse(JSON.stringify(initialValues));
+      this.initialValues = initialValues.slice();
     }
   }
 

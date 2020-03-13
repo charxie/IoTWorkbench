@@ -19,12 +19,18 @@ export class ActionBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
+                  <td>Label:</td>
+                  <td><input type="text" id="action-block-label-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Type:</td>
                   <td>
                     <select id="action-type-selector" style="width: 100%">
                       <option value="Reset" selected>Reset</option>
                       <option value="Stop">Stop</option>
                       <option value="Repaint">Repaint</option>
+                      <option value="Stop-And-Reset">Stop & Reset</option>
+                      <option value="Reset-Without-Update">Reset Without Update</option>
                     </select>
                   </td>
                 </tr>
@@ -46,6 +52,8 @@ export class ActionBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof ActionBlock) {
       const act = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let labelInputElement = document.getElementById("action-block-label-field") as HTMLInputElement;
+      labelInputElement.value = act.getSymbol();
       let typeSelectElement = document.getElementById("action-type-selector") as HTMLSelectElement;
       typeSelectElement.value = act.getType();
       let widthInputElement = document.getElementById("action-block-width-field") as HTMLInputElement;
@@ -74,6 +82,7 @@ export class ActionBlockContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           act.setType(typeSelectElement.value);
+          act.setSymbol(labelInputElement.value);
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(act);
           flowchart.storeBlockStates();
@@ -88,6 +97,7 @@ export class ActionBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
+      labelInputElement.addEventListener("keyup", enterKeyUp);
       widthInputElement.addEventListener("keyup", enterKeyUp);
       heightInputElement.addEventListener("keyup", enterKeyUp);
       d.dialog({

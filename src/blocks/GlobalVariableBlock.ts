@@ -6,6 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {flowchart} from "../Main";
 import {GlobalBlock} from "./GlobalBlock";
+import {GlobalObjectBlock} from "./GlobalObjectBlock";
 
 export class GlobalVariableBlock extends GlobalBlock {
 
@@ -62,8 +63,30 @@ export class GlobalVariableBlock extends GlobalBlock {
     return copy;
   }
 
+  getOutputPort(): Port {
+    return this.portO;
+  }
+
   destroy(): void {
-    flowchart.removeGlobalVariable(this.key);
+    let foundAnother = false;
+    for (let b of flowchart.blocks) {
+      if (b !== this) {
+        if (b instanceof GlobalVariableBlock) {
+          if (b.getKey() === this.key) {
+            foundAnother = true;
+            break;
+          }
+        } else if (b instanceof GlobalObjectBlock) {
+          if (b.getKeys().indexOf(this.key) !== -1) {
+            foundAnother = true;
+            break;
+          }
+        }
+      }
+    }
+    if (!foundAnother) {
+      flowchart.removeGlobalVariable(this.key);
+    }
   }
 
   getKey(): string {

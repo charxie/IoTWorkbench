@@ -23,6 +23,7 @@ export class ActionBlock extends Block {
     readonly width: number;
     readonly height: number;
     readonly type: string;
+    readonly symbol: string;
 
     constructor(block: ActionBlock) {
       this.name = block.name;
@@ -32,6 +33,7 @@ export class ActionBlock extends Block {
       this.width = block.width;
       this.height = block.height;
       this.type = block.type;
+      this.symbol = block.symbol;
     }
   };
 
@@ -62,10 +64,12 @@ export class ActionBlock extends Block {
     this.ports.length = 0;
     switch (this.type) {
       case "Stop":
+      case "Stop-And-Reset":
       case "Repaint":
         this.ports.push(this.portI);
         break;
       case "Reset":
+      case "Reset-Without-Update":
         this.ports.push(this.portO);
         break;
     }
@@ -134,10 +138,12 @@ export class ActionBlock extends Block {
     ctx.font = "bold 12px Times";
     switch (this.type) {
       case "Stop":
+      case "Stop-And-Reset":
       case "Repaint":
         this.portI.draw(ctx, this.iconic);
         break;
       case "Reset":
+      case "Reset-Without-Update":
         this.portO.draw(ctx, this.iconic);
         break;
     }
@@ -172,14 +178,24 @@ export class ActionBlock extends Block {
     switch (this.type) {
       case "Reset":
         flowchart.reset(this);
-        //flowchart.resetGlobalBlocks();
         flowchart.updateResults();
         flowchart.erase();
+        flowchart.storeBlockStates();
+        break;
+      case "Reset-Without-Update":
+        flowchart.reset(this);
+        flowchart.updateResultsExcludingAllWorkerBlocks();
+        flowchart.updateGlobalBlockChildren();
         flowchart.storeBlockStates();
         break;
       case "Stop":
         if (this.portI.getValue()) {
           flowchart.stopWorker(this);
+        }
+        break;
+      case "Stop-And-Reset":
+        if (this.portI.getValue()) {
+          flowchart.stopAndResetWorker(this);
         }
         break;
       case "Repaint":
@@ -192,7 +208,7 @@ export class ActionBlock extends Block {
 
   mouseDown(e: MouseEvent): boolean {
     if (e.which == 3) return; // if this is a right-click event
-    if (this.type === "Stop") return;
+    if (this.type === "Stop" || this.type === "Stop-And-Reset") return;
     // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
     let rect = flowchart.blockView.canvas.getBoundingClientRect();
     let x = e.clientX - rect.left;

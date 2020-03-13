@@ -271,9 +271,14 @@ export class WorkerBlock extends Block {
     }
   }
 
-  stop(): void {
+  stop(reset: boolean): void {
     if (this.worker !== undefined) {
-      this.worker.postMessage({count: 0});
+      if (reset) {
+        this.worker.postMessage({count: 0});
+      } else {
+        this.worker.postMessage({count: 0, cmd: "Pause"});
+        this.paused = true;
+      }
       this.stopWithoutResetCounter();
     }
   }

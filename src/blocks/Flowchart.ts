@@ -158,6 +158,20 @@ export class Flowchart {
     this.blockView.requestDraw();
   }
 
+  updateGlobalBlockChildren(): void {
+    for (let b of this.blocks) {
+      if (b instanceof GlobalBlock) {
+        if (b instanceof GlobalVariableBlock) {
+          b.getOutputPort().setValue(b.getValue());
+        } else if (b instanceof GlobalObjectBlock) {
+          b.getOutputPort().setValue(b.getValues());
+        }
+        b.updateConnectors();
+        this.traverseChildren(b);
+      }
+    }
+  }
+
   resetConnectedBlocks(block: Block) {
     let outputTo = block.outputTo();
     for (let next of outputTo) {
@@ -189,7 +203,18 @@ export class Flowchart {
     for (let b of this.blocks) {
       if (b instanceof WorkerBlock) {
         if (this.areBlocksConnected(b, block)) {
-          b.stop();
+          b.stop(false);
+        }
+      }
+    }
+    this.blockView.requestDraw();
+  }
+
+  stopAndResetWorker(block: Block): void {
+    for (let b of this.blocks) {
+      if (b instanceof WorkerBlock) {
+        if (this.areBlocksConnected(b, block)) {
+          b.stop(true);
         }
       }
     }

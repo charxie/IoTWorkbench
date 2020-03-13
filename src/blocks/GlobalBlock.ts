@@ -1,7 +1,9 @@
 /*
  * @author Charles Xie
  */
+
 import {Block} from "./Block";
+import {Port} from "./Port";
 
 export abstract class GlobalBlock extends Block {
 
@@ -14,5 +16,7 @@ export abstract class GlobalBlock extends Block {
   setShowValue(showValue: boolean) {
     this.showValue = showValue;
   }
+
+  abstract getOutputPort(): Port;
 
 }
