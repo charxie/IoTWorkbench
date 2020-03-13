@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import simple_math_game from "./examples/simple-math-game.json";
+// @ts-ignore
 import import_datasets from "./examples/import-datasets.json";
 // @ts-ignore
 import rayleigh_benard_convection from "./examples/rayleigh-benard-convection.json";
@@ -219,6 +221,7 @@ export class Examples {
     this.files.push({name: "Math: Spirals", data: spirals});
     this.files.push({name: "Math: Sunflower Pattern", data: sunflower_vogel_model});
     this.files.push({name: "Math: Import Datasets", data: import_datasets});
+    this.files.push({name: "Math: Make a Simple Game", data: simple_math_game});
     this.files.push({name: "Sound: Make Sound with Beepers", data: make_sound_with_beepers});
     this.files.push({name: "Sound: Synthesizing Sound", data: synthesizing_sound});
     this.files.push({name: "IoT: RGB LED Array", data: rainbow_hat_rgb_led_array});
