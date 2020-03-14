@@ -170,9 +170,11 @@ export class StateIO {
           if (state.dataPortNumber != undefined) block.setDataPortNumber(state.dataPortNumber);
           if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
+          if (state.lineThicknesses != undefined) block.setLineThicknesses(state.lineThicknesses);
           if (state.graphSymbols != undefined) block.setGraphSymbols(state.graphSymbols);
           if (state.graphSymbolSizes != undefined) block.setGraphSymbolSizes(state.graphSymbolSizes);
           if (state.graphSymbolColors != undefined) block.setGraphSymbolColors(state.graphSymbolColors);
+          if (state.graphSymbolSpacings != undefined) block.setGraphSymbolSpacings(state.graphSymbolSpacings);
           if (state.fillOptions != undefined) block.setFillOptions(state.fillOptions);
           if (state.fillColors != undefined) block.setFillColors(state.fillColors);
         } else if (block instanceof IntegralBlock) {

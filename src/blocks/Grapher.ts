@@ -33,11 +33,13 @@ export class Grapher extends Block {
   };
   private lineTypes: string[] = [];
   private lineColors: string[] = [];
+  private lineThicknesses: number[] = [];
   private fillOptions: boolean[] = [];
   private fillColors: string[] = [];
   private graphSymbols: string[] = [];
   private graphSymbolSizes: number[] = [];
   private graphSymbolColors: string[] = [];
+  private graphSymbolSpacings: number[] = [];
 
   static State = class {
     readonly name: string;
@@ -55,11 +57,13 @@ export class Grapher extends Block {
     readonly maximumValue: number;
     readonly lineTypes: string[];
     readonly lineColors: string[];
+    readonly lineThicknesses: number[];
     readonly fillOptions: boolean[];
     readonly fillColors: string[];
     readonly graphSymbols: string[];
     readonly graphSymbolSizes: number[];
     readonly graphSymbolColors: string[];
+    readonly graphSymbolSpacings: number[];
 
     constructor(grapher: Grapher) {
       this.name = grapher.name;
@@ -75,13 +79,15 @@ export class Grapher extends Block {
       this.autoscale = grapher.autoscale;
       this.minimumValue = grapher.minimumValue;
       this.maximumValue = grapher.maximumValue;
-      this.lineTypes = grapher.lineTypes.slice();
-      this.lineColors = grapher.lineColors.slice();
-      this.fillOptions = grapher.fillOptions.slice();
-      this.fillColors = grapher.fillColors.slice();
-      this.graphSymbols = grapher.graphSymbols.slice();
-      this.graphSymbolSizes = grapher.graphSymbolSizes.slice();
-      this.graphSymbolColors = grapher.graphSymbolColors.slice();
+      this.lineTypes = [...grapher.lineTypes];
+      this.lineColors = [...grapher.lineColors];
+      this.lineThicknesses = [...grapher.lineThicknesses];
+      this.fillOptions = [...grapher.fillOptions];
+      this.fillColors = [...grapher.fillColors];
+      this.graphSymbols = [...grapher.graphSymbols];
+      this.graphSymbolSizes = [...grapher.graphSymbolSizes];
+      this.graphSymbolColors = [...grapher.graphSymbolColors];
+      this.graphSymbolSpacings = [...grapher.graphSymbolSpacings];
     }
   };
 
@@ -102,11 +108,13 @@ export class Grapher extends Block {
     this.dataArrays.push(new DataArray(0));
     this.lineTypes.push("Solid");
     this.lineColors.push("black");
+    this.lineThicknesses.push(1);
     this.fillOptions.push(false);
     this.fillColors.push("lightgray");
     this.graphSymbols.push("Circle");
     this.graphSymbolSizes.push(3);
     this.graphSymbolColors.push("white");
+    this.graphSymbolSpacings.push(2);
   }
 
   getCopy(): Block {
@@ -117,13 +125,15 @@ export class Grapher extends Block {
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.graphWindowColor = this.graphWindowColor;
-    copy.graphSymbols = this.graphSymbols.slice();
-    copy.graphSymbolSizes = this.graphSymbolSizes.slice();
-    copy.graphSymbolColors = this.graphSymbolColors.slice();
-    copy.lineTypes = this.lineTypes.slice();
-    copy.lineColors = this.lineColors.slice();
-    copy.fillOptions = this.fillOptions.slice();
-    copy.fillColors = this.fillColors.slice();
+    copy.graphSymbols = [...this.graphSymbols];
+    copy.graphSymbolSizes = [...this.graphSymbolSizes];
+    copy.graphSymbolColors = [...this.graphSymbolColors];
+    copy.graphSymbolSpacings = [...this.graphSymbolSpacings];
+    copy.lineTypes = [...this.lineTypes];
+    copy.lineColors = [...this.lineColors];
+    copy.lineThicknesses = [...this.lineThicknesses];
+    copy.fillOptions = [...this.fillOptions];
+    copy.fillColors = [...this.fillColors];
     copy.setDataPortNumber(this.getDataPorts().length);
     return copy;
   }
@@ -141,11 +151,13 @@ export class Grapher extends Block {
           this.dataArrays.push(new DataArray(0));
           this.lineTypes.push("Solid");
           this.lineColors.push("black");
+          this.lineThicknesses.push(1);
           this.fillOptions.push(false);
           this.fillColors.push("lightgray");
           this.graphSymbols.push("Circle");
           this.graphSymbolSizes.push(3);
           this.graphSymbolColors.push("white");
+          this.graphSymbolSpacings.push(2);
         }
       }
     } else if (portNumber < this.portI.length) { // decrease data ports
@@ -155,11 +167,13 @@ export class Grapher extends Block {
         this.dataArrays.pop();
         this.lineTypes.pop();
         this.lineColors.pop();
+        this.lineThicknesses.pop();
         this.fillOptions.pop();
         this.fillColors.pop();
         this.graphSymbols.pop();
         this.graphSymbolSizes.pop();
         this.graphSymbolColors.pop();
+        this.graphSymbolSpacings.pop();
       }
     }
     this.refreshView();
@@ -222,7 +236,7 @@ export class Grapher extends Block {
   }
 
   getLineColors(): string[] {
-    return this.lineColors.slice();
+    return [...this.lineColors];
   }
 
   setLineColor(i: number, lineColor: string): void {
@@ -233,12 +247,28 @@ export class Grapher extends Block {
     return this.lineColors[index];
   }
 
+  setLineThicknesses(lineThicknesses: number[]): void {
+    this.lineThicknesses = lineThicknesses;
+  }
+
+  getLineThicknesses(): number[] {
+    return [...this.lineThicknesses];
+  }
+
+  setLineThickness(i: number, lineThickness: number): void {
+    this.lineThicknesses[i] = lineThickness;
+  }
+
+  getLineThickness(index: number): number {
+    return this.lineThicknesses[index];
+  }
+
   setFillOptions(fillOptions: boolean[]): void {
     this.fillOptions = fillOptions;
   }
 
   getFillOptions(): boolean[] {
-    return this.fillOptions.slice();
+    return [...this.fillOptions];
   }
 
   setFillOption(i: number, fill: boolean): void {
@@ -254,7 +284,7 @@ export class Grapher extends Block {
   }
 
   getFillColors(): string[] {
-    return this.fillColors.slice();
+    return [...this.fillColors];
   }
 
   setFillColor(i: number, fillColor: string): void {
@@ -270,7 +300,7 @@ export class Grapher extends Block {
   }
 
   getLineTypes(): string[] {
-    return this.lineTypes.slice();
+    return [...this.lineTypes];
   }
 
   setLineType(i: number, lineType: string): void {
@@ -286,7 +316,7 @@ export class Grapher extends Block {
   }
 
   getGraphSymbols(): string[] {
-    return this.graphSymbols.slice();
+    return [...this.graphSymbols];
   }
 
   setGraphSymbol(i: number, graphSymbol: string): void {
@@ -302,7 +332,7 @@ export class Grapher extends Block {
   }
 
   getGraphSymbolColors(): string[] {
-    return this.graphSymbolColors.slice();
+    return [...this.graphSymbolColors];
   }
 
   setGraphSymbolColor(i: number, graphSymbolColor: string): void {
@@ -318,7 +348,7 @@ export class Grapher extends Block {
   }
 
   getGraphSymbolSizes(): number[] {
-    return this.graphSymbolSizes.slice();
+    return [...this.graphSymbolSizes];
   }
 
   setGraphSymbolSize(i: number, graphSymbolSize: number): void {
@@ -327,6 +357,22 @@ export class Grapher extends Block {
 
   getGraphSymbolSize(i: number): number {
     return this.graphSymbolSizes[i];
+  }
+
+  setGraphSymbolSpacings(graphSymbolSpacings: number[]): void {
+    this.graphSymbolSpacings = graphSymbolSpacings;
+  }
+
+  getGraphSymbolSpacings(): number[] {
+    return [...this.graphSymbolSpacings];
+  }
+
+  setGraphSymbolSpacing(i: number, graphSymbolSpacing: number): void {
+    this.graphSymbolSpacings[i] = Math.round(graphSymbolSpacing);
+  }
+
+  getGraphSymbolSpacing(i: number): number {
+    return this.graphSymbolSpacings[i];
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -428,62 +474,138 @@ export class Grapher extends Block {
     let horizontalAxisY = this.y + this.height - this.graphMargin.bottom;
 
     // draw the data line
-    ctx.lineWidth = 1;
     for (let i = 0; i < this.dataArrays.length; i++) {
-      let arr = this.dataArrays[i];
-      switch (this.lineTypes[i]) {
-        case "Solid":
-          ctx.strokeStyle = this.lineColors[i];
-          ctx.font = "10px Arial";
-          ctx.beginPath();
-          tmpX = this.graphWindow.x;
-          tmpY = yOffset + (arr.data[0] - min) * dy;
-          ctx.moveTo(tmpX, horizontalAxisY - tmpY);
-          for (let k = 1; k < arr.length(); k++) {
-            tmpX = this.graphWindow.x + dx * k;
-            tmpY = yOffset + (arr.data[k] - min) * dy;
-            ctx.lineTo(tmpX, horizontalAxisY - tmpY);
-          }
-          if (this.fillOptions[i]) {
-            ctx.fillStyle = this.fillColors[i];
-            ctx.closePath();
-            ctx.fill();
-          }
-          ctx.stroke();
-          break;
+      if (this.lineTypes[i] !== "None") {
+        ctx.lineWidth = this.lineThicknesses[i];
+        let arr = this.dataArrays[i];
+        switch (this.lineTypes[i]) {
+          case "Solid":
+            ctx.setLineDash([]);
+            break;
+          case "Dashed":
+            ctx.setLineDash([5, 3]); // dashes are 5px and spaces are 3px
+            break;
+          case "Dotted":
+            ctx.setLineDash([2, 2]);
+            break;
+          case "Dashdot":
+            ctx.setLineDash([8, 2, 2, 2]);
+            break;
+        }
+        ctx.strokeStyle = this.lineColors[i];
+        ctx.font = "10px Arial";
+        ctx.beginPath();
+        tmpX = this.graphWindow.x;
+        tmpY = yOffset + (arr.data[0] - min) * dy;
+        ctx.moveTo(tmpX, horizontalAxisY - tmpY);
+        for (let k = 1; k < arr.length(); k++) {
+          tmpX = this.graphWindow.x + dx * k;
+          tmpY = yOffset + (arr.data[k] - min) * dy;
+          ctx.lineTo(tmpX, horizontalAxisY - tmpY);
+        }
+        if (this.fillOptions[i]) {
+          ctx.fillStyle = this.fillColors[i];
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.stroke();
       }
     }
 
+    ctx.setLineDash([]);
     ctx.lineWidth = 1;
     // draw symbols on top of the line
     for (let i = 0; i < this.dataArrays.length; i++) {
+      if (this.graphSymbolSizes[i] < 0.1) continue; // don't draw if the size is too small
       let arr = this.dataArrays[i];
       switch (this.graphSymbols[i]) { // put switch outside, though the code is longer, the performance is better
         case "Circle":
           for (let k = 0; k < arr.length(); k++) {
-            tmpX = this.graphWindow.x + dx * k;
-            tmpY = yOffset + (arr.data[k] - min) * dy;
-            ctx.beginPath();
-            ctx.arc(tmpX, horizontalAxisY - tmpY, this.graphSymbolSizes[i], 0, 2 * Math.PI);
-            ctx.closePath();
-            ctx.fillStyle = this.graphSymbolColors[i];
-            ctx.fill();
-            ctx.strokeStyle = this.lineColors[i];
-            ctx.stroke();
+            if (k % this.graphSymbolSpacings[i] === 0) {
+              tmpX = this.graphWindow.x + dx * k;
+              tmpY = yOffset + (arr.data[k] - min) * dy;
+              ctx.beginPath();
+              ctx.arc(tmpX, horizontalAxisY - tmpY, this.graphSymbolSizes[i], 0, 2 * Math.PI);
+              ctx.closePath();
+              ctx.fillStyle = this.graphSymbolColors[i];
+              ctx.fill();
+              ctx.strokeStyle = this.lineColors[i];
+              ctx.stroke();
+            }
           }
           break;
         case "Square":
           let r = this.graphSymbolSizes[i];
           let d = 2 * r;
           for (let k = 0; k < arr.length(); k++) {
-            tmpX = this.graphWindow.x + dx * k;
-            tmpY = yOffset + (arr.data[k] - min) * dy;
-            ctx.beginPath();
-            ctx.rect(tmpX - r, horizontalAxisY - tmpY - r, d, d);
-            ctx.fillStyle = this.graphSymbolColors[i];
-            ctx.fill();
-            ctx.strokeStyle = this.lineColors[i];
-            ctx.stroke();
+            if (k % this.graphSymbolSpacings[i] === 0) {
+              tmpX = this.graphWindow.x + dx * k;
+              tmpY = yOffset + (arr.data[k] - min) * dy;
+              ctx.beginPath();
+              ctx.rect(tmpX - r, horizontalAxisY - tmpY - r, d, d);
+              ctx.fillStyle = this.graphSymbolColors[i];
+              ctx.fill();
+              ctx.strokeStyle = this.lineColors[i];
+              ctx.stroke();
+            }
+          }
+          break;
+        case "Triangle Up":
+          r = this.graphSymbolSizes[i];
+          d = 2 * r;
+          for (let k = 0; k < arr.length(); k++) {
+            if (k % this.graphSymbolSpacings[i] === 0) {
+              tmpX = this.graphWindow.x + dx * k;
+              tmpY = yOffset + (arr.data[k] - min) * dy;
+              ctx.beginPath();
+              ctx.moveTo(tmpX, horizontalAxisY - tmpY - d);
+              ctx.lineTo(tmpX - r, horizontalAxisY - tmpY);
+              ctx.lineTo(tmpX + r, horizontalAxisY - tmpY);
+              ctx.closePath();
+              ctx.fillStyle = this.graphSymbolColors[i];
+              ctx.fill();
+              ctx.strokeStyle = this.lineColors[i];
+              ctx.stroke();
+            }
+          }
+          break;
+        case "Triangle Down":
+          r = this.graphSymbolSizes[i];
+          d = 2 * r;
+          for (let k = 0; k < arr.length(); k++) {
+            if (k % this.graphSymbolSpacings[i] === 0) {
+              tmpX = this.graphWindow.x + dx * k;
+              tmpY = yOffset + (arr.data[k] - min) * dy;
+              ctx.beginPath();
+              ctx.moveTo(tmpX, horizontalAxisY - tmpY + r);
+              ctx.lineTo(tmpX - r, horizontalAxisY - tmpY - r);
+              ctx.lineTo(tmpX + r, horizontalAxisY - tmpY - r);
+              ctx.closePath();
+              ctx.fillStyle = this.graphSymbolColors[i];
+              ctx.fill();
+              ctx.strokeStyle = this.lineColors[i];
+              ctx.stroke();
+            }
+          }
+          break;
+        case "Diamond":
+          r = this.graphSymbolSizes[i];
+          d = 2 * r;
+          for (let k = 0; k < arr.length(); k++) {
+            if (k % this.graphSymbolSpacings[i] === 0) {
+              tmpX = this.graphWindow.x + dx * k;
+              tmpY = yOffset + (arr.data[k] - min) * dy;
+              ctx.beginPath();
+              ctx.moveTo(tmpX, horizontalAxisY - tmpY + r);
+              ctx.lineTo(tmpX - r, horizontalAxisY - tmpY);
+              ctx.lineTo(tmpX, horizontalAxisY - tmpY - r);
+              ctx.lineTo(tmpX + r, horizontalAxisY - tmpY);
+              ctx.closePath();
+              ctx.fillStyle = this.graphSymbolColors[i];
+              ctx.fill();
+              ctx.strokeStyle = this.lineColors[i];
+              ctx.stroke();
+            }
           }
           break;
       }

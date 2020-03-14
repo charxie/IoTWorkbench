@@ -87,6 +87,9 @@ export class GrapherContextMenu extends BlockContextMenu {
                     <select id="grapher-line-type-selector" style="width: 100%">
                       <option value="None">None</option>
                       <option value="Solid" selected>Solid</option>
+                      <option value="Dashed">Dashed</option>
+                      <option value="Dotted">Dotted</option>
+                      <option value="Dashdot">Dashdot</option>
                     </select>
                   </td>
                 </tr>
@@ -97,6 +100,11 @@ export class GrapherContextMenu extends BlockContextMenu {
                   <td><input type="text" id="grapher-line-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Line Thickness:</td>
+                  <td><select id="grapher-line-thickness-port-selector" style="width: 65px"></select></td>
+                  <td colspan="2"><input type="text" id="grapher-line-thickness-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Symbol Type:</td>
                   <td><select id="grapher-symbol-type-port-selector" style="width: 65px"></select></td>
                   <td colspan="2">
@@ -104,6 +112,9 @@ export class GrapherContextMenu extends BlockContextMenu {
                       <option value="None">None</option>
                       <option value="Circle" selected>Circle</option>
                       <option value="Square">Square</option>
+                      <option value="Triangle Up">Triangle Up</option>
+                      <option value="Triangle Down">Triangle Down</option>
+                      <option value="Diamond">Diamond</option>
                     </select>
                   </td>
                 </tr>
@@ -117,6 +128,11 @@ export class GrapherContextMenu extends BlockContextMenu {
                   <td><select id="grapher-symbol-color-port-selector" style="width: 65px"></select></td>
                   <td><input type="color" id="grapher-symbol-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="grapher-symbol-color-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Symbol Spacing:</td>
+                  <td><select id="grapher-symbol-spacing-port-selector" style="width: 65px"></select></td>
+                  <td colspan="2"><input type="text" id="grapher-symbol-spacing-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Aera Fill:</td>
@@ -171,11 +187,13 @@ export class GrapherContextMenu extends BlockContextMenu {
       // temporary storage of properties (don't store the changes to the block object or else we won't be able to cancel)
       let lineTypes: string[] = g.getLineTypes();
       let lineColors: string[] = g.getLineColors();
+      let lineThicknesses: number[] = g.getLineThicknesses();
       let fillOptions: boolean[] = g.getFillOptions();
       let fillColors: string[] = g.getFillColors();
       let graphSymbols: string[] = g.getGraphSymbols();
       let graphSymbolSizes: number[] = g.getGraphSymbolSizes();
       let graphSymbolColors: string[] = g.getGraphSymbolColors();
+      let graphSymbolSpacings: number[] = g.getGraphSymbolSpacings();
 
       let nameField = document.getElementById("grapher-name-field") as HTMLInputElement;
       nameField.value = g.getName();
@@ -202,6 +220,24 @@ export class GrapherContextMenu extends BlockContextMenu {
       let lineTypePortSelector = this.createPortSelector("grapher-line-type-port-selector");
       lineTypePortSelector.onchange = () => lineTypeSelector.value = lineTypes[parseInt(lineTypePortSelector.value)];
 
+      let lineColorField = document.getElementById("grapher-line-color-field") as HTMLInputElement;
+      lineColorField.value = lineColors[0];
+      lineColorField.onchange = () => lineColors[parseInt(lineColorPortSelector.value)] = lineColorField.value;
+      let lineColorChooser = document.getElementById("grapher-line-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(lineColorChooser, lineColors[0]);
+      let lineColorPortSelector = this.createPortSelector("grapher-line-color-port-selector");
+      lineColorPortSelector.onchange = () => {
+        let c = lineColors[parseInt(lineColorPortSelector.value)];
+        lineColorField.value = c;
+        Util.setColorPicker(lineColorChooser, c);
+      };
+
+      let lineThicknessField = document.getElementById("grapher-line-thickness-field") as HTMLInputElement;
+      lineThicknessField.value = lineThicknesses[0].toString();
+      lineThicknessField.onchange = () => lineThicknesses[parseInt(lineThicknessPortSelector.value)] = parseInt(lineThicknessField.value);
+      let lineThicknessPortSelector = this.createPortSelector("grapher-line-thickness-port-selector");
+      lineThicknessPortSelector.onchange = () => lineThicknessField.value = lineThicknesses[parseInt(lineThicknessPortSelector.value)].toString();
+
       let symbolTypeSelector = document.getElementById("grapher-symbol-type-selector") as HTMLSelectElement;
       symbolTypeSelector.value = graphSymbols[0];
       symbolTypeSelector.onchange = () => graphSymbols[parseInt(symbolTypePortSelector.value)] = symbolTypeSelector.value;
@@ -226,17 +262,11 @@ export class GrapherContextMenu extends BlockContextMenu {
         Util.setColorPicker(symbolColorChooser, c);
       };
 
-      let lineColorField = document.getElementById("grapher-line-color-field") as HTMLInputElement;
-      lineColorField.value = lineColors[0];
-      lineColorField.onchange = () => lineColors[parseInt(lineColorPortSelector.value)] = lineColorField.value;
-      let lineColorChooser = document.getElementById("grapher-line-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(lineColorChooser, lineColors[0]);
-      let lineColorPortSelector = this.createPortSelector("grapher-line-color-port-selector");
-      lineColorPortSelector.onchange = () => {
-        let c = lineColors[parseInt(lineColorPortSelector.value)];
-        lineColorField.value = c;
-        Util.setColorPicker(lineColorChooser, c);
-      };
+      let symbolSpacingField = document.getElementById("grapher-symbol-spacing-field") as HTMLInputElement;
+      symbolSpacingField.value = graphSymbolSpacings[0].toString();
+      symbolSpacingField.onchange = () => graphSymbolSpacings[parseInt(symbolSpacingPortSelector.value)] = parseInt(symbolSpacingField.value);
+      let symbolSpacingPortSelector = this.createPortSelector("grapher-symbol-spacing-port-selector");
+      symbolSpacingPortSelector.onchange = () => symbolSpacingField.value = graphSymbolSpacings[parseInt(symbolSpacingPortSelector.value)].toString();
 
       let noFillRadioButton = document.getElementById("grapher-no-fill-radio-button") as HTMLInputElement;
       noFillRadioButton.checked = !fillOptions[0];
@@ -330,6 +360,30 @@ export class GrapherContextMenu extends BlockContextMenu {
           success = false;
           message = heightField.value + " is not a valid height";
         }
+        // check line thicknesses
+        for (let lineThickness of lineThicknesses) {
+          if (lineThickness < 0) {
+            success = false;
+            message = "Port " + g.getDataPorts()[lineThicknesses.indexOf(lineThickness)].getUid() + " line thickness cannot be negative (" + lineThickness + ")";
+            break;
+          }
+        }
+        // check symbol sizes
+        for (let symbolSize of graphSymbolSizes) {
+          if (symbolSize < 0) {
+            success = false;
+            message = "Port " + g.getDataPorts()[graphSymbolSizes.indexOf(symbolSize)].getUid() + " symbol size cannot be negative (" + symbolSize + ")";
+            break;
+          }
+        }
+        // check symbol spacings
+        for (let symbolSpacing of graphSymbolSpacings) {
+          if (symbolSpacing < 1) {
+            success = false;
+            message = "Port " + g.getDataPorts()[graphSymbolSpacings.indexOf(symbolSpacing)].getUid() + " symbol spacing cannot be less than one (" + symbolSpacing + ")";
+            break;
+          }
+        }
         // finish
         if (success) {
           g.setName(nameField.value);
@@ -340,11 +394,13 @@ export class GrapherContextMenu extends BlockContextMenu {
           for (let i = 0; i < fillOptions.length; i++) {
             g.setLineType(i, lineTypes[i]);
             g.setLineColor(i, lineColors[i]);
+            g.setLineThickness(i, lineThicknesses[i]);
             g.setFillColor(i, fillColors[i]);
             g.setFillOption(i, fillOptions[i]);
             g.setGraphSymbol(i, graphSymbols[i]);
             g.setGraphSymbolSize(i, graphSymbolSizes[i]);
             g.setGraphSymbolColor(i, graphSymbolColors[i]);
+            g.setGraphSymbolSpacing(i, graphSymbolSpacings[i]);
           }
           g.refreshView();
           flowchart.storeBlockStates();
@@ -367,9 +423,11 @@ export class GrapherContextMenu extends BlockContextMenu {
       yAxisLableField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       lineColorField.addEventListener("keyup", enterKeyUp);
+      lineThicknessField.addEventListener("keyup", enterKeyUp);
       fillColorField.addEventListener("keyup", enterKeyUp);
       symbolSizeField.addEventListener("keyup", enterKeyUp);
       symbolColorField.addEventListener("keyup", enterKeyUp);
+      symbolSpacingField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
