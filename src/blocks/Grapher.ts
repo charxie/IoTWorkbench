@@ -221,6 +221,10 @@ export class Grapher extends Block {
     this.lineColors = lineColors;
   }
 
+  getLineColors(): string[] {
+    return this.lineColors.slice();
+  }
+
   setLineColor(i: number, lineColor: string): void {
     this.lineColors[i] = lineColor;
   }
@@ -231,6 +235,10 @@ export class Grapher extends Block {
 
   setFillOptions(fillOptions: boolean[]): void {
     this.fillOptions = fillOptions;
+  }
+
+  getFillOptions(): boolean[] {
+    return this.fillOptions.slice();
   }
 
   setFillOption(i: number, fill: boolean): void {
@@ -245,6 +253,10 @@ export class Grapher extends Block {
     this.fillColors = fillColors;
   }
 
+  getFillColors(): string[] {
+    return this.fillColors.slice();
+  }
+
   setFillColor(i: number, fillColor: string): void {
     this.fillColors[i] = fillColor;
   }
@@ -255,6 +267,10 @@ export class Grapher extends Block {
 
   setLineTypes(lineTypes: string[]): void {
     this.lineTypes = lineTypes;
+  }
+
+  getLineTypes(): string[] {
+    return this.lineTypes.slice();
   }
 
   setLineType(i: number, lineType: string): void {
@@ -269,6 +285,10 @@ export class Grapher extends Block {
     this.graphSymbols = graphSymbols;
   }
 
+  getGraphSymbols(): string[] {
+    return this.graphSymbols.slice();
+  }
+
   setGraphSymbol(i: number, graphSymbol: string): void {
     this.graphSymbols[i] = graphSymbol;
   }
@@ -281,6 +301,10 @@ export class Grapher extends Block {
     this.graphSymbolColors = graphSymbolColors;
   }
 
+  getGraphSymbolColors(): string[] {
+    return this.graphSymbolColors.slice();
+  }
+
   setGraphSymbolColor(i: number, graphSymbolColor: string): void {
     this.graphSymbolColors[i] = graphSymbolColor;
   }
@@ -291,6 +315,10 @@ export class Grapher extends Block {
 
   setGraphSymbolSizes(graphSymbolSizes: number[]): void {
     this.graphSymbolSizes = graphSymbolSizes;
+  }
+
+  getGraphSymbolSizes(): number[] {
+    return this.graphSymbolSizes.slice();
   }
 
   setGraphSymbolSize(i: number, graphSymbolSize: number): void {

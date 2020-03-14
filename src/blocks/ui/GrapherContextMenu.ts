@@ -168,6 +168,15 @@ export class GrapherContextMenu extends BlockContextMenu {
       const g = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
 
+      // temporary storage of properties (don't store the changes to the block object or else we won't be able to cancel)
+      let lineTypes: string[] = g.getLineTypes();
+      let lineColors: string[] = g.getLineColors();
+      let fillOptions: boolean[] = g.getFillOptions();
+      let fillColors: string[] = g.getFillColors();
+      let graphSymbols: string[] = g.getGraphSymbols();
+      let graphSymbolSizes: number[] = g.getGraphSymbolSizes();
+      let graphSymbolColors: string[] = g.getGraphSymbolColors();
+
       let nameField = document.getElementById("grapher-name-field") as HTMLInputElement;
       nameField.value = g.getName();
       let xAxisLableField = document.getElementById("grapher-x-axis-label-field") as HTMLInputElement;
@@ -188,56 +197,56 @@ export class GrapherContextMenu extends BlockContextMenu {
       dataPortsField.value = g.getDataPorts().length.toString();
 
       let lineTypeSelector = document.getElementById("grapher-line-type-selector") as HTMLSelectElement;
-      lineTypeSelector.value = g.getLineType(0);
-      lineTypeSelector.onchange = () => g.setLineType(parseInt(lineTypePortSelector.value), lineTypeSelector.value);
+      lineTypeSelector.value = lineTypes[0];
+      lineTypeSelector.onchange = () => lineTypes[parseInt(lineTypePortSelector.value)] = lineTypeSelector.value;
       let lineTypePortSelector = this.createPortSelector("grapher-line-type-port-selector");
-      lineTypePortSelector.onchange = () => lineTypeSelector.value = g.getLineType(parseInt(lineTypePortSelector.value));
+      lineTypePortSelector.onchange = () => lineTypeSelector.value = lineTypes[parseInt(lineTypePortSelector.value)];
 
       let symbolTypeSelector = document.getElementById("grapher-symbol-type-selector") as HTMLSelectElement;
-      symbolTypeSelector.value = g.getGraphSymbol(0);
-      symbolTypeSelector.onchange = () => g.setGraphSymbol(parseInt(symbolTypePortSelector.value), symbolTypeSelector.value);
+      symbolTypeSelector.value = graphSymbols[0];
+      symbolTypeSelector.onchange = () => graphSymbols[parseInt(symbolTypePortSelector.value)] = symbolTypeSelector.value;
       let symbolTypePortSelector = this.createPortSelector("grapher-symbol-type-port-selector");
-      symbolTypePortSelector.onchange = () => symbolTypeSelector.value = g.getGraphSymbol(parseInt(symbolTypePortSelector.value));
+      symbolTypePortSelector.onchange = () => symbolTypeSelector.value = graphSymbols[parseInt(symbolTypePortSelector.value)];
 
       let symbolSizeField = document.getElementById("grapher-symbol-size-field") as HTMLInputElement;
-      symbolSizeField.value = g.getGraphSymbolSize(0).toString();
-      symbolSizeField.onchange = () => g.setGraphSymbolSize(parseInt(symbolSizePortSelector.value), parseInt(symbolSizeField.value));
+      symbolSizeField.value = graphSymbolSizes[0].toString();
+      symbolSizeField.onchange = () => graphSymbolSizes[parseInt(symbolSizePortSelector.value)] = parseInt(symbolSizeField.value);
       let symbolSizePortSelector = this.createPortSelector("grapher-symbol-size-port-selector");
-      symbolSizePortSelector.onchange = () => symbolSizeField.value = g.getGraphSymbolSize(parseInt(symbolSizePortSelector.value)).toString();
+      symbolSizePortSelector.onchange = () => symbolSizeField.value = graphSymbolSizes[parseInt(symbolSizePortSelector.value)].toString();
 
       let symbolColorField = document.getElementById("grapher-symbol-color-field") as HTMLInputElement;
-      symbolColorField.value = g.getGraphSymbolColor(0);
-      symbolColorField.onchange = () => g.setGraphSymbolColor(parseInt(symbolColorPortSelector.value), symbolColorField.value);
+      symbolColorField.value = graphSymbolColors[0];
+      symbolColorField.onchange = () => graphSymbolColors[parseInt(symbolColorPortSelector.value)] = symbolColorField.value;
       let symbolColorChooser = document.getElementById("grapher-symbol-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(symbolColorChooser, g.getGraphSymbolColor(0));
+      Util.setColorPicker(symbolColorChooser, graphSymbolColors[0]);
       let symbolColorPortSelector = this.createPortSelector("grapher-symbol-color-port-selector");
       symbolColorPortSelector.onchange = () => {
-        let c = g.getGraphSymbolColor(parseInt(symbolColorPortSelector.value));
+        let c = graphSymbolColors[parseInt(symbolColorPortSelector.value)];
         symbolColorField.value = c;
         Util.setColorPicker(symbolColorChooser, c);
       };
 
       let lineColorField = document.getElementById("grapher-line-color-field") as HTMLInputElement;
-      lineColorField.value = g.getLineColor(0);
-      lineColorField.onchange = () => g.setLineColor(parseInt(lineColorPortSelector.value), lineColorField.value);
+      lineColorField.value = lineColors[0];
+      lineColorField.onchange = () => lineColors[parseInt(lineColorPortSelector.value)] = lineColorField.value;
       let lineColorChooser = document.getElementById("grapher-line-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(lineColorChooser, g.getLineColor(0));
+      Util.setColorPicker(lineColorChooser, lineColors[0]);
       let lineColorPortSelector = this.createPortSelector("grapher-line-color-port-selector");
       lineColorPortSelector.onchange = () => {
-        let c = g.getLineColor(parseInt(lineColorPortSelector.value));
+        let c = lineColors[parseInt(lineColorPortSelector.value)];
         lineColorField.value = c;
         Util.setColorPicker(lineColorChooser, c);
       };
 
       let noFillRadioButton = document.getElementById("grapher-no-fill-radio-button") as HTMLInputElement;
-      noFillRadioButton.checked = !g.getFillOption(0);
-      noFillRadioButton.onchange = () => g.setFillOption(parseInt(fillOptionPortSelector.value), !noFillRadioButton.checked);
+      noFillRadioButton.checked = !fillOptions[0];
+      noFillRadioButton.onchange = () => fillOptions[parseInt(fillOptionPortSelector.value)] = !noFillRadioButton.checked;
       let fillRadioButton = document.getElementById("grapher-fill-radio-button") as HTMLInputElement;
-      fillRadioButton.checked = g.getFillOption(0);
-      fillRadioButton.onchange = () => g.setFillOption(parseInt(fillOptionPortSelector.value), fillRadioButton.checked);
+      fillRadioButton.checked = fillOptions[0];
+      fillRadioButton.onchange = () => fillOptions[parseInt(fillOptionPortSelector.value)] = fillRadioButton.checked;
       let fillOptionPortSelector = this.createPortSelector("grapher-fill-option-port-selector");
       fillOptionPortSelector.onchange = () => {
-        let fill = g.getFillOption(parseInt(fillOptionPortSelector.value));
+        let fill = fillOptions[parseInt(fillOptionPortSelector.value)];
         if (fill) {
           fillRadioButton.checked = true;
           noFillRadioButton.checked = false;
@@ -249,12 +258,12 @@ export class GrapherContextMenu extends BlockContextMenu {
 
       let fillColorField = document.getElementById("grapher-fill-color-field") as HTMLInputElement;
       fillColorField.value = g.getFillColor(0);
-      fillColorField.onchange = () => g.setFillColor(parseInt(fillColorPortSelector.value), fillColorField.value);
+      fillColorField.onchange = () => fillColors[parseInt(fillColorPortSelector.value)] = fillColorField.value;
       let fillColorChooser = document.getElementById("grapher-fill-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(fillColorChooser, g.getFillColor(0));
+      Util.setColorPicker(fillColorChooser, fillColors[0]);
       let fillColorPortSelector = this.createPortSelector("grapher-fill-color-port-selector");
       fillColorPortSelector.onchange = () => {
-        let c = g.getFillColor(parseInt(fillColorPortSelector.value));
+        let c = fillColors[parseInt(fillColorPortSelector.value)];
         fillColorField.value = c;
         Util.setColorPicker(fillColorChooser, c);
       };
@@ -328,12 +337,15 @@ export class GrapherContextMenu extends BlockContextMenu {
           g.setYAxisLabel(yAxisLableField.value);
           g.setGraphWindowColor(windowColorField.value);
           g.setAutoScale(autoScaleRadioButton.checked);
-          g.setFillOption(parseInt(fillOptionPortSelector.value), fillRadioButton.checked);
-          g.setFillColor(parseInt(fillColorPortSelector.value), fillColorField.value);
-          g.setGraphSymbol(parseInt(symbolTypePortSelector.value), symbolTypeSelector.value);
-          g.setGraphSymbolColor(parseInt(symbolColorPortSelector.value), symbolColorField.value);
-          g.setLineType(parseInt(lineTypePortSelector.value), lineTypeSelector.value);
-          g.setLineColor(parseInt(lineColorPortSelector.value), lineColorField.value);
+          for (let i = 0; i < fillOptions.length; i++) {
+            g.setLineType(i, lineTypes[i]);
+            g.setLineColor(i, lineColors[i]);
+            g.setFillColor(i, fillColors[i]);
+            g.setFillOption(i, fillOptions[i]);
+            g.setGraphSymbol(i, graphSymbols[i]);
+            g.setGraphSymbolSize(i, graphSymbolSizes[i]);
+            g.setGraphSymbolColor(i, graphSymbolColors[i]);
+          }
           g.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();
