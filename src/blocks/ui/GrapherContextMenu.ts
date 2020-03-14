@@ -108,13 +108,18 @@ export class GrapherContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
+                  <td>Symbol Size:</td>
+                  <td><select id="grapher-symbol-size-port-selector" style="width: 65px"></select></td>
+                  <td colspan="2"><input type="text" id="grapher-symbol-size-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Symbol Color:</td>
                   <td><select id="grapher-symbol-color-port-selector" style="width: 65px"></select></td>
                   <td><input type="color" id="grapher-symbol-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="grapher-symbol-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Fill:</td>
+                  <td>Aera Fill:</td>
                   <td><select id="grapher-fill-option-port-selector" style="width: 65px"></select></td>
                   <td colspan="2">
                     <input type="radio" name="fill" id="grapher-no-fill-radio-button" checked> No
@@ -163,49 +168,64 @@ export class GrapherContextMenu extends BlockContextMenu {
       const g = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
 
-      let nameInputElement = document.getElementById("grapher-name-field") as HTMLInputElement;
-      nameInputElement.value = g.getName();
-      let dataPortsInputElement = document.getElementById("grapher-data-ports-field") as HTMLInputElement;
-      dataPortsInputElement.value = g.getDataPorts().length.toString();
-
-      let lineTypeSelectElement = document.getElementById("grapher-line-type-selector") as HTMLSelectElement;
-      lineTypeSelectElement.value = g.getLineType(0);
-      lineTypeSelectElement.onchange = () => g.setLineType(parseInt(lineTypePortSelector.value), lineTypeSelectElement.value);
-      let lineTypePortSelector = this.createPortSelector("grapher-line-type-port-selector");
-      lineTypePortSelector.onchange = () => lineTypeSelectElement.value = g.getLineType(parseInt(lineTypePortSelector.value));
-
-      let symbolTypeSelectElement = document.getElementById("grapher-symbol-type-selector") as HTMLSelectElement;
-      symbolTypeSelectElement.value = g.getGraphSymbol(0);
-      symbolTypeSelectElement.onchange = () => g.setGraphSymbol(parseInt(symbolTypePortSelector.value), symbolTypeSelectElement.value);
-      let symbolTypePortSelector = this.createPortSelector("grapher-symbol-type-port-selector");
-      symbolTypePortSelector.onchange = () => symbolTypeSelectElement.value = g.getGraphSymbol(parseInt(symbolTypePortSelector.value));
+      let nameField = document.getElementById("grapher-name-field") as HTMLInputElement;
+      nameField.value = g.getName();
+      let xAxisLableField = document.getElementById("grapher-x-axis-label-field") as HTMLInputElement;
+      xAxisLableField.value = g.getXAxisLabel();
+      let yAxisLableField = document.getElementById("grapher-y-axis-label-field") as HTMLInputElement;
+      yAxisLableField.value = g.getYAxisLabel();
 
       let autoScaleRadioButton = document.getElementById("grapher-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("grapher-fixed-scale-radio-button") as HTMLInputElement;
       fixedScaleRadioButton.checked = !g.getAutoScale();
-      let minimumValueInputElement = document.getElementById("grapher-minimum-value-field") as HTMLInputElement;
-      minimumValueInputElement.value = g.getMinimumValue().toString();
-      let maximumValueInputElement = document.getElementById("grapher-maximum-value-field") as HTMLInputElement;
-      maximumValueInputElement.value = g.getMaximumValue().toString();
-      let xAxisLableInputElement = document.getElementById("grapher-x-axis-label-field") as HTMLInputElement;
-      xAxisLableInputElement.value = g.getXAxisLabel();
-      let yAxisLableInputElement = document.getElementById("grapher-y-axis-label-field") as HTMLInputElement;
-      yAxisLableInputElement.value = g.getYAxisLabel();
-      let windowColorInputElement = document.getElementById("grapher-window-color-field") as HTMLInputElement;
-      windowColorInputElement.value = g.getGraphWindowColor();
-      let windowColorChooser = document.getElementById("grapher-window-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(windowColorChooser, g.getGraphWindowColor());
+      let minimumValueField = document.getElementById("grapher-minimum-value-field") as HTMLInputElement;
+      minimumValueField.value = g.getMinimumValue().toString();
+      let maximumValueField = document.getElementById("grapher-maximum-value-field") as HTMLInputElement;
+      maximumValueField.value = g.getMaximumValue().toString();
 
-      let lineColorInputElement = document.getElementById("grapher-line-color-field") as HTMLInputElement;
-      lineColorInputElement.value = g.getLineColor(0);
-      lineColorInputElement.onchange = () => g.setLineColor(parseInt(lineColorPortSelector.value), lineColorInputElement.value);
+      let dataPortsField = document.getElementById("grapher-data-ports-field") as HTMLInputElement;
+      dataPortsField.value = g.getDataPorts().length.toString();
+
+      let lineTypeSelector = document.getElementById("grapher-line-type-selector") as HTMLSelectElement;
+      lineTypeSelector.value = g.getLineType(0);
+      lineTypeSelector.onchange = () => g.setLineType(parseInt(lineTypePortSelector.value), lineTypeSelector.value);
+      let lineTypePortSelector = this.createPortSelector("grapher-line-type-port-selector");
+      lineTypePortSelector.onchange = () => lineTypeSelector.value = g.getLineType(parseInt(lineTypePortSelector.value));
+
+      let symbolTypeSelector = document.getElementById("grapher-symbol-type-selector") as HTMLSelectElement;
+      symbolTypeSelector.value = g.getGraphSymbol(0);
+      symbolTypeSelector.onchange = () => g.setGraphSymbol(parseInt(symbolTypePortSelector.value), symbolTypeSelector.value);
+      let symbolTypePortSelector = this.createPortSelector("grapher-symbol-type-port-selector");
+      symbolTypePortSelector.onchange = () => symbolTypeSelector.value = g.getGraphSymbol(parseInt(symbolTypePortSelector.value));
+
+      let symbolSizeField = document.getElementById("grapher-symbol-size-field") as HTMLInputElement;
+      symbolSizeField.value = g.getGraphSymbolSize(0).toString();
+      symbolSizeField.onchange = () => g.setGraphSymbolSize(parseInt(symbolSizePortSelector.value), parseInt(symbolSizeField.value));
+      let symbolSizePortSelector = this.createPortSelector("grapher-symbol-size-port-selector");
+      symbolSizePortSelector.onchange = () => symbolSizeField.value = g.getGraphSymbolSize(parseInt(symbolSizePortSelector.value)).toString();
+
+      let symbolColorField = document.getElementById("grapher-symbol-color-field") as HTMLInputElement;
+      symbolColorField.value = g.getGraphSymbolColor(0);
+      symbolColorField.onchange = () => g.setGraphSymbolColor(parseInt(symbolColorPortSelector.value), symbolColorField.value);
+      let symbolColorChooser = document.getElementById("grapher-symbol-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(symbolColorChooser, g.getGraphSymbolColor(0));
+      let symbolColorPortSelector = this.createPortSelector("grapher-symbol-color-port-selector");
+      symbolColorPortSelector.onchange = () => {
+        let c = g.getGraphSymbolColor(parseInt(symbolColorPortSelector.value));
+        symbolColorField.value = c;
+        Util.setColorPicker(symbolColorChooser, c);
+      };
+
+      let lineColorField = document.getElementById("grapher-line-color-field") as HTMLInputElement;
+      lineColorField.value = g.getLineColor(0);
+      lineColorField.onchange = () => g.setLineColor(parseInt(lineColorPortSelector.value), lineColorField.value);
       let lineColorChooser = document.getElementById("grapher-line-color-chooser") as HTMLInputElement;
       Util.setColorPicker(lineColorChooser, g.getLineColor(0));
       let lineColorPortSelector = this.createPortSelector("grapher-line-color-port-selector");
       lineColorPortSelector.onchange = () => {
         let c = g.getLineColor(parseInt(lineColorPortSelector.value));
-        lineColorInputElement.value = c;
+        lineColorField.value = c;
         Util.setColorPicker(lineColorChooser, c);
       };
 
@@ -227,45 +247,37 @@ export class GrapherContextMenu extends BlockContextMenu {
         }
       };
 
-      let fillColorInputElement = document.getElementById("grapher-fill-color-field") as HTMLInputElement;
-      fillColorInputElement.value = g.getFillColor(0);
-      fillColorInputElement.onchange = () => g.setFillColor(parseInt(fillColorPortSelector.value), fillColorInputElement.value);
+      let fillColorField = document.getElementById("grapher-fill-color-field") as HTMLInputElement;
+      fillColorField.value = g.getFillColor(0);
+      fillColorField.onchange = () => g.setFillColor(parseInt(fillColorPortSelector.value), fillColorField.value);
       let fillColorChooser = document.getElementById("grapher-fill-color-chooser") as HTMLInputElement;
       Util.setColorPicker(fillColorChooser, g.getFillColor(0));
       let fillColorPortSelector = this.createPortSelector("grapher-fill-color-port-selector");
       fillColorPortSelector.onchange = () => {
         let c = g.getFillColor(parseInt(fillColorPortSelector.value));
-        fillColorInputElement.value = c;
+        fillColorField.value = c;
         Util.setColorPicker(fillColorChooser, c);
       };
 
-      let symbolColorInputElement = document.getElementById("grapher-symbol-color-field") as HTMLInputElement;
-      symbolColorInputElement.value = g.getGraphSymbolColor(0);
-      symbolColorInputElement.onchange = () => g.setGraphSymbolColor(parseInt(symbolColorPortSelector.value), symbolColorInputElement.value);
-      let symbolColorChooser = document.getElementById("grapher-symbol-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(symbolColorChooser, g.getGraphSymbolColor(0));
-      let symbolColorPortSelector = this.createPortSelector("grapher-symbol-color-port-selector");
-      symbolColorPortSelector.onchange = () => {
-        let c = g.getGraphSymbolColor(parseInt(symbolColorPortSelector.value));
-        symbolColorInputElement.value = c;
-        Util.setColorPicker(symbolColorChooser, c);
-      };
+      let windowColorField = document.getElementById("grapher-window-color-field") as HTMLInputElement;
+      windowColorField.value = g.getGraphWindowColor();
+      let windowColorChooser = document.getElementById("grapher-window-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(windowColorChooser, g.getGraphWindowColor());
+      let widthField = document.getElementById("grapher-width-field") as HTMLInputElement;
+      widthField.value = g.getWidth().toString();
+      let heightField = document.getElementById("grapher-height-field") as HTMLInputElement;
+      heightField.value = g.getHeight().toString();
 
-      let widthInputElement = document.getElementById("grapher-width-field") as HTMLInputElement;
-      widthInputElement.value = g.getWidth().toString();
-      let heightInputElement = document.getElementById("grapher-height-field") as HTMLInputElement;
-      heightInputElement.value = g.getHeight().toString();
-
-      Util.hookupColorInputs(windowColorInputElement, windowColorChooser);
-      Util.hookupColorInputs(lineColorInputElement, lineColorChooser);
-      Util.hookupColorInputs(fillColorInputElement, fillColorChooser);
-      Util.hookupColorInputs(symbolColorInputElement, symbolColorChooser);
+      Util.hookupColorInputs(windowColorField, windowColorChooser);
+      Util.hookupColorInputs(lineColorField, lineColorChooser);
+      Util.hookupColorInputs(fillColorField, fillColorChooser);
+      Util.hookupColorInputs(symbolColorField, symbolColorChooser);
 
       const okFunction = () => {
         let success = true;
         let message;
         // set data port number
-        let dataPortNumber = parseFloat(dataPortsInputElement.value);
+        let dataPortNumber = parseFloat(dataPortsField.value);
         if (isNumber(dataPortNumber)) {
           if (dataPortNumber > 10 || dataPortNumber < 1) {
             success = false;
@@ -275,53 +287,53 @@ export class GrapherContextMenu extends BlockContextMenu {
           }
         } else {
           success = false;
-          message = dataPortsInputElement.value + " is not a valid value for data port number";
+          message = dataPortsField.value + " is not a valid value for data port number";
         }
         // set minimum value
-        let minimumValue = parseFloat(minimumValueInputElement.value);
+        let minimumValue = parseFloat(minimumValueField.value);
         if (isNumber(minimumValue)) {
           g.setMinimumValue(minimumValue);
         } else {
           success = false;
-          message = minimumValueInputElement.value + " is not a valid value for minimum";
+          message = minimumValueField.value + " is not a valid value for minimum";
         }
         // set maximum value
-        let maximumValue = parseFloat(maximumValueInputElement.value);
+        let maximumValue = parseFloat(maximumValueField.value);
         if (isNumber(maximumValue)) {
           g.setMaximumValue(maximumValue);
         } else {
           success = false;
-          message = maximumValueInputElement.value + " is not a valid value for maximum";
+          message = maximumValueField.value + " is not a valid value for maximum";
         }
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           g.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           g.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
-          g.setName(nameInputElement.value);
-          g.setXAxisLabel(xAxisLableInputElement.value);
-          g.setYAxisLabel(yAxisLableInputElement.value);
-          g.setGraphWindowColor(windowColorInputElement.value);
+          g.setName(nameField.value);
+          g.setXAxisLabel(xAxisLableField.value);
+          g.setYAxisLabel(yAxisLableField.value);
+          g.setGraphWindowColor(windowColorField.value);
           g.setAutoScale(autoScaleRadioButton.checked);
           g.setFillOption(parseInt(fillOptionPortSelector.value), fillRadioButton.checked);
-          g.setFillColor(parseInt(fillColorPortSelector.value), fillColorInputElement.value);
-          g.setGraphSymbol(parseInt(symbolTypePortSelector.value), symbolTypeSelectElement.value);
-          g.setGraphSymbolColor(parseInt(symbolColorPortSelector.value), symbolColorInputElement.value);
-          g.setLineType(parseInt(lineTypePortSelector.value), lineTypeSelectElement.value);
-          g.setLineColor(parseInt(lineColorPortSelector.value), lineColorInputElement.value);
+          g.setFillColor(parseInt(fillColorPortSelector.value), fillColorField.value);
+          g.setGraphSymbol(parseInt(symbolTypePortSelector.value), symbolTypeSelector.value);
+          g.setGraphSymbolColor(parseInt(symbolColorPortSelector.value), symbolColorField.value);
+          g.setLineType(parseInt(lineTypePortSelector.value), lineTypeSelector.value);
+          g.setLineColor(parseInt(lineColorPortSelector.value), lineColorField.value);
           g.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();
@@ -335,18 +347,19 @@ export class GrapherContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      dataPortsInputElement.addEventListener("keyup", enterKeyUp);
-      minimumValueInputElement.addEventListener("keyup", enterKeyUp);
-      maximumValueInputElement.addEventListener("keyup", enterKeyUp);
-      xAxisLableInputElement.addEventListener("keyup", enterKeyUp);
-      yAxisLableInputElement.addEventListener("keyup", enterKeyUp);
-      windowColorInputElement.addEventListener("keyup", enterKeyUp);
-      lineColorInputElement.addEventListener("keyup", enterKeyUp);
-      fillColorInputElement.addEventListener("keyup", enterKeyUp);
-      symbolColorInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      dataPortsField.addEventListener("keyup", enterKeyUp);
+      minimumValueField.addEventListener("keyup", enterKeyUp);
+      maximumValueField.addEventListener("keyup", enterKeyUp);
+      xAxisLableField.addEventListener("keyup", enterKeyUp);
+      yAxisLableField.addEventListener("keyup", enterKeyUp);
+      windowColorField.addEventListener("keyup", enterKeyUp);
+      lineColorField.addEventListener("keyup", enterKeyUp);
+      fillColorField.addEventListener("keyup", enterKeyUp);
+      symbolSizeField.addEventListener("keyup", enterKeyUp);
+      symbolColorField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,

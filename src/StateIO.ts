@@ -171,6 +171,7 @@ export class StateIO {
           if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
           if (state.graphSymbols != undefined) block.setGraphSymbols(state.graphSymbols);
+          if (state.graphSymbolSizes != undefined) block.setGraphSymbolSizes(state.graphSymbolSizes);
           if (state.graphSymbolColors != undefined) block.setGraphSymbolColors(state.graphSymbolColors);
           if (state.fillOptions != undefined) block.setFillOptions(state.fillOptions);
           if (state.fillColors != undefined) block.setFillColors(state.fillColors);

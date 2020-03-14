@@ -36,6 +36,7 @@ export class Grapher extends Block {
   private fillOptions: boolean[] = [];
   private fillColors: string[] = [];
   private graphSymbols: string[] = [];
+  private graphSymbolSizes: number[] = [];
   private graphSymbolColors: string[] = [];
 
   static State = class {
@@ -57,6 +58,7 @@ export class Grapher extends Block {
     readonly fillOptions: boolean[];
     readonly fillColors: string[];
     readonly graphSymbols: string[];
+    readonly graphSymbolSizes: number[];
     readonly graphSymbolColors: string[];
 
     constructor(grapher: Grapher) {
@@ -78,6 +80,7 @@ export class Grapher extends Block {
       this.fillOptions = grapher.fillOptions.slice();
       this.fillColors = grapher.fillColors.slice();
       this.graphSymbols = grapher.graphSymbols.slice();
+      this.graphSymbolSizes = grapher.graphSymbolSizes.slice();
       this.graphSymbolColors = grapher.graphSymbolColors.slice();
     }
   };
@@ -102,6 +105,7 @@ export class Grapher extends Block {
     this.fillOptions.push(false);
     this.fillColors.push("lightgray");
     this.graphSymbols.push("Circle");
+    this.graphSymbolSizes.push(3);
     this.graphSymbolColors.push("white");
   }
 
@@ -114,6 +118,7 @@ export class Grapher extends Block {
     copy.yAxisLabel = this.yAxisLabel;
     copy.graphWindowColor = this.graphWindowColor;
     copy.graphSymbols = this.graphSymbols.slice();
+    copy.graphSymbolSizes = this.graphSymbolSizes.slice();
     copy.graphSymbolColors = this.graphSymbolColors.slice();
     copy.lineTypes = this.lineTypes.slice();
     copy.lineColors = this.lineColors.slice();
@@ -139,6 +144,7 @@ export class Grapher extends Block {
           this.fillOptions.push(false);
           this.fillColors.push("lightgray");
           this.graphSymbols.push("Circle");
+          this.graphSymbolSizes.push(3);
           this.graphSymbolColors.push("white");
         }
       }
@@ -152,6 +158,7 @@ export class Grapher extends Block {
         this.fillOptions.pop();
         this.fillColors.pop();
         this.graphSymbols.pop();
+        this.graphSymbolSizes.pop();
         this.graphSymbolColors.pop();
       }
     }
@@ -280,6 +287,18 @@ export class Grapher extends Block {
 
   getGraphSymbolColor(i: number): string {
     return this.graphSymbolColors[i];
+  }
+
+  setGraphSymbolSizes(graphSymbolSizes: number[]): void {
+    this.graphSymbolSizes = graphSymbolSizes;
+  }
+
+  setGraphSymbolSize(i: number, graphSymbolSize: number): void {
+    this.graphSymbolSizes[i] = graphSymbolSize;
+  }
+
+  getGraphSymbolSize(i: number): number {
+    return this.graphSymbolSizes[i];
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -417,7 +436,7 @@ export class Grapher extends Block {
             tmpX = this.graphWindow.x + dx * k;
             tmpY = yOffset + (arr.data[k] - min) * dy;
             ctx.beginPath();
-            ctx.arc(tmpX, horizontalAxisY - tmpY, 3, 0, 2 * Math.PI);
+            ctx.arc(tmpX, horizontalAxisY - tmpY, this.graphSymbolSizes[i], 0, 2 * Math.PI);
             ctx.closePath();
             ctx.fillStyle = this.graphSymbolColors[i];
             ctx.fill();
@@ -426,11 +445,13 @@ export class Grapher extends Block {
           }
           break;
         case "Square":
+          let r = this.graphSymbolSizes[i];
+          let d = 2 * r;
           for (let k = 0; k < arr.length(); k++) {
             tmpX = this.graphWindow.x + dx * k;
             tmpY = yOffset + (arr.data[k] - min) * dy;
             ctx.beginPath();
-            ctx.rect(tmpX - 2, horizontalAxisY - tmpY - 2, 4, 4);
+            ctx.rect(tmpX - r, horizontalAxisY - tmpY - r, d, d);
             ctx.fillStyle = this.graphSymbolColors[i];
             ctx.fill();
             ctx.strokeStyle = this.lineColors[i];
