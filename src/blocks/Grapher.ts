@@ -66,7 +66,7 @@ export class Grapher extends Block {
       this.y = grapher.y;
       this.width = grapher.width;
       this.height = grapher.height;
-      this.dataPortNumber = grapher.getDataPortNumber();
+      this.dataPortNumber = grapher.getDataPorts().length;
       this.xAxisLabel = grapher.xAxisLabel;
       this.yAxisLabel = grapher.yAxisLabel;
       this.graphWindowColor = grapher.graphWindowColor;
@@ -119,7 +119,7 @@ export class Grapher extends Block {
     copy.lineColors = this.lineColors.slice();
     copy.fillOptions = this.fillOptions.slice();
     copy.fillColors = this.fillColors.slice();
-    copy.setDataPortNumber(this.getDataPortNumber());
+    copy.setDataPortNumber(this.getDataPorts().length);
     return copy;
   }
 
@@ -158,8 +158,8 @@ export class Grapher extends Block {
     this.refreshView();
   }
 
-  getDataPortNumber(): number {
-    return this.portI.length;
+  getDataPorts(): Port[] {
+    return this.portI;
   }
 
   setMinimumValue(minimumValue: number): void {
@@ -214,14 +214,12 @@ export class Grapher extends Block {
     this.lineColors = lineColors;
   }
 
-  setLineColor(lineColor: string): void {
-    for (let i = 0; i < this.lineColors.length; i++) {
-      this.lineColors[i] = lineColor;
-    }
+  setLineColor(i: number, lineColor: string): void {
+    this.lineColors[i] = lineColor;
   }
 
-  getLineColor(): string {
-    return this.lineColors[0];
+  getLineColor(index: number): string {
+    return this.lineColors[index];
   }
 
   setFillOptions(fillOptions: boolean[]): void {
@@ -256,28 +254,24 @@ export class Grapher extends Block {
     this.lineTypes = lineTypes;
   }
 
-  setLineType(lineType: string): void {
-    for (let i = 0; i < this.lineTypes.length; i++) {
-      this.lineTypes[i] = lineType;
-    }
+  setLineType(i: number, lineType: string): void {
+    this.lineTypes[i] = lineType;
   }
 
-  getLineType(): string {
-    return this.lineTypes[0];
+  getLineType(i: number): string {
+    return this.lineTypes[i];
   }
 
   setGraphSymbols(graphSymbols: string[]): void {
     this.graphSymbols = graphSymbols;
   }
 
-  setGraphSymbol(graphSymbol: string): void {
-    for (let i = 0; i < this.graphSymbols.length; i++) {
-      this.graphSymbols[i] = graphSymbol;
-    }
+  setGraphSymbol(i: number, graphSymbol: string): void {
+    this.graphSymbols[i] = graphSymbol;
   }
 
-  getGraphSymbol(): string {
-    return this.graphSymbols[0];
+  getGraphSymbol(i: number): string {
+    return this.graphSymbols[i];
   }
 
   setGraphSymbolColors(graphSymbolColors: string[]): void {

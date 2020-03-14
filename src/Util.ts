@@ -61,6 +61,7 @@ export class Util {
   static hookupColorInputs(textInput: HTMLInputElement, colorPicker: HTMLInputElement) {
     colorPicker.onchange = e => {
       textInput.value = colorPicker.value;
+      textInput.dispatchEvent(new Event("change"));
     };
     textInput.onkeyup = e => {
       if (Util.isHexColor(textInput.value)) {
