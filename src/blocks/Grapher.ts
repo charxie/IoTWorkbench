@@ -226,28 +226,24 @@ export class Grapher extends Block {
     this.fillOptions = fillOptions;
   }
 
-  setFillOption(fill: boolean): void {
-    for (let i = 0; i < this.fillOptions.length; i++) {
-      this.fillOptions[i] = fill;
-    }
+  setFillOption(i: number, fill: boolean): void {
+    this.fillOptions[i] = fill;
   }
 
-  getFillOption(): boolean {
-    return this.fillOptions[0];
+  getFillOption(i: number): boolean {
+    return this.fillOptions[i];
   }
 
   setFillColors(fillColors: string[]): void {
     this.fillColors = fillColors;
   }
 
-  setFillColor(fillColor: string): void {
-    for (let i = 0; i < this.fillColors.length; i++) {
-      this.fillColors[i] = fillColor;
-    }
+  setFillColor(i: number, fillColor: string): void {
+    this.fillColors[i] = fillColor;
   }
 
-  getFillColor(): string {
-    return this.fillColors[0];
+  getFillColor(i: number): string {
+    return this.fillColors[i];
   }
 
   setLineTypes(lineTypes: string[]): void {
@@ -278,14 +274,12 @@ export class Grapher extends Block {
     this.graphSymbolColors = graphSymbolColors;
   }
 
-  setGraphSymbolColor(graphSymbolColor: string): void {
-    for (let i = 0; i < this.graphSymbolColors.length; i++) {
-      this.graphSymbolColors[i] = graphSymbolColor;
-    }
+  setGraphSymbolColor(i: number, graphSymbolColor: string): void {
+    this.graphSymbolColors[i] = graphSymbolColor;
   }
 
-  getGraphSymbolColor(): string {
-    return this.graphSymbolColors[0];
+  getGraphSymbolColor(i: number): string {
+    return this.graphSymbolColors[i];
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -398,9 +392,9 @@ export class Grapher extends Block {
           tmpX = this.graphWindow.x;
           tmpY = yOffset + (arr.data[0] - min) * dy;
           ctx.moveTo(tmpX, horizontalAxisY - tmpY);
-          for (let i = 1; i < arr.length(); i++) {
-            tmpX = this.graphWindow.x + dx * i;
-            tmpY = yOffset + (arr.data[i] - min) * dy;
+          for (let k = 1; k < arr.length(); k++) {
+            tmpX = this.graphWindow.x + dx * k;
+            tmpY = yOffset + (arr.data[k] - min) * dy;
             ctx.lineTo(tmpX, horizontalAxisY - tmpY);
           }
           if (this.fillOptions[i]) {
@@ -419,9 +413,9 @@ export class Grapher extends Block {
       let arr = this.dataArrays[i];
       switch (this.graphSymbols[i]) { // put switch outside, though the code is longer, the performance is better
         case "Circle":
-          for (let i = 0; i < arr.length(); i++) {
-            tmpX = this.graphWindow.x + dx * i;
-            tmpY = yOffset + (arr.data[i] - min) * dy;
+          for (let k = 0; k < arr.length(); k++) {
+            tmpX = this.graphWindow.x + dx * k;
+            tmpY = yOffset + (arr.data[k] - min) * dy;
             ctx.beginPath();
             ctx.arc(tmpX, horizontalAxisY - tmpY, 3, 0, 2 * Math.PI);
             ctx.closePath();
@@ -432,9 +426,9 @@ export class Grapher extends Block {
           }
           break;
         case "Square":
-          for (let i = 0; i < arr.length(); i++) {
-            tmpX = this.graphWindow.x + dx * i;
-            tmpY = yOffset + (arr.data[i] - min) * dy;
+          for (let k = 0; k < arr.length(); k++) {
+            tmpX = this.graphWindow.x + dx * k;
+            tmpY = yOffset + (arr.data[k] - min) * dy;
             ctx.beginPath();
             ctx.rect(tmpX - 2, horizontalAxisY - tmpY - 2, 4, 4);
             ctx.fillStyle = this.graphSymbolColors[i];
