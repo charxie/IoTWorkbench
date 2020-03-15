@@ -438,9 +438,7 @@ export class GrapherContextMenu extends BlockContextMenu {
         width: 450,
         buttons: {
           'OK': okFunction,
-          'Cancel': () => {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

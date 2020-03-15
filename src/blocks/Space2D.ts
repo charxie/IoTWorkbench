@@ -28,7 +28,6 @@ export class Space2D extends Block {
   private spaceWindowColor: string = "white";
   private backgroundImage;
   private showGridLines: boolean = false;
-  private endSymbolRadius: number = 0;
   private endSymbolsConnection: string = "None";
   private spaceWindow: Rectangle;
   private barHeight: number;
@@ -38,15 +37,18 @@ export class Space2D extends Block {
     top: <number>4,
     bottom: <number>4
   };
+  private images = [];
+  private numberOfZigzags: number[] = [];
   private tempX: number; // temporarily store x and y before pushing them into the point arrays
   private tempY: number;
   private lineTypes: string[] = [];
   private lineColors: string[] = [];
+  private lineThicknesses: number[] = [];
   private dataSymbols: string[] = [];
   private dataSymbolRadii: number[] = [];
   private dataSymbolColors: string[] = [];
-  private images = [];
-  private numberOfZigzags: number[] = [];
+  private dataSymbolSpacings: number[] = [];
+  private endSymbolRadii: number[] = [];
 
   static State = class {
     readonly name: string;
@@ -60,7 +62,6 @@ export class Space2D extends Block {
     readonly spaceWindowColor: string;
     readonly backgroundImageSrc: string;
     readonly showGridLines: boolean;
-    readonly endSymbolRadius: number;
     readonly endSymbolsConnection: string;
     readonly autoscale: boolean;
     readonly minimumXValue: number;
@@ -71,9 +72,12 @@ export class Space2D extends Block {
     readonly numberOfPoints: number;
     readonly lineTypes: string[] = [];
     readonly lineColors: string[] = [];
+    readonly lineThicknesses: number[] = [];
     readonly dataSymbols: string[] = [];
     readonly dataSymbolRadii: number[] = [];
     readonly dataSymbolColors: string[] = [];
+    readonly dataSymbolSpacings: number[] = [];
+    readonly endSymbolRadii: number[] = [];
 
     constructor(g: Space2D) {
       this.name = g.name;
@@ -87,7 +91,6 @@ export class Space2D extends Block {
       this.spaceWindowColor = g.spaceWindowColor;
       this.backgroundImageSrc = g.backgroundImage !== undefined ? g.backgroundImage.src : undefined; // base64 image data
       this.showGridLines = g.showGridLines;
-      this.endSymbolRadius = g.endSymbolRadius;
       this.endSymbolsConnection = g.endSymbolsConnection;
       this.autoscale = g.autoscale;
       this.minimumXValue = g.minimumXValue;
@@ -96,11 +99,14 @@ export class Space2D extends Block {
       this.maximumYValue = g.maximumYValue;
       this.pointInput = g.pointInput;
       this.numberOfPoints = g.getNumberOfPoints();
-      this.lineTypes = g.lineTypes.slice();
-      this.lineColors = g.lineColors.slice();
-      this.dataSymbols = g.dataSymbols.slice();
-      this.dataSymbolRadii = g.dataSymbolRadii.slice();
-      this.dataSymbolColors = g.dataSymbolColors.slice();
+      this.lineTypes = [...g.lineTypes];
+      this.lineColors = [...g.lineColors];
+      this.lineThicknesses = [...g.lineThicknesses];
+      this.dataSymbols = [...g.dataSymbols];
+      this.dataSymbolRadii = [...g.dataSymbolRadii];
+      this.dataSymbolColors = [...g.dataSymbolColors];
+      this.dataSymbolSpacings = [...g.dataSymbolSpacings];
+      this.endSymbolRadii = [...g.endSymbolRadii];
     }
   };
 
@@ -118,9 +124,12 @@ export class Space2D extends Block {
     this.points.push(new Point2DArray());
     this.lineTypes.push("Solid");
     this.lineColors.push("black");
+    this.lineThicknesses.push(1);
     this.dataSymbols.push("Circle");
     this.dataSymbolRadii.push(3);
     this.dataSymbolColors.push("white");
+    this.dataSymbolSpacings.push(1);
+    this.endSymbolRadii.push(0);
   }
 
   getCopy(): Block {
@@ -134,19 +143,25 @@ export class Space2D extends Block {
     copy.yAxisLabel = this.yAxisLabel;
     copy.spaceWindowColor = this.spaceWindowColor;
     copy.showGridLines = this.showGridLines;
-    copy.lineColors = this.lineColors.slice();
-    copy.lineTypes = this.lineTypes.slice();
-    copy.dataSymbols = this.dataSymbols.slice();
-    copy.dataSymbolRadii = this.dataSymbolRadii.slice();
-    copy.dataSymbolColors = this.dataSymbolColors.slice();
-    copy.endSymbolRadius = this.endSymbolRadius;
     copy.endSymbolsConnection = this.endSymbolsConnection;
     copy.setPointInput(this.pointInput);
     copy.setNumberOfPoints(this.getNumberOfPoints());
+    copy.lineColors = [...this.lineColors];
+    copy.lineTypes = [...this.lineTypes];
+    copy.lineThicknesses = [...this.lineThicknesses];
+    copy.dataSymbols = [...this.dataSymbols];
+    copy.dataSymbolRadii = [...this.dataSymbolRadii];
+    copy.dataSymbolColors = [...this.dataSymbolColors];
+    copy.dataSymbolSpacings = [...this.dataSymbolSpacings];
+    copy.endSymbolRadii = [...this.endSymbolRadii];
     return copy;
   }
 
   destroy(): void {
+  }
+
+  getPointPorts(): Port[] {
+    return this.portPoints;
   }
 
   reset(): void {
@@ -212,9 +227,12 @@ export class Space2D extends Block {
             if (notSet) {
               this.lineTypes.push("Solid");
               this.lineColors.push("black");
+              this.lineThicknesses.push(1);
               this.dataSymbols.push("Circle");
               this.dataSymbolRadii.push(3);
               this.dataSymbolColors.push("white");
+              this.dataSymbolSpacings.push(1);
+              this.endSymbolRadii.push(0);
             }
           }
         }
@@ -227,9 +245,12 @@ export class Space2D extends Block {
           flowchart.removeConnectorsToPort(this.ports.pop());
           this.lineTypes.pop();
           this.lineColors.pop();
+          this.lineThicknesses.pop();
           this.dataSymbols.pop();
           this.dataSymbolRadii.pop();
           this.dataSymbolColors.pop();
+          this.dataSymbolSpacings.pop();
+          this.endSymbolRadii.pop();
         }
       }
       this.refreshView();
@@ -326,78 +347,128 @@ export class Space2D extends Block {
     this.lineColors = lineColors;
   }
 
-  setLineColor(lineColor: string): void {
-    for (let i = 0; i < this.lineColors.length; i++) {
-      this.lineColors[i] = lineColor;
-    }
+  getLineColors(): string[] {
+    return [...this.lineColors];
   }
 
-  getLineColor(): string {
-    return this.lineColors[0];
+  setLineColor(i: number, lineColor: string): void {
+    this.lineColors[i] = lineColor;
+  }
+
+  getLineColor(i: number): string {
+    return this.lineColors[i];
   }
 
   setLineTypes(lineTypes: string[]): void {
     this.lineTypes = lineTypes;
   }
 
-  setLineType(lineType: string): void {
-    for (let i = 0; i < this.lineTypes.length; i++) {
-      this.lineTypes[i] = lineType;
-    }
+  getLineTypes(): string[] {
+    return [...this.lineTypes];
   }
 
-  getLineType(): string {
-    return this.lineTypes[0];
+  setLineType(i: number, lineType: string): void {
+    this.lineTypes[i] = lineType;
+  }
+
+  getLineType(i: number): string {
+    return this.lineTypes[i];
+  }
+
+  setLineThicknesses(lineThicknesses: number[]): void {
+    this.lineThicknesses = lineThicknesses;
+  }
+
+  getLineThicknesses(): number[] {
+    return [...this.lineThicknesses];
+  }
+
+  setLineThickness(i: number, lineThickness: number): void {
+    this.lineThicknesses[i] = lineThickness;
+  }
+
+  getLineThickness(i: number): number {
+    return this.lineThicknesses[i];
   }
 
   setDataSymbols(dataSymbols: string[]): void {
     this.dataSymbols = dataSymbols;
   }
 
-  setDataSymbol(dataSymbol: string): void {
-    for (let i = 0; i < this.dataSymbols.length; i++) {
-      this.dataSymbols[i] = dataSymbol;
-    }
+  getDataSymbols(): string[] {
+    return [...this.dataSymbols];
   }
 
-  getDataSymbol(): string {
-    return this.dataSymbols[0];
+  setDataSymbol(i: number, dataSymbol: string): void {
+    this.dataSymbols[i] = dataSymbol;
+  }
+
+  getDataSymbol(i: number): string {
+    return this.dataSymbols[i];
   }
 
   setDataSymbolColors(dataSymbolColors: string[]): void {
     this.dataSymbolColors = dataSymbolColors;
   }
 
-  setDataSymbolColor(dataSymbolColor: string): void {
-    for (let i = 0; i < this.dataSymbolColors.length; i++) {
-      this.dataSymbolColors[i] = dataSymbolColor;
-    }
+  getDataSymbolColors(): string[] {
+    return [...this.dataSymbolColors];
   }
 
-  getDataSymbolColor(): string {
-    return this.dataSymbolColors[0];
+  setDataSymbolColor(i: number, dataSymbolColor: string): void {
+    this.dataSymbolColors[i] = dataSymbolColor;
+  }
+
+  getDataSymbolColor(i: number): string {
+    return this.dataSymbolColors[i];
+  }
+
+  setDataSymbolSpacings(dataSymbolSpacings: number[]): void {
+    this.dataSymbolSpacings = dataSymbolSpacings;
+  }
+
+  getDataSymbolSpacings(): number[] {
+    return [...this.dataSymbolSpacings];
+  }
+
+  setDataSymbolSpacing(i: number, dataSymbolSpacing: number): void {
+    this.dataSymbolSpacings[i] = dataSymbolSpacing;
+  }
+
+  getDataSymbolSpacing(i: number): number {
+    return this.dataSymbolSpacings[i];
   }
 
   setDataSymbolRadii(dataSymbolRadii: number[]): void {
     this.dataSymbolRadii = dataSymbolRadii;
   }
 
-  setDataSymbolRadius(dataSymbolRadius: number): void {
-    for (let i = 0; i < this.dataSymbolRadii.length; i++) {
-      this.dataSymbolRadii[i] = dataSymbolRadius;
-    }
+  getDataSymbolRadii(): number[] {
+    return [...this.dataSymbolRadii];
   }
 
-  getDataSymbolRadius(): number {
-    return this.dataSymbolRadii[0];
+  setDataSymbolRadius(i: number, dataSymbolRadius: number): void {
+    this.dataSymbolRadii[i] = dataSymbolRadius;
   }
 
-  setEndSymbolRadius(endSymbolRadius: number): void {
-    this.endSymbolRadius = endSymbolRadius;
+  getDataSymbolRadius(i: number): number {
+    return this.dataSymbolRadii[i];
   }
 
-  getEndSymbolRadius(): number {
-    return this.endSymbolRadius;
+  setEndSymbolRadii(endSymbolRadii: number[]): void {
+    this.endSymbolRadii = endSymbolRadii;
+  }
+
+  getEndSymbolRadii(): number[] {
+    return this.endSymbolRadii;
+  }
+
+  setEndSymbolRadius(i: number, endSymbolRadius: number): void {
+    this.endSymbolRadii[i] = endSymbolRadius;
+  }
+
+  getEndSymbolRadius(i: number): number {
+    return this.endSymbolRadii[i];
   }
 
   setEndSymbolsConnection(endSymbolsConnection: string): void {
@@ -510,6 +581,7 @@ export class Space2D extends Block {
       let length = p.length();
       if (length > 1) {
         let index = this.points.indexOf(p);
+        ctx.lineWidth = this.lineThicknesses[index];
         ctx.strokeStyle = this.lineColors[index];
         if (this.lineTypes[index] === "Solid") {
           ctx.beginPath();
@@ -521,34 +593,41 @@ export class Space2D extends Block {
         }
 
         // draw symbols on top of the line
+        ctx.lineWidth = 1;
         switch (this.dataSymbols[index]) {
           case "Circle":
             for (let i = 0; i < length; i++) {
-              ctx.beginPath();
-              ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.dataSymbolRadii[index], 0, 2 * Math.PI);
-              ctx.fillStyle = this.dataSymbolColors[index];
-              ctx.fill();
-              ctx.strokeStyle = this.lineColors[index];
-              ctx.stroke();
+              if (i % this.dataSymbolSpacings[index] === 0) {
+                ctx.beginPath();
+                ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.dataSymbolRadii[index], 0, 2 * Math.PI);
+                ctx.fillStyle = this.dataSymbolColors[index];
+                ctx.fill();
+                ctx.strokeStyle = this.lineColors[index];
+                ctx.stroke();
+              }
             }
             break;
           case "Square":
             let r = this.dataSymbolRadii[index];
             for (let i = 0; i < length; i++) {
-              ctx.beginPath();
-              ctx.rect((p.getX(i) - xmin) * dx - r, -(p.getY(i) - ymin) * dy - r, 2 * r, 2 * r);
-              ctx.fillStyle = this.dataSymbolColors[index];
-              ctx.fill();
-              ctx.strokeStyle = this.lineColors[index];
-              ctx.stroke();
+              if (i % this.dataSymbolSpacings[index] === 0) {
+                ctx.beginPath();
+                ctx.rect((p.getX(i) - xmin) * dx - r, -(p.getY(i) - ymin) * dy - r, 2 * r, 2 * r);
+                ctx.fillStyle = this.dataSymbolColors[index];
+                ctx.fill();
+                ctx.strokeStyle = this.lineColors[index];
+                ctx.stroke();
+              }
             }
             break;
           case "Dot":
             for (let i = 0; i < length; i++) {
-              ctx.beginPath();
-              ctx.rect((p.getX(i) - xmin) * dx - 1, -(p.getY(i) - ymin) * dy - 1, 2, 2);
-              ctx.fillStyle = this.dataSymbolColors[index];
-              ctx.fill();
+              if (i % this.dataSymbolSpacings[index] === 0) {
+                ctx.beginPath();
+                ctx.rect((p.getX(i) - xmin) * dx - 1, -(p.getY(i) - ymin) * dy - 1, 2, 2);
+                ctx.fillStyle = this.dataSymbolColors[index];
+                ctx.fill();
+              }
             }
             break;
         }
@@ -601,23 +680,23 @@ export class Space2D extends Block {
       }
     }
 
-    if (this.endSymbolRadius > 0) {
-      for (let p of this.points) {
-        let i = p.length() - 1;
-        if (i >= 0) {
-          let index = this.points.indexOf(p);
-          ctx.beginPath();
+    for (let p of this.points) {
+      let i = p.length() - 1;
+      if (i >= 0) {
+        let index = this.points.indexOf(p);
+        if (this.endSymbolRadii[index] > 0) {
           if (this.portImages !== undefined && this.portImages[index].getValue() !== undefined) {
             if (this.images[index] === undefined) {
               this.images[index] = new Image();
             }
             this.images[index].src = this.portImages[index].getValue();
-            let imageHeight = this.endSymbolRadius * this.images[index].height / this.images[index].width;
+            let imageHeight = this.endSymbolRadii[index] * this.images[index].height / this.images[index].width;
             let imageX = p.getX(i) !== undefined ? (p.getX(i) - xmin) * dx : (p.getX(0) - xmin) * dx; // if the input is the same, the array will not grow
             let imageY = p.getY(i) !== undefined ? -(p.getY(i) - ymin) * dy : -(p.getY(0) - ymin) * dy;
-            ctx.drawImage(this.images[index], imageX - this.endSymbolRadius, imageY - imageHeight, 2 * this.endSymbolRadius, 2 * imageHeight);
+            ctx.drawImage(this.images[index], imageX - this.endSymbolRadii[index], imageY - imageHeight, 2 * this.endSymbolRadii[index], 2 * imageHeight);
           } else {
-            ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.endSymbolRadius, 0, 2 * Math.PI);
+            ctx.beginPath();
+            ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.endSymbolRadii[index], 0, 2 * Math.PI);
             ctx.fillStyle = this.dataSymbolColors[index];
             ctx.fill();
             ctx.strokeStyle = this.lineColors[index];
