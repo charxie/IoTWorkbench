@@ -581,9 +581,23 @@ export class Space2D extends Block {
       let length = p.length();
       if (length > 1) {
         let index = this.points.indexOf(p);
-        ctx.lineWidth = this.lineThicknesses[index];
-        ctx.strokeStyle = this.lineColors[index];
-        if (this.lineTypes[index] === "Solid") {
+        if (this.lineTypes[index] !== "None") {
+          ctx.lineWidth = this.lineThicknesses[index];
+          ctx.strokeStyle = this.lineColors[index];
+          switch (this.lineTypes[index]) {
+            case "Solid":
+              ctx.setLineDash([]);
+              break;
+            case "Dashed":
+              ctx.setLineDash([5, 3]); // dashes are 5px and spaces are 3px
+              break;
+            case "Dotted":
+              ctx.setLineDash([2, 2]);
+              break;
+            case "Dashdot":
+              ctx.setLineDash([8, 2, 2, 2]);
+              break;
+          }
           ctx.beginPath();
           ctx.moveTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
           for (let i = 1; i < length; i++) {
@@ -593,13 +607,15 @@ export class Space2D extends Block {
         }
 
         // draw symbols on top of the line
+        ctx.setLineDash([]);
         ctx.lineWidth = 1;
+        let r = this.dataSymbolRadii[index];
         switch (this.dataSymbols[index]) {
           case "Circle":
             for (let i = 0; i < length; i++) {
               if (i % this.dataSymbolSpacings[index] === 0) {
                 ctx.beginPath();
-                ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.dataSymbolRadii[index], 0, 2 * Math.PI);
+                ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, r, 0, 2 * Math.PI);
                 ctx.fillStyle = this.dataSymbolColors[index];
                 ctx.fill();
                 ctx.strokeStyle = this.lineColors[index];
@@ -608,7 +624,6 @@ export class Space2D extends Block {
             }
             break;
           case "Square":
-            let r = this.dataSymbolRadii[index];
             for (let i = 0; i < length; i++) {
               if (i % this.dataSymbolSpacings[index] === 0) {
                 ctx.beginPath();
@@ -627,6 +642,59 @@ export class Space2D extends Block {
                 ctx.rect((p.getX(i) - xmin) * dx - 1, -(p.getY(i) - ymin) * dy - 1, 2, 2);
                 ctx.fillStyle = this.dataSymbolColors[index];
                 ctx.fill();
+              }
+            }
+            break;
+          case "Triangle Up":
+            let tmpX, tmpY;
+            for (let i = 0; i < length; i++) {
+              if (i % this.dataSymbolSpacings[index] === 0) {
+                tmpX = (p.getX(i) - xmin) * dx;
+                tmpY = -(p.getY(i) - ymin) * dy;
+                ctx.beginPath();
+                ctx.moveTo(tmpX, tmpY - r);
+                ctx.lineTo(tmpX - r, tmpY + r);
+                ctx.lineTo(tmpX + r, tmpY + r);
+                ctx.closePath();
+                ctx.fillStyle = this.dataSymbolColors[index];
+                ctx.fill();
+                ctx.strokeStyle = this.lineColors[index];
+                ctx.stroke();
+              }
+            }
+            break;
+          case "Triangle Down":
+            for (let i = 0; i < length; i++) {
+              if (i % this.dataSymbolSpacings[index] === 0) {
+                tmpX = (p.getX(i) - xmin) * dx;
+                tmpY = -(p.getY(i) - ymin) * dy;
+                ctx.beginPath();
+                ctx.moveTo(tmpX, tmpY + r);
+                ctx.lineTo(tmpX - r, tmpY - r);
+                ctx.lineTo(tmpX + r, tmpY - r);
+                ctx.closePath();
+                ctx.fillStyle = this.dataSymbolColors[index];
+                ctx.fill();
+                ctx.strokeStyle = this.lineColors[index];
+                ctx.stroke();
+              }
+            }
+            break;
+          case "Diamond":
+            for (let i = 0; i < length; i++) {
+              if (i % this.dataSymbolSpacings[index] === 0) {
+                tmpX = (p.getX(i) - xmin) * dx;
+                tmpY = -(p.getY(i) - ymin) * dy;
+                ctx.beginPath();
+                ctx.moveTo(tmpX, tmpY + r);
+                ctx.lineTo(tmpX - r, tmpY);
+                ctx.lineTo(tmpX, tmpY - r);
+                ctx.lineTo(tmpX + r, tmpY);
+                ctx.closePath();
+                ctx.fillStyle = this.dataSymbolColors[index];
+                ctx.fill();
+                ctx.strokeStyle = this.lineColors[index];
+                ctx.stroke();
               }
             }
             break;

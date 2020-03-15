@@ -113,6 +113,9 @@ export class Space2DContextMenu extends BlockContextMenu {
                     <select id="space2d-line-type-selector" style="width: 100%">
                       <option value="None">None</option>
                       <option value="Solid" selected>Solid</option>
+                      <option value="Dashed">Dashed</option>
+                      <option value="Dotted">Dotted</option>
+                      <option value="Dashdot">Dashdot</option>
                     </select>
                   </td>
                 </tr>
@@ -135,6 +138,9 @@ export class Space2DContextMenu extends BlockContextMenu {
                       <option value="None">None</option>
                       <option value="Circle" selected>Circle</option>
                       <option value="Square">Square</option>
+                      <option value="Triangle Up">Triangle Up</option>
+                      <option value="Triangle Down">Triangle Down</option>
+                      <option value="Diamond">Diamond</option>
                       <option value="Dot">Dot</option>
                     </select>
                   </td>
@@ -305,7 +311,7 @@ export class Space2DContextMenu extends BlockContextMenu {
 
       let lineThicknessField = document.getElementById("space2d-line-thickness-field") as HTMLInputElement;
       lineThicknessField.value = lineThicknesses[0].toString();
-      lineThicknessField.onchange = () => lineThicknesses[parseInt(lineThicknessSetSelector.value)] = parseInt(lineThicknessField.value);
+      lineThicknessField.onchange = () => lineThicknesses[parseInt(lineThicknessSetSelector.value)] = parseFloat(lineThicknessField.value);
       let lineThicknessSetSelector = this.createSetSelector("space2d-line-thickness-set-selector");
       lineThicknessSetSelector.onchange = () => lineThicknessField.value = lineThicknesses[parseInt(lineThicknessSetSelector.value)].toString();
 
@@ -455,7 +461,7 @@ export class Space2DContextMenu extends BlockContextMenu {
         }
         // check symbol spacings
         for (let symbolSpacing of dataSymbolSpacings) {
-          if (symbolSpacing < 1) {
+          if (symbolSpacing != null && symbolSpacing < 1) {
             success = false;
             if (g.getPointInput()) {
               message = "Port " + g.getPointPorts()[dataSymbolSpacings.indexOf(symbolSpacing)].getUid() + " symbol spacing cannot be less than one (" + symbolSpacing + ")";
@@ -492,9 +498,9 @@ export class Space2DContextMenu extends BlockContextMenu {
             g.setLineColor(i, lineColors[i]);
             g.setLineThickness(i, lineThicknesses[i]);
             g.setDataSymbol(i, dataSymbols[i]);
-            g.setDataSymbolRadius(i, dataSymbolRadii[i]);
             g.setDataSymbolColor(i, dataSymbolColors[i]);
-            g.setDataSymbolSpacing(i, dataSymbolSpacings[i]);
+            g.setDataSymbolRadius(i, dataSymbolRadii[i] != null ? dataSymbolRadii[i] : 3);
+            g.setDataSymbolSpacing(i, dataSymbolSpacings[i] != null ? dataSymbolSpacings[i] : 1);
             g.setEndSymbolRadius(i, endSymbolRadii[i]);
           }
           g.refreshView();

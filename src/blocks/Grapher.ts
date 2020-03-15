@@ -518,6 +518,7 @@ export class Grapher extends Block {
     for (let i = 0; i < this.dataArrays.length; i++) {
       if (this.graphSymbolSizes[i] < 0.1) continue; // don't draw if the size is too small
       let arr = this.dataArrays[i];
+      let r = this.graphSymbolSizes[i];
       switch (this.graphSymbols[i]) { // put switch outside, though the code is longer, the performance is better
         case "Circle":
           for (let k = 0; k < arr.length(); k++) {
@@ -525,7 +526,7 @@ export class Grapher extends Block {
               tmpX = this.graphWindow.x + dx * k;
               tmpY = yOffset + (arr.data[k] - min) * dy;
               ctx.beginPath();
-              ctx.arc(tmpX, horizontalAxisY - tmpY, this.graphSymbolSizes[i], 0, 2 * Math.PI);
+              ctx.arc(tmpX, horizontalAxisY - tmpY, r, 0, 2 * Math.PI);
               ctx.closePath();
               ctx.fillStyle = this.graphSymbolColors[i];
               ctx.fill();
@@ -535,7 +536,6 @@ export class Grapher extends Block {
           }
           break;
         case "Square":
-          let r = this.graphSymbolSizes[i];
           let d = 2 * r;
           for (let k = 0; k < arr.length(); k++) {
             if (k % this.graphSymbolSpacings[i] === 0) {
@@ -551,16 +551,14 @@ export class Grapher extends Block {
           }
           break;
         case "Triangle Up":
-          r = this.graphSymbolSizes[i];
-          d = 2 * r;
           for (let k = 0; k < arr.length(); k++) {
             if (k % this.graphSymbolSpacings[i] === 0) {
               tmpX = this.graphWindow.x + dx * k;
               tmpY = yOffset + (arr.data[k] - min) * dy;
               ctx.beginPath();
-              ctx.moveTo(tmpX, horizontalAxisY - tmpY - d);
-              ctx.lineTo(tmpX - r, horizontalAxisY - tmpY);
-              ctx.lineTo(tmpX + r, horizontalAxisY - tmpY);
+              ctx.moveTo(tmpX, horizontalAxisY - tmpY - r);
+              ctx.lineTo(tmpX - r, horizontalAxisY - tmpY + r);
+              ctx.lineTo(tmpX + r, horizontalAxisY - tmpY + r);
               ctx.closePath();
               ctx.fillStyle = this.graphSymbolColors[i];
               ctx.fill();
@@ -570,8 +568,6 @@ export class Grapher extends Block {
           }
           break;
         case "Triangle Down":
-          r = this.graphSymbolSizes[i];
-          d = 2 * r;
           for (let k = 0; k < arr.length(); k++) {
             if (k % this.graphSymbolSpacings[i] === 0) {
               tmpX = this.graphWindow.x + dx * k;
@@ -589,8 +585,6 @@ export class Grapher extends Block {
           }
           break;
         case "Diamond":
-          r = this.graphSymbolSizes[i];
-          d = 2 * r;
           for (let k = 0; k < arr.length(); k++) {
             if (k % this.graphSymbolSpacings[i] === 0) {
               tmpX = this.graphWindow.x + dx * k;

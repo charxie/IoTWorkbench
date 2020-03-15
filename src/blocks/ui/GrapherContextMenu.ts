@@ -234,7 +234,7 @@ export class GrapherContextMenu extends BlockContextMenu {
 
       let lineThicknessField = document.getElementById("grapher-line-thickness-field") as HTMLInputElement;
       lineThicknessField.value = lineThicknesses[0].toString();
-      lineThicknessField.onchange = () => lineThicknesses[parseInt(lineThicknessPortSelector.value)] = parseInt(lineThicknessField.value);
+      lineThicknessField.onchange = () => lineThicknesses[parseInt(lineThicknessPortSelector.value)] = parseFloat(lineThicknessField.value);
       let lineThicknessPortSelector = this.createPortSelector("grapher-line-thickness-port-selector");
       lineThicknessPortSelector.onchange = () => lineThicknessField.value = lineThicknesses[parseInt(lineThicknessPortSelector.value)].toString();
 
