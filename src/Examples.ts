@@ -51,6 +51,8 @@ import ode_solver from "./examples/ode-solver.json";
 // @ts-ignore
 import chua_circuit from "./examples/chua-circuit.json";
 // @ts-ignore
+import logistic_map from "./examples/logistic-map.json";
+// @ts-ignore
 import lorenz_attractor from "./examples/lorenz-attractor.json";
 // @ts-ignore
 import fourier_transform from "./examples/fourier-transform.json";
@@ -92,6 +94,8 @@ import lorentz_force from "./examples/lorentz-force.json";
 import harmonic_oscillator from "./examples/harmonic-oscillator.json";
 // @ts-ignore
 import coupled_harmonic_oscillators from "./examples/coupled-harmonic-oscillators.json";
+// @ts-ignore
+import duffing_oscillator from "./examples/duffing-oscillator.json";
 // @ts-ignore
 import van_der_pol_oscillator from "./examples/van-der-pol-oscillator.json";
 // @ts-ignore
@@ -254,6 +258,7 @@ export class Examples {
     this.files.push({name: "Chemistry: Irreversible Reaction", data: chemical_kinetics_irreversible_reaction});
     this.files.push({name: "Chemistry: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
     this.files.push({name: "Chemistry: Brusselator", data: brusselator});
+    this.files.push({name: "Chaos: Logistic Map", data: logistic_map});
     this.files.push({name: "Chaos: Lorenz Attractor", data: lorenz_attractor});
     this.files.push({name: "Chaos: Rössler Attactor", data: rossler_attactor});
     this.files.push({name: "Fractals: Fern Generator 1", data: fern_generator_1});
@@ -262,6 +267,7 @@ export class Examples {
     this.files.push({name: "Mechanics: Projectile Motion 2", data: projectile_motion_2});
     this.files.push({name: "Mechanics: Harmonic Oscillator", data: harmonic_oscillator});
     this.files.push({name: "Mechanics: Coupled Harmonic Oscillators", data: coupled_harmonic_oscillators});
+    this.files.push({name: "Mechanics: Duffing Oscillator", data: duffing_oscillator});
     this.files.push({name: "Mechanics: Pendulum", data: pendulum});
     this.files.push({name: "Mechanics: Double Pendulum", data: double_pendulum});
     this.files.push({name: "Mechanics: Inverted Pendulum on Oscillatory Base", data: inverted_pendulum_oscillatory_base});

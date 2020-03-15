@@ -55,47 +55,45 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof GlobalVariableBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let keyInputElement = document.getElementById("global-variable-key-field") as HTMLInputElement;
-      keyInputElement.value = block.getKey();
-      let valueInputElement = document.getElementById("global-variable-value-field") as HTMLInputElement;
-      valueInputElement.value = block.getValue() ? block.getValue().toString() : 0;
-      let initialValueInputElement = document.getElementById("global-variable-initial-value-field") as HTMLInputElement;
-      initialValueInputElement.value = block.getInitialValue() ? block.getInitialValue().toString() : undefined;
+      let keyField = document.getElementById("global-variable-key-field") as HTMLInputElement;
+      keyField.value = block.getKey();
+      let valueField = document.getElementById("global-variable-value-field") as HTMLInputElement;
+      valueField.value = block.getValue() ? block.getValue().toString() : 0;
+      let initialValueField = document.getElementById("global-variable-initial-value-field") as HTMLInputElement;
+      initialValueField.value = block.getInitialValue() ? block.getInitialValue().toString() : undefined;
       let showValueNoRadioButton = document.getElementById("global-variable-show-value-no-radio-button") as HTMLInputElement;
       showValueNoRadioButton.checked = !block.getShowValue();
       let showValueYesRadioButton = document.getElementById("global-variable-show-value-yes-radio-button") as HTMLInputElement;
       showValueYesRadioButton.checked = block.getShowValue();
-      let widthInputElement = document.getElementById("global-variable-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("global-variable-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let widthField = document.getElementById("global-variable-block-width-field") as HTMLInputElement;
+      widthField.value = block.getWidth().toString();
+      let heightField = document.getElementById("global-variable-block-height-field") as HTMLInputElement;
+      heightField.value = block.getHeight().toString();
+      const okFunction = () => {
         block.setShowValue(showValueYesRadioButton.checked);
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
-          if (keyInputElement.value !== block.getKey()) {
-            block.setKey(keyInputElement.value);
-          }
-          block.setValue(valueInputElement.value);
-          block.setInitialValue(initialValueInputElement.value);
+          block.setKey(keyField.value);
+          block.setValue(valueField.value);
+          block.setInitialValue(initialValueField.value);
           flowchart.updateGlobalVariable(block.getKey(), block.getValue());
           block.refreshView();
           flowchart.blockView.requestDraw();
@@ -107,16 +105,16 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      keyInputElement.addEventListener("keyup", enterKeyUp);
-      valueInputElement.addEventListener("keyup", enterKeyUp);
-      initialValueInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      keyField.addEventListener("keyup", enterKeyUp);
+      valueField.addEventListener("keyup", enterKeyUp);
+      initialValueField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -125,9 +123,7 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
         width: 360,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }
