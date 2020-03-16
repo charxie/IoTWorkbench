@@ -76,8 +76,13 @@ export class ODESolverBlock extends SolverBlock {
       this.portO = new Array(this.equations.length);
       let dh = this.height / (this.equations.length + 2);
       const firstPortName = "A";
+      let k = firstPortName.charCodeAt(0);
       for (let i = 0; i < this.equations.length; i++) {
-        this.portO[i] = new Port(this, false, String.fromCharCode(firstPortName.charCodeAt(0) + i), this.width, (i + 2) * dh, true);
+        let id = String.fromCharCode(k++);
+        if (id === "H" || id === "N" || id === "T") { // skip over the existing port names
+          id = String.fromCharCode(k++);
+        }
+        this.portO[i] = new Port(this, false, id, this.width, (i + 2) * dh, true);
         this.ports.push(this.portO[i]);
       }
     }

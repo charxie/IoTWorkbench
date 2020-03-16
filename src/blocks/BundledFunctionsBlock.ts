@@ -61,9 +61,14 @@ export class BundledFunctionsBlock extends Block {
       }
       this.portO = new Array(this.expressions.length);
       let dh = this.height / (this.expressions.length + 1);
-      let nm = "A";
+      let firstPortName = "A";
+      let k = firstPortName.charCodeAt(0);
       for (let i = 0; i < this.expressions.length; i++) {
-        this.portO[i] = new Port(this, false, String.fromCharCode(nm.charCodeAt(0) + i), this.width, (i + 1) * dh, true);
+        let id = String.fromCharCode(k++);
+        if (id === "I") { // skip over the existing port names
+          id = String.fromCharCode(k++);
+        }
+        this.portO[i] = new Port(this, false, id, this.width, (i + 1) * dh, true);
         this.ports.push(this.portO[i]);
       }
     }
