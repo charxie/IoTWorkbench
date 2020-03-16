@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import two_body_problem from "./examples/two-body-problem.json";
+// @ts-ignore
 import simple_math_game from "./examples/simple-math-game.json";
 // @ts-ignore
 import import_datasets from "./examples/import-datasets.json";
@@ -265,12 +267,16 @@ export class Examples {
     this.files.push({name: "Fractals: Fern Generator 2", data: fern_generator_2});
     this.files.push({name: "Mechanics: Projectile Motion 1", data: projectile_motion_1});
     this.files.push({name: "Mechanics: Projectile Motion 2", data: projectile_motion_2});
+    this.files.push({name: "Mechanics: Two-Body Problem", data: two_body_problem});
     this.files.push({name: "Mechanics: Harmonic Oscillator", data: harmonic_oscillator});
     this.files.push({name: "Mechanics: Coupled Harmonic Oscillators", data: coupled_harmonic_oscillators});
     this.files.push({name: "Mechanics: Duffing Oscillator", data: duffing_oscillator});
     this.files.push({name: "Mechanics: Pendulum", data: pendulum});
     this.files.push({name: "Mechanics: Double Pendulum", data: double_pendulum});
-    this.files.push({name: "Mechanics: Inverted Pendulum on Oscillatory Base", data: inverted_pendulum_oscillatory_base});
+    this.files.push({
+      name: "Mechanics: Inverted Pendulum on Oscillatory Base",
+      data: inverted_pendulum_oscillatory_base
+    });
     this.files.push({name: "Electronics: RLC Circuit", data: rlc_circuit});
     this.files.push({name: "Electronics: Chua Circuit", data: chua_circuit});
     this.files.push({name: "Electronics: Van der Pol Oscillator", data: van_der_pol_oscillator});
