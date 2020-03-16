@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import three_body_problem from "./examples/three-body-problem.json";
+// @ts-ignore
 import two_body_problem from "./examples/two-body-problem.json";
 // @ts-ignore
 import simple_math_game from "./examples/simple-math-game.json";
@@ -268,6 +270,7 @@ export class Examples {
     this.files.push({name: "Mechanics: Projectile Motion 1", data: projectile_motion_1});
     this.files.push({name: "Mechanics: Projectile Motion 2", data: projectile_motion_2});
     this.files.push({name: "Mechanics: Two-Body Problem", data: two_body_problem});
+    this.files.push({name: "Mechanics: Three-Body Problem", data: three_body_problem});
     this.files.push({name: "Mechanics: Harmonic Oscillator", data: harmonic_oscillator});
     this.files.push({name: "Mechanics: Coupled Harmonic Oscillators", data: coupled_harmonic_oscillators});
     this.files.push({name: "Mechanics: Duffing Oscillator", data: duffing_oscillator});
