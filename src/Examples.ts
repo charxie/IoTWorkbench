@@ -85,6 +85,10 @@ import predator_prey_equations from "./examples/predator-prey-equations.json";
 // @ts-ignore
 import epidemiology_sir_model from "./examples/epidemiology-sir-model.json";
 // @ts-ignore
+import epidemiology_seir_model from "./examples/epidemiology-seir-model.json";
+// @ts-ignore
+import epidemiology_sis_model from "./examples/epidemiology-sis-model.json";
+// @ts-ignore
 import competitive_lotka_volterra_equations from "./examples/competitive-lotka-volterra-equations.json";
 // @ts-ignore
 import chemical_kinetics_irreversible_reaction from "./examples/chemical-kinetics-irreversible-reaction.json";
@@ -259,6 +263,8 @@ export class Examples {
       data: competitive_lotka_volterra_equations
     });
     this.files.push({name: "Epidemiology: The SIR Model", data: epidemiology_sir_model});
+    this.files.push({name: "Epidemiology: The SIS Model", data: epidemiology_sis_model});
+    this.files.push({name: "Epidemiology: The SEIR Model", data: epidemiology_seir_model});
     this.files.push({name: "Chemistry: Irreversible Reaction", data: chemical_kinetics_irreversible_reaction});
     this.files.push({name: "Chemistry: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
     this.files.push({name: "Chemistry: Brusselator", data: brusselator});
