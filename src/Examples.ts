@@ -3,6 +3,12 @@
  */
 
 // @ts-ignore
+import gradient_descent_1d from "./examples/gradient-descent-1d.json";
+// @ts-ignore
+import gradient_descent_2d from "./examples/gradient-descent-2d.json";
+// @ts-ignore
+import duffing_map from "./examples/duffing-map.json";
+// @ts-ignore
 import three_body_problem from "./examples/three-body-problem.json";
 // @ts-ignore
 import two_body_problem from "./examples/two-body-problem.json";
@@ -88,6 +94,8 @@ import epidemiology_sir_model from "./examples/epidemiology-sir-model.json";
 import epidemiology_seir_model from "./examples/epidemiology-seir-model.json";
 // @ts-ignore
 import epidemiology_sis_model from "./examples/epidemiology-sis-model.json";
+// @ts-ignore
+import epidemiology_seis_model from "./examples/epidemiology-seis-model.json";
 // @ts-ignore
 import competitive_lotka_volterra_equations from "./examples/competitive-lotka-volterra-equations.json";
 // @ts-ignore
@@ -233,6 +241,7 @@ export class Examples {
     this.files.push({name: "Math: Parametric Generator 1", data: parametric_generator_1});
     this.files.push({name: "Math: Parametric Generator 2", data: parametric_generator_2});
     this.files.push({name: "Math: Spirals", data: spirals});
+    this.files.push({name: "Math: Recurrence Relation", data: duffing_map});
     this.files.push({name: "Math: Sunflower Pattern", data: sunflower_vogel_model});
     this.files.push({name: "Math: Import Datasets", data: import_datasets});
     this.files.push({name: "Math: Make a Simple Game", data: simple_math_game});
@@ -253,6 +262,8 @@ export class Examples {
     this.files.push({name: "Calculus: Integration", data: integration});
     this.files.push({name: "Calculus: The Runge-Kutta Method", data: runge_kutta_method});
     this.files.push({name: "Calculus: ODE Solver", data: ode_solver});
+    this.files.push({name: "Optimization: Gradient Descent in One Dimension", data: gradient_descent_1d});
+    this.files.push({name: "Optimization: Gradient Descent in Two Dimensions", data: gradient_descent_2d});
     this.files.push({name: "Statistics: Box-Muller Transform", data: box_muller_transform});
     this.files.push({name: "Statistics: Normal Distributions", data: normal_distributions});
     this.files.push({name: "Statistics: Random Walk", data: random_walk});
@@ -263,8 +274,9 @@ export class Examples {
       data: competitive_lotka_volterra_equations
     });
     this.files.push({name: "Epidemiology: The SIR Model", data: epidemiology_sir_model});
-    this.files.push({name: "Epidemiology: The SIS Model", data: epidemiology_sis_model});
     this.files.push({name: "Epidemiology: The SEIR Model", data: epidemiology_seir_model});
+    this.files.push({name: "Epidemiology: The SIS Model", data: epidemiology_sis_model});
+    this.files.push({name: "Epidemiology: The SEIS Model", data: epidemiology_seis_model});
     this.files.push({name: "Chemistry: Irreversible Reaction", data: chemical_kinetics_irreversible_reaction});
     this.files.push({name: "Chemistry: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
     this.files.push({name: "Chemistry: Brusselator", data: brusselator});

@@ -81,8 +81,7 @@ export class StickerContextMenu extends BlockContextMenu {
       heightInputElement.value = sticker.getHeight().toString();
       Util.hookupColorInputs(panelColorInputElement, panelColorChooser);
       Util.hookupColorInputs(textColorInputElement, textColorChooser);
-      let that = this;
-      const okFunction = function () {
+      const okFunction = () => {
         let success = true;
         let message;
         // set panel color
@@ -137,7 +136,7 @@ export class StickerContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
@@ -152,19 +151,17 @@ export class StickerContextMenu extends BlockContextMenu {
         resizable: true,
         modal: true,
         title: sticker.getUid(),
-        height: that.dialogHeight,
-        width: that.dialogWidth,
-        resize: function (e, ui) {
+        height: this.dialogHeight,
+        width: this.dialogWidth,
+        resize: (e, ui) => {
           // @ts-ignore
-          that.dialogWidth = ui.size.width;
+          this.dialogWidth = ui.size.width;
           // @ts-ignore
-          that.dialogHeight = ui.size.height;
+          this.dialogHeight = ui.size.height;
         },
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

@@ -10,6 +10,9 @@ import {BundledFunctionsBlock} from "../BundledFunctionsBlock";
 
 export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
 
+  private dialogWidth: number = 450;
+  private dialogHeight: number = 440;
+
   constructor() {
     super();
     this.id = "bundled-functions-block-context-menu";
@@ -24,7 +27,7 @@ export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Expressions:<div style="font-size: 70%">(e.g., ["cos(x)", "sin(x)", "tan(x)"])</div></td>
-                  <td><textarea id="bundled-functions-block-expressions-field" rows="5" style="width: 100%"></textarea></td>
+                  <td><textarea id="bundled-functions-block-expressions-field" rows="7" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
@@ -44,50 +47,50 @@ export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof BundledFunctionsBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let inputNameInputElement = document.getElementById("bundled-functions-block-input-name-field") as HTMLInputElement;
-      inputNameInputElement.value = block.getInputName() ? block.getInputName().toString() : "t";
-      let expressionsInputElement = document.getElementById("bundled-functions-block-expressions-field") as HTMLTextAreaElement;
-      expressionsInputElement.value = JSON.stringify(block.getExpressions());
-      let widthInputElement = document.getElementById("bundled-functions-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("bundled-functions-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
-        block.setInputName(inputNameInputElement.value);
+      let inputNameField = document.getElementById("bundled-functions-block-input-name-field") as HTMLInputElement;
+      inputNameField.value = block.getInputName() ? block.getInputName().toString() : "t";
+      let expressionsField = document.getElementById("bundled-functions-block-expressions-field") as HTMLTextAreaElement;
+      expressionsField.value = JSON.stringify(block.getExpressions());
+      let widthField = document.getElementById("bundled-functions-block-width-field") as HTMLInputElement;
+      widthField.value = block.getWidth().toString();
+      let heightField = document.getElementById("bundled-functions-block-height-field") as HTMLInputElement;
+      heightField.value = block.getHeight().toString();
+      const okFunction = () => {
+        block.setInputName(inputNameField.value);
         let success = true;
         let message;
         // set expressions
-        if (JSON.stringify(block.getExpressions()) != expressionsInputElement.value) {
+        if (JSON.stringify(block.getExpressions()) != expressionsField.value) {
           try {
-            block.setExpressions(JSON.parse(expressionsInputElement.value));
+            block.setExpressions(JSON.parse(expressionsField.value));
             block.useDeclaredFunctions();
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = expressionsInputElement.value + " is not a valid array";
+            message = expressionsField.value + " is not a valid array";
           }
           try {
             flowchart.updateResultsForBlock(block);
           } catch (err) {
             success = false;
-            message = JSON.stringify(expressionsInputElement.value) + " are not valid expressions";
+            message = JSON.stringify(expressionsField.value) + " are not valid expressions";
           }
         }
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
@@ -100,25 +103,29 @@ export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      inputNameInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      inputNameField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
-        resizable: false,
+        resizable: true,
         modal: true,
         title: block.getUid(),
-        height: 350,
-        width: 400,
+        height: this.dialogHeight,
+        width: this.dialogWidth,
+        resize: (e, ui) => {
+          // @ts-ignore
+          this.dialogWidth = ui.size.width;
+          // @ts-ignore
+          this.dialogHeight = ui.size.height;
+        },
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }
