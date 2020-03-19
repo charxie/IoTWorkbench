@@ -33,12 +33,14 @@ export class TransientStateFDMSolverBlock extends SolverBlock {
   private hasDeclarationError: boolean = false;
   private relaxationSteps: number = 5;
   private readonly partialDerivativePattern = /[a-zA-Z]+_[a-zA-Z]+/g;
+  private boundary: string = "Dirichlet";
 
   static State = class {
     readonly uid: string;
     readonly variables: string[];
     readonly equations: string[];
     readonly method: string;
+    readonly boundary: string;
     readonly x: number;
     readonly y: number;
     readonly width: number;
@@ -49,6 +51,7 @@ export class TransientStateFDMSolverBlock extends SolverBlock {
       this.variables = block.variables.slice();
       this.equations = block.equations.slice();
       this.method = block.method;
+      this.boundary = block.boundary;
       this.x = block.x;
       this.y = block.y;
       this.width = block.width;
@@ -124,6 +127,7 @@ export class TransientStateFDMSolverBlock extends SolverBlock {
     block.variables = this.variables.slice();
     block.setEquations(this.equations);
     block.method = this.method;
+    block.boundary = this.boundary;
     return block;
   }
 
@@ -133,6 +137,14 @@ export class TransientStateFDMSolverBlock extends SolverBlock {
 
   getVariables(): string[] {
     return this.variables;
+  }
+
+  setBoundary(boundary: string): void {
+    this.boundary = boundary;
+  }
+
+  getBoundary(): string {
+    return this.boundary;
   }
 
   setEquations(equations: string[]): void {
@@ -312,10 +324,25 @@ export class TransientStateFDMSolverBlock extends SolverBlock {
             break;
         }
       }
-      this.values[n].data[0] = this.values[n].data[len] = 0;
       for (let j = 1; j < len; j++) {
         this.prevValues[n].data[j] = this.values[n].data[j];
         this.values[n].data[j] = this.nextValues[n].data[j];
+      }
+      // handle left and right end points
+      if (derivativeMatches !== null) {
+        switch (this.boundary) {
+          case "Dirichlet":
+            this.values[n].data[0] = 0;
+            this.values[n].data[len] = 0;
+            break;
+          case "Neumann":
+            this.values[n].data[0] = this.values[n].data[1];
+            this.values[n].data[len] = this.values[n].data[len - 1];
+            break;
+        }
+      } else {
+        this.values[n].data[0] = this.values[n].data[1];
+        this.values[n].data[len] = this.values[n].data[len - 1];
       }
     }
   }

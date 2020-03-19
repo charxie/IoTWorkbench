@@ -11,7 +11,7 @@ import {TransientStateFDMSolverBlock} from "../TransientStateFDMSolverBlock";
 export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
 
   private dialogWidth: number = 450;
-  private dialogHeight: number = 450;
+  private dialogHeight: number = 500;
 
   constructor() {
     super();
@@ -39,6 +39,15 @@ export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
+                  <td>Boundary:</td>
+                  <td>
+                    <select id="transient-state-fdm-solver-block-boundary-selector" style="width: 100%">
+                      <option value="Dirichlet" selected>Dirichlet</option>
+                      <option value="Neumann">Neumann</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="transient-state-fdm-solver-block-width-field" style="width: 100%"></td>
                 </tr>
@@ -56,65 +65,68 @@ export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof TransientStateFDMSolverBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let methodSelectElement = document.getElementById("transient-state-fdm-solver-block-method-selector") as HTMLSelectElement;
-      methodSelectElement.value = block.getMethod();
-      let variablesInputElement = document.getElementById("transient-state-fdm-solver-block-variables-field") as HTMLInputElement;
-      variablesInputElement.value = block.getVariables() ? JSON.stringify(block.getVariables()) : "['t', 'x']";
-      let equationsInputElement = document.getElementById("transient-state-fdm-solver-block-equations-field") as HTMLTextAreaElement;
-      equationsInputElement.value = JSON.stringify(block.getEquations());
-      let widthInputElement = document.getElementById("transient-state-fdm-solver-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("transient-state-fdm-solver-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let methodSelector = document.getElementById("transient-state-fdm-solver-block-method-selector") as HTMLSelectElement;
+      methodSelector.value = block.getMethod();
+      let boundarySelector = document.getElementById("transient-state-fdm-solver-block-boundary-selector") as HTMLSelectElement;
+      boundarySelector.value = block.getBoundary();
+      let variablesField = document.getElementById("transient-state-fdm-solver-block-variables-field") as HTMLInputElement;
+      variablesField.value = block.getVariables() ? JSON.stringify(block.getVariables()) : "['t', 'x']";
+      let equationsField = document.getElementById("transient-state-fdm-solver-block-equations-field") as HTMLTextAreaElement;
+      equationsField.value = JSON.stringify(block.getEquations());
+      let widthField = document.getElementById("transient-state-fdm-solver-block-width-field") as HTMLInputElement;
+      widthField.value = block.getWidth().toString();
+      let heightField = document.getElementById("transient-state-fdm-solver-block-height-field") as HTMLInputElement;
+      heightField.value = block.getHeight().toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set variables
-        if (JSON.stringify(block.getVariables()) !== variablesInputElement.value) {
+        if (JSON.stringify(block.getVariables()) !== variablesField.value) {
           try {
-            block.setVariables(JSON.parse(variablesInputElement.value));
+            block.setVariables(JSON.parse(variablesField.value));
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = equationsInputElement.value + " is not a valid array for variables";
+            message = equationsField.value + " is not a valid array for variables";
           }
         }
         // set equations
-        if (JSON.stringify(block.getEquations()) !== equationsInputElement.value) {
+        if (JSON.stringify(block.getEquations()) !== equationsField.value) {
           try {
-            block.setEquations(JSON.parse(equationsInputElement.value));
+            block.setEquations(JSON.parse(equationsField.value));
             block.useDeclaredFunctions();
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = equationsInputElement.value + " is not a valid array for equations";
+            message = equationsField.value + " is not a valid array for equations";
           }
           try {
             flowchart.updateResultsForBlock(block);
           } catch (err) {
             success = false;
-            message = JSON.stringify(equationsInputElement.value) + " are not valid equations";
+            message = JSON.stringify(equationsField.value) + " are not valid equations";
           }
         }
         // finish up
         if (success) {
-          block.setMethod(methodSelectElement.value);
+          block.setMethod(methodSelector.value);
+          block.setBoundary(boundarySelector.value);
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.storeBlockStates();
@@ -124,32 +136,29 @@ export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      variablesInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
-      let that = this;
+      variablesField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: true,
         modal: true,
         title: block.getUid(),
-        height: that.dialogHeight,
-        width: that.dialogWidth,
-        resize: function (e, ui) {
+        height: this.dialogHeight,
+        width: this.dialogWidth,
+        resize: (e, ui) => {
           // @ts-ignore
-          that.dialogWidth = ui.size.width;
+          this.dialogWidth = ui.size.width;
           // @ts-ignore
-          that.dialogHeight = ui.size.height;
+          this.dialogHeight = ui.size.height;
         },
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

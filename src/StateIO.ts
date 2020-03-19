@@ -193,6 +193,7 @@ export class StateIO {
           block.setVariables(state.variables != undefined ? state.variables : ["t", "x"]);
           block.setEquations(state.equations != undefined ? state.equations : ["T_t=T_xx"]);
           block.setMethod(state.method != undefined ? state.method : "Explicit");
+          block.setBoundary(state.boundary != undefined ? state.boundary : "Dirichlet");
         } else if (block instanceof SteadyStateFDMSolverBlock) {
           block.setVariables(state.variables != undefined ? state.variables : ["x", "y"]);
           block.setEquations(state.equations != undefined ? state.equations : ["T_xx+T_yy=0"]);
