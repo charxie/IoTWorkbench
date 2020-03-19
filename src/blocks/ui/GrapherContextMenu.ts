@@ -105,6 +105,11 @@ export class GrapherContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="grapher-line-thickness-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Legend:</td>
+                  <td><select id="grapher-legend-port-selector" style="width: 65px"></select></td>
+                  <td colspan="2"><input type="text" id="grapher-legend-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Symbol Type:</td>
                   <td><select id="grapher-symbol-type-port-selector" style="width: 65px"></select></td>
                   <td colspan="2">
@@ -185,6 +190,7 @@ export class GrapherContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
 
       // temporary storage of properties (don't store the changes to the block object or else we won't be able to cancel)
+      let legends: string[] = g.getLegends();
       let lineTypes: string[] = g.getLineTypes();
       let lineColors: string[] = g.getLineColors();
       let lineThicknesses: number[] = g.getLineThicknesses();
@@ -237,6 +243,12 @@ export class GrapherContextMenu extends BlockContextMenu {
       lineThicknessField.onchange = () => lineThicknesses[parseInt(lineThicknessPortSelector.value)] = parseFloat(lineThicknessField.value);
       let lineThicknessPortSelector = this.createPortSelector("grapher-line-thickness-port-selector");
       lineThicknessPortSelector.onchange = () => lineThicknessField.value = lineThicknesses[parseInt(lineThicknessPortSelector.value)].toString();
+
+      let legendField = document.getElementById("grapher-legend-field") as HTMLInputElement;
+      legendField.value = legends[0].toString();
+      legendField.onchange = () => legends[parseInt(legendPortSelector.value)] = legendField.value;
+      let legendPortSelector = this.createPortSelector("grapher-legend-port-selector");
+      legendPortSelector.onchange = () => legendField.value = legends[parseInt(legendPortSelector.value)].toString();
 
       let symbolTypeSelector = document.getElementById("grapher-symbol-type-selector") as HTMLSelectElement;
       symbolTypeSelector.value = graphSymbols[0];
@@ -392,6 +404,7 @@ export class GrapherContextMenu extends BlockContextMenu {
           g.setGraphWindowColor(windowColorField.value);
           g.setAutoScale(autoScaleRadioButton.checked);
           for (let i = 0; i < fillOptions.length; i++) {
+            g.setLegend(i, legends[i]);
             g.setLineType(i, lineTypes[i]);
             g.setLineColor(i, lineColors[i]);
             g.setLineThickness(i, lineThicknesses[i]);
@@ -422,6 +435,7 @@ export class GrapherContextMenu extends BlockContextMenu {
       xAxisLableField.addEventListener("keyup", enterKeyUp);
       yAxisLableField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
+      legendField.addEventListener("keyup", enterKeyUp);
       lineColorField.addEventListener("keyup", enterKeyUp);
       lineThicknessField.addEventListener("keyup", enterKeyUp);
       fillColorField.addEventListener("keyup", enterKeyUp);

@@ -167,7 +167,7 @@ export class StateIO {
           if (state.xAxisLabel != undefined) block.setXAxisLabel(state.xAxisLabel);
           if (state.yAxisLabel != undefined) block.setYAxisLabel(state.yAxisLabel);
           if (state.graphWindowColor != undefined) block.setGraphWindowColor(state.graphWindowColor);
-          if (state.dataPortNumber != undefined) block.setDataPortNumber(state.dataPortNumber);
+          if (state.legends != undefined) block.setLegends(state.legends);
           if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
           if (state.lineThicknesses != undefined) block.setLineThicknesses(state.lineThicknesses);
@@ -177,6 +177,7 @@ export class StateIO {
           if (state.graphSymbolSpacings != undefined) block.setGraphSymbolSpacings(state.graphSymbolSpacings);
           if (state.fillOptions != undefined) block.setFillOptions(state.fillOptions);
           if (state.fillColors != undefined) block.setFillColors(state.fillColors);
+          if (state.dataPortNumber != undefined) block.setDataPortNumber(state.dataPortNumber);
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);

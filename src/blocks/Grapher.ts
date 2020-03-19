@@ -31,6 +31,7 @@ export class Grapher extends Block {
     top: <number>4,
     bottom: <number>4
   };
+  private legends: string[] = [];
   private lineTypes: string[] = [];
   private lineColors: string[] = [];
   private lineThicknesses: number[] = [];
@@ -55,6 +56,7 @@ export class Grapher extends Block {
     readonly autoscale: boolean;
     readonly minimumValue: number;
     readonly maximumValue: number;
+    readonly legends: string[];
     readonly lineTypes: string[];
     readonly lineColors: string[];
     readonly lineThicknesses: number[];
@@ -65,29 +67,30 @@ export class Grapher extends Block {
     readonly graphSymbolColors: string[];
     readonly graphSymbolSpacings: number[];
 
-    constructor(grapher: Grapher) {
-      this.name = grapher.name;
-      this.uid = grapher.uid;
-      this.x = grapher.x;
-      this.y = grapher.y;
-      this.width = grapher.width;
-      this.height = grapher.height;
-      this.dataPortNumber = grapher.getDataPorts().length;
-      this.xAxisLabel = grapher.xAxisLabel;
-      this.yAxisLabel = grapher.yAxisLabel;
-      this.graphWindowColor = grapher.graphWindowColor;
-      this.autoscale = grapher.autoscale;
-      this.minimumValue = grapher.minimumValue;
-      this.maximumValue = grapher.maximumValue;
-      this.lineTypes = [...grapher.lineTypes];
-      this.lineColors = [...grapher.lineColors];
-      this.lineThicknesses = [...grapher.lineThicknesses];
-      this.fillOptions = [...grapher.fillOptions];
-      this.fillColors = [...grapher.fillColors];
-      this.graphSymbols = [...grapher.graphSymbols];
-      this.graphSymbolSizes = [...grapher.graphSymbolSizes];
-      this.graphSymbolColors = [...grapher.graphSymbolColors];
-      this.graphSymbolSpacings = [...grapher.graphSymbolSpacings];
+    constructor(g: Grapher) {
+      this.name = g.name;
+      this.uid = g.uid;
+      this.x = g.x;
+      this.y = g.y;
+      this.width = g.width;
+      this.height = g.height;
+      this.dataPortNumber = g.getDataPorts().length;
+      this.xAxisLabel = g.xAxisLabel;
+      this.yAxisLabel = g.yAxisLabel;
+      this.graphWindowColor = g.graphWindowColor;
+      this.autoscale = g.autoscale;
+      this.minimumValue = g.minimumValue;
+      this.maximumValue = g.maximumValue;
+      this.legends = [...g.legends];
+      this.lineTypes = [...g.lineTypes];
+      this.lineColors = [...g.lineColors];
+      this.lineThicknesses = [...g.lineThicknesses];
+      this.fillOptions = [...g.fillOptions];
+      this.fillColors = [...g.fillColors];
+      this.graphSymbols = [...g.graphSymbols];
+      this.graphSymbolSizes = [...g.graphSymbolSizes];
+      this.graphSymbolColors = [...g.graphSymbolColors];
+      this.graphSymbolSpacings = [...g.graphSymbolSpacings];
     }
   };
 
@@ -106,6 +109,7 @@ export class Grapher extends Block {
     this.ports.push(this.portD);
     this.graphWindow = new Rectangle(0, 0, 1, 1);
     this.dataArrays.push(new DataArray(0));
+    this.legends.push("I");
     this.lineTypes.push("Solid");
     this.lineColors.push("black");
     this.lineThicknesses.push(1);
@@ -125,6 +129,7 @@ export class Grapher extends Block {
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.graphWindowColor = this.graphWindowColor;
+    copy.legends = [...this.legends];
     copy.graphSymbols = [...this.graphSymbols];
     copy.graphSymbolSizes = [...this.graphSymbolSizes];
     copy.graphSymbolColors = [...this.graphSymbolColors];
@@ -149,6 +154,7 @@ export class Grapher extends Block {
           this.portI.push(p);
           this.ports.push(p);
           this.dataArrays.push(new DataArray(0));
+          this.legends.push(p.getUid());
           this.lineTypes.push("Solid");
           this.lineColors.push("black");
           this.lineThicknesses.push(1);
@@ -165,6 +171,7 @@ export class Grapher extends Block {
         this.portI.pop();
         flowchart.removeConnectorsToPort(this.ports.pop());
         this.dataArrays.pop();
+        this.legends.pop();
         this.lineTypes.pop();
         this.lineColors.pop();
         this.lineThicknesses.pop();
@@ -176,6 +183,19 @@ export class Grapher extends Block {
         this.graphSymbolSpacings.pop();
       }
     }
+    // ensure that extra properties are removed
+    let n = this.portI.length;
+    this.dataArrays.length = n;
+    this.legends.length = n;
+    this.lineTypes.length = n;
+    this.lineColors.length = n;
+    this.lineThicknesses.length = n;
+    this.fillOptions.length = n;
+    this.fillColors.length = n;
+    this.graphSymbols.length = n;
+    this.graphSymbolSizes.length = n;
+    this.graphSymbolColors.length = n;
+    this.graphSymbolSpacings.length = n;
     this.refreshView();
   }
 
@@ -231,6 +251,22 @@ export class Grapher extends Block {
     return this.graphWindowColor;
   }
 
+  setLegends(legends: string[]): void {
+    this.legends = legends;
+  }
+
+  getLegends(): string[] {
+    return [...this.legends];
+  }
+
+  setLegend(i: number, legend: string): void {
+    this.legends[i] = legend;
+  }
+
+  getLegend(i: number): string {
+    return this.legends[i];
+  }
+
   setLineColors(lineColors: string[]): void {
     this.lineColors = lineColors;
   }
@@ -243,8 +279,8 @@ export class Grapher extends Block {
     this.lineColors[i] = lineColor;
   }
 
-  getLineColor(index: number): string {
-    return this.lineColors[index];
+  getLineColor(i: number): string {
+    return this.lineColors[i];
   }
 
   setLineThicknesses(lineThicknesses: number[]): void {
@@ -259,8 +295,8 @@ export class Grapher extends Block {
     this.lineThicknesses[i] = lineThickness;
   }
 
-  getLineThickness(index: number): number {
-    return this.lineThicknesses[index];
+  getLineThickness(i: number): number {
+    return this.lineThicknesses[i];
   }
 
   setFillOptions(fillOptions: boolean[]): void {
@@ -423,6 +459,9 @@ export class Grapher extends Block {
     }
     if (!this.iconic) {
       this.drawAxisLabels(ctx);
+      if (this.dataArrays.length > 1) {
+        this.drawLegends(ctx);
+      }
       if (maxLength > 1) {
         this.drawLineCharts(ctx);
       }
@@ -680,6 +719,99 @@ export class Grapher extends Block {
     ctx.stroke();
     ctx.fillText(maxString, this.graphWindow.x - ctx.measureText(maxString).width - 5, horizontalAxisY - tmpY);
 
+  }
+
+  private drawLegends(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    ctx.font = "10px Arial";
+    let x0 = this.graphWindow.x + this.graphWindow.width - 50;
+    let y0 = this.graphWindow.y + this.graphMargin.top + 10;
+    let yi;
+    for (let i = 0; i < this.legends.length; i++) {
+      yi = y0 + i * 20;
+      ctx.fillStyle = "black";
+      ctx.fillText(this.legends[i], x0 - ctx.measureText(this.legends[i]).width, yi);
+      ctx.beginPath();
+      yi -= 4;
+      ctx.moveTo(x0 + 10, yi);
+      ctx.lineTo(x0 + 40, yi);
+      ctx.lineWidth = this.lineThicknesses[i];
+      ctx.strokeStyle = this.lineColors[i];
+      switch (this.lineTypes[i]) {
+        case "Solid":
+          ctx.setLineDash([]);
+          break;
+        case "Dashed":
+          ctx.setLineDash([5, 3]);
+          break;
+        case "Dotted":
+          ctx.setLineDash([2, 2]);
+          break;
+        case "Dashdot":
+          ctx.setLineDash([8, 2, 2, 2]);
+          break;
+      }
+      ctx.stroke();
+      ctx.lineWidth = 1;
+      ctx.setLineDash([]);
+      let xi = x0 + 25;
+      let r = this.graphSymbolSizes[i];
+      switch (this.graphSymbols[i]) {
+        case "Circle":
+          ctx.beginPath();
+          ctx.arc(xi, yi, r, 0, 2 * Math.PI);
+          ctx.closePath();
+          ctx.fillStyle = this.graphSymbolColors[i];
+          ctx.fill();
+          ctx.strokeStyle = this.lineColors[i];
+          ctx.stroke();
+          break;
+        case "Square":
+          let d = 2 * r;
+          ctx.beginPath();
+          ctx.rect(xi - r, yi - r, d, d);
+          ctx.fillStyle = this.graphSymbolColors[i];
+          ctx.fill();
+          ctx.strokeStyle = this.lineColors[i];
+          ctx.stroke();
+          break;
+        case "Triangle Up":
+          ctx.beginPath();
+          ctx.moveTo(xi, yi - r);
+          ctx.lineTo(xi - r, yi + r);
+          ctx.lineTo(xi + r, yi + r);
+          ctx.closePath();
+          ctx.fillStyle = this.graphSymbolColors[i];
+          ctx.fill();
+          ctx.strokeStyle = this.lineColors[i];
+          ctx.stroke();
+          break;
+        case "Triangle Down":
+          ctx.beginPath();
+          ctx.moveTo(xi, yi + r);
+          ctx.lineTo(xi - r, yi - r);
+          ctx.lineTo(xi + r, yi - r);
+          ctx.closePath();
+          ctx.fillStyle = this.graphSymbolColors[i];
+          ctx.fill();
+          ctx.strokeStyle = this.lineColors[i];
+          ctx.stroke();
+          break;
+        case "Diamond":
+          ctx.beginPath();
+          ctx.moveTo(xi, yi + r);
+          ctx.lineTo(xi - r, yi);
+          ctx.lineTo(xi, yi - r);
+          ctx.lineTo(xi + r, yi);
+          ctx.closePath();
+          ctx.fillStyle = this.graphSymbolColors[i];
+          ctx.fill();
+          ctx.strokeStyle = this.lineColors[i];
+          ctx.stroke();
+          break;
+      }
+    }
+    ctx.restore();
   }
 
   private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
