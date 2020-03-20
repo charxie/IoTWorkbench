@@ -41,6 +41,7 @@ export class Space2D extends Block {
   private numberOfZigzags: number[] = [];
   private tempX: number; // temporarily store x and y before pushing them into the point arrays
   private tempY: number;
+  private legends: string[] = [];
   private lineTypes: string[] = [];
   private lineColors: string[] = [];
   private lineThicknesses: number[] = [];
@@ -70,6 +71,7 @@ export class Space2D extends Block {
     readonly maximumYValue: number;
     readonly pointInput: boolean;
     readonly numberOfPoints: number;
+    readonly legends: string[] = [];
     readonly lineTypes: string[] = [];
     readonly lineColors: string[] = [];
     readonly lineThicknesses: number[] = [];
@@ -99,6 +101,7 @@ export class Space2D extends Block {
       this.maximumYValue = g.maximumYValue;
       this.pointInput = g.pointInput;
       this.numberOfPoints = g.getNumberOfPoints();
+      this.legends = [...g.legends];
       this.lineTypes = [...g.lineTypes];
       this.lineColors = [...g.lineColors];
       this.lineThicknesses = [...g.lineThicknesses];
@@ -122,6 +125,7 @@ export class Space2D extends Block {
     this.ports.push(this.portY);
     this.spaceWindow = new Rectangle(0, 0, 1, 1);
     this.points.push(new Point2DArray());
+    this.legends.push("A");
     this.lineTypes.push("Solid");
     this.lineColors.push("black");
     this.lineThicknesses.push(1);
@@ -146,6 +150,7 @@ export class Space2D extends Block {
     copy.endSymbolsConnection = this.endSymbolsConnection;
     copy.setPointInput(this.pointInput);
     copy.setNumberOfPoints(this.getNumberOfPoints());
+    copy.legends = [...this.legends];
     copy.lineColors = [...this.lineColors];
     copy.lineTypes = [...this.lineTypes];
     copy.lineThicknesses = [...this.lineThicknesses];
@@ -214,17 +219,18 @@ export class Space2D extends Block {
     if (this.pointInput) {
       if (numberOfPoints > this.portPoints.length) { // increase data ports
         // test if the line and symbol properties have already been set (this happens when loading an existing state)
-        let notSet = this.lineColors.length == this.portPoints.length;
+        let notSet = this.legends.length == this.portPoints.length;
         for (let i = 0; i < numberOfPoints; i++) {
           if (i >= this.portPoints.length) {
             let p = new Port(this, true, String.fromCharCode("A".charCodeAt(0) + i), 0, 0, false);
             this.portPoints.push(p);
             this.ports.push(p);
             this.points.push(new Point2DArray());
-            p = new Port(this, true, String.fromCharCode("A".charCodeAt(0) + i) + "I", 0, 0, false);
-            this.portImages.push(p);
-            this.ports.push(p);
+            let pi = new Port(this, true, String.fromCharCode("A".charCodeAt(0) + i) + "I", 0, 0, false);
+            this.portImages.push(pi);
+            this.ports.push(pi);
             if (notSet) {
+              this.legends.push(p.getUid());
               this.lineTypes.push("Solid");
               this.lineColors.push("black");
               this.lineThicknesses.push(1);
@@ -243,6 +249,7 @@ export class Space2D extends Block {
           flowchart.removeConnectorsToPort(this.ports.pop());
           this.portImages.pop();
           flowchart.removeConnectorsToPort(this.ports.pop());
+          this.legends.pop();
           this.lineTypes.pop();
           this.lineColors.pop();
           this.lineThicknesses.pop();
@@ -253,6 +260,17 @@ export class Space2D extends Block {
           this.endSymbolRadii.pop();
         }
       }
+      let n = this.portPoints.length;
+      this.points.length = n;
+      this.legends.length = n;
+      this.lineTypes.length = n;
+      this.lineColors.length = n;
+      this.lineThicknesses.length = n;
+      this.dataSymbols.length = n;
+      this.dataSymbolRadii.length = n;
+      this.dataSymbolColors.length = n;
+      this.dataSymbolSpacings.length = n;
+      this.endSymbolRadii.length = n;
       this.refreshView();
     }
   }
@@ -341,6 +359,22 @@ export class Space2D extends Block {
 
   getShowGridLines(): boolean {
     return this.showGridLines;
+  }
+
+  setLegends(legends: string[]): void {
+    this.legends = legends;
+  }
+
+  getLegends(): string[] {
+    return [...this.legends];
+  }
+
+  setLegend(i: number, legend: string): void {
+    this.legends[i] = legend;
+  }
+
+  getLegend(i: number): string {
+    return this.legends[i];
   }
 
   setLineColors(lineColors: string[]): void {
@@ -531,6 +565,9 @@ export class Space2D extends Block {
     ctx.stroke();
     if (!this.iconic) {
       this.drawAxisLabels(ctx);
+      if (this.pointInput && this.portPoints.length > 1) {
+        this.drawLegends(ctx);
+      }
       if (this.showGridLines) {
         this.drawGridLines(ctx);
       }
@@ -835,6 +872,108 @@ export class Space2D extends Block {
       this.highlightSelection(ctx);
     }
 
+  }
+
+  private drawLegends(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    ctx.font = "10px Arial";
+    let x0 = this.spaceWindow.x + this.spaceWindow.width - 50;
+    let y0 = this.spaceWindow.y + this.spaceMargin.top + 10;
+    let yi;
+    for (let i = 0; i < this.portPoints.length; i++) {
+      if (this.legends[i].trim() === "") continue;
+      yi = y0 + i * 20;
+      ctx.fillStyle = "black";
+      ctx.fillText(this.legends[i], x0 - ctx.measureText(this.legends[i]).width, yi);
+      yi -= 4;
+      if (this.lineTypes[i] !== "None") {
+        ctx.beginPath();
+        ctx.moveTo(x0 + 10, yi);
+        ctx.lineTo(x0 + 40, yi);
+        ctx.lineWidth = this.lineThicknesses[i];
+        ctx.strokeStyle = this.lineColors[i];
+        switch (this.lineTypes[i]) {
+          case "Solid":
+            ctx.setLineDash([]);
+            break;
+          case "Dashed":
+            ctx.setLineDash([5, 3]);
+            break;
+          case "Dotted":
+            ctx.setLineDash([2, 2]);
+            break;
+          case "Dashdot":
+            ctx.setLineDash([8, 2, 2, 2]);
+            break;
+        }
+        ctx.stroke();
+      }
+      ctx.lineWidth = 1;
+      ctx.setLineDash([]);
+      let xi = x0 + 25;
+      let r = this.dataSymbolRadii[i];
+      switch (this.dataSymbols[i]) {
+        case "Circle":
+          ctx.beginPath();
+          ctx.arc(xi, yi, r, 0, 2 * Math.PI);
+          ctx.closePath();
+          ctx.fillStyle = this.dataSymbolColors[i];
+          ctx.fill();
+          ctx.strokeStyle = this.lineColors[i];
+          ctx.stroke();
+          break;
+        case "Square":
+          let d = 2 * r;
+          ctx.beginPath();
+          ctx.rect(xi - r, yi - r, d, d);
+          ctx.fillStyle = this.dataSymbolColors[i];
+          ctx.fill();
+          ctx.strokeStyle = this.lineColors[i];
+          ctx.stroke();
+          break;
+        case "Triangle Up":
+          ctx.beginPath();
+          ctx.moveTo(xi, yi - r);
+          ctx.lineTo(xi - r, yi + r);
+          ctx.lineTo(xi + r, yi + r);
+          ctx.closePath();
+          ctx.fillStyle = this.dataSymbolColors[i];
+          ctx.fill();
+          ctx.strokeStyle = this.lineColors[i];
+          ctx.stroke();
+          break;
+        case "Triangle Down":
+          ctx.beginPath();
+          ctx.moveTo(xi, yi + r);
+          ctx.lineTo(xi - r, yi - r);
+          ctx.lineTo(xi + r, yi - r);
+          ctx.closePath();
+          ctx.fillStyle = this.dataSymbolColors[i];
+          ctx.fill();
+          ctx.strokeStyle = this.lineColors[i];
+          ctx.stroke();
+          break;
+        case "Diamond":
+          ctx.beginPath();
+          ctx.moveTo(xi, yi + r);
+          ctx.lineTo(xi - r, yi);
+          ctx.lineTo(xi, yi - r);
+          ctx.lineTo(xi + r, yi);
+          ctx.closePath();
+          ctx.fillStyle = this.dataSymbolColors[i];
+          ctx.fill();
+          ctx.strokeStyle = this.lineColors[i];
+          ctx.stroke();
+          break;
+        case "Dot":
+          ctx.beginPath();
+          ctx.rect(xi - 2, yi - 2, 4, 4);
+          ctx.fillStyle = this.dataSymbolColors[i];
+          ctx.fill();
+          break;
+      }
+    }
+    ctx.restore();
   }
 
   private drawGridLines(ctx: CanvasRenderingContext2D): void {

@@ -131,6 +131,11 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="space2d-line-thickness-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Legend:</td>
+                  <td><select id="space2d-legend-port-selector" style="width: 65px"></select></td>
+                  <td colspan="2"><input type="text" id="space2d-legend-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Symbol Type:</td>
                   <td><select id="space2d-symbol-set-selector" style="width: 65px"></select></td>
                   <td colspan="2">
@@ -256,6 +261,7 @@ export class Space2DContextMenu extends BlockContextMenu {
       };
 
       // temporary storage of properties (don't store the changes to the block object or else we won't be able to cancel)
+      let legends: string[] = g.getLegends();
       let lineTypes: string[] = g.getLineTypes();
       let lineColors: string[] = g.getLineColors();
       let lineThicknesses: number[] = g.getLineThicknesses();
@@ -314,6 +320,12 @@ export class Space2DContextMenu extends BlockContextMenu {
       lineThicknessField.onchange = () => lineThicknesses[parseInt(lineThicknessSetSelector.value)] = parseFloat(lineThicknessField.value);
       let lineThicknessSetSelector = this.createSetSelector("space2d-line-thickness-set-selector");
       lineThicknessSetSelector.onchange = () => lineThicknessField.value = lineThicknesses[parseInt(lineThicknessSetSelector.value)].toString();
+
+      let legendField = document.getElementById("space2d-legend-field") as HTMLInputElement;
+      legendField.value = legends[0].toString();
+      legendField.onchange = () => legends[parseInt(legendPortSelector.value)] = legendField.value;
+      let legendPortSelector = this.createSetSelector("space2d-legend-port-selector");
+      legendPortSelector.onchange = () => legendField.value = legends[parseInt(legendPortSelector.value)].toString();
 
       let symbolSelector = document.getElementById("space2d-symbol-selector") as HTMLSelectElement;
       symbolSelector.value = dataSymbols[0];
@@ -494,6 +506,7 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setPointInput(pointInputRadioButton.checked);
           g.setEndSymbolsConnection(endSymbolsConnectionSelector.value);
           for (let i = 0; i < lineTypes.length; i++) {
+            g.setLegend(i, legends[i]);
             g.setLineType(i, lineTypes[i]);
             g.setLineColor(i, lineColors[i]);
             g.setLineThickness(i, lineThicknesses[i]);
@@ -527,6 +540,7 @@ export class Space2DContextMenu extends BlockContextMenu {
       windowColorField.addEventListener("keyup", enterKeyUp);
       lineColorField.addEventListener("keyup", enterKeyUp);
       lineThicknessField.addEventListener("keyup", enterKeyUp);
+      legendField.addEventListener("keyup", enterKeyUp);
       symbolColorField.addEventListener("keyup", enterKeyUp);
       symbolRadiusField.addEventListener("keyup", enterKeyUp);
       symbolSpacingField.addEventListener("keyup", enterKeyUp);

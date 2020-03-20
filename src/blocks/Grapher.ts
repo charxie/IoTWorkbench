@@ -459,7 +459,7 @@ export class Grapher extends Block {
     }
     if (!this.iconic) {
       this.drawAxisLabels(ctx);
-      if (this.dataArrays.length > 1) {
+      if (this.portI.length > 1) {
         this.drawLegends(ctx);
       }
       if (maxLength > 1) {
@@ -532,7 +532,6 @@ export class Grapher extends Block {
             break;
         }
         ctx.strokeStyle = this.lineColors[i];
-        ctx.font = "10px Arial";
         ctx.beginPath();
         tmpX = this.graphWindow.x;
         tmpY = yOffset + (arr.data[0] - min) * dy;
@@ -548,9 +547,26 @@ export class Grapher extends Block {
           ctx.fill();
         }
         ctx.stroke();
+      } else {
+        if (this.fillOptions[i]) {
+          let arr = this.dataArrays[i];
+          ctx.beginPath();
+          tmpX = this.graphWindow.x;
+          tmpY = yOffset + (arr.data[0] - min) * dy;
+          ctx.moveTo(tmpX, horizontalAxisY - tmpY);
+          for (let k = 1; k < arr.length(); k++) {
+            tmpX = this.graphWindow.x + dx * k;
+            tmpY = yOffset + (arr.data[k] - min) * dy;
+            ctx.lineTo(tmpX, horizontalAxisY - tmpY);
+          }
+          ctx.fillStyle = this.fillColors[i];
+          ctx.closePath();
+          ctx.fill();
+        }
       }
     }
 
+    ctx.font = "10px Arial";
     ctx.setLineDash([]);
     ctx.lineWidth = 1;
     // draw symbols on top of the line
@@ -727,31 +743,34 @@ export class Grapher extends Block {
     let x0 = this.graphWindow.x + this.graphWindow.width - 50;
     let y0 = this.graphWindow.y + this.graphMargin.top + 10;
     let yi;
-    for (let i = 0; i < this.legends.length; i++) {
+    for (let i = 0; i < this.portI.length; i++) {
+      if (this.legends[i].trim() === "") continue;
       yi = y0 + i * 20;
       ctx.fillStyle = "black";
       ctx.fillText(this.legends[i], x0 - ctx.measureText(this.legends[i]).width, yi);
-      ctx.beginPath();
       yi -= 4;
-      ctx.moveTo(x0 + 10, yi);
-      ctx.lineTo(x0 + 40, yi);
-      ctx.lineWidth = this.lineThicknesses[i];
-      ctx.strokeStyle = this.lineColors[i];
-      switch (this.lineTypes[i]) {
-        case "Solid":
-          ctx.setLineDash([]);
-          break;
-        case "Dashed":
-          ctx.setLineDash([5, 3]);
-          break;
-        case "Dotted":
-          ctx.setLineDash([2, 2]);
-          break;
-        case "Dashdot":
-          ctx.setLineDash([8, 2, 2, 2]);
-          break;
+      if (this.lineTypes[i] !== "None") {
+        ctx.beginPath();
+        ctx.moveTo(x0 + 10, yi);
+        ctx.lineTo(x0 + 40, yi);
+        ctx.lineWidth = this.lineThicknesses[i];
+        ctx.strokeStyle = this.lineColors[i];
+        switch (this.lineTypes[i]) {
+          case "Solid":
+            ctx.setLineDash([]);
+            break;
+          case "Dashed":
+            ctx.setLineDash([5, 3]);
+            break;
+          case "Dotted":
+            ctx.setLineDash([2, 2]);
+            break;
+          case "Dashdot":
+            ctx.setLineDash([8, 2, 2, 2]);
+            break;
+        }
+        ctx.stroke();
       }
-      ctx.stroke();
       ctx.lineWidth = 1;
       ctx.setLineDash([]);
       let xi = x0 + 25;

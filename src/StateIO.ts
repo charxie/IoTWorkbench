@@ -224,6 +224,7 @@ export class StateIO {
           block.setShowGridLines(state.showGridLines == undefined ? false : state.showGridLines);
           block.setEndSymbolsConnection(state.endSymbolsConnection === undefined ? "None" : state.endSymbolsConnection);
           if (state.backgroundImageSrc != undefined) block.setBackgroundImageSrc(state.backgroundImageSrc);
+          if (state.legends != undefined) block.setLegends(state.legends);
           if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
           if (state.lineThicknesses != undefined) block.setLineThicknesses(state.lineThicknesses);
