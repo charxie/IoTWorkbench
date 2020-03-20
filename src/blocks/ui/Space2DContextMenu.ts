@@ -421,9 +421,9 @@ export class Space2DContextMenu extends BlockContextMenu {
       let gridLinesRadioButton = document.getElementById("space2d-grid-lines-radio-button") as HTMLInputElement;
       gridLinesRadioButton.checked = g.getShowGridLines();
       let widthField = document.getElementById("space2d-width-field") as HTMLInputElement;
-      widthField.value = g.getWidth().toString();
+      widthField.value = Math.round(g.getWidth()).toString();
       let heightField = document.getElementById("space2d-height-field") as HTMLInputElement;
-      heightField.value = g.getHeight().toString();
+      heightField.value = Math.round(g.getHeight()).toString();
 
       Util.hookupColorInputs(lineColorField, lineColorChooser);
       Util.hookupColorInputs(symbolColorField, symbolColorChooser);

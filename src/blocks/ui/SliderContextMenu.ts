@@ -70,8 +70,8 @@ export class SliderContextMenu extends BlockContextMenu {
     if (this.block instanceof Slider) {
       const slider = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("slider-name-field") as HTMLInputElement;
-      nameInputElement.value = slider.getName();
+      let nameField = document.getElementById("slider-name-field") as HTMLInputElement;
+      nameField.value = slider.getName();
       let sourceRadioButton = document.getElementById("slider-source-radio-button") as HTMLInputElement;
       sourceRadioButton.checked = slider.isSource();
       let notSourceRadioButton = document.getElementById("slider-not-source-radio-button") as HTMLInputElement;
@@ -80,70 +80,70 @@ export class SliderContextMenu extends BlockContextMenu {
       snapRadioButton.checked = slider.getSnapToTick();
       let noSnapRadioButton = document.getElementById("slider-no-snap-radio-button") as HTMLInputElement;
       noSnapRadioButton.checked = !slider.getSnapToTick();
-      let minimumInputElement = document.getElementById("slider-minimum-field") as HTMLInputElement;
-      minimumInputElement.value = slider.getMinimum().toString();
-      let maximumInputElement = document.getElementById("slider-maximum-field") as HTMLInputElement;
-      maximumInputElement.value = slider.getMaximum().toString();
-      let stepsInputElement = document.getElementById("slider-steps-field") as HTMLInputElement;
-      stepsInputElement.value = slider.getSteps().toString();
-      let valueInputElement = document.getElementById("slider-value-field") as HTMLInputElement;
-      valueInputElement.value = slider.getValue().toFixed(3);
-      let precisionInputElement = document.getElementById("slider-value-precision-field") as HTMLInputElement;
-      precisionInputElement.value = slider.getValuePrecision() != undefined ? slider.getValuePrecision().toString() : "2";
-      let widthInputElement = document.getElementById("slider-width-field") as HTMLInputElement;
-      widthInputElement.value = slider.getWidth().toString();
-      let heightInputElement = document.getElementById("slider-height-field") as HTMLInputElement;
-      heightInputElement.value = slider.getHeight().toString();
-      const okFunction = function () {
+      let minimumField = document.getElementById("slider-minimum-field") as HTMLInputElement;
+      minimumField.value = slider.getMinimum().toString();
+      let maximumField = document.getElementById("slider-maximum-field") as HTMLInputElement;
+      maximumField.value = slider.getMaximum().toString();
+      let stepsField = document.getElementById("slider-steps-field") as HTMLInputElement;
+      stepsField.value = slider.getSteps().toString();
+      let valueField = document.getElementById("slider-value-field") as HTMLInputElement;
+      valueField.value = slider.getValue().toFixed(3);
+      let precisionField = document.getElementById("slider-value-precision-field") as HTMLInputElement;
+      precisionField.value = slider.getValuePrecision() != undefined ? slider.getValuePrecision().toString() : "2";
+      let widthField = document.getElementById("slider-width-field") as HTMLInputElement;
+      widthField.value = Math.round(slider.getWidth()).toString();
+      let heightField = document.getElementById("slider-height-field") as HTMLInputElement;
+      heightField.value = Math.round(slider.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           slider.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           slider.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set minimum
-        let minimum = parseFloat(minimumInputElement.value);
+        let minimum = parseFloat(minimumField.value);
         if (isNumber(minimum)) {
           slider.setMinimum(minimum);
         } else {
           success = false;
-          message = minimumInputElement.value + " is not a valid minimum";
+          message = minimumField.value + " is not a valid minimum";
         }
         // set maximum
-        let maximum = parseFloat(maximumInputElement.value);
+        let maximum = parseFloat(maximumField.value);
         if (isNumber(maximum)) {
           if (maximum > minimum) {
             slider.setMaximum(maximum);
           } else {
             success = false;
-            message = "The set maximum " + maximumInputElement.value + " is not greater than the minimum " + minimum;
+            message = "The set maximum " + maximumField.value + " is not greater than the minimum " + minimum;
           }
         } else {
           success = false;
-          message = maximumInputElement.value + " is not a valid maximum";
+          message = maximumField.value + " is not a valid maximum";
         }
         // set steps
-        let steps = parseFloat(stepsInputElement.value);
+        let steps = parseFloat(stepsField.value);
         if (isNumber(steps)) {
           slider.setSteps(Math.max(1, steps));
         } else {
           success = false;
-          message = stepsInputElement.value + " is not a valid number for steps";
+          message = stepsField.value + " is not a valid number for steps";
         }
         // set current value
-        let value = parseFloat(valueInputElement.value);
+        let value = parseFloat(valueField.value);
         if (isNumber(value)) {
           if (value > maximum) {
             value = maximum
@@ -153,19 +153,19 @@ export class SliderContextMenu extends BlockContextMenu {
           slider.setValue(value);
         } else {
           success = false;
-          message = valueInputElement.value + " is not a valid number for value";
+          message = valueField.value + " is not a valid number for value";
         }
         // set value precision
-        let valuePrecision = parseInt(precisionInputElement.value);
+        let valuePrecision = parseInt(precisionField.value);
         if (isNumber(valuePrecision)) {
           slider.setValuePrecision(Math.max(1, valuePrecision));
         } else {
           success = false;
-          message = valueInputElement.value + " is not a valid number for value precision";
+          message = valueField.value + " is not a valid number for value precision";
         }
         // finish
         if (success) {
-          slider.setName(nameInputElement.value);
+          slider.setName(nameField.value);
           slider.setSnapToTick(snapRadioButton.checked);
           slider.setSource(sourceRadioButton.checked);
           slider.refreshView();
@@ -176,19 +176,19 @@ export class SliderContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      minimumInputElement.addEventListener("keyup", enterKeyUp);
-      maximumInputElement.addEventListener("keyup", enterKeyUp);
-      stepsInputElement.addEventListener("keyup", enterKeyUp);
-      valueInputElement.addEventListener("keyup", enterKeyUp);
-      precisionInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      minimumField.addEventListener("keyup", enterKeyUp);
+      maximumField.addEventListener("keyup", enterKeyUp);
+      stepsField.addEventListener("keyup", enterKeyUp);
+      valueField.addEventListener("keyup", enterKeyUp);
+      precisionField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -197,9 +197,7 @@ export class SliderContextMenu extends BlockContextMenu {
         width: 360,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

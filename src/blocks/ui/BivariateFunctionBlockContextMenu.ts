@@ -55,48 +55,48 @@ export class BivariateFunctionBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof BivariateFunctionBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let variable1NameInputElement = document.getElementById("bivariate-function-block-variable1-name-field") as HTMLInputElement;
-      variable1NameInputElement.value = block.getVariable1Name() ? block.getVariable1Name() : "x";
-      let variable2NameInputElement = document.getElementById("bivariate-function-block-variable2-name-field") as HTMLInputElement;
-      variable2NameInputElement.value = block.getVariable2Name() ? block.getVariable2Name() : "y";
-      let expressionInputElement = document.getElementById("bivariate-function-block-expression-field") as HTMLInputElement;
-      expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x+y";
+      let variable1NameField = document.getElementById("bivariate-function-block-variable1-name-field") as HTMLInputElement;
+      variable1NameField.value = block.getVariable1Name() ? block.getVariable1Name() : "x";
+      let variable2NameField = document.getElementById("bivariate-function-block-variable2-name-field") as HTMLInputElement;
+      variable2NameField.value = block.getVariable2Name() ? block.getVariable2Name() : "y";
+      let expressionField = document.getElementById("bivariate-function-block-expression-field") as HTMLInputElement;
+      expressionField.value = block.getExpression() ? block.getExpression().toString() : "x+y";
       let output1DRadioButton = document.getElementById("bivariate-function-block-output-1d-radio-button") as HTMLInputElement;
       output1DRadioButton.checked = block.getOutputArrayType() === "1D";
       let output2DRadioButton = document.getElementById("bivariate-function-block-output-2d-radio-button") as HTMLInputElement;
       output2DRadioButton.checked = block.getOutputArrayType() === "2D";
-      let widthInputElement = document.getElementById("bivariate-function-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("bivariate-function-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let widthField = document.getElementById("bivariate-function-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("bivariate-function-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
-        block.setVariable1Name(variable1NameInputElement.value);
-        block.setVariable2Name(variable2NameInputElement.value);
-        block.setExpression(expressionInputElement.value);
+        block.setVariable1Name(variable1NameField.value);
+        block.setVariable2Name(variable2NameField.value);
+        block.setExpression(expressionField.value);
         block.useDeclaredFunctions();
         try {
           flowchart.updateResultsForBlock(block);
         } catch (err) {
           success = false;
-          message = expressionInputElement.value + " is not a valid expression";
+          message = expressionField.value + " is not a valid expression";
         }
         // finish up
         if (success) {
@@ -111,16 +111,16 @@ export class BivariateFunctionBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      variable1NameInputElement.addEventListener("keyup", enterKeyUp);
-      variable2NameInputElement.addEventListener("keyup", enterKeyUp);
-      expressionInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      variable1NameField.addEventListener("keyup", enterKeyUp);
+      variable2NameField.addEventListener("keyup", enterKeyUp);
+      expressionField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -129,9 +129,7 @@ export class BivariateFunctionBlockContextMenu extends BlockContextMenu {
         width: 450,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

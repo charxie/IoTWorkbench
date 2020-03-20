@@ -52,68 +52,68 @@ export class RgbaColorBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof RgbaColorBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let redInputElement = document.getElementById("rgba-color-block-red-field") as HTMLInputElement;
-      redInputElement.value = block.getRed().toString();
-      let greenInputElement = document.getElementById("rgba-color-block-green-field") as HTMLInputElement;
-      greenInputElement.value = block.getGreen().toString();
-      let blueInputElement = document.getElementById("rgba-color-block-blue-field") as HTMLInputElement;
-      blueInputElement.value = block.getBlue().toString();
-      let alphaInputElement = document.getElementById("rgba-color-block-alpha-field") as HTMLInputElement;
-      alphaInputElement.value = block.getAlpha().toString();
-      let widthInputElement = document.getElementById("rgba-color-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("rgba-color-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let redField = document.getElementById("rgba-color-block-red-field") as HTMLInputElement;
+      redField.value = block.getRed().toString();
+      let greenField = document.getElementById("rgba-color-block-green-field") as HTMLInputElement;
+      greenField.value = block.getGreen().toString();
+      let blueField = document.getElementById("rgba-color-block-blue-field") as HTMLInputElement;
+      blueField.value = block.getBlue().toString();
+      let alphaField = document.getElementById("rgba-color-block-alpha-field") as HTMLInputElement;
+      alphaField.value = block.getAlpha().toString();
+      let widthField = document.getElementById("rgba-color-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("rgba-color-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set red
-        let red = parseFloat(redInputElement.value);
+        let red = parseFloat(redField.value);
         if (isNumber(red)) {
           block.setRed(red);
         } else {
           success = false;
-          message = redInputElement.value + " is not a valid number for red";
+          message = redField.value + " is not a valid number for red";
         }
         // set green
-        let green = parseFloat(greenInputElement.value);
+        let green = parseFloat(greenField.value);
         if (isNumber(green)) {
           block.setGreen(green);
         } else {
           success = false;
-          message = greenInputElement.value + " is not a valid number for green";
+          message = greenField.value + " is not a valid number for green";
         }
         // set blue
-        let blue = parseInt(blueInputElement.value);
+        let blue = parseInt(blueField.value);
         if (isNumber(blue)) {
           block.setBlue(blue);
         } else {
           success = false;
-          message = blueInputElement.value + " is not a valid number for blue";
+          message = blueField.value + " is not a valid number for blue";
         }
         // set alpha
-        let alpha = parseInt(alphaInputElement.value);
+        let alpha = parseInt(alphaField.value);
         if (isNumber(alpha)) {
           block.setAlpha(alpha);
         } else {
           success = false;
-          message = alphaInputElement.value + " is not a valid number for alpha";
+          message = alphaField.value + " is not a valid number for alpha";
         }
         // finish
         if (success) {
@@ -127,17 +127,17 @@ export class RgbaColorBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      redInputElement.addEventListener("keyup", enterKeyUp);
-      greenInputElement.addEventListener("keyup", enterKeyUp);
-      blueInputElement.addEventListener("keyup", enterKeyUp);
-      alphaInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      redField.addEventListener("keyup", enterKeyUp);
+      greenField.addEventListener("keyup", enterKeyUp);
+      blueField.addEventListener("keyup", enterKeyUp);
+      alphaField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -146,9 +146,7 @@ export class RgbaColorBlockContextMenu extends BlockContextMenu {
         width: 400,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

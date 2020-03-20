@@ -20,7 +20,7 @@ export class MatrixBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Values:<div style="font-size: 70%">(e.g.,<br>[[1, 0, 0],<br>[0, 1, 0],<br>[0, 0, 1]])</div></td>
-                  <td><textarea id="matrix-block-values-field" rows="5" style="width: 100%"></textarea></td>
+                  <td><textarea id="matrix-block-values-area" rows="5" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>
                   <td>Fraction Digits:</td>
@@ -44,47 +44,47 @@ export class MatrixBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof MatrixBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let valuesInputElement = document.getElementById("matrix-block-values-field") as HTMLTextAreaElement;
-      valuesInputElement.value = JSON.stringify(block.getValues());
-      let fractionDigitsInputElement = document.getElementById("matrix-block-fraction-digits-field") as HTMLInputElement;
-      fractionDigitsInputElement.value = block.getFractionDigits().toString();
-      let widthInputElement = document.getElementById("matrix-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("matrix-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let valuesArea = document.getElementById("matrix-block-values-area") as HTMLTextAreaElement;
+      valuesArea.value = JSON.stringify(block.getValues());
+      let fractionDigitsField = document.getElementById("matrix-block-fraction-digits-field") as HTMLInputElement;
+      fractionDigitsField.value = block.getFractionDigits().toString();
+      let widthField = document.getElementById("matrix-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("matrix-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set fraction digits
-        let fractionDigits = parseInt(fractionDigitsInputElement.value);
+        let fractionDigits = parseInt(fractionDigitsField.value);
         if (isNumber(fractionDigits)) {
           block.setFractionDigits(Math.max(0, fractionDigits));
         } else {
           success = false;
-          message = fractionDigitsInputElement.value + " is not valid for fraction digits";
+          message = fractionDigitsField.value + " is not valid for fraction digits";
         }
         // set values
         try {
-          block.setValues(JSON.parse(valuesInputElement.value));
+          block.setValues(JSON.parse(valuesArea.value));
         } catch (err) {
           success = false;
-          message = valuesInputElement.value + " is not a valid matrix";
+          message = valuesArea.value + " is not a valid matrix";
         }
         // finish
         if (success) {
@@ -98,14 +98,14 @@ export class MatrixBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      fractionDigitsInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      fractionDigitsField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -114,9 +114,7 @@ export class MatrixBlockContextMenu extends BlockContextMenu {
         width: 360,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

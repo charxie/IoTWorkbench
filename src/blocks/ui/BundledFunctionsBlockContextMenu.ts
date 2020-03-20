@@ -50,11 +50,11 @@ export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
       let inputNameField = document.getElementById("bundled-functions-block-input-name-field") as HTMLInputElement;
       inputNameField.value = block.getInputName() ? block.getInputName().toString() : "t";
       let expressionsField = document.getElementById("bundled-functions-block-expressions-field") as HTMLTextAreaElement;
-      expressionsField.value = JSON.stringify(block.getExpressions());
+      expressionsField.value = JSON.stringify(block.getExpressions()).replaceAll(',', ',\n');
       let widthField = document.getElementById("bundled-functions-block-width-field") as HTMLInputElement;
-      widthField.value = block.getWidth().toString();
+      widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("bundled-functions-block-height-field") as HTMLInputElement;
-      heightField.value = block.getHeight().toString();
+      heightField.value = Math.round(block.getHeight()).toString();
       const okFunction = () => {
         block.setInputName(inputNameField.value);
         let success = true;

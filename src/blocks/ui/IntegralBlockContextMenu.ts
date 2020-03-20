@@ -52,47 +52,47 @@ export class IntegralBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof IntegralBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("integral-block-name-field") as HTMLInputElement;
-      nameInputElement.value = block.getName();
-      let methodSelectElement = document.getElementById("integral-block-method-selector") as HTMLSelectElement;
-      methodSelectElement.value = block.getMethod();
-      let fractionDigitsInputElement = document.getElementById("integral-block-fraction-digits-field") as HTMLInputElement;
-      fractionDigitsInputElement.value = block.getFractionDigits().toString();
-      let widthInputElement = document.getElementById("integral-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("integral-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let nameField = document.getElementById("integral-block-name-field") as HTMLInputElement;
+      nameField.value = block.getName();
+      let methodSelector = document.getElementById("integral-block-method-selector") as HTMLSelectElement;
+      methodSelector.value = block.getMethod();
+      let fractionDigitsField = document.getElementById("integral-block-fraction-digits-field") as HTMLInputElement;
+      fractionDigitsField.value = block.getFractionDigits().toString();
+      let widthField = document.getElementById("integral-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("integral-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set fraction digits
-        let fractionDigits = parseInt(fractionDigitsInputElement.value);
+        let fractionDigits = parseInt(fractionDigitsField.value);
         if (isNumber(fractionDigits)) {
           block.setFractionDigits(Math.max(0, fractionDigits));
         } else {
           success = false;
-          message = fractionDigitsInputElement.value + " is not valid for fraction digits";
+          message = fractionDigitsField.value + " is not valid for fraction digits";
         }
         // finish
         if (success) {
-          block.setMethod(methodSelectElement.value);
-          block.setName(nameInputElement.value);
+          block.setMethod(methodSelector.value);
+          block.setName(nameField.value);
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(block);
@@ -103,15 +103,15 @@ export class IntegralBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      fractionDigitsInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      fractionDigitsField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -120,9 +120,7 @@ export class IntegralBlockContextMenu extends BlockContextMenu {
         width: 360,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

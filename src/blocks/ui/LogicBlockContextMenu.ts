@@ -50,37 +50,37 @@ export class LogicBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof LogicBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let selectElement = document.getElementById("logic-block-operator") as HTMLSelectElement;
-      selectElement.value = block.getName();
-      let widthInputElement = document.getElementById("logic-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("logic-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let operatorSelector = document.getElementById("logic-block-operator") as HTMLSelectElement;
+      operatorSelector.value = block.getName();
+      let widthField = document.getElementById("logic-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("logic-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
-          let name = selectElement.options[selectElement.selectedIndex].value;
+          let name = operatorSelector.options[operatorSelector.selectedIndex].value;
           if (name !== block.getName()) {
             block.setName(name);
-            block.setSymbol(selectElement.options[selectElement.selectedIndex].text);
+            block.setSymbol(operatorSelector.options[operatorSelector.selectedIndex].text);
             block.setUid(block.getName() + " #" + Date.now().toString(16));
           }
           block.refreshView();
@@ -93,13 +93,13 @@ export class LogicBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -108,9 +108,7 @@ export class LogicBlockContextMenu extends BlockContextMenu {
         width: 360,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

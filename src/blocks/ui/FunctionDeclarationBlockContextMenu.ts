@@ -48,39 +48,39 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof FunctionDeclarationBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let variableNamesInputElement = document.getElementById("function-declaration-block-variable-name-field") as HTMLInputElement;
-      variableNamesInputElement.value = block.getVariableNames() !== undefined ? JSON.stringify(block.getVariableNames()) : "[x]";
-      let functionNameInputElement = document.getElementById("function-declaration-block-function-name-field") as HTMLInputElement;
-      functionNameInputElement.value = block.getFunctionName() ? block.getFunctionName() : "f";
-      let expressionInputElement = document.getElementById("function-declaration-block-expression-field") as HTMLInputElement;
-      expressionInputElement.value = block.getExpression() ? block.getExpression() : "x";
-      let widthInputElement = document.getElementById("function-declaration-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("function-declaration-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let variableNamesField = document.getElementById("function-declaration-block-variable-name-field") as HTMLInputElement;
+      variableNamesField.value = block.getVariableNames() !== undefined ? JSON.stringify(block.getVariableNames()) : "[x]";
+      let functionNameField = document.getElementById("function-declaration-block-function-name-field") as HTMLInputElement;
+      functionNameField.value = block.getFunctionName() ? block.getFunctionName() : "f";
+      let expressionField = document.getElementById("function-declaration-block-expression-field") as HTMLInputElement;
+      expressionField.value = block.getExpression() ? block.getExpression() : "x";
+      let widthField = document.getElementById("function-declaration-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("function-declaration-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set function name and expression
         let redefine = false;
-        let fun = functionNameInputElement.value + "(" + variableNamesInputElement.value + ")";
-        if (functionNameInputElement.value !== block.getFunctionName()) {
+        let fun = functionNameField.value + "(" + variableNamesField.value + ")";
+        if (functionNameField.value !== block.getFunctionName()) {
           if (flowchart.isFunctionNameDeclared(fun)) {
             success = false;
             message = "The function " + name + " is already declared";
@@ -88,7 +88,7 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
         } else {
           redefine = true;
         }
-        let expression = expressionInputElement.value;
+        let expression = expressionField.value;
         if (expression !== block.getExpression()) {
           if (!redefine && flowchart.isFunctionExpressionDeclared(fun, expression)) {
             success = false;
@@ -96,19 +96,19 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
           }
         }
         // set variables
-        if (JSON.stringify(block.getVariableNames()) !== variableNamesInputElement.value) {
+        if (JSON.stringify(block.getVariableNames()) !== variableNamesField.value) {
           try {
-            block.setVariableNames(JSON.parse(variableNamesInputElement.value));
+            block.setVariableNames(JSON.parse(variableNamesField.value));
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = variableNamesInputElement.value + " is not a valid array for variable names";
+            message = variableNamesField.value + " is not a valid array for variable names";
           }
         }
         // finish
         if (success) {
-          block.setVariableNames(JSON.parse(variableNamesInputElement.value));
-          block.setFunctionName(functionNameInputElement.value);
+          block.setVariableNames(JSON.parse(variableNamesField.value));
+          block.setFunctionName(functionNameField.value);
           block.setExpression(expression);
           flowchart.updateFunctionDeclaration(block);
           flowchart.useDeclaredFunctions();
@@ -122,16 +122,16 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      variableNamesInputElement.addEventListener("keyup", enterKeyUp);
-      functionNameInputElement.addEventListener("keyup", enterKeyUp);
-      expressionInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      variableNamesField.addEventListener("keyup", enterKeyUp);
+      functionNameField.addEventListener("keyup", enterKeyUp);
+      expressionField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -140,9 +140,7 @@ export class FunctionDeclarationBlockContextMenu extends BlockContextMenu {
         width: 420,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

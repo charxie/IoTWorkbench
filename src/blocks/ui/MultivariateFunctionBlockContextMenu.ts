@@ -22,7 +22,7 @@ export class MultivariateFunctionBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Variables:<div style="font-size: 70%">(e.g., ["x", "y", "z"])</div></td>
-                  <td><textarea id="multivariate-function-block-cases-field" rows="3" style="width: 100%"></textarea></td>
+                  <td><textarea id="multivariate-function-block-cases-area" rows="3" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>
                   <td>Expression (e.g. x+y+z):</td>
@@ -50,60 +50,60 @@ export class MultivariateFunctionBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof MultivariateFunctionBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let variablesInputElement = document.getElementById("multivariate-function-block-cases-field") as HTMLTextAreaElement;
-      variablesInputElement.value = JSON.stringify(block.getVariables());
-      let expressionInputElement = document.getElementById("multivariate-function-block-expression-field") as HTMLInputElement;
-      expressionInputElement.value = block.getExpression() ? block.getExpression().toString() : "x+y+z";
-      let insetMarginInputElement = document.getElementById("multivariate-function-inset-margin-field") as HTMLInputElement;
-      insetMarginInputElement.value = block.getMarginX().toString();
-      let widthInputElement = document.getElementById("multivariate-function-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("multivariate-function-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let variablesArea = document.getElementById("multivariate-function-block-cases-area") as HTMLTextAreaElement;
+      variablesArea.value = JSON.stringify(block.getVariables());
+      let expressionField = document.getElementById("multivariate-function-block-expression-field") as HTMLInputElement;
+      expressionField.value = block.getExpression() ? block.getExpression().toString() : "x+y+z";
+      let insetMarginField = document.getElementById("multivariate-function-inset-margin-field") as HTMLInputElement;
+      insetMarginField.value = block.getMarginX().toString();
+      let widthField = document.getElementById("multivariate-function-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("multivariate-function-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set inset margin
-        let margin = parseInt(insetMarginInputElement.value);
+        let margin = parseInt(insetMarginField.value);
         if (isNumber(margin)) {
           block.setMarginX(Math.max(15, margin));
         } else {
           success = false;
-          message = insetMarginInputElement.value + " is not a valid margin";
+          message = insetMarginField.value + " is not a valid margin";
         }
         // set variables
-        if (JSON.stringify(block.getVariables()) != variablesInputElement.value) {
+        if (JSON.stringify(block.getVariables()) != variablesArea.value) {
           try {
-            block.setVariables(JSON.parse(variablesInputElement.value));
+            block.setVariables(JSON.parse(variablesArea.value));
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = variablesInputElement.value + " is not a valid array for variables";
+            message = variablesArea.value + " is not a valid array for variables";
           }
         }
-        block.setExpression(expressionInputElement.value);
+        block.setExpression(expressionField.value);
         block.useDeclaredFunctions();
         try {
           flowchart.updateResultsForBlock(block);
         } catch (err) {
           success = false;
-          message = expressionInputElement.value + " is not a valid expression";
+          message = expressionField.value + " is not a valid expression";
         }
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
@@ -116,15 +116,15 @@ export class MultivariateFunctionBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      expressionInputElement.addEventListener("keyup", enterKeyUp);
-      insetMarginInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      expressionField.addEventListener("keyup", enterKeyUp);
+      insetMarginField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -133,9 +133,7 @@ export class MultivariateFunctionBlockContextMenu extends BlockContextMenu {
         width: 450,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

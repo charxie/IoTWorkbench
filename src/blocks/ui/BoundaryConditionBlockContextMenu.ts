@@ -80,83 +80,83 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof BoundaryConditionBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let northTypeSelectElement = document.getElementById("boundary-condition-block-north-type-selector") as HTMLSelectElement;
-      northTypeSelectElement.value = block.boundaryCondition.north.type;
-      let eastTypeSelectElement = document.getElementById("boundary-condition-block-east-type-selector") as HTMLSelectElement;
-      eastTypeSelectElement.value = block.boundaryCondition.east.type;
-      let southTypeSelectElement = document.getElementById("boundary-condition-block-south-type-selector") as HTMLSelectElement;
-      southTypeSelectElement.value = block.boundaryCondition.south.type;
-      let westTypeSelectElement = document.getElementById("boundary-condition-block-west-type-selector") as HTMLSelectElement;
-      westTypeSelectElement.value = block.boundaryCondition.west.type;
-      let northValueInputElement = document.getElementById("boundary-condition-block-north-value-field") as HTMLInputElement;
-      northValueInputElement.value = block.boundaryCondition.north.value != undefined ? block.boundaryCondition.north.value.toString() : "0";
-      let eastValueInputElement = document.getElementById("boundary-condition-block-east-value-field") as HTMLInputElement;
-      eastValueInputElement.value = block.boundaryCondition.east.value != undefined ? block.boundaryCondition.east.value.toString() : "0";
-      let southValueInputElement = document.getElementById("boundary-condition-block-south-value-field") as HTMLInputElement;
-      southValueInputElement.value = block.boundaryCondition.south.value != undefined ? block.boundaryCondition.south.value.toString() : "0";
-      let westValueInputElement = document.getElementById("boundary-condition-block-west-value-field") as HTMLInputElement;
-      westValueInputElement.value = block.boundaryCondition.west.value != undefined ? block.boundaryCondition.west.value.toString() : "0";
-      let widthInputElement = document.getElementById("boundary-condition-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("boundary-condition-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let northTypeSelector = document.getElementById("boundary-condition-block-north-type-selector") as HTMLSelectElement;
+      northTypeSelector.value = block.boundaryCondition.north.type;
+      let eastTypeSelector = document.getElementById("boundary-condition-block-east-type-selector") as HTMLSelectElement;
+      eastTypeSelector.value = block.boundaryCondition.east.type;
+      let southTypeSelector = document.getElementById("boundary-condition-block-south-type-selector") as HTMLSelectElement;
+      southTypeSelector.value = block.boundaryCondition.south.type;
+      let westTypeSelector = document.getElementById("boundary-condition-block-west-type-selector") as HTMLSelectElement;
+      westTypeSelector.value = block.boundaryCondition.west.type;
+      let northValueField = document.getElementById("boundary-condition-block-north-value-field") as HTMLInputElement;
+      northValueField.value = block.boundaryCondition.north.value != undefined ? block.boundaryCondition.north.value.toString() : "0";
+      let eastValueField = document.getElementById("boundary-condition-block-east-value-field") as HTMLInputElement;
+      eastValueField.value = block.boundaryCondition.east.value != undefined ? block.boundaryCondition.east.value.toString() : "0";
+      let southValueField = document.getElementById("boundary-condition-block-south-value-field") as HTMLInputElement;
+      southValueField.value = block.boundaryCondition.south.value != undefined ? block.boundaryCondition.south.value.toString() : "0";
+      let westValueField = document.getElementById("boundary-condition-block-west-value-field") as HTMLInputElement;
+      westValueField.value = block.boundaryCondition.west.value != undefined ? block.boundaryCondition.west.value.toString() : "0";
+      let widthField = document.getElementById("boundary-condition-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("boundary-condition-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set north value
-        let northValue = parseFloat(northValueInputElement.value);
+        let northValue = parseFloat(northValueField.value);
         if (isNumber(northValue)) {
           block.boundaryCondition.north.value = northValue;
         } else {
           success = false;
-          message = northValueInputElement.value + " is not a valid number for north value";
+          message = northValueField.value + " is not a valid number for north value";
         }
         // set east value
-        let eastValue = parseFloat(eastValueInputElement.value);
+        let eastValue = parseFloat(eastValueField.value);
         if (isNumber(eastValue)) {
           block.boundaryCondition.east.value = eastValue;
         } else {
           success = false;
-          message = eastValueInputElement.value + " is not a valid number for east value";
+          message = eastValueField.value + " is not a valid number for east value";
         }
         // set south value
-        let southValue = parseFloat(southValueInputElement.value);
+        let southValue = parseFloat(southValueField.value);
         if (isNumber(southValue)) {
           block.boundaryCondition.south.value = southValue;
         } else {
           success = false;
-          message = southValueInputElement.value + " is not a valid number for south value";
+          message = southValueField.value + " is not a valid number for south value";
         }
         // set west value
-        let westValue = parseFloat(westValueInputElement.value);
+        let westValue = parseFloat(westValueField.value);
         if (isNumber(westValue)) {
           block.boundaryCondition.west.value = westValue;
         } else {
           success = false;
-          message = westValueInputElement.value + " is not a valid number for west value";
+          message = westValueField.value + " is not a valid number for west value";
         }
         // finish
         if (success) {
-          block.boundaryCondition.north.type = northTypeSelectElement.value;
-          block.boundaryCondition.east.type = eastTypeSelectElement.value;
-          block.boundaryCondition.south.type = southTypeSelectElement.value;
-          block.boundaryCondition.west.type = westTypeSelectElement.value;
+          block.boundaryCondition.north.type = northTypeSelector.value;
+          block.boundaryCondition.east.type = eastTypeSelector.value;
+          block.boundaryCondition.south.type = southTypeSelector.value;
+          block.boundaryCondition.west.type = westTypeSelector.value;
           block.refreshView();
           flowchart.updateResultsForBlock(block);
           flowchart.blockView.requestDraw();
@@ -167,17 +167,17 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      northValueInputElement.addEventListener("keyup", enterKeyUp);
-      eastValueInputElement.addEventListener("keyup", enterKeyUp);
-      southValueInputElement.addEventListener("keyup", enterKeyUp);
-      westValueInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      northValueField.addEventListener("keyup", enterKeyUp);
+      eastValueField.addEventListener("keyup", enterKeyUp);
+      southValueField.addEventListener("keyup", enterKeyUp);
+      westValueField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -186,9 +186,7 @@ export class BoundaryConditionBlockContextMenu extends BlockContextMenu {
         width: 400,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

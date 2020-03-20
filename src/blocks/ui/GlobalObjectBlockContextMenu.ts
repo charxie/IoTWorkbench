@@ -57,89 +57,89 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof GlobalObjectBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("global-object-name-field") as HTMLInputElement;
-      nameInputElement.value = block.getSymbol();
-      let keysInputElement = document.getElementById("global-object-keys-field") as HTMLInputElement;
-      keysInputElement.value = JSON.stringify(block.getKeys());
-      let valuesInputElement = document.getElementById("global-object-values-field") as HTMLInputElement;
-      valuesInputElement.value = JSON.stringify(block.getValues());
-      let initialValuesInputElement = document.getElementById("global-object-initial-values-field") as HTMLInputElement;
-      initialValuesInputElement.value = block.getInitialValues() == undefined ? "" : JSON.stringify(block.getInitialValues());
-      let insetMarginInputElement = document.getElementById("global-object-inset-margin-field") as HTMLInputElement;
-      insetMarginInputElement.value = block.getMarginX().toString();
-      let widthInputElement = document.getElementById("global-object-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("global-object-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let nameField = document.getElementById("global-object-name-field") as HTMLInputElement;
+      nameField.value = block.getSymbol();
+      let keysField = document.getElementById("global-object-keys-field") as HTMLInputElement;
+      keysField.value = JSON.stringify(block.getKeys());
+      let valuesField = document.getElementById("global-object-values-field") as HTMLInputElement;
+      valuesField.value = JSON.stringify(block.getValues());
+      let initialValuesField = document.getElementById("global-object-initial-values-field") as HTMLInputElement;
+      initialValuesField.value = block.getInitialValues() == undefined ? "" : JSON.stringify(block.getInitialValues());
+      let insetMarginField = document.getElementById("global-object-inset-margin-field") as HTMLInputElement;
+      insetMarginField.value = block.getMarginX().toString();
+      let widthField = document.getElementById("global-object-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("global-object-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set inset margin
-        let margin = parseInt(insetMarginInputElement.value);
+        let margin = parseInt(insetMarginField.value);
         if (isNumber(margin)) {
           block.setMarginX(Math.max(15, margin));
         } else {
           success = false;
-          message = insetMarginInputElement.value + " is not a valid margin";
+          message = insetMarginField.value + " is not a valid margin";
         }
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // parse keys
         let keys;
         try {
-          keys = JSON.parse(keysInputElement.value);
+          keys = JSON.parse(keysField.value);
         } catch (e) {
           console.log(e.stack);
           success = false;
-          message = keysInputElement.value + " is not valid: " + e.message;
+          message = keysField.value + " is not valid: " + e.message;
         }
         if (success && !Array.isArray(keys)) {
           success = false;
-          message = "Keys must be an array. Cannot accept " + keysInputElement.value;
+          message = "Keys must be an array. Cannot accept " + keysField.value;
         }
         // parse values
         let values;
         try {
-          values = JSON.parse(valuesInputElement.value);
+          values = JSON.parse(valuesField.value);
         } catch (e) {
           console.log(e.stack);
           success = false;
-          message = valuesInputElement.value + " is not valid: " + e.message;
+          message = valuesField.value + " is not valid: " + e.message;
         }
         if (success && !Array.isArray(values)) {
           success = false;
-          message = "Values must be an array. Cannot accept " + valuesInputElement.value;
+          message = "Values must be an array. Cannot accept " + valuesField.value;
         }
         // parse initial values
         let initialValues;
         try {
-          initialValues = JSON.parse(initialValuesInputElement.value);
+          initialValues = JSON.parse(initialValuesField.value);
         } catch (e) {
           console.log(e.stack);
           success = false;
-          message = initialValuesInputElement.value + " is not valid: " + e.message;
+          message = initialValuesField.value + " is not valid: " + e.message;
         }
         if (success && !Array.isArray(initialValues)) {
           success = false;
-          message = "Initial values must be an array. Cannot accept " + initialValuesInputElement.value;
+          message = "Initial values must be an array. Cannot accept " + initialValuesField.value;
         }
         // finish
         if (success) {
-          block.setSymbol(nameInputElement.value);
+          block.setSymbol(nameField.value);
           if (keys !== undefined && values !== undefined) {
             if (block.getKeys() !== keys) {
               block.setKeys(keys);
@@ -162,18 +162,18 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      keysInputElement.addEventListener("keyup", enterKeyUp);
-      valuesInputElement.addEventListener("keyup", enterKeyUp);
-      initialValuesInputElement.addEventListener("keyup", enterKeyUp);
-      insetMarginInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      keysField.addEventListener("keyup", enterKeyUp);
+      valuesField.addEventListener("keyup", enterKeyUp);
+      initialValuesField.addEventListener("keyup", enterKeyUp);
+      insetMarginField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -182,9 +182,7 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
         width: 400,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

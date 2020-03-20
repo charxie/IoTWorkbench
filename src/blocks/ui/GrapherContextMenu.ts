@@ -315,9 +315,9 @@ export class GrapherContextMenu extends BlockContextMenu {
       let windowColorChooser = document.getElementById("grapher-window-color-chooser") as HTMLInputElement;
       Util.setColorPicker(windowColorChooser, g.getGraphWindowColor());
       let widthField = document.getElementById("grapher-width-field") as HTMLInputElement;
-      widthField.value = g.getWidth().toString();
+      widthField.value = Math.round(g.getWidth()).toString();
       let heightField = document.getElementById("grapher-height-field") as HTMLInputElement;
-      heightField.value = g.getHeight().toString();
+      heightField.value = Math.round(g.getHeight()).toString();
 
       Util.hookupColorInputs(windowColorField, windowColorChooser);
       Util.hookupColorInputs(lineColorField, lineColorChooser);

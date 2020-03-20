@@ -72,11 +72,11 @@ export class TransientStateFDMSolverBlockContextMenu extends BlockContextMenu {
       let variablesField = document.getElementById("transient-state-fdm-solver-block-variables-field") as HTMLInputElement;
       variablesField.value = block.getVariables() ? JSON.stringify(block.getVariables()) : "['t', 'x']";
       let equationsField = document.getElementById("transient-state-fdm-solver-block-equations-field") as HTMLTextAreaElement;
-      equationsField.value = JSON.stringify(block.getEquations());
+      equationsField.value = JSON.stringify(block.getEquations()).replaceAll(',', ',\n');
       let widthField = document.getElementById("transient-state-fdm-solver-block-width-field") as HTMLInputElement;
-      widthField.value = block.getWidth().toString();
+      widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("transient-state-fdm-solver-block-height-field") as HTMLInputElement;
-      heightField.value = block.getHeight().toString();
+      heightField.value = Math.round(block.getHeight()).toString();
       const okFunction = () => {
         let success = true;
         let message;

@@ -45,15 +45,14 @@ export class ImageBlockContextMenu extends BlockContextMenu {
   }
 
   private open(): void {
-    let that = this;
     let fileDialog = document.getElementById('image-file-dialog') as HTMLInputElement;
     fileDialog.onchange = e => {
       let target = <HTMLInputElement>event.target;
       if (target.files.length) {
         let reader: FileReader = new FileReader();
         reader.readAsDataURL(target.files[0]); // base64 string
-        reader.onload = function (e) {
-          (<ImageBlock>that.block).setData(reader.result.toString());
+        reader.onload = (e) => {
+          (<ImageBlock>this.block).setData(reader.result.toString());
           target.value = "";
         };
         document.getElementById("image-block-file-name-label").innerHTML = target.files[0].name;
@@ -66,45 +65,42 @@ export class ImageBlockContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof ImageBlock) {
-      let that = this;
       const imageBlock = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let fileOpenButton = document.getElementById("image-block-file-button") as HTMLButtonElement;
-      fileOpenButton.onclick = function () {
-        that.open();
-      };
-      let nameInputElement = document.getElementById("image-block-name-field") as HTMLInputElement;
-      nameInputElement.value = imageBlock.getName();
+      fileOpenButton.onclick = () => this.open();
+      let nameField = document.getElementById("image-block-name-field") as HTMLInputElement;
+      nameField.value = imageBlock.getName();
       let notTransparentRadioButton = document.getElementById("image-block-not-transparent-radio-button") as HTMLInputElement;
       notTransparentRadioButton.checked = !imageBlock.isTransparent();
       let transparentRadioButton = document.getElementById("image-block-transparent-radio-button") as HTMLInputElement;
       transparentRadioButton.checked = imageBlock.isTransparent();
-      let widthInputElement = document.getElementById("image-block-width-field") as HTMLInputElement;
-      widthInputElement.value = imageBlock.getWidth().toString();
-      let heightInputElement = document.getElementById("image-block-height-field") as HTMLInputElement;
-      heightInputElement.value = imageBlock.getHeight().toString();
-      const okFunction = function () {
+      let widthField = document.getElementById("image-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(imageBlock.getWidth()).toString();
+      let heightField = document.getElementById("image-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(imageBlock.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           imageBlock.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           imageBlock.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
-          imageBlock.setName(nameInputElement.value);
+          imageBlock.setName(nameField.value);
           imageBlock.setTransparent(transparentRadioButton.checked);
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(imageBlock);
@@ -115,14 +111,14 @@ export class ImageBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -131,9 +127,7 @@ export class ImageBlockContextMenu extends BlockContextMenu {
         width: 350,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

@@ -47,37 +47,37 @@ export class MomentarySwitchContextMenu extends BlockContextMenu {
     if (this.block instanceof MomentarySwitch) {
       const s = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("momentary-switch-name-field") as HTMLInputElement;
-      nameInputElement.value = s.getName();
+      let nameField = document.getElementById("momentary-switch-name-field") as HTMLInputElement;
+      nameField.value = s.getName();
       let continuousRadioButton = document.getElementById("momentary-switch-continuous-radio-button") as HTMLInputElement;
       continuousRadioButton.checked = !s.getFireOnlyAtMouseUp();
       let notContinuousRadioButton = document.getElementById("momentary-switch-not-continuous-radio-button") as HTMLInputElement;
       notContinuousRadioButton.checked = s.getFireOnlyAtMouseUp();
-      let widthInputElement = document.getElementById("momentary-switch-width-field") as HTMLInputElement;
-      widthInputElement.value = s.getWidth().toString();
-      let heightInputElement = document.getElementById("momentary-switch-height-field") as HTMLInputElement;
-      heightInputElement.value = s.getHeight().toString();
-      const okFunction = function () {
+      let widthField = document.getElementById("momentary-switch-width-field") as HTMLInputElement;
+      widthField.value = Math.round(s.getWidth()).toString();
+      let heightField = document.getElementById("momentary-switch-height-field") as HTMLInputElement;
+      heightField.value = Math.round(s.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           s.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           s.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         if (success) {
-          s.setName(nameInputElement.value);
+          s.setName(nameField.value);
           s.setFireOnlyAtMouseUp(notContinuousRadioButton.checked);
           s.refreshView();
           flowchart.storeBlockStates();
@@ -87,14 +87,14 @@ export class MomentarySwitchContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -103,9 +103,7 @@ export class MomentarySwitchContextMenu extends BlockContextMenu {
         width: 360,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

@@ -127,85 +127,85 @@ export class Field2DContextMenu extends BlockContextMenu {
     if (this.block instanceof Field2D) {
       const g = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("field2d-name-field") as HTMLInputElement;
-      nameInputElement.value = g.getName();
-      let lineNumberInputElement = document.getElementById("field2d-line-number-field") as HTMLInputElement;
-      lineNumberInputElement.value = g.getLineNumber().toString();
-      let scaleTypeSelectElement = document.getElementById("field2d-scale-type-selector") as HTMLSelectElement;
-      scaleTypeSelectElement.value = g.getScaleType();
-      let minimumColorInputElement = document.getElementById("field2d-minimum-color-field") as HTMLInputElement;
-      minimumColorInputElement.value = g.getMinimumColor();
+      let nameField = document.getElementById("field2d-name-field") as HTMLInputElement;
+      nameField.value = g.getName();
+      let lineNumberField = document.getElementById("field2d-line-number-field") as HTMLInputElement;
+      lineNumberField.value = g.getLineNumber().toString();
+      let scaleTypeSelector = document.getElementById("field2d-scale-type-selector") as HTMLSelectElement;
+      scaleTypeSelector.value = g.getScaleType();
+      let minimumColorField = document.getElementById("field2d-minimum-color-field") as HTMLInputElement;
+      minimumColorField.value = g.getMinimumColor();
       let minimumColorChooser = document.getElementById("field2d-minimum-color-chooser") as HTMLInputElement;
       Util.setColorPicker(minimumColorChooser, g.getMinimumColor());
-      let maximumColorInputElement = document.getElementById("field2d-maximum-color-field") as HTMLInputElement;
-      maximumColorInputElement.value = g.getMaximumColor();
+      let maximumColorField = document.getElementById("field2d-maximum-color-field") as HTMLInputElement;
+      maximumColorField.value = g.getMaximumColor();
       let maximumColorChooser = document.getElementById("field2d-maximum-color-chooser") as HTMLInputElement;
       Util.setColorPicker(maximumColorChooser, g.getMaximumColor());
-      let lineTypeSelectElement = document.getElementById("field2d-line-type-selector") as HTMLSelectElement;
-      lineTypeSelectElement.value = g.getLineType();
-      let lineColorInputElement = document.getElementById("field2d-line-color-field") as HTMLInputElement;
-      lineColorInputElement.value = g.getLineColor();
+      let lineTypeSelector = document.getElementById("field2d-line-type-selector") as HTMLSelectElement;
+      lineTypeSelector.value = g.getLineType();
+      let lineColorField = document.getElementById("field2d-line-color-field") as HTMLInputElement;
+      lineColorField.value = g.getLineColor();
       let lineColorChooser = document.getElementById("field2d-line-color-chooser") as HTMLInputElement;
       Util.setColorPicker(lineColorChooser, g.getLineColor());
-      let xAxisLableInputElement = document.getElementById("field2d-x-axis-label-field") as HTMLInputElement;
-      xAxisLableInputElement.value = g.getXAxisLabel();
-      let yAxisLableInputElement = document.getElementById("field2d-y-axis-label-field") as HTMLInputElement;
-      yAxisLableInputElement.value = g.getYAxisLabel();
-      let windowColorInputElement = document.getElementById("field2d-window-color-field") as HTMLInputElement;
-      windowColorInputElement.value = g.getFieldWindowColor();
+      let xAxisLableField = document.getElementById("field2d-x-axis-label-field") as HTMLInputElement;
+      xAxisLableField.value = g.getXAxisLabel();
+      let yAxisLableField = document.getElementById("field2d-y-axis-label-field") as HTMLInputElement;
+      yAxisLableField.value = g.getYAxisLabel();
+      let windowColorField = document.getElementById("field2d-window-color-field") as HTMLInputElement;
+      windowColorField.value = g.getFieldWindowColor();
       let windowColorChooser = document.getElementById("field2d-window-color-chooser") as HTMLInputElement;
       Util.setColorPicker(windowColorChooser, g.getFieldWindowColor());
       let noGridLinesRadioButton = document.getElementById("field2d-no-grid-lines-radio-button") as HTMLInputElement;
       noGridLinesRadioButton.checked = !g.getShowGridLines();
       let gridLinesRadioButton = document.getElementById("field2d-grid-lines-radio-button") as HTMLInputElement;
       gridLinesRadioButton.checked = g.getShowGridLines();
-      let widthInputElement = document.getElementById("field2d-width-field") as HTMLInputElement;
-      widthInputElement.value = g.getWidth().toString();
-      let heightInputElement = document.getElementById("field2d-height-field") as HTMLInputElement;
-      heightInputElement.value = g.getHeight().toString();
-      Util.hookupColorInputs(minimumColorInputElement, minimumColorChooser);
-      Util.hookupColorInputs(maximumColorInputElement, maximumColorChooser);
-      Util.hookupColorInputs(lineColorInputElement, lineColorChooser);
-      Util.hookupColorInputs(windowColorInputElement, windowColorChooser);
-      const okFunction = function () {
+      let widthField = document.getElementById("field2d-width-field") as HTMLInputElement;
+      widthField.value = Math.round(g.getWidth()).toString();
+      let heightField = document.getElementById("field2d-height-field") as HTMLInputElement;
+      heightField.value = Math.round(g.getHeight()).toString();
+      Util.hookupColorInputs(minimumColorField, minimumColorChooser);
+      Util.hookupColorInputs(maximumColorField, maximumColorChooser);
+      Util.hookupColorInputs(lineColorField, lineColorChooser);
+      Util.hookupColorInputs(windowColorField, windowColorChooser);
+      const okFunction = () => {
         let success = true;
         let message;
         // set line number
-        let lineNumber = parseInt(lineNumberInputElement.value);
+        let lineNumber = parseInt(lineNumberField.value);
         if (isNumber(lineNumber)) {
           g.setWidth(Math.max(10, lineNumber));
         } else {
           success = false;
-          message = lineNumberInputElement.value + " is not a valid line number";
+          message = lineNumberField.value + " is not a valid line number";
         }
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           g.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           g.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
-          g.setName(nameInputElement.value);
+          g.setName(nameField.value);
           g.setLineNumber(lineNumber);
-          g.setScaleType(scaleTypeSelectElement.value);
-          g.setMinimumColor(minimumColorInputElement.value);
-          g.setMaximumColor(maximumColorInputElement.value);
-          g.setLineType(lineTypeSelectElement.value);
-          g.setLineColor(lineColorInputElement.value);
-          g.setXAxisLabel(xAxisLableInputElement.value);
-          g.setYAxisLabel(yAxisLableInputElement.value);
-          g.setFieldWindowColor(windowColorInputElement.value);
+          g.setScaleType(scaleTypeSelector.value);
+          g.setMinimumColor(minimumColorField.value);
+          g.setMaximumColor(maximumColorField.value);
+          g.setLineType(lineTypeSelector.value);
+          g.setLineColor(lineColorField.value);
+          g.setXAxisLabel(xAxisLableField.value);
+          g.setYAxisLabel(yAxisLableField.value);
+          g.setFieldWindowColor(windowColorField.value);
           g.setShowGridLines(gridLinesRadioButton.checked);
           g.refreshView();
           flowchart.storeBlockStates();
@@ -215,21 +215,21 @@ export class Field2DContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      lineNumberInputElement.addEventListener("keyup", enterKeyUp);
-      minimumColorInputElement.addEventListener("keyup", enterKeyUp);
-      maximumColorInputElement.addEventListener("keyup", enterKeyUp);
-      xAxisLableInputElement.addEventListener("keyup", enterKeyUp);
-      yAxisLableInputElement.addEventListener("keyup", enterKeyUp);
-      windowColorInputElement.addEventListener("keyup", enterKeyUp);
-      lineColorInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      lineNumberField.addEventListener("keyup", enterKeyUp);
+      minimumColorField.addEventListener("keyup", enterKeyUp);
+      maximumColorField.addEventListener("keyup", enterKeyUp);
+      xAxisLableField.addEventListener("keyup", enterKeyUp);
+      yAxisLableField.addEventListener("keyup", enterKeyUp);
+      windowColorField.addEventListener("keyup", enterKeyUp);
+      lineColorField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -238,9 +238,7 @@ export class Field2DContextMenu extends BlockContextMenu {
         width: 450,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

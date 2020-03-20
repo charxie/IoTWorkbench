@@ -52,47 +52,47 @@ export class RandomNumberGeneratorBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof RandomNumberGeneratorBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("random-number-generator-block-name-field") as HTMLInputElement;
-      nameInputElement.value = block.getName();
-      let numberOfOutputsInputElement = document.getElementById("random-number-generator-block-number-of-outputs-field") as HTMLInputElement;
-      numberOfOutputsInputElement.value = block.getNumberOfOutputs().toString();
-      let typeSelectElement = document.getElementById("random-number-generator-block-type-selector") as HTMLSelectElement;
-      typeSelectElement.value = block.getType();
-      let widthInputElement = document.getElementById("random-number-generator-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("random-number-generator-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let nameField = document.getElementById("random-number-generator-block-name-field") as HTMLInputElement;
+      nameField.value = block.getName();
+      let numberOfOutputsField = document.getElementById("random-number-generator-block-number-of-outputs-field") as HTMLInputElement;
+      numberOfOutputsField.value = block.getNumberOfOutputs().toString();
+      let typeSelector = document.getElementById("random-number-generator-block-type-selector") as HTMLSelectElement;
+      typeSelector.value = block.getType();
+      let widthField = document.getElementById("random-number-generator-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("random-number-generator-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set number of outputs
-        let n = parseInt(numberOfOutputsInputElement.value);
+        let n = parseInt(numberOfOutputsField.value);
         if (isNumber(n)) {
           block.setNumberOfOutputs(Math.max(1, n));
         } else {
           success = false;
-          message = numberOfOutputsInputElement.value + " is not a valid number of outputs";
+          message = numberOfOutputsField.value + " is not a valid number of outputs";
         }
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
-          block.setName(nameInputElement.value);
-          block.setType(typeSelectElement.value);
+          block.setName(nameField.value);
+          block.setType(typeSelector.value);
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.storeBlockStates();
@@ -102,15 +102,15 @@ export class RandomNumberGeneratorBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      numberOfOutputsInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      numberOfOutputsField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -119,9 +119,7 @@ export class RandomNumberGeneratorBlockContextMenu extends BlockContextMenu {
         width: 450,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

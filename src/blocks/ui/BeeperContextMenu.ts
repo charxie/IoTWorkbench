@@ -59,54 +59,54 @@ export class BeeperContextMenu extends BlockContextMenu {
     if (this.block instanceof Beeper) {
       const beeper = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("beeper-name-field") as HTMLInputElement;
-      nameInputElement.value = beeper.getName();
+      let nameField = document.getElementById("beeper-name-field") as HTMLInputElement;
+      nameField.value = beeper.getName();
       let typeSelector = document.getElementById("beeper-oscillator-type-selector") as HTMLSelectElement;
       typeSelector.value = beeper.getOscillatorType();
-      let frequencyInputElement = document.getElementById("beeper-frequency-field") as HTMLInputElement;
-      frequencyInputElement.value = beeper.getFrequency().toString();
-      let volumeInputElement = document.getElementById("beeper-volume-field") as HTMLInputElement;
-      volumeInputElement.value = beeper.getVolume().toString();
-      let widthInputElement = document.getElementById("beeper-width-field") as HTMLInputElement;
-      widthInputElement.value = beeper.getWidth().toString();
-      let heightInputElement = document.getElementById("beeper-height-field") as HTMLInputElement;
-      heightInputElement.value = beeper.getHeight().toString();
-      const okFunction = function () {
-        beeper.setName(nameInputElement.value);
+      let frequencyField = document.getElementById("beeper-frequency-field") as HTMLInputElement;
+      frequencyField.value = beeper.getFrequency().toString();
+      let volumeField = document.getElementById("beeper-volume-field") as HTMLInputElement;
+      volumeField.value = beeper.getVolume().toString();
+      let widthField = document.getElementById("beeper-width-field") as HTMLInputElement;
+      widthField.value = Math.round(beeper.getWidth()).toString();
+      let heightField = document.getElementById("beeper-height-field") as HTMLInputElement;
+      heightField.value = Math.round(beeper.getHeight()).toString();
+      const okFunction = () => {
+        beeper.setName(nameField.value);
         beeper.setOscillatorType(typeSelector.value);
         let success = true;
         let message;
         // set frequency
-        let f = parseFloat(frequencyInputElement.value);
+        let f = parseFloat(frequencyField.value);
         if (isNumber(f)) {
           beeper.setFrequency(Math.max(0.001, f));
         } else {
           success = false;
-          message = frequencyInputElement.value + " is not a valid frequency";
+          message = frequencyField.value + " is not a valid frequency";
         }
         // set volume
-        let v = parseFloat(volumeInputElement.value);
+        let v = parseFloat(volumeField.value);
         if (isNumber(v)) {
           beeper.setVolume(Math.max(0.000001, v));
         } else {
           success = false;
-          message = volumeInputElement.value + " is not a valid volume";
+          message = volumeField.value + " is not a valid volume";
         }
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           beeper.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           beeper.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         if (success) {
           beeper.refreshView();
@@ -117,16 +117,16 @@ export class BeeperContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      frequencyInputElement.addEventListener("keyup", enterKeyUp);
-      volumeInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      frequencyField.addEventListener("keyup", enterKeyUp);
+      volumeField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -135,9 +135,7 @@ export class BeeperContextMenu extends BlockContextMenu {
         width: 320,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

@@ -67,79 +67,79 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let methodSelectElement = document.getElementById("steady-state-fdm-solver-block-method-selector") as HTMLSelectElement;
       methodSelectElement.value = block.getMethod();
-      let variablesInputElement = document.getElementById("steady-state-fdm-solver-block-variables-field") as HTMLInputElement;
-      variablesInputElement.value = block.getVariables() ? JSON.stringify(block.getVariables()) : "['x', 'y']";
-      let equationsInputElement = document.getElementById("steady-state-fdm-solver-block-equations-field") as HTMLTextAreaElement;
-      equationsInputElement.value = JSON.stringify(block.getEquations());
-      let relaxationStepsInputElement = document.getElementById("steady-state-fdm-solver-block-relaxation-steps-field") as HTMLInputElement;
-      relaxationStepsInputElement.value = block.getRelaxationSteps().toString();
-      let relaxationFactorInputElement = document.getElementById("steady-state-fdm-solver-block-relaxation-factor-field") as HTMLInputElement;
-      relaxationFactorInputElement.value = block.getRelaxationFactor().toString();
-      let widthInputElement = document.getElementById("steady-state-fdm-solver-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("steady-state-fdm-solver-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let variablesField = document.getElementById("steady-state-fdm-solver-block-variables-field") as HTMLInputElement;
+      variablesField.value = block.getVariables() ? JSON.stringify(block.getVariables()) : "['x', 'y']";
+      let equationsField = document.getElementById("steady-state-fdm-solver-block-equations-field") as HTMLTextAreaElement;
+      equationsField.value = JSON.stringify(block.getEquations()).replaceAll(',', ',\n');
+      let relaxationStepsField = document.getElementById("steady-state-fdm-solver-block-relaxation-steps-field") as HTMLInputElement;
+      relaxationStepsField.value = block.getRelaxationSteps().toString();
+      let relaxationFactorField = document.getElementById("steady-state-fdm-solver-block-relaxation-factor-field") as HTMLInputElement;
+      relaxationFactorField.value = block.getRelaxationFactor().toString();
+      let widthField = document.getElementById("steady-state-fdm-solver-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("steady-state-fdm-solver-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set relaxation steps
-        let relaxationSteps = parseInt(relaxationStepsInputElement.value);
+        let relaxationSteps = parseInt(relaxationStepsField.value);
         if (isNumber(relaxationSteps)) {
           block.setRelaxationSteps(Math.max(5, relaxationSteps));
         } else {
           success = false;
-          message = relaxationStepsInputElement.value + " is not a valid relaxation step";
+          message = relaxationStepsField.value + " is not a valid relaxation step";
         }
         // set relaxation factor
-        let relaxationFactor = parseFloat(relaxationFactorInputElement.value);
+        let relaxationFactor = parseFloat(relaxationFactorField.value);
         if (isNumber(relaxationFactor)) {
           block.setRelaxationFactor(Math.min(1.99, Math.max(0.1, relaxationFactor)));
         } else {
           success = false;
-          message = relaxationFactorInputElement.value + " is not a valid relaxation factor";
+          message = relaxationFactorField.value + " is not a valid relaxation factor";
         }
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set variables
-        if (JSON.stringify(block.getVariables()) !== variablesInputElement.value) {
+        if (JSON.stringify(block.getVariables()) !== variablesField.value) {
           try {
-            block.setVariables(JSON.parse(variablesInputElement.value));
+            block.setVariables(JSON.parse(variablesField.value));
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = equationsInputElement.value + " is not a valid array for variables";
+            message = equationsField.value + " is not a valid array for variables";
           }
         }
         // set equations
-        if (JSON.stringify(block.getEquations()) !== equationsInputElement.value) {
+        if (JSON.stringify(block.getEquations()) !== equationsField.value) {
           try {
-            block.setEquations(JSON.parse(equationsInputElement.value));
+            block.setEquations(JSON.parse(equationsField.value));
             block.findCoefficients();
             block.useDeclaredFunctions();
           } catch (err) {
             console.log(err.stack);
             success = false;
-            message = equationsInputElement.value + " is not a valid array for equations";
+            message = equationsField.value + " is not a valid array for equations";
           }
           try {
             flowchart.updateResultsForBlock(block);
           } catch (err) {
             success = false;
-            message = JSON.stringify(equationsInputElement.value) + " are not valid equations";
+            message = JSON.stringify(equationsField.value) + " are not valid equations";
           }
         }
         // finish up
@@ -154,34 +154,31 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      variablesInputElement.addEventListener("keyup", enterKeyUp);
-      relaxationStepsInputElement.addEventListener("keyup", enterKeyUp);
-      relaxationFactorInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
-      let that = this;
+      variablesField.addEventListener("keyup", enterKeyUp);
+      relaxationStepsField.addEventListener("keyup", enterKeyUp);
+      relaxationFactorField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: true,
         modal: true,
         title: block.getUid(),
-        height: that.dialogHeight,
-        width: that.dialogWidth,
-        resize: function (e, ui) {
+        height: this.dialogHeight,
+        width: this.dialogWidth,
+        resize: (e, ui) => {
           // @ts-ignore
-          that.dialogWidth = ui.size.width;
+          this.dialogWidth = ui.size.width;
           // @ts-ignore
-          that.dialogHeight = ui.size.height;
+          this.dialogHeight = ui.size.height;
         },
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

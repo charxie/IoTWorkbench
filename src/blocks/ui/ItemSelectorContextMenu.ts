@@ -49,48 +49,48 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
     if (this.block instanceof ItemSelector) {
       const itemSelector = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("item-selector-name-field") as HTMLInputElement;
-      nameInputElement.value = itemSelector.getName();
+      let nameField = document.getElementById("item-selector-name-field") as HTMLInputElement;
+      nameField.value = itemSelector.getName();
       let sourceRadioButton = document.getElementById("item-selector-source-radio-button") as HTMLInputElement;
       sourceRadioButton.checked = itemSelector.isSource();
       let notSourceRadioButton = document.getElementById("item-selector-not-source-radio-button") as HTMLInputElement;
       notSourceRadioButton.checked = !itemSelector.isSource();
-      let itemsInputElement = document.getElementById("item-selector-block-items-field") as HTMLTextAreaElement;
-      itemsInputElement.value = JSON.stringify(itemSelector.getItems());
-      itemsInputElement.disabled = itemSelector.hasInput();
-      let widthInputElement = document.getElementById("item-selector-block-width-field") as HTMLInputElement;
-      widthInputElement.value = itemSelector.getWidth().toString();
-      let heightInputElement = document.getElementById("item-selector-block-height-field") as HTMLInputElement;
-      heightInputElement.value = itemSelector.getHeight().toString();
-      const okFunction = function () {
+      let itemsField = document.getElementById("item-selector-block-items-field") as HTMLTextAreaElement;
+      itemsField.value = JSON.stringify(itemSelector.getItems());
+      itemsField.disabled = itemSelector.hasInput();
+      let widthField = document.getElementById("item-selector-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(itemSelector.getWidth()).toString();
+      let heightField = document.getElementById("item-selector-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(itemSelector.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           itemSelector.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           itemSelector.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set items
         try {
-          itemSelector.setItems(JSON.parse(itemsInputElement.value));
+          itemSelector.setItems(JSON.parse(itemsField.value));
         } catch (err) {
           success = false;
-          message = itemsInputElement.value + " is not a valid array";
+          message = itemsField.value + " is not a valid array";
         }
         // finish up
         if (success) {
-          itemSelector.setName(nameInputElement.value);
+          itemSelector.setName(nameField.value);
           itemSelector.setSource(sourceRadioButton.checked);
           itemSelector.updateModel();
           itemSelector.refreshView();
@@ -103,14 +103,14 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -119,9 +119,7 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
         width: 320,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

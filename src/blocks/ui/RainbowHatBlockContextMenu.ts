@@ -53,18 +53,15 @@ export class RainbowHatBlockContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof RainbowHatBlock) {
-      const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       d.dialog({
         resizable: false,
         modal: true,
-        title: block.getUid(),
+        title: this.block.getUid(),
         height: 500,
         width: 400,
         buttons: {
-          'Close': function () {
-            d.dialog('close');
-          }
+          'Close': () => d.dialog('close')
         }
       });
     }

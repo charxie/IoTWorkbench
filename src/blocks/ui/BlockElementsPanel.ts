@@ -71,7 +71,7 @@ export class BlockElementsPanel {
                 </table>
               </div>
               <div class="vertical-divider"></div>
-              <h3 style="text-align: left; font-size: 12px;"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> I/O</h3>
+              <h3 style="text-align: left; font-size: 12px;"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Inputs & Outputs</h3>
               <div class="horizontal-scroll" style="margin-right: 10px; background-color: moccasin; border: 1px solid #b81900; border-radius: 4px">
                 <table style="width: 100%">
                   <tr>

@@ -44,41 +44,41 @@ export class TurnoutSwitchContextMenu extends BlockContextMenu {
     if (this.block instanceof TurnoutSwitch) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let variableNameInputElement = document.getElementById("turnout-switch-variable-name-field") as HTMLInputElement;
-      variableNameInputElement.value = block.getVariableName() ? block.getVariableName() : "x";
-      let expressionInputElement = document.getElementById("turnout-switch-expression-field") as HTMLInputElement;
-      expressionInputElement.value = block.getExpression() != undefined ? block.getExpression().toString() : "x>0";
-      let widthInputElement = document.getElementById("turnout-switch-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("turnout-switch-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let variableNameField = document.getElementById("turnout-switch-variable-name-field") as HTMLInputElement;
+      variableNameField.value = block.getVariableName() ? block.getVariableName() : "x";
+      let expressionField = document.getElementById("turnout-switch-expression-field") as HTMLInputElement;
+      expressionField.value = block.getExpression() != undefined ? block.getExpression().toString() : "x>0";
+      let widthField = document.getElementById("turnout-switch-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("turnout-switch-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
-        block.setVariableName(variableNameInputElement.value);
-        block.setExpression(expressionInputElement.value);
+        block.setVariableName(variableNameField.value);
+        block.setExpression(expressionField.value);
         block.useDeclaredFunctions();
         try {
           flowchart.updateResultsForBlock(block);
         } catch (err) {
           success = false;
-          message = expressionInputElement.value + " is not a valid expression";
+          message = expressionField.value + " is not a valid expression";
         }
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
@@ -91,15 +91,15 @@ export class TurnoutSwitchContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      variableNameInputElement.addEventListener("keyup", enterKeyUp);
-      expressionInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      variableNameField.addEventListener("keyup", enterKeyUp);
+      expressionField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -108,9 +108,7 @@ export class TurnoutSwitchContextMenu extends BlockContextMenu {
         width: 390,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

@@ -44,53 +44,53 @@ export class VectorBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof VectorBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let valuesInputElement = document.getElementById("vector-block-values-field") as HTMLTextAreaElement;
-      valuesInputElement.value = JSON.stringify(block.getValues());
-      let fractionDigitsInputElement = document.getElementById("vector-block-fraction-digits-field") as HTMLInputElement;
-      fractionDigitsInputElement.value = block.getFractionDigits().toString();
-      let widthInputElement = document.getElementById("vector-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("vector-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let valuesArea = document.getElementById("vector-block-values-field") as HTMLTextAreaElement;
+      valuesArea.value = JSON.stringify(block.getValues());
+      let fractionDigitsField = document.getElementById("vector-block-fraction-digits-field") as HTMLInputElement;
+      fractionDigitsField.value = block.getFractionDigits().toString();
+      let widthField = document.getElementById("vector-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("vector-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set fraction digits
-        let fractionDigits = parseInt(fractionDigitsInputElement.value);
+        let fractionDigits = parseInt(fractionDigitsField.value);
         if (isNumber(fractionDigits)) {
           block.setFractionDigits(Math.max(0, fractionDigits));
         } else {
           success = false;
-          message = fractionDigitsInputElement.value + " is not valid for fraction digits";
+          message = fractionDigitsField.value + " is not valid for fraction digits";
         }
         // set values
         let values;
         try {
-          values = JSON.parse(valuesInputElement.value);
+          values = JSON.parse(valuesArea.value);
         } catch (err) {
           console.log(err.stack);
           success = false;
-          message = valuesInputElement.value + " is not a valid vector.";
+          message = valuesArea.value + " is not a valid vector.";
         }
         if (success && !Array.isArray(values)) {
           success = false;
-          message = "Values must be an array. Cannot accept " + valuesInputElement.value;
+          message = "Values must be an array. Cannot accept " + valuesArea.value;
         }
         // finish
         if (success) {
@@ -107,14 +107,14 @@ export class VectorBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      fractionDigitsInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      fractionDigitsField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -123,9 +123,7 @@ export class VectorBlockContextMenu extends BlockContextMenu {
         width: 400,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

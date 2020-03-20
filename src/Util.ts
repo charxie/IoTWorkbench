@@ -70,7 +70,7 @@ export class Util {
     };
   }
 
-  static containsInRect(x: number, y:number, rect: DOMRect): boolean{
+  static containsInRect(x: number, y: number, rect: DOMRect): boolean {
     return x > rect.x && x < rect.x + rect.width && y > rect.y && y < rect.y + rect.height;
   }
 
@@ -139,9 +139,7 @@ export class Util {
       height: 300,
       width: 250,
       buttons: {
-        "OK": function () {
-          d.dialog('close');
-        }
+        "OK": () => d.dialog('close')
       }
     });
   }
@@ -155,9 +153,7 @@ export class Util {
       height: 300,
       width: 250,
       buttons: {
-        "OK": function () {
-          d.dialog('close');
-        }
+        "OK": () => d.dialog('close')
       }
     });
   }

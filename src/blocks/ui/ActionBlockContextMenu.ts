@@ -52,37 +52,37 @@ export class ActionBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof ActionBlock) {
       const act = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let labelInputElement = document.getElementById("action-block-label-field") as HTMLInputElement;
-      labelInputElement.value = act.getSymbol();
+      let labelField = document.getElementById("action-block-label-field") as HTMLInputElement;
+      labelField.value = act.getSymbol();
       let typeSelectElement = document.getElementById("action-type-selector") as HTMLSelectElement;
       typeSelectElement.value = act.getType();
-      let widthInputElement = document.getElementById("action-block-width-field") as HTMLInputElement;
-      widthInputElement.value = act.getWidth().toString();
-      let heightInputElement = document.getElementById("action-block-height-field") as HTMLInputElement;
-      heightInputElement.value = act.getHeight().toString();
-      const okFunction = function () {
+      let widthField = document.getElementById("action-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(act.getWidth()).toString();
+      let heightField = document.getElementById("action-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(act.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           act.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           act.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
           act.setType(typeSelectElement.value);
-          act.setSymbol(labelInputElement.value);
+          act.setSymbol(labelField.value);
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(act);
           flowchart.storeBlockStates();
@@ -92,14 +92,14 @@ export class ActionBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      labelInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      labelField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -108,9 +108,7 @@ export class ActionBlockContextMenu extends BlockContextMenu {
         width: 350,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

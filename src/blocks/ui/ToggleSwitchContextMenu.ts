@@ -44,34 +44,34 @@ export class ToggleSwitchContextMenu extends BlockContextMenu {
     if (this.block instanceof ToggleSwitch) {
       const toggle = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("toggle-switch-name-field") as HTMLInputElement;
-      nameInputElement.value = toggle.getName();
-      let valueInputElement = document.getElementById("toggle-switch-value-field") as HTMLInputElement;
-      valueInputElement.value = toggle.isChecked() ? "true" : "false";
-      let widthInputElement = document.getElementById("toggle-switch-width-field") as HTMLInputElement;
-      widthInputElement.value = toggle.getWidth().toString();
-      let heightInputElement = document.getElementById("toggle-switch-height-field") as HTMLInputElement;
-      heightInputElement.value = toggle.getHeight().toString();
-      const okFunction = function () {
-        toggle.setName(nameInputElement.value);
-        toggle.setChecked(valueInputElement.value == "true");
+      let nameField = document.getElementById("toggle-switch-name-field") as HTMLInputElement;
+      nameField.value = toggle.getName();
+      let valueField = document.getElementById("toggle-switch-value-field") as HTMLInputElement;
+      valueField.value = toggle.isChecked() ? "true" : "false";
+      let widthField = document.getElementById("toggle-switch-width-field") as HTMLInputElement;
+      widthField.value = Math.round(toggle.getWidth()).toString();
+      let heightField = document.getElementById("toggle-switch-height-field") as HTMLInputElement;
+      heightField.value = Math.round(toggle.getHeight()).toString();
+      const okFunction = () => {
+        toggle.setName(nameField.value);
+        toggle.setChecked(valueField.value == "true");
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           toggle.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           toggle.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         if (success) {
           toggle.refreshView();
@@ -82,15 +82,15 @@ export class ToggleSwitchContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      valueInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      valueField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -99,9 +99,7 @@ export class ToggleSwitchContextMenu extends BlockContextMenu {
         width: 300,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

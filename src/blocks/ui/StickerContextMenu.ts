@@ -61,73 +61,73 @@ export class StickerContextMenu extends BlockContextMenu {
     if (this.block instanceof Sticker) {
       const sticker = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("sticker-name-field") as HTMLInputElement;
-      nameInputElement.value = sticker.getName();
-      let decimalsInputElement = document.getElementById("sticker-decimals-field") as HTMLInputElement;
-      decimalsInputElement.value = sticker.getDecimals() != undefined ? sticker.getDecimals().toString() : "3";
-      let userTextInputElement = document.getElementById("sticker-user-text-area") as HTMLTextAreaElement;
-      userTextInputElement.value = sticker.getUserText() != undefined ? sticker.getUserText() : "";
-      let panelColorInputElement = document.getElementById("sticker-panel-color-field") as HTMLInputElement;
-      panelColorInputElement.value = sticker.getColor();
+      let nameField = document.getElementById("sticker-name-field") as HTMLInputElement;
+      nameField.value = sticker.getName();
+      let decimalsField = document.getElementById("sticker-decimals-field") as HTMLInputElement;
+      decimalsField.value = sticker.getDecimals() != undefined ? sticker.getDecimals().toString() : "3";
+      let userTextArea = document.getElementById("sticker-user-text-area") as HTMLTextAreaElement;
+      userTextArea.value = sticker.getUserText() != undefined ? sticker.getUserText() : "";
+      let panelColorField = document.getElementById("sticker-panel-color-field") as HTMLInputElement;
+      panelColorField.value = sticker.getColor();
       let panelColorChooser = document.getElementById("sticker-panel-color-chooser") as HTMLInputElement;
       panelColorChooser.value = sticker.getColor();
-      let textColorInputElement = document.getElementById("sticker-text-color-field") as HTMLInputElement;
-      textColorInputElement.value = sticker.getTextColor();
+      let textColorField = document.getElementById("sticker-text-color-field") as HTMLInputElement;
+      textColorField.value = sticker.getTextColor();
       let textColorChooser = document.getElementById("sticker-text-color-chooser") as HTMLInputElement;
       textColorChooser.value = sticker.getTextColor();
-      let widthInputElement = document.getElementById("sticker-width-field") as HTMLInputElement;
-      widthInputElement.value = sticker.getWidth().toString();
-      let heightInputElement = document.getElementById("sticker-height-field") as HTMLInputElement;
-      heightInputElement.value = sticker.getHeight().toString();
-      Util.hookupColorInputs(panelColorInputElement, panelColorChooser);
-      Util.hookupColorInputs(textColorInputElement, textColorChooser);
+      let widthField = document.getElementById("sticker-width-field") as HTMLInputElement;
+      widthField.value = Math.round(sticker.getWidth()).toString();
+      let heightField = document.getElementById("sticker-height-field") as HTMLInputElement;
+      heightField.value = Math.round(sticker.getHeight()).toString();
+      Util.hookupColorInputs(panelColorField, panelColorChooser);
+      Util.hookupColorInputs(textColorField, textColorChooser);
       const okFunction = () => {
         let success = true;
         let message;
         // set panel color
-        let panelColor = Util.getHexColor(panelColorInputElement.value);
+        let panelColor = Util.getHexColor(panelColorField.value);
         if (panelColor) {
           sticker.setColor(panelColor);
         } else {
           success = false;
-          message = panelColorInputElement.value + " is not a valid panel color";
+          message = panelColorField.value + " is not a valid panel color";
         }
         // set text color
-        let textColor = Util.getHexColor(textColorInputElement.value);
+        let textColor = Util.getHexColor(textColorField.value);
         if (textColor) {
           sticker.setTextColor(textColor);
         } else {
           success = false;
-          message = textColorInputElement.value + " is not a valid text color";
+          message = textColorField.value + " is not a valid text color";
         }
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           sticker.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           sticker.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set decimals
-        let decimals = parseInt(decimalsInputElement.value);
+        let decimals = parseInt(decimalsField.value);
         if (isNumber(decimals)) {
           sticker.setDecimals(Math.max(0, decimals));
         } else {
           success = false;
-          message = decimalsInputElement.value + " is not valid for decimals";
+          message = decimalsField.value + " is not valid for decimals";
         }
         // finish
         if (success) {
-          sticker.setName(nameInputElement.value);
-          sticker.setUserText(userTextInputElement.value.trim() == "" ? undefined : userTextInputElement.value);
+          sticker.setName(nameField.value);
+          sticker.setUserText(userTextArea.value.trim() == "" ? undefined : userTextArea.value);
           sticker.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();
@@ -141,12 +141,12 @@ export class StickerContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      decimalsInputElement.addEventListener("keyup", enterKeyUp);
-      panelColorInputElement.addEventListener("keyup", enterKeyUp);
-      textColorInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      decimalsField.addEventListener("keyup", enterKeyUp);
+      panelColorField.addEventListener("keyup", enterKeyUp);
+      textColorField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: true,
         modal: true,

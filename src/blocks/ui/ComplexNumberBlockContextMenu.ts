@@ -55,48 +55,48 @@ export class ComplexNumberBlockContextMenu extends BlockContextMenu {
       forwardRadioButton.checked = !block.isInverse();
       let inverseRadioButton = document.getElementById("complex-number-block-inverse-radio-button") as HTMLInputElement;
       inverseRadioButton.checked = block.isInverse();
-      let realInputElement = document.getElementById("complex-number-block-real-field") as HTMLInputElement;
-      realInputElement.value = block.getReal().toString();
-      let imaginaryInputElement = document.getElementById("complex-number-block-imaginary-field") as HTMLInputElement;
-      imaginaryInputElement.value = block.getImaginary().toString();
-      let widthInputElement = document.getElementById("complex-number-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("complex-number-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let realField = document.getElementById("complex-number-block-real-field") as HTMLInputElement;
+      realField.value = block.getReal().toString();
+      let imaginaryField = document.getElementById("complex-number-block-imaginary-field") as HTMLInputElement;
+      imaginaryField.value = block.getImaginary().toString();
+      let widthField = document.getElementById("complex-number-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("complex-number-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set real
-        let real = parseFloat(realInputElement.value);
+        let real = parseFloat(realField.value);
         if (isNumber(real)) {
           block.setReal(real);
         } else {
           success = false;
-          message = realInputElement.value + " is not a valid number for the real part";
+          message = realField.value + " is not a valid number for the real part";
         }
         // set imaginary
-        let imaginary = parseFloat(imaginaryInputElement.value);
+        let imaginary = parseFloat(imaginaryField.value);
         if (isNumber(imaginary)) {
           block.setImaginary(imaginary);
         } else {
           success = false;
-          message = imaginaryInputElement.value + " is not a valid number for the imaginary part";
+          message = imaginaryField.value + " is not a valid number for the imaginary part";
         }
         // finish
         if (success) {
@@ -113,15 +113,15 @@ export class ComplexNumberBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      realInputElement.addEventListener("keyup", enterKeyUp);
-      imaginaryInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      realField.addEventListener("keyup", enterKeyUp);
+      imaginaryField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -130,9 +130,7 @@ export class ComplexNumberBlockContextMenu extends BlockContextMenu {
         width: 360,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

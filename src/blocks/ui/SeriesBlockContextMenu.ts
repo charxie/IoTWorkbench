@@ -48,58 +48,58 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof SeriesBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let startInputElement = document.getElementById("series-block-start-field") as HTMLInputElement;
-      startInputElement.value = block.getStart().toString();
-      let incrementInputElement = document.getElementById("series-block-increment-field") as HTMLInputElement;
-      incrementInputElement.value = block.getIncrement().toString();
-      let countInputElement = document.getElementById("series-block-count-field") as HTMLInputElement;
-      countInputElement.value = block.getCount().toString();
-      let widthInputElement = document.getElementById("series-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("series-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let startField = document.getElementById("series-block-start-field") as HTMLInputElement;
+      startField.value = block.getStart().toString();
+      let incrementField = document.getElementById("series-block-increment-field") as HTMLInputElement;
+      incrementField.value = block.getIncrement().toString();
+      let countField = document.getElementById("series-block-count-field") as HTMLInputElement;
+      countField.value = block.getCount().toString();
+      let widthField = document.getElementById("series-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("series-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set start
-        let start = parseFloat(startInputElement.value);
+        let start = parseFloat(startField.value);
         if (isNumber(start)) {
           block.setStart(start);
         } else {
           success = false;
-          message = startInputElement.value + " is not a valid number for Start";
+          message = startField.value + " is not a valid number for Start";
         }
         // set increment
-        let increment = parseFloat(incrementInputElement.value);
+        let increment = parseFloat(incrementField.value);
         if (isNumber(increment)) {
           block.setIncrement(increment);
         } else {
           success = false;
-          message = incrementInputElement.value + " is not a valid number for Increment";
+          message = incrementField.value + " is not a valid number for Increment";
         }
         // set count
-        let count = parseInt(countInputElement.value);
+        let count = parseInt(countField.value);
         if (isNumber(count)) {
           block.setCount(count);
         } else {
           success = false;
-          message = countInputElement.value + " is not a valid number for Count";
+          message = countField.value + " is not a valid number for Count";
         }
         // finish
         if (success) {
@@ -113,16 +113,16 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      startInputElement.addEventListener("keyup", enterKeyUp);
-      incrementInputElement.addEventListener("keyup", enterKeyUp);
-      countInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      startField.addEventListener("keyup", enterKeyUp);
+      incrementField.addEventListener("keyup", enterKeyUp);
+      countField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -131,9 +131,7 @@ export class SeriesBlockContextMenu extends BlockContextMenu {
         width: 300,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

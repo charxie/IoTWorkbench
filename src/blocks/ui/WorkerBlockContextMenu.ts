@@ -57,54 +57,54 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof WorkerBlock) {
       const worker = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameInputElement = document.getElementById("worker-block-name-field") as HTMLInputElement;
-      nameInputElement.value = worker.getName();
-      let outputTypeSelectElement = document.getElementById("worker-output-type-selector") as HTMLSelectElement;
-      outputTypeSelectElement.value = worker.getOutputType();
-      let intervalInputElement = document.getElementById("worker-block-interval-field") as HTMLInputElement;
-      intervalInputElement.value = worker.getInterval().toString();
-      let repeatTimesInputElement = document.getElementById("worker-block-repeat-times-field") as HTMLInputElement;
-      repeatTimesInputElement.value = worker.getRepeatTimes().toString();
-      let widthInputElement = document.getElementById("worker-block-width-field") as HTMLInputElement;
-      widthInputElement.value = worker.getWidth().toString();
-      let heightInputElement = document.getElementById("worker-block-height-field") as HTMLInputElement;
-      heightInputElement.value = worker.getHeight().toString();
-      const okFunction = function () {
-        worker.setName(nameInputElement.value);
-        worker.setOutputType(outputTypeSelectElement.value);
+      let nameField = document.getElementById("worker-block-name-field") as HTMLInputElement;
+      nameField.value = worker.getName();
+      let outputTypeSelector = document.getElementById("worker-output-type-selector") as HTMLSelectElement;
+      outputTypeSelector.value = worker.getOutputType();
+      let intervalField = document.getElementById("worker-block-interval-field") as HTMLInputElement;
+      intervalField.value = worker.getInterval().toString();
+      let repeatTimesField = document.getElementById("worker-block-repeat-times-field") as HTMLInputElement;
+      repeatTimesField.value = worker.getRepeatTimes().toString();
+      let widthField = document.getElementById("worker-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(worker.getWidth()).toString();
+      let heightField = document.getElementById("worker-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(worker.getHeight()).toString();
+      const okFunction = () => {
+        worker.setName(nameField.value);
+        worker.setOutputType(outputTypeSelector.value);
         let success = true;
         let message;
         // set interval
-        let interval = parseInt(intervalInputElement.value);
+        let interval = parseInt(intervalField.value);
         if (isNumber(interval)) {
           worker.setInterval(Math.max(50, interval)); // set the mininum interval to be 100 to avoid slowing down the UI
         } else {
           success = false;
-          message = intervalInputElement.value + " is not a valid interval";
+          message = intervalField.value + " is not a valid interval";
         }
         // set repeat times
-        let repeatTimes = parseInt(repeatTimesInputElement.value);
+        let repeatTimes = parseInt(repeatTimesField.value);
         if (isNumber(repeatTimes)) {
           worker.setRepeatTimes(Math.max(1, repeatTimes)); // must execute at least once
         } else {
           success = false;
-          message = repeatTimesInputElement.value + " is not a valid value for repeat times";
+          message = repeatTimesField.value + " is not a valid value for repeat times";
         }
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           worker.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           worker.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
@@ -118,16 +118,16 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      intervalInputElement.addEventListener("keyup", enterKeyUp);
-      repeatTimesInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      intervalField.addEventListener("keyup", enterKeyUp);
+      repeatTimesField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -136,9 +136,7 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
         width: 350,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

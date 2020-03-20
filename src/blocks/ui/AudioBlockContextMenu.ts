@@ -45,15 +45,14 @@ export class AudioBlockContextMenu extends BlockContextMenu {
   }
 
   private open(): void {
-    let that = this;
     let fileDialog = document.getElementById('audio-file-dialog') as HTMLInputElement;
     fileDialog.onchange = e => {
       let target = <HTMLInputElement>event.target;
       if (target.files.length) {
         let reader: FileReader = new FileReader();
         reader.readAsDataURL(target.files[0]); // base64 string
-        reader.onload = function (e) {
-          (<AudioBlock>that.block).setData(reader.result.toString());
+        reader.onload = (e) => {
+          (<AudioBlock>this.block).setData(reader.result.toString());
           target.value = "";
         };
         document.getElementById("audio-block-file-name-label").innerHTML = target.files[0].name;
@@ -66,45 +65,42 @@ export class AudioBlockContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof AudioBlock) {
-      let that = this;
       const audioBlock = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let fileOpenButton = document.getElementById("audio-block-file-button") as HTMLButtonElement;
-      fileOpenButton.onclick = function () {
-        that.open();
-      };
+      fileOpenButton.onclick = () => this.open();
       let interruptibleRadioButton = document.getElementById("audio-block-interruptible-radio-button") as HTMLInputElement;
       interruptibleRadioButton.checked = audioBlock.isInterruptible();
       let notInterruptibleRadioButton = document.getElementById("audio-block-not-interruptible-radio-button") as HTMLInputElement;
       notInterruptibleRadioButton.checked = !audioBlock.isInterruptible();
-      let nameInputElement = document.getElementById("audio-block-name-field") as HTMLInputElement;
-      nameInputElement.value = audioBlock.getName();
-      let widthInputElement = document.getElementById("audio-block-width-field") as HTMLInputElement;
-      widthInputElement.value = audioBlock.getWidth().toString();
-      let heightInputElement = document.getElementById("audio-block-height-field") as HTMLInputElement;
-      heightInputElement.value = audioBlock.getHeight().toString();
-      const okFunction = function () {
+      let nameField = document.getElementById("audio-block-name-field") as HTMLInputElement;
+      nameField.value = audioBlock.getName();
+      let widthField = document.getElementById("audio-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(audioBlock.getWidth()).toString();
+      let heightField = document.getElementById("audio-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(audioBlock.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           audioBlock.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           audioBlock.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
-          audioBlock.setName(nameInputElement.value);
+          audioBlock.setName(nameField.value);
           audioBlock.setInterruptible(interruptibleRadioButton.checked);
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(audioBlock);
@@ -115,14 +111,14 @@ export class AudioBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -131,9 +127,7 @@ export class AudioBlockContextMenu extends BlockContextMenu {
         width: 350,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

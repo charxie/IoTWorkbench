@@ -53,15 +53,14 @@ export class DataBlockContextMenu extends BlockContextMenu {
   }
 
   private openSourceFile(): void {
-    let that = this;
     let fileDialog = document.getElementById('data-file-dialog') as HTMLInputElement;
     fileDialog.onchange = e => {
       let target = <HTMLInputElement>event.target;
       if (target.files.length) {
         let reader: FileReader = new FileReader();
         reader.readAsText(target.files[0]);
-        reader.onload = function (e) {
-          (<DataBlock>that.block).setDataInput(reader.result.toString());
+        reader.onload = (e) => {
+          (<DataBlock>this.block).setDataInput(reader.result.toString());
           target.value = "";
         };
         document.getElementById("data-block-source-file-name-label").innerHTML = target.files[0].name;
@@ -71,15 +70,14 @@ export class DataBlockContextMenu extends BlockContextMenu {
   }
 
   private openImageFile(): void {
-    let that = this;
     let fileDialog = document.getElementById('image-file-dialog') as HTMLInputElement;
     fileDialog.onchange = e => {
       let target = <HTMLInputElement>event.target;
       if (target.files.length) {
         let reader: FileReader = new FileReader();
         reader.readAsDataURL(target.files[0]); // base64 string
-        reader.onload = function (e) {
-          (<DataBlock>that.block).setImageSrc(reader.result.toString());
+        reader.onload = (e) => {
+          (<DataBlock>this.block).setImageSrc(reader.result.toString());
           target.value = "";
         };
         document.getElementById("data-block-image-file-name-label").innerHTML = target.files[0].name;
@@ -92,47 +90,42 @@ export class DataBlockContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     if (this.block instanceof DataBlock) {
-      let that = this;
       const dataBlock = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let sourceFileOpenButton = document.getElementById("data-block-source-file-button") as HTMLButtonElement;
-      sourceFileOpenButton.onclick = function () {
-        that.openSourceFile();
-      };
+      sourceFileOpenButton.onclick = () => this.openSourceFile();
       let imageFileOpenButton = document.getElementById("data-block-image-file-button") as HTMLButtonElement;
-      imageFileOpenButton.onclick = function () {
-        that.openImageFile();
-      };
-      let nameInputElement = document.getElementById("data-block-name-field") as HTMLInputElement;
-      nameInputElement.value = dataBlock.getName();
+      imageFileOpenButton.onclick = () => this.openImageFile();
+      let nameField = document.getElementById("data-block-name-field") as HTMLInputElement;
+      nameField.value = dataBlock.getName();
       let formatSelectElement = document.getElementById("data-block-format-selector") as HTMLSelectElement;
       formatSelectElement.value = dataBlock.getFormat();
-      let widthInputElement = document.getElementById("data-block-width-field") as HTMLInputElement;
-      widthInputElement.value = dataBlock.getWidth().toString();
-      let heightInputElement = document.getElementById("data-block-height-field") as HTMLInputElement;
-      heightInputElement.value = dataBlock.getHeight().toString();
-      const okFunction = function () {
+      let widthField = document.getElementById("data-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(dataBlock.getWidth()).toString();
+      let heightField = document.getElementById("data-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(dataBlock.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           dataBlock.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           dataBlock.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // finish
         if (success) {
-          dataBlock.setName(nameInputElement.value);
+          dataBlock.setName(nameField.value);
           dataBlock.setFormat(formatSelectElement.value);
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(dataBlock);
@@ -143,14 +136,14 @@ export class DataBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      nameInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      nameField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -159,9 +152,7 @@ export class DataBlockContextMenu extends BlockContextMenu {
         width: 350,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }

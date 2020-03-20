@@ -66,9 +66,9 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
       let showValueYesRadioButton = document.getElementById("global-variable-show-value-yes-radio-button") as HTMLInputElement;
       showValueYesRadioButton.checked = block.getShowValue();
       let widthField = document.getElementById("global-variable-block-width-field") as HTMLInputElement;
-      widthField.value = block.getWidth().toString();
+      widthField.value = Math.round(block.getWidth()).toString(); // Mac returns non-integer width and height
       let heightField = document.getElementById("global-variable-block-height-field") as HTMLInputElement;
-      heightField.value = block.getHeight().toString();
+      heightField.value = Math.round(block.getHeight()).toString();
       const okFunction = () => {
         block.setShowValue(showValueYesRadioButton.checked);
         let success = true;

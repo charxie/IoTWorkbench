@@ -141,31 +141,31 @@ export class BlockViewContextMenu extends MyContextMenu {
     closeAllContextMenus();
     let view = this.view;
     let d = $("#modal-dialog").html(this.getSettingsUI());
-    let backgroundColorInputElement = document.getElementById("block-view-background-color-field") as HTMLInputElement;
-    backgroundColorInputElement.value = view.getBackgroundColor();
+    let backgroundColorField = document.getElementById("block-view-background-color-field") as HTMLInputElement;
+    backgroundColorField.value = view.getBackgroundColor();
     let backgroundColorChooser = document.getElementById("block-view-background-color-chooser") as HTMLInputElement;
     let bgColor = Util.getHexColor(view.getBackgroundColor());
     if (bgColor) backgroundColorChooser.value = bgColor;
-    let blockStyleSelectElement = document.getElementById("block-view-block-style-selector") as HTMLSelectElement;
-    blockStyleSelectElement.value = view.getBlockStyle();
-    let widthInputElement = document.getElementById("block-view-width-field") as HTMLInputElement;
-    widthInputElement.value = view.canvas.width.toString();
-    let heightInputElement = document.getElementById("block-view-height-field") as HTMLInputElement;
-    heightInputElement.value = view.canvas.height.toString();
-    Util.hookupColorInputs(backgroundColorInputElement, backgroundColorChooser);
-    const okFunction = function () {
-      view.setBackgroundColor(backgroundColorInputElement.value);
-      view.setBlockStyle(blockStyleSelectElement.value);
+    let blockStyleSelector = document.getElementById("block-view-block-style-selector") as HTMLSelectElement;
+    blockStyleSelector.value = view.getBlockStyle();
+    let widthField = document.getElementById("block-view-width-field") as HTMLInputElement;
+    widthField.value = view.canvas.width.toString();
+    let heightField = document.getElementById("block-view-height-field") as HTMLInputElement;
+    heightField.value = view.canvas.height.toString();
+    Util.hookupColorInputs(backgroundColorField, backgroundColorChooser);
+    const okFunction = () => {
+      view.setBackgroundColor(backgroundColorField.value);
+      view.setBlockStyle(blockStyleSelector.value);
       flowchart.storeViewState();
       flowchart.blockView.requestDraw();
       d.dialog('close');
     };
-    const enterKeyUp = function (e) {
+    const enterKeyUp = (e) => {
       if (e.key == "Enter") {
         okFunction();
       }
     };
-    backgroundColorInputElement.addEventListener("keyup", enterKeyUp);
+    backgroundColorField.addEventListener("keyup", enterKeyUp);
     d.dialog({
       resizable: false,
       modal: true,
@@ -174,9 +174,7 @@ export class BlockViewContextMenu extends MyContextMenu {
       width: 420,
       buttons: {
         'OK': okFunction,
-        'Cancel': function () {
-          d.dialog('close');
-        }
+        'Cancel': () => d.dialog('close')
       }
     });
   }
@@ -214,9 +212,7 @@ export class BlockViewContextMenu extends MyContextMenu {
       height: 300,
       width: 320,
       buttons: {
-        'Close': function () {
-          d.dialog('close');
-        }
+        'Close': () => d.dialog('close')
       }
     });
   }

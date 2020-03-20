@@ -48,45 +48,45 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof ParametricEquationBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let parameterNameInputElement = document.getElementById("parametric-equation-block-parameter-name-field") as HTMLInputElement;
-      parameterNameInputElement.value = block.getParameterName() ? block.getParameterName().toString() : "t";
-      let expressionXInputElement = document.getElementById("parametric-equation-block-expression-x-field") as HTMLInputElement;
-      expressionXInputElement.value = block.getExpressionX() ? block.getExpressionX().toString() : "cos(t)";
-      let expressionYInputElement = document.getElementById("parametric-equation-block-expression-y-field") as HTMLInputElement;
-      expressionYInputElement.value = block.getExpressionY() ? block.getExpressionY().toString() : "sin(t)";
-      let widthInputElement = document.getElementById("parametric-equation-block-width-field") as HTMLInputElement;
-      widthInputElement.value = block.getWidth().toString();
-      let heightInputElement = document.getElementById("parametric-equation-block-height-field") as HTMLInputElement;
-      heightInputElement.value = block.getHeight().toString();
-      const okFunction = function () {
+      let parameterNameField = document.getElementById("parametric-equation-block-parameter-name-field") as HTMLInputElement;
+      parameterNameField.value = block.getParameterName() ? block.getParameterName().toString() : "t";
+      let expressionXField = document.getElementById("parametric-equation-block-expression-x-field") as HTMLInputElement;
+      expressionXField.value = block.getExpressionX() ? block.getExpressionX().toString() : "cos(t)";
+      let expressionYField = document.getElementById("parametric-equation-block-expression-y-field") as HTMLInputElement;
+      expressionYField.value = block.getExpressionY() ? block.getExpressionY().toString() : "sin(t)";
+      let widthField = document.getElementById("parametric-equation-block-width-field") as HTMLInputElement;
+      widthField.value = Math.round(block.getWidth()).toString();
+      let heightField = document.getElementById("parametric-equation-block-height-field") as HTMLInputElement;
+      heightField.value = Math.round(block.getHeight()).toString();
+      const okFunction = () => {
         let success = true;
         let message;
         // set width
-        let w = parseInt(widthInputElement.value);
+        let w = parseInt(widthField.value);
         if (isNumber(w)) {
           block.setWidth(Math.max(20, w));
         } else {
           success = false;
-          message = widthInputElement.value + " is not a valid width";
+          message = widthField.value + " is not a valid width";
         }
         // set height
-        let h = parseInt(heightInputElement.value);
+        let h = parseInt(heightField.value);
         if (isNumber(h)) {
           block.setHeight(Math.max(20, h));
         } else {
           success = false;
-          message = heightInputElement.value + " is not a valid height";
+          message = heightField.value + " is not a valid height";
         }
         // set parameter name and expressions
-        block.setParameterName(parameterNameInputElement.value);
-        block.setExpressionX(expressionXInputElement.value);
-        block.setExpressionY(expressionYInputElement.value);
+        block.setParameterName(parameterNameField.value);
+        block.setExpressionX(expressionXField.value);
+        block.setExpressionY(expressionYField.value);
         block.useDeclaredFunctions();
         try {
           flowchart.updateResultsForBlock(block);
         } catch (err) {
           success = false;
-          message = expressionXInputElement.value + ", " + expressionYInputElement.value + " are not valid expressions";
+          message = expressionXField.value + ", " + expressionYField.value + " are not valid expressions";
         }
         // finish up
         if (success) {
@@ -99,16 +99,16 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
           Util.showInputError(message);
         }
       };
-      const enterKeyUp = function (e) {
+      const enterKeyUp = (e) => {
         if (e.key == "Enter") {
           okFunction();
         }
       };
-      parameterNameInputElement.addEventListener("keyup", enterKeyUp);
-      expressionXInputElement.addEventListener("keyup", enterKeyUp);
-      expressionYInputElement.addEventListener("keyup", enterKeyUp);
-      widthInputElement.addEventListener("keyup", enterKeyUp);
-      heightInputElement.addEventListener("keyup", enterKeyUp);
+      parameterNameField.addEventListener("keyup", enterKeyUp);
+      expressionXField.addEventListener("keyup", enterKeyUp);
+      expressionYField.addEventListener("keyup", enterKeyUp);
+      widthField.addEventListener("keyup", enterKeyUp);
+      heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
@@ -117,9 +117,7 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
         width: 500,
         buttons: {
           'OK': okFunction,
-          'Cancel': function () {
-            d.dialog('close');
-          }
+          'Cancel': () => d.dialog('close')
         }
       });
     }
