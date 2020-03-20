@@ -182,6 +182,20 @@ export class Space2DContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
+                  <td>Aera Fill:</td>
+                  <td><select id="space2d-fill-option-set-selector" style="width: 65px"></select></td>
+                  <td colspan="2">
+                    <input type="radio" name="fill" id="space2d-no-fill-radio-button" checked> No
+                    <input type="radio" name="fill" id="space2d-fill-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
+                  <td>Fill Color:</td>
+                  <td><select id="space2d-fill-color-set-selector" style="width: 65px"></select></td>
+                  <td><input type="color" id="space2d-fill-color-chooser" style="width: 50px"></td>
+                  <td><input type="text" id="space2d-fill-color-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Window Color:</td>
                   <td><input type="color" id="space2d-window-color-chooser" style="width: 50px"></td>
                   <td colspan="2"><input type="text" id="space2d-window-color-field" style="width: 100%"></td>
@@ -265,6 +279,8 @@ export class Space2DContextMenu extends BlockContextMenu {
       let lineTypes: string[] = g.getLineTypes();
       let lineColors: string[] = g.getLineColors();
       let lineThicknesses: number[] = g.getLineThicknesses();
+      let fillOptions: boolean[] = g.getFillOptions();
+      let fillColors: string[] = g.getFillColors();
       let dataSymbols: string[] = g.getDataSymbols();
       let dataSymbolRadii: number[] = g.getDataSymbolRadii();
       let dataSymbolColors: string[] = g.getDataSymbolColors();
@@ -320,6 +336,36 @@ export class Space2DContextMenu extends BlockContextMenu {
       lineThicknessField.onchange = () => lineThicknesses[parseInt(lineThicknessSetSelector.value)] = parseFloat(lineThicknessField.value);
       let lineThicknessSetSelector = this.createSetSelector("space2d-line-thickness-set-selector");
       lineThicknessSetSelector.onchange = () => lineThicknessField.value = lineThicknesses[parseInt(lineThicknessSetSelector.value)].toString();
+
+      let noFillRadioButton = document.getElementById("space2d-no-fill-radio-button") as HTMLInputElement;
+      noFillRadioButton.checked = !fillOptions[0];
+      noFillRadioButton.onchange = () => fillOptions[parseInt(fillOptionSetSelector.value)] = !noFillRadioButton.checked;
+      let fillRadioButton = document.getElementById("space2d-fill-radio-button") as HTMLInputElement;
+      fillRadioButton.checked = fillOptions[0];
+      fillRadioButton.onchange = () => fillOptions[parseInt(fillOptionSetSelector.value)] = fillRadioButton.checked;
+      let fillOptionSetSelector = this.createSetSelector("space2d-fill-option-set-selector");
+      fillOptionSetSelector.onchange = () => {
+        let fill = fillOptions[parseInt(fillOptionSetSelector.value)];
+        if (fill) {
+          fillRadioButton.checked = true;
+          noFillRadioButton.checked = false;
+        } else {
+          fillRadioButton.checked = false;
+          noFillRadioButton.checked = true;
+        }
+      };
+
+      let fillColorField = document.getElementById("space2d-fill-color-field") as HTMLInputElement;
+      fillColorField.value = g.getFillColor(0);
+      fillColorField.onchange = () => fillColors[parseInt(fillColorSetSelector.value)] = fillColorField.value;
+      let fillColorChooser = document.getElementById("space2d-fill-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(fillColorChooser, fillColors[0]);
+      let fillColorSetSelector = this.createSetSelector("space2d-fill-color-set-selector");
+      fillColorSetSelector.onchange = () => {
+        let c = fillColors[parseInt(fillColorSetSelector.value)];
+        fillColorField.value = c;
+        Util.setColorPicker(fillColorChooser, c);
+      };
 
       let legendField = document.getElementById("space2d-legend-field") as HTMLInputElement;
       legendField.value = legends[0].toString();
@@ -382,6 +428,7 @@ export class Space2DContextMenu extends BlockContextMenu {
       Util.hookupColorInputs(lineColorField, lineColorChooser);
       Util.hookupColorInputs(symbolColorField, symbolColorChooser);
       Util.hookupColorInputs(windowColorField, windowColorChooser);
+      Util.hookupColorInputs(fillColorField, fillColorChooser);
 
       const okFunction = () => {
         let success = true;
@@ -510,6 +557,8 @@ export class Space2DContextMenu extends BlockContextMenu {
             g.setLineType(i, lineTypes[i]);
             g.setLineColor(i, lineColors[i]);
             g.setLineThickness(i, lineThicknesses[i]);
+            g.setFillColor(i, fillColors[i]);
+            g.setFillOption(i, fillOptions[i]);
             g.setDataSymbol(i, dataSymbols[i]);
             g.setDataSymbolColor(i, dataSymbolColors[i]);
             g.setDataSymbolRadius(i, dataSymbolRadii[i] != null ? dataSymbolRadii[i] : 3);
@@ -540,6 +589,7 @@ export class Space2DContextMenu extends BlockContextMenu {
       windowColorField.addEventListener("keyup", enterKeyUp);
       lineColorField.addEventListener("keyup", enterKeyUp);
       lineThicknessField.addEventListener("keyup", enterKeyUp);
+      fillColorField.addEventListener("keyup", enterKeyUp);
       legendField.addEventListener("keyup", enterKeyUp);
       symbolColorField.addEventListener("keyup", enterKeyUp);
       symbolRadiusField.addEventListener("keyup", enterKeyUp);

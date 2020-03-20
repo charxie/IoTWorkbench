@@ -228,6 +228,8 @@ export class StateIO {
           if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
           if (state.lineThicknesses != undefined) block.setLineThicknesses(state.lineThicknesses);
+          if (state.fillOptions != undefined) block.setFillOptions(state.fillOptions);
+          if (state.fillColors != undefined) block.setFillColors(state.fillColors);
           if (state.dataSymbols != undefined) block.setDataSymbols(state.dataSymbols);
           if (state.dataSymbolRadii != undefined) block.setDataSymbolRadii(state.dataSymbolRadii);
           if (state.dataSymbolColors != undefined) block.setDataSymbolColors(state.dataSymbolColors);

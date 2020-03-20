@@ -45,6 +45,8 @@ export class Space2D extends Block {
   private lineTypes: string[] = [];
   private lineColors: string[] = [];
   private lineThicknesses: number[] = [];
+  private fillOptions: boolean[] = [];
+  private fillColors: string[] = [];
   private dataSymbols: string[] = [];
   private dataSymbolRadii: number[] = [];
   private dataSymbolColors: string[] = [];
@@ -75,6 +77,8 @@ export class Space2D extends Block {
     readonly lineTypes: string[] = [];
     readonly lineColors: string[] = [];
     readonly lineThicknesses: number[] = [];
+    readonly fillOptions: boolean[];
+    readonly fillColors: string[];
     readonly dataSymbols: string[] = [];
     readonly dataSymbolRadii: number[] = [];
     readonly dataSymbolColors: string[] = [];
@@ -105,6 +109,8 @@ export class Space2D extends Block {
       this.lineTypes = [...g.lineTypes];
       this.lineColors = [...g.lineColors];
       this.lineThicknesses = [...g.lineThicknesses];
+      this.fillOptions = [...g.fillOptions];
+      this.fillColors = [...g.fillColors];
       this.dataSymbols = [...g.dataSymbols];
       this.dataSymbolRadii = [...g.dataSymbolRadii];
       this.dataSymbolColors = [...g.dataSymbolColors];
@@ -129,6 +135,8 @@ export class Space2D extends Block {
     this.lineTypes.push("Solid");
     this.lineColors.push("black");
     this.lineThicknesses.push(1);
+    this.fillOptions.push(false);
+    this.fillColors.push("lightgray");
     this.dataSymbols.push("Circle");
     this.dataSymbolRadii.push(3);
     this.dataSymbolColors.push("white");
@@ -154,6 +162,8 @@ export class Space2D extends Block {
     copy.lineColors = [...this.lineColors];
     copy.lineTypes = [...this.lineTypes];
     copy.lineThicknesses = [...this.lineThicknesses];
+    copy.fillOptions = [...this.fillOptions];
+    copy.fillColors = [...this.fillColors];
     copy.dataSymbols = [...this.dataSymbols];
     copy.dataSymbolRadii = [...this.dataSymbolRadii];
     copy.dataSymbolColors = [...this.dataSymbolColors];
@@ -234,6 +244,8 @@ export class Space2D extends Block {
               this.lineTypes.push("Solid");
               this.lineColors.push("black");
               this.lineThicknesses.push(1);
+              this.fillOptions.push(false);
+              this.fillColors.push("lightgray");
               this.dataSymbols.push("Circle");
               this.dataSymbolRadii.push(3);
               this.dataSymbolColors.push("white");
@@ -253,6 +265,8 @@ export class Space2D extends Block {
           this.lineTypes.pop();
           this.lineColors.pop();
           this.lineThicknesses.pop();
+          this.fillOptions.pop();
+          this.fillColors.pop();
           this.dataSymbols.pop();
           this.dataSymbolRadii.pop();
           this.dataSymbolColors.pop();
@@ -266,6 +280,8 @@ export class Space2D extends Block {
       this.lineTypes.length = n;
       this.lineColors.length = n;
       this.lineThicknesses.length = n;
+      this.fillOptions.length = n;
+      this.fillColors.length = n;
       this.dataSymbols.length = n;
       this.dataSymbolRadii.length = n;
       this.dataSymbolColors.length = n;
@@ -423,6 +439,38 @@ export class Space2D extends Block {
 
   getLineThickness(i: number): number {
     return this.lineThicknesses[i];
+  }
+
+  setFillOptions(fillOptions: boolean[]): void {
+    this.fillOptions = fillOptions;
+  }
+
+  getFillOptions(): boolean[] {
+    return [...this.fillOptions];
+  }
+
+  setFillOption(i: number, fill: boolean): void {
+    this.fillOptions[i] = fill;
+  }
+
+  getFillOption(i: number): boolean {
+    return this.fillOptions[i];
+  }
+
+  setFillColors(fillColors: string[]): void {
+    this.fillColors = fillColors;
+  }
+
+  getFillColors(): string[] {
+    return [...this.fillColors];
+  }
+
+  setFillColor(i: number, fillColor: string): void {
+    this.fillColors[i] = fillColor;
+  }
+
+  getFillColor(i: number): string {
+    return this.fillColors[i];
   }
 
   setDataSymbols(dataSymbols: string[]): void {
@@ -641,6 +689,22 @@ export class Space2D extends Block {
             ctx.lineTo((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy);
           }
           ctx.stroke();
+          if (this.fillOptions[index]) {
+            ctx.fillStyle = this.fillColors[index];
+            ctx.closePath();
+            ctx.fill();
+          }
+        } else {
+          if (this.fillOptions[index]) {
+            ctx.fillStyle = this.fillColors[index];
+            ctx.beginPath();
+            ctx.moveTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
+            for (let i = 1; i < length; i++) {
+              ctx.lineTo((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy);
+            }
+            ctx.closePath();
+            ctx.fill();
+          }
         }
 
         // draw symbols on top of the line
