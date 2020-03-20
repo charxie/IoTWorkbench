@@ -137,6 +137,8 @@ import random_walk from "./examples/random-walk.json";
 // @ts-ignore
 import spirals from "./examples/spirals.json";
 // @ts-ignore
+import regular_polygon from "./examples/regular-polygon.json";
+// @ts-ignore
 import sunflower_vogel_model from "./examples/sunflower-vogel-model.json";
 // @ts-ignore
 import fern_generator_1 from "./examples/fern-generator-1.json";
@@ -242,6 +244,7 @@ export class Examples {
     this.files.push({name: "Math: Parametric Generator 2", data: parametric_generator_2});
     this.files.push({name: "Math: Spirals", data: spirals});
     this.files.push({name: "Math: Recurrence Relation", data: duffing_map});
+    this.files.push({name: "Math: Regular Polygon", data: regular_polygon});
     this.files.push({name: "Math: Sunflower Pattern", data: sunflower_vogel_model});
     this.files.push({name: "Math: Import Datasets", data: import_datasets});
     this.files.push({name: "Math: Make a Simple Game", data: simple_math_game});
