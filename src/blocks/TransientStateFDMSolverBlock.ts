@@ -408,7 +408,9 @@ export class TransientStateFDMSolverBlock extends SolverBlock {
       if (this.initialValues[n] === undefined) {
         this.initialValues[n] = new DataArray(0);
       }
-      this.initialValues[n].data = this.portI[n].getValue();
+      if (this.portI[n] != undefined) {
+        this.initialValues[n].data = this.portI[n].getValue();
+      }
     }
     this.hasError = this.hasEquationError || this.hasDeclarationError;
     if (this.equations && nx != undefined && dx != undefined && nt != undefined && dt != undefined) {

@@ -3,6 +3,10 @@
  */
 
 // @ts-ignore
+import fisher_equation from "./examples/fisher-equation.json";
+// @ts-ignore
+import kaplan_yorke_map from "./examples/kaplan–yorke-map.json";
+// @ts-ignore
 import hindmarsh_rose_model from "./examples/hindmarsh-rose-model.json";
 // @ts-ignore
 import gradient_descent_1d from "./examples/gradient-descent-1d.json";
@@ -289,6 +293,7 @@ export class Examples {
     this.files.push({name: "Chemistry: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
     this.files.push({name: "Chemistry: Brusselator", data: brusselator});
     this.files.push({name: "Chaos: Logistic Map", data: logistic_map});
+    this.files.push({name: "Chaos: Kaplan–Yorke Map", data: kaplan_yorke_map});
     this.files.push({name: "Chaos: Lorenz Attractor", data: lorenz_attractor});
     this.files.push({name: "Chaos: Rössler Attactor", data: rossler_attactor});
     this.files.push({name: "Fractals: Fern Generator 1", data: fern_generator_1});
@@ -322,6 +327,7 @@ export class Examples {
     this.files.push({name: "1D Simulation: Transient State Finite Difference Method", data: pde_fdm_solver});
     this.files.push({name: "1D Simulation: Numerical Stability", data: pde_numerical_stability});
     this.files.push({name: "1D Simulation: Heat Equation", data: heat_equation});
+    this.files.push({name: "1D Simulation: Fisher Equation", data: fisher_equation});
     this.files.push({name: "1D Simulation: Wave Equation", data: wave_equation});
     this.files.push({name: "1D Simulation: Transport Equation", data: transport_equation});
     this.files.push({name: "1D Simulation: Standing Waves", data: standing_waves});
