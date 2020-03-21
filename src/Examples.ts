@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import hindmarsh_rose_model from "./examples/hindmarsh-rose-model.json";
+// @ts-ignore
 import gradient_descent_1d from "./examples/gradient-descent-1d.json";
 // @ts-ignore
 import gradient_descent_2d from "./examples/gradient-descent-2d.json";
@@ -314,6 +316,7 @@ export class Examples {
       name: "Biology: Brownian Motion with Multiple Particles",
       data: brownian_motion_multiple_particles
     });
+    this.files.push({name: "Biology: Hindmarsh–Rose Model of Neuronal Activity", data: hindmarsh_rose_model});
     this.files.push({name: "Signal Processing: Fourier Transform", data: fourier_transform});
     this.files.push({name: "Signal Processing: Convolution Theorem", data: convolution_theorem});
     this.files.push({name: "1D Simulation: Transient State Finite Difference Method", data: pde_fdm_solver});
