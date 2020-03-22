@@ -3,7 +3,11 @@
  */
 
 // @ts-ignore
+import thomas_attractor from "./examples/thomas-attractor.json";
+// @ts-ignore
 import fisher_equation from "./examples/fisher-equation.json";
+// @ts-ignore
+import de_jong_map from "./examples/de-jong-map.json";
 // @ts-ignore
 import kaplan_yorke_map from "./examples/kaplan–yorke-map.json";
 // @ts-ignore
@@ -61,7 +65,7 @@ import normal_distributions from "./examples/normal-distributions.json";
 // @ts-ignore
 import box_muller_transform from "./examples/box-muller-transform.json";
 // @ts-ignore
-import rossler_attactor from "./examples/rossler-attractor.json";
+import rossler_attractor from "./examples/rossler-attractor.json";
 // @ts-ignore
 import ode_solver from "./examples/ode-solver.json";
 // @ts-ignore
@@ -294,8 +298,10 @@ export class Examples {
     this.files.push({name: "Chemistry: Brusselator", data: brusselator});
     this.files.push({name: "Chaos: Logistic Map", data: logistic_map});
     this.files.push({name: "Chaos: Kaplan–Yorke Map", data: kaplan_yorke_map});
+    this.files.push({name: "Chaos: De Jong Map", data: de_jong_map});
     this.files.push({name: "Chaos: Lorenz Attractor", data: lorenz_attractor});
-    this.files.push({name: "Chaos: Rössler Attactor", data: rossler_attactor});
+    this.files.push({name: "Chaos: Rössler Attractor", data: rossler_attractor});
+    this.files.push({name: "Chaos: Thomas Attractor", data: thomas_attractor});
     this.files.push({name: "Fractals: Fern Generator 1", data: fern_generator_1});
     this.files.push({name: "Fractals: Fern Generator 2", data: fern_generator_2});
     this.files.push({name: "Mechanics: Projectile Motion 1", data: projectile_motion_1});
