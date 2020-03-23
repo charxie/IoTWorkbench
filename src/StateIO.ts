@@ -235,6 +235,7 @@ export class StateIO {
           if (state.dataSymbolColors != undefined) block.setDataSymbolColors(state.dataSymbolColors);
           if (state.dataSymbolSpacings != undefined) block.setDataSymbolSpacings(state.dataSymbolSpacings);
           if (state.endSymbolRadii != undefined) block.setEndSymbolRadii(state.endSymbolRadii);
+          if (state.endSymbolRotatables != undefined) block.setEndSymbolRotatables(state.endSymbolRotatables);
           if (state.numberOfPoints != undefined) block.setNumberOfPoints(state.numberOfPoints);
         } else if (block instanceof Field2D) {
           block.setName(state.name);

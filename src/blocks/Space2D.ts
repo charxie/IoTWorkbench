@@ -52,6 +52,7 @@ export class Space2D extends Block {
   private dataSymbolColors: string[] = [];
   private dataSymbolSpacings: number[] = [];
   private endSymbolRadii: number[] = [];
+  private endSymbolRotatables: boolean[] = [];
 
   static State = class {
     readonly name: string;
@@ -84,6 +85,7 @@ export class Space2D extends Block {
     readonly dataSymbolColors: string[] = [];
     readonly dataSymbolSpacings: number[] = [];
     readonly endSymbolRadii: number[] = [];
+    readonly endSymbolRotatables: boolean[] = [];
 
     constructor(g: Space2D) {
       this.name = g.name;
@@ -116,6 +118,7 @@ export class Space2D extends Block {
       this.dataSymbolColors = [...g.dataSymbolColors];
       this.dataSymbolSpacings = [...g.dataSymbolSpacings];
       this.endSymbolRadii = [...g.endSymbolRadii];
+      this.endSymbolRotatables = [...g.endSymbolRotatables];
     }
   };
 
@@ -142,6 +145,7 @@ export class Space2D extends Block {
     this.dataSymbolColors.push("white");
     this.dataSymbolSpacings.push(1);
     this.endSymbolRadii.push(0);
+    this.endSymbolRotatables.push(false);
   }
 
   getCopy(): Block {
@@ -169,6 +173,7 @@ export class Space2D extends Block {
     copy.dataSymbolColors = [...this.dataSymbolColors];
     copy.dataSymbolSpacings = [...this.dataSymbolSpacings];
     copy.endSymbolRadii = [...this.endSymbolRadii];
+    copy.endSymbolRotatables = [...this.endSymbolRotatables];
     return copy;
   }
 
@@ -251,6 +256,7 @@ export class Space2D extends Block {
               this.dataSymbolColors.push("white");
               this.dataSymbolSpacings.push(1);
               this.endSymbolRadii.push(0);
+              this.endSymbolRotatables.push(false);
             }
           }
         }
@@ -272,6 +278,7 @@ export class Space2D extends Block {
           this.dataSymbolColors.pop();
           this.dataSymbolSpacings.pop();
           this.endSymbolRadii.pop();
+          this.endSymbolRotatables.pop();
         }
       }
       let n = this.portPoints.length;
@@ -287,6 +294,7 @@ export class Space2D extends Block {
       this.dataSymbolColors.length = n;
       this.dataSymbolSpacings.length = n;
       this.endSymbolRadii.length = n;
+      this.endSymbolRotatables.length = n;
       this.refreshView();
     }
   }
@@ -551,6 +559,22 @@ export class Space2D extends Block {
 
   getEndSymbolRadius(i: number): number {
     return this.endSymbolRadii[i];
+  }
+
+  setEndSymbolRotatables(endSymbolRotatables: boolean[]): void {
+    this.endSymbolRotatables = endSymbolRotatables;
+  }
+
+  getEndSymbolRotatables(): boolean[] {
+    return this.endSymbolRotatables;
+  }
+
+  setEndSymbolRotatable(i: number, endSymbolRotatable: boolean): void {
+    this.endSymbolRotatables[i] = endSymbolRotatable;
+  }
+
+  getEndSymbolRotatable(i: number): boolean {
+    return this.endSymbolRotatables[i];
   }
 
   setEndSymbolsConnection(endSymbolsConnection: string): void {
@@ -862,7 +886,21 @@ export class Space2D extends Block {
             let imageHeight = this.endSymbolRadii[index] * this.images[index].height / this.images[index].width;
             let imageX = p.getX(i) !== undefined ? (p.getX(i) - xmin) * dx : (p.getX(0) - xmin) * dx; // if the input is the same, the array will not grow
             let imageY = p.getY(i) !== undefined ? -(p.getY(i) - ymin) * dy : -(p.getY(0) - ymin) * dy;
-            ctx.drawImage(this.images[index], imageX - this.endSymbolRadii[index], imageY - imageHeight, 2 * this.endSymbolRadii[index], 2 * imageHeight);
+            if (i > 0 && this.endSymbolRotatables[index]) {
+              let imageX0 = p.getX(i) !== undefined ? (p.getX(i - 1) - xmin) * dx : (p.getX(0) - xmin) * dx; // if the input is the same, the array will not grow
+              let imageY0 = p.getY(i) !== undefined ? -(p.getY(i - 1) - ymin) * dy : -(p.getY(0) - ymin) * dy;
+              if (imageX0 !== imageX || imageY0 !== imageY) {
+                ctx.save();
+                ctx.translate(imageX, imageY);
+                ctx.rotate(Math.atan2(imageY - imageY0, imageX - imageX0) + 0.5 * Math.PI);
+                ctx.drawImage(this.images[index], -this.endSymbolRadii[index], -imageHeight, 2 * this.endSymbolRadii[index], 2 * imageHeight);
+                ctx.restore();
+              } else {
+                ctx.drawImage(this.images[index], imageX - this.endSymbolRadii[index], imageY - imageHeight, 2 * this.endSymbolRadii[index], 2 * imageHeight);
+              }
+            } else {
+              ctx.drawImage(this.images[index], imageX - this.endSymbolRadii[index], imageY - imageHeight, 2 * this.endSymbolRadii[index], 2 * imageHeight);
+            }
           } else {
             ctx.beginPath();
             ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.endSymbolRadii[index], 0, 2 * Math.PI);

@@ -172,6 +172,14 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="space2d-end-symbol-radius-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>End Symbol Rotation:</td>
+                  <td><select id="space2d-end-symbol-rotation-set-selector" style="width: 65px"></select></td>
+                  <td colspan="2">
+                    <input type="radio" name="fill" id="space2d-end-symbol-no-rotation-radio-button" checked> No
+                    <input type="radio" name="fill" id="space2d-end-symbol-rotation-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
                   <td>End Connection:</td>
                   <td colspan="3">
                     <select id="space2d-end-symbols-connection-selector" style="width: 100%">
@@ -286,6 +294,7 @@ export class Space2DContextMenu extends BlockContextMenu {
       let dataSymbolColors: string[] = g.getDataSymbolColors();
       let dataSymbolSpacings: number[] = g.getDataSymbolSpacings();
       let endSymbolRadii: number[] = g.getEndSymbolRadii();
+      let endSymbolRotatables: boolean[] = g.getEndSymbolRotatables();
 
       let nameField = document.getElementById("space2d-name-field") as HTMLInputElement;
       nameField.value = g.getName();
@@ -408,6 +417,24 @@ export class Space2DContextMenu extends BlockContextMenu {
       endSymbolRadiusField.onchange = () => endSymbolRadii[parseInt(endSymbolRadiusSetSelector.value)] = parseInt(endSymbolRadiusField.value);
       let endSymbolRadiusSetSelector = this.createSetSelector("space2d-end-symbol-radius-set-selector");
       endSymbolRadiusSetSelector.onchange = () => endSymbolRadiusField.value = endSymbolRadii[parseInt(endSymbolRadiusSetSelector.value)].toString();
+
+      let endSymbolNoRotationRadioButton = document.getElementById("space2d-end-symbol-no-rotation-radio-button") as HTMLInputElement;
+      endSymbolNoRotationRadioButton.checked = !endSymbolRotatables[0];
+      endSymbolNoRotationRadioButton.onchange = () => endSymbolRotatables[parseInt(endSymbolRotationSetSelector.value)] = !endSymbolNoRotationRadioButton.checked;
+      let endSymbolRotationRadioButton = document.getElementById("space2d-end-symbol-rotation-radio-button") as HTMLInputElement;
+      endSymbolRotationRadioButton.checked = endSymbolRotatables[0];
+      endSymbolRotationRadioButton.onchange = () => endSymbolRotatables[parseInt(endSymbolRotationSetSelector.value)] = endSymbolRotationRadioButton.checked;
+      let endSymbolRotationSetSelector = this.createSetSelector("space2d-end-symbol-rotation-set-selector");
+      endSymbolRotationSetSelector.onchange = () => {
+        let rotate = endSymbolRotatables[parseInt(endSymbolRotationSetSelector.value)];
+        if (rotate) {
+          endSymbolRotationRadioButton.checked = true;
+          endSymbolNoRotationRadioButton.checked = false;
+        } else {
+          endSymbolRotationRadioButton.checked = false;
+          endSymbolNoRotationRadioButton.checked = true;
+        }
+      };
 
       let endSymbolsConnectionSelector = document.getElementById("space2d-end-symbols-connection-selector") as HTMLSelectElement;
       endSymbolsConnectionSelector.value = g.getEndSymbolsConnection();
