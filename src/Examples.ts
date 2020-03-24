@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import hypotrochoid_epitrochoid from "./examples/hypotrochoid-epitrochoid.json";
+// @ts-ignore
 import trochoid from "./examples/trochoid.json";
 // @ts-ignore
 import thomas_attractor from "./examples/thomas-attractor.json";
@@ -309,6 +311,7 @@ export class Examples {
     this.files.push({name: "Mechanics: Projectile Motion 1", data: projectile_motion_1});
     this.files.push({name: "Mechanics: Projectile Motion 2", data: projectile_motion_2});
     this.files.push({name: "Mechanics: Trochoid", data: trochoid});
+    this.files.push({name: "Mechanics: Hypotrochoid & Epitrochoid", data: hypotrochoid_epitrochoid});
     this.files.push({name: "Mechanics: Two-Body Problem", data: two_body_problem});
     this.files.push({name: "Mechanics: Three-Body Problem", data: three_body_problem});
     this.files.push({name: "Mechanics: Harmonic Oscillator", data: harmonic_oscillator});
