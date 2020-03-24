@@ -671,7 +671,7 @@ export class Grapher extends Block {
       let xmax = this.x0 + maxLength * this.dx;
       precision = Math.abs(xmax) < 1 ? 2 : (1 + Math.round(Math.abs(xmax)).toString().length);
     } else {
-      precision = maxLength.toString().length;
+      precision = maxLength.toString().length + 1;
     }
     for (let i = 0; i <= maxLength; i++) {
       if (i % spacing == 0) {

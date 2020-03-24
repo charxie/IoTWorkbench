@@ -71,6 +71,10 @@ export class RainbowHatBlock extends HatBlock {
     return block;
   }
 
+  reset(): void {
+    this.clearSensorData();
+  }
+
   destroy(): void {
   }
 
