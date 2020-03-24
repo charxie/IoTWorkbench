@@ -6,7 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
-import {flowchart} from "../Main";
+import {flowchart, isNumber} from "../Main";
 import {Point2DArray} from "./Point2DArray";
 import {Vector} from "../math/Vector";
 
@@ -51,7 +51,7 @@ export class Space2D extends Block {
   private dataSymbolRadii: number[] = [];
   private dataSymbolColors: string[] = [];
   private dataSymbolSpacings: number[] = [];
-  private endSymbolRadii: number[] = [];
+  private endSymbolRadii: any[] = [];
   private endSymbolRotatables: boolean[] = [];
 
   static State = class {
@@ -84,7 +84,7 @@ export class Space2D extends Block {
     readonly dataSymbolRadii: number[] = [];
     readonly dataSymbolColors: string[] = [];
     readonly dataSymbolSpacings: number[] = [];
-    readonly endSymbolRadii: number[] = [];
+    readonly endSymbolRadii: any[] = [];
     readonly endSymbolRotatables: boolean[] = [];
 
     constructor(g: Space2D) {
@@ -368,8 +368,12 @@ export class Space2D extends Block {
   }
 
   setBackgroundImageSrc(imageSrc: string) {
-    if (this.backgroundImage === undefined) this.backgroundImage = new Image();
-    this.backgroundImage.src = imageSrc;
+    if (imageSrc === undefined || imageSrc === null) {
+      this.backgroundImage = undefined;
+    } else {
+      if (this.backgroundImage === undefined) this.backgroundImage = new Image();
+      this.backgroundImage.src = imageSrc;
+    }
   }
 
   getBackgroundImageSrc(): string {
@@ -629,7 +633,7 @@ export class Space2D extends Block {
     ctx.rect(this.spaceWindow.x, this.spaceWindow.y, this.spaceWindow.width, this.spaceWindow.height);
     ctx.fillStyle = this.spaceWindowColor;
     ctx.fill();
-    if (this.backgroundImage !== undefined) {
+    if (this.backgroundImage !== undefined && this.backgroundImage.src !== null) {
       ctx.drawImage(this.backgroundImage, this.spaceWindow.x, this.spaceWindow.y,
         this.spaceWindow.height * this.backgroundImage.width / this.backgroundImage.height, this.spaceWindow.height);
     }
@@ -835,7 +839,8 @@ export class Space2D extends Block {
       for (let i = 0; i < this.points.length - 1; i++) {
         xi = (this.points[i].getLatestX() - xmin) * dx;
         yi = -(this.points[i].getLatestY() - ymin) * dy;
-        ctx.strokeStyle = this.dataSymbolColors[i];
+        //ctx.strokeStyle = this.dataSymbolColors[i];
+        ctx.strokeStyle = this.lineColors[i];
         xj = (this.points[i + 1].getLatestX() - xmin) * dx;
         yj = -(this.points[i + 1].getLatestY() - ymin) * dy;
         ctx.beginPath();
@@ -877,13 +882,18 @@ export class Space2D extends Block {
       let i = p.length() - 1;
       if (i >= 0) {
         let index = this.points.indexOf(p);
-        if (this.endSymbolRadii[index] > 0) {
+        let endSymbolRadius = this.endSymbolRadii[index];
+        if (!isNumber(endSymbolRadius)) {
+          endSymbolRadius = flowchart.globalVariables[endSymbolRadius];
+        }
+        if (endSymbolRadius > 0) {
+          ctx.lineWidth = this.lineThicknesses[index];
           if (this.portImages !== undefined && this.portImages[index].getValue() !== undefined) {
             if (this.images[index] === undefined) {
               this.images[index] = new Image();
             }
             this.images[index].src = this.portImages[index].getValue();
-            let imageHeight = this.endSymbolRadii[index] * this.images[index].height / this.images[index].width;
+            let imageHeight = endSymbolRadius * this.images[index].height / this.images[index].width;
             let imageX = p.getX(i) !== undefined ? (p.getX(i) - xmin) * dx : (p.getX(0) - xmin) * dx; // if the input is the same, the array will not grow
             let imageY = p.getY(i) !== undefined ? -(p.getY(i) - ymin) * dy : -(p.getY(0) - ymin) * dy;
             if (i > 0 && this.endSymbolRotatables[index]) {
@@ -893,17 +903,17 @@ export class Space2D extends Block {
                 ctx.save();
                 ctx.translate(imageX, imageY);
                 ctx.rotate(Math.atan2(imageY - imageY0, imageX - imageX0) + 0.5 * Math.PI);
-                ctx.drawImage(this.images[index], -this.endSymbolRadii[index], -imageHeight, 2 * this.endSymbolRadii[index], 2 * imageHeight);
+                ctx.drawImage(this.images[index], -endSymbolRadius, -imageHeight, 2 * endSymbolRadius, 2 * imageHeight);
                 ctx.restore();
               } else {
-                ctx.drawImage(this.images[index], imageX - this.endSymbolRadii[index], imageY - imageHeight, 2 * this.endSymbolRadii[index], 2 * imageHeight);
+                ctx.drawImage(this.images[index], imageX - endSymbolRadius, imageY - imageHeight, 2 * endSymbolRadius, 2 * imageHeight);
               }
             } else {
-              ctx.drawImage(this.images[index], imageX - this.endSymbolRadii[index], imageY - imageHeight, 2 * this.endSymbolRadii[index], 2 * imageHeight);
+              ctx.drawImage(this.images[index], imageX - endSymbolRadius, imageY - imageHeight, 2 * endSymbolRadius, 2 * imageHeight);
             }
           } else {
             ctx.beginPath();
-            ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, this.endSymbolRadii[index], 0, 2 * Math.PI);
+            ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, endSymbolRadius, 0, 2 * Math.PI);
             ctx.fillStyle = this.dataSymbolColors[index];
             ctx.fill();
             ctx.strokeStyle = this.lineColors[index];

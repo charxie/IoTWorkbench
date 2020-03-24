@@ -210,8 +210,9 @@ export class Space2DContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Window Background:</td>
-                  <td><button type="button" id="space2d-window-background-file-button">Open</button></td>
-                  <td colspan="2"><label id="space2d-window-background-file-name-label" style="width: 100%"></label></label></td>
+                  <td><button type="button" id="space2d-window-background-file-button">Select</button></td>
+                  <td><button type="button" id="space2d-window-background-remove-button">Remove</button></td>
+                  <td><label id="space2d-window-background-file-name-label" style="width: 100%"></label></label></td>
                 </tr>
                 <tr>
                   <td>Grid Lines:</td>
@@ -233,15 +234,14 @@ export class Space2DContextMenu extends BlockContextMenu {
   }
 
   private openImageFile(): void {
-    let that = this;
     let fileDialog = document.getElementById('image-file-dialog') as HTMLInputElement;
     fileDialog.onchange = e => {
       let target = <HTMLInputElement>event.target;
       if (target.files.length) {
         let reader: FileReader = new FileReader();
         reader.readAsDataURL(target.files[0]); // base64 string
-        reader.onload = function (e) {
-          (<Space2D>that.block).setBackgroundImageSrc(reader.result.toString());
+        reader.onload = (e) => {
+          (<Space2D>this.block).setBackgroundImageSrc(reader.result.toString());
           target.value = "";
         };
         document.getElementById("space2d-window-background-file-name-label").innerHTML = target.files[0].name;
@@ -276,10 +276,12 @@ export class Space2DContextMenu extends BlockContextMenu {
     if (this.block instanceof Space2D) {
       const g = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let that = this;
       let imageFileOpenButton = document.getElementById("space2d-window-background-file-button") as HTMLButtonElement;
-      imageFileOpenButton.onclick = function () {
-        that.openImageFile();
+      imageFileOpenButton.onclick = () => this.openImageFile();
+      let imageFileRemoveButton = document.getElementById("space2d-window-background-remove-button") as HTMLButtonElement;
+      imageFileRemoveButton.onclick = () => {
+        g.setBackgroundImageSrc(undefined);
+        document.getElementById("space2d-window-background-file-name-label").innerHTML = "No image";
       };
 
       // temporary storage of properties (don't store the changes to the block object or else we won't be able to cancel)
@@ -293,7 +295,7 @@ export class Space2DContextMenu extends BlockContextMenu {
       let dataSymbolRadii: number[] = g.getDataSymbolRadii();
       let dataSymbolColors: string[] = g.getDataSymbolColors();
       let dataSymbolSpacings: number[] = g.getDataSymbolSpacings();
-      let endSymbolRadii: number[] = g.getEndSymbolRadii();
+      let endSymbolRadii: any[] = g.getEndSymbolRadii();
       let endSymbolRotatables: boolean[] = g.getEndSymbolRotatables();
 
       let nameField = document.getElementById("space2d-name-field") as HTMLInputElement;
@@ -413,8 +415,14 @@ export class Space2DContextMenu extends BlockContextMenu {
       symbolSpacingSetSelector.onchange = () => symbolSpacingField.value = dataSymbolSpacings[parseInt(symbolSpacingSetSelector.value)].toString();
 
       let endSymbolRadiusField = document.getElementById("space2d-end-symbol-radius-field") as HTMLInputElement;
-      endSymbolRadiusField.value = endSymbolRadii[0].toString();
-      endSymbolRadiusField.onchange = () => endSymbolRadii[parseInt(endSymbolRadiusSetSelector.value)] = parseInt(endSymbolRadiusField.value);
+      endSymbolRadiusField.value = endSymbolRadii[0] != null ? endSymbolRadii[0].toString() : "10";
+      endSymbolRadiusField.onchange = () => {
+        if (isNumber(endSymbolRadiusField.value)) {
+          endSymbolRadii[parseInt(endSymbolRadiusSetSelector.value)] = parseInt(endSymbolRadiusField.value);
+        } else {
+          endSymbolRadii[parseInt(endSymbolRadiusSetSelector.value)] = endSymbolRadiusField.value;
+        }
+      };
       let endSymbolRadiusSetSelector = this.createSetSelector("space2d-end-symbol-radius-set-selector");
       endSymbolRadiusSetSelector.onchange = () => endSymbolRadiusField.value = endSymbolRadii[parseInt(endSymbolRadiusSetSelector.value)].toString();
 
@@ -559,12 +567,14 @@ export class Space2DContextMenu extends BlockContextMenu {
         }
         // check end symbol radii
         for (let endSymbolRadius of endSymbolRadii) {
-          if (endSymbolRadius < 0) {
-            success = false;
-            if (g.getPointInput()) {
-              message = "Port " + g.getPointPorts()[endSymbolRadii.indexOf(endSymbolRadius)].getUid() + " end symbol size cannot be negative (" + endSymbolRadius + ")";
-            } else {
-              message = "End symbol radius cannot be negative (" + endSymbolRadius + ")";
+          if (isNumber(endSymbolRadius)) {
+            if (endSymbolRadius < 0) {
+              success = false;
+              if (g.getPointInput()) {
+                message = "Port " + g.getPointPorts()[endSymbolRadii.indexOf(endSymbolRadius)].getUid() + " end symbol size cannot be negative (" + endSymbolRadius + ")";
+              } else {
+                message = "End symbol radius cannot be negative (" + endSymbolRadius + ")";
+              }
             }
             break;
           }
