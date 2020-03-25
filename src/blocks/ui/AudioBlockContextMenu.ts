@@ -24,7 +24,7 @@ export class AudioBlockContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>File:</td>
-                  <td><button type="button" id="audio-block-file-button">Open</button></td>
+                  <td><button type="button" id="audio-block-file-button">Select</button></td>
                   <td><label id="audio-block-file-name-label" style="width: 100%"></label></label></td>
                 </tr>
                 <tr>

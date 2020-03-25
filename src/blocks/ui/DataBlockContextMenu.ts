@@ -24,7 +24,7 @@ export class DataBlockContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Source File:</td>
-                  <td><button type="button" id="data-block-source-file-button">Open</button></td>
+                  <td><button type="button" id="data-block-source-file-button">Select</button></td>
                   <td><label id="data-block-source-file-name-label" style="width: 100%"></label></label></td>
                 </tr>
                <tr>
@@ -37,7 +37,7 @@ export class DataBlockContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Image:</td>
-                  <td><button type="button" id="data-block-image-file-button">Open</button></td>
+                  <td><button type="button" id="data-block-image-file-button">Select</button></td>
                   <td><label id="data-block-image-file-name-label" style="width: 100%"></label></label></td>
                 </tr>
                 <tr>
