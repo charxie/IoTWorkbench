@@ -3,7 +3,9 @@
  */
 
 // @ts-ignore
-import slider_crank from "./examples/slider-crank.json";
+import slider_crank_offset from "./examples/slider-crank-offset.json";
+// @ts-ignore
+import slider_crank_inline from "./examples/slider-crank-inline.json";
 // @ts-ignore
 import scotch_yoke from "./examples/scotch-yoke.json";
 // @ts-ignore
@@ -317,7 +319,8 @@ export class Examples {
     this.files.push({name: "Mechanics: Trochoid", data: trochoid});
     this.files.push({name: "Mechanics: Hypotrochoid & Epitrochoid", data: hypotrochoid_epitrochoid});
     this.files.push({name: "Mechanics: Scotch Yoke", data: scotch_yoke});
-    this.files.push({name: "Mechanics: Slider-Crank Mechanism", data: slider_crank});
+    this.files.push({name: "Mechanics: Inline Slider-Crank Linkage", data: slider_crank_inline});
+    this.files.push({name: "Mechanics: Offset Slider-Crank Linkage", data: slider_crank_offset});
     this.files.push({name: "Mechanics: Two-Body Problem", data: two_body_problem});
     this.files.push({name: "Mechanics: Three-Body Problem", data: three_body_problem});
     this.files.push({name: "Mechanics: Harmonic Oscillator", data: harmonic_oscillator});

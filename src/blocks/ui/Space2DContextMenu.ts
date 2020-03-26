@@ -175,8 +175,8 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td>End Symbol Rotation:</td>
                   <td><select id="space2d-end-symbol-rotation-set-selector" style="width: 65px"></select></td>
                   <td colspan="2">
-                    <input type="radio" name="fill" id="space2d-end-symbol-no-rotation-radio-button" checked> No
-                    <input type="radio" name="fill" id="space2d-end-symbol-rotation-radio-button"> Yes
+                    <input type="radio" name="end-symbol-rotation" id="space2d-end-symbol-no-rotation-radio-button" checked> No
+                    <input type="radio" name="end-symbol-rotation" id="space2d-end-symbol-rotation-radio-button"> Yes
                   </td>
                 </tr>
                 <tr>
