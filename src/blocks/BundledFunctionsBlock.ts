@@ -12,6 +12,7 @@ export class BundledFunctionsBlock extends Block {
 
   private inputName: string = "x";
   private expressions: string[] = ["cos(x)", "sin(x)", "tan(x)"];
+  private updateImmediately: boolean = true;
   private codes;
   private readonly portI: Port;
   private portO: Port[];
@@ -22,6 +23,7 @@ export class BundledFunctionsBlock extends Block {
     readonly uid: string;
     readonly inputName: string;
     readonly expressions: string[];
+    readonly updateImmediately: boolean;
     readonly x: number;
     readonly y: number;
     readonly width: number;
@@ -31,6 +33,7 @@ export class BundledFunctionsBlock extends Block {
       this.uid = block.uid;
       this.inputName = block.inputName;
       this.expressions = block.expressions;
+      this.updateImmediately = block.updateImmediately;
       this.x = block.x;
       this.y = block.y;
       this.width = block.width;
@@ -77,11 +80,20 @@ export class BundledFunctionsBlock extends Block {
   getCopy(): Block {
     let block = new BundledFunctionsBlock("Bundled Functions Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.inputName = this.inputName;
+    block.updateImmediately = this.updateImmediately;
     block.setExpressions(this.expressions);
     return block;
   }
 
   destroy(): void {
+  }
+
+  setUpdateImmediately(updateImmediately: boolean): void {
+    this.updateImmediately = updateImmediately;
+  }
+
+  getUpdateImmediately(): boolean {
+    return this.updateImmediately;
   }
 
   setInputName(inputName: string): void {
@@ -183,11 +195,14 @@ export class BundledFunctionsBlock extends Block {
             if (this.portO[n]) {
               this.portO[n].setValue(this.codes[n].evaluate(param));
               // update the global variables at each step, or the solution for an iterative method will be incorrect
-              let connectors = flowchart.getConnectorsWithOutput(this.portO[n]);
-              for (let c of connectors) {
-                let input = c.getInput();
-                if (input.getBlock() instanceof GlobalBlock) {
-                  param[input.getUid()] = this.portO[n].getValue();
+              // however, there are cases such as a discrete map that should not update until all functions have been evaluated
+              if (this.updateImmediately) {
+                let connectors = flowchart.getConnectorsWithOutput(this.portO[n]);
+                for (let c of connectors) {
+                  let input = c.getInput();
+                  if (input.getBlock() instanceof GlobalBlock) {
+                    param[input.getUid()] = this.portO[n].getValue();
+                  }
                 }
               }
             }

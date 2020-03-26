@@ -280,6 +280,7 @@ export class StateIO {
           block.setName(state.name);
           block.setInputName(state.inputName ? state.inputName : "t");
           block.setExpressions(state.expressions);
+          if (state.updateImmediately !== undefined) block.setUpdateImmediately(state.updateImmediately);
         } else if (block instanceof RandomNumberGeneratorBlock) {
           block.setName(state.name);
           block.setNumberOfOutputs(state.numberOfOutputs);

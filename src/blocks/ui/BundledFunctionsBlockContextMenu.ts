@@ -11,7 +11,7 @@ import {BundledFunctionsBlock} from "../BundledFunctionsBlock";
 export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
 
   private dialogWidth: number = 450;
-  private dialogHeight: number = 440;
+  private dialogHeight: number = 480;
 
   constructor() {
     super();
@@ -28,6 +28,13 @@ export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
                 <tr>
                   <td>Expressions:<div style="font-size: 70%">(e.g., ["cos(x)", "sin(x)", "tan(x)"])</div></td>
                   <td><textarea id="bundled-functions-block-expressions-field" rows="7" style="width: 100%"></textarea></td>
+                </tr>
+                <tr>
+                  <td>Update Immediately:</td>
+                  <td>
+                    <input type="radio" name="scale" id="bundled-functions-block-update-immediately-radio-button" checked> Yes
+                    <input type="radio" name="scale" id="bundled-functions-block-not-update-immediately-radio-button"> No
+                  </td>
                 </tr>
                 <tr>
                   <td>Width:</td>
@@ -51,6 +58,10 @@ export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
       inputNameField.value = block.getInputName() ? block.getInputName().toString() : "t";
       let expressionsField = document.getElementById("bundled-functions-block-expressions-field") as HTMLTextAreaElement;
       expressionsField.value = JSON.stringify(block.getExpressions()).replaceAll(',', ',\n');
+      let updateImmediatelyRadioButton = document.getElementById("bundled-functions-block-update-immediately-radio-button") as HTMLInputElement;
+      updateImmediatelyRadioButton.checked = block.getUpdateImmediately();
+      let notUpdateImmediatelyRadioButton = document.getElementById("bundled-functions-block-not-update-immediately-radio-button") as HTMLInputElement;
+      notUpdateImmediatelyRadioButton.checked = !block.getUpdateImmediately();
       let widthField = document.getElementById("bundled-functions-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("bundled-functions-block-height-field") as HTMLInputElement;
@@ -94,6 +105,7 @@ export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          block.setUpdateImmediately(updateImmediatelyRadioButton.checked);
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.storeBlockStates();

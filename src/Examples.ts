@@ -21,6 +21,10 @@ import fisher_equation from "./examples/fisher-equation.json";
 // @ts-ignore
 import de_jong_map from "./examples/de-jong-map.json";
 // @ts-ignore
+import henon_map from "./examples/henon-map.json";
+// @ts-ignore
+import tinkerbell_map from "./examples/tinkerbell-map.json";
+// @ts-ignore
 import kaplan_yorke_map from "./examples/kaplan–yorke-map.json";
 // @ts-ignore
 import hindmarsh_rose_model from "./examples/hindmarsh-rose-model.json";
@@ -309,6 +313,8 @@ export class Examples {
     this.files.push({name: "Chemistry: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
     this.files.push({name: "Chemistry: Brusselator", data: brusselator});
     this.files.push({name: "Chaos: Logistic Map", data: logistic_map});
+    this.files.push({name: "Chaos: Hénon Map", data: henon_map});
+    this.files.push({name: "Chaos: Tinkerbell Map", data: tinkerbell_map});
     this.files.push({name: "Chaos: Kaplan–Yorke Map", data: kaplan_yorke_map});
     this.files.push({name: "Chaos: De Jong Map", data: de_jong_map});
     this.files.push({name: "Chaos: Lorenz Attractor", data: lorenz_attractor});
