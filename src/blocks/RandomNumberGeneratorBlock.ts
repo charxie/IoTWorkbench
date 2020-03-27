@@ -138,6 +138,13 @@ export class RandomNumberGeneratorBlock extends Block {
             }
           }
           break;
+        case "Poisson":
+          let lambda = flowchart.globalVariables["lambda"];
+          if (lambda === undefined) lambda = 4;
+          for (let p of this.portO) {
+            p.setValue(Random.poisson(lambda));
+          }
+          break;
       }
       this.updateConnectors();
     } else {

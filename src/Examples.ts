@@ -23,6 +23,8 @@ import de_jong_map from "./examples/de-jong-map.json";
 // @ts-ignore
 import henon_map from "./examples/henon-map.json";
 // @ts-ignore
+import ikeda_map from "./examples/ikeda-map.json";
+// @ts-ignore
 import tinkerbell_map from "./examples/tinkerbell-map.json";
 // @ts-ignore
 import kaplan_yorke_map from "./examples/kaplan–yorke-map.json";
@@ -78,6 +80,8 @@ import pde_fdm_solver from "./examples/pde-fdm-solver.json";
 import pde_numerical_stability from "./examples/pde-numerical-stability.json";
 // @ts-ignore
 import normal_distributions from "./examples/normal-distributions.json";
+// @ts-ignore
+import poisson_distribution from "./examples/poisson-distribution.json";
 // @ts-ignore
 import box_muller_transform from "./examples/box-muller-transform.json";
 // @ts-ignore
@@ -298,6 +302,7 @@ export class Examples {
     this.files.push({name: "Optimization: Gradient Descent in Two Dimensions", data: gradient_descent_2d});
     this.files.push({name: "Statistics: Box-Muller Transform", data: box_muller_transform});
     this.files.push({name: "Statistics: Normal Distributions", data: normal_distributions});
+    this.files.push({name: "Statistics: Poisson Distribution", data: poisson_distribution});
     this.files.push({name: "Statistics: Random Walk", data: random_walk});
     this.files.push({name: "Ecology: Logistic Population Model", data: logistic_population_equation});
     this.files.push({name: "Ecology: Predator-Prey Equations", data: predator_prey_equations});
@@ -314,6 +319,7 @@ export class Examples {
     this.files.push({name: "Chemistry: Brusselator", data: brusselator});
     this.files.push({name: "Chaos: Logistic Map", data: logistic_map});
     this.files.push({name: "Chaos: Hénon Map", data: henon_map});
+    this.files.push({name: "Chaos: Ikeda Map", data: ikeda_map});
     this.files.push({name: "Chaos: Tinkerbell Map", data: tinkerbell_map});
     this.files.push({name: "Chaos: Kaplan–Yorke Map", data: kaplan_yorke_map});
     this.files.push({name: "Chaos: De Jong Map", data: de_jong_map});

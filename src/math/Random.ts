@@ -25,4 +25,16 @@ export class Random {
     return r;
   }
 
+  // return a random number in a poisson distribution with the specified lamba.
+  public static poisson(lambda: number): number {
+    let x = 0, p = Math.exp(-lambda), s = p;
+    let u = Math.random();
+    while (u > s) {
+      x++;
+      p *= lambda / x;
+      s += p;
+    }
+    return x;
+  }
+
 }

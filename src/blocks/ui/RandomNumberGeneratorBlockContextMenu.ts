@@ -32,6 +32,7 @@ export class RandomNumberGeneratorBlockContextMenu extends BlockContextMenu {
                     <select id="random-number-generator-block-type-selector" style="width: 100%">
                       <option value="Uniform" selected>Uniform [0, 1]</option>
                       <option value="Gaussian">Gaussian (μ=0, σ=1)</option>
+                      <option value="Poisson">Poisson (global var: lamba, default 4)</option>
                     </select>
                 </tr>
                 <tr>
