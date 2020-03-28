@@ -156,6 +156,8 @@ export class StateIO {
         } else if (block instanceof Sticker) {
           block.setName(state.name);
           block.setDecimals(state.decimals != undefined ? state.decimals : 3);
+          block.setMarginX(state.marginX === undefined ? 15 : state.marginX);
+          block.setMarginY(state.marginY === undefined ? 15 : state.marginY);
           if (state.color != undefined) block.setColor(state.color);
           if (state.textColor != undefined) block.setTextColor(state.textColor);
           if (state.useHtml != undefined) block.setUseHtml(state.useHtml);

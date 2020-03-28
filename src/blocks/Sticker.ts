@@ -11,7 +11,6 @@ import {Vector} from "../math/Vector";
 import {Matrix} from "../math/Matrix";
 import {BoundaryCondition} from "./BoundaryCondition";
 import {Rectangle} from "../math/Rectangle";
-import {BlockUtilities} from "./BlockUtilities";
 
 export class Sticker extends Block {
 
@@ -31,6 +30,8 @@ export class Sticker extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly marginX: number;
+    readonly marginY: number;
     readonly text: string;
     readonly userText: string;
     readonly decimals: number;
@@ -45,6 +46,8 @@ export class Sticker extends Block {
       this.y = sticker.y;
       this.width = sticker.width;
       this.height = sticker.height;
+      this.marginX = sticker.marginX;
+      this.marginY = sticker.marginY;
       this.text = sticker.text;
       this.userText = sticker.userText;
       this.decimals = sticker.decimals;
@@ -69,6 +72,8 @@ export class Sticker extends Block {
     copy.color = this.color;
     copy.textColor = this.textColor;
     copy.userText = this.userText;
+    copy.marginX = this.marginX;
+    copy.marginY = this.marginY;
     return copy;
   }
 

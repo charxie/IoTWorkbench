@@ -51,6 +51,14 @@ export class StickerContextMenu extends BlockContextMenu {
                   <td><input type="text" id="sticker-text-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Margin X:</td>
+                  <td colspan="2"><input type="text" id="sticker-margin-x-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Margin Y:</td>
+                  <td colspan="2"><input type="text" id="sticker-margin-y-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td colspan="2"><input type="text" id="sticker-width-field" style="width: 100%"></td>
                 </tr>
@@ -86,6 +94,10 @@ export class StickerContextMenu extends BlockContextMenu {
       textColorField.value = sticker.getTextColor();
       let textColorChooser = document.getElementById("sticker-text-color-chooser") as HTMLInputElement;
       textColorChooser.value = sticker.getTextColor();
+      let marginXField = document.getElementById("sticker-margin-x-field") as HTMLInputElement;
+      marginXField.value = sticker.getMarginX().toString();
+      let marginYField = document.getElementById("sticker-margin-y-field") as HTMLInputElement;
+      marginYField.value = sticker.getMarginY().toString();
       let widthField = document.getElementById("sticker-width-field") as HTMLInputElement;
       widthField.value = Math.round(sticker.getWidth()).toString();
       let heightField = document.getElementById("sticker-height-field") as HTMLInputElement;
@@ -110,6 +122,22 @@ export class StickerContextMenu extends BlockContextMenu {
         } else {
           success = false;
           message = textColorField.value + " is not a valid text color";
+        }
+        // set marginX
+        let marginX = parseInt(marginXField.value);
+        if (isNumber(marginX)) {
+          sticker.setMarginX(Math.max(0, marginX));
+        } else {
+          success = false;
+          message = marginXField.value + " is not a valid margin in the x direction";
+        }
+        // set marginY
+        let marginY = parseInt(marginYField.value);
+        if (isNumber(marginY)) {
+          sticker.setMarginY(Math.max(0, marginY));
+        } else {
+          success = false;
+          message = marginYField.value + " is not a valid margin in the y direction";
         }
         // set width
         let w = parseInt(widthField.value);
@@ -160,6 +188,8 @@ export class StickerContextMenu extends BlockContextMenu {
       decimalsField.addEventListener("keyup", enterKeyUp);
       panelColorField.addEventListener("keyup", enterKeyUp);
       textColorField.addEventListener("keyup", enterKeyUp);
+      marginXField.addEventListener("keyup", enterKeyUp);
+      marginYField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
