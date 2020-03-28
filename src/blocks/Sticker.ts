@@ -5,7 +5,7 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
-import {flowchart} from "../Main";
+import {closeAllContextMenus, flowchart} from "../Main";
 import {Complex} from "../math/Complex";
 import {Vector} from "../math/Vector";
 import {Matrix} from "../math/Matrix";
@@ -112,6 +112,7 @@ export class Sticker extends Block {
 
   private htmlMouseDown(e: MouseEvent): void {
     if (this.htmlOverlay !== undefined) {
+      closeAllContextMenus();
       if (flowchart.blockView.getSelectedBlock() !== null) {
         flowchart.blockView.getSelectedBlock().setSelected(false);
       }

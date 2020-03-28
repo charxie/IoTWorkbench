@@ -2,6 +2,7 @@
  * @author Charles Xie
  */
 
+import {contextMenus} from "./Main";
 import {BlockViewContextMenu} from "./blocks/ui/BlockViewContextMenu";
 import {FunctionDeclarationBlockContextMenu} from "./blocks/ui/FunctionDeclarationBlockContextMenu";
 import {BitwiseOperatorBlockContextMenu} from "./blocks/ui/BitwiseOperatorBlockContextMenu";
@@ -42,10 +43,11 @@ import {TransientStateFDMSolverBlockContextMenu} from "./blocks/ui/TransientStat
 import {SteadyStateFDMSolverBlockContextMenu} from "./blocks/ui/SteadyStateFDMSolverBlockContextMenu";
 import {BoundaryConditionBlockContextMenu} from "./blocks/ui/BoundaryConditionBlockContextMenu";
 import {Space2DContextMenu} from "./blocks/ui/Space2DContextMenu";
+import {Space3DContextMenu} from "./blocks/ui/Space3DContextMenu";
 import {Field2DContextMenu} from "./blocks/ui/Field2DContextMenu";
+import {Surface3DContextMenu} from "./blocks/ui/Surface3DContextMenu";
 import {RandomNumberGeneratorBlockContextMenu} from "./blocks/ui/RandomNumberGeneratorBlockContextMenu";
 import {RainbowHatBlockContextMenu} from "./blocks/ui/RainbowHatBlockContextMenu";
-import {contextMenus} from "./Main";
 import {ImageBlockContextMenu} from "./blocks/ui/ImageBlockContextMenu";
 import {AudioBlockContextMenu} from "./blocks/ui/AudioBlockContextMenu";
 import {DataBlockContextMenu} from "./blocks/ui/DataBlockContextMenu";
@@ -95,7 +97,9 @@ export function createContextMenusForBlocks() {
   addPlaceholder("boundary-condition-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("grapher-context-menu-placeholder", blockPlayground);
   addPlaceholder("space2d-context-menu-placeholder", blockPlayground);
+  addPlaceholder("space3d-context-menu-placeholder", blockPlayground);
   addPlaceholder("field2d-context-menu-placeholder", blockPlayground);
+  addPlaceholder("surface3d-context-menu-placeholder", blockPlayground);
   addPlaceholder("image-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("audio-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("data-block-context-menu-placeholder", blockPlayground);
@@ -306,10 +310,20 @@ function setupContextMenuForBlocks() {
   space2dContextMenu.addListeners();
   contextMenus.space2d = space2dContextMenu;
 
+  let space3dContextMenu = new Space3DContextMenu();
+  space3dContextMenu.render("space3d-context-menu-placeholder");
+  space3dContextMenu.addListeners();
+  contextMenus.space3d = space3dContextMenu;
+
   let field2dContextMenu = new Field2DContextMenu();
   field2dContextMenu.render("field2d-context-menu-placeholder");
   field2dContextMenu.addListeners();
   contextMenus.field2d = field2dContextMenu;
+
+  let surface3dContextMenu = new Surface3DContextMenu();
+  surface3dContextMenu.render("surface3d-context-menu-placeholder");
+  surface3dContextMenu.addListeners();
+  contextMenus.surface3d = surface3dContextMenu;
 
   let randomNumberGeneratorBlockContextMenu = new RandomNumberGeneratorBlockContextMenu();
   randomNumberGeneratorBlockContextMenu.render("random-number-generator-block-context-menu-placeholder");

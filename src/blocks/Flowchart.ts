@@ -27,7 +27,9 @@ import {SeriesBlock} from "./SeriesBlock";
 import {ItemSelector} from "./ItemSelector";
 import {Grapher} from "./Grapher";
 import {Space2D} from "./Space2D";
+import {Space3D} from "./Space3D";
 import {Field2D} from "./Field2D";
+import {Surface3D} from "./Surface3D";
 import {WorkerBlock} from "./WorkerBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {SwitchStatementBlock} from "./SwitchStatementBlock";
@@ -293,7 +295,7 @@ export class Flowchart {
 
   erase(): void {
     for (let b of this.blocks) {
-      if (b instanceof Space2D) {
+      if (b instanceof Space2D || b instanceof Space3D) {
         b.erase();
       }
     }
@@ -887,8 +889,14 @@ export class Flowchart {
       case "Space2D":
         block = new Space2D(uid, name, x, y, 200, 220);
         break;
+      case "Space3D":
+        block = new Space3D(uid, name, x, y, 200, 220);
+        break;
       case "Field2D":
         block = new Field2D(uid, name, x, y, 200, 220);
+        break;
+      case "Surface3D":
+        block = new Surface3D(uid, name, x, y, 200, 220);
         break;
       case "Random Number Generator Block":
         block = new RandomNumberGeneratorBlock(uid, x, y, 200, 220);
@@ -994,8 +1002,12 @@ export class Flowchart {
         blockStates.push(new BoundaryConditionBlock.State(b));
       } else if (b instanceof Space2D) {
         blockStates.push(new Space2D.State(b));
+      } else if (b instanceof Space3D) {
+        blockStates.push(new Space3D.State(b));
       } else if (b instanceof Field2D) {
         blockStates.push(new Field2D.State(b));
+      } else if (b instanceof Surface3D) {
+        blockStates.push(new Surface3D.State(b));
       } else if (b instanceof TurnoutSwitch) {
         blockStates.push(new TurnoutSwitch.State(b));
       } else if (b instanceof SwitchStatementBlock) {
@@ -1042,8 +1054,8 @@ export class Flowchart {
 
   askToClear(): void {
     if (this.blocks.length > 0 || this.connectors.length > 0) {
-      let message = "<div style='font-size: 90%;'>Are you sure you want to clear the code?</div>";
-      $("#modal-dialog").html(message).dialog({
+      let d = $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to clear the code?</div>");
+      d.dialog({
         resizable: false,
         modal: true,
         title: "Clear",
@@ -1054,9 +1066,9 @@ export class Flowchart {
             this.clear();
             let selectElement = document.getElementById("example-list") as HTMLSelectElement;
             selectElement.value = "select";
-            $(this).dialog('close');
+            d.dialog('close');
           },
-          'Cancel': () => $(this).dialog('close')
+          'Cancel': () => d.dialog('close')
         }
       });
     }

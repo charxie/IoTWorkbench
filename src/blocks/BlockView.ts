@@ -28,6 +28,9 @@ import {SeriesBlock} from "./SeriesBlock";
 import {ParametricEquationBlock} from "./ParametricEquationBlock";
 import {Grapher} from "./Grapher";
 import {Space2D} from "./Space2D";
+import {Space3D} from "./Space3D";
+import {Field2D} from "./Field2D";
+import {Surface3D} from "./Surface3D";
 import {WorkerBlock} from "./WorkerBlock";
 import {ActionBlock} from "./ActionBlock";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
@@ -51,7 +54,6 @@ import {ODESolverBlock} from "./ODESolverBlock";
 import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
 import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
-import {Field2D} from "./Field2D";
 import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
 import {StateIO} from "../StateIO";
 import {State} from "../State";
@@ -310,8 +312,14 @@ export class BlockView {
       case "space2d-block":
         b = this.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));
         break;
+      case "space3d-block":
+        b = this.addBlockUndoable(new Space3D("Space3D #" + timestamp, "Space3D", x - 100, y - 110, 200, 220));
+        break;
       case "field2d-block":
         b = this.addBlockUndoable(new Field2D("Field2D #" + timestamp, "Field", x - 100, y - 110, 200, 220));
+        break;
+      case "surface3d-block":
+        b = this.addBlockUndoable(new Surface3D("Surface3D #" + timestamp, "Surface Plot", x - 100, y - 110, 200, 220));
         break;
       case "random-number-generator-block":
         b = this.addBlockUndoable(new RandomNumberGeneratorBlock("Random Number Generator Block #" + timestamp, x - 30, y - 40, 60, 80));

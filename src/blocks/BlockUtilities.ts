@@ -24,6 +24,7 @@ import {Sticker} from "./Sticker";
 import {Beeper} from "./Beeper";
 import {Grapher} from "./Grapher";
 import {Space2D} from "./Space2D";
+import {Space3D} from "./Space3D";
 import {GlobalVariableBlock} from "./GlobalVariableBlock";
 import {GlobalObjectBlock} from "./GlobalObjectBlock";
 import {SeriesBlock} from "./SeriesBlock";
@@ -45,6 +46,7 @@ import {ODESolverBlock} from "./ODESolverBlock";
 import {TransientStateFDMSolverBlock} from "./TransientStateFDMSolverBlock";
 import {RandomNumberGeneratorBlock} from "./RandomNumberGeneratorBlock";
 import {Field2D} from "./Field2D";
+import {Surface3D} from "./Surface3D";
 import {SteadyStateFDMSolverBlock} from "./SteadyStateFDMSolverBlock";
 import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
 import {ImageBlock} from "./ImageBlock";
@@ -138,8 +140,14 @@ export class BlockUtilities {
     if (block instanceof Space2D) {
       return contextMenus.space2d;
     }
+    if (block instanceof Space3D) {
+      return contextMenus.space3d;
+    }
     if (block instanceof Field2D) {
       return contextMenus.field2d;
+    }
+    if (block instanceof Surface3D) {
+      return contextMenus.surface3d;
     }
     if (block instanceof GlobalVariableBlock) {
       return contextMenus.globalVariableBlock;
@@ -305,9 +313,17 @@ export class BlockUtilities {
       contextMenus.space2d.block = block;
       return document.getElementById("space2d-context-menu") as HTMLMenuElement;
     }
+    if (block instanceof Space3D) {
+      contextMenus.space3d.block = block;
+      return document.getElementById("space3d-context-menu") as HTMLMenuElement;
+    }
     if (block instanceof Field2D) {
       contextMenus.field2d.block = block;
       return document.getElementById("field2d-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof Surface3D) {
+      contextMenus.surface3d.block = block;
+      return document.getElementById("surface3d-context-menu") as HTMLMenuElement;
     }
     if (block instanceof GlobalVariableBlock) {
       contextMenus.globalVariableBlock.block = block;
