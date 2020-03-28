@@ -30,6 +30,13 @@ export class StickerContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="sticker-decimals-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Text Type:</td>
+                  <td colspan="2">
+                    <input type="radio" name="text-type" id="sticker-plain-text-radio-button" checked> Plain
+                    <input type="radio" name="text-type" id="sticker-html-text-radio-button"> HTML
+                  </td>
+                </tr>
+                <tr>
                   <td>User Text:</td>
                   <td colspan="2"><textarea id="sticker-user-text-area" rows="8" style="width: 100%"></textarea>
                 </tr>
@@ -65,6 +72,10 @@ export class StickerContextMenu extends BlockContextMenu {
       nameField.value = sticker.getName();
       let decimalsField = document.getElementById("sticker-decimals-field") as HTMLInputElement;
       decimalsField.value = sticker.getDecimals() != undefined ? sticker.getDecimals().toString() : "3";
+      let plainTextRadioButton = document.getElementById("sticker-plain-text-radio-button") as HTMLInputElement;
+      plainTextRadioButton.checked = !sticker.getUseHtml();
+      let htmlTextRadioButton = document.getElementById("sticker-html-text-radio-button") as HTMLInputElement;
+      htmlTextRadioButton.checked = sticker.getUseHtml();
       let userTextArea = document.getElementById("sticker-user-text-area") as HTMLTextAreaElement;
       userTextArea.value = sticker.getUserText() != undefined ? sticker.getUserText() : "";
       let panelColorField = document.getElementById("sticker-panel-color-field") as HTMLInputElement;
@@ -127,7 +138,11 @@ export class StickerContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           sticker.setName(nameField.value);
+          sticker.setUseHtml(htmlTextRadioButton.checked);
           sticker.setUserText(userTextArea.value.trim() == "" ? undefined : userTextArea.value);
+          if (sticker.getUseHtml()) {
+            sticker.locateHtmlOverlay();
+          }
           sticker.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();

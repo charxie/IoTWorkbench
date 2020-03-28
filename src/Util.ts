@@ -6,6 +6,21 @@ import $ from "jquery";
 
 export class Util {
 
+  static getSelectedText(): string {
+    let text = "";
+    if (typeof window.getSelection != "undefined") {
+      let sel = window.getSelection();
+      if (sel.rangeCount) {
+        let container = document.createElement("div");
+        for (let i = 0, len = sel.rangeCount; i < len; ++i) {
+          container.appendChild(sel.getRangeAt(i).cloneContents());
+        }
+        text = container.innerHTML;
+      }
+    }
+    return text;
+  }
+
   static parseCSV(str: string): any[] {
     let arr = [];
     let quote = false;  // true means we're inside a quoted field

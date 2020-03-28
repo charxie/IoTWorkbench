@@ -123,58 +123,57 @@ export class BlockView {
     let playground = document.getElementById("block-playground") as HTMLDivElement;
 
     // drag and drop support
-    let that = this;
-    playground.addEventListener("dragstart", function (e) {
-      that.draggedElementId = (<HTMLElement>e.target).id;
-      if (that.selectedBlock) {
-        that.selectedBlock.setSelected(false);
-        that.selectedBlock = null;
+    playground.addEventListener("dragstart", (e) => {
+      this.draggedElementId = (<HTMLElement>e.target).id;
+      if (this.selectedBlock) {
+        this.selectedBlock.setSelected(false);
+        this.selectedBlock = null;
       }
     });
-    playground.addEventListener("dragover", function (e) {
+    playground.addEventListener("dragover", (e) => {
       e.preventDefault(); // prevent default to allow drop
     }, false);
-    playground.addEventListener("drop", function (e) {
+    playground.addEventListener("drop", (e) => {
       e.preventDefault();
       let id = (<HTMLElement>e.target).id;
       if (id === "block-view") {
         let x = e.offsetX;
         let y = e.offsetY;
-        that.canvas.focus();
-        let b = that.dropBlock(x, y);
+        this.canvas.focus();
+        let b = this.dropBlock(x, y);
         if (b != null) {
           b.setSelected(true);
-          that.selectedBlock = b;
+          this.selectedBlock = b;
         }
       }
     }, false);
 
     // drag and drop support for mobile browsers (as the above drag-and-drop isn't supported on mobile browsers)
     let clientX, clientY;
-    playground.addEventListener("touchstart", function (e) {
+    playground.addEventListener("touchstart", (e) => {
       clientX = e.targetTouches[0].clientX;
       clientY = e.targetTouches[0].clientY;
-      if (!Util.containsInRect(clientX, clientY, that.canvas.getBoundingClientRect())) {
-        if (that.selectedBlock) {
-          that.selectedBlock.setSelected(false);
-          that.selectedBlock = null;
+      if (!Util.containsInRect(clientX, clientY, this.canvas.getBoundingClientRect())) {
+        if (this.selectedBlock) {
+          this.selectedBlock.setSelected(false);
+          this.selectedBlock = null;
         }
       }
     });
-    playground.addEventListener("touchmove", function (e) {
+    playground.addEventListener("touchmove", (e) => {
       //e.preventDefault(); // do not call this as it will disable the zoom and move features
       clientX = e.targetTouches[0].clientX;
       clientY = e.targetTouches[0].clientY;
     }, false);
-    playground.addEventListener("touchend", function (e) {
+    playground.addEventListener("touchend", (e) => {
       //e.preventDefault(); // do not call this as it will disable the zoom and move features
-      that.draggedElementId = (<HTMLElement>e.target).id;
-      let rect = that.canvas.getBoundingClientRect();
+      this.draggedElementId = (<HTMLElement>e.target).id;
+      let rect = this.canvas.getBoundingClientRect();
       if (Util.containsInRect(clientX, clientY, rect)) {
-        let b = that.dropBlock(clientX - rect.x, clientY - rect.y);
+        let b = this.dropBlock(clientX - rect.x, clientY - rect.y);
         if (b != null) {
           b.setSelected(true);
-          that.selectedBlock = b;
+          this.selectedBlock = b;
         }
       }
     }, false);
@@ -321,8 +320,16 @@ export class BlockView {
     return b;
   }
 
-  setCopiedBlock(copiedBlock: Block): void {
-    this.copiedBlock = copiedBlock;
+  setSelectedBlock(b: Block): void {
+    this.selectedBlock = b;
+  }
+
+  getSelectedBlock(): Block {
+    return this.selectedBlock;
+  }
+
+  setCopiedBlock(b: Block): void {
+    this.copiedBlock = b;
   }
 
   paste(): void {
@@ -367,23 +374,16 @@ export class BlockView {
 
   private addBlockUndoable(block: Block): Block {
     this.addBlock(block);
-    let that = this;
     undoManager.add({
-      undo: function () {
-        that.removeBlock(block);
-      }, redo: function () {
-        that.addBlock(block);
-      }
+      undo: () => this.removeBlock(block),
+      redo: () => this.addBlock(block)
     });
     return block;
   }
 
   requestDraw(): void {
     if (this.drawFunc == undefined) {
-      let that = this;
-      this.drawFunc = function () {
-        that.draw();
-      }
+      this.drawFunc = () => this.draw();
     }
     requestAnimationFrame(this.drawFunc);
   }
@@ -453,7 +453,7 @@ export class BlockView {
     this.blockStyle = blockStyle;
   }
 
-  private keyUp(e: KeyboardEvent): void {
+  keyUp(e: KeyboardEvent): void {
     e.preventDefault();
     if (Util.isArrowKey(e)) {
       if (this.keyDownCount > 0) {
@@ -570,14 +570,13 @@ export class BlockView {
     let oldY = this.selectedMovablePreviousY;
     let newX = this.selectedBlock.getX();
     let newY = this.selectedBlock.getY();
-    let that = this;
     undoManager.add({
-      undo: function () {
-        that.moveTo(oldX, oldY, that.selectedBlock);
-        that.requestDraw();
-      }, redo: function () {
-        that.moveTo(newX, newY, that.selectedBlock);
-        that.requestDraw();
+      undo: () => {
+        this.moveTo(oldX, oldY, this.selectedBlock);
+        this.requestDraw();
+      }, redo: () => {
+        this.moveTo(newX, newY, this.selectedBlock);
+        this.requestDraw();
       }
     });
   }
@@ -896,6 +895,7 @@ export class BlockView {
   private mouseOut(e: MouseEvent): void {
     e.preventDefault();
     this.selectedMovable = null;
+    this.clearResizeName();
     for (let b of flowchart.blocks) {
       if (b.isSelected()) {
         // if the mouse is out of this canvas, consider that an mouseup event would follow to terminate whatever
@@ -909,7 +909,7 @@ export class BlockView {
     }
   }
 
-  private openContextMenu(e: MouseEvent): void {
+  openContextMenu(e: MouseEvent): void {
     e.preventDefault();
     closeAllContextMenus(); // close any open context menu
     // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
@@ -972,14 +972,13 @@ export class BlockView {
       this.mouseMoveTo(x, y, m);
       let newX = m.getX();
       let newY = m.getY();
-      let that = this;
       undoManager.add({
-        undo: function () {
-          that.moveTo(oldX, oldY, m);
-          that.requestDraw();
-        }, redo: function () {
-          that.moveTo(newX, newY, m);
-          that.requestDraw();
+        undo: () => {
+          this.moveTo(oldX, oldY, m);
+          this.requestDraw();
+        }, redo: () => {
+          this.moveTo(newX, newY, m);
+          this.requestDraw();
         }
       });
       this.selectedMovableMoved = false;
@@ -996,24 +995,27 @@ export class BlockView {
   }
 
   private resizeSelectedBlockUndoable(): void {
-    let that = this;
     let block = this.selectedBlock;
     let oldRect = this.selectedBlockPreviousRect.clone();
     let newRect = new Rectangle(this.selectedBlock.getX(), this.selectedBlock.getY(), this.selectedBlock.getWidth(), this.selectedBlock.getHeight());
     undoManager.add({
-      undo: function () {
+      undo: () => {
         block.setRect(oldRect);
         block.refreshView();
-        that.requestDraw();
+        this.requestDraw();
         flowchart.storeBlockStates();
-      }, redo: function () {
+      }, redo: () => {
         block.setRect(newRect);
         block.refreshView();
-        that.requestDraw();
+        this.requestDraw();
         flowchart.storeBlockStates();
       }
     });
     this.selectedBlockResized = false;
+  }
+
+  clearResizeName(): void {
+    this.selectedResizeName = undefined;
   }
 
   private resizeSelectedBlock(x: number, y: number): void {

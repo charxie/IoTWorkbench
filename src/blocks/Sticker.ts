@@ -10,6 +10,8 @@ import {Complex} from "../math/Complex";
 import {Vector} from "../math/Vector";
 import {Matrix} from "../math/Matrix";
 import {BoundaryCondition} from "./BoundaryCondition";
+import {Rectangle} from "../math/Rectangle";
+import {BlockUtilities} from "./BlockUtilities";
 
 export class Sticker extends Block {
 
@@ -20,6 +22,7 @@ export class Sticker extends Block {
   private isArray: boolean;
   private decimals: number = 3;
   private barHeight: number;
+  private htmlOverlay: HTMLDivElement;
 
   static State = class {
     readonly name: string;
@@ -32,7 +35,8 @@ export class Sticker extends Block {
     readonly userText: string;
     readonly decimals: number;
     readonly color: string;
-    protected textColor: string;
+    readonly textColor: string;
+    readonly useHtml: boolean;
 
     constructor(sticker: Sticker) {
       this.name = sticker.name;
@@ -46,6 +50,7 @@ export class Sticker extends Block {
       this.decimals = sticker.decimals;
       this.color = sticker.color;
       this.textColor = sticker.textColor;
+      this.useHtml = sticker.htmlOverlay !== undefined;
     }
   };
 
@@ -68,10 +73,70 @@ export class Sticker extends Block {
   }
 
   destroy(): void {
+    if (this.htmlOverlay !== undefined) {
+      document.getElementById("block-view-wrapper").removeChild(this.htmlOverlay);
+    }
+  }
+
+  setUseHtml(useHtml: boolean): void {
+    if (useHtml) {
+      if (this.htmlOverlay === undefined) {
+        this.htmlOverlay = document.createElement("div");
+        this.htmlOverlay.tabIndex = 0;
+        this.htmlOverlay.style.overflowY = "auto";
+        this.htmlOverlay.style.position = "absolute";
+        this.htmlOverlay.style.fontFamily = "Arial";
+        this.htmlOverlay.style.fontSize = "12px";
+        this.htmlOverlay.addEventListener("mousedown", this.htmlMouseDown.bind(this), false);
+        this.htmlOverlay.addEventListener('contextmenu', this.htmlOpenContextMenu.bind(this), false);
+        this.htmlOverlay.addEventListener("keyup", this.htmlKeyUp.bind(this), false);
+      }
+      document.getElementById("block-view-wrapper").append(this.htmlOverlay);
+      this.htmlOverlay.style.color = this.textColor;
+    } else {
+      if (this.htmlOverlay !== undefined) {
+        document.getElementById("block-view-wrapper").removeChild(this.htmlOverlay);
+        this.htmlOverlay = undefined;
+      }
+    }
+  }
+
+  getUseHtml(): boolean {
+    return this.htmlOverlay !== undefined;
+  }
+
+  private htmlMouseDown(e: MouseEvent): void {
+    if (this.htmlOverlay !== undefined) {
+      if (flowchart.blockView.getSelectedBlock() !== null) {
+        flowchart.blockView.getSelectedBlock().setSelected(false);
+      }
+      this.setSelected(true);
+      flowchart.blockView.setSelectedBlock(this);
+      flowchart.blockView.clearResizeName();
+      flowchart.blockView.requestDraw();
+    }
+  }
+
+  private htmlOpenContextMenu(e: MouseEvent): void {
+    if (this.htmlOverlay !== undefined) {
+      if (Util.getSelectedText() === "") {
+        flowchart.blockView.openContextMenu(e);
+      }
+      // if text is selected, use default
+    }
+  }
+
+  private htmlKeyUp(e: KeyboardEvent): void {
+    if (this.htmlOverlay !== undefined) {
+      flowchart.blockView.keyUp(e);
+    }
   }
 
   setUserText(userText: string): void {
     this.userText = userText;
+    if (this.htmlOverlay !== undefined && this.userText !== undefined) {
+      this.htmlOverlay.innerHTML = userText;
+    }
   }
 
   getUserText(): string {
@@ -92,6 +157,59 @@ export class Sticker extends Block {
 
   getDecimals(): number {
     return this.decimals;
+  }
+
+  locateHtmlOverlay(): void {
+    this.setX(this.getX());
+    this.setY(this.getY());
+    this.setWidth(this.getWidth());
+    this.setHeight(this.getHeight());
+  }
+
+  setX(x: number): void {
+    super.setX(x);
+    if (this.htmlOverlay !== undefined) {
+      this.htmlOverlay.style.left = (this.x + this.marginX) + "px";
+    }
+  }
+
+  setY(y: number): void {
+    super.setY(y);
+    if (this.htmlOverlay !== undefined) {
+      this.htmlOverlay.style.top = (this.y + this.barHeight + this.marginY) + "px";
+    }
+  }
+
+  setWidth(width: number): void {
+    super.setWidth(width);
+    if (this.htmlOverlay !== undefined) {
+      this.htmlOverlay.style.width = (this.width - 2 * this.marginX) + "px";
+    }
+  }
+
+  setHeight(height: number): void {
+    super.setHeight(height);
+    if (this.htmlOverlay !== undefined) {
+      this.htmlOverlay.style.height = (this.height - this.barHeight - 2 * this.marginY) + "px";
+    }
+  }
+
+  translateBy(dx: number, dy: number): void {
+    super.translateBy(dx, dy);
+    if (this.htmlOverlay !== undefined) {
+      this.htmlOverlay.style.left = (this.x + this.marginX) + "px";
+      this.htmlOverlay.style.top = (this.y + this.barHeight + this.marginY) + "px";
+    }
+  }
+
+  setRect(rect: Rectangle): void {
+    super.setRect(rect);
+    if (this.htmlOverlay !== undefined) {
+      this.htmlOverlay.style.left = (this.x + this.marginX) + "px";
+      this.htmlOverlay.style.top = (this.y + this.barHeight + this.marginY) + "px";
+      this.htmlOverlay.style.width = (this.width - 2 * this.marginX) + "px";
+      this.htmlOverlay.style.height = (this.height - this.barHeight - 2 * this.marginY) + "px";
+    }
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -127,37 +245,64 @@ export class Sticker extends Block {
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
-    ctx.fillStyle = this.textColor;
-    if (this.text != undefined) {
-      ctx.font = "12px Courier New";
-      if (this.isArray) {
-        let lineHeight = ctx.measureText("M").width * 2;
-        let lines = this.text.split(",");
-        for (let i = 0; i < lines.length; ++i) {
-          let yi = this.y + this.barHeight + 10 + i * lineHeight;
-          if (yi < this.y + this.height - lineHeight / 2) {
-            if (i % 2 == 0) {
-              ctx.fillStyle = "lightgreen";
-              ctx.beginPath();
-              ctx.rect(this.x + 1, yi - lineHeight, this.width - 2, lineHeight + 4);
-              ctx.fill();
+    if (this.htmlOverlay) {
+      if (this.text != undefined) {
+        this.htmlOverlay.style.fontFamily = "Courier New";
+        if (this.isArray) {
+          let lines = this.text.split(",");
+          let htmlLines = "<p style='line-height: 1.2; margin: 0; padding: 0;'>";
+          for (let i = 0; i < lines.length; i++) {
+            if (i % 2 === 0) {
+              htmlLines += "<mark style='background-color: lightgreen; color:" + this.textColor + "'>" + lines[i] + "</mark>";
+            } else {
+              htmlLines += lines[i];
             }
-            ctx.fillStyle = "black";
-            ctx.fillText(lines[i], this.x + 10, yi);
+            if (i < lines.length - 1) {
+              htmlLines += "<br>";
+            }
           }
+          this.htmlOverlay.innerHTML = htmlLines;
+        } else {
+          this.htmlOverlay.innerHTML = this.text;
         }
-      } else {
-        ctx.fillText(this.text, this.x + 10, this.y + this.barHeight + 20);
       }
-    } else if (this.userText != undefined) {
-      ctx.font = Util.getOS() == "Android" ? "13px Noto Serif" : "14px Times New Roman";
-      let lineHeight = ctx.measureText("M").width * 1.2;
-      let lines = this.userText.split("\n");
+    } else {
       ctx.fillStyle = this.textColor;
-      for (let i = 0; i < lines.length; ++i) {
-        let yi = this.y + this.barHeight + 20 + i * lineHeight;
-        if (yi < this.y + this.height - lineHeight / 2) {
-          ctx.fillText(lines[i], this.x + 10, yi);
+      if (this.text != undefined) {
+        ctx.font = "12px Courier New";
+        if (this.isArray) {
+          let lineHeight = ctx.measureText("M").width * 2;
+          let lines = this.text.split(",");
+          for (let i = 0; i < lines.length; ++i) {
+            let yi = this.y + this.barHeight + 10 + i * lineHeight;
+            if (yi < this.y + this.height - lineHeight / 2) {
+              if (i % 2 == 0) {
+                ctx.fillStyle = "lightgreen";
+                ctx.beginPath();
+                ctx.rect(this.x + 1, yi - lineHeight, this.width - 2, lineHeight + 4);
+                ctx.fill();
+              }
+              ctx.fillStyle = "black";
+              ctx.fillText(lines[i], this.x + 10, yi);
+            } else {
+              break;
+            }
+          }
+        } else {
+          ctx.fillText(this.text, this.x + 10, this.y + this.barHeight + 20);
+        }
+      } else if (this.userText != undefined) {
+        ctx.font = Util.getOS() == "Android" ? "13px Noto Serif" : "14px Times New Roman";
+        let lineHeight = ctx.measureText("M").width * 1.2;
+        let lines = this.userText.split("\n");
+        ctx.fillStyle = this.textColor;
+        for (let i = 0; i < lines.length; ++i) {
+          let yi = this.y + this.barHeight + 20 + i * lineHeight;
+          if (yi < this.y + this.height - lineHeight / 2) {
+            ctx.fillText(lines[i], this.x + 10, yi);
+          } else {
+            break;
+          }
         }
       }
     }

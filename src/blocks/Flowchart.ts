@@ -683,23 +683,20 @@ export class Flowchart {
   }
 
   askToDeleteBlock(block: Block): void {
-    let message = "<div style='font-size: 90%;'>Are you sure you want to delete " + block.getUid() + "?</div>";
-    let that = this;
-    $("#modal-dialog").html(message).dialog({
+    let d = $("#modal-dialog").html("<div style='font-size: 90%;'>Are you sure you want to delete " + block.getUid() + "?</div>");
+    d.dialog({
       resizable: false,
       modal: true,
       title: "Delete",
       height: 200,
       width: 300,
       buttons: {
-        'OK': function () {
-          that.removeBlock(block.getUid());
-          that.blockView.requestDraw();
-          $(this).dialog('close');
+        'OK': () => {
+          this.removeBlock(block.getUid());
+          this.blockView.requestDraw();
+          d.dialog('close');
         },
-        'Cancel': function () {
-          $(this).dialog('close');
-        }
+        'Cancel': () => d.dialog('close')
       }
     });
   }
@@ -1046,7 +1043,6 @@ export class Flowchart {
   askToClear(): void {
     if (this.blocks.length > 0 || this.connectors.length > 0) {
       let message = "<div style='font-size: 90%;'>Are you sure you want to clear the code?</div>";
-      let that = this;
       $("#modal-dialog").html(message).dialog({
         resizable: false,
         modal: true,
@@ -1054,15 +1050,13 @@ export class Flowchart {
         height: 150,
         width: 350,
         buttons: {
-          'OK': function () {
-            that.clear();
+          'OK': () => {
+            this.clear();
             let selectElement = document.getElementById("example-list") as HTMLSelectElement;
             selectElement.value = "select";
             $(this).dialog('close');
           },
-          'Cancel': function () {
-            $(this).dialog('close');
-          }
+          'Cancel': () => $(this).dialog('close')
         }
       });
     }

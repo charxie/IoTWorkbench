@@ -156,9 +156,10 @@ export class StateIO {
         } else if (block instanceof Sticker) {
           block.setName(state.name);
           block.setDecimals(state.decimals != undefined ? state.decimals : 3);
-          block.setUserText(state.userText);
           if (state.color != undefined) block.setColor(state.color);
           if (state.textColor != undefined) block.setTextColor(state.textColor);
+          if (state.useHtml != undefined) block.setUseHtml(state.useHtml);
+          block.setUserText(state.userText);
         } else if (block instanceof Grapher) {
           block.setName(state.name);
           if (state.minimumValue != undefined) block.setMinimumValue(state.minimumValue);
@@ -466,6 +467,10 @@ export class StateIO {
         b.updateModel();
       } else if (b instanceof DataBlock) {
         flowchart.traverse(b);
+      } else if (b instanceof Sticker) {
+        if (b.getUseHtml()) {
+          b.locateHtmlOverlay();
+        }
       }
     }
   }
