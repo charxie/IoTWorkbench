@@ -30,7 +30,7 @@ export class Surface3D extends Block {
   private yAxisLabel: string = "y";
   private zAxisLabel: string = "z";
   private fieldWindowColor: string = "white";
-  private fieldWindow: Rectangle;
+  private viewWindow: Rectangle;
   private barHeight: number;
   private lineType: string;
   private lineColor: string;
@@ -48,7 +48,7 @@ export class Surface3D extends Block {
     top: <number>4,
     bottom: <number>4
   };
-  private overlay: HTMLDivElement;
+  private overlay: HTMLCanvasElement;
   private plot: SurfacePlot;
 
   static State = class {
@@ -109,18 +109,18 @@ export class Surface3D extends Block {
     this.ports.push(this.portY0);
     this.ports.push(this.portDY);
     this.ports.push(this.portNY);
-    this.fieldWindow = new Rectangle(0, 0, 1, 1);
+    this.viewWindow = new Rectangle(0, 0, 1, 1);
     this.lineType = "Solid";
     this.lineColor = "black";
     this.marginX = 25;
-    this.overlay = document.createElement("div");
+    this.plot = new SurfacePlot();
+    this.overlay = this.plot.getDomElement();
     this.overlay.tabIndex = 0;
     this.overlay.style.position = "absolute";
     document.getElementById("block-view-wrapper").append(this.overlay);
     this.overlay.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
     this.overlay.addEventListener("keyup", this.overlayKeyUp.bind(this), false);
     this.overlay.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
-    this.plot = new SurfacePlot(this.overlay);
   }
 
   getCopy(): Block {
@@ -169,10 +169,10 @@ export class Surface3D extends Block {
   }
 
   locateOverlay(): void {
-    this.fieldWindow.x = this.x + this.spaceMargin.left;
-    this.fieldWindow.y = this.y + this.barHeight + this.spaceMargin.top;
-    this.fieldWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
-    this.fieldWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
+    this.viewWindow.x = this.x + this.spaceMargin.left;
+    this.viewWindow.y = this.y + this.barHeight + this.spaceMargin.top;
+    this.viewWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
+    this.viewWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
     this.setX(this.getX());
     this.setY(this.getY());
     this.setWidth(this.getWidth());
@@ -182,46 +182,46 @@ export class Surface3D extends Block {
   setX(x: number): void {
     super.setX(x);
     if (this.overlay !== undefined) {
-      this.overlay.style.left = this.fieldWindow.x + "px";
+      this.overlay.style.left = this.viewWindow.x + "px";
     }
   }
 
   setY(y: number): void {
     super.setY(y);
     if (this.overlay !== undefined) {
-      this.overlay.style.top = this.fieldWindow.y + "px";
+      this.overlay.style.top = this.viewWindow.y + "px";
     }
   }
 
   setWidth(width: number): void {
     super.setWidth(width);
     if (this.overlay !== undefined) {
-      this.overlay.style.width = this.fieldWindow.width + "px";
+      this.overlay.style.width = this.viewWindow.width + "px";
     }
   }
 
   setHeight(height: number): void {
     super.setHeight(height);
     if (this.overlay !== undefined) {
-      this.overlay.style.height = this.fieldWindow.height + "px";
+      this.overlay.style.height = this.viewWindow.height + "px";
     }
   }
 
   translateBy(dx: number, dy: number): void {
     super.translateBy(dx, dy);
     if (this.overlay !== undefined) {
-      this.overlay.style.left = this.fieldWindow.x + "px";
-      this.overlay.style.top = this.fieldWindow.y + "px";
+      this.overlay.style.left = this.viewWindow.x + "px";
+      this.overlay.style.top = this.viewWindow.y + "px";
     }
   }
 
   setRect(rect: Rectangle): void {
     super.setRect(rect);
     if (this.overlay !== undefined) {
-      this.overlay.style.left = this.fieldWindow.x + "px";
-      this.overlay.style.top = this.fieldWindow.y + "px";
-      this.overlay.style.width = this.fieldWindow.width + "px";
-      this.overlay.style.height = this.fieldWindow.height + "px";
+      this.overlay.style.left = this.viewWindow.x + "px";
+      this.overlay.style.top = this.viewWindow.y + "px";
+      this.overlay.style.width = this.viewWindow.width + "px";
+      this.overlay.style.height = this.viewWindow.height + "px";
     }
   }
 
@@ -396,11 +396,11 @@ export class Surface3D extends Block {
     ctx.lineWidth = 1;
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
     ctx.beginPath();
-    this.fieldWindow.x = this.x + this.spaceMargin.left;
-    this.fieldWindow.y = this.y + this.barHeight + this.spaceMargin.top;
-    this.fieldWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
-    this.fieldWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
-    ctx.rect(this.fieldWindow.x, this.fieldWindow.y, this.fieldWindow.width, this.fieldWindow.height);
+    this.viewWindow.x = this.x + this.spaceMargin.left;
+    this.viewWindow.y = this.y + this.barHeight + this.spaceMargin.top;
+    this.viewWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
+    this.viewWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
+    ctx.rect(this.viewWindow.x, this.viewWindow.y, this.viewWindow.width, this.viewWindow.height);
     ctx.fillStyle = this.fieldWindowColor;
     ctx.fill();
     ctx.strokeStyle = "black";
@@ -423,9 +423,9 @@ export class Surface3D extends Block {
     ctx.font = "italic 15px Times New Roman";
     ctx.fillStyle = "black";
     let horizontalAxisY = this.height - this.spaceMargin.bottom;
-    ctx.fillText(this.xAxisLabel, this.fieldWindow.x + (this.fieldWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 30);
+    ctx.fillText(this.xAxisLabel, this.viewWindow.x + (this.viewWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 30);
     ctx.save();
-    ctx.translate(this.x + 35, this.fieldWindow.y + (this.fieldWindow.height + ctx.measureText(this.yAxisLabel).width) / 2 + 10);
+    ctx.translate(this.x + 35, this.viewWindow.y + (this.viewWindow.height + ctx.measureText(this.yAxisLabel).width) / 2 + 10);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(this.yAxisLabel, 0, 0);
     ctx.restore();
@@ -474,8 +474,8 @@ export class Surface3D extends Block {
     if (this.data !== undefined) {
       // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
       let rect = flowchart.blockView.canvas.getBoundingClientRect();
-      let kx = Math.round((e.clientX - rect.left - this.fieldWindow.x) / this.fieldWindow.width * this.nx);
-      let ky = this.ny - Math.round((e.clientY - rect.top - this.fieldWindow.y) / this.fieldWindow.height * this.ny);
+      let kx = Math.round((e.clientX - rect.left - this.viewWindow.x) / this.viewWindow.width * this.nx);
+      let ky = this.ny - Math.round((e.clientY - rect.top - this.viewWindow.y) / this.viewWindow.height * this.ny);
       if (kx >= 0 && kx < this.nx && ky >= 0 && ky < this.ny) {
         this.mouseOverX = this.x0 + kx * this.dx;
         this.mouseOverY = this.y0 + ky * this.dy;

@@ -13,34 +13,61 @@ export class SurfacePlot {
   private renderer: THREE.WebGLRenderer;
   private controls: THREE.TrackballControls;
 
-  readonly SCREEN_WIDTH = 300;
-  readonly SCREEN_HEIGHT = 300;
-  readonly VIEW_ANGLE = 45;
-  readonly ASPECT = this.SCREEN_WIDTH / this.SCREEN_HEIGHT;
-  readonly NEAR = 0.1;
-  readonly FAR = 2000;
-
-  constructor(parent: HTMLDivElement) {
+  constructor() {
 
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(this.VIEW_ANGLE, this.ASPECT, this.NEAR, this.FAR);
-    this.scene.add(this.camera);
-    this.camera.position.set(0, 150, 400);
-    this.camera.lookAt(this.scene.position);
+    this.camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     this.renderer = new THREE.WebGLRenderer({antialias: true});
-    this.renderer.setSize(this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
-    parent.appendChild(this.renderer.domElement);
+    this.renderer.setSize(300, 300);
 
-    let positions = [[1, 1, 1], [-1, -1, 1], [-1, 1, 1], [1, -1, 1]];
-    for (let i = 0; i < 4; i++) {
-      var light = new THREE.DirectionalLight(0xdddddd);
-      light.position.set(positions[i][0], positions[i][1], 0.4 * positions[i][2]);
-      this.scene.add(light);
-    }
-    //initGrid();
+    let geometry = new THREE.BoxGeometry();
+    let material = new THREE.MeshStandardMaterial({color: 0xcccccc, roughness: 0.1, metalness: 0.1});
+    let cube = new THREE.Mesh(geometry, material);
+    this.scene.add(cube);
 
-    //this.controls = new THREE.TrackballControls(this.camera);
-    this.renderer.setClearColor(0xffffff, 1);
+    let light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(0, 0, 1).normalize();
+    this.scene.add(light);
+
+    let points = [];
+    points.push(new THREE.Vector3(-10, 0, 0));
+    points.push(new THREE.Vector3(10, 0, 0));
+    material = new THREE.LineBasicMaterial({color: 0xff0000});
+    geometry = new THREE.BufferGeometry().setFromPoints(points);
+    let xAxis = new THREE.Line(geometry, material);
+    this.scene.add(xAxis);
+
+    points = [];
+    points.push(new THREE.Vector3(0, -10, 0));
+    points.push(new THREE.Vector3(0, 10, 0));
+    material = new THREE.LineBasicMaterial({color: 0x00ff00});
+    geometry = new THREE.BufferGeometry().setFromPoints(points);
+    let yAxis = new THREE.Line(geometry, material);
+    this.scene.add(yAxis);
+
+    points = [];
+    points.push(new THREE.Vector3(0, 0, -10));
+    points.push(new THREE.Vector3(0, 0, 10));
+    material = new THREE.LineBasicMaterial({color: 0x0000ff});
+    geometry = new THREE.BufferGeometry().setFromPoints(points);
+    let zAxis = new THREE.Line(geometry, material);
+    this.scene.add(zAxis);
+
+    this.camera.position.z = 2;
+    cube.rotation.x += 1;
+    cube.rotation.y += 1;
+    xAxis.rotation.x += 1;
+    xAxis.rotation.y += 1;
+    yAxis.rotation.x += 1;
+    yAxis.rotation.y += 1;
+    zAxis.rotation.x += 1;
+    zAxis.rotation.y += 1;
+    this.renderer.render(this.scene, this.camera);
+
+  }
+
+  getDomElement(): HTMLCanvasElement {
+    return this.renderer.domElement;
   }
 
 }
