@@ -313,12 +313,8 @@ export class Field2D extends Block {
     if (this.data !== undefined && Array.isArray(this.data)) {
       if (this.nx === undefined) this.nx = Math.round(Math.sqrt(this.data.length));
       if (this.ny === undefined) this.ny = this.nx;
-      let min = Number.MAX_VALUE;
-      let max = -min;
-      for (let d of this.data) {
-        if (d > max) max = d;
-        if (d < min) min = d;
-      }
+      let min = d3.min(this.data);
+      let max = d3.max(this.data);
       // Compute the contour polygons at specified intervals; return an array of MultiPolygon.
       let contours;
       if (this.scaleType === "Logarithmic") {
