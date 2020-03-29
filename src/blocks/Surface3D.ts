@@ -92,7 +92,7 @@ export class Surface3D extends Block {
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = name;
-    this.color = "#88EEAA";
+    this.color = "#FEFE8A";
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 8;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false)
@@ -118,7 +118,7 @@ export class Surface3D extends Block {
     this.overlay.tabIndex = 0;
     this.overlay.style.position = "absolute";
     document.getElementById("block-view-wrapper").append(this.overlay);
-    this.overlay.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
+    //this.overlay.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
     this.overlay.addEventListener("keyup", this.overlayKeyUp.bind(this), false);
     this.overlay.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
   }
@@ -443,6 +443,13 @@ export class Surface3D extends Block {
     this.y0 = this.portY0.getValue();
     this.dy = this.portDY.getValue();
     this.ny = this.portNY.getValue();
+    if (this.x0 !== undefined && this.y0 !== undefined && this.dx !== undefined && this.dy !== undefined && this.nx !== undefined && this.ny !== undefined && this.data !== undefined) {
+      this.plot.setData(this.x0, this.y0, this.dx, this.dy, this.nx, this.ny, this.data, this.scaleType);
+      this.plot.render();
+    }
+  }
+
+  rescale(): void {
   }
 
   refreshView(): void {

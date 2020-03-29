@@ -196,6 +196,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
           g.setYAxisLabel(yAxisLableField.value);
           g.setFieldWindowColor(windowColorField.value);
           g.locateOverlay();
+          g.rescale();
           g.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();

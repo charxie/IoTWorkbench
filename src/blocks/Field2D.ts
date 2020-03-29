@@ -403,10 +403,13 @@ export class Field2D extends Block {
         ctx.fillStyle = "white";
         let kx = Math.round((this.mouseOverX - this.x0) / this.dx);
         let ky = Math.round((this.mouseOverY - this.y0) / this.dy);
-        let reading = this.data[this.nx * ky + kx].toPrecision(3);
-        let rx = kx / this.nx * this.fieldWindow.width;
-        let ry = -ky / this.ny * this.fieldWindow.height;
-        ctx.fillText(reading, rx - ctx.measureText(reading).width / 2, ry);
+        let kxy = this.nx * ky + kx;
+        if (kxy < this.data.length && kxy >= 0) {
+          let reading = this.data[kxy].toPrecision(3);
+          let rx = kx / this.nx * this.fieldWindow.width;
+          let ry = -ky / this.ny * this.fieldWindow.height;
+          ctx.fillText(reading, rx - ctx.measureText(reading).width / 2, ry);
+        }
       }
     }
     ctx.restore();

@@ -9,157 +9,155 @@ import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 export class SurfacePlot {
 
+  private xgrid: number[];
+  private ygrid: number[];
+  private values: number[];
+
   private scene: THREE.Scene;
+  private geometry: THREE.Geometry;
+  private material: THREE.Material;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
 
   constructor() {
-
     this.scene = new THREE.Scene();
-
-    // Structured (n * m) grid of data. Point coordinates are (xgrid, ygrid)
-    var n = 101, m = 101;
-    var nverts = n * m;
-    var values = new Array(n * m);
-    var xgrid = new Array(n * m);
-    var ygrid = new Array(n * m);
-    for (var j = 0., k = 0; j < m; ++j) {
-      for (var i = 0.; i < n; ++i, ++k) {
-        xgrid[k] = -5 + i * 0.1;
-        ygrid[k] = -5 + j * 0.1;
-        let x2 = xgrid[k] * xgrid[k] + ygrid[k] - 11;
-        let y2 = xgrid[k] + ygrid[k] * ygrid[k] - 7;
-        values[k] = x2 * x2 + y2 * y2;
-      }
-    }
-
-    // Obtain centre of grid and scale factors
-    var xmin = d3.min(xgrid);
-    var xmax = d3.max(xgrid);
-    var xmid = 0.5 * (xmin + xmax);
-    var xrange = xmax - xmin;
-
-    var ymin = d3.min(ygrid);
-    var ymax = d3.max(ygrid);
-    var ymid = 0.5 * (ymin + ymax);
-    var yrange = ymax - ymin;
-
-    var zmin = d3.min(values);
-    var zmax = d3.max(values);
-    var zmid = 0.5 * (zmin + zmax);
-    var zrange = zmax - zmin;
-
-    const scaleX = 1 / xrange;
-    const scaleY = 1 / yrange;
-    const scaleZ = 1 / zrange;
-
-    // Use d3 for color scale
-    let color = d3.scaleLinear().domain(d3.extent(values)).interpolate(() => {
-      return d3.interpolateTurbo;
-    });
-
-    // Initialise threejs geometry
-    let geometry = new THREE.Geometry();
-
-    // Add grid vertices to geometry
-    for (var k = 0; k < nverts; ++k) {
-      var newvert = new THREE.Vector3((xgrid[k] - xmid) * scaleX, (ygrid[k] - ymid) * scaleY, (values[k] - zmid) * scaleZ);
-      geometry.vertices.push(newvert);
-    }
-
-    // Add cell faces (2 traingles per cell) to geometry
-    for (var j = 0; j < m - 1; j++) {
-      for (var i = 0; i < n - 1; i++) {
-        var n0 = j * n + i;
-        var n1 = n0 + 1;
-        var n2 = (j + 1) * n + i + 1;
-        var n3 = n2 - 1;
-        let face1 = new THREE.Face3(n0, n1, n2);
-        let face2 = new THREE.Face3(n2, n3, n0);
-        face1.vertexColors[0] = new THREE.Color(color(values[n0]));
-        face1.vertexColors[1] = new THREE.Color(color(values[n1]));
-        face1.vertexColors[2] = new THREE.Color(color(values[n2]));
-        face2.vertexColors[0] = new THREE.Color(color(values[n2]));
-        face2.vertexColors[1] = new THREE.Color(color(values[n3]));
-        face2.vertexColors[2] = new THREE.Color(color(values[n0]));
-        geometry.faces.push(face1);
-        geometry.faces.push(face2);
-      }
-    }
-
-    // Compute normals for shading
-    geometry.computeFaceNormals();
-    geometry.computeVertexNormals();
-
-    //let material = new THREE.MeshStandardMaterial({color: 0xcccccc, roughness: 0.1, metalness: 0.1});
-    let material = new THREE.MeshPhongMaterial({
+    this.geometry = new THREE.Geometry();
+    //this.material = new THREE.MeshStandardMaterial({color: 0xcccccc, roughness: 0.1, metalness: 0.1});
+    this.material = new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,
       color: 0xffffff,
       vertexColors: true,
       specular: 0x050505,
-      shininess: 10,
+      shininess: 1,
       emissive: 0x111111,
     });
+    this.scene.add(new THREE.Mesh(this.geometry, this.material));
+    this.createAxes();
+    this.renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(300, 300);
+    this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    this.camera.position.z = 10;
+    let controls = new OrbitControls(this.camera, this.renderer.domElement);
+    controls.addEventListener('change', () => {
+      this.renderer.render(this.scene, this.camera); // re-render if controls move/zoom
+    });
+    controls.enableZoom = true;
+    this.createLights();
+  }
 
-    // Add Mesh to scene
-    this.scene.add(new THREE.Mesh(geometry, material));
+  setData(x0: number, y0: number, dx: number, dy: number, nx: number, ny: number, data: number[], scaleType: string) {
+    let n = nx * ny;
+    if (this.xgrid === undefined || this.xgrid.length !== n) {
+      this.xgrid = new Array(n);
+    }
+    if (this.ygrid === undefined || this.ygrid.length !== n) {
+      this.ygrid = new Array(n);
+    }
+    if (this.xgrid[0] === undefined || this.xgrid[0] !== x0 || this.xgrid[1] - this.xgrid[0] !== dx) {
+      for (let j = 0, k = 0; j < ny; ++j) {
+        for (let i = 0; i < nx; ++i, ++k) {
+          this.xgrid[k] = x0 + i * dx;
+        }
+      }
+    }
+    if (this.ygrid[0] === undefined || this.ygrid[0] !== y0 || this.ygrid[1] - this.ygrid[0] !== dy) {
+      for (let j = 0, k = 0; j < ny; ++j) {
+        for (let i = 0; i < nx; ++i, ++k) {
+          this.ygrid[k] = y0 + j * dy;
+        }
+      }
+    }
+    this.values = data;
 
-    // draw the three axes
+    this.geometry.vertices.length = 0;
+    switch (scaleType) {
+      case "Logarithmic":
+        let zmin = d3.min(this.values);
+        for (let k = 0; k < n; k++) {
+          let v = Math.log(this.values[k] - zmin + 1);
+          this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], v));
+        }
+        break;
+      default:
+        for (let k = 0; k < n; k++) {
+          this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], this.values[k]));
+        }
+        break;
+    }
+
+    // use d3 for color scale
+    let color = d3.scaleLinear().domain(d3.extent(this.values)).interpolate(() => {
+      return d3.interpolateTurbo;
+    });
+
+    // add cell faces (2 traingles per cell) to geometry
+    for (let j = 0; j < ny - 1; j++) {
+      for (let i = 0; i < nx - 1; i++) {
+        let n0 = j * nx + i;
+        let n1 = n0 + 1;
+        let n2 = (j + 1) * nx + i + 1;
+        let n3 = n2 - 1;
+        let face1 = new THREE.Face3(n0, n1, n2);
+        let face2 = new THREE.Face3(n2, n3, n0);
+        face1.vertexColors[0] = new THREE.Color(color(this.values[n0]));
+        face1.vertexColors[1] = new THREE.Color(color(this.values[n1]));
+        face1.vertexColors[2] = new THREE.Color(color(this.values[n2]));
+        face2.vertexColors[0] = new THREE.Color(color(this.values[n2]));
+        face2.vertexColors[1] = new THREE.Color(color(this.values[n3]));
+        face2.vertexColors[2] = new THREE.Color(color(this.values[n0]));
+        this.geometry.faces.push(face1);
+        this.geometry.faces.push(face2);
+      }
+    }
+
+    // compute normals for shading
+    this.geometry.computeFaceNormals();
+    this.geometry.computeVertexNormals();
+
+  }
+
+  createAxes(): void {
     let points = [];
-    points.push(new THREE.Vector3(-10, 0, 0));
-    points.push(new THREE.Vector3(10, 0, 0));
+    points.push(new THREE.Vector3(-1000, 0, 0));
+    points.push(new THREE.Vector3(1000, 0, 0));
     let lineMaterial = new THREE.LineBasicMaterial({color: 0xff0000});
     let lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
     let xAxis = new THREE.Line(lineGeometry, lineMaterial);
     this.scene.add(xAxis);
 
     points = [];
-    points.push(new THREE.Vector3(0, -10, 0));
-    points.push(new THREE.Vector3(0, 10, 0));
+    points.push(new THREE.Vector3(0, -1000, 0));
+    points.push(new THREE.Vector3(0, 1000, 0));
     lineMaterial = new THREE.LineBasicMaterial({color: 0x00ff00});
     lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
     let yAxis = new THREE.Line(lineGeometry, lineMaterial);
     this.scene.add(yAxis);
 
     points = [];
-    points.push(new THREE.Vector3(0, 0, -10));
-    points.push(new THREE.Vector3(0, 0, 10));
+    points.push(new THREE.Vector3(0, 0, -1000));
+    points.push(new THREE.Vector3(0, 0, 1000));
     lineMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
     lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
     let zAxis = new THREE.Line(lineGeometry, lineMaterial);
     this.scene.add(zAxis);
+  }
 
-    // Create renderer
-    this.renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setSize(300, 300);
-
-    // Define the camera
-    this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 10);
-    this.camera.position.z = 2;
-
-    // Add controls
-    let controls = new OrbitControls(this.camera, this.renderer.domElement);
-    controls.addEventListener('change', () => {
-      this.renderer.render(this.scene, this.camera); // re-render if controls move/zoom
-    });
-    controls.enableZoom = true;
-
+  createLights(): void {
     // Light above
     let light = new THREE.PointLight(0xffffff);
-    light.position.set(0, 0, 3);
+    light.position.set(0, 0, 1000);
     this.scene.add(light);
-
     // Light below
     light = new THREE.PointLight(0xffffff);
-    light.position.set(0, 0, -3);
+    light.position.set(0, 0, -1000);
     this.scene.add(light);
-
     // Ambient light
-    this.scene.add(new THREE.AmbientLight(0x222222));
+    this.scene.add(new THREE.AmbientLight(0xffffff));
+  }
 
+  render(): void {
     this.renderer.render(this.scene, this.camera);
-
   }
 
   getDomElement(): HTMLCanvasElement {
