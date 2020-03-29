@@ -23,7 +23,7 @@
     "jsfft": "0.0.4",
     "mathjs": "^6.6.0",
     "parcel": "^1.12.4",
-    "three-js": "^79.0.0",
+    "three": "^0.115.0",
     "undo-manager": "^1.0.5"
   },
   "devDependencies": {

@@ -7,7 +7,8 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
-import {flowchart} from "../Main";
+import {closeAllContextMenus, flowchart} from "../Main";
+import {SurfacePlot} from "./SurfacePlot";
 
 export class Surface3D extends Block {
 
@@ -47,6 +48,8 @@ export class Surface3D extends Block {
     top: <number>4,
     bottom: <number>4
   };
+  private overlay: HTMLDivElement;
+  private plot: SurfacePlot;
 
   static State = class {
     readonly name: string;
@@ -110,6 +113,14 @@ export class Surface3D extends Block {
     this.lineType = "Solid";
     this.lineColor = "black";
     this.marginX = 25;
+    this.overlay = document.createElement("div");
+    this.overlay.tabIndex = 0;
+    this.overlay.style.position = "absolute";
+    document.getElementById("block-view-wrapper").append(this.overlay);
+    this.overlay.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
+    this.overlay.addEventListener("keyup", this.overlayKeyUp.bind(this), false);
+    this.overlay.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
+    this.plot = new SurfacePlot(this.overlay);
   }
 
   getCopy(): Block {
@@ -129,7 +140,95 @@ export class Surface3D extends Block {
     return copy;
   }
 
+  private overlayMouseDown(e: MouseEvent): void {
+    if (this.overlay !== undefined) {
+      closeAllContextMenus();
+      if (flowchart.blockView.getSelectedBlock() !== null) {
+        flowchart.blockView.getSelectedBlock().setSelected(false);
+      }
+      this.setSelected(true);
+      flowchart.blockView.setSelectedBlock(this);
+      flowchart.blockView.clearResizeName();
+      flowchart.blockView.requestDraw();
+    }
+  }
+
+  private overlayOpenContextMenu(e: MouseEvent): void {
+    if (this.overlay !== undefined) {
+      if (Util.getSelectedText() === "") {
+        flowchart.blockView.openContextMenu(e);
+      }
+      // if text is selected, use default
+    }
+  }
+
+  private overlayKeyUp(e: KeyboardEvent): void {
+    if (this.overlay !== undefined) {
+      flowchart.blockView.keyUp(e);
+    }
+  }
+
+  locateOverlay(): void {
+    this.fieldWindow.x = this.x + this.spaceMargin.left;
+    this.fieldWindow.y = this.y + this.barHeight + this.spaceMargin.top;
+    this.fieldWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
+    this.fieldWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
+    this.setX(this.getX());
+    this.setY(this.getY());
+    this.setWidth(this.getWidth());
+    this.setHeight(this.getHeight());
+  }
+
+  setX(x: number): void {
+    super.setX(x);
+    if (this.overlay !== undefined) {
+      this.overlay.style.left = this.fieldWindow.x + "px";
+    }
+  }
+
+  setY(y: number): void {
+    super.setY(y);
+    if (this.overlay !== undefined) {
+      this.overlay.style.top = this.fieldWindow.y + "px";
+    }
+  }
+
+  setWidth(width: number): void {
+    super.setWidth(width);
+    if (this.overlay !== undefined) {
+      this.overlay.style.width = this.fieldWindow.width + "px";
+    }
+  }
+
+  setHeight(height: number): void {
+    super.setHeight(height);
+    if (this.overlay !== undefined) {
+      this.overlay.style.height = this.fieldWindow.height + "px";
+    }
+  }
+
+  translateBy(dx: number, dy: number): void {
+    super.translateBy(dx, dy);
+    if (this.overlay !== undefined) {
+      this.overlay.style.left = this.fieldWindow.x + "px";
+      this.overlay.style.top = this.fieldWindow.y + "px";
+    }
+  }
+
+  setRect(rect: Rectangle): void {
+    super.setRect(rect);
+    if (this.overlay !== undefined) {
+      this.overlay.style.left = this.fieldWindow.x + "px";
+      this.overlay.style.top = this.fieldWindow.y + "px";
+      this.overlay.style.width = this.fieldWindow.width + "px";
+      this.overlay.style.height = this.fieldWindow.height + "px";
+    }
+  }
+
   destroy(): void {
+    if (this.overlay !== undefined) {
+      document.getElementById("block-view-wrapper").removeChild(this.overlay);
+    }
   }
 
   reset(): void {
@@ -306,118 +405,6 @@ export class Surface3D extends Block {
     ctx.fill();
     ctx.strokeStyle = "black";
     ctx.stroke();
-
-    // draw contour plot
-    ctx.save();
-    ctx.translate(this.fieldWindow.x, this.fieldWindow.y);
-    if (this.data !== undefined && Array.isArray(this.data)) {
-      if (this.nx === undefined) this.nx = Math.round(Math.sqrt(this.data.length));
-      if (this.ny === undefined) this.ny = this.nx;
-      let min = Number.MAX_VALUE;
-      let max = -min;
-      for (let d of this.data) {
-        if (d > max) max = d;
-        if (d < min) min = d;
-      }
-      // Compute the contour polygons at specified intervals; return an array of MultiPolygon.
-      let contours;
-      if (this.scaleType === "Logarithmic") {
-        max = max - min + 1;
-        min = 1;
-        let ncon = Math.log(max);
-        contours = d3.contours().size([this.nx, this.ny]).thresholds(d3.range(0, ncon, ncon / this.lineNumber).map(p => Math.exp(p)))(this.data);
-      } else {
-        contours = d3.contours().size([this.nx, this.ny]).thresholds(d3.range(min, max, (max - min) / this.lineNumber))(this.data);
-      }
-      let projection = d3.geoIdentity().reflectY(true).scale(this.fieldWindow.width / this.nx, this.fieldWindow.height / this.ny).translate([0, this.fieldWindow.height]);
-      let path = d3.geoPath(projection, ctx);
-      let lineIndex = 0;
-      contours.forEach(c => {
-        if (c.coordinates.length == 0) return;
-        ctx.beginPath();
-        path(c);
-        if (this.minimumColor !== this.maximumColor) {
-          let scale = Math.min(1, lineIndex / this.lineNumber);
-          let r = this.minimumRgb[0] + scale * (this.maximumRgb[0] - this.minimumRgb[0]);
-          let g = this.minimumRgb[1] + scale * (this.maximumRgb[1] - this.minimumRgb[1]);
-          let b = this.minimumRgb[2] + scale * (this.maximumRgb[2] - this.minimumRgb[2]);
-          ctx.fillStyle = Util.rgbToHex(r, g, b);
-          ctx.fill();
-        }
-        switch (this.lineType) {
-          case "Solid":
-            ctx.strokeStyle = this.lineColor;
-            ctx.stroke();
-            break;
-        }
-        lineIndex++;
-      });
-    }
-    ctx.translate(0, this.fieldWindow.height);
-    // draw axis tick marks and labels
-    if (!this.iconic) {
-      ctx.lineWidth = 1;
-      ctx.font = "10px Arial";
-      ctx.fillStyle = "black";
-      let inx = (this.dx === undefined || this.nx === undefined) ? 1 : this.dx * this.nx / 10;
-      let dex = this.fieldWindow.width / 10;
-      for (let i = 0; i < 11; i++) {
-        let tmpX = dex * i;
-        ctx.beginPath();
-        ctx.moveTo(tmpX, 0);
-        ctx.lineTo(tmpX, -4);
-        ctx.stroke();
-        let xtick = (this.x0 === undefined ? 0 : this.x0) + i * inx;
-        let precision = 2;
-        if (Math.abs(xtick) >= 1) {
-          let diff = Math.abs(xtick - Math.round(xtick));
-          precision = Math.round(Math.abs(xtick)).toString().length + (diff < 0.1 ? 0 : 1);
-        } else {
-          if (xtick.toPrecision(precision).endsWith("0")) {
-            precision--;
-          }
-        }
-        let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
-        ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
-      }
-      let iny = (this.dy === undefined || this.ny === undefined) ? 1 : this.dy * this.ny / 10;
-      let dey = this.fieldWindow.height / 10;
-      for (let i = 0; i < 11; i++) {
-        let tmpY = -dey * i;
-        ctx.beginPath();
-        ctx.moveTo(0, tmpY);
-        ctx.lineTo(4, tmpY);
-        ctx.stroke();
-        let ytick = (this.y0 === undefined ? 0 : this.y0) + i * iny;
-        let precision = 2;
-        if (Math.abs(ytick) >= 1) {
-          let diff = Math.abs(ytick - Math.round(ytick));
-          precision = Math.round(Math.abs(ytick)).toString().length + (diff < 0.1 ? 0 : 1);
-        } else {
-          if (ytick.toPrecision(precision).endsWith("0")) {
-            precision--;
-          }
-        }
-        let iString = Math.abs(ytick) < 0.01 ? "0" : ytick.toPrecision(precision);
-        ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
-      }
-    }
-    if (this.selected) {
-      if (this.mouseOverX !== undefined && this.mouseOverY !== undefined) {
-        ctx.fillStyle = "white";
-        let kx = Math.round((this.mouseOverX - this.x0) / this.dx);
-        let ky = Math.round((this.mouseOverY - this.y0) / this.dy);
-        let reading = this.data[this.nx * ky + kx].toPrecision(3);
-        let rx = kx / this.nx * this.fieldWindow.width;
-        let ry = -ky / this.ny * this.fieldWindow.height;
-        ctx.fillText(reading, rx - ctx.measureText(reading).width / 2, ry);
-      }
-    }
-    ctx.restore();
-
-    if (!this.iconic) {
-      this.drawAxisLabels(ctx);
-    }
 
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";

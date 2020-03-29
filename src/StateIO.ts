@@ -508,6 +508,8 @@ export class StateIO {
         if (b.getUseHtml()) {
           b.locateHtmlOverlay();
         }
+      } else if (b instanceof Surface3D) {
+        b.locateOverlay();
       }
     }
   }

@@ -92,9 +92,9 @@ export class Sticker extends Block {
         this.htmlOverlay.style.position = "absolute";
         this.htmlOverlay.style.fontFamily = "Arial";
         this.htmlOverlay.style.fontSize = "12px";
-        this.htmlOverlay.addEventListener("mousedown", this.htmlMouseDown.bind(this), false);
-        this.htmlOverlay.addEventListener('contextmenu', this.htmlOpenContextMenu.bind(this), false);
-        this.htmlOverlay.addEventListener("keyup", this.htmlKeyUp.bind(this), false);
+        this.htmlOverlay.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
+        this.htmlOverlay.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
+        this.htmlOverlay.addEventListener("keyup", this.overlayKeyUp.bind(this), false);
       }
       document.getElementById("block-view-wrapper").append(this.htmlOverlay);
       this.htmlOverlay.style.color = this.textColor;
@@ -110,7 +110,7 @@ export class Sticker extends Block {
     return this.htmlOverlay !== undefined;
   }
 
-  private htmlMouseDown(e: MouseEvent): void {
+  private overlayMouseDown(e: MouseEvent): void {
     if (this.htmlOverlay !== undefined) {
       closeAllContextMenus();
       if (flowchart.blockView.getSelectedBlock() !== null) {
@@ -123,7 +123,7 @@ export class Sticker extends Block {
     }
   }
 
-  private htmlOpenContextMenu(e: MouseEvent): void {
+  private overlayOpenContextMenu(e: MouseEvent): void {
     if (this.htmlOverlay !== undefined) {
       if (Util.getSelectedText() === "") {
         flowchart.blockView.openContextMenu(e);
@@ -132,7 +132,7 @@ export class Sticker extends Block {
     }
   }
 
-  private htmlKeyUp(e: KeyboardEvent): void {
+  private overlayKeyUp(e: KeyboardEvent): void {
     if (this.htmlOverlay !== undefined) {
       flowchart.blockView.keyUp(e);
     }
