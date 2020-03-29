@@ -12,6 +12,7 @@ export class SurfacePlot {
   private xgrid: number[];
   private ygrid: number[];
   private values: number[];
+  private interpolateColor = d3.interpolateTurbo;
 
   private scene: THREE.Scene;
   private geometry: THREE.Geometry;
@@ -34,7 +35,7 @@ export class SurfacePlot {
     this.createAxes();
     this.renderer = new THREE.WebGLRenderer({alpha: true, antialias: true, preserveDrawingBuffer: true});
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setSize(300, 300);
+    this.renderer.setSize(500, 500);
     this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
     this.camera.position.z = 10;
     let controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -47,6 +48,17 @@ export class SurfacePlot {
 
   setBackgroundColor(color: string): void {
     this.renderer.setClearColor(color, 1);
+  }
+
+  setInterpolateColorScheme(scheme: string): void {
+    switch (scheme) {
+      case "Turbo":
+        this.interpolateColor = d3.interpolateTurbo;
+        break;
+      case "Spectral":
+        this.interpolateColor = d3.interpolateSpectral;
+        break;
+    }
   }
 
   setData(x0: number, y0: number, dx: number, dy: number, nx: number, ny: number, data: number[], scaleType: string) {
@@ -90,7 +102,7 @@ export class SurfacePlot {
 
     // use d3 for color scale
     let color = d3.scaleLinear().domain(d3.extent(this.values)).interpolate(() => {
-      return d3.interpolateTurbo;
+      return this.interpolateColor;
     });
 
     // add cell faces (2 traingles per cell) to geometry

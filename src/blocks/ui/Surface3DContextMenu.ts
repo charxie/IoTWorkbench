@@ -62,15 +62,14 @@ export class Surface3DContextMenu extends BlockContextMenu {
                     </select>
                   </td>
                 </tr>
-                <tr>
-                  <td>Minimum Color:</td>
-                  <td><input type="color" id="surface3d-minimum-color-chooser" style="width: 50px"></td>
-                  <td><input type="text" id="surface3d-minimum-color-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Maximum Color:</td>
-                  <td><input type="color" id="surface3d-maximum-color-chooser" style="width: 50px"></td>
-                  <td><input type="text" id="surface3d-maximum-color-field" style="width: 100%"></td>
+               <tr>
+                  <td>Color Scheme:</td>
+                  <td colspan="2">
+                    <select id="surface3d-color-scheme-selector" style="width: 100%">
+                      <option value="Turbo" selected>Turbo</option>
+                      <option value="Spectral">Spectral</option>
+                    </select>
+                  </td>
                 </tr>
                 <tr>
                   <td>X-Axis Label:</td>
@@ -111,18 +110,14 @@ export class Surface3DContextMenu extends BlockContextMenu {
       nameField.value = g.getName();
       let scaleTypeSelector = document.getElementById("surface3d-scale-type-selector") as HTMLSelectElement;
       scaleTypeSelector.value = g.getScaleType();
-      let minimumColorField = document.getElementById("surface3d-minimum-color-field") as HTMLInputElement;
-      minimumColorField.value = g.getMinimumColor();
-      let minimumColorChooser = document.getElementById("surface3d-minimum-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(minimumColorChooser, g.getMinimumColor());
-      let maximumColorField = document.getElementById("surface3d-maximum-color-field") as HTMLInputElement;
-      maximumColorField.value = g.getMaximumColor();
-      let maximumColorChooser = document.getElementById("surface3d-maximum-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(maximumColorChooser, g.getMaximumColor());
+      let colorSchemeSelector = document.getElementById("surface3d-color-scheme-selector") as HTMLSelectElement;
+      colorSchemeSelector.value = g.getColorScheme();
       let xAxisLableField = document.getElementById("surface3d-x-axis-label-field") as HTMLInputElement;
       xAxisLableField.value = g.getXAxisLabel();
       let yAxisLableField = document.getElementById("surface3d-y-axis-label-field") as HTMLInputElement;
       yAxisLableField.value = g.getYAxisLabel();
+      let zAxisLableField = document.getElementById("surface3d-z-axis-label-field") as HTMLInputElement;
+      zAxisLableField.value = g.getZAxisLabel();
       let windowColorField = document.getElementById("surface3d-window-color-field") as HTMLInputElement;
       windowColorField.value = g.getViewWindowColor();
       let windowColorChooser = document.getElementById("surface3d-window-color-chooser") as HTMLInputElement;
@@ -131,8 +126,6 @@ export class Surface3DContextMenu extends BlockContextMenu {
       widthField.value = Math.round(g.getWidth()).toString();
       let heightField = document.getElementById("surface3d-height-field") as HTMLInputElement;
       heightField.value = Math.round(g.getHeight()).toString();
-      Util.hookupColorInputs(minimumColorField, minimumColorChooser);
-      Util.hookupColorInputs(maximumColorField, maximumColorChooser);
       Util.hookupColorInputs(windowColorField, windowColorChooser);
       const okFunction = () => {
         let success = true;
@@ -157,8 +150,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
         if (success) {
           g.setName(nameField.value);
           g.setScaleType(scaleTypeSelector.value);
-          g.setMinimumColor(minimumColorField.value);
-          g.setMaximumColor(maximumColorField.value);
+          g.setColorScheme(colorSchemeSelector.value)
           g.setXAxisLabel(xAxisLableField.value);
           g.setYAxisLabel(yAxisLableField.value);
           g.setViewWindowColor(windowColorField.value);
@@ -178,10 +170,9 @@ export class Surface3DContextMenu extends BlockContextMenu {
         }
       };
       nameField.addEventListener("keyup", enterKeyUp);
-      minimumColorField.addEventListener("keyup", enterKeyUp);
-      maximumColorField.addEventListener("keyup", enterKeyUp);
       xAxisLableField.addEventListener("keyup", enterKeyUp);
       yAxisLableField.addEventListener("keyup", enterKeyUp);
+      zAxisLableField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);

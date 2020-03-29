@@ -278,13 +278,12 @@ export class StateIO {
           block.setFieldWindowColor(state.fieldWindowColor === undefined ? "white" : state.fieldWindowColor);
         } else if (block instanceof Surface3D) {
           block.setName(state.name);
-          block.setScaleType(state.scaleType === undefined ? "Linear" : state.scaleType);
+          block.setScaleType(state.scaleType);
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
           block.setZAxisLabel(state.zAxisLabel);
-          block.setMinimumColor(state.minimumColor === undefined ? "rgb(0,0,0)" : state.minimumColor);
-          block.setMaximumColor(state.maximumColor === undefined ? "rgb(255,255,255)" : state.maximumColor);
-          block.setViewWindowColor(state.viewWindowColor === undefined ? "white" : state.viewWindowColor);
+          block.setColorScheme(state.colorScheme);
+          block.setViewWindowColor(state.viewWindowColor);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");

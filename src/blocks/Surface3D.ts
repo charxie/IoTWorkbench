@@ -33,10 +33,7 @@ export class Surface3D extends Block {
   private viewWindow: Rectangle;
   private barHeight: number;
   private scaleType: string = "Linear";
-  private minimumColor: string = "rgb(0, 0, 0)";
-  private maximumColor: string = "rgb(255, 255, 255)";
-  private minimumRgb: number[] = [0, 0, 0];
-  private maximumRgb: number[] = [255, 255, 255];
+  private colorScheme: string = "Turbo";
   private readonly viewWindowMargin = {
     left: <number>4,
     right: <number>3,
@@ -58,8 +55,7 @@ export class Surface3D extends Block {
     readonly zAxisLabel: string;
     readonly viewWindowColor: string;
     readonly scaleType: string;
-    readonly minimumColor: string;
-    readonly maximumColor: string;
+    readonly colorScheme: string;
 
     constructor(g: Surface3D) {
       this.name = g.name;
@@ -73,8 +69,7 @@ export class Surface3D extends Block {
       this.zAxisLabel = g.zAxisLabel;
       this.viewWindowColor = g.viewWindowColor;
       this.scaleType = g.scaleType;
-      this.minimumColor = g.minimumColor;
-      this.maximumColor = g.maximumColor;
+      this.colorScheme = g.colorScheme;
     }
   };
 
@@ -117,10 +112,7 @@ export class Surface3D extends Block {
     copy.zAxisLabel = this.zAxisLabel;
     copy.viewWindowColor = this.viewWindowColor;
     copy.scaleType = this.scaleType;
-    copy.minimumColor = this.minimumColor;
-    copy.maximumColor = this.maximumColor;
-    copy.minimumRgb = this.minimumRgb.slice();
-    copy.maximumRgb = this.maximumRgb.slice()
+    copy.colorScheme = this.colorScheme;
     return copy;
   }
 
@@ -231,64 +223,13 @@ export class Surface3D extends Block {
     return this.scaleType;
   }
 
-  setMinimumColor(minimumColor: string): void {
-    this.minimumColor = minimumColor;
-    this.minimumRgb.length = 0;
-    if (Util.isHexColor(minimumColor)) {
-      let c = Util.hexToRgb(minimumColor);
-      this.minimumRgb.push(c.r);
-      this.minimumRgb.push(c.g);
-      this.minimumRgb.push(c.b);
-    } else {
-      let c = minimumColor.match(/\d+/g);
-      if (c !== null) {
-        for (let x of c) {
-          this.minimumRgb.push(parseInt(x));
-        }
-      } else {
-        let hex = Util.getHexColor(minimumColor);
-        if (hex) {
-          let a = Util.hexToRgb(hex);
-          this.minimumRgb.push(a.r);
-          this.minimumRgb.push(a.g);
-          this.minimumRgb.push(a.b);
-        }
-      }
-    }
+  setColorScheme(colorScheme: string): void {
+    this.colorScheme = colorScheme;
+    this.plot.setInterpolateColorScheme(colorScheme);
   }
 
-  getMinimumColor(): string {
-    return this.minimumColor;
-  }
-
-  setMaximumColor(maximumColor: string): void {
-    this.maximumColor = maximumColor;
-    this.maximumRgb.length = 0;
-    if (Util.isHexColor(maximumColor)) {
-      let c = Util.hexToRgb(maximumColor);
-      this.maximumRgb.push(c.r);
-      this.maximumRgb.push(c.g);
-      this.maximumRgb.push(c.b);
-    } else {
-      let c = maximumColor.match(/\d+/g);
-      if (c !== null) {
-        for (let x of c) {
-          this.maximumRgb.push(parseInt(x));
-        }
-      } else {
-        let hex = Util.getHexColor(maximumColor);
-        if (hex) {
-          let a = Util.hexToRgb(hex);
-          this.maximumRgb.push(a.r);
-          this.maximumRgb.push(a.g);
-          this.maximumRgb.push(a.b);
-        }
-      }
-    }
-  }
-
-  getMaximumColor(): string {
-    return this.maximumColor;
+  getColorScheme(): string {
+    return this.colorScheme;
   }
 
   setXAxisLabel(xAxisLabel: string): void {
