@@ -22,7 +22,6 @@ export class SurfacePlot {
   constructor() {
     this.scene = new THREE.Scene();
     this.geometry = new THREE.Geometry();
-    //this.material = new THREE.MeshStandardMaterial({color: 0xcccccc, roughness: 0.1, metalness: 0.1});
     this.material = new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,
       color: 0xffffff,
@@ -33,7 +32,7 @@ export class SurfacePlot {
     });
     this.scene.add(new THREE.Mesh(this.geometry, this.material));
     this.createAxes();
-    this.renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
+    this.renderer = new THREE.WebGLRenderer({alpha: true, antialias: true, preserveDrawingBuffer: true});
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(300, 300);
     this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
@@ -44,6 +43,10 @@ export class SurfacePlot {
     });
     controls.enableZoom = true;
     this.createLights();
+  }
+
+  setBackgroundColor(color: string): void {
+    this.renderer.setClearColor(color, 1);
   }
 
   setData(x0: number, y0: number, dx: number, dy: number, nx: number, ny: number, data: number[], scaleType: string) {
@@ -75,8 +78,7 @@ export class SurfacePlot {
       case "Logarithmic":
         let zmin = d3.min(this.values);
         for (let k = 0; k < n; k++) {
-          let v = Math.log(this.values[k] - zmin + 1);
-          this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], v));
+          this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], Math.log(this.values[k] - zmin + 1)));
         }
         break;
       default:

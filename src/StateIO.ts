@@ -281,12 +281,10 @@ export class StateIO {
           block.setScaleType(state.scaleType === undefined ? "Linear" : state.scaleType);
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
-          block.setLineType(state.lineType);
-          block.setLineColor(state.lineColor);
-          block.setLineNumber(state.lineNumber === undefined ? 20 : state.lineNumber);
+          block.setZAxisLabel(state.zAxisLabel);
           block.setMinimumColor(state.minimumColor === undefined ? "rgb(0,0,0)" : state.minimumColor);
           block.setMaximumColor(state.maximumColor === undefined ? "rgb(255,255,255)" : state.maximumColor);
-          block.setFieldWindowColor(state.fieldWindowColor === undefined ? "white" : state.fieldWindowColor);
+          block.setViewWindowColor(state.viewWindowColor === undefined ? "white" : state.viewWindowColor);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");

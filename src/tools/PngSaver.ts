@@ -20,18 +20,17 @@ export class PngSaver {
   };
 
   static saveAs(canvas): void {
-    let that = this;
     let fileName = 'screenshot.png';
     let d = $('#modal-dialog').html(`<div style="font-family: Arial; line-height: 30px; font-size: 90%;">
         Save screenshot as:<br><input type="text" id="${this.inputFieldId}" style="width: 260px;" value="${fileName}"></div>`);
-    let inputElement = document.getElementById(that.inputFieldId) as HTMLInputElement;
+    let inputElement = document.getElementById(this.inputFieldId) as HTMLInputElement;
     Util.selectField(inputElement, 0, inputElement.value.indexOf("."));
-    let okFunction = function () {
+    let okFunction = () => {
       d.dialog('close');
       let filename = inputElement.value;
-      that.save(filename, canvas.toDataURL("image/png"));
+      this.save(filename, canvas.toDataURL("image/png"));
     };
-    inputElement.addEventListener("keyup", function (e) {
+    inputElement.addEventListener("keyup", (e) => {
       if (e.key == "Enter") {
         okFunction();
       }
@@ -49,9 +48,7 @@ export class PngSaver {
       },
       buttons: {
         'OK': okFunction,
-        'Cancel': function () {
-          d.dialog('close');
-        }
+        'Cancel': () => d.dialog('close')
       }
     });
   }

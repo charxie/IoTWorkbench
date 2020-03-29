@@ -29,20 +29,15 @@ export class Surface3D extends Block {
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private zAxisLabel: string = "z";
-  private fieldWindowColor: string = "white";
+  private viewWindowColor: string = "white";
   private viewWindow: Rectangle;
   private barHeight: number;
-  private lineType: string;
-  private lineColor: string;
-  private lineNumber: number = 20;
   private scaleType: string = "Linear";
   private minimumColor: string = "rgb(0, 0, 0)";
   private maximumColor: string = "rgb(255, 255, 255)";
   private minimumRgb: number[] = [0, 0, 0];
   private maximumRgb: number[] = [255, 255, 255];
-  private mouseOverX: number;
-  private mouseOverY: number;
-  private readonly spaceMargin = {
+  private readonly viewWindowMargin = {
     left: <number>4,
     right: <number>3,
     top: <number>4,
@@ -61,10 +56,7 @@ export class Surface3D extends Block {
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly zAxisLabel: string;
-    readonly fieldWindowColor: string;
-    readonly lineType: string;
-    readonly lineColor: string;
-    readonly lineNumber: number;
+    readonly viewWindowColor: string;
     readonly scaleType: string;
     readonly minimumColor: string;
     readonly maximumColor: string;
@@ -79,10 +71,7 @@ export class Surface3D extends Block {
       this.xAxisLabel = g.xAxisLabel;
       this.yAxisLabel = g.yAxisLabel;
       this.zAxisLabel = g.zAxisLabel;
-      this.fieldWindowColor = g.fieldWindowColor;
-      this.lineColor = g.lineColor;
-      this.lineType = g.lineType;
-      this.lineNumber = g.lineNumber;
+      this.viewWindowColor = g.viewWindowColor;
       this.scaleType = g.scaleType;
       this.minimumColor = g.minimumColor;
       this.maximumColor = g.maximumColor;
@@ -110,8 +99,6 @@ export class Surface3D extends Block {
     this.ports.push(this.portDY);
     this.ports.push(this.portNY);
     this.viewWindow = new Rectangle(0, 0, 1, 1);
-    this.lineType = "Solid";
-    this.lineColor = "black";
     this.marginX = 25;
     this.plot = new SurfacePlot();
     this.overlay = this.plot.getDomElement();
@@ -128,10 +115,7 @@ export class Surface3D extends Block {
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.zAxisLabel = this.zAxisLabel;
-    copy.fieldWindowColor = this.fieldWindowColor;
-    copy.lineColor = this.lineColor;
-    copy.lineType = this.lineType;
-    copy.lineNumber = this.lineNumber;
+    copy.viewWindowColor = this.viewWindowColor;
     copy.scaleType = this.scaleType;
     copy.minimumColor = this.minimumColor;
     copy.maximumColor = this.maximumColor;
@@ -169,10 +153,10 @@ export class Surface3D extends Block {
   }
 
   locateOverlay(): void {
-    this.viewWindow.x = this.x + this.spaceMargin.left;
-    this.viewWindow.y = this.y + this.barHeight + this.spaceMargin.top;
-    this.viewWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
-    this.viewWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
+    this.viewWindow.x = this.x + this.viewWindowMargin.left;
+    this.viewWindow.y = this.y + this.barHeight + this.viewWindowMargin.top;
+    this.viewWindow.width = this.width - this.viewWindowMargin.left - this.viewWindowMargin.right;
+    this.viewWindow.height = this.height - this.barHeight - this.viewWindowMargin.top - this.viewWindowMargin.bottom;
     this.setX(this.getX());
     this.setY(this.getY());
     this.setWidth(this.getWidth());
@@ -331,36 +315,13 @@ export class Surface3D extends Block {
     return this.zAxisLabel;
   }
 
-  setFieldWindowColor(fieldWindowColor: string): void {
-    this.fieldWindowColor = fieldWindowColor;
+  setViewWindowColor(viewWindowColor: string): void {
+    this.viewWindowColor = viewWindowColor;
+    this.plot.setBackgroundColor(viewWindowColor);
   }
 
-  getFieldWindowColor(): string {
-    return this.fieldWindowColor;
-  }
-
-  setLineColor(lineColor: string): void {
-    this.lineColor = lineColor;
-  }
-
-  getLineColor(): string {
-    return this.lineColor;
-  }
-
-  setLineType(lineType: string): void {
-    this.lineType = lineType;
-  }
-
-  getLineType(): string {
-    return this.lineType;
-  }
-
-  setLineNumber(lineNumber: number): void {
-    this.lineNumber = lineNumber;
-  }
-
-  getLineNumber(): number {
-    return this.lineNumber;
+  getViewWindowColor(): string {
+    return this.viewWindowColor;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -396,12 +357,12 @@ export class Surface3D extends Block {
     ctx.lineWidth = 1;
     ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
     ctx.beginPath();
-    this.viewWindow.x = this.x + this.spaceMargin.left;
-    this.viewWindow.y = this.y + this.barHeight + this.spaceMargin.top;
-    this.viewWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
-    this.viewWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
+    this.viewWindow.x = this.x + this.viewWindowMargin.left;
+    this.viewWindow.y = this.y + this.barHeight + this.viewWindowMargin.top;
+    this.viewWindow.width = this.width - this.viewWindowMargin.left - this.viewWindowMargin.right;
+    this.viewWindow.height = this.height - this.barHeight - this.viewWindowMargin.top - this.viewWindowMargin.bottom;
     ctx.rect(this.viewWindow.x, this.viewWindow.y, this.viewWindow.width, this.viewWindow.height);
-    ctx.fillStyle = this.fieldWindowColor;
+    ctx.fillStyle = this.viewWindowColor;
     ctx.fill();
     ctx.strokeStyle = "black";
     ctx.stroke();
@@ -422,7 +383,7 @@ export class Surface3D extends Block {
   private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
     ctx.font = "italic 15px Times New Roman";
     ctx.fillStyle = "black";
-    let horizontalAxisY = this.height - this.spaceMargin.bottom;
+    let horizontalAxisY = this.height - this.viewWindowMargin.bottom;
     ctx.fillText(this.xAxisLabel, this.viewWindow.x + (this.viewWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 30);
     ctx.save();
     ctx.translate(this.x + 35, this.viewWindow.y + (this.viewWindow.height + ctx.measureText(this.yAxisLabel).width) / 2 + 10);
@@ -450,14 +411,15 @@ export class Surface3D extends Block {
   }
 
   rescale(): void {
+    this.plot.render();
   }
 
   refreshView(): void {
     super.refreshView();
-    this.spaceMargin.top = 10;
-    this.spaceMargin.bottom = 40;
-    this.spaceMargin.left = 70;
-    this.spaceMargin.right = 16;
+    this.viewWindowMargin.top = 10;
+    this.viewWindowMargin.bottom = 40;
+    this.viewWindowMargin.left = 70;
+    this.viewWindowMargin.right = 16;
     let dh = (this.height - this.barHeight) / 8;
     this.portI.setY(this.barHeight + dh);
     this.portX0.setY(this.barHeight + 2 * dh);
@@ -468,27 +430,8 @@ export class Surface3D extends Block {
     this.portNY.setY(this.barHeight + 7 * dh);
   }
 
-  mouseMove(e: MouseEvent): void {
-    this.setToolTip(e);
-  }
-
-  mouseDown(e: MouseEvent): boolean {
-    this.setToolTip(e);
-    return false;
-  }
-
-  private setToolTip(e: MouseEvent): void {
-    if (this.data !== undefined) {
-      // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
-      let rect = flowchart.blockView.canvas.getBoundingClientRect();
-      let kx = Math.round((e.clientX - rect.left - this.viewWindow.x) / this.viewWindow.width * this.nx);
-      let ky = this.ny - Math.round((e.clientY - rect.top - this.viewWindow.y) / this.viewWindow.height * this.ny);
-      if (kx >= 0 && kx < this.nx && ky >= 0 && ky < this.ny) {
-        this.mouseOverX = this.x0 + kx * this.dx;
-        this.mouseOverY = this.y0 + ky * this.dy;
-      }
-    }
-    flowchart.blockView.requestDraw();
+  toCanvas(): HTMLCanvasElement {
+    return this.overlay;
   }
 
 }

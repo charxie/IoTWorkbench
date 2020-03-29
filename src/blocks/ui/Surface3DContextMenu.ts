@@ -53,10 +53,6 @@ export class Surface3DContextMenu extends BlockContextMenu {
                   <td>Name:</td>
                   <td colspan="2"><input type="text" id="surface3d-name-field" style="width: 100%"></td>
                 </tr>
-                <tr>
-                  <td>Contour Lines:</td>
-                  <td colspan="2"><input type="text" id="surface3d-line-number-field" style="width: 100%"></td>
-                </tr>
                <tr>
                   <td>Scale:</td>
                   <td colspan="2">
@@ -77,19 +73,6 @@ export class Surface3DContextMenu extends BlockContextMenu {
                   <td><input type="text" id="surface3d-maximum-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Line Type:</td>
-                  <td colspan="2">
-                    <select id="surface3d-line-type-selector" style="width: 100%">
-                      <option value="None">None</option>
-                      <option value="Solid" selected>Solid</option>
-                    </select>
-                </tr>
-                <tr>
-                  <td>Line Color:</td>
-                  <td><input type="color" id="surface3d-line-color-chooser" style="width: 50px"></td>
-                  <td><input type="text" id="surface3d-line-color-field" style="width: 100%"></td>
-                </tr>
-                <tr>
                   <td>X-Axis Label:</td>
                   <td colspan="2"><input type="text" id="surface3d-x-axis-label-field" style="width: 100%"></td>
                 </tr>
@@ -98,7 +81,11 @@ export class Surface3DContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="surface3d-y-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Window Color:</td>
+                  <td>Z-Axis Label:</td>
+                  <td colspan="2"><input type="text" id="surface3d-z-axis-label-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Background Color:</td>
                   <td><input type="color" id="surface3d-window-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="surface3d-window-color-field" style="width: 100%"></td>
                 </tr>
@@ -122,8 +109,6 @@ export class Surface3DContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("surface3d-name-field") as HTMLInputElement;
       nameField.value = g.getName();
-      let lineNumberField = document.getElementById("surface3d-line-number-field") as HTMLInputElement;
-      lineNumberField.value = g.getLineNumber().toString();
       let scaleTypeSelector = document.getElementById("surface3d-scale-type-selector") as HTMLSelectElement;
       scaleTypeSelector.value = g.getScaleType();
       let minimumColorField = document.getElementById("surface3d-minimum-color-field") as HTMLInputElement;
@@ -134,39 +119,24 @@ export class Surface3DContextMenu extends BlockContextMenu {
       maximumColorField.value = g.getMaximumColor();
       let maximumColorChooser = document.getElementById("surface3d-maximum-color-chooser") as HTMLInputElement;
       Util.setColorPicker(maximumColorChooser, g.getMaximumColor());
-      let lineTypeSelector = document.getElementById("surface3d-line-type-selector") as HTMLSelectElement;
-      lineTypeSelector.value = g.getLineType();
-      let lineColorField = document.getElementById("surface3d-line-color-field") as HTMLInputElement;
-      lineColorField.value = g.getLineColor();
-      let lineColorChooser = document.getElementById("surface3d-line-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(lineColorChooser, g.getLineColor());
       let xAxisLableField = document.getElementById("surface3d-x-axis-label-field") as HTMLInputElement;
       xAxisLableField.value = g.getXAxisLabel();
       let yAxisLableField = document.getElementById("surface3d-y-axis-label-field") as HTMLInputElement;
       yAxisLableField.value = g.getYAxisLabel();
       let windowColorField = document.getElementById("surface3d-window-color-field") as HTMLInputElement;
-      windowColorField.value = g.getFieldWindowColor();
+      windowColorField.value = g.getViewWindowColor();
       let windowColorChooser = document.getElementById("surface3d-window-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(windowColorChooser, g.getFieldWindowColor());
+      Util.setColorPicker(windowColorChooser, g.getViewWindowColor());
       let widthField = document.getElementById("surface3d-width-field") as HTMLInputElement;
       widthField.value = Math.round(g.getWidth()).toString();
       let heightField = document.getElementById("surface3d-height-field") as HTMLInputElement;
       heightField.value = Math.round(g.getHeight()).toString();
       Util.hookupColorInputs(minimumColorField, minimumColorChooser);
       Util.hookupColorInputs(maximumColorField, maximumColorChooser);
-      Util.hookupColorInputs(lineColorField, lineColorChooser);
       Util.hookupColorInputs(windowColorField, windowColorChooser);
       const okFunction = () => {
         let success = true;
         let message;
-        // set line number
-        let lineNumber = parseInt(lineNumberField.value);
-        if (isNumber(lineNumber)) {
-          g.setWidth(Math.max(10, lineNumber));
-        } else {
-          success = false;
-          message = lineNumberField.value + " is not a valid line number";
-        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -186,15 +156,12 @@ export class Surface3DContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           g.setName(nameField.value);
-          g.setLineNumber(lineNumber);
           g.setScaleType(scaleTypeSelector.value);
           g.setMinimumColor(minimumColorField.value);
           g.setMaximumColor(maximumColorField.value);
-          g.setLineType(lineTypeSelector.value);
-          g.setLineColor(lineColorField.value);
           g.setXAxisLabel(xAxisLableField.value);
           g.setYAxisLabel(yAxisLableField.value);
-          g.setFieldWindowColor(windowColorField.value);
+          g.setViewWindowColor(windowColorField.value);
           g.locateOverlay();
           g.rescale();
           g.refreshView();
@@ -211,13 +178,11 @@ export class Surface3DContextMenu extends BlockContextMenu {
         }
       };
       nameField.addEventListener("keyup", enterKeyUp);
-      lineNumberField.addEventListener("keyup", enterKeyUp);
       minimumColorField.addEventListener("keyup", enterKeyUp);
       maximumColorField.addEventListener("keyup", enterKeyUp);
       xAxisLableField.addEventListener("keyup", enterKeyUp);
       yAxisLableField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
-      lineColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({

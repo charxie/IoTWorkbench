@@ -1088,4 +1088,8 @@ export class Space3D extends Block {
     }
   }
 
+  // toCanvas(): HTMLCanvasElement {
+  //   return this.overlay;
+  // }
+
 }
