@@ -67,7 +67,29 @@ export class Surface3DContextMenu extends BlockContextMenu {
                   <td colspan="2">
                     <select id="surface3d-color-scheme-selector" style="width: 100%">
                       <option value="Turbo" selected>Turbo</option>
+                      <option value="Warm">Warm</option>
+                      <option value="Cool">Cool</option>
+                      <option value="Magma">Magma</option>
+                      <option value="Plasma">Plasma</option>
+                      <option value="Inferno">Inferno</option>
                       <option value="Spectral">Spectral</option>
+                      <option value="Cividis">Cividis</option>
+                      <option value="Viridis">Viridis</option>
+                      <option value="Rainbow">Rainbow</option>
+                      <option value="Sinebow">Sinebow</option>
+                      <option value="Cubehelix">Cubehelix</option>
+                      <option value="BuGn">BuGn</option>
+                      <option value="BuPu">BuPu</option>
+                      <option value="GnBu">GnBu</option>
+                      <option value="OrRd">OrRd</option>
+                      <option value="PuBu">PuBu</option>
+                      <option value="PuBuGn">PuBuGn</option>
+                      <option value="YlPuRd">YlPuRd</option>
+                      <option value="YlRdPu">YlRdPu</option>
+                      <option value="YlGn">YlGn</option>
+                      <option value="YlGnBu">YlGnBu</option>
+                      <option value="YlOrBr">YlOrBr</option>
+                      <option value="YlOrRd">YlOrRd</option>
                     </select>
                   </td>
                 </tr>

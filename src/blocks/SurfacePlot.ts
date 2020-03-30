@@ -2,16 +2,17 @@
  * @author Charles Xie
  */
 
-import * as d3 from 'd3';
 // @ts-ignore
 import * as THREE from 'three';
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import * as d3 from 'd3';
 
 export class SurfacePlot {
 
   private xgrid: number[];
   private ygrid: number[];
   private values: number[];
+  private scaledValues: number[];
   private interpolateColor = d3.interpolateTurbo;
 
   private scene: THREE.Scene;
@@ -46,21 +47,6 @@ export class SurfacePlot {
     this.createLights();
   }
 
-  setBackgroundColor(color: string): void {
-    this.renderer.setClearColor(color, 1);
-  }
-
-  setInterpolateColorScheme(scheme: string): void {
-    switch (scheme) {
-      case "Turbo":
-        this.interpolateColor = d3.interpolateTurbo;
-        break;
-      case "Spectral":
-        this.interpolateColor = d3.interpolateSpectral;
-        break;
-    }
-  }
-
   setData(x0: number, y0: number, dx: number, dy: number, nx: number, ny: number, data: number[], scaleType: string) {
     let n = nx * ny;
     if (this.xgrid === undefined || this.xgrid.length !== n) {
@@ -84,24 +70,48 @@ export class SurfacePlot {
       }
     }
     this.values = data;
+    if (this.scaledValues === undefined || this.scaledValues.length !== this.values.length) {
+      this.scaledValues = new Array(this.values.length);
+    }
 
     this.geometry.vertices.length = 0;
+    let zmin = d3.min(this.values);
+    let zmax = d3.max(this.values);
     switch (scaleType) {
       case "Logarithmic":
-        let zmin = d3.min(this.values);
-        for (let k = 0; k < n; k++) {
-          this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], Math.log(this.values[k] - zmin + 1)));
+        if (zmin !== zmax) {
+          let scale = 1 / Math.log(zmax - zmin + 1);
+          let tmp;
+          for (let k = 0; k < n; k++) {
+            tmp = Math.log((this.values[k] - zmin + 1));
+            this.scaledValues[k] = tmp * scale;
+            this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], tmp));
+          }
+        } else {
+          for (let k = 0; k < n; k++) {
+            this.scaledValues[k] = this.values[k];
+            this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], this.values[k]));
+          }
         }
         break;
       default:
-        for (let k = 0; k < n; k++) {
-          this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], this.values[k]));
+        if (zmin !== zmax) {
+          let scale = 1 / (zmax - zmin);
+          for (let k = 0; k < n; k++) {
+            this.scaledValues[k] = (this.values[k] - zmin) * scale;
+            this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], this.values[k]));
+          }
+        } else {
+          for (let k = 0; k < n; k++) {
+            this.scaledValues[k] = this.values[k];
+            this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], this.values[k]));
+          }
         }
         break;
     }
 
-    // use d3 for color scale
-    let color = d3.scaleLinear().domain(d3.extent(this.values)).interpolate(() => {
+    // scale values to (0, 1) for coloring
+    let color = d3.scaleLinear().domain(d3.extent(this.scaledValues)).interpolate(() => {
       return this.interpolateColor;
     });
 
@@ -114,12 +124,12 @@ export class SurfacePlot {
         let n3 = n2 - 1;
         let face1 = new THREE.Face3(n0, n1, n2);
         let face2 = new THREE.Face3(n2, n3, n0);
-        face1.vertexColors[0] = new THREE.Color(color(this.values[n0]));
-        face1.vertexColors[1] = new THREE.Color(color(this.values[n1]));
-        face1.vertexColors[2] = new THREE.Color(color(this.values[n2]));
-        face2.vertexColors[0] = new THREE.Color(color(this.values[n2]));
-        face2.vertexColors[1] = new THREE.Color(color(this.values[n3]));
-        face2.vertexColors[2] = new THREE.Color(color(this.values[n0]));
+        face1.vertexColors[0] = new THREE.Color(color(this.scaledValues[n0]));
+        face1.vertexColors[1] = new THREE.Color(color(this.scaledValues[n1]));
+        face1.vertexColors[2] = new THREE.Color(color(this.scaledValues[n2]));
+        face2.vertexColors[0] = new THREE.Color(color(this.scaledValues[n2]));
+        face2.vertexColors[1] = new THREE.Color(color(this.scaledValues[n3]));
+        face2.vertexColors[2] = new THREE.Color(color(this.scaledValues[n0]));
         this.geometry.faces.push(face1);
         this.geometry.faces.push(face2);
       }
@@ -176,6 +186,87 @@ export class SurfacePlot {
 
   getDomElement(): HTMLCanvasElement {
     return this.renderer.domElement;
+  }
+
+  setBackgroundColor(color: string): void {
+    this.renderer.setClearColor(color, 1);
+  }
+
+  setInterpolateColorScheme(scheme: string): void {
+    switch (scheme) {
+      case "YlOrRd":
+        this.interpolateColor = d3.interpolateYlOrRd;
+        break;
+      case "YlOrBr":
+        this.interpolateColor = d3.interpolateYlOrBr;
+        break;
+      case "YlPuRd":
+        this.interpolateColor = d3.interpolateYlPuRd;
+        break;
+      case "YlRdPu":
+        this.interpolateColor = d3.interpolateYlRdPu;
+        break;
+      case "YlGnBu":
+        this.interpolateColor = d3.interpolateYlGnBu;
+        break;
+      case "YlGn":
+        this.interpolateColor = d3.interpolateYlGn;
+        break;
+      case "BuGn":
+        this.interpolateColor = d3.interpolateBuGn;
+        break;
+      case "OrRd":
+        this.interpolateColor = d3.interpolateOrRd;
+        break;
+      case "GnBu":
+        this.interpolateColor = d3.interpolateGnBu;
+        break;
+      case "BuPu":
+        this.interpolateColor = d3.interpolateBuPu;
+        break;
+      case "PuBu":
+        this.interpolateColor = d3.interpolatePuBu;
+        break;
+      case "PuBuGn":
+        this.interpolateColor = d3.interpolatePuBuGn;
+        break;
+      case "Rainbow":
+        this.interpolateColor = d3.interpolateRainbow;
+        break;
+      case "Sinebow":
+        this.interpolateColor = d3.interpolateSinebow;
+        break;
+      case "Cubehelix":
+        this.interpolateColor = d3.interpolateCubehelixDefault;
+        break;
+      case "Warm":
+        this.interpolateColor = d3.interpolateWarm;
+        break;
+      case "Cool":
+        this.interpolateColor = d3.interpolateCool;
+        break;
+      case "Cividis":
+        this.interpolateColor = d3.interpolateCividis;
+        break;
+      case "Viridis":
+        this.interpolateColor = d3.interpolateViridis;
+        break;
+      case "Spectral":
+        this.interpolateColor = d3.interpolateSpectral;
+        break;
+      case "Inferno":
+        this.interpolateColor = d3.interpolateInferno;
+        break;
+      case "Magma":
+        this.interpolateColor = d3.interpolateMagma;
+        break;
+      case "Plasma":
+        this.interpolateColor = d3.interpolatePlasma;
+        break;
+      default:
+        this.interpolateColor = d3.interpolateTurbo;
+        break;
+    }
   }
 
 }
