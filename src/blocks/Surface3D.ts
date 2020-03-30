@@ -2,7 +2,6 @@
  * @author Charles Xie
  */
 
-import * as d3 from 'd3';
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";

@@ -222,14 +222,17 @@ export class SurfacePlot {
     return this.camera.position.z;
   }
 
+  // return Euler angle
   getCameraRotationX(): number {
     return this.camera.rotation.x;
   }
 
+  // return Euler angle
   getCameraRotationY(): number {
     return this.camera.rotation.y;
   }
 
+  // return Euler angle
   getCameraRotationZ(): number {
     return this.camera.rotation.z;
   }

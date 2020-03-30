@@ -6,9 +6,10 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
-import {flowchart, isNumber} from "../Main";
+import {closeAllContextMenus, flowchart, isNumber} from "../Main";
 import {Vector} from "../math/Vector";
 import {Point3DArray} from "./Point3DArray";
+import {LinePlot} from "./LinePlot";
 
 export class Space3D extends Block {
 
@@ -51,6 +52,8 @@ export class Space3D extends Block {
   private dataSymbolColors: string[] = [];
   private dataSymbolSpacings: number[] = [];
   private endSymbolRadii: number[] = [];
+  private overlay: HTMLCanvasElement;
+  private plot: LinePlot;
 
   static State = class {
     readonly name: string;
@@ -82,6 +85,12 @@ export class Space3D extends Block {
     readonly dataSymbolColors: string[] = [];
     readonly dataSymbolSpacings: number[] = [];
     readonly endSymbolRadii: any[] = [];
+    readonly cameraPositionX: number;
+    readonly cameraPositionY: number;
+    readonly cameraPositionZ: number;
+    readonly cameraRotationX: number;
+    readonly cameraRotationY: number;
+    readonly cameraRotationZ: number;
 
     constructor(g: Space3D) {
       this.name = g.name;
@@ -113,6 +122,12 @@ export class Space3D extends Block {
       this.dataSymbolColors = [...g.dataSymbolColors];
       this.dataSymbolSpacings = [...g.dataSymbolSpacings];
       this.endSymbolRadii = [...g.endSymbolRadii];
+      this.cameraPositionX = g.plot.getCameraPositionX();
+      this.cameraPositionY = g.plot.getCameraPositionY();
+      this.cameraPositionZ = g.plot.getCameraPositionZ();
+      this.cameraRotationX = g.plot.getCameraRotationX();
+      this.cameraRotationY = g.plot.getCameraRotationY();
+      this.cameraRotationZ = g.plot.getCameraRotationZ();
     }
   };
 
@@ -134,11 +149,19 @@ export class Space3D extends Block {
     this.lineTypes.push("Solid");
     this.lineColors.push("black");
     this.lineThicknesses.push(1);
-    this.dataSymbols.push("Circle");
+    this.dataSymbols.push("None");
     this.dataSymbolRadii.push(3);
     this.dataSymbolColors.push("white");
     this.dataSymbolSpacings.push(1);
     this.endSymbolRadii.push(0);
+    this.plot = new LinePlot();
+    this.overlay = this.plot.getDomElement();
+    this.overlay.tabIndex = 0;
+    this.overlay.style.position = "absolute";
+    document.getElementById("block-view-wrapper").append(this.overlay);
+    //this.overlay.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
+    this.overlay.addEventListener("keyup", this.overlayKeyUp.bind(this), false);
+    this.overlay.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
   }
 
   getCopy(): Block {
@@ -166,10 +189,105 @@ export class Space3D extends Block {
     copy.dataSymbolColors = [...this.dataSymbolColors];
     copy.dataSymbolSpacings = [...this.dataSymbolSpacings];
     copy.endSymbolRadii = [...this.endSymbolRadii];
+    copy.setWidth(this.getWidth());
+    copy.setHeight(this.getHeight());
+    copy.plot.render();
     return copy;
   }
 
+  private overlayMouseDown(e: MouseEvent): void {
+    if (this.overlay !== undefined) {
+      closeAllContextMenus();
+      if (flowchart.blockView.getSelectedBlock() !== null) {
+        flowchart.blockView.getSelectedBlock().setSelected(false);
+      }
+      this.setSelected(true);
+      flowchart.blockView.setSelectedBlock(this);
+      flowchart.blockView.clearResizeName();
+      flowchart.blockView.requestDraw();
+    }
+  }
+
+  private overlayOpenContextMenu(e: MouseEvent): void {
+    if (this.overlay !== undefined) {
+      if (Util.getSelectedText() === "") {
+        flowchart.blockView.openContextMenu(e);
+      }
+      // if text is selected, use default
+    }
+  }
+
+  private overlayKeyUp(e: KeyboardEvent): void {
+    if (this.overlay !== undefined) {
+      flowchart.blockView.keyUp(e);
+    }
+  }
+
+  locateOverlay(): void {
+    this.spaceWindow.x = this.x + this.spaceMargin.left;
+    this.spaceWindow.y = this.y + this.barHeight + this.spaceMargin.top;
+    this.spaceWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
+    this.spaceWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
+    this.setX(this.getX());
+    this.setY(this.getY());
+    this.setWidth(this.getWidth());
+    this.setHeight(this.getHeight());
+  }
+
+  setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
+    this.plot.setCameraPosition(px, py, pz, rx, ry, rz);
+  }
+
+  setX(x: number): void {
+    super.setX(x);
+    if (this.overlay !== undefined) {
+      this.overlay.style.left = this.spaceWindow.x + "px";
+    }
+  }
+
+  setY(y: number): void {
+    super.setY(y);
+    if (this.overlay !== undefined) {
+      this.overlay.style.top = this.spaceWindow.y + "px";
+    }
+  }
+
+  setWidth(width: number): void {
+    super.setWidth(width);
+    if (this.overlay !== undefined) {
+      this.overlay.style.width = this.spaceWindow.width + "px";
+    }
+  }
+
+  setHeight(height: number): void {
+    super.setHeight(height);
+    if (this.overlay !== undefined) {
+      this.overlay.style.height = this.spaceWindow.height + "px";
+    }
+  }
+
+  translateBy(dx: number, dy: number): void {
+    super.translateBy(dx, dy);
+    if (this.overlay !== undefined) {
+      this.overlay.style.left = this.spaceWindow.x + "px";
+      this.overlay.style.top = this.spaceWindow.y + "px";
+    }
+  }
+
+  setRect(rect: Rectangle): void {
+    super.setRect(rect);
+    if (this.overlay !== undefined) {
+      this.overlay.style.left = this.spaceWindow.x + "px";
+      this.overlay.style.top = this.spaceWindow.y + "px";
+      this.overlay.style.width = this.spaceWindow.width + "px";
+      this.overlay.style.height = this.spaceWindow.height + "px";
+    }
+  }
+
   destroy(): void {
+    if (this.overlay !== undefined) {
+      document.getElementById("block-view-wrapper").removeChild(this.overlay);
+    }
   }
 
   getPointPorts(): Port[] {
@@ -356,6 +474,7 @@ export class Space3D extends Block {
 
   setSpaceWindowColor(spaceWindowColor: string): void {
     this.spaceWindowColor = spaceWindowColor;
+    this.plot.setBackgroundColor(spaceWindowColor);
   }
 
   getSpaceWindowColor(): string {
@@ -561,294 +680,10 @@ export class Space3D extends Block {
     ctx.strokeStyle = "black";
     ctx.stroke();
     if (!this.iconic) {
-      this.drawAxisLabels(ctx);
       if (this.pointInput && this.portPoints.length > 1) {
         this.drawLegends(ctx);
       }
     }
-
-    // detect minimum and maximum of x and y values from all inputs and calculate the scale factor
-    let xmin = Number.MAX_VALUE;
-    let xmax = -xmin;
-    let ymin = Number.MAX_VALUE;
-    let ymax = -ymin;
-    if (this.autoscale) {
-      for (let p of this.points) {
-        let length = p.length();
-        if (length > 1) {
-          let xminxmax = p.getXminXmax();
-          if (xmin > xminxmax.min) {
-            xmin = xminxmax.min;
-          }
-          if (xmax < xminxmax.max) {
-            xmax = xminxmax.max;
-          }
-          let yminymax = p.getYminYmax();
-          if (ymin > yminymax.min) {
-            ymin = yminymax.min;
-          }
-          if (ymax < yminymax.max) {
-            ymax = yminymax.max;
-          }
-        }
-      }
-      if (xmin == Number.MAX_VALUE) xmin = 0;
-      if (xmax == -Number.MAX_VALUE) xmax = 1;
-      if (ymin == Number.MAX_VALUE) ymin = 0;
-      if (ymax == -Number.MAX_VALUE) ymax = 1;
-    } else {
-      xmin = this.minimumXValue;
-      xmax = this.maximumXValue;
-      ymin = this.minimumYValue;
-      ymax = this.maximumYValue;
-    }
-    let dx = xmax === xmin ? 1 : this.spaceWindow.width / (xmax - xmin);
-    let dy = ymax === ymin ? 1 : this.spaceWindow.height / (ymax - ymin);
-
-    // draw X-Y plot
-    ctx.save();
-    ctx.translate(this.spaceWindow.x, this.spaceWindow.y + this.spaceWindow.height);
-    for (let p of this.points) {
-      let length = p.length();
-      if (length > 1) {
-        let index = this.points.indexOf(p);
-        if (this.lineTypes[index] !== "None") {
-          ctx.lineWidth = this.lineThicknesses[index];
-          ctx.strokeStyle = this.lineColors[index];
-          switch (this.lineTypes[index]) {
-            case "Solid":
-              ctx.setLineDash([]);
-              break;
-            case "Dashed":
-              ctx.setLineDash([5, 3]); // dashes are 5px and spaces are 3px
-              break;
-            case "Dotted":
-              ctx.setLineDash([2, 2]);
-              break;
-            case "Dashdot":
-              ctx.setLineDash([8, 2, 2, 2]);
-              break;
-          }
-          ctx.beginPath();
-          ctx.moveTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
-          for (let i = 1; i < length; i++) {
-            ctx.lineTo((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy);
-          }
-          ctx.stroke();
-        }
-
-        // draw symbols on top of the line
-        ctx.setLineDash([]);
-        ctx.lineWidth = 1;
-        let r = this.dataSymbolRadii[index];
-        switch (this.dataSymbols[index]) {
-          case "Circle":
-            for (let i = 0; i < length; i++) {
-              if (i % this.dataSymbolSpacings[index] === 0) {
-                ctx.beginPath();
-                ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, r, 0, 2 * Math.PI);
-                ctx.fillStyle = this.dataSymbolColors[index];
-                ctx.fill();
-                ctx.strokeStyle = this.lineColors[index];
-                ctx.stroke();
-              }
-            }
-            break;
-          case "Square":
-            for (let i = 0; i < length; i++) {
-              if (i % this.dataSymbolSpacings[index] === 0) {
-                ctx.beginPath();
-                ctx.rect((p.getX(i) - xmin) * dx - r, -(p.getY(i) - ymin) * dy - r, 2 * r, 2 * r);
-                ctx.fillStyle = this.dataSymbolColors[index];
-                ctx.fill();
-                ctx.strokeStyle = this.lineColors[index];
-                ctx.stroke();
-              }
-            }
-            break;
-          case "Dot":
-            for (let i = 0; i < length; i++) {
-              if (i % this.dataSymbolSpacings[index] === 0) {
-                ctx.beginPath();
-                ctx.rect((p.getX(i) - xmin) * dx - 1, -(p.getY(i) - ymin) * dy - 1, 2, 2);
-                ctx.fillStyle = this.dataSymbolColors[index];
-                ctx.fill();
-              }
-            }
-            break;
-          case "Triangle Up":
-            let tmpX, tmpY;
-            for (let i = 0; i < length; i++) {
-              if (i % this.dataSymbolSpacings[index] === 0) {
-                tmpX = (p.getX(i) - xmin) * dx;
-                tmpY = -(p.getY(i) - ymin) * dy;
-                ctx.beginPath();
-                ctx.moveTo(tmpX, tmpY - r);
-                ctx.lineTo(tmpX - r, tmpY + r);
-                ctx.lineTo(tmpX + r, tmpY + r);
-                ctx.closePath();
-                ctx.fillStyle = this.dataSymbolColors[index];
-                ctx.fill();
-                ctx.strokeStyle = this.lineColors[index];
-                ctx.stroke();
-              }
-            }
-            break;
-          case "Triangle Down":
-            for (let i = 0; i < length; i++) {
-              if (i % this.dataSymbolSpacings[index] === 0) {
-                tmpX = (p.getX(i) - xmin) * dx;
-                tmpY = -(p.getY(i) - ymin) * dy;
-                ctx.beginPath();
-                ctx.moveTo(tmpX, tmpY + r);
-                ctx.lineTo(tmpX - r, tmpY - r);
-                ctx.lineTo(tmpX + r, tmpY - r);
-                ctx.closePath();
-                ctx.fillStyle = this.dataSymbolColors[index];
-                ctx.fill();
-                ctx.strokeStyle = this.lineColors[index];
-                ctx.stroke();
-              }
-            }
-            break;
-          case "Diamond":
-            for (let i = 0; i < length; i++) {
-              if (i % this.dataSymbolSpacings[index] === 0) {
-                tmpX = (p.getX(i) - xmin) * dx;
-                tmpY = -(p.getY(i) - ymin) * dy;
-                ctx.beginPath();
-                ctx.moveTo(tmpX, tmpY + r);
-                ctx.lineTo(tmpX - r, tmpY);
-                ctx.lineTo(tmpX, tmpY - r);
-                ctx.lineTo(tmpX + r, tmpY);
-                ctx.closePath();
-                ctx.fillStyle = this.dataSymbolColors[index];
-                ctx.fill();
-                ctx.strokeStyle = this.lineColors[index];
-                ctx.stroke();
-              }
-            }
-            break;
-        }
-      }
-    }
-
-    if (this.endSymbolsConnection !== "None") {
-      let xi, yi, xj, yj;
-      if (this.numberOfZigzags === undefined || this.numberOfZigzags.length !== this.points.length - 1) {
-        this.numberOfZigzags = new Array(this.points.length - 1);
-      }
-      for (let i = 0; i < this.points.length - 1; i++) {
-        xi = (this.points[i].getLatestX() - xmin) * dx;
-        yi = -(this.points[i].getLatestY() - ymin) * dy;
-        //ctx.strokeStyle = this.dataSymbolColors[i];
-        ctx.strokeStyle = this.lineColors[i];
-        xj = (this.points[i + 1].getLatestX() - xmin) * dx;
-        yj = -(this.points[i + 1].getLatestY() - ymin) * dy;
-        ctx.beginPath();
-        ctx.moveTo(xi, yi);
-        switch (this.endSymbolsConnection) {
-          case "Line":
-            ctx.lineWidth = 5;
-            ctx.lineTo(xj, yj);
-            break;
-          case "Zigzag":
-            ctx.lineWidth = 2;
-            if (this.numberOfZigzags[i] === undefined) {
-              this.numberOfZigzags[i] = Math.round(Math.hypot(xj - xi, yj - yi) / 8);
-            }
-            let dx = (xj - xi) / this.numberOfZigzags[i];
-            let dy = (yj - yi) / this.numberOfZigzags[i];
-            let dr = Math.hypot(dx, dy);
-            let cx = dy / dr;
-            let cy = -dx / dr;
-            for (let k = 0; k <= this.numberOfZigzags[i]; k++) {
-              let xk = xi + dx * k;
-              let yk = yi + dy * k;
-              if (k % 2 == 0) {
-                xk += cx * 5;
-                yk += cy * 5
-              } else {
-                xk -= cx * 5;
-                yk -= cy * 5
-              }
-              ctx.lineTo(xk, yk);
-            }
-            break;
-        }
-        ctx.stroke();
-      }
-    }
-
-    for (let p of this.points) {
-      let i = p.length() - 1;
-      if (i >= 0) {
-        let index = this.points.indexOf(p);
-        let endSymbolRadius = this.endSymbolRadii[index];
-        if (!isNumber(endSymbolRadius)) {
-          endSymbolRadius = flowchart.globalVariables[endSymbolRadius];
-        }
-        if (endSymbolRadius > 0) {
-          ctx.lineWidth = this.lineThicknesses[index];
-          ctx.beginPath();
-          ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, endSymbolRadius, 0, 2 * Math.PI);
-          ctx.fillStyle = this.dataSymbolColors[index];
-          ctx.fill();
-          ctx.strokeStyle = this.lineColors[index];
-          ctx.stroke();
-        }
-      }
-    }
-
-    // draw axis tick marks and labels
-    if (!this.iconic) {
-      ctx.lineWidth = 1;
-      ctx.font = "10px Arial";
-      ctx.fillStyle = "black";
-      let inx = (xmax - xmin) / 10;
-      dx = this.spaceWindow.width / 10;
-      for (let i = 0; i < 11; i++) {
-        let tmpX = dx * i;
-        ctx.beginPath();
-        ctx.moveTo(tmpX, 0);
-        ctx.lineTo(tmpX, -4);
-        ctx.stroke();
-        let xtick = xmin + i * inx;
-        let precision = 2;
-        if (Math.abs(xtick) >= 1) {
-          let diff = Math.abs(xtick - Math.round(xtick));
-          precision = Math.round(Math.abs(xtick)).toString().length + (diff < 0.1 ? 0 : 1);
-        } else {
-          if (xtick.toPrecision(precision).endsWith("0")) {
-            precision--;
-          }
-        }
-        let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
-        ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
-      }
-      let iny = (ymax - ymin) / 10;
-      dy = this.spaceWindow.height / 10;
-      for (let i = 0; i < 11; i++) {
-        let tmpY = -dy * i;
-        ctx.beginPath();
-        ctx.moveTo(0, tmpY);
-        ctx.lineTo(4, tmpY);
-        ctx.stroke();
-        let ytick = ymin + i * iny;
-        let precision = 2;
-        if (Math.abs(ytick) >= 1) {
-          let diff = Math.abs(ytick - Math.round(ytick));
-          precision = Math.round(Math.abs(ytick)).toString().length + (diff < 0.1 ? 0 : 1);
-        } else {
-          if (ytick.toPrecision(precision).endsWith("0")) {
-            precision--;
-          }
-        }
-        let iString = Math.abs(ytick) < 0.01 ? "0" : ytick.toPrecision(precision);
-        ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
-      }
-    }
-    ctx.restore();
 
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
@@ -965,41 +800,6 @@ export class Space3D extends Block {
     ctx.restore();
   }
 
-  private drawGridLines(ctx: CanvasRenderingContext2D): void {
-    ctx.save();
-    ctx.translate(this.spaceWindow.x, this.spaceWindow.y + this.spaceWindow.height);
-    ctx.strokeStyle = "lightgray";
-    let dx = this.spaceWindow.width / 10;
-    for (let i = 1; i < 10; i++) {
-      let tmpX = dx * i;
-      ctx.beginPath();
-      ctx.moveTo(tmpX, 0);
-      ctx.lineTo(tmpX, -this.spaceWindow.height);
-      ctx.stroke();
-    }
-    let dy = this.spaceWindow.height / 10;
-    for (let i = 1; i < 10; i++) {
-      let tmpY = -dy * i;
-      ctx.beginPath();
-      ctx.moveTo(0, tmpY);
-      ctx.lineTo(this.spaceWindow.width, tmpY);
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-
-  private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
-    ctx.font = "italic 15px Times New Roman";
-    ctx.fillStyle = "black";
-    let horizontalAxisY = this.height - this.spaceMargin.bottom;
-    ctx.fillText(this.xAxisLabel, this.spaceWindow.x + (this.spaceWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 30);
-    ctx.save();
-    ctx.translate(this.x + 25, this.spaceWindow.y + (this.spaceWindow.height + ctx.measureText(this.yAxisLabel).width) / 2 + 10);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillText(this.yAxisLabel, 0, 0);
-    ctx.restore();
-  }
-
   onDraggableArea(x: number, y: number): boolean {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
   }
@@ -1067,6 +867,7 @@ export class Space3D extends Block {
         this.tempZ = undefined;
       }
     }
+    this.plot.render();
   }
 
   refreshView(): void {
@@ -1088,8 +889,8 @@ export class Space3D extends Block {
     }
   }
 
-  // toCanvas(): HTMLCanvasElement {
-  //   return this.overlay;
-  // }
+  toCanvas(): HTMLCanvasElement {
+    return this.overlay;
+  }
 
 }
