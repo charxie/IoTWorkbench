@@ -56,6 +56,9 @@ export class Surface3D extends Block {
     readonly viewWindowColor: string;
     readonly scaleType: string;
     readonly colorScheme: string;
+    readonly cameraPositionX: number;
+    readonly cameraPositionY: number;
+    readonly cameraPositionZ: number;
 
     constructor(g: Surface3D) {
       this.name = g.name;
@@ -70,6 +73,9 @@ export class Surface3D extends Block {
       this.viewWindowColor = g.viewWindowColor;
       this.scaleType = g.scaleType;
       this.colorScheme = g.colorScheme;
+      this.cameraPositionX = g.plot.getCameraPositionX();
+      this.cameraPositionY = g.plot.getCameraPositionY();
+      this.cameraPositionZ = g.plot.getCameraPositionZ();
     }
   };
 
@@ -153,6 +159,10 @@ export class Surface3D extends Block {
     this.setY(this.getY());
     this.setWidth(this.getWidth());
     this.setHeight(this.getHeight());
+  }
+
+  setCameraPosition(x: number, y: number, z: number): void {
+    this.plot.setCameraPosition(x, y, z);
   }
 
   setX(x: number): void {
@@ -349,10 +359,6 @@ export class Surface3D extends Block {
       this.plot.setData(this.x0, this.y0, this.dx, this.dy, this.nx, this.ny, this.data, this.scaleType);
       this.plot.render();
     }
-  }
-
-  rescale(): void {
-    this.plot.render();
   }
 
   refreshView(): void {

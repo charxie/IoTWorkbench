@@ -67,6 +67,12 @@ export class Surface3DContextMenu extends BlockContextMenu {
                   <td colspan="2">
                     <select id="surface3d-color-scheme-selector" style="width: 100%">
                       <option value="Turbo" selected>Turbo</option>
+                      <option value="Reds">Reds</option>
+                      <option value="Greens">Greens</option>
+                      <option value="Blues">Blues</option>
+                      <option value="Greys">Greys</option>
+                      <option value="Oranges">Oranges</option>
+                      <option value="Purples">Purples</option>
                       <option value="Warm">Warm</option>
                       <option value="Cool">Cool</option>
                       <option value="Magma">Magma</option>
@@ -78,14 +84,22 @@ export class Surface3DContextMenu extends BlockContextMenu {
                       <option value="Rainbow">Rainbow</option>
                       <option value="Sinebow">Sinebow</option>
                       <option value="Cubehelix">Cubehelix</option>
+                      <option value="RdYlBu">RdYlBu</option>
+                      <option value="RdYlGn">RdYlGn</option>
+                      <option value="RdGy">RdGy</option>
+                      <option value="RdBu">RdBu</option>
+                      <option value="PuOr">PuOr</option>
+                      <option value="PiYG">PiYG</option>
+                      <option value="PRGn">PRGn</option>
+                      <option value="BrBG">BrBG</option>
                       <option value="BuGn">BuGn</option>
                       <option value="BuPu">BuPu</option>
                       <option value="GnBu">GnBu</option>
                       <option value="OrRd">OrRd</option>
                       <option value="PuBu">PuBu</option>
                       <option value="PuBuGn">PuBuGn</option>
-                      <option value="YlPuRd">YlPuRd</option>
-                      <option value="YlRdPu">YlRdPu</option>
+                      <option value="PuRd">PuRd</option>
+                      <option value="RdPu">RdPu</option>
                       <option value="YlGn">YlGn</option>
                       <option value="YlGnBu">YlGnBu</option>
                       <option value="YlOrBr">YlOrBr</option>
@@ -177,7 +191,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
           g.setYAxisLabel(yAxisLableField.value);
           g.setViewWindowColor(windowColorField.value);
           g.locateOverlay();
-          g.rescale();
+          g.updateModel();
           g.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();

@@ -16,10 +16,12 @@ export class SurfacePlot {
   private interpolateColor = d3.interpolateTurbo;
 
   private scene: THREE.Scene;
+  private mesh: THREE.Mesh;
   private geometry: THREE.Geometry;
   private material: THREE.Material;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
+  private controls: OrbitControls;
 
   constructor() {
     this.scene = new THREE.Scene();
@@ -32,22 +34,48 @@ export class SurfacePlot {
       shininess: 1,
       emissive: 0x111111,
     });
-    this.scene.add(new THREE.Mesh(this.geometry, this.material));
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.scene.add(this.mesh);
     this.createAxes();
     this.renderer = new THREE.WebGLRenderer({alpha: true, antialias: true, preserveDrawingBuffer: true});
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(500, 500);
     this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-    this.camera.position.z = 10;
-    let controls = new OrbitControls(this.camera, this.renderer.domElement);
-    controls.addEventListener('change', () => {
-      this.renderer.render(this.scene, this.camera); // re-render if controls move/zoom
-    });
-    controls.enableZoom = true;
+    this.setCameraPosition(0, 0, 10);
     this.createLights();
   }
 
+  setCameraPosition(x: number, y: number, z: number): void {
+    this.camera.position.set(x, y, z);
+    // we have to recreate an OrbitControls or else this won't be initialized correctly
+    if (this.controls !== undefined) this.controls.dispose();
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.addEventListener('change', () => {
+      this.render(); // re-render if controls move/zoom
+    });
+    this.controls.enableZoom = true;
+  }
+
+  getCameraPositionX(): number {
+    return this.camera.position.x;
+  }
+
+  getCameraPositionY(): number {
+    return this.camera.position.y;
+  }
+
+  getCameraPositionZ(): number {
+    return this.camera.position.z;
+  }
+
   setData(x0: number, y0: number, dx: number, dy: number, nx: number, ny: number, data: number[], scaleType: string) {
+    // somehow we have to remove the mesh, recreate the geometry, and re-add them back to the scene to chnage the colors
+    this.scene.remove(this.mesh);
+    this.geometry.dispose();
+    this.geometry = new THREE.Geometry();
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.scene.add(this.mesh);
+
     let n = nx * ny;
     if (this.xgrid === undefined || this.xgrid.length !== n) {
       this.xgrid = new Array(n);
@@ -74,7 +102,6 @@ export class SurfacePlot {
       this.scaledValues = new Array(this.values.length);
     }
 
-    this.geometry.vertices.length = 0;
     let zmin = d3.min(this.values);
     let zmax = d3.max(this.values);
     switch (scaleType) {
@@ -194,17 +221,59 @@ export class SurfacePlot {
 
   setInterpolateColorScheme(scheme: string): void {
     switch (scheme) {
+      case "Reds":
+        this.interpolateColor = d3.interpolateReds;
+        break;
+      case "Greens":
+        this.interpolateColor = d3.interpolateGreens;
+        break;
+      case "Blues":
+        this.interpolateColor = d3.interpolateBlues;
+        break;
+      case "Greys":
+        this.interpolateColor = d3.interpolateGreys;
+        break;
+      case "Oranges":
+        this.interpolateColor = d3.interpolateOranges;
+        break;
+      case "Purples":
+        this.interpolateColor = d3.interpolatePurples;
+        break;
+      case "RdYlBu":
+        this.interpolateColor = d3.interpolateRdYlBu;
+        break;
+      case "RdYlGn":
+        this.interpolateColor = d3.interpolateRdYlGn;
+        break;
+      case "RdGy":
+        this.interpolateColor = d3.interpolateRdGy;
+        break;
+      case "RdBu":
+        this.interpolateColor = d3.interpolateRdBu;
+        break;
+      case "PuOr":
+        this.interpolateColor = d3.interpolatePuOr;
+        break;
+      case "PiYG":
+        this.interpolateColor = d3.interpolatePiYG;
+        break;
+      case "PRGn":
+        this.interpolateColor = d3.interpolatePRGn;
+        break;
+      case "BrBG":
+        this.interpolateColor = d3.interpolateBrBG;
+        break;
       case "YlOrRd":
         this.interpolateColor = d3.interpolateYlOrRd;
         break;
       case "YlOrBr":
         this.interpolateColor = d3.interpolateYlOrBr;
         break;
-      case "YlPuRd":
-        this.interpolateColor = d3.interpolateYlPuRd;
+      case "PuRd":
+        this.interpolateColor = d3.interpolatePuRd;
         break;
-      case "YlRdPu":
-        this.interpolateColor = d3.interpolateYlRdPu;
+      case "RdPu":
+        this.interpolateColor = d3.interpolateRdPu;
         break;
       case "YlGnBu":
         this.interpolateColor = d3.interpolateYlGnBu;
