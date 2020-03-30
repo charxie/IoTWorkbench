@@ -31,6 +31,10 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="parametric-equation-block-expression-y-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Expression for Z (e.g. 2*t):</td>
+                  <td><input type="text" id="parametric-equation-block-expression-z-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="parametric-equation-block-width-field" style="width: 100%"></td>
                 </tr>
@@ -51,9 +55,11 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
       let parameterNameField = document.getElementById("parametric-equation-block-parameter-name-field") as HTMLInputElement;
       parameterNameField.value = block.getParameterName() ? block.getParameterName().toString() : "t";
       let expressionXField = document.getElementById("parametric-equation-block-expression-x-field") as HTMLInputElement;
-      expressionXField.value = block.getExpressionX() ? block.getExpressionX().toString() : "cos(t)";
+      expressionXField.value = block.getExpressionX() ? block.getExpressionX() : "cos(t)";
       let expressionYField = document.getElementById("parametric-equation-block-expression-y-field") as HTMLInputElement;
-      expressionYField.value = block.getExpressionY() ? block.getExpressionY().toString() : "sin(t)";
+      expressionYField.value = block.getExpressionY() ? block.getExpressionY() : "sin(t)";
+      let expressionZField = document.getElementById("parametric-equation-block-expression-z-field") as HTMLInputElement;
+      expressionZField.value = block.getExpressionZ() ? block.getExpressionZ() : "";
       let widthField = document.getElementById("parametric-equation-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("parametric-equation-block-height-field") as HTMLInputElement;
@@ -81,6 +87,7 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
         block.setParameterName(parameterNameField.value);
         block.setExpressionX(expressionXField.value);
         block.setExpressionY(expressionYField.value);
+        block.setExpressionZ(expressionZField.value);
         block.useDeclaredFunctions();
         try {
           flowchart.updateResultsForBlock(block);
@@ -107,13 +114,14 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
       parameterNameField.addEventListener("keyup", enterKeyUp);
       expressionXField.addEventListener("keyup", enterKeyUp);
       expressionYField.addEventListener("keyup", enterKeyUp);
+      expressionZField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 360,
+        height: 400,
         width: 500,
         buttons: {
           'OK': okFunction,

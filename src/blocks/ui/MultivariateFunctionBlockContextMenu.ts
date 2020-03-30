@@ -53,7 +53,7 @@ export class MultivariateFunctionBlockContextMenu extends BlockContextMenu {
       let variablesArea = document.getElementById("multivariate-function-block-cases-area") as HTMLTextAreaElement;
       variablesArea.value = JSON.stringify(block.getVariables());
       let expressionField = document.getElementById("multivariate-function-block-expression-field") as HTMLInputElement;
-      expressionField.value = block.getExpression() ? block.getExpression().toString() : "x+y+z";
+      expressionField.value = block.getExpression() ? block.getExpression() : "x+y+z";
       let insetMarginField = document.getElementById("multivariate-function-inset-margin-field") as HTMLInputElement;
       insetMarginField.value = block.getMarginX().toString();
       let widthField = document.getElementById("multivariate-function-block-width-field") as HTMLInputElement;

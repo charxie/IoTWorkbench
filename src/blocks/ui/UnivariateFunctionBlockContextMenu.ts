@@ -47,7 +47,7 @@ export class UnivariateFunctionBlockContextMenu extends BlockContextMenu {
       let variableNameField = document.getElementById("univariate-function-block-variable-name-field") as HTMLInputElement;
       variableNameField.value = block.getVariableName() ? block.getVariableName() : "x";
       let expressionField = document.getElementById("univariate-function-block-expression-field") as HTMLInputElement;
-      expressionField.value = block.getExpression() ? block.getExpression().toString() : "x";
+      expressionField.value = block.getExpression() ? block.getExpression() : "x";
       let widthField = document.getElementById("univariate-function-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("univariate-function-block-height-field") as HTMLInputElement;

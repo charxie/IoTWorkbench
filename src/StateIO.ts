@@ -313,6 +313,7 @@ export class StateIO {
           block.setParameterName(state.parameterName ? state.parameterName : "t");
           block.setExpressionX(state.expressionX ? state.expressionX : "cos(t)");
           block.setExpressionY(state.expressionY ? state.expressionY : "sin(t)");
+          block.setExpressionZ(state.expressionZ ? state.expressionZ : "");
         } else if (block instanceof BundledFunctionsBlock) {
           block.setName(state.name);
           block.setInputName(state.inputName ? state.inputName : "t");

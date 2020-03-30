@@ -60,7 +60,7 @@ export class BivariateFunctionBlockContextMenu extends BlockContextMenu {
       let variable2NameField = document.getElementById("bivariate-function-block-variable2-name-field") as HTMLInputElement;
       variable2NameField.value = block.getVariable2Name() ? block.getVariable2Name() : "y";
       let expressionField = document.getElementById("bivariate-function-block-expression-field") as HTMLInputElement;
-      expressionField.value = block.getExpression() ? block.getExpression().toString() : "x+y";
+      expressionField.value = block.getExpression() ? block.getExpression() : "x+y";
       let output1DRadioButton = document.getElementById("bivariate-function-block-output-1d-radio-button") as HTMLInputElement;
       output1DRadioButton.checked = block.getOutputArrayType() === "1D";
       let output2DRadioButton = document.getElementById("bivariate-function-block-output-2d-radio-button") as HTMLInputElement;

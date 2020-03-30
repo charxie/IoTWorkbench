@@ -12,13 +12,17 @@ export class ParametricEquationBlock extends Block {
   private parameterName: string = "t";
   private expressionX: string = "cos(t)";
   private expressionY: string = "sin(t)";
+  private expressionZ: string = "";
   private codeX;
   private codeY;
+  private codeZ;
   private readonly portT: Port;
   private readonly portX: Port;
   private readonly portY: Port;
+  private readonly portZ: Port;
   private hasParserXError: boolean = false;
   private hasParserYError: boolean = false;
+  private hasParserZError: boolean = false;
   private hasDeclarationError: boolean = false;
 
   static State = class {
@@ -26,6 +30,7 @@ export class ParametricEquationBlock extends Block {
     readonly parameterName: string;
     readonly expressionX: string;
     readonly expressionY: string;
+    readonly expressionZ: string;
     readonly x: number;
     readonly y: number;
     readonly width: number;
@@ -36,6 +41,7 @@ export class ParametricEquationBlock extends Block {
       this.parameterName = block.parameterName;
       this.expressionX = block.expressionX;
       this.expressionY = block.expressionY;
+      this.expressionZ = block.expressionZ;
       this.x = block.x;
       this.y = block.y;
       this.width = block.width;
@@ -50,10 +56,12 @@ export class ParametricEquationBlock extends Block {
     this.parameterName = "t";
     this.expressionX = "cos(t)";
     this.expressionY = "sin(t)";
+    this.expressionZ = "";
     this.color = "#A0522D";
     this.portT = new Port(this, true, "T", 0, this.height / 2, false);
     this.portX = new Port(this, false, "X", this.width, this.height / 3, true);
     this.portY = new Port(this, false, "Y", this.width, this.height * 2 / 3, true);
+    this.portZ = new Port(this, false, "Z", this.width, this.height, true);
     this.ports.push(this.portT);
     this.ports.push(this.portX);
     this.ports.push(this.portY);
@@ -64,6 +72,7 @@ export class ParametricEquationBlock extends Block {
     block.parameterName = this.parameterName;
     block.expressionX = this.expressionX;
     block.expressionY = this.expressionY;
+    block.expressionZ = this.expressionZ;
     return block;
   }
 
@@ -96,6 +105,27 @@ export class ParametricEquationBlock extends Block {
     return this.expressionY;
   }
 
+  setExpressionZ(expressionZ: string): void {
+    let index = this.ports.indexOf(this.portZ);
+    if (expressionZ.trim() !== "") {
+      this.expressionZ = expressionZ.replace(/\s/g, "");
+      this.createParserZ();
+      if (index === -1) {
+        this.ports.push(this.portZ);
+      }
+    } else {
+      this.expressionZ = "";
+      if (index !== -1) {
+        this.ports.pop();
+      }
+    }
+    this.refreshView();
+  }
+
+  getExpressionZ(): string {
+    return this.expressionZ;
+  }
+
   useDeclaredFunctions() {
     this.hasDeclarationError = false;
     let exp = flowchart.replaceWithDeclaredFunctions(this.expressionX);
@@ -116,6 +146,18 @@ export class ParametricEquationBlock extends Block {
         console.log(e.stack);
         Util.showBlockError(e.toString());
         this.hasDeclarationError = true;
+      }
+    }
+    if (this.expressionZ !== "") {
+      exp = flowchart.replaceWithDeclaredFunctions(this.expressionZ);
+      if (exp != this.expressionZ) {
+        try {
+          this.codeZ = math.parse(exp).compile();
+        } catch (e) {
+          console.log(e.stack);
+          Util.showBlockError(e.toString());
+          this.hasDeclarationError = true;
+        }
       }
     }
   }
@@ -142,13 +184,31 @@ export class ParametricEquationBlock extends Block {
     }
   }
 
+  private createParserZ(): void {
+    this.hasParserZError = false;
+    try {
+      this.codeZ = math.parse(this.expressionZ).compile();
+    } catch (e) {
+      console.log(e.stack);
+      Util.showBlockError(e.toString());
+      this.hasParserZError = true;
+    }
+  }
+
   refreshView(): void {
     super.refreshView();
     this.portT.setY(this.height / 2);
     this.portX.setX(this.width);
-    this.portX.setY(this.height / 3);
     this.portY.setX(this.width);
-    this.portY.setY(this.height * 2 / 3);
+    if (this.expressionZ === "") {
+      this.portX.setY(this.height / 3);
+      this.portY.setY(this.height * 2 / 3);
+    } else {
+      this.portZ.setX(this.width);
+      this.portX.setY(this.height / 4);
+      this.portY.setY(this.height / 2);
+      this.portZ.setY(this.height * 3 / 4);
+    }
   }
 
   protected drawLabel(ctx: CanvasRenderingContext2D): void {
@@ -157,18 +217,27 @@ export class ParametricEquationBlock extends Block {
       this.drawTextAt(this.symbol, 0, 0, ctx);
     } else {
       ctx.font = Util.getOS() == "Android" ? "italic 16px Noto Serif" : "italic 16px Times New Roman";
-      this.drawTextAt("x=" + this.expressionX, 0, -10, ctx);
-      this.drawTextAt("y=" + this.expressionY, 0, 10, ctx);
+      if (this.expressionZ !== "") {
+        let h = this.height / 4;
+        this.drawTextAt("x=" + this.expressionX, 0, -h, ctx);
+        this.drawTextAt("y=" + this.expressionY, 0, 0, ctx);
+        this.drawTextAt("z=" + this.expressionZ, 0, h, ctx);
+      } else {
+        let h = this.height / 3;
+        this.drawTextAt("x=" + this.expressionX, 0, -h / 2, ctx);
+        this.drawTextAt("y=" + this.expressionY, 0, h / 2, ctx);
+      }
     }
   }
 
   updateModel(): void {
-    this.hasError = this.hasParserXError || this.hasParserYError || this.hasDeclarationError;
+    this.hasError = this.hasParserXError || this.hasParserYError || this.hasParserZError || this.hasDeclarationError;
     let t = this.portT.getValue();
     if (this.expressionX && this.expressionY && this.parameterName && t != undefined) {
       try {
         if (this.codeX == undefined) this.createParserX();
         if (this.codeY == undefined) this.createParserY();
+        if (this.expressionZ !== "" && this.codeZ == undefined) this.createParserZ();
         let param = {...flowchart.globalVariables};
         if (Array.isArray(t)) {
           let x = new Array(t.length);
@@ -180,10 +249,21 @@ export class ParametricEquationBlock extends Block {
           }
           this.portX.setValue(x);
           this.portY.setValue(y);
+          if (this.expressionZ !== "") {
+            let z = new Array(t.length);
+            for (let i = 0; i < t.length; i++) {
+              param[this.parameterName] = t[i];
+              z[i] = this.codeZ.evaluate(param);
+            }
+            this.portZ.setValue(z);
+          }
         } else {
           param[this.parameterName] = t;
           this.portX.setValue(this.codeX.evaluate(param));
           this.portY.setValue(this.codeY.evaluate(param));
+          if (this.expressionZ !== "") {
+            this.portZ.setValue(this.codeZ.evaluate(param));
+          }
         }
         this.updateConnectors();
       } catch (e) {
@@ -194,6 +274,7 @@ export class ParametricEquationBlock extends Block {
     } else {
       this.portX.setValue(undefined);
       this.portY.setValue(undefined);
+      this.portZ.setValue(undefined);
     }
   }
 
