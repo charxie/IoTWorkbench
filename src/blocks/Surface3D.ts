@@ -59,6 +59,9 @@ export class Surface3D extends Block {
     readonly cameraPositionX: number;
     readonly cameraPositionY: number;
     readonly cameraPositionZ: number;
+    readonly cameraRotationX: number;
+    readonly cameraRotationY: number;
+    readonly cameraRotationZ: number;
 
     constructor(g: Surface3D) {
       this.name = g.name;
@@ -76,6 +79,9 @@ export class Surface3D extends Block {
       this.cameraPositionX = g.plot.getCameraPositionX();
       this.cameraPositionY = g.plot.getCameraPositionY();
       this.cameraPositionZ = g.plot.getCameraPositionZ();
+      this.cameraRotationX = g.plot.getCameraRotationX();
+      this.cameraRotationY = g.plot.getCameraRotationY();
+      this.cameraRotationZ = g.plot.getCameraRotationZ();
     }
   };
 
@@ -161,8 +167,8 @@ export class Surface3D extends Block {
     this.setHeight(this.getHeight());
   }
 
-  setCameraPosition(x: number, y: number, z: number): void {
-    this.plot.setCameraPosition(x, y, z);
+  setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
+    this.plot.setCameraPosition(px, py, pz, rx, ry, rz);
   }
 
   setX(x: number): void {

@@ -284,7 +284,8 @@ export class StateIO {
           block.setZAxisLabel(state.zAxisLabel);
           block.setColorScheme(state.colorScheme);
           block.setViewWindowColor(state.viewWindowColor);
-          if (state.cameraPositionX !== undefined) block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ);
+          if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
+            block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
         } else if (block instanceof TurnoutSwitch) {
           block.setName(state.name);
           block.setVariableName(state.variableName ? state.variableName : "x");

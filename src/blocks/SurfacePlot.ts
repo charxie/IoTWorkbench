@@ -41,19 +41,18 @@ export class SurfacePlot {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(500, 500);
     this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-    this.setCameraPosition(0, 0, 10);
-    this.createLights();
-  }
-
-  setCameraPosition(x: number, y: number, z: number): void {
-    this.camera.position.set(x, y, z);
-    // we have to recreate an OrbitControls or else this won't be initialized correctly
-    if (this.controls !== undefined) this.controls.dispose();
+    this.setCameraPosition(0, 0, 10, 1, 1, 1);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.addEventListener('change', () => {
       this.render(); // re-render if controls move/zoom
     });
     this.controls.enableZoom = true;
+    this.createLights();
+  }
+
+  setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
+    this.camera.position.set(px, py, pz);
+    this.camera.rotation.set(rx, ry, rz);
   }
 
   getCameraPositionX(): number {
@@ -66,6 +65,18 @@ export class SurfacePlot {
 
   getCameraPositionZ(): number {
     return this.camera.position.z;
+  }
+
+  getCameraRotationX(): number {
+    return this.camera.rotation.x;
+  }
+
+  getCameraRotationY(): number {
+    return this.camera.rotation.y;
+  }
+
+  getCameraRotationZ(): number {
+    return this.camera.rotation.z;
   }
 
   setData(x0: number, y0: number, dx: number, dy: number, nx: number, ny: number, data: number[], scaleType: string) {
