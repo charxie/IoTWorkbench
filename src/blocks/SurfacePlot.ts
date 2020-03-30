@@ -26,14 +26,22 @@ export class SurfacePlot {
   constructor() {
     this.scene = new THREE.Scene();
     this.geometry = new THREE.Geometry();
+    // let wireframeTexture = new THREE.TextureLoader().load(squareImage);
+    // wireframeTexture.wrapS = THREE.RepeatWrapping;
+    // wireframeTexture.wrapT = THREE.RepeatWrapping;
+    // wireframeTexture.repeat.set(40, 40);
     this.material = new THREE.MeshPhongMaterial({
       side: THREE.DoubleSide,
       color: 0xffffff,
       vertexColors: true,
+      transparent: true,
+      //opacity: 0.5,
+      //map: wireframeTexture,
       specular: 0x050505,
       shininess: 1,
-      emissive: 0x111111,
+      emissive: 0x111111
     });
+
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.scene.add(this.mesh);
     this.createAxes();
@@ -48,35 +56,6 @@ export class SurfacePlot {
     });
     this.controls.enableZoom = true;
     this.createLights();
-  }
-
-  setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
-    this.camera.position.set(px, py, pz);
-    this.camera.rotation.set(rx, ry, rz);
-  }
-
-  getCameraPositionX(): number {
-    return this.camera.position.x;
-  }
-
-  getCameraPositionY(): number {
-    return this.camera.position.y;
-  }
-
-  getCameraPositionZ(): number {
-    return this.camera.position.z;
-  }
-
-  getCameraRotationX(): number {
-    return this.camera.rotation.x;
-  }
-
-  getCameraRotationY(): number {
-    return this.camera.rotation.y;
-  }
-
-  getCameraRotationZ(): number {
-    return this.camera.rotation.z;
   }
 
   setData(x0: number, y0: number, dx: number, dy: number, nx: number, ny: number, data: number[], scaleType: string) {
@@ -224,6 +203,35 @@ export class SurfacePlot {
 
   getDomElement(): HTMLCanvasElement {
     return this.renderer.domElement;
+  }
+
+  setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
+    this.camera.position.set(px, py, pz);
+    this.camera.rotation.set(rx, ry, rz);
+  }
+
+  getCameraPositionX(): number {
+    return this.camera.position.x;
+  }
+
+  getCameraPositionY(): number {
+    return this.camera.position.y;
+  }
+
+  getCameraPositionZ(): number {
+    return this.camera.position.z;
+  }
+
+  getCameraRotationX(): number {
+    return this.camera.rotation.x;
+  }
+
+  getCameraRotationY(): number {
+    return this.camera.rotation.y;
+  }
+
+  getCameraRotationZ(): number {
+    return this.camera.rotation.z;
   }
 
   setBackgroundColor(color: string): void {

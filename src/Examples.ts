@@ -65,6 +65,8 @@ import contour_plot_settings from "./examples/contour-plot-settings.json";
 // @ts-ignore
 import bivariate_functions_contour_plots from "./examples/bivariate-functions-contour-plots.json";
 // @ts-ignore
+import bivariate_functions_surface_plots from "./examples/bivariate-functions-surface-plots.json";
+// @ts-ignore
 import himmelblau_function from "./examples/himmelblau-function.json";
 // @ts-ignore
 import standing_waves from "./examples/standing-waves.json";
@@ -266,6 +268,7 @@ export class Examples {
     this.files.push({name: "Math: Bivariate Function 1D Output", data: bivariate_functions});
     this.files.push({name: "Math: Bivariate Function 2D Output", data: himmelblau_function});
     this.files.push({name: "Math: Bivariate Function Contour Plots", data: bivariate_functions_contour_plots});
+    this.files.push({name: "Math: Bivariate Function Surface Plots", data: bivariate_functions_surface_plots});
     this.files.push({name: "Math: Contour Plot Settings", data: contour_plot_settings});
     this.files.push({name: "Math: Multivariate Functions", data: multivariate_functions});
     this.files.push({name: "Math: Heart Function", data: heart_function});

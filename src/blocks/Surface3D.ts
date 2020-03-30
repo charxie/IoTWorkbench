@@ -125,6 +125,9 @@ export class Surface3D extends Block {
     copy.viewWindowColor = this.viewWindowColor;
     copy.scaleType = this.scaleType;
     copy.colorScheme = this.colorScheme;
+    copy.setWidth(this.getWidth());
+    copy.setHeight(this.getHeight());
+    copy.plot.render();
     return copy;
   }
 
