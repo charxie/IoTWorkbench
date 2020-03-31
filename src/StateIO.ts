@@ -550,7 +550,7 @@ export class StateIO {
         Save as:<br><input type="text" id="${this.inputFieldId}" style="width: 260px;" value="${this.lastFileName}">`);
     let inputFileName = document.getElementById(this.inputFieldId) as HTMLInputElement;
     Util.selectField(inputFileName, 0, inputFileName.value.indexOf("."));
-    let okFunction = function () {
+    let okFunction = () => {
       Util.saveText(data, inputFileName.value);
       this.lastFileName = inputFileName.value;
       d.dialog('close');
