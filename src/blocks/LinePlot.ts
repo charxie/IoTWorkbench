@@ -19,7 +19,7 @@ export class LinePlot {
   private controls: OrbitControls;
 
   private points: Point3DArray[] = [];
-  private numberOfDataPoints: number;
+  private numberOfDataPoints: number = 0;
 
   constructor() {
     this.scene = new THREE.Scene();
@@ -68,6 +68,11 @@ export class LinePlot {
 
   addPoint(i: number, x: number, y: number, z: number): void {
     this.points[i].addPoint(x, y, z);
+    if (this.geometries[i] !== undefined) this.geometries[i].dispose();
+    this.geometries[i] = new THREE.BufferGeometry().setFromPoints(this.points[i].getPoints());
+    if (this.lines[i] !== undefined) this.scene.remove(this.lines[i]);
+    this.lines[i] = new THREE.Line(this.geometries[i], this.materials[i]);
+    this.scene.add(this.lines[i]);
   }
 
   getLatestPoint(i: number): THREE.Vector3 {

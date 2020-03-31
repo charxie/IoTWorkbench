@@ -727,12 +727,10 @@ export class Space3D extends Block {
             }
             if (Array.isArray(vp) && vp.length > 1) {
               let v = this.plot.getLatestPoint(i);
-              if (v !== null) {
-                if (vp[0] != v.x || vp[1] != v.y || vp[2] != v.z) {
-                  this.tempX = vp[0];
-                  this.tempY = vp[1];
-                  this.tempZ = vp[2];
-                }
+              if ((v !== null && (vp[0] !== v.x || vp[1] !== v.y || vp[2] !== v.z)) || v === null) {
+                this.tempX = vp[0];
+                this.tempY = vp[1];
+                this.tempZ = vp[2];
               }
             }
             if (this.tempX != undefined && this.tempY != undefined && this.tempZ != undefined) {
