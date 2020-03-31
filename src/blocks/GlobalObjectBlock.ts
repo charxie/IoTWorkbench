@@ -72,6 +72,17 @@ export class GlobalObjectBlock extends GlobalBlock {
         for (let p of this.portI) {
           this.ports.pop();
         }
+        if (this.portI.length > this.keys.length) {
+          for (let i = 0; i < this.portI.length - this.keys.length; i++) {
+            this.values.pop();
+            this.initialValues.pop();
+          }
+        } else {
+          for (let i = 0; i < this.keys.length - this.portI.length; i++) {
+            this.values.push(0);
+            this.initialValues.push(0);
+          }
+        }
       }
       this.portI = new Array(this.keys.length);
       let dh = this.height / (this.keys.length + 1);

@@ -313,13 +313,17 @@ export class BlockView {
         b = this.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));
         break;
       case "space3d-block":
-        b = this.addBlockUndoable(new Space3D("Space3D #" + timestamp, "Space3D", x - 100, y - 110, 200, 220));
+        let space3d = new Space3D("Space3D #" + timestamp, "Space3D", x - 100, y - 110, 200, 220);
+        b = this.addBlockUndoable(space3d);
+        space3d.locateOverlay();
         break;
       case "field2d-block":
         b = this.addBlockUndoable(new Field2D("Field2D #" + timestamp, "Field", x - 100, y - 110, 200, 220));
         break;
       case "surface3d-block":
-        b = this.addBlockUndoable(new Surface3D("Surface3D #" + timestamp, "Surface Plot", x - 100, y - 110, 200, 220));
+        let surface3d = new Surface3D("Surface3D #" + timestamp, "Surface Plot", x - 100, y - 110, 200, 220);
+        b = this.addBlockUndoable(surface3d);
+        surface3d.locateOverlay();
         break;
       case "random-number-generator-block":
         b = this.addBlockUndoable(new RandomNumberGeneratorBlock("Random Number Generator Block #" + timestamp, x - 30, y - 40, 60, 80));

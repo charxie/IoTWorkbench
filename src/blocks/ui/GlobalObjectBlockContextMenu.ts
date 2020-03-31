@@ -140,17 +140,17 @@ export class GlobalObjectBlockContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           block.setSymbol(nameField.value);
+          if (initialValues !== undefined) {
+            block.setInitialValues(initialValues);
+          }
           if (keys !== undefined && values !== undefined) {
+            block.setValues(values);
             if (block.getKeys() !== keys) {
               block.setKeys(keys);
             }
-            block.setValues(values);
             for (let i = 0; i < keys.length; i++) {
               flowchart.updateGlobalVariable(keys[i], values[i]);
             }
-          }
-          if (initialValues !== undefined) {
-            block.setInitialValues(initialValues);
           }
           block.refreshView();
           flowchart.blockView.requestDraw();

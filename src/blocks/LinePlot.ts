@@ -39,10 +39,15 @@ export class LinePlot {
     this.geometries = new Array(1);
     this.materials = new Array(1);
     this.setLineColor(0, "black");
+    this.points.push(new Point3DArray());
   }
 
   erase(): void {
-    this.points.length = 0;
+    if (this.points !== undefined) {
+      for (let p of this.points) {
+        p.clear();
+      }
+    }
   }
 
   getDataPoints(): number {
