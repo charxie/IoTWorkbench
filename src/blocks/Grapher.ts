@@ -115,7 +115,7 @@ export class Grapher extends Block {
     this.lineThicknesses.push(1);
     this.fillOptions.push(false);
     this.fillColors.push("lightgray");
-    this.graphSymbols.push("Circle");
+    this.graphSymbols.push("None");
     this.graphSymbolSizes.push(3);
     this.graphSymbolColors.push("white");
     this.graphSymbolSpacings.push(2);
@@ -160,7 +160,7 @@ export class Grapher extends Block {
           this.lineThicknesses.push(1);
           this.fillOptions.push(false);
           this.fillColors.push("lightgray");
-          this.graphSymbols.push("Circle");
+          this.graphSymbols.push("None");
           this.graphSymbolSizes.push(3);
           this.graphSymbolColors.push("white");
           this.graphSymbolSpacings.push(2);

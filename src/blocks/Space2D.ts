@@ -140,7 +140,7 @@ export class Space2D extends Block {
     this.lineThicknesses.push(1);
     this.fillOptions.push(false);
     this.fillColors.push("lightgray");
-    this.dataSymbols.push("Circle");
+    this.dataSymbols.push("None");
     this.dataSymbolRadii.push(3);
     this.dataSymbolColors.push("white");
     this.dataSymbolSpacings.push(1);
@@ -251,7 +251,7 @@ export class Space2D extends Block {
               this.lineThicknesses.push(1);
               this.fillOptions.push(false);
               this.fillColors.push("lightgray");
-              this.dataSymbols.push("Circle");
+              this.dataSymbols.push("None");
               this.dataSymbolRadii.push(3);
               this.dataSymbolColors.push("white");
               this.dataSymbolSpacings.push(1);

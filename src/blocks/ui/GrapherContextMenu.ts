@@ -114,8 +114,8 @@ export class GrapherContextMenu extends BlockContextMenu {
                   <td><select id="grapher-symbol-type-port-selector" style="width: 65px"></select></td>
                   <td colspan="2">
                     <select id="grapher-symbol-type-selector" style="width: 100%">
-                      <option value="None">None</option>
-                      <option value="Circle" selected>Circle</option>
+                      <option value="None" selected>None</option>
+                      <option value="Circle">Circle</option>
                       <option value="Square">Square</option>
                       <option value="Triangle Up">Triangle Up</option>
                       <option value="Triangle Down">Triangle Down</option>

@@ -244,11 +244,6 @@ export class StateIO {
           if (state.numberOfPoints != undefined) block.setNumberOfPoints(state.numberOfPoints);
         } else if (block instanceof Space3D) {
           block.setName(state.name);
-          block.setMinimumXValue(state.minimumXValue);
-          block.setMaximumXValue(state.maximumXValue);
-          block.setMinimumYValue(state.minimumYValue);
-          block.setMaximumYValue(state.maximumYValue);
-          block.setAutoScale(state.autoscale);
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
           block.setSpaceWindowColor(state.spaceWindowColor);

@@ -140,8 +140,8 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td><select id="space2d-symbol-set-selector" style="width: 65px"></select></td>
                   <td colspan="2">
                     <select id="space2d-symbol-selector" style="width: 100%">
-                      <option value="None">None</option>
-                      <option value="Circle" selected>Circle</option>
+                      <option value="None" selected>None</option>
+                      <option value="Circle">Circle</option>
                       <option value="Square">Square</option>
                       <option value="Triangle Up">Triangle Up</option>
                       <option value="Triangle Down">Triangle Down</option>

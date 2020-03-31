@@ -19,13 +19,6 @@ export class Space3D extends Block {
   private portPoints: Port[]; // only used in the point mode (multiple point streams are supported only in this mode)
   private pointInput: boolean = false;
   private points: Point3DArray[] = [];
-  private minimumXValue: number = 0;
-  private maximumXValue: number = 1;
-  private minimumYValue: number = 0;
-  private maximumYValue: number = 1;
-  private minimumZValue: number = 0;
-  private maximumZValue: number = 1;
-  private autoscale: boolean = true;
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private zAxisLabel: string = "z";
@@ -67,13 +60,6 @@ export class Space3D extends Block {
     readonly zAxisLabel: string;
     readonly spaceWindowColor: string;
     readonly endSymbolsConnection: string;
-    readonly autoscale: boolean;
-    readonly minimumXValue: number;
-    readonly maximumXValue: number;
-    readonly minimumYValue: number;
-    readonly maximumYValue: number;
-    readonly minimumZValue: number;
-    readonly maximumZValue: number;
     readonly pointInput: boolean;
     readonly numberOfPoints: number;
     readonly legends: string[] = [];
@@ -104,13 +90,6 @@ export class Space3D extends Block {
       this.zAxisLabel = g.zAxisLabel;
       this.spaceWindowColor = g.spaceWindowColor;
       this.endSymbolsConnection = g.endSymbolsConnection;
-      this.autoscale = g.autoscale;
-      this.minimumXValue = g.minimumXValue;
-      this.maximumXValue = g.maximumXValue;
-      this.minimumYValue = g.minimumYValue;
-      this.maximumYValue = g.maximumYValue;
-      this.minimumZValue = g.minimumZValue;
-      this.maximumZValue = g.maximumZValue;
       this.pointInput = g.pointInput;
       this.numberOfPoints = g.getNumberOfPoints();
       this.legends = [...g.legends];
@@ -166,13 +145,6 @@ export class Space3D extends Block {
 
   getCopy(): Block {
     let copy = new Space3D("Space3D #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    copy.minimumXValue = this.minimumXValue;
-    copy.maximumXValue = this.maximumXValue;
-    copy.minimumYValue = this.minimumYValue;
-    copy.maximumYValue = this.maximumYValue;
-    copy.minimumZValue = this.minimumZValue;
-    copy.maximumZValue = this.maximumZValue;
-    copy.autoscale = this.autoscale;
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.zAxisLabel = this.zAxisLabel;
@@ -350,7 +322,7 @@ export class Space3D extends Block {
               this.lineTypes.push("Solid");
               this.lineColors.push("black");
               this.lineThicknesses.push(1);
-              this.dataSymbols.push("Circle");
+              this.dataSymbols.push("None");
               this.dataSymbolRadii.push(3);
               this.dataSymbolColors.push("white");
               this.dataSymbolSpacings.push(1);
@@ -391,62 +363,6 @@ export class Space3D extends Block {
 
   getNumberOfPoints(): number {
     return this.pointInput ? this.portPoints.length : 1;
-  }
-
-  setMinimumXValue(minimumXValue: number): void {
-    this.minimumXValue = minimumXValue;
-  }
-
-  getMinimumXValue(): number {
-    return this.minimumXValue;
-  }
-
-  setMaximumXValue(maximumXValue: number): void {
-    this.maximumXValue = maximumXValue;
-  }
-
-  getMaximumXValue(): number {
-    return this.maximumXValue;
-  }
-
-  setMinimumYValue(minimumYValue: number): void {
-    this.minimumYValue = minimumYValue;
-  }
-
-  getMinimumYValue(): number {
-    return this.minimumYValue;
-  }
-
-  setMaximumYValue(maximumYValue: number): void {
-    this.maximumYValue = maximumYValue;
-  }
-
-  getMaximumYValue(): number {
-    return this.maximumYValue;
-  }
-
-  setMinimumZValue(minimumZValue: number): void {
-    this.minimumZValue = minimumZValue;
-  }
-
-  getMinimumZValue(): number {
-    return this.minimumZValue;
-  }
-
-  setMaximumZValue(maximumZValue: number): void {
-    this.maximumZValue = maximumZValue;
-  }
-
-  getMaximumZValue(): number {
-    return this.maximumZValue;
-  }
-
-  setAutoScale(autoscale: boolean): void {
-    this.autoscale = autoscale;
-  }
-
-  getAutoScale(): boolean {
-    return this.autoscale;
   }
 
   setXAxisLabel(xAxisLabel: string): void {
@@ -815,16 +731,18 @@ export class Space3D extends Block {
               vp = vp.getValues();
             }
             if (Array.isArray(vp) && vp.length > 1) {
-              if (vp[0] != this.points[i].getLatestX() || vp[1] != this.points[i].getLatestY()) {
+              if (vp[0] != this.points[i].getLatestX() || vp[1] != this.points[i].getLatestY() || vp[2] != this.points[i].getLatestZ()) {
                 this.tempX = vp[0];
                 this.tempY = vp[1];
+                this.tempZ = vp[2];
               }
             }
-            if (this.tempX != undefined && this.tempY != undefined) {
+            if (this.tempX != undefined && this.tempY != undefined && this.tempZ != undefined) {
               //console.log(i+"="+this.portPoints[i].getUid()+","+this.tempX + "," + this.tempY);
               this.points[i].addPoint(this.tempX, this.tempY, this.tempZ);
               this.tempX = undefined;
               this.tempY = undefined;
+              this.tempZ = undefined;
             }
           }
         }

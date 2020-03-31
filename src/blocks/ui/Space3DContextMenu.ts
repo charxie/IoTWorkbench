@@ -88,37 +88,6 @@ export class Space3DContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="space3d-points-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Scale:</td>
-                  <td colspan="3">
-                    <input type="radio" name="scale" id="space3d-auto-scale-radio-button" checked> Auto
-                    <input type="radio" name="scale" id="space3d-fixed-scale-radio-button"> Fixed
-                  </td>
-                </tr>
-                <tr>
-                  <td>Minimum X Value:</td>
-                  <td colspan="3"><input type="text" id="space3d-minimum-x-value-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Maximum X Value:</td>
-                  <td colspan="3"><input type="text" id="space3d-maximum-x-value-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Minimum Y Value:</td>
-                  <td colspan="3"><input type="text" id="space3d-minimum-y-value-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Maximum Y Value:</td>
-                  <td colspan="3"><input type="text" id="space3d-maximum-y-value-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Minimum Z Value:</td>
-                  <td colspan="3"><input type="text" id="space3d-minimum-z-value-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Maximum Z Value:</td>
-                  <td colspan="3"><input type="text" id="space3d-maximum-z-value-field" style="width: 100%"></td>
-                </tr>
-                <tr>
                   <td>Line Type:</td>
                   <td><select id="space3d-line-type-set-selector" style="width: 65px"></select></td>
                   <td colspan="2">
@@ -152,8 +121,8 @@ export class Space3DContextMenu extends BlockContextMenu {
                   <td><select id="space3d-symbol-set-selector" style="width: 65px"></select></td>
                   <td colspan="2">
                     <select id="space3d-symbol-selector" style="width: 100%">
-                      <option value="None">None</option>
-                      <option value="Circle" selected>Circle</option>
+                      <option value="None" selected>None</option>
+                      <option value="Circle">Circle</option>
                       <option value="Square">Square</option>
                       <option value="Triangle Up">Triangle Up</option>
                       <option value="Triangle Down">Triangle Down</option>
@@ -250,22 +219,6 @@ export class Space3DContextMenu extends BlockContextMenu {
 
       let nameField = document.getElementById("space3d-name-field") as HTMLInputElement;
       nameField.value = g.getName();
-      let autoScaleRadioButton = document.getElementById("space3d-auto-scale-radio-button") as HTMLInputElement;
-      autoScaleRadioButton.checked = g.getAutoScale();
-      let fixedScaleRadioButton = document.getElementById("space3d-fixed-scale-radio-button") as HTMLInputElement;
-      fixedScaleRadioButton.checked = !g.getAutoScale();
-      let minimumXValueField = document.getElementById("space3d-minimum-x-value-field") as HTMLInputElement;
-      minimumXValueField.value = g.getMinimumXValue().toString();
-      let maximumXValueField = document.getElementById("space3d-maximum-x-value-field") as HTMLInputElement;
-      maximumXValueField.value = g.getMaximumXValue().toString();
-      let minimumYValueField = document.getElementById("space3d-minimum-y-value-field") as HTMLInputElement;
-      minimumYValueField.value = g.getMinimumYValue().toString();
-      let maximumYValueField = document.getElementById("space3d-maximum-y-value-field") as HTMLInputElement;
-      maximumYValueField.value = g.getMaximumYValue().toString();
-      let minimumZValueField = document.getElementById("space3d-minimum-z-value-field") as HTMLInputElement;
-      minimumZValueField.value = g.getMinimumZValue().toString();
-      let maximumZValueField = document.getElementById("space3d-maximum-z-value-field") as HTMLInputElement;
-      maximumZValueField.value = g.getMaximumZValue().toString();
       let xAxisLableField = document.getElementById("space3d-x-axis-label-field") as HTMLInputElement;
       xAxisLableField.value = g.getXAxisLabel();
       let yAxisLableField = document.getElementById("space3d-y-axis-label-field") as HTMLInputElement;
@@ -384,54 +337,6 @@ export class Space3DContextMenu extends BlockContextMenu {
           success = false;
           message = pointsField.value + " is not a valid value for number of points";
         }
-        // set minimum X value
-        let minimumXValue = parseFloat(minimumXValueField.value);
-        if (isNumber(minimumXValue)) {
-          g.setMinimumXValue(minimumXValue);
-        } else {
-          success = false;
-          message = minimumXValueField.value + " is not a valid value for minimum X";
-        }
-        // set maximum X value
-        let maximumXValue = parseFloat(maximumXValueField.value);
-        if (isNumber(maximumXValue)) {
-          g.setMaximumXValue(maximumXValue);
-        } else {
-          success = false;
-          message = maximumXValueField.value + " is not a valid value for maximum X";
-        }
-        // set minimum Y value
-        let minimumYValue = parseFloat(minimumYValueField.value);
-        if (isNumber(minimumYValue)) {
-          g.setMinimumYValue(minimumYValue);
-        } else {
-          success = false;
-          message = minimumYValueField.value + " is not a valid value for minimum Y";
-        }
-        // set maximum Y value
-        let maximumYValue = parseFloat(maximumYValueField.value);
-        if (isNumber(maximumYValue)) {
-          g.setMaximumYValue(maximumYValue);
-        } else {
-          success = false;
-          message = maximumYValueField.value + " is not a valid value for maximum Y";
-        }
-        // set minimum Z value
-        let minimumZValue = parseFloat(minimumZValueField.value);
-        if (isNumber(minimumZValue)) {
-          g.setMinimumZValue(minimumZValue);
-        } else {
-          success = false;
-          message = minimumZValueField.value + " is not a valid value for minimum Z";
-        }
-        // set maximum Z value
-        let maximumZValue = parseFloat(maximumZValueField.value);
-        if (isNumber(maximumZValue)) {
-          g.setMaximumZValue(maximumZValue);
-        } else {
-          success = false;
-          message = maximumZValueField.value + " is not a valid value for maximum Z";
-        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -504,7 +409,6 @@ export class Space3DContextMenu extends BlockContextMenu {
           g.setXAxisLabel(xAxisLableField.value);
           g.setYAxisLabel(yAxisLableField.value);
           g.setSpaceWindowColor(windowColorField.value);
-          g.setAutoScale(autoScaleRadioButton.checked);
           g.setPointInput(pointInputRadioButton.checked);
           g.setEndSymbolsConnection(endSymbolsConnectionSelector.value);
           for (let i = 0; i < lineTypes.length; i++) {
@@ -534,10 +438,6 @@ export class Space3DContextMenu extends BlockContextMenu {
       };
       nameField.addEventListener("keyup", enterKeyUp);
       pointsField.addEventListener("keyup", enterKeyUp);
-      minimumXValueField.addEventListener("keyup", enterKeyUp);
-      maximumXValueField.addEventListener("keyup", enterKeyUp);
-      minimumYValueField.addEventListener("keyup", enterKeyUp);
-      maximumYValueField.addEventListener("keyup", enterKeyUp);
       xAxisLableField.addEventListener("keyup", enterKeyUp);
       yAxisLableField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
