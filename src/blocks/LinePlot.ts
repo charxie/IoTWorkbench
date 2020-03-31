@@ -8,13 +8,16 @@ import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 export class LinePlot {
 
+  private lines: THREE.Line[];
+  private geometries: THREE.BufferGeometry[];
+  private materials: THREE.Material[];
+
   private scene: THREE.Scene;
-  private line: THREE.Line;
-  private geometry: THREE.BufferGeometry;
-  private material: THREE.Material;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private controls: OrbitControls;
+
+  private numberOfDataPoints: number;
 
   constructor() {
     this.scene = new THREE.Scene();
@@ -30,26 +33,37 @@ export class LinePlot {
     });
     this.controls.enableZoom = true;
     this.createLights();
-    this.setLineColor("gray");
+    this.lines = new Array(1);
+    this.geometries = new Array(1);
+    this.materials = new Array(1);
+    this.setLineColor(0, "black");
   }
 
-  setData(xValues: number[], yValues: number[], zValues: number[]): void {
-    if (this.geometry !== undefined) this.geometry.dispose();
-    let points = new Array(xValues.length);
-    for (let i = 0; i < points.length; i++) {
-      points.push(new THREE.Vector3(xValues[i], yValues[i], zValues[i]));
+  getDataPoints(): number {
+    return this.numberOfDataPoints;
+  }
+
+  setData(i: number, xValues: number[], yValues: number[], zValues: number[]): void {
+    this.numberOfDataPoints = xValues.length;
+    if (this.lines[i] !== undefined) this.scene.remove(this.lines[i]);
+    if (this.geometries[i] !== undefined) this.geometries[i].dispose();
+    let points = [];
+    for (let k = 0; k < this.numberOfDataPoints; k++) {
+      points.push(new THREE.Vector3(xValues[k], yValues[k], zValues[k]));
     }
-    this.geometry = new THREE.BufferGeometry().setFromPoints(points);
-    this.line = new THREE.Line(this.geometry, this.material);
+    this.geometries[i] = new THREE.BufferGeometry().setFromPoints(points);
+    this.lines[i] = new THREE.Line(this.geometries[i], this.materials[i]);
+    this.scene.add(this.lines[i]);
   }
 
-  erase() : void {
-
-  }
-
-  setLineColor(color: string) {
-    if (this.material !== undefined) this.material.dispose();
-    this.material = new THREE.LineBasicMaterial({color: color});
+  setLineColor(i: number, color: string) {
+    if (this.materials[i] !== undefined) this.materials[i].dispose();
+    this.materials[i] = new THREE.LineBasicMaterial({color: color});
+    if (this.lines[i] !== undefined) {
+      this.scene.remove(this.lines[i]);
+      this.lines[i] = new THREE.Line(this.geometries[i], this.materials[i]);
+      this.scene.add(this.lines[i]);
+    }
   }
 
   setBackgroundColor(color: string): void {

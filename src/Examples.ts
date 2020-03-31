@@ -235,6 +235,8 @@ import parametric_equations_1 from "./examples/parametric-equations-1.json";
 // @ts-ignore
 import parametric_equations_2 from "./examples/parametric-equations-2.json";
 // @ts-ignore
+import parametric_equations_3d from "./examples/parametric-equations-3d.json";
+// @ts-ignore
 import parametric_generator_1 from "./examples/parametric-generator-1.json";
 // @ts-ignore
 import parametric_generator_2 from "./examples/parametric-generator-2.json";
@@ -275,6 +277,7 @@ export class Examples {
     this.files.push({name: "Math: Declared Functions", data: declared_functions});
     this.files.push({name: "Math: Parametric Equations 1", data: parametric_equations_1});
     this.files.push({name: "Math: Parametric Equations 2", data: parametric_equations_2});
+    this.files.push({name: "Math: Parametric Equations 3D", data: parametric_equations_3d});
     this.files.push({name: "Math: Parametric Generator 1", data: parametric_generator_1});
     this.files.push({name: "Math: Parametric Generator 2", data: parametric_generator_2});
     this.files.push({name: "Math: Spirals", data: spirals});

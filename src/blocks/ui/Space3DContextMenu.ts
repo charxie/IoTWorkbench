@@ -518,6 +518,7 @@ export class Space3DContextMenu extends BlockContextMenu {
             g.setDataSymbolSpacing(i, dataSymbolSpacings[i] != null ? dataSymbolSpacings[i] : 1);
             g.setEndSymbolRadius(i, endSymbolRadii[i]);
           }
+          g.locateOverlay();
           g.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();

@@ -264,6 +264,8 @@ export class StateIO {
           block.setDataSymbolSpacings(state.dataSymbolSpacings);
           block.setEndSymbolRadii(state.endSymbolRadii);
           block.setNumberOfPoints(state.numberOfPoints);
+          if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
+            block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
         } else if (block instanceof Field2D) {
           block.setName(state.name);
           block.setScaleType(state.scaleType === undefined ? "Linear" : state.scaleType);
@@ -508,7 +510,7 @@ export class StateIO {
         if (b.getUseHtml()) {
           b.locateHtmlOverlay();
         }
-      } else if (b instanceof Surface3D) {
+      } else if (b instanceof Surface3D || b instanceof Space3D) {
         b.locateOverlay();
       }
     }
@@ -549,17 +551,16 @@ export class StateIO {
   }
 
   static saveAs(data: string): void {
-    let that = this;
     let d = $('#modal-dialog').html(`<div style="font-family: Arial; line-height: 30px; font-size: 90%;">
         Save as:<br><input type="text" id="${this.inputFieldId}" style="width: 260px;" value="${this.lastFileName}">`);
-    let inputFileName = document.getElementById(that.inputFieldId) as HTMLInputElement;
+    let inputFileName = document.getElementById(this.inputFieldId) as HTMLInputElement;
     Util.selectField(inputFileName, 0, inputFileName.value.indexOf("."));
     let okFunction = function () {
       Util.saveText(data, inputFileName.value);
-      that.lastFileName = inputFileName.value;
+      this.lastFileName = inputFileName.value;
       d.dialog('close');
     };
-    inputFileName.addEventListener("keyup", function (e) {
+    inputFileName.addEventListener("keyup", (e) => {
       if (e.key == "Enter") {
         okFunction();
       }
@@ -577,9 +578,7 @@ export class StateIO {
       },
       buttons: {
         'OK': okFunction,
-        'Cancel': function () {
-          d.dialog('close');
-        }
+        'Cancel': () => d.dialog('close')
       }
     });
   }

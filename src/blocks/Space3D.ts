@@ -232,6 +232,7 @@ export class Space3D extends Block {
     this.setY(this.getY());
     this.setWidth(this.getWidth());
     this.setHeight(this.getHeight());
+    this.plot.render();
   }
 
   setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
@@ -499,6 +500,9 @@ export class Space3D extends Block {
 
   setLineColors(lineColors: string[]): void {
     this.lineColors = lineColors;
+    for (let i = 0; i < lineColors.length; i++) {
+      this.plot.setLineColor(i, lineColors[i]);
+    }
   }
 
   getLineColors(): string[] {
@@ -507,6 +511,7 @@ export class Space3D extends Block {
 
   setLineColor(i: number, lineColor: string): void {
     this.lineColors[i] = lineColor;
+    this.plot.setLineColor(i, lineColor);
   }
 
   getLineColor(i: number): string {
@@ -654,11 +659,7 @@ export class Space3D extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "white";
-      let maxPoints = this.points[0].length();
-      for (let i = 1; i < this.points.length; i++) {
-        if (maxPoints < this.points[i].length()) maxPoints = this.points[i].length();
-      }
-      let title = this.name + " (" + maxPoints + " points)";
+      let title = this.name + " (" + this.plot.getDataPoints() + " points)";
       let titleWidth = ctx.measureText(title).width;
       ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
@@ -828,43 +829,37 @@ export class Space3D extends Block {
           }
         }
       }
-    } else { // dual input mode (support only one curve, but it can accept arrays as the inputs)
+    } else { // trio input mode (support only one curve, but it can accept arrays as the inputs)
       let vx = this.portX.getValue();
-      if (vx != undefined) {
-        if (Array.isArray(vx)) {
-          this.points[0].setXPoints(vx);
-        } else {
+      let vy = this.portY.getValue();
+      let vz = this.portZ.getValue();
+      if (vx !== undefined && vy !== undefined && vz !== undefined) {
+        if (!Array.isArray(vx)) {
           if (vx != this.points[0].getLatestX()) { // TODO: Not a reliable way to store x and y at the same time
             this.tempX = vx;
           }
         }
-      }
-      let vy = this.portY.getValue();
-      if (vy != undefined) {
-        if (Array.isArray(vy)) {
-          this.points[0].setYPoints(vy);
-        } else {
+        if (!Array.isArray(vy)) {
           if (vy != this.points[0].getLatestY()) { // TODO: Not a reliable way to store x and y at the same time
             this.tempY = vy;
           }
         }
-      }
-      let vz = this.portZ.getValue();
-      if (vz != undefined) {
-        if (Array.isArray(vz)) {
-          this.points[0].setZPoints(vz);
-        } else {
+        if (!Array.isArray(vz)) {
           if (vy != this.points[0].getLatestZ()) { // TODO: Not a reliable way to store x and y at the same time
             this.tempZ = vz;
           }
         }
-      }
-      // console.log(this.tempX + "," + this.tempY);
-      if (this.tempX != undefined && this.tempY != undefined && this.tempZ != undefined) {
-        this.points[0].addPoint(this.tempX, this.tempY, this.tempZ);
-        this.tempX = undefined;
-        this.tempY = undefined;
-        this.tempZ = undefined;
+        // console.log(this.tempX + "," + this.tempY);
+        if (this.tempX != undefined && this.tempY != undefined && this.tempZ != undefined) {
+          this.points[0].addPoint(this.tempX, this.tempY, this.tempZ);
+          this.tempX = undefined;
+          this.tempY = undefined;
+          this.tempZ = undefined;
+        } else {
+          if (Array.isArray(vx) && Array.isArray(vy) && Array.isArray(vz)) {
+            this.plot.setData(0, vx, vy, vz);
+          }
+        }
       }
     }
     this.plot.render();
