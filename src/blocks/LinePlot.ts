@@ -5,6 +5,7 @@
 // @ts-ignore
 import * as THREE from 'three';
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import {Point3DArray} from "./Point3DArray";
 
 export class LinePlot {
 
@@ -17,6 +18,7 @@ export class LinePlot {
   private renderer: THREE.WebGLRenderer;
   private controls: OrbitControls;
 
+  private points: Point3DArray[] = [];
   private numberOfDataPoints: number;
 
   constructor() {
@@ -39,19 +41,44 @@ export class LinePlot {
     this.setLineColor(0, "black");
   }
 
+  erase(): void {
+    this.points.length = 0;
+  }
+
   getDataPoints(): number {
     return this.numberOfDataPoints;
+  }
+
+  pushPointArray(): void {
+    this.points.push(new Point3DArray());
+  }
+
+  popPointArray(): void {
+    this.points.pop();
+  }
+
+  setPointArrayLength(n: number): void {
+    this.points.length = n;
+  }
+
+  addPoint(i: number, x: number, y: number, z: number): void {
+    this.points[i].addPoint(x, y, z);
+  }
+
+  getLatestPoint(i: number): THREE.Vector3 {
+    if (this.points[i].length() == 0) return null;
+    return this.points[i].getPoint(this.points[i].length() - 1);
   }
 
   setData(i: number, xValues: number[], yValues: number[], zValues: number[]): void {
     this.numberOfDataPoints = xValues.length;
     if (this.lines[i] !== undefined) this.scene.remove(this.lines[i]);
     if (this.geometries[i] !== undefined) this.geometries[i].dispose();
-    let points = [];
+    this.points[i].clear();
     for (let k = 0; k < this.numberOfDataPoints; k++) {
-      points.push(new THREE.Vector3(xValues[k], yValues[k], zValues[k]));
+      this.points[i].addPoint(xValues[k], yValues[k], zValues[k]);
     }
-    this.geometries[i] = new THREE.BufferGeometry().setFromPoints(points);
+    this.geometries[i] = new THREE.BufferGeometry().setFromPoints(this.points[i].getPoints());
     this.lines[i] = new THREE.Line(this.geometries[i], this.materials[i]);
     this.scene.add(this.lines[i]);
   }

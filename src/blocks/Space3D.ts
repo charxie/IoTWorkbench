@@ -8,7 +8,6 @@ import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {closeAllContextMenus, flowchart, isNumber} from "../Main";
 import {Vector} from "../math/Vector";
-import {Point3DArray} from "./Point3DArray";
 import {LinePlot} from "./LinePlot";
 
 export class Space3D extends Block {
@@ -18,7 +17,6 @@ export class Space3D extends Block {
   private portZ: Port;
   private portPoints: Port[]; // only used in the point mode (multiple point streams are supported only in this mode)
   private pointInput: boolean = false;
-  private points: Point3DArray[] = [];
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private zAxisLabel: string = "z";
@@ -123,7 +121,6 @@ export class Space3D extends Block {
     this.ports.push(this.portY);
     this.ports.push(this.portZ);
     this.spaceWindow = new Rectangle(0, 0, 1, 1);
-    this.points.push(new Point3DArray());
     this.legends.push("A");
     this.lineTypes.push("Solid");
     this.lineColors.push("black");
@@ -134,6 +131,7 @@ export class Space3D extends Block {
     this.dataSymbolSpacings.push(1);
     this.endSymbolRadii.push(0);
     this.plot = new LinePlot();
+    this.plot.pushPointArray();
     this.overlay = this.plot.getDomElement();
     this.overlay.tabIndex = 0;
     this.overlay.style.position = "absolute";
@@ -273,10 +271,7 @@ export class Space3D extends Block {
   }
 
   erase(): void {
-    for (let p of this.points) {
-      p.clear();
-    }
-    flowchart.blockView.requestDraw();
+    this.plot.erase();
   }
 
   setPointInput(pointInput: boolean): void {
@@ -316,7 +311,7 @@ export class Space3D extends Block {
             let p = new Port(this, true, String.fromCharCode("A".charCodeAt(0) + i), 0, 0, false);
             this.portPoints.push(p);
             this.ports.push(p);
-            this.points.push(new Point3DArray());
+            this.plot.pushPointArray();
             if (notSet) {
               this.legends.push(p.getUid());
               this.lineTypes.push("Solid");
@@ -333,7 +328,7 @@ export class Space3D extends Block {
       } else if (numberOfPoints < this.portPoints.length) { // decrease data ports
         for (let i = this.portPoints.length - 1; i >= numberOfPoints; i--) {
           this.portPoints.pop();
-          this.points.pop();
+          this.plot.popPointArray();
           flowchart.removeConnectorsToPort(this.ports.pop());
           this.legends.pop();
           this.lineTypes.pop();
@@ -347,7 +342,7 @@ export class Space3D extends Block {
         }
       }
       let n = this.portPoints.length;
-      this.points.length = n;
+      this.plot.setPointArrayLength(n);
       this.legends.length = n;
       this.lineTypes.length = n;
       this.lineColors.length = n;
@@ -731,7 +726,8 @@ export class Space3D extends Block {
               vp = vp.getValues();
             }
             if (Array.isArray(vp) && vp.length > 1) {
-              if (vp[0] != this.points[i].getLatestX() || vp[1] != this.points[i].getLatestY() || vp[2] != this.points[i].getLatestZ()) {
+              let v = this.plot.getLatestPoint(i);
+              if (vp[0] != v.x || vp[1] != v.y || vp[2] != v.z) {
                 this.tempX = vp[0];
                 this.tempY = vp[1];
                 this.tempZ = vp[2];
@@ -739,7 +735,7 @@ export class Space3D extends Block {
             }
             if (this.tempX != undefined && this.tempY != undefined && this.tempZ != undefined) {
               //console.log(i+"="+this.portPoints[i].getUid()+","+this.tempX + "," + this.tempY);
-              this.points[i].addPoint(this.tempX, this.tempY, this.tempZ);
+              this.plot.addPoint(i, this.tempX, this.tempY, this.tempZ);
               this.tempX = undefined;
               this.tempY = undefined;
               this.tempZ = undefined;
@@ -752,24 +748,25 @@ export class Space3D extends Block {
       let vy = this.portY.getValue();
       let vz = this.portZ.getValue();
       if (vx !== undefined && vy !== undefined && vz !== undefined) {
+        let v = this.plot.getLatestPoint(0);
         if (!Array.isArray(vx)) {
-          if (vx != this.points[0].getLatestX()) { // TODO: Not a reliable way to store x and y at the same time
+          if (vx != v.x) { // TODO: Not a reliable way to store x and y at the same time
             this.tempX = vx;
           }
         }
         if (!Array.isArray(vy)) {
-          if (vy != this.points[0].getLatestY()) { // TODO: Not a reliable way to store x and y at the same time
+          if (vy != v.y) { // TODO: Not a reliable way to store x and y at the same time
             this.tempY = vy;
           }
         }
         if (!Array.isArray(vz)) {
-          if (vy != this.points[0].getLatestZ()) { // TODO: Not a reliable way to store x and y at the same time
+          if (vy != v.z) { // TODO: Not a reliable way to store x and y at the same time
             this.tempZ = vz;
           }
         }
         // console.log(this.tempX + "," + this.tempY);
         if (this.tempX != undefined && this.tempY != undefined && this.tempZ != undefined) {
-          this.points[0].addPoint(this.tempX, this.tempY, this.tempZ);
+          this.plot.addPoint(0, this.tempX, this.tempY, this.tempZ);
           this.tempX = undefined;
           this.tempY = undefined;
           this.tempZ = undefined;
