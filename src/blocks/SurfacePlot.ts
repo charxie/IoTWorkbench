@@ -205,6 +205,10 @@ export class SurfacePlot {
     return this.renderer.domElement;
   }
 
+  resetViewAngle(): void {
+    this.controls.reset();
+  }
+
   setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
     this.camera.position.set(px, py, pz);
     this.camera.rotation.set(rx, ry, rz);

@@ -17,7 +17,7 @@ export class Space3DContextMenu extends BlockContextMenu {
   }
 
   getUi(): string {
-    return `<menu id="${this.id}" class="menu" style="width: 150px; z-index: 10000">
+    return `<menu id="${this.id}" class="menu" style="width: 180px; z-index: 10000">
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-copy-button"><i class="fas fa-copy"></i><span class="menu-text">Copy</span></button>
               </li>
@@ -26,6 +26,9 @@ export class Space3DContextMenu extends BlockContextMenu {
               </li>
               <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-erase-button"><i class="fas fa-eraser"></i><span class="menu-text">Erase</span></button>
+              </li>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-reset-view-angle-button"><i class="fas fa-compass"></i><span class="menu-text">Reset View Angle</span></button>
               </li>
               <li class="menu-separator"></li>` + this.getLayerMenu() + `<li class="menu-separator"></li>
               <li class="menu-item">
@@ -41,8 +44,16 @@ export class Space3DContextMenu extends BlockContextMenu {
     super.addListeners();
     let eraseButton = document.getElementById(this.id + "-erase-button");
     eraseButton.addEventListener("click", this.eraseButtonClick.bind(this), false);
+    let resetViewAngleButton = document.getElementById(this.id + "-reset-view-angle-button");
+    resetViewAngleButton.addEventListener("click", this.resetViewAngleButtonClick.bind(this), false);
     let saveImageButton = document.getElementById(this.id + "-save-image-button");
     saveImageButton.addEventListener("click", this.saveImageButtonClick.bind(this), false);
+  }
+
+  private resetViewAngleButtonClick(): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    (<Space3D>this.block).resetViewAngle();
   }
 
   private eraseButtonClick(): void {

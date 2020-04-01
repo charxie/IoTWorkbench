@@ -34,7 +34,7 @@ export class LinePlot {
     this.renderer = new WebGLRenderer({alpha: true, antialias: true, preserveDrawingBuffer: true});
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(500, 500);
-    this.camera = new PerspectiveCamera(45, 1, 0.1, 1000);
+    this.camera = new PerspectiveCamera(90, 1, 0.1, 5000);
     this.setCameraPosition(0, 0, 10, 1, 1, 1);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.addEventListener('change', () => {
@@ -133,6 +133,31 @@ export class LinePlot {
     } else {
       this.scene.remove(this.endSymbols[i]);
     }
+  }
+
+  setDataSymbol(i: number, dataSymbol: string): void {
+    switch (dataSymbol) {
+      case "Circle":
+        break;
+      case "Square":
+        break;
+      case "Triangle Up":
+        break;
+      case "Triangle Down":
+        break;
+      case "Diamond":
+        break;
+      case "Dot":
+        break;
+    }
+  }
+
+  setDataSymbolSpacing(i: number, dataSymbolSpacing: number): void {
+
+  }
+
+  setDataSymbolRadius(i: number, dataSymbolRadius: number): void {
+
   }
 
   setDataSymbolColor(i: number, c: string): void {
@@ -240,9 +265,14 @@ export class LinePlot {
     return false;
   }
 
+  resetViewAngle(): void {
+    this.controls.reset();
+  }
+
   setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
     this.camera.position.set(px, py, pz);
     this.camera.rotation.set(rx, ry, rz);
+    //if (this.controls !== undefined) this.controls.update(); // this sets to the orgin to the center of the window
   }
 
   getCameraPositionX(): number {

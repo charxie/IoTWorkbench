@@ -34,10 +34,10 @@ export class Surface3D extends Block {
   private scaleType: string = "Linear";
   private colorScheme: string = "Turbo";
   private readonly viewWindowMargin = {
-    left: <number>4,
-    right: <number>3,
-    top: <number>4,
-    bottom: <number>4
+    left: <number>6,
+    right: <number>2,
+    top: <number>6,
+    bottom: <number>3
   };
   private overlay: HTMLCanvasElement;
   private plot: SurfacePlot;
@@ -233,6 +233,10 @@ export class Surface3D extends Block {
   erase(): void {
   }
 
+  resetViewAngle(): void {
+    this.plot.resetViewAngle();
+  }
+
   setScaleType(scaleType: string): void {
     this.scaleType = scaleType;
   }
@@ -323,12 +327,15 @@ export class Surface3D extends Block {
     ctx.rect(this.viewWindow.x, this.viewWindow.y, this.viewWindow.width, this.viewWindow.height);
     ctx.fillStyle = this.viewWindowColor;
     ctx.fill();
+    ctx.beginPath();
+    ctx.rect(this.viewWindow.x - 3, this.viewWindow.y - 3, this.viewWindow.width + 2, this.viewWindow.height + 2);
     ctx.strokeStyle = "black";
+    ctx.lineWidth = this.iconic ? 1 : 2;
     ctx.stroke();
     if (this.iconic) {
       ctx.fillStyle = "black";
       ctx.font = "8px Arial";
-      let h = ctx.measureText("M").width - 2;
+      let h = ctx.measureText("M").width - 4;
       ctx.fillText("3D", this.viewWindow.x + this.viewWindow.width / 2 - ctx.measureText("3D").width / 2, this.viewWindow.y + this.viewWindow.height / 2 + h / 2);
     }
 
@@ -377,10 +384,10 @@ export class Surface3D extends Block {
 
   refreshView(): void {
     super.refreshView();
-    this.viewWindowMargin.top = 10;
-    this.viewWindowMargin.bottom = 40;
-    this.viewWindowMargin.left = 70;
-    this.viewWindowMargin.right = 16;
+    this.viewWindowMargin.top = 14;
+    this.viewWindowMargin.bottom = 10;
+    this.viewWindowMargin.left = 36;
+    this.viewWindowMargin.right = 10;
     let dh = (this.height - this.barHeight) / 8;
     this.portI.setY(this.barHeight + dh);
     this.portX0.setY(this.barHeight + 2 * dh);

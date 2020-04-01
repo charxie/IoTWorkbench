@@ -205,6 +205,10 @@ export class Space3D extends Block {
     this.plot.render();
   }
 
+  resetViewAngle(): void {
+    this.plot.resetViewAngle();
+  }
+
   setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
     this.plot.setCameraPosition(px, py, pz, rx, ry, rz);
   }
@@ -472,6 +476,9 @@ export class Space3D extends Block {
 
   setDataSymbols(dataSymbols: string[]): void {
     this.dataSymbols = dataSymbols;
+    for (let i = 0; i < this.dataSymbols.length; i++) {
+      this.plot.setDataSymbol(i, this.dataSymbols[i]);
+    }
   }
 
   getDataSymbols(): string[] {
@@ -480,6 +487,7 @@ export class Space3D extends Block {
 
   setDataSymbol(i: number, dataSymbol: string): void {
     this.dataSymbols[i] = dataSymbol;
+    this.plot.setDataSymbol(i, dataSymbol);
   }
 
   getDataSymbol(i: number): string {
@@ -508,6 +516,9 @@ export class Space3D extends Block {
 
   setDataSymbolSpacings(dataSymbolSpacings: number[]): void {
     this.dataSymbolSpacings = dataSymbolSpacings;
+    for (let i = 0; i < this.dataSymbolSpacings.length; i++) {
+      this.plot.setDataSymbolSpacing(i, this.dataSymbolSpacings[i]);
+    }
   }
 
   getDataSymbolSpacings(): number[] {
@@ -516,6 +527,7 @@ export class Space3D extends Block {
 
   setDataSymbolSpacing(i: number, dataSymbolSpacing: number): void {
     this.dataSymbolSpacings[i] = dataSymbolSpacing;
+    this.plot.setDataSymbolSpacing(i, dataSymbolSpacing);
   }
 
   getDataSymbolSpacing(i: number): number {
@@ -524,6 +536,9 @@ export class Space3D extends Block {
 
   setDataSymbolRadii(dataSymbolRadii: number[]): void {
     this.dataSymbolRadii = dataSymbolRadii;
+    for (let i = 0; i < this.dataSymbolRadii.length; i++) {
+      this.plot.setDataSymbolRadius(i, this.dataSymbolRadii[i]);
+    }
   }
 
   getDataSymbolRadii(): number[] {
@@ -532,6 +547,7 @@ export class Space3D extends Block {
 
   setDataSymbolRadius(i: number, dataSymbolRadius: number): void {
     this.dataSymbolRadii[i] = dataSymbolRadius;
+    this.plot.setDataSymbolRadius(i, dataSymbolRadius);
   }
 
   getDataSymbolRadius(i: number): number {
