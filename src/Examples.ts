@@ -139,6 +139,8 @@ import brusselator from "./examples/brusselator.json";
 // @ts-ignore
 import lorentz_force from "./examples/lorentz-force.json";
 // @ts-ignore
+import lorentz_force_3d from "./examples/lorentz-force-3d.json";
+// @ts-ignore
 import harmonic_oscillator from "./examples/harmonic-oscillator.json";
 // @ts-ignore
 import coupled_harmonic_oscillators from "./examples/coupled-harmonic-oscillators.json";
@@ -359,7 +361,8 @@ export class Examples {
     this.files.push({name: "Electronics: RLC Circuit", data: rlc_circuit});
     this.files.push({name: "Electronics: Chua Circuit", data: chua_circuit});
     this.files.push({name: "Electronics: Van der Pol Oscillator", data: van_der_pol_oscillator});
-    this.files.push({name: "Electromagnetism: Lorentz Force", data: lorentz_force});
+    this.files.push({name: "Electromagnetism: Lorentz Force in 2D", data: lorentz_force});
+    this.files.push({name: "Electromagnetism: Lorentz Force in 3D", data: lorentz_force_3d});
     this.files.push({name: "Biology: Brownian Motion", data: brownian_motion_single_particle});
     this.files.push({name: "Biology: Langevin Equation", data: langevin_equation});
     this.files.push({

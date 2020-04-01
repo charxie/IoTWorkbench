@@ -6,6 +6,7 @@
 import * as THREE from 'three';
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {Point3DArray} from "./Point3DArray";
+import {Geometry, Material} from "three";
 
 export class LinePlot {
 
@@ -20,6 +21,9 @@ export class LinePlot {
 
   private points: Point3DArray[] = [];
   private numberOfDataPoints: number = 0;
+  private endSymbol: THREE.Mesh;
+  private endSymbolGeometry: Geometry;
+  private endSymbolMaterial: Material;
 
   constructor() {
     this.scene = new THREE.Scene();
@@ -40,6 +44,14 @@ export class LinePlot {
     this.materials = new Array(1);
     this.setLineColor(0, "black");
     this.points.push(new Point3DArray());
+    this.endSymbolGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+    this.endSymbolMaterial = new THREE.MeshPhongMaterial({
+      color: "dimgray",
+      specular: 0x050505,
+      shininess: 0.1
+    });
+    this.endSymbol = new THREE.Mesh(this.endSymbolGeometry, this.endSymbolMaterial);
+    this.scene.add(this.endSymbol);
   }
 
   erase(): void {
@@ -74,6 +86,7 @@ export class LinePlot {
     this.lines[i] = new THREE.Line(this.geometries[i], this.materials[i]);
     this.scene.add(this.lines[i]);
     this.numberOfDataPoints = this.points[i].length();
+    this.endSymbol.position.set(x, y, z);
   }
 
   getLatestPoint(i: number): THREE.Vector3 {
