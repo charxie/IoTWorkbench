@@ -252,7 +252,7 @@ export class StateIO {
           block.setLegends(state.legends);
           block.setLineTypes(state.lineTypes);
           block.setLineColors(state.lineColors);
-          block.setLineThicknesses(state.lineThicknesses);
+          if (state.lineWidths !== undefined) block.setLineWidths(state.lineWidths);
           block.setDataSymbols(state.dataSymbols);
           block.setDataSymbolRadii(state.dataSymbolRadii);
           block.setDataSymbolColors(state.dataSymbolColors);

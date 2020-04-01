@@ -9,8 +9,7 @@ import {
   AmbientLight,
   BufferGeometry,
   Color,
-  Line, LineBasicMaterial,
-  Material,
+  Line, LineBasicMaterial, LineDashedMaterial,
   Mesh,
   MeshPhongMaterial,
   PerspectiveCamera, PointLight,
@@ -48,7 +47,7 @@ export class LinePlot {
     this.lines = new Array(1);
     this.lines[0] = new Line();
     this.lines[0].geometry = new BufferGeometry();
-    this.lines[0].material = new LineBasicMaterial({color: "black"});
+    this.lines[0].material = new LineDashedMaterial({color: "black", dashSize: 3, gapSize: 1});
     this.scene.add(this.lines[0]);
     this.endSymbols = new Array(1);
     this.endSymbols[0] = new Mesh();
@@ -106,6 +105,7 @@ export class LinePlot {
     if (this.lines[i].geometry !== undefined) this.lines[i].geometry.dispose();
     this.lines[i].geometry = new BufferGeometry().setFromPoints(this.points[i].getPoints());
     this.endSymbols[i].position.set(x, y, z);
+    if (this.lines[i].material instanceof LineDashedMaterial) this.lines[i].computeLineDistances();
   }
 
   getLatestPoint(i: number): THREE.Vector3 {
@@ -122,6 +122,7 @@ export class LinePlot {
       this.points[i].addPoint(xValues[k], yValues[k], zValues[k]);
     }
     this.lines[i].geometry = new BufferGeometry().setFromPoints(this.points[i].getPoints());
+    if (this.lines[i].material instanceof LineDashedMaterial) this.lines[i].computeLineDistances();
   }
 
   setEndSymbolRadius(i: number, r: number): void {
@@ -142,6 +143,43 @@ export class LinePlot {
 
   setLineColor(i: number, color: string) {
     (<LineBasicMaterial>this.lines[i].material).color = new Color(color);
+  }
+
+  setLineWidth(i: number, width: number) {
+    (<LineBasicMaterial>this.lines[i].material).linewidth = width;
+  }
+
+  setLineType(i: number, type: string) {
+    if (type === "None") {
+      if (this.isSceneChild(this.lines[i])) {
+        this.scene.remove(this.lines[i]);
+      }
+    } else {
+      if (!this.isSceneChild(this.lines[i])) {
+        this.scene.add(this.lines[i]);
+      }
+    }
+    switch (type) {
+      case "Solid":
+        this.lines[i].material = new LineBasicMaterial({color: (<LineBasicMaterial>this.lines[i].material).color});
+        break;
+      case "Dashed":
+        this.lines[i].material = new LineDashedMaterial({
+          color: (<LineBasicMaterial>this.lines[i].material).color,
+          dashSize: 1,
+          gapSize: 0.25
+        });
+        if (this.points[i].length() > 0) this.lines[i].computeLineDistances();
+        break;
+      case "Dotted":
+        this.lines[i].material = new LineDashedMaterial({
+          color: (<LineBasicMaterial>this.lines[i].material).color,
+          dashSize: 0.1,
+          gapSize: 0.1
+        });
+        if (this.points[i].length() > 0) this.lines[i].computeLineDistances();
+        break;
+    }
   }
 
   setBackgroundColor(color: string): void {

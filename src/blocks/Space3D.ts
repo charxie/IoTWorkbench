@@ -37,7 +37,7 @@ export class Space3D extends Block {
   private legends: string[] = [];
   private lineTypes: string[] = [];
   private lineColors: string[] = [];
-  private lineThicknesses: number[] = [];
+  private lineWidths: number[] = [];
   private dataSymbols: string[] = [];
   private dataSymbolRadii: number[] = [];
   private dataSymbolColors: string[] = [];
@@ -63,7 +63,7 @@ export class Space3D extends Block {
     readonly legends: string[] = [];
     readonly lineTypes: string[] = [];
     readonly lineColors: string[] = [];
-    readonly lineThicknesses: number[] = [];
+    readonly lineWidths: number[] = [];
     readonly dataSymbols: string[] = [];
     readonly dataSymbolRadii: number[] = [];
     readonly dataSymbolColors: string[] = [];
@@ -93,7 +93,7 @@ export class Space3D extends Block {
       this.legends = [...g.legends];
       this.lineTypes = [...g.lineTypes];
       this.lineColors = [...g.lineColors];
-      this.lineThicknesses = [...g.lineThicknesses];
+      this.lineWidths = [...g.lineWidths];
       this.dataSymbols = [...g.dataSymbols];
       this.dataSymbolRadii = [...g.dataSymbolRadii];
       this.dataSymbolColors = [...g.dataSymbolColors];
@@ -124,7 +124,7 @@ export class Space3D extends Block {
     this.legends.push("A");
     this.lineTypes.push("Solid");
     this.lineColors.push("black");
-    this.lineThicknesses.push(1);
+    this.lineWidths.push(1);
     this.dataSymbols.push("None");
     this.dataSymbolRadii.push(3);
     this.dataSymbolColors.push("white");
@@ -153,7 +153,7 @@ export class Space3D extends Block {
     copy.legends = [...this.legends];
     copy.lineColors = [...this.lineColors];
     copy.lineTypes = [...this.lineTypes];
-    copy.lineThicknesses = [...this.lineThicknesses];
+    copy.lineWidths = [...this.lineWidths];
     copy.dataSymbols = [...this.dataSymbols];
     copy.dataSymbolRadii = [...this.dataSymbolRadii];
     copy.dataSymbolColors = [...this.dataSymbolColors];
@@ -317,7 +317,7 @@ export class Space3D extends Block {
               this.legends.push(p.getUid());
               this.lineTypes.push("Solid");
               this.lineColors.push("black");
-              this.lineThicknesses.push(1);
+              this.lineWidths.push(1);
               this.dataSymbols.push("None");
               this.dataSymbolRadii.push(3);
               this.dataSymbolColors.push("white");
@@ -334,7 +334,7 @@ export class Space3D extends Block {
           this.legends.pop();
           this.lineTypes.pop();
           this.lineColors.pop();
-          this.lineThicknesses.pop();
+          this.lineWidths.pop();
           this.dataSymbols.pop();
           this.dataSymbolRadii.pop();
           this.dataSymbolColors.pop();
@@ -347,7 +347,7 @@ export class Space3D extends Block {
       this.legends.length = n;
       this.lineTypes.length = n;
       this.lineColors.length = n;
-      this.lineThicknesses.length = n;
+      this.lineWidths.length = n;
       this.dataSymbols.length = n;
       this.dataSymbolRadii.length = n;
       this.dataSymbolColors.length = n;
@@ -432,6 +432,9 @@ export class Space3D extends Block {
 
   setLineTypes(lineTypes: string[]): void {
     this.lineTypes = lineTypes;
+    for (let i = 0; i < this.lineTypes.length; i++) {
+      this.plot.setLineType(i, this.lineTypes[i]);
+    }
   }
 
   getLineTypes(): string[] {
@@ -440,26 +443,31 @@ export class Space3D extends Block {
 
   setLineType(i: number, lineType: string): void {
     this.lineTypes[i] = lineType;
+    this.plot.setLineType(i, lineType);
   }
 
   getLineType(i: number): string {
     return this.lineTypes[i];
   }
 
-  setLineThicknesses(lineThicknesses: number[]): void {
-    this.lineThicknesses = lineThicknesses;
+  setLineWidths(lineWidths: number[]): void {
+    this.lineWidths = lineWidths;
+    for (let i = 0; i < this.lineWidths.length; i++) {
+      this.plot.setLineWidth(i, this.lineWidths[i]);
+    }
   }
 
-  getLineThicknesses(): number[] {
-    return [...this.lineThicknesses];
+  getLineWidths(): number[] {
+    return [...this.lineWidths];
   }
 
-  setLineThickness(i: number, lineThickness: number): void {
-    this.lineThicknesses[i] = lineThickness;
+  setLineWidth(i: number, lineWidth: number): void {
+    this.lineWidths[i] = lineWidth;
+    this.plot.setLineWidth(i, lineWidth);
   }
 
-  getLineThickness(i: number): number {
-    return this.lineThicknesses[i];
+  getLineWidth(i: number): number {
+    return this.lineWidths[i];
   }
 
   setDataSymbols(dataSymbols: string[]): void {
@@ -491,7 +499,7 @@ export class Space3D extends Block {
 
   setDataSymbolColor(i: number, dataSymbolColor: string): void {
     this.dataSymbolColors[i] = dataSymbolColor;
-    this.plot.setDataSymbolColor(i, this.dataSymbolColors[i]);
+    this.plot.setDataSymbolColor(i, dataSymbolColor);
   }
 
   getDataSymbolColor(i: number): string {
@@ -642,7 +650,7 @@ export class Space3D extends Block {
         ctx.beginPath();
         ctx.moveTo(x0 + 10, yi);
         ctx.lineTo(x0 + 40, yi);
-        ctx.lineWidth = this.lineThicknesses[i];
+        ctx.lineWidth = this.lineWidths[i];
         ctx.strokeStyle = this.lineColors[i];
         switch (this.lineTypes[i]) {
           case "Solid":

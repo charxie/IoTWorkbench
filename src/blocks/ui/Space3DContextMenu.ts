@@ -96,7 +96,6 @@ export class Space3DContextMenu extends BlockContextMenu {
                       <option value="Solid" selected>Solid</option>
                       <option value="Dashed">Dashed</option>
                       <option value="Dotted">Dotted</option>
-                      <option value="Dashdot">Dashdot</option>
                     </select>
                   </td>
                 </tr>
@@ -107,9 +106,9 @@ export class Space3DContextMenu extends BlockContextMenu {
                   <td><input type="text" id="space3d-line-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Line Thicknesses:</td>
-                  <td><select id="space3d-line-thickness-set-selector" style="width: 65px"></select></td>
-                  <td colspan="2"><input type="text" id="space3d-line-thickness-field" style="width: 100%"></td>
+                  <td>Line Widths:</td>
+                  <td><select id="space3d-line-width-set-selector" style="width: 65px"></select></td>
+                  <td colspan="2"><input type="text" id="space3d-line-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Legend:</td>
@@ -210,7 +209,7 @@ export class Space3DContextMenu extends BlockContextMenu {
       let legends: string[] = g.getLegends();
       let lineTypes: string[] = g.getLineTypes();
       let lineColors: string[] = g.getLineColors();
-      let lineThicknesses: number[] = g.getLineThicknesses();
+      let lineWidths: number[] = g.getLineWidths();
       let dataSymbols: string[] = g.getDataSymbols();
       let dataSymbolRadii: number[] = g.getDataSymbolRadii();
       let dataSymbolColors: string[] = g.getDataSymbolColors();
@@ -251,11 +250,11 @@ export class Space3DContextMenu extends BlockContextMenu {
         Util.setColorPicker(lineColorChooser, c);
       };
 
-      let lineThicknessField = document.getElementById("space3d-line-thickness-field") as HTMLInputElement;
-      lineThicknessField.value = lineThicknesses[0].toString();
-      lineThicknessField.onchange = () => lineThicknesses[parseInt(lineThicknessSetSelector.value)] = parseFloat(lineThicknessField.value);
-      let lineThicknessSetSelector = this.createSetSelector("space3d-line-thickness-set-selector");
-      lineThicknessSetSelector.onchange = () => lineThicknessField.value = lineThicknesses[parseInt(lineThicknessSetSelector.value)].toString();
+      let lineWidthField = document.getElementById("space3d-line-width-field") as HTMLInputElement;
+      lineWidthField.value = lineWidths[0].toString();
+      lineWidthField.onchange = () => lineWidths[parseInt(lineWidthSetSelector.value)] = parseFloat(lineWidthField.value);
+      let lineWidthSetSelector = this.createSetSelector("space3d-line-width-set-selector");
+      lineWidthSetSelector.onchange = () => lineWidthField.value = lineWidths[parseInt(lineWidthSetSelector.value)].toString();
 
       let legendField = document.getElementById("space3d-legend-field") as HTMLInputElement;
       legendField.value = legends[0].toString();
@@ -353,14 +352,14 @@ export class Space3DContextMenu extends BlockContextMenu {
           success = false;
           message = heightField.value + " is not a valid height";
         }
-        // check line thicknesses
-        for (let lineThickness of lineThicknesses) {
-          if (lineThickness < 0) {
+        // check line width
+        for (let lineWidth of lineWidths) {
+          if (lineWidth < 0) {
             success = false;
             if (g.getPointInput()) {
-              message = "Port " + g.getPointPorts()[lineThicknesses.indexOf(lineThickness)].getUid() + " line thickness cannot be negative (" + lineThickness + ")";
+              message = "Port " + g.getPointPorts()[lineWidths.indexOf(lineWidth)].getUid() + " line width cannot be negative (" + lineWidth + ")";
             } else {
-              message = "Line thickness cannot be negative (" + lineThickness + ")";
+              message = "Line width cannot be negative (" + lineWidth + ")";
             }
             break;
           }
@@ -415,7 +414,7 @@ export class Space3DContextMenu extends BlockContextMenu {
             g.setLegend(i, legends[i]);
             g.setLineType(i, lineTypes[i]);
             g.setLineColor(i, lineColors[i]);
-            g.setLineThickness(i, lineThicknesses[i]);
+            g.setLineWidth(i, lineWidths[i]);
             g.setDataSymbol(i, dataSymbols[i]);
             g.setDataSymbolColor(i, dataSymbolColors[i]);
             g.setDataSymbolRadius(i, dataSymbolRadii[i] != null ? dataSymbolRadii[i] : 3);
@@ -442,7 +441,7 @@ export class Space3DContextMenu extends BlockContextMenu {
       yAxisLableField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       lineColorField.addEventListener("keyup", enterKeyUp);
-      lineThicknessField.addEventListener("keyup", enterKeyUp);
+      lineWidthField.addEventListener("keyup", enterKeyUp);
       legendField.addEventListener("keyup", enterKeyUp);
       symbolColorField.addEventListener("keyup", enterKeyUp);
       symbolRadiusField.addEventListener("keyup", enterKeyUp);
