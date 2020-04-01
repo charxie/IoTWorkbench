@@ -259,6 +259,7 @@ export class Space3D extends Block {
     if (this.overlay !== undefined) {
       document.getElementById("block-view-wrapper").removeChild(this.overlay);
     }
+    this.plot.destroy();
   }
 
   getPointPorts(): Port[] {
@@ -479,6 +480,9 @@ export class Space3D extends Block {
 
   setDataSymbolColors(dataSymbolColors: string[]): void {
     this.dataSymbolColors = dataSymbolColors;
+    for (let i = 0; i < this.dataSymbolColors.length; i++) {
+      this.plot.setDataSymbolColor(i, this.dataSymbolColors[i]);
+    }
   }
 
   getDataSymbolColors(): string[] {
@@ -487,6 +491,7 @@ export class Space3D extends Block {
 
   setDataSymbolColor(i: number, dataSymbolColor: string): void {
     this.dataSymbolColors[i] = dataSymbolColor;
+    this.plot.setDataSymbolColor(i, this.dataSymbolColors[i]);
   }
 
   getDataSymbolColor(i: number): string {
@@ -527,6 +532,9 @@ export class Space3D extends Block {
 
   setEndSymbolRadii(endSymbolRadii: number[]): void {
     this.endSymbolRadii = endSymbolRadii;
+    for (let i = 0; i < this.endSymbolRadii.length; i++) {
+      this.plot.setEndSymbolRadius(i, this.endSymbolRadii[i]);
+    }
   }
 
   getEndSymbolRadii(): number[] {
@@ -535,6 +543,7 @@ export class Space3D extends Block {
 
   setEndSymbolRadius(i: number, endSymbolRadius: number): void {
     this.endSymbolRadii[i] = endSymbolRadius;
+    this.plot.setEndSymbolRadius(i, endSymbolRadius);
   }
 
   getEndSymbolRadius(i: number): number {

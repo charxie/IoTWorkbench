@@ -3,35 +3,39 @@
  */
 
 // @ts-ignore
-import * as THREE from 'three';
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {Point3DArray} from "./Point3DArray";
-import {Geometry, Material} from "three";
+import {
+  AmbientLight,
+  BufferGeometry,
+  Color,
+  Line, LineBasicMaterial,
+  Material,
+  Mesh,
+  MeshPhongMaterial,
+  PerspectiveCamera, PointLight,
+  Scene, SphereGeometry, Vector3,
+  WebGLRenderer
+} from "three";
 
 export class LinePlot {
 
-  private lines: THREE.Line[];
-  private geometries: THREE.BufferGeometry[];
-  private materials: THREE.Material[];
-
-  private scene: THREE.Scene;
-  private camera: THREE.PerspectiveCamera;
-  private renderer: THREE.WebGLRenderer;
-  private controls: OrbitControls;
-
   private points: Point3DArray[] = [];
   private numberOfDataPoints: number = 0;
-  private endSymbol: THREE.Mesh;
-  private endSymbolGeometry: Geometry;
-  private endSymbolMaterial: Material;
+  private lines: Line[];
+  private endSymbols: Mesh[];
+  private scene: Scene;
+  private camera: PerspectiveCamera;
+  private renderer: WebGLRenderer;
+  private controls: OrbitControls;
 
   constructor() {
-    this.scene = new THREE.Scene();
+    this.scene = new Scene();
     this.createAxes();
-    this.renderer = new THREE.WebGLRenderer({alpha: true, antialias: true, preserveDrawingBuffer: true});
+    this.renderer = new WebGLRenderer({alpha: true, antialias: true, preserveDrawingBuffer: true});
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(500, 500);
-    this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    this.camera = new PerspectiveCamera(45, 1, 0.1, 1000);
     this.setCameraPosition(0, 0, 10, 1, 1, 1);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.addEventListener('change', () => {
@@ -39,25 +43,42 @@ export class LinePlot {
     });
     this.controls.enableZoom = true;
     this.createLights();
-    this.lines = new Array(1);
-    this.geometries = new Array(1);
-    this.materials = new Array(1);
-    this.setLineColor(0, "black");
+    // default scene below
     this.points.push(new Point3DArray());
-    this.endSymbolGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-    this.endSymbolMaterial = new THREE.MeshPhongMaterial({
+    this.lines = new Array(1);
+    this.lines[0] = new Line();
+    this.lines[0].geometry = new BufferGeometry();
+    this.lines[0].material = new LineBasicMaterial({color: "black"});
+    this.scene.add(this.lines[0]);
+    this.endSymbols = new Array(1);
+    this.endSymbols[0] = new Mesh();
+    this.endSymbols[0].geometry = new SphereGeometry(0.5, 32, 32);
+    this.endSymbols[0].material = new MeshPhongMaterial({
       color: "dimgray",
       specular: 0x050505,
       shininess: 0.1
     });
-    this.endSymbol = new THREE.Mesh(this.endSymbolGeometry, this.endSymbolMaterial);
-    this.scene.add(this.endSymbol);
+    this.scene.add(this.endSymbols[0]);
   }
 
   erase(): void {
     if (this.points !== undefined) {
       for (let p of this.points) {
         p.clear();
+      }
+    }
+  }
+
+  destroy(): void {
+    this.erase();
+    if (this.lines !== undefined) {
+      for (let l of this.lines) {
+        l.geometry.dispose();
+      }
+    }
+    if (this.endSymbols !== undefined) {
+      for (let s of this.endSymbols) {
+        s.geometry.dispose();
       }
     }
   }
@@ -78,15 +99,13 @@ export class LinePlot {
     this.points.length = n;
   }
 
+  // add a point at a time (used to create the trajectory of a motion)
   addPoint(i: number, x: number, y: number, z: number): void {
     this.points[i].addPoint(x, y, z);
-    if (this.geometries[i] !== undefined) this.geometries[i].dispose();
-    this.geometries[i] = new THREE.BufferGeometry().setFromPoints(this.points[i].getPoints());
-    if (this.lines[i] !== undefined) this.scene.remove(this.lines[i]);
-    this.lines[i] = new THREE.Line(this.geometries[i], this.materials[i]);
-    this.scene.add(this.lines[i]);
     this.numberOfDataPoints = this.points[i].length();
-    this.endSymbol.position.set(x, y, z);
+    if (this.lines[i].geometry !== undefined) this.lines[i].geometry.dispose();
+    this.lines[i].geometry = new BufferGeometry().setFromPoints(this.points[i].getPoints());
+    this.endSymbols[i].position.set(x, y, z);
   }
 
   getLatestPoint(i: number): THREE.Vector3 {
@@ -94,27 +113,35 @@ export class LinePlot {
     return this.points[i].getPoint(this.points[i].length() - 1);
   }
 
+  // add all the points at once (used to create a static curve)
   setData(i: number, xValues: number[], yValues: number[], zValues: number[]): void {
     this.numberOfDataPoints = xValues.length;
-    if (this.lines[i] !== undefined) this.scene.remove(this.lines[i]);
-    if (this.geometries[i] !== undefined) this.geometries[i].dispose();
+    if (this.lines[i].geometry !== undefined) this.lines[i].geometry.dispose();
     this.points[i].clear();
     for (let k = 0; k < this.numberOfDataPoints; k++) {
       this.points[i].addPoint(xValues[k], yValues[k], zValues[k]);
     }
-    this.geometries[i] = new THREE.BufferGeometry().setFromPoints(this.points[i].getPoints());
-    this.lines[i] = new THREE.Line(this.geometries[i], this.materials[i]);
-    this.scene.add(this.lines[i]);
+    this.lines[i].geometry = new BufferGeometry().setFromPoints(this.points[i].getPoints());
+  }
+
+  setEndSymbolRadius(i: number, r: number): void {
+    if (this.endSymbols[i].geometry !== undefined) this.endSymbols[i].geometry.dispose();
+    if (r > 0.000001) {
+      this.endSymbols[i].geometry = new SphereGeometry(r, 32, 32);
+      if (!this.isSceneChild(this.endSymbols[i])) this.scene.add(this.endSymbols[i]);
+    } else {
+      this.scene.remove(this.endSymbols[i]);
+    }
+  }
+
+  setDataSymbolColor(i: number, c: string): void {
+    if (this.endSymbols[i].material instanceof MeshPhongMaterial) {
+      (<MeshPhongMaterial>this.endSymbols[i].material).color = new Color(c);
+    }
   }
 
   setLineColor(i: number, color: string) {
-    if (this.materials[i] !== undefined) this.materials[i].dispose();
-    this.materials[i] = new THREE.LineBasicMaterial({color: color});
-    if (this.lines[i] !== undefined) {
-      this.scene.remove(this.lines[i]);
-      this.lines[i] = new THREE.Line(this.geometries[i], this.materials[i]);
-      this.scene.add(this.lines[i]);
-    }
+    (<LineBasicMaterial>this.lines[i].material).color = new Color(color);
   }
 
   setBackgroundColor(color: string): void {
@@ -123,41 +150,41 @@ export class LinePlot {
 
   createAxes(): void {
     let points = [];
-    points.push(new THREE.Vector3(-1000, 0, 0));
-    points.push(new THREE.Vector3(1000, 0, 0));
-    let lineMaterial = new THREE.LineBasicMaterial({color: 0xff0000});
-    let lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-    let xAxis = new THREE.Line(lineGeometry, lineMaterial);
+    points.push(new Vector3(-1000, 0, 0));
+    points.push(new Vector3(1000, 0, 0));
+    let lineMaterial = new LineBasicMaterial({color: 0xff0000});
+    let lineGeometry = new BufferGeometry().setFromPoints(points);
+    let xAxis = new Line(lineGeometry, lineMaterial);
     this.scene.add(xAxis);
 
     points = [];
-    points.push(new THREE.Vector3(0, -1000, 0));
-    points.push(new THREE.Vector3(0, 1000, 0));
-    lineMaterial = new THREE.LineBasicMaterial({color: 0x00ff00});
-    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-    let yAxis = new THREE.Line(lineGeometry, lineMaterial);
+    points.push(new Vector3(0, -1000, 0));
+    points.push(new Vector3(0, 1000, 0));
+    lineMaterial = new LineBasicMaterial({color: 0x00ff00});
+    lineGeometry = new BufferGeometry().setFromPoints(points);
+    let yAxis = new Line(lineGeometry, lineMaterial);
     this.scene.add(yAxis);
 
     points = [];
-    points.push(new THREE.Vector3(0, 0, -1000));
-    points.push(new THREE.Vector3(0, 0, 1000));
-    lineMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
-    lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-    let zAxis = new THREE.Line(lineGeometry, lineMaterial);
+    points.push(new Vector3(0, 0, -1000));
+    points.push(new Vector3(0, 0, 1000));
+    lineMaterial = new LineBasicMaterial({color: 0x0000ff});
+    lineGeometry = new BufferGeometry().setFromPoints(points);
+    let zAxis = new Line(lineGeometry, lineMaterial);
     this.scene.add(zAxis);
   }
 
   createLights(): void {
     // Light above
-    let light = new THREE.PointLight(0xffffff);
+    let light = new PointLight(0xffffff);
     light.position.set(0, 0, 1000);
     this.scene.add(light);
     // Light below
-    light = new THREE.PointLight(0xffffff);
+    light = new PointLight(0xffffff);
     light.position.set(0, 0, -1000);
     this.scene.add(light);
     // Ambient light
-    this.scene.add(new THREE.AmbientLight(0xffffff));
+    this.scene.add(new AmbientLight(0xffffff));
   }
 
   render(): void {
@@ -166,6 +193,13 @@ export class LinePlot {
 
   getDomElement(): HTMLCanvasElement {
     return this.renderer.domElement;
+  }
+
+  isSceneChild(x: any): boolean {
+    for (let c of this.scene.children) {
+      if (c === x) return true;
+    }
+    return false;
   }
 
   setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {

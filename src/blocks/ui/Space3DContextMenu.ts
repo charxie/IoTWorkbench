@@ -283,13 +283,13 @@ export class Space3DContextMenu extends BlockContextMenu {
 
       let symbolRadiusField = document.getElementById("space3d-symbol-radius-field") as HTMLInputElement;
       symbolRadiusField.value = dataSymbolRadii[0].toString();
-      symbolRadiusField.onchange = () => dataSymbolRadii[parseInt(symbolRadiusSetSelector.value)] = parseInt(symbolRadiusField.value);
+      symbolRadiusField.onchange = () => dataSymbolRadii[parseInt(symbolRadiusSetSelector.value)] = parseFloat(symbolRadiusField.value);
       let symbolRadiusSetSelector = this.createSetSelector("space3d-symbol-radius-set-selector");
       symbolRadiusSetSelector.onchange = () => symbolRadiusField.value = dataSymbolRadii[parseInt(symbolRadiusSetSelector.value)].toString();
 
       let symbolSpacingField = document.getElementById("space3d-symbol-spacing-field") as HTMLInputElement;
       symbolSpacingField.value = dataSymbolSpacings[0].toString();
-      symbolSpacingField.onchange = () => dataSymbolSpacings[parseInt(symbolSpacingSetSelector.value)] = parseInt(symbolSpacingField.value);
+      symbolSpacingField.onchange = () => dataSymbolSpacings[parseInt(symbolSpacingSetSelector.value)] = parseFloat(symbolSpacingField.value);
       let symbolSpacingSetSelector = this.createSetSelector("space3d-symbol-spacing-set-selector");
       symbolSpacingSetSelector.onchange = () => symbolSpacingField.value = dataSymbolSpacings[parseInt(symbolSpacingSetSelector.value)].toString();
 
@@ -297,7 +297,7 @@ export class Space3DContextMenu extends BlockContextMenu {
       endSymbolRadiusField.value = endSymbolRadii[0] != null ? endSymbolRadii[0].toString() : "10";
       endSymbolRadiusField.onchange = () => {
         if (isNumber(endSymbolRadiusField.value)) {
-          endSymbolRadii[parseInt(endSymbolRadiusSetSelector.value)] = parseInt(endSymbolRadiusField.value);
+          endSymbolRadii[parseInt(endSymbolRadiusSetSelector.value)] = parseFloat(endSymbolRadiusField.value);
         } else {
           endSymbolRadii[parseInt(endSymbolRadiusSetSelector.value)] = endSymbolRadiusField.value;
         }
