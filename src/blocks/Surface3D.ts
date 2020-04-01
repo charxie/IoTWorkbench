@@ -325,6 +325,12 @@ export class Surface3D extends Block {
     ctx.fill();
     ctx.strokeStyle = "black";
     ctx.stroke();
+    if (this.iconic) {
+      ctx.fillStyle = "black";
+      ctx.font = "8px Arial";
+      let h = ctx.measureText("M").width - 2;
+      ctx.fillText("3D", this.viewWindow.x + this.viewWindow.width / 2 - ctx.measureText("3D").width / 2, this.viewWindow.y + this.viewWindow.height / 2 + h / 2);
+    }
 
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";

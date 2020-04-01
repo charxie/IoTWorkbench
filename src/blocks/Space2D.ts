@@ -639,7 +639,12 @@ export class Space2D extends Block {
     }
     ctx.strokeStyle = "black";
     ctx.stroke();
-    if (!this.iconic) {
+    if (this.iconic) {
+      ctx.fillStyle = "black";
+      ctx.font = "8px Arial";
+      let h = ctx.measureText("M").width - 2;
+      ctx.fillText("2D", this.spaceWindow.x + this.spaceWindow.width / 2 - ctx.measureText("2D").width / 2, this.spaceWindow.y + this.spaceWindow.height / 2 + h / 2);
+    } else {
       this.drawAxisLabels(ctx);
       if (this.pointInput && this.portPoints.length > 1) {
         this.drawLegends(ctx);

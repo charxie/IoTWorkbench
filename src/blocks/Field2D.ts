@@ -306,6 +306,12 @@ export class Field2D extends Block {
     ctx.fill();
     ctx.strokeStyle = "black";
     ctx.stroke();
+    if (this.iconic) {
+      ctx.fillStyle = "black";
+      ctx.font = "8px Arial";
+      let h = ctx.measureText("M").width - 2;
+      ctx.fillText("2D", this.fieldWindow.x + this.fieldWindow.width / 2 - ctx.measureText("2D").width / 2, this.fieldWindow.y + this.fieldWindow.height / 2 + h / 2);
+    }
 
     // draw contour plot
     ctx.save();

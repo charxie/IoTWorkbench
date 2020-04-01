@@ -85,7 +85,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="grapher-block" title="Grapher" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="space2d-block" title="Space2D" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="space3d-block" title="Space3D" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="field2d-block" title="Field2D" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="field2d-block" title="Contour Plot" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="surface3d-block" title="Surface Plot" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="beeper-block" title="Beeper" width="45px" height="45px" style="cursor: pointer;"/></td>
                   </tr>

@@ -457,7 +457,12 @@ export class Grapher extends Block {
     for (let da of this.dataArrays) {
       if (da.length() > maxLength) maxLength = da.length();
     }
-    if (!this.iconic) {
+    if (this.iconic) {
+      ctx.beginPath();
+      ctx.moveTo(this.graphWindow.x, this.graphWindow.y + this.graphWindow.height - 2);
+      ctx.quadraticCurveTo(this.graphWindow.x, this.graphWindow.y - 4, this.graphWindow.x + this.graphWindow.width, this.graphWindow.y + this.graphWindow.height - 2);
+      ctx.stroke();
+    } else {
       this.drawAxisLabels(ctx);
       if (this.portI.length > 1) {
         this.drawLegends(ctx);

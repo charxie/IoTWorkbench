@@ -167,6 +167,8 @@ import langevin_equation from "./examples/langevin-equation.json";
 // @ts-ignore
 import random_walk from "./examples/random-walk.json";
 // @ts-ignore
+import random_walk_3d from "./examples/random-walk-3d.json";
+// @ts-ignore
 import spirals from "./examples/spirals.json";
 // @ts-ignore
 import regular_polygon from "./examples/regular-polygon.json";
@@ -309,7 +311,8 @@ export class Examples {
     this.files.push({name: "Statistics: Box-Muller Transform", data: box_muller_transform});
     this.files.push({name: "Statistics: Normal Distributions", data: normal_distributions});
     this.files.push({name: "Statistics: Poisson Distribution", data: poisson_distribution});
-    this.files.push({name: "Statistics: Random Walk", data: random_walk});
+    this.files.push({name: "Statistics: Random Walk in 2D", data: random_walk});
+    this.files.push({name: "Statistics: Random Walk in 3D", data: random_walk_3d});
     this.files.push({name: "Ecology: Logistic Population Model", data: logistic_population_equation});
     this.files.push({name: "Ecology: Predator-Prey Equations", data: predator_prey_equations});
     this.files.push({

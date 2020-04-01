@@ -73,6 +73,7 @@ export class LinePlot {
     if (this.lines[i] !== undefined) this.scene.remove(this.lines[i]);
     this.lines[i] = new THREE.Line(this.geometries[i], this.materials[i]);
     this.scene.add(this.lines[i]);
+    this.numberOfDataPoints = this.points[i].length();
   }
 
   getLatestPoint(i: number): THREE.Vector3 {

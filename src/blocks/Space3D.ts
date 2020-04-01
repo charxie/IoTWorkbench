@@ -25,10 +25,10 @@ export class Space3D extends Block {
   private spaceWindow: Rectangle;
   private barHeight: number;
   private readonly spaceMargin = {
-    left: <number>4,
-    right: <number>3,
-    top: <number>4,
-    bottom: <number>4
+    left: <number>6,
+    right: <number>5,
+    top: <number>6,
+    bottom: <number>5
   };
   private numberOfZigzags: number[] = [];
   private tempX: number; // temporarily store x, y, and z before pushing them into the point arrays
@@ -589,9 +589,16 @@ export class Space3D extends Block {
     ctx.rect(this.spaceWindow.x, this.spaceWindow.y, this.spaceWindow.width, this.spaceWindow.height);
     ctx.fillStyle = this.spaceWindowColor;
     ctx.fill();
+    ctx.beginPath();
+    ctx.rect(this.spaceWindow.x - 3, this.spaceWindow.y - 3, this.spaceWindow.width + 4, this.spaceWindow.height + 4);
     ctx.strokeStyle = "black";
     ctx.stroke();
-    if (!this.iconic) {
+    if (this.iconic) {
+      ctx.fillStyle = "black";
+      ctx.font = "8px Arial";
+      let h = ctx.measureText("M").width - 2;
+      ctx.fillText("3D", this.spaceWindow.x + this.spaceWindow.width / 2 - ctx.measureText("3D").width / 2, this.spaceWindow.y + this.spaceWindow.height / 2 + h / 2);
+    } else {
       if (this.pointInput && this.portPoints.length > 1) {
         this.drawLegends(ctx);
       }
@@ -782,10 +789,10 @@ export class Space3D extends Block {
 
   refreshView(): void {
     super.refreshView();
-    this.spaceMargin.top = 10;
-    this.spaceMargin.bottom = 40;
-    this.spaceMargin.left = 60;
-    this.spaceMargin.right = 16;
+    this.spaceMargin.top = 11;
+    this.spaceMargin.bottom = 10;
+    this.spaceMargin.left = 24;
+    this.spaceMargin.right = 10;
     if (this.pointInput) {
       let dh = (this.height - this.barHeight) / (this.portPoints.length + 1);
       for (let i = 0; i < this.portPoints.length; i++) {
