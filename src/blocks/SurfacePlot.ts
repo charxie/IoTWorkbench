@@ -58,6 +58,14 @@ export class SurfacePlot {
     this.createLights();
   }
 
+  destroy() {
+    this.geometry.dispose();
+    this.material.dispose();
+    this.scene.remove(this.mesh);
+    this.scene.dispose();
+    this.controls.dispose();
+  }
+
   setData(x0: number, y0: number, dx: number, dy: number, nx: number, ny: number, data: number[], scaleType: string) {
     // somehow we have to remove the mesh, recreate the geometry, and re-add them back to the scene to chnage the colors
     this.scene.remove(this.mesh);

@@ -223,6 +223,7 @@ export class Surface3D extends Block {
     if (this.overlay !== undefined) {
       document.getElementById("block-view-wrapper").removeChild(this.overlay);
     }
+    this.plot.destroy();
   }
 
   reset(): void {

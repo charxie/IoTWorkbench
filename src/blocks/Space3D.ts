@@ -30,19 +30,10 @@ export class Space3D extends Block {
     top: <number>6,
     bottom: <number>5
   };
-  private numberOfZigzags: number[] = [];
   private tempX: number; // temporarily store x, y, and z before pushing them into the point arrays
   private tempY: number;
   private tempZ: number;
   private legends: string[] = [];
-  private lineTypes: string[] = [];
-  private lineColors: string[] = [];
-  private lineWidths: number[] = [];
-  private dataSymbols: string[] = [];
-  private dataSymbolRadii: number[] = [];
-  private dataSymbolColors: string[] = [];
-  private dataSymbolSpacings: number[] = [];
-  private endSymbolRadii: number[] = [];
   private overlay: HTMLCanvasElement;
   private plot: LinePlot;
 
@@ -91,14 +82,14 @@ export class Space3D extends Block {
       this.pointInput = g.pointInput;
       this.numberOfPoints = g.getNumberOfPoints();
       this.legends = [...g.legends];
-      this.lineTypes = [...g.lineTypes];
-      this.lineColors = [...g.lineColors];
-      this.lineWidths = [...g.lineWidths];
-      this.dataSymbols = [...g.dataSymbols];
-      this.dataSymbolRadii = [...g.dataSymbolRadii];
-      this.dataSymbolColors = [...g.dataSymbolColors];
-      this.dataSymbolSpacings = [...g.dataSymbolSpacings];
-      this.endSymbolRadii = [...g.endSymbolRadii];
+      this.lineTypes = [...g.plot.lineTypes];
+      this.lineColors = [...g.plot.lineColors];
+      this.lineWidths = [...g.plot.lineWidths];
+      this.dataSymbols = [...g.plot.dataSymbols];
+      this.dataSymbolRadii = [...g.plot.dataSymbolRadii];
+      this.dataSymbolColors = [...g.plot.dataSymbolColors];
+      this.dataSymbolSpacings = [...g.plot.dataSymbolSpacings];
+      this.endSymbolRadii = [...g.plot.endSymbolRadii];
       this.cameraPositionX = g.plot.getCameraPositionX();
       this.cameraPositionY = g.plot.getCameraPositionY();
       this.cameraPositionZ = g.plot.getCameraPositionZ();
@@ -122,16 +113,16 @@ export class Space3D extends Block {
     this.ports.push(this.portZ);
     this.spaceWindow = new Rectangle(0, 0, 1, 1);
     this.legends.push("A");
-    this.lineTypes.push("Solid");
-    this.lineColors.push("black");
-    this.lineWidths.push(1);
-    this.dataSymbols.push("None");
-    this.dataSymbolRadii.push(3);
-    this.dataSymbolColors.push("white");
-    this.dataSymbolSpacings.push(1);
-    this.endSymbolRadii.push(0);
     this.plot = new LinePlot();
     this.plot.pushPointArray();
+    this.plot.lineTypes.push("Solid");
+    this.plot.lineColors.push("black");
+    this.plot.lineWidths.push(1);
+    this.plot.dataSymbols.push("None");
+    this.plot.dataSymbolRadii.push(3);
+    this.plot.dataSymbolColors.push("white");
+    this.plot.dataSymbolSpacings.push(1);
+    this.plot.endSymbolRadii.push(0);
     this.overlay = this.plot.getDomElement();
     this.overlay.tabIndex = 0;
     this.overlay.style.position = "absolute";
@@ -151,14 +142,14 @@ export class Space3D extends Block {
     copy.setPointInput(this.pointInput);
     copy.setNumberOfPoints(this.getNumberOfPoints());
     copy.legends = [...this.legends];
-    copy.lineColors = [...this.lineColors];
-    copy.lineTypes = [...this.lineTypes];
-    copy.lineWidths = [...this.lineWidths];
-    copy.dataSymbols = [...this.dataSymbols];
-    copy.dataSymbolRadii = [...this.dataSymbolRadii];
-    copy.dataSymbolColors = [...this.dataSymbolColors];
-    copy.dataSymbolSpacings = [...this.dataSymbolSpacings];
-    copy.endSymbolRadii = [...this.endSymbolRadii];
+    copy.plot.lineColors = [...this.plot.lineColors];
+    copy.plot.lineTypes = [...this.plot.lineTypes];
+    copy.plot.lineWidths = [...this.plot.lineWidths];
+    copy.plot.dataSymbols = [...this.plot.dataSymbols];
+    copy.plot.dataSymbolRadii = [...this.plot.dataSymbolRadii];
+    copy.plot.dataSymbolColors = [...this.plot.dataSymbolColors];
+    copy.plot.dataSymbolSpacings = [...this.plot.dataSymbolSpacings];
+    copy.plot.endSymbolRadii = [...this.plot.endSymbolRadii];
     copy.setWidth(this.getWidth());
     copy.setHeight(this.getHeight());
     copy.plot.render();
@@ -319,14 +310,14 @@ export class Space3D extends Block {
             this.plot.pushPointArray();
             if (notSet) {
               this.legends.push(p.getUid());
-              this.lineTypes.push("Solid");
-              this.lineColors.push("black");
-              this.lineWidths.push(1);
-              this.dataSymbols.push("None");
-              this.dataSymbolRadii.push(3);
-              this.dataSymbolColors.push("white");
-              this.dataSymbolSpacings.push(1);
-              this.endSymbolRadii.push(0);
+              this.plot.lineTypes.push("Solid");
+              this.plot.lineColors.push("black");
+              this.plot.lineWidths.push(1);
+              this.plot.dataSymbols.push("None");
+              this.plot.dataSymbolRadii.push(3);
+              this.plot.dataSymbolColors.push("white");
+              this.plot.dataSymbolSpacings.push(1);
+              this.plot.endSymbolRadii.push(0);
             }
           }
         }
@@ -336,27 +327,27 @@ export class Space3D extends Block {
           this.plot.popPointArray();
           flowchart.removeConnectorsToPort(this.ports.pop());
           this.legends.pop();
-          this.lineTypes.pop();
-          this.lineColors.pop();
-          this.lineWidths.pop();
-          this.dataSymbols.pop();
-          this.dataSymbolRadii.pop();
-          this.dataSymbolColors.pop();
-          this.dataSymbolSpacings.pop();
-          this.endSymbolRadii.pop();
+          this.plot.lineTypes.pop();
+          this.plot.lineColors.pop();
+          this.plot.lineWidths.pop();
+          this.plot.dataSymbols.pop();
+          this.plot.dataSymbolRadii.pop();
+          this.plot.dataSymbolColors.pop();
+          this.plot.dataSymbolSpacings.pop();
+          this.plot.endSymbolRadii.pop();
         }
       }
       let n = this.portPoints.length;
       this.plot.setPointArrayLength(n);
       this.legends.length = n;
-      this.lineTypes.length = n;
-      this.lineColors.length = n;
-      this.lineWidths.length = n;
-      this.dataSymbols.length = n;
-      this.dataSymbolRadii.length = n;
-      this.dataSymbolColors.length = n;
-      this.dataSymbolSpacings.length = n;
-      this.endSymbolRadii.length = n;
+      this.plot.lineTypes.length = n;
+      this.plot.lineColors.length = n;
+      this.plot.lineWidths.length = n;
+      this.plot.dataSymbols.length = n;
+      this.plot.dataSymbolRadii.length = n;
+      this.plot.dataSymbolColors.length = n;
+      this.plot.dataSymbolSpacings.length = n;
+      this.plot.endSymbolRadii.length = n;
       this.refreshView();
     }
   }
@@ -403,7 +394,7 @@ export class Space3D extends Block {
   }
 
   getLegends(): string[] {
-    return [...this.legends];
+    return this.legends;
   }
 
   setLegend(i: number, legend: string): void {
@@ -415,163 +406,147 @@ export class Space3D extends Block {
   }
 
   setLineColors(lineColors: string[]): void {
-    this.lineColors = lineColors;
     for (let i = 0; i < lineColors.length; i++) {
       this.plot.setLineColor(i, lineColors[i]);
     }
   }
 
   getLineColors(): string[] {
-    return [...this.lineColors];
+    return this.plot.lineColors;
   }
 
   setLineColor(i: number, lineColor: string): void {
-    this.lineColors[i] = lineColor;
     this.plot.setLineColor(i, lineColor);
   }
 
   getLineColor(i: number): string {
-    return this.lineColors[i];
+    return this.plot.lineColors[i];
   }
 
   setLineTypes(lineTypes: string[]): void {
-    this.lineTypes = lineTypes;
-    for (let i = 0; i < this.lineTypes.length; i++) {
-      this.plot.setLineType(i, this.lineTypes[i]);
+    for (let i = 0; i < lineTypes.length; i++) {
+      this.plot.setLineType(i, lineTypes[i]);
     }
   }
 
   getLineTypes(): string[] {
-    return [...this.lineTypes];
+    return this.plot.lineTypes;
   }
 
   setLineType(i: number, lineType: string): void {
-    this.lineTypes[i] = lineType;
     this.plot.setLineType(i, lineType);
   }
 
   getLineType(i: number): string {
-    return this.lineTypes[i];
+    return this.plot.lineTypes[i];
   }
 
   setLineWidths(lineWidths: number[]): void {
-    this.lineWidths = lineWidths;
-    for (let i = 0; i < this.lineWidths.length; i++) {
-      this.plot.setLineWidth(i, this.lineWidths[i]);
+    for (let i = 0; i < lineWidths.length; i++) {
+      this.plot.setLineWidth(i, lineWidths[i]);
     }
   }
 
   getLineWidths(): number[] {
-    return [...this.lineWidths];
+    return this.plot.lineWidths;
   }
 
   setLineWidth(i: number, lineWidth: number): void {
-    this.lineWidths[i] = lineWidth;
     this.plot.setLineWidth(i, lineWidth);
   }
 
   getLineWidth(i: number): number {
-    return this.lineWidths[i];
+    return this.plot.lineWidths[i];
   }
 
   setDataSymbols(dataSymbols: string[]): void {
-    this.dataSymbols = dataSymbols;
-    for (let i = 0; i < this.dataSymbols.length; i++) {
-      this.plot.setDataSymbol(i, this.dataSymbols[i]);
+    for (let i = 0; i < dataSymbols.length; i++) {
+      this.plot.setDataSymbol(i, dataSymbols[i]);
     }
   }
 
   getDataSymbols(): string[] {
-    return [...this.dataSymbols];
+    return this.plot.dataSymbols;
   }
 
   setDataSymbol(i: number, dataSymbol: string): void {
-    this.dataSymbols[i] = dataSymbol;
     this.plot.setDataSymbol(i, dataSymbol);
   }
 
   getDataSymbol(i: number): string {
-    return this.dataSymbols[i];
+    return this.plot.dataSymbols[i];
   }
 
   setDataSymbolColors(dataSymbolColors: string[]): void {
-    this.dataSymbolColors = dataSymbolColors;
-    for (let i = 0; i < this.dataSymbolColors.length; i++) {
-      this.plot.setDataSymbolColor(i, this.dataSymbolColors[i]);
+    for (let i = 0; i < dataSymbolColors.length; i++) {
+      this.plot.setDataSymbolColor(i, dataSymbolColors[i]);
     }
   }
 
   getDataSymbolColors(): string[] {
-    return [...this.dataSymbolColors];
+    return this.plot.dataSymbolColors;
   }
 
   setDataSymbolColor(i: number, dataSymbolColor: string): void {
-    this.dataSymbolColors[i] = dataSymbolColor;
     this.plot.setDataSymbolColor(i, dataSymbolColor);
   }
 
   getDataSymbolColor(i: number): string {
-    return this.dataSymbolColors[i];
+    return this.plot.dataSymbolColors[i];
   }
 
   setDataSymbolSpacings(dataSymbolSpacings: number[]): void {
-    this.dataSymbolSpacings = dataSymbolSpacings;
-    for (let i = 0; i < this.dataSymbolSpacings.length; i++) {
-      this.plot.setDataSymbolSpacing(i, this.dataSymbolSpacings[i]);
+    for (let i = 0; i < dataSymbolSpacings.length; i++) {
+      this.plot.setDataSymbolSpacing(i, dataSymbolSpacings[i]);
     }
   }
 
   getDataSymbolSpacings(): number[] {
-    return [...this.dataSymbolSpacings];
+    return this.plot.dataSymbolSpacings;
   }
 
   setDataSymbolSpacing(i: number, dataSymbolSpacing: number): void {
-    this.dataSymbolSpacings[i] = dataSymbolSpacing;
     this.plot.setDataSymbolSpacing(i, dataSymbolSpacing);
   }
 
   getDataSymbolSpacing(i: number): number {
-    return this.dataSymbolSpacings[i];
+    return this.plot.dataSymbolSpacings[i];
   }
 
   setDataSymbolRadii(dataSymbolRadii: number[]): void {
-    this.dataSymbolRadii = dataSymbolRadii;
-    for (let i = 0; i < this.dataSymbolRadii.length; i++) {
-      this.plot.setDataSymbolRadius(i, this.dataSymbolRadii[i]);
+    for (let i = 0; i < dataSymbolRadii.length; i++) {
+      this.plot.setDataSymbolRadius(i, dataSymbolRadii[i]);
     }
   }
 
   getDataSymbolRadii(): number[] {
-    return [...this.dataSymbolRadii];
+    return this.plot.dataSymbolRadii;
   }
 
   setDataSymbolRadius(i: number, dataSymbolRadius: number): void {
-    this.dataSymbolRadii[i] = dataSymbolRadius;
     this.plot.setDataSymbolRadius(i, dataSymbolRadius);
   }
 
   getDataSymbolRadius(i: number): number {
-    return this.dataSymbolRadii[i];
+    return this.plot.dataSymbolRadii[i];
   }
 
   setEndSymbolRadii(endSymbolRadii: number[]): void {
-    this.endSymbolRadii = endSymbolRadii;
-    for (let i = 0; i < this.endSymbolRadii.length; i++) {
-      this.plot.setEndSymbolRadius(i, this.endSymbolRadii[i]);
+    for (let i = 0; i < endSymbolRadii.length; i++) {
+      this.plot.setEndSymbolRadius(i, endSymbolRadii[i]);
     }
   }
 
   getEndSymbolRadii(): number[] {
-    return this.endSymbolRadii;
+    return this.plot.endSymbolRadii;
   }
 
   setEndSymbolRadius(i: number, endSymbolRadius: number): void {
-    this.endSymbolRadii[i] = endSymbolRadius;
     this.plot.setEndSymbolRadius(i, endSymbolRadius);
   }
 
   getEndSymbolRadius(i: number): number {
-    return this.endSymbolRadii[i];
+    return this.plot.endSymbolRadii[i];
   }
 
   setEndSymbolsConnection(endSymbolsConnection: string): void {
@@ -631,10 +606,6 @@ export class Space3D extends Block {
       ctx.font = "8px Arial";
       let h = ctx.measureText("M").width - 2;
       ctx.fillText("3D", this.spaceWindow.x + this.spaceWindow.width / 2 - ctx.measureText("3D").width / 2, this.spaceWindow.y + this.spaceWindow.height / 2 + h / 2);
-    } else {
-      if (this.pointInput && this.portPoints.length > 1) {
-        this.drawLegends(ctx);
-      }
     }
 
     // draw the port
@@ -648,108 +619,6 @@ export class Space3D extends Block {
       this.highlightSelection(ctx);
     }
 
-  }
-
-  private drawLegends(ctx: CanvasRenderingContext2D): void {
-    ctx.save();
-    ctx.font = "10px Arial";
-    let x0 = this.spaceWindow.x + this.spaceWindow.width - 50;
-    let y0 = this.spaceWindow.y + this.spaceMargin.top + 10;
-    let yi;
-    for (let i = 0; i < this.portPoints.length; i++) {
-      if (this.legends[i].trim() === "") continue;
-      yi = y0 + i * 20;
-      ctx.fillStyle = "black";
-      ctx.fillText(this.legends[i], x0 - ctx.measureText(this.legends[i]).width, yi);
-      yi -= 4;
-      if (this.lineTypes[i] !== "None") {
-        ctx.beginPath();
-        ctx.moveTo(x0 + 10, yi);
-        ctx.lineTo(x0 + 40, yi);
-        ctx.lineWidth = this.lineWidths[i];
-        ctx.strokeStyle = this.lineColors[i];
-        switch (this.lineTypes[i]) {
-          case "Solid":
-            ctx.setLineDash([]);
-            break;
-          case "Dashed":
-            ctx.setLineDash([5, 3]);
-            break;
-          case "Dotted":
-            ctx.setLineDash([2, 2]);
-            break;
-          case "Dashdot":
-            ctx.setLineDash([8, 2, 2, 2]);
-            break;
-        }
-        ctx.stroke();
-      }
-      ctx.lineWidth = 1;
-      ctx.setLineDash([]);
-      let xi = x0 + 25;
-      let r = this.dataSymbolRadii[i];
-      switch (this.dataSymbols[i]) {
-        case "Circle":
-          ctx.beginPath();
-          ctx.arc(xi, yi, r, 0, 2 * Math.PI);
-          ctx.closePath();
-          ctx.fillStyle = this.dataSymbolColors[i];
-          ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
-          ctx.stroke();
-          break;
-        case "Square":
-          let d = 2 * r;
-          ctx.beginPath();
-          ctx.rect(xi - r, yi - r, d, d);
-          ctx.fillStyle = this.dataSymbolColors[i];
-          ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
-          ctx.stroke();
-          break;
-        case "Triangle Up":
-          ctx.beginPath();
-          ctx.moveTo(xi, yi - r);
-          ctx.lineTo(xi - r, yi + r);
-          ctx.lineTo(xi + r, yi + r);
-          ctx.closePath();
-          ctx.fillStyle = this.dataSymbolColors[i];
-          ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
-          ctx.stroke();
-          break;
-        case "Triangle Down":
-          ctx.beginPath();
-          ctx.moveTo(xi, yi + r);
-          ctx.lineTo(xi - r, yi - r);
-          ctx.lineTo(xi + r, yi - r);
-          ctx.closePath();
-          ctx.fillStyle = this.dataSymbolColors[i];
-          ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
-          ctx.stroke();
-          break;
-        case "Diamond":
-          ctx.beginPath();
-          ctx.moveTo(xi, yi + r);
-          ctx.lineTo(xi - r, yi);
-          ctx.lineTo(xi, yi - r);
-          ctx.lineTo(xi + r, yi);
-          ctx.closePath();
-          ctx.fillStyle = this.dataSymbolColors[i];
-          ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
-          ctx.stroke();
-          break;
-        case "Dot":
-          ctx.beginPath();
-          ctx.rect(xi - 2, yi - 2, 4, 4);
-          ctx.fillStyle = this.dataSymbolColors[i];
-          ctx.fill();
-          break;
-      }
-    }
-    ctx.restore();
   }
 
   onDraggableArea(x: number, y: number): boolean {

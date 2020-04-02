@@ -132,12 +132,10 @@ export class Space3DContextMenu extends BlockContextMenu {
                   <td colspan="2">
                     <select id="space3d-symbol-selector" style="width: 100%">
                       <option value="None" selected>None</option>
-                      <option value="Circle">Circle</option>
-                      <option value="Square">Square</option>
-                      <option value="Triangle Up">Triangle Up</option>
-                      <option value="Triangle Down">Triangle Down</option>
-                      <option value="Diamond">Diamond</option>
-                      <option value="Dot">Dot</option>
+                      <option value="Sphere">Sphere</option>
+                      <option value="Cube">Cube</option>
+                      <option value="Pyramid Up">Pyramid Up</option>
+                      <option value="Pyramid Down">Pyramid Down</option>
                     </select>
                   </td>
                 </tr>
@@ -428,8 +426,8 @@ export class Space3DContextMenu extends BlockContextMenu {
             g.setLineWidth(i, lineWidths[i]);
             g.setDataSymbol(i, dataSymbols[i]);
             g.setDataSymbolColor(i, dataSymbolColors[i]);
-            g.setDataSymbolRadius(i, dataSymbolRadii[i] != null ? dataSymbolRadii[i] : 3);
-            g.setDataSymbolSpacing(i, dataSymbolSpacings[i] != null ? dataSymbolSpacings[i] : 1);
+            g.setDataSymbolRadius(i, dataSymbolRadii[i] != null ? dataSymbolRadii[i] : 0.5);
+            g.setDataSymbolSpacing(i, dataSymbolSpacings[i] != null ? dataSymbolSpacings[i] : 10);
             g.setEndSymbolRadius(i, endSymbolRadii[i]);
           }
           g.locateOverlay();

@@ -4,29 +4,41 @@
 
 // @ts-ignore
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {Point3DArray} from "./Point3DArray";
 import {
-  AmbientLight,
+  AmbientLight, BoxGeometry,
   BufferGeometry,
   Color,
-  Line, LineBasicMaterial, LineDashedMaterial,
+  Line, LineBasicMaterial, LineDashedMaterial, Material,
   Mesh,
   MeshPhongMaterial,
   PerspectiveCamera, PointLight,
   Scene, SphereGeometry, Vector3,
   WebGLRenderer
 } from "three";
+import {Point3DArray} from "./Point3DArray";
+import {Symbol3DArray} from "./Symbol3DArray";
 
 export class LinePlot {
+
+  lineTypes: string[] = [];
+  lineColors: string[] = [];
+  lineWidths: number[] = [];
+  dataSymbols: string[] = [];
+  dataSymbolRadii: number[] = [];
+  dataSymbolColors: string[] = [];
+  dataSymbolSpacings: number[] = [];
+  endSymbolRadii: number[] = [];
 
   private points: Point3DArray[] = [];
   private numberOfDataPoints: number = 0;
   private lines: Line[];
+  private symbols: Symbol3DArray[] = [];
   private endSymbols: Mesh[];
   private scene: Scene;
   private camera: PerspectiveCamera;
   private renderer: WebGLRenderer;
   private controls: OrbitControls;
+  private symbolMaterial: Material;
 
   constructor() {
     this.scene = new Scene();
@@ -34,7 +46,7 @@ export class LinePlot {
     this.renderer = new WebGLRenderer({alpha: true, antialias: true, preserveDrawingBuffer: true});
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(500, 500);
-    this.camera = new PerspectiveCamera(90, 1, 0.1, 5000);
+    this.camera = new PerspectiveCamera(45, 1, 0.1, 10000);
     this.setCameraPosition(0, 0, 10, 1, 1, 1);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.addEventListener('change', () => {
@@ -49,14 +61,16 @@ export class LinePlot {
     this.lines[0].geometry = new BufferGeometry();
     this.lines[0].material = new LineDashedMaterial({color: "black", dashSize: 3, gapSize: 1});
     this.scene.add(this.lines[0]);
-    this.endSymbols = new Array(1);
-    this.endSymbols[0] = new Mesh();
-    this.endSymbols[0].geometry = new SphereGeometry(0.5, 32, 32);
-    this.endSymbols[0].material = new MeshPhongMaterial({
+    this.symbolMaterial = new MeshPhongMaterial({
       color: "dimgray",
       specular: 0x050505,
       shininess: 0.1
     });
+    this.symbols.push(new Symbol3DArray());
+    this.endSymbols = new Array(1);
+    this.endSymbols[0] = new Mesh();
+    this.endSymbols[0].geometry = new SphereGeometry(0.5, 32, 32);
+    this.endSymbols[0].material = this.symbolMaterial;
     this.scene.add(this.endSymbols[0]);
   }
 
@@ -73,13 +87,17 @@ export class LinePlot {
     if (this.lines !== undefined) {
       for (let l of this.lines) {
         l.geometry.dispose();
+        this.scene.remove(l);
       }
     }
     if (this.endSymbols !== undefined) {
       for (let s of this.endSymbols) {
         s.geometry.dispose();
+        this.scene.remove(s);
       }
     }
+    this.scene.dispose();
+    this.controls.dispose();
   }
 
   getDataPoints(): number {
@@ -123,9 +141,11 @@ export class LinePlot {
     }
     this.lines[i].geometry = new BufferGeometry().setFromPoints(this.points[i].getPoints());
     if (this.lines[i].material instanceof LineDashedMaterial) this.lines[i].computeLineDistances();
+    this.drawSymbols(i);
   }
 
   setEndSymbolRadius(i: number, r: number): void {
+    this.endSymbolRadii[i] = r;
     if (this.endSymbols[i].geometry !== undefined) this.endSymbols[i].geometry.dispose();
     if (r > 0.000001) {
       this.endSymbols[i].geometry = new SphereGeometry(r, 32, 32);
@@ -136,45 +156,89 @@ export class LinePlot {
   }
 
   setDataSymbol(i: number, dataSymbol: string): void {
-    switch (dataSymbol) {
-      case "Circle":
+    this.dataSymbols[i] = dataSymbol;
+    this.drawSymbols(i);
+  }
+
+  // this is an expensive method as it removes all the existing symbols and recreates new ones every time
+  private drawSymbols(i: number): void {
+    if (this.symbols[i].length() > 0) {
+      for (let k = 0; k < this.symbols[i].length(); k++) {
+        let s = this.symbols[i].getSymbol(k);
+        if (this.isSceneChild(s)) {
+          this.scene.remove(s);
+        }
+      }
+    }
+    this.symbols[i].clear();
+    if (this.dataSymbols[i] === "None") return;
+    let iLength = this.points[i].length();
+    if (iLength <= 0) return;
+    switch (this.dataSymbols[i]) {
+      case "Sphere":
+        let sg = new SphereGeometry(this.dataSymbolRadii[i], 8, 8);
+        for (let k = 0; k < iLength; k++) {
+          if (k % this.dataSymbolSpacings[i] == 0) {
+            let sphere = new Mesh(sg, this.symbolMaterial);
+            sphere.translateX(this.points[i].getX(k));
+            sphere.translateY(this.points[i].getY(k));
+            sphere.translateZ(this.points[i].getZ(k));
+            this.symbols[i].addSymbol(sphere);
+          }
+        }
         break;
-      case "Square":
+      case "Cube":
+        let l = this.dataSymbolRadii[i] * 2;
+        let bg = new BoxGeometry(l, l, l);
+        for (let k = 0; k < iLength; k++) {
+          if (k % this.dataSymbolSpacings[i] == 0) {
+            let cube = new Mesh(bg, this.symbolMaterial);
+            cube.translateX(this.points[i].getX(k));
+            cube.translateY(this.points[i].getY(k));
+            cube.translateZ(this.points[i].getZ(k));
+            this.symbols[i].addSymbol(cube);
+          }
+        }
         break;
-      case "Triangle Up":
+      case "Pyramid Up":
         break;
-      case "Triangle Down":
+      case "Pyramid Down":
         break;
-      case "Diamond":
-        break;
-      case "Dot":
-        break;
+    }
+    if (this.symbols[i].length() > 0) {
+      for (let k = 0; k < this.symbols[i].length(); k++) {
+        this.scene.add(this.symbols[i].getSymbol(k));
+      }
     }
   }
 
   setDataSymbolSpacing(i: number, dataSymbolSpacing: number): void {
-
+    this.dataSymbolSpacings[i] = dataSymbolSpacing;
   }
 
   setDataSymbolRadius(i: number, dataSymbolRadius: number): void {
-
+    this.dataSymbolRadii[i] = dataSymbolRadius;
   }
 
   setDataSymbolColor(i: number, c: string): void {
+    this.dataSymbolColors[i] = c;
     if (this.endSymbols[i].material instanceof MeshPhongMaterial) {
       (<MeshPhongMaterial>this.endSymbols[i].material).color = new Color(c);
     }
   }
 
-  setLineColor(i: number, color: string) {
-    (<LineBasicMaterial>this.lines[i].material).color = new Color(color);
+  setLineColor(i: number, c: string) {
+    this.lineColors[i] = c;
+    (<LineBasicMaterial>this.lines[i].material).color = new Color(c);
   }
 
   setLineWidth(i: number, width: number) {
+    this.lineWidths[i] = width;
     (<LineBasicMaterial>this.lines[i].material).linewidth = width;
   }
 
   setLineType(i: number, type: string) {
+    this.lineTypes[i] = type;
     if (type === "None") {
       if (this.isSceneChild(this.lines[i])) {
         this.scene.remove(this.lines[i]);
