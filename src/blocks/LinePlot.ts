@@ -8,7 +8,7 @@ import {
   AmbientLight, BoxGeometry,
   BufferGeometry,
   Color, ConeGeometry, CylinderGeometry, Geometry,
-  Line, LineBasicMaterial, LineDashedMaterial, Material,
+  Line, LineBasicMaterial, LineDashedMaterial, Matrix4,
   Mesh,
   MeshPhongMaterial,
   PerspectiveCamera, PointLight,
@@ -29,6 +29,7 @@ export class LinePlot {
   dataSymbolSpacings: number[] = [];
   endSymbolRadii: number[] = [];
 
+  private endSymbolsConnection: string = "None";
   private points: Point3DArray[] = [];
   private numberOfDataPoints: number = 0;
   private lines: Line[];
@@ -38,7 +39,7 @@ export class LinePlot {
   private camera: PerspectiveCamera;
   private renderer: WebGLRenderer;
   private controls: OrbitControls;
-  private symbolMaterial: Material;
+  private stick: Mesh;
 
   constructor() {
     this.scene = new Scene();
@@ -61,16 +62,15 @@ export class LinePlot {
     this.lines[0].geometry = new BufferGeometry();
     this.lines[0].material = new LineDashedMaterial({color: "black", dashSize: 3, gapSize: 1});
     this.scene.add(this.lines[0]);
-    this.symbolMaterial = new MeshPhongMaterial({
-      color: "dimgray",
-      specular: 0x050505,
-      shininess: 0.1
-    });
     this.symbols.push(new Symbol3DArray());
     this.endSymbols = new Array(1);
     this.endSymbols[0] = new Mesh();
     this.endSymbols[0].geometry = new SphereGeometry(0.5, 32, 32);
-    this.endSymbols[0].material = this.symbolMaterial;
+    this.endSymbols[0].material = new MeshPhongMaterial({
+      color: "dimgray",
+      specular: 0x050505,
+      shininess: 0.1
+    });
     this.scene.add(this.endSymbols[0]);
   }
 
@@ -106,10 +106,44 @@ export class LinePlot {
 
   pushPointArray(): void {
     this.points.push(new Point3DArray());
+    let line = new Line();
+    line.geometry = new BufferGeometry();
+    line.material = new LineDashedMaterial({color: "black", dashSize: 3, gapSize: 1});
+    this.lines.push(line);
+    this.scene.add(line);
+    let endSymbol = new Mesh();
+    this.endSymbols.push(endSymbol);
+    endSymbol.geometry = new SphereGeometry(0.01, 32, 32);
+    endSymbol.material = new MeshPhongMaterial({
+      color: "dimgray",
+      specular: 0x050505,
+      shininess: 0.1
+    });
+    this.scene.add(endSymbol);
+    this.symbols.push(new Symbol3DArray());
+    this.lineTypes.push("Solid");
+    this.lineColors.push("black");
+    this.lineWidths.push(1);
+    this.dataSymbols.push("None");
+    this.dataSymbolRadii.push(3);
+    this.dataSymbolColors.push("dimgray");
+    this.dataSymbolSpacings.push(1);
+    this.endSymbolRadii.push(0);
   }
 
   popPointArray(): void {
     this.points.pop();
+    this.lines.pop();
+    this.endSymbols.pop();
+    this.symbols.pop();
+    this.lineTypes.pop();
+    this.lineColors.pop();
+    this.lineWidths.pop();
+    this.dataSymbols.pop();
+    this.dataSymbolRadii.pop();
+    this.dataSymbolColors.pop();
+    this.dataSymbolSpacings.pop();
+    this.endSymbolRadii.pop();
   }
 
   setPointArrayLength(n: number): void {
@@ -124,6 +158,33 @@ export class LinePlot {
     this.lines[i].geometry = new BufferGeometry().setFromPoints(this.points[i].getPoints());
     this.endSymbols[i].position.set(x, y, z);
     if (this.lines[i].material instanceof LineDashedMaterial) this.lines[i].computeLineDistances();
+    if (i == 1) {
+      let x1 = this.endSymbols[i].position.x;
+      let x0 = this.endSymbols[i - 1].position.x;
+      let y1 = this.endSymbols[i].position.y;
+      let y0 = this.endSymbols[i - 1].position.y;
+      let z1 = this.endSymbols[i].position.z;
+      let z0 = this.endSymbols[i - 1].position.z;
+      let dx = x1 - x0;
+      let dy = y1 - y0;
+      let dz = z1 - z0;
+      let h = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      if (this.stick !== undefined) {
+        this.scene.remove(this.stick);
+      }
+      this.stick = new Mesh();
+      this.stick.geometry = new CylinderGeometry(0.05, 0.05, h, 5);
+      this.stick.geometry.applyMatrix4(new Matrix4().makeTranslation(0, h / 2, 0));
+      this.stick.geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
+      this.stick.material = new MeshPhongMaterial({
+        color: "dimgray",
+        specular: 0x050505,
+        shininess: 0.1
+      });
+      this.scene.add(this.stick);
+      this.stick.position.set(x0, y0, z0);
+      this.stick.lookAt(new Vector3(x1, y1, z1));
+    }
   }
 
   getLatestPoint(i: number): THREE.Vector3 {
@@ -142,6 +203,14 @@ export class LinePlot {
     this.lines[i].geometry = new BufferGeometry().setFromPoints(this.points[i].getPoints());
     if (this.lines[i].material instanceof LineDashedMaterial) this.lines[i].computeLineDistances();
     this.drawSymbols(i);
+  }
+
+  setEndSymbolsConnection(endSymbolsConnection: string): void {
+    this.endSymbolsConnection = endSymbolsConnection;
+  }
+
+  getEndSymbolsConnection(): string {
+    return this.endSymbolsConnection;
   }
 
   setEndSymbolRadius(i: number, r: number): void {
@@ -193,9 +262,14 @@ export class LinePlot {
     if (iLength <= 0) return;
     let g: Geometry = this.getSymbolGeometry(i, this.dataSymbolRadii[i]);
     if (g !== undefined) {
+      let symbolMaterial = new MeshPhongMaterial({
+        color: this.dataSymbolColors[i],
+        specular: 0x050505,
+        shininess: 0.1
+      });
       for (let k = 0; k < iLength; k++) {
         if (k % this.dataSymbolSpacings[i] == 0) {
-          let mesh = new Mesh(g, this.symbolMaterial);
+          let mesh = new Mesh(g, symbolMaterial);
           mesh.translateX(this.points[i].getX(k));
           mesh.translateY(this.points[i].getY(k));
           mesh.translateZ(this.points[i].getZ(k));

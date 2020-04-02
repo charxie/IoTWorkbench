@@ -21,7 +21,6 @@ export class Space3D extends Block {
   private yAxisLabel: string = "y";
   private zAxisLabel: string = "z";
   private spaceWindowColor: string = "white";
-  private endSymbolsConnection: string = "None";
   private spaceWindow: Rectangle;
   private barHeight: number;
   private readonly spaceMargin = {
@@ -78,7 +77,7 @@ export class Space3D extends Block {
       this.yAxisLabel = g.yAxisLabel;
       this.zAxisLabel = g.zAxisLabel;
       this.spaceWindowColor = g.spaceWindowColor;
-      this.endSymbolsConnection = g.endSymbolsConnection;
+      this.endSymbolsConnection = g.getEndSymbolsConnection();
       this.pointInput = g.pointInput;
       this.numberOfPoints = g.getNumberOfPoints();
       this.legends = [...g.legends];
@@ -138,7 +137,6 @@ export class Space3D extends Block {
     copy.yAxisLabel = this.yAxisLabel;
     copy.zAxisLabel = this.zAxisLabel;
     copy.spaceWindowColor = this.spaceWindowColor;
-    copy.endSymbolsConnection = this.endSymbolsConnection;
     copy.setPointInput(this.pointInput);
     copy.setNumberOfPoints(this.getNumberOfPoints());
     copy.legends = [...this.legends];
@@ -150,6 +148,7 @@ export class Space3D extends Block {
     copy.plot.dataSymbolColors = [...this.plot.dataSymbolColors];
     copy.plot.dataSymbolSpacings = [...this.plot.dataSymbolSpacings];
     copy.plot.endSymbolRadii = [...this.plot.endSymbolRadii];
+    copy.setEndSymbolsConnection(this.getEndSymbolsConnection());
     copy.setWidth(this.getWidth());
     copy.setHeight(this.getHeight());
     copy.plot.render();
@@ -310,14 +309,6 @@ export class Space3D extends Block {
             this.plot.pushPointArray();
             if (notSet) {
               this.legends.push(p.getUid());
-              this.plot.lineTypes.push("Solid");
-              this.plot.lineColors.push("black");
-              this.plot.lineWidths.push(1);
-              this.plot.dataSymbols.push("None");
-              this.plot.dataSymbolRadii.push(3);
-              this.plot.dataSymbolColors.push("white");
-              this.plot.dataSymbolSpacings.push(1);
-              this.plot.endSymbolRadii.push(0);
             }
           }
         }
@@ -327,14 +318,6 @@ export class Space3D extends Block {
           this.plot.popPointArray();
           flowchart.removeConnectorsToPort(this.ports.pop());
           this.legends.pop();
-          this.plot.lineTypes.pop();
-          this.plot.lineColors.pop();
-          this.plot.lineWidths.pop();
-          this.plot.dataSymbols.pop();
-          this.plot.dataSymbolRadii.pop();
-          this.plot.dataSymbolColors.pop();
-          this.plot.dataSymbolSpacings.pop();
-          this.plot.endSymbolRadii.pop();
         }
       }
       let n = this.portPoints.length;
@@ -550,11 +533,11 @@ export class Space3D extends Block {
   }
 
   setEndSymbolsConnection(endSymbolsConnection: string): void {
-    this.endSymbolsConnection = endSymbolsConnection;
+    this.plot.setEndSymbolsConnection(endSymbolsConnection);
   }
 
   getEndSymbolsConnection(): string {
-    return this.endSymbolsConnection;
+    return this.plot.getEndSymbolsConnection();
   }
 
   draw(ctx: CanvasRenderingContext2D): void {

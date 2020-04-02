@@ -248,17 +248,17 @@ export class StateIO {
           block.setYAxisLabel(state.yAxisLabel);
           block.setSpaceWindowColor(state.spaceWindowColor);
           block.setPointInput(state.pointInput);
+          block.setNumberOfPoints(state.numberOfPoints);
           block.setEndSymbolsConnection(state.endSymbolsConnection);
           block.setLegends(state.legends);
           block.setLineTypes(state.lineTypes);
           block.setLineColors(state.lineColors);
           if (state.lineWidths !== undefined) block.setLineWidths(state.lineWidths);
+          block.setEndSymbolRadii(state.endSymbolRadii);
           block.setDataSymbols(state.dataSymbols);
           block.setDataSymbolRadii(state.dataSymbolRadii);
           block.setDataSymbolColors(state.dataSymbolColors);
           block.setDataSymbolSpacings(state.dataSymbolSpacings);
-          block.setEndSymbolRadii(state.endSymbolRadii);
-          block.setNumberOfPoints(state.numberOfPoints);
           if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
             block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
         } else if (block instanceof Field2D) {

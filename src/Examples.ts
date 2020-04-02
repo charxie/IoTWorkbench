@@ -155,6 +155,8 @@ import double_pendulum from "./examples/double-pendulum.json";
 // @ts-ignore
 import inverted_pendulum_oscillatory_base from "./examples/inverted-pendulum-oscillatory-base.json";
 // @ts-ignore
+import spherical_pendulum from "./examples/spherical-pendulum.json";
+// @ts-ignore
 import rlc_circuit from "./examples/rlc-circuit.json";
 // @ts-ignore
 import projectile_motion_1 from "./examples/projectile-motion-1.json";
@@ -358,6 +360,7 @@ export class Examples {
       name: "Mechanics: Inverted Pendulum on Oscillatory Base",
       data: inverted_pendulum_oscillatory_base
     });
+    this.files.push({name: "Mechanics: Spherical Pendulum", data: spherical_pendulum});
     this.files.push({name: "Electronics: RLC Circuit", data: rlc_circuit});
     this.files.push({name: "Electronics: Chua Circuit", data: chua_circuit});
     this.files.push({name: "Electronics: Van der Pol Oscillator", data: van_der_pol_oscillator});
