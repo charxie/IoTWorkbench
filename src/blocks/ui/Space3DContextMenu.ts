@@ -134,8 +134,9 @@ export class Space3DContextMenu extends BlockContextMenu {
                       <option value="None" selected>None</option>
                       <option value="Sphere">Sphere</option>
                       <option value="Cube">Cube</option>
-                      <option value="Pyramid Up">Pyramid Up</option>
-                      <option value="Pyramid Down">Pyramid Down</option>
+                      <option value="Cone">Cone</option>
+                      <option value="Cylinder">Cylinder</option>
+                      <option value="Tetrahedron">Tetrahedron</option>
                     </select>
                   </td>
                 </tr>

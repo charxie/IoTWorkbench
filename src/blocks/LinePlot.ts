@@ -7,12 +7,12 @@ import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {
   AmbientLight, BoxGeometry,
   BufferGeometry,
-  Color,
+  Color, ConeGeometry, CylinderGeometry, Geometry,
   Line, LineBasicMaterial, LineDashedMaterial, Material,
   Mesh,
   MeshPhongMaterial,
   PerspectiveCamera, PointLight,
-  Scene, SphereGeometry, Vector3,
+  Scene, SphereGeometry, TetrahedronGeometry, Vector3,
   WebGLRenderer
 } from "three";
 import {Point3DArray} from "./Point3DArray";
@@ -86,13 +86,13 @@ export class LinePlot {
     this.erase();
     if (this.lines !== undefined) {
       for (let l of this.lines) {
-        l.geometry.dispose();
+        if (l.geometry !== undefined) l.geometry.dispose();
         this.scene.remove(l);
       }
     }
     if (this.endSymbols !== undefined) {
       for (let s of this.endSymbols) {
-        s.geometry.dispose();
+        if (s.geometry !== undefined) s.geometry.dispose();
         this.scene.remove(s);
       }
     }
@@ -148,11 +148,28 @@ export class LinePlot {
     this.endSymbolRadii[i] = r;
     if (this.endSymbols[i].geometry !== undefined) this.endSymbols[i].geometry.dispose();
     if (r > 0.000001) {
-      this.endSymbols[i].geometry = new SphereGeometry(r, 32, 32);
+      this.endSymbols[i].geometry = new SphereGeometry(r, 16, 16);
       if (!this.isSceneChild(this.endSymbols[i])) this.scene.add(this.endSymbols[i]);
     } else {
       this.scene.remove(this.endSymbols[i]);
     }
+  }
+
+  private getSymbolGeometry(i: number, r: number): Geometry {
+    switch (this.dataSymbols[i]) {
+      case "Sphere":
+        return new SphereGeometry(r, 8, 8);
+      case "Cube":
+        let l = r * 2;
+        return new BoxGeometry(l, l, l);
+      case "Cone":
+        return new ConeGeometry(r, 2 * r, 8);
+      case "Cylinder":
+        return new CylinderGeometry(r, r, 2 * r, 8);
+      case "Tetrahedron":
+        return new TetrahedronGeometry(r);
+    }
+    return undefined;
   }
 
   setDataSymbol(i: number, dataSymbol: string): void {
@@ -174,36 +191,17 @@ export class LinePlot {
     if (this.dataSymbols[i] === "None") return;
     let iLength = this.points[i].length();
     if (iLength <= 0) return;
-    switch (this.dataSymbols[i]) {
-      case "Sphere":
-        let sg = new SphereGeometry(this.dataSymbolRadii[i], 8, 8);
-        for (let k = 0; k < iLength; k++) {
-          if (k % this.dataSymbolSpacings[i] == 0) {
-            let sphere = new Mesh(sg, this.symbolMaterial);
-            sphere.translateX(this.points[i].getX(k));
-            sphere.translateY(this.points[i].getY(k));
-            sphere.translateZ(this.points[i].getZ(k));
-            this.symbols[i].addSymbol(sphere);
-          }
+    let g: Geometry = this.getSymbolGeometry(i, this.dataSymbolRadii[i]);
+    if (g !== undefined) {
+      for (let k = 0; k < iLength; k++) {
+        if (k % this.dataSymbolSpacings[i] == 0) {
+          let mesh = new Mesh(g, this.symbolMaterial);
+          mesh.translateX(this.points[i].getX(k));
+          mesh.translateY(this.points[i].getY(k));
+          mesh.translateZ(this.points[i].getZ(k));
+          this.symbols[i].addSymbol(mesh);
         }
-        break;
-      case "Cube":
-        let l = this.dataSymbolRadii[i] * 2;
-        let bg = new BoxGeometry(l, l, l);
-        for (let k = 0; k < iLength; k++) {
-          if (k % this.dataSymbolSpacings[i] == 0) {
-            let cube = new Mesh(bg, this.symbolMaterial);
-            cube.translateX(this.points[i].getX(k));
-            cube.translateY(this.points[i].getY(k));
-            cube.translateZ(this.points[i].getZ(k));
-            this.symbols[i].addSymbol(cube);
-          }
-        }
-        break;
-      case "Pyramid Up":
-        break;
-      case "Pyramid Down":
-        break;
+      }
     }
     if (this.symbols[i].length() > 0) {
       for (let k = 0; k < this.symbols[i].length(); k++) {
