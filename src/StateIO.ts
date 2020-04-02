@@ -248,8 +248,8 @@ export class StateIO {
           block.setYAxisLabel(state.yAxisLabel);
           block.setSpaceWindowColor(state.spaceWindowColor);
           block.setPointInput(state.pointInput);
-          block.setNumberOfPoints(state.numberOfPoints);
           block.setEndSymbolsConnection(state.endSymbolsConnection);
+          block.setNumberOfPoints(state.numberOfPoints);
           block.setLegends(state.legends);
           block.setLineTypes(state.lineTypes);
           block.setLineColors(state.lineColors);

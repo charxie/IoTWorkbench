@@ -100,6 +100,7 @@ export class GlobalObjectBlock extends GlobalBlock {
     copy.values = this.values.slice();
     copy.initialValues = this.initialValues.slice();
     copy.marginX = this.marginX;
+    copy.setInputPorts();
     return copy;
   }
 

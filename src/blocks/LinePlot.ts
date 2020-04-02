@@ -35,11 +35,11 @@ export class LinePlot {
   private lines: Line[];
   private symbols: Symbol3DArray[] = [];
   private endSymbols: Mesh[];
+  private endSymbolConnectors: Mesh[];
   private scene: Scene;
   private camera: PerspectiveCamera;
   private renderer: WebGLRenderer;
   private controls: OrbitControls;
-  private stick: Mesh;
 
   constructor() {
     this.scene = new Scene();
@@ -147,6 +147,41 @@ export class LinePlot {
   }
 
   setPointArrayLength(n: number): void {
+    if (this.endSymbolsConnection !== "None") {
+      if (this.endSymbolConnectors === undefined) {
+        if (n > 1) {
+          this.endSymbolConnectors = new Array();
+          for (let i = 0; i < n - 1; i++) {
+            this.endSymbolConnectors.push(new Mesh());
+          }
+        }
+      } else {
+        if (n < this.points.length) {
+          for (let i = n; i < this.points.length; i++) {
+            let mesh = this.endSymbolConnectors.pop();
+            mesh.geometry.dispose();
+            if (this.isSceneChild(mesh)) {
+              this.scene.remove(mesh);
+            }
+          }
+        } else if (n > this.points.length) {
+          for (let i = this.points.length; i < n; i++) {
+            this.endSymbolConnectors.push(new Mesh());
+          }
+        }
+      }
+      let connectorMaterial = new MeshPhongMaterial({
+        color: "dimgray",
+        specular: 0x050505,
+        shininess: 0.1
+      });
+      for (let m of this.endSymbolConnectors) {
+        if (!this.isSceneChild(m)) {
+          this.scene.add(m);
+        }
+        m.material = connectorMaterial;
+      }
+    }
     this.points.length = n;
   }
 
@@ -158,33 +193,28 @@ export class LinePlot {
     this.lines[i].geometry = new BufferGeometry().setFromPoints(this.points[i].getPoints());
     this.endSymbols[i].position.set(x, y, z);
     if (this.lines[i].material instanceof LineDashedMaterial) this.lines[i].computeLineDistances();
-    if (i == 1) {
-      let x1 = this.endSymbols[i].position.x;
-      let x0 = this.endSymbols[i - 1].position.x;
-      let y1 = this.endSymbols[i].position.y;
-      let y0 = this.endSymbols[i - 1].position.y;
-      let z1 = this.endSymbols[i].position.z;
-      let z0 = this.endSymbols[i - 1].position.z;
-      let dx = x1 - x0;
-      let dy = y1 - y0;
-      let dz = z1 - z0;
-      let h = Math.sqrt(dx * dx + dy * dy + dz * dz);
-      if (this.stick !== undefined) {
-        this.scene.remove(this.stick);
-      }
-      this.stick = new Mesh();
-      this.stick.geometry = new CylinderGeometry(0.05, 0.05, h, 5);
-      this.stick.geometry.applyMatrix4(new Matrix4().makeTranslation(0, h / 2, 0));
-      this.stick.geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
-      this.stick.material = new MeshPhongMaterial({
-        color: "dimgray",
-        specular: 0x050505,
-        shininess: 0.1
-      });
-      this.scene.add(this.stick);
-      this.stick.position.set(x0, y0, z0);
-      this.stick.lookAt(new Vector3(x1, y1, z1));
+    if (i > 0 && this.endSymbolsConnection !== "None") {
+      let j = i - 1;
+      this.setEndSymolConnector(i, j, j);
     }
+  }
+
+  private setEndSymolConnector(i: number, j: number, k: number): void {
+    let xi = this.endSymbols[i].position.x;
+    let xj = this.endSymbols[j].position.x;
+    let yi = this.endSymbols[i].position.y;
+    let yj = this.endSymbols[j].position.y;
+    let zi = this.endSymbols[i].position.z;
+    let zj = this.endSymbols[j].position.z;
+    let dx = xi - xj;
+    let dy = yi - yj;
+    let dz = zi - zj;
+    let h = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    this.endSymbolConnectors[k].geometry = new CylinderGeometry(0.05, 0.05, h, 5);
+    this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeTranslation(0, h / 2, 0));
+    this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
+    this.endSymbolConnectors[k].position.set(xj, yj, zj);
+    this.endSymbolConnectors[k].lookAt(new Vector3(xi, yi, zi));
   }
 
   getLatestPoint(i: number): THREE.Vector3 {
