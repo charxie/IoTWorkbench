@@ -3,7 +3,7 @@
  */
 
 import $ from "jquery";
-import {closeAllContextMenus, flowchart, math, system} from "../Main";
+import {closeAllContextMenus, examples, flowchart, math, system} from "../Main";
 import {Util} from "../Util";
 import {BlockView} from "./BlockView";
 import {Block} from "./Block";
@@ -1064,8 +1064,7 @@ export class Flowchart {
         buttons: {
           'OK': () => {
             this.clear();
-            let selectElement = document.getElementById("example-list") as HTMLSelectElement;
-            selectElement.value = "select";
+            examples.deselect();
             d.dialog('close');
           },
           'Cancel': () => d.dialog('close')

@@ -200,6 +200,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
           g.setColorScheme(colorSchemeSelector.value)
           g.setXAxisLabel(xAxisLableField.value);
           g.setYAxisLabel(yAxisLableField.value);
+          g.setZAxisLabel(zAxisLableField.value);
           g.setViewWindowColor(windowColorField.value);
           g.locateOverlay();
           g.updateModel();

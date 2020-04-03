@@ -354,9 +354,7 @@ export class Space3DContextMenu extends BlockContextMenu {
         }
         // set box size
         let boxSize = parseInt(boxSizeField.value);
-        if (isNumber(boxSize)) {
-          g.setBoxSize(Math.max(0, boxSize));
-        } else {
+        if (!isNumber(boxSize)) {
           success = false;
           message = boxSizeField.value + " is not a valid box size";
         }
@@ -431,6 +429,8 @@ export class Space3DContextMenu extends BlockContextMenu {
           g.setName(nameField.value);
           g.setXAxisLabel(xAxisLableField.value);
           g.setYAxisLabel(yAxisLableField.value);
+          g.setZAxisLabel(zAxisLableField.value);
+          g.setBoxSize(Math.max(0, boxSize));
           g.setSpaceWindowColor(windowColorField.value);
           g.setPointInput(pointInputRadioButton.checked);
           g.setEndSymbolsConnection(endSymbolsConnectionSelector.value);
@@ -464,6 +464,7 @@ export class Space3DContextMenu extends BlockContextMenu {
       pointsField.addEventListener("keyup", enterKeyUp);
       xAxisLableField.addEventListener("keyup", enterKeyUp);
       yAxisLableField.addEventListener("keyup", enterKeyUp);
+      zAxisLableField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       lineColorField.addEventListener("keyup", enterKeyUp);
       lineWidthField.addEventListener("keyup", enterKeyUp);

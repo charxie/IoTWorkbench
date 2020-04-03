@@ -73,6 +73,7 @@ export const contextMenus: any = {};
 export const sound = new Sound();
 export const math = create(all, {});
 export const undoManager = new UndoManager();
+export const examples = new Examples();
 
 export function closeAllContextMenus() {
   Object.keys(contextMenus).forEach(key => {
@@ -115,7 +116,6 @@ window.onload = function () {
     + Constants.Software.name + " Version " + Constants.Software.version
     + ", created by <a href='https://charxie.github.io/' style='text-decoration: none;'>Dr. Charles Xie</a>, " + new Date().getFullYear();
 
-  let examples = new Examples();
   document.getElementById("main-page-previous-tutorial-button").onclick = function () {
     examples.loadPrevious();
   };

@@ -221,7 +221,8 @@ export class Surface3D extends Block {
 
   destroy(): void {
     if (this.overlay !== undefined) {
-      document.getElementById("block-view-wrapper").removeChild(this.overlay);
+      let parent = document.getElementById("block-view-wrapper");
+      if (parent.contains(this.overlay)) parent.removeChild(this.overlay);
     }
     this.plot.destroy();
   }

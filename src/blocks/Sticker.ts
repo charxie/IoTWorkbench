@@ -79,7 +79,8 @@ export class Sticker extends Block {
 
   destroy(): void {
     if (this.htmlOverlay !== undefined) {
-      document.getElementById("block-view-wrapper").removeChild(this.htmlOverlay);
+      let parent = document.getElementById("block-view-wrapper");
+      if (parent.contains(this.htmlOverlay)) parent.removeChild(this.htmlOverlay);
     }
   }
 

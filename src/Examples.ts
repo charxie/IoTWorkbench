@@ -407,10 +407,9 @@ export class Examples {
 
     }
 
-    let that = this;
-    selectElement.onchange = function () {
+    selectElement.onchange = () => {
       if (selectElement.selectedIndex > 0) {
-        that.load(that.files[selectElement.selectedIndex - 1].data);
+        this.load(this.files[selectElement.selectedIndex - 1].data);
       }
     };
   }
@@ -429,6 +428,11 @@ export class Examples {
       selectElement.selectedIndex++;
       this.load(this.files[selectElement.selectedIndex - 1].data);
     }
+  }
+
+  deselect(): void {
+    let selectElement = document.getElementById("example-list") as HTMLSelectElement;
+    selectElement.selectedIndex = 0;
   }
 
   load(s): void {

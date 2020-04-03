@@ -7,7 +7,7 @@ import FileSaver from "file-saver";
 import {Util} from "./Util";
 import {Slider} from "./blocks/Slider";
 import {Sticker} from "./blocks/Sticker";
-import {flowchart, system} from "./Main";
+import {examples, flowchart, system} from "./Main";
 import {ToggleSwitch} from "./blocks/ToggleSwitch";
 import {ItemSelector} from "./blocks/ItemSelector";
 import {SeriesBlock} from "./blocks/SeriesBlock";
@@ -246,6 +246,7 @@ export class StateIO {
           block.setName(state.name);
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
+          block.setZAxisLabel(state.zAxisLabel);
           block.setSpaceWindowColor(state.spaceWindowColor);
           block.setPointInput(state.pointInput);
           block.setEndSymbolsConnection(state.endSymbolsConnection);
@@ -513,18 +514,18 @@ export class StateIO {
   }
 
   static open(): void {
-    let that = this;
-    flowchart.destroy();
     let fileDialog = document.getElementById('state-file-dialog') as HTMLInputElement;
     fileDialog.onchange = e => {
       let target = <HTMLInputElement>event.target;
       if (target.files.length) {
+        flowchart.destroy();
+        examples.deselect();
         let reader: FileReader = new FileReader();
         reader.readAsText(target.files[0]);
-        that.lastFileName = target.files[0].name;
-        reader.onload = function (e) {
+        this.lastFileName = target.files[0].name;
+        reader.onload = (e) => {
           let s = JSON.parse(reader.result.toString());
-          that.restore(s);
+          this.restore(s);
           flowchart.updateResultsExcludingAllWorkerBlocks();
           flowchart.updateLocalStorage();
           system.updateLocalStorage();
