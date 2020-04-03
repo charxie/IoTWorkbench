@@ -259,6 +259,7 @@ export class StateIO {
           block.setDataSymbolRadii(state.dataSymbolRadii);
           block.setDataSymbolColors(state.dataSymbolColors);
           block.setDataSymbolSpacings(state.dataSymbolSpacings);
+          if (state.boxSize !== undefined) block.setBoxSize(state.boxSize);
           if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
             block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
         } else if (block instanceof Field2D) {

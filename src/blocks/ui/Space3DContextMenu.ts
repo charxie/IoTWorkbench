@@ -76,6 +76,21 @@ export class Space3DContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="space3d-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Input Type:</td>
+                  <td colspan="3">
+                    <input type="radio" name="input" id="space3d-trio-input-radio-button" checked> Trio
+                    <input type="radio" name="input" id="space3d-point-input-radio-button"> Point
+                  </td>
+                </tr>
+                <tr>
+                  <td>Points:</td>
+                  <td colspan="3"><input type="text" id="space3d-points-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Box Size:</td>
+                  <td colspan="3"><input type="text" id="space3d-box-size-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>X-Axis Label:</td>
                   <td colspan="3"><input type="text" id="space3d-x-axis-label-field" style="width: 100%"></td>
                 </tr>
@@ -86,17 +101,6 @@ export class Space3DContextMenu extends BlockContextMenu {
                 <tr>
                   <td>Z-Axis Label:</td>
                   <td colspan="3"><input type="text" id="space3d-z-axis-label-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Input Type:</td>
-                  <td colspan="3">
-                    <input type="radio" name="input" id="space3d-trio-input-radio-button" checked> Trio
-                    <input type="radio" name="input" id="space3d-point-input-radio-button"> Point
-                  </td>
-                </tr>
-                <tr>
-                  <td>Points:</td>
-                  <td colspan="3"><input type="text" id="space3d-points-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Line Type:</td>
@@ -228,6 +232,8 @@ export class Space3DContextMenu extends BlockContextMenu {
 
       let nameField = document.getElementById("space3d-name-field") as HTMLInputElement;
       nameField.value = g.getName();
+      let boxSizeField = document.getElementById("space3d-box-size-field") as HTMLInputElement;
+      boxSizeField.value = g.getBoxSize().toString();
       let xAxisLableField = document.getElementById("space3d-x-axis-label-field") as HTMLInputElement;
       xAxisLableField.value = g.getXAxisLabel();
       let yAxisLableField = document.getElementById("space3d-y-axis-label-field") as HTMLInputElement;
@@ -346,6 +352,14 @@ export class Space3DContextMenu extends BlockContextMenu {
           success = false;
           message = pointsField.value + " is not a valid value for number of points";
         }
+        // set box size
+        let boxSize = parseInt(boxSizeField.value);
+        if (isNumber(boxSize)) {
+          g.setBoxSize(Math.max(0, boxSize));
+        } else {
+          success = false;
+          message = boxSizeField.value + " is not a valid box size";
+        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -446,6 +460,7 @@ export class Space3DContextMenu extends BlockContextMenu {
         }
       };
       nameField.addEventListener("keyup", enterKeyUp);
+      boxSizeField.addEventListener("keyup", enterKeyUp);
       pointsField.addEventListener("keyup", enterKeyUp);
       xAxisLableField.addEventListener("keyup", enterKeyUp);
       yAxisLableField.addEventListener("keyup", enterKeyUp);

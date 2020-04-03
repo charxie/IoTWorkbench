@@ -9,7 +9,7 @@ import {
   BufferGeometry,
   Color, ConeGeometry, CylinderGeometry, Geometry,
   Line, LineBasicMaterial, LineDashedMaterial, Matrix4,
-  Mesh,
+  Mesh, MeshBasicMaterial,
   MeshPhongMaterial,
   PerspectiveCamera, PointLight,
   Scene, SphereGeometry, TetrahedronGeometry, Vector3,
@@ -17,6 +17,7 @@ import {
 } from "three";
 import {Point3DArray} from "./Point3DArray";
 import {Symbol3DArray} from "./Symbol3DArray";
+import {SpriteText2D, textAlign} from 'three-text2d'
 
 export class LinePlot {
 
@@ -29,7 +30,24 @@ export class LinePlot {
   dataSymbolSpacings: number[] = [];
   endSymbolRadii: number[] = [];
 
+  private boxSize: number = 0; // zero means no box
+  private boxBottomFace: Line;
+  private boxTopFace: Line;
+  private boxLine1: Line;
+  private boxLine2: Line;
+  private boxLine3: Line;
+  private boxLine4: Line;
+  private xAxisArrow: Mesh;
+  private yAxisArrow: Mesh;
+  private zAxisArrow: Mesh;
+  private xLabelSprite: SpriteText2D;
+  private yLabelSprite: SpriteText2D;
+  private zLabelSprite: SpriteText2D;
   private endSymbolsConnection: string = "None";
+  private xAxisLabel: string = "x";
+  private yAxisLabel: string = "y";
+  private zAxisLabel: string = "z";
+
   private points: Point3DArray[] = [];
   private numberOfDataPoints: number = 0;
   private lines: Line[];
@@ -377,30 +395,185 @@ export class LinePlot {
     this.renderer.setClearColor(color, 1);
   }
 
-  createAxes(): void {
-    let points = [];
-    points.push(new Vector3(-1000, 0, 0));
-    points.push(new Vector3(1000, 0, 0));
-    let lineMaterial = new LineBasicMaterial({color: 0xff0000});
-    let lineGeometry = new BufferGeometry().setFromPoints(points);
-    let xAxis = new Line(lineGeometry, lineMaterial);
-    this.scene.add(xAxis);
+  setBoxSize(boxSize: number): void {
+    this.removeBox();
+    this.removeArrows();
+    this.removeSprites();
+    let p;
+    let r;
+    if (boxSize > 0) {
+      p = boxSize;
+      r = boxSize * 0.02;
+      this.createBox(boxSize / 2, 0xcccccc);
+    } else {
+      p = 50;
+      r = 1;
+    }
+    let xArrow = new Vector3(p, 0, 0);
+    let yArrow = new Vector3(0, p, 0);
+    let zArrow = new Vector3(0, 0, p);
+    this.xAxisArrow = this.addArrow(xArrow, 0xff0000, r, "x");
+    this.yAxisArrow = this.addArrow(yArrow, 0x00ff00, r, "y");
+    this.zAxisArrow = this.addArrow(zArrow, 0x0000ff, r, "z");
+    let fontSize = p * 0.01;
+    this.xLabelSprite = this.addSprite(xArrow.multiplyScalar(1.1), "black", "x");
+    this.xLabelSprite.scale.set(fontSize, fontSize, fontSize);
+    this.yLabelSprite = this.addSprite(yArrow.multiplyScalar(1.1), "black", "y");
+    this.yLabelSprite.scale.set(fontSize, fontSize, fontSize);
+    this.zLabelSprite = this.addSprite(zArrow.multiplyScalar(1.1), "black", "z");
+    this.zLabelSprite.scale.set(fontSize, fontSize, fontSize);
+    this.boxSize = boxSize;
+  }
 
-    points = [];
-    points.push(new Vector3(0, -1000, 0));
-    points.push(new Vector3(0, 1000, 0));
-    lineMaterial = new LineBasicMaterial({color: 0x00ff00});
-    lineGeometry = new BufferGeometry().setFromPoints(points);
-    let yAxis = new Line(lineGeometry, lineMaterial);
-    this.scene.add(yAxis);
+  getBoxSize(): number {
+    return this.boxSize;
+  }
 
-    points = [];
-    points.push(new Vector3(0, 0, -1000));
-    points.push(new Vector3(0, 0, 1000));
-    lineMaterial = new LineBasicMaterial({color: 0x0000ff});
-    lineGeometry = new BufferGeometry().setFromPoints(points);
-    let zAxis = new Line(lineGeometry, lineMaterial);
-    this.scene.add(zAxis);
+  private removeArrows(): void {
+    if (this.isSceneChild(this.xAxisArrow)) this.scene.remove(this.xAxisArrow);
+    if (this.isSceneChild(this.yAxisArrow)) this.scene.remove(this.yAxisArrow);
+    if (this.isSceneChild(this.zAxisArrow)) this.scene.remove(this.zAxisArrow);
+  }
+
+  private removeSprites(): void {
+    if (this.isSceneChild(this.xLabelSprite)) this.scene.remove(this.xLabelSprite);
+    if (this.isSceneChild(this.yLabelSprite)) this.scene.remove(this.yLabelSprite);
+    if (this.isSceneChild(this.zLabelSprite)) this.scene.remove(this.zLabelSprite);
+  }
+
+  private removeBox(): void {
+    if (this.isSceneChild(this.boxBottomFace)) this.scene.remove(this.boxBottomFace);
+    if (this.isSceneChild(this.boxTopFace)) this.scene.remove(this.boxTopFace);
+    if (this.isSceneChild(this.boxLine1)) this.scene.remove(this.boxLine1);
+    if (this.isSceneChild(this.boxLine2)) this.scene.remove(this.boxLine2);
+    if (this.isSceneChild(this.boxLine3)) this.scene.remove(this.boxLine3);
+    if (this.isSceneChild(this.boxLine4)) this.scene.remove(this.boxLine4);
+  }
+
+  private createBox(a: number, c: number): void {
+    let p1 = new Vector3(-a, -a, -a);
+    let p2 = new Vector3(-a, a, -a);
+    let p3 = new Vector3(a, a, -a);
+    let p4 = new Vector3(a, -a, -a);
+    let q1 = new Vector3(-a, -a, a);
+    let q2 = new Vector3(-a, a, a);
+    let q3 = new Vector3(a, a, a);
+    let q4 = new Vector3(a, -a, a);
+    this.boxBottomFace = this.addRectangle(p1, p2, p3, p4, c);
+    this.boxTopFace = this.addRectangle(q1, q2, q3, q4, c);
+    this.boxLine1 = this.addLine(p1, q1, c);
+    this.boxLine2 = this.addLine(p2, q2, c);
+    this.boxLine3 = this.addLine(p3, q3, c);
+    this.boxLine4 = this.addLine(p4, q4, c);
+  }
+
+  private createAxes(): void {
+    this.addLine(new Vector3(-1000, 0, 0), new Vector3(1000, 0, 0), 0xff0000);
+    this.addLine(new Vector3(0, -1000, 0), new Vector3(0, 1000, 0), 0x00ff00);
+    this.addLine(new Vector3(0, 0, -1000), new Vector3(0, 0, 1000), 0x0000ff);
+  }
+
+  private addRectangle(p1: Vector3, p2: Vector3, p3: Vector3, p4: Vector3, c: number): Line {
+    let line = new Line(new BufferGeometry().setFromPoints([p1, p2, p3, p4, p1]), new LineBasicMaterial({color: c}));
+    this.scene.add(line);
+    return line;
+  }
+
+  private addLine(p1: Vector3, p2: Vector3, c: number): Line {
+    let line = new Line(new BufferGeometry().setFromPoints([p1, p2]), new LineBasicMaterial({color: c}));
+    this.scene.add(line);
+    return line;
+  }
+
+  private addArrow(p: Vector3, c: number, r: number, axis: string): Mesh {
+    let cone = new Mesh(new ConeGeometry(r, 4 * r, 8), new MeshBasicMaterial({
+      transparent: true,
+      opacity: 0.5,
+      color: c
+    }));
+    cone.position.copy(p);
+    switch (axis) {
+      case "x":
+        cone.rotation.z = -Math.PI / 2;
+        break;
+      case "y":
+        // no need to do anything - already pointing to the right direction
+        break;
+      case "z":
+        cone.rotation.x = Math.PI / 2;
+        break;
+    }
+    this.scene.add(cone);
+    return cone;
+  }
+
+  private addSprite(p: Vector3, color: string, axis: string): SpriteText2D {
+    let sprite;
+    switch (axis) {
+      case "x":
+        sprite = new SpriteText2D(this.xAxisLabel, {
+          align: textAlign.topLeft,
+          font: '10px Arial',
+          fillStyle: color,
+          antialias: true
+        });
+        break;
+      case "y":
+        sprite = new SpriteText2D(this.yAxisLabel, {
+          align: textAlign.topLeft,
+          font: '10px Arial',
+          fillStyle: color,
+          antialias: true
+        });
+        break;
+      case "z":
+        sprite = new SpriteText2D(this.zAxisLabel, {
+          align: textAlign.topLeft,
+          font: '10px Arial',
+          fillStyle: color,
+          antialias: true
+        });
+        break;
+    }
+    sprite.position.copy(p);
+    this.scene.add(sprite);
+    return sprite;
+  }
+
+  setXAxisLabel(xAxisLabel: string): void {
+    this.xAxisLabel = xAxisLabel;
+    if (this.xAxisArrow !== undefined) {
+      if (this.isSceneChild(this.xLabelSprite)) this.scene.remove(this.xLabelSprite);
+      this.xLabelSprite = this.addSprite(this.xAxisArrow.position.multiplyScalar(1.1), "black", "x");
+    }
+  }
+
+  getXAxisLabel(): string {
+    return this.xAxisLabel;
+  }
+
+  setYAxisLabel(yAxisLabel: string): void {
+    this.yAxisLabel = yAxisLabel;
+    if (this.yAxisArrow !== undefined) {
+      if (this.isSceneChild(this.yLabelSprite)) this.scene.remove(this.yLabelSprite);
+      this.yLabelSprite = this.addSprite(this.yAxisArrow.position.multiplyScalar(1.1), "black", "y");
+    }
+  }
+
+  getYAxisLabel(): string {
+    return this.yAxisLabel;
+  }
+
+  setZAxisLabel(zAxisLabel: string): void {
+    this.zAxisLabel = zAxisLabel;
+    if (this.zAxisArrow !== undefined) {
+      if (this.isSceneChild(this.zLabelSprite)) this.scene.remove(this.zLabelSprite);
+      this.zLabelSprite = this.addSprite(this.zAxisArrow.position.multiplyScalar(1.1), "black", "z");
+    }
+  }
+
+  getZAxisLabel(): string {
+    return this.zAxisLabel;
   }
 
   createLights(): void {
@@ -425,8 +598,10 @@ export class LinePlot {
   }
 
   isSceneChild(x: any): boolean {
-    for (let c of this.scene.children) {
-      if (c === x) return true;
+    if (x !== undefined) {
+      for (let c of this.scene.children) {
+        if (c === x) return true;
+      }
     }
     return false;
   }

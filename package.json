@@ -24,6 +24,7 @@
     "mathjs": "^6.6.0",
     "parcel": "^1.12.4",
     "three": "^0.115.0",
+    "three-text2d": "^0.6.0",
     "undo-manager": "^1.0.5"
   },
   "devDependencies": {

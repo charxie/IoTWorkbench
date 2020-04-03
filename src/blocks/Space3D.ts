@@ -17,9 +17,6 @@ export class Space3D extends Block {
   private portZ: Port;
   private portPoints: Port[]; // only used in the point mode (multiple point streams are supported only in this mode)
   private pointInput: boolean = false;
-  private xAxisLabel: string = "x";
-  private yAxisLabel: string = "y";
-  private zAxisLabel: string = "z";
   private spaceWindowColor: string = "white";
   private spaceWindow: Rectangle;
   private barHeight: number;
@@ -46,6 +43,7 @@ export class Space3D extends Block {
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly zAxisLabel: string;
+    readonly boxSize: number;
     readonly spaceWindowColor: string;
     readonly endSymbolsConnection: string;
     readonly pointInput: boolean;
@@ -73,9 +71,10 @@ export class Space3D extends Block {
       this.y = g.y;
       this.width = g.width;
       this.height = g.height;
-      this.xAxisLabel = g.xAxisLabel;
-      this.yAxisLabel = g.yAxisLabel;
-      this.zAxisLabel = g.zAxisLabel;
+      this.xAxisLabel = g.getXAxisLabel();
+      this.yAxisLabel = g.getYAxisLabel();
+      this.zAxisLabel = g.getZAxisLabel();
+      this.boxSize = g.plot.getBoxSize();
       this.spaceWindowColor = g.spaceWindowColor;
       this.endSymbolsConnection = g.getEndSymbolsConnection();
       this.pointInput = g.pointInput;
@@ -133,9 +132,9 @@ export class Space3D extends Block {
 
   getCopy(): Block {
     let copy = new Space3D("Space3D #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    copy.xAxisLabel = this.xAxisLabel;
-    copy.yAxisLabel = this.yAxisLabel;
-    copy.zAxisLabel = this.zAxisLabel;
+    copy.setXAxisLabel(this.getXAxisLabel());
+    copy.setYAxisLabel(this.getYAxisLabel());
+    copy.setZAxisLabel(this.getZAxisLabel());
     copy.spaceWindowColor = this.spaceWindowColor;
     copy.setPointInput(this.pointInput);
     copy.setNumberOfPoints(this.getNumberOfPoints());
@@ -148,6 +147,7 @@ export class Space3D extends Block {
     copy.plot.dataSymbolColors = [...this.plot.dataSymbolColors];
     copy.plot.dataSymbolSpacings = [...this.plot.dataSymbolSpacings];
     copy.plot.endSymbolRadii = [...this.plot.endSymbolRadii];
+    copy.setBoxSize(this.getBoxSize());
     copy.setEndSymbolsConnection(this.getEndSymbolsConnection());
     copy.setWidth(this.getWidth());
     copy.setHeight(this.getHeight());
@@ -339,28 +339,36 @@ export class Space3D extends Block {
     return this.pointInput ? this.portPoints.length : 1;
   }
 
+  setBoxSize(boxSize: number): void {
+    this.plot.setBoxSize(boxSize);
+  }
+
+  getBoxSize(): number {
+    return this.plot.getBoxSize();
+  }
+
   setXAxisLabel(xAxisLabel: string): void {
-    this.xAxisLabel = xAxisLabel;
+    this.plot.setXAxisLabel(xAxisLabel);
   }
 
   getXAxisLabel(): string {
-    return this.xAxisLabel;
+    return this.plot.getXAxisLabel();
   }
 
   setYAxisLabel(yAxisLabel: string): void {
-    this.yAxisLabel = yAxisLabel;
+    this.plot.setYAxisLabel(yAxisLabel);
   }
 
   getYAxisLabel(): string {
-    return this.yAxisLabel;
+    return this.plot.getYAxisLabel();
   }
 
   setZAxisLabel(zAxisLabel: string): void {
-    this.zAxisLabel = zAxisLabel;
+    this.plot.setZAxisLabel(zAxisLabel);
   }
 
   getZAxisLabel(): string {
-    return this.zAxisLabel;
+    return this.plot.getZAxisLabel();
   }
 
   setSpaceWindowColor(spaceWindowColor: string): void {
