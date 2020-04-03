@@ -201,7 +201,7 @@ export class Util {
       return parseInt(a, 10);
     });
     document.body.removeChild(a);
-    return (colors.length >= 3) ? '#' + (((1 << 24) + (colors[0] << 16) + (colors[1] << 8) + colors[2]).toString(16).substr(1)) : false;
+    return colors.length >= 3 ? '#' + (((1 << 24) + (colors[0] << 16) + (colors[1] << 8) + colors[2]).toString(16).substr(1)) : false;
   }
 
   static isHexColor(s: string): boolean {
@@ -418,6 +418,45 @@ export class Util {
         break;
     }
     return {h: h, s: s, v: v};
+  }
+
+  static isDarkish(color): boolean {
+    // Variables for red, green, blue values
+    let r, g, b, hsp;
+    if (typeof color === "string") {
+      // Check the format of the color, HEX or RGB?
+      if (color.match(/^rgb/)) {
+        // If HEX --> store the red, green, blue values in separate variables
+        color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+        r = color[1];
+        g = color[2];
+        b = color[3];
+      } else if (color.startsWith("#")) {
+        // If RGB --> Convert it to HEX: http://gist.github.com/983661
+        color = +("0x" + color.slice(1).replace(color.length < 5 && /./g, '$&$&'));
+        r = color >> 16;
+        g = color >> 8 & 255;
+        b = color & 255;
+      } else {
+        color = this.nameToHexColor(color);
+        color = "0x" + color.slice(1).replace(color.length < 5 && /./g, '$&$&');
+        r = color >> 16;
+        g = color >> 8 & 255;
+        b = color & 255;
+      }
+      // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+      hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+      // Using the HSP value, determine whether the color is light or dark
+      return hsp < 127.5;
+    }
+    if (typeof color === "number") {
+      r = color >> 16;
+      g = color >> 8 & 255;
+      b = color & 255;
+      hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+      return hsp < 127.5;
+    }
+    return false;
   }
 
 }

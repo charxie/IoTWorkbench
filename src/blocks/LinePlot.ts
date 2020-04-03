@@ -18,6 +18,7 @@ import {
 import {Point3DArray} from "./Point3DArray";
 import {Symbol3DArray} from "./Symbol3DArray";
 import {SpriteText2D, textAlign} from 'three-text2d'
+import {Util} from "../Util";
 
 export class LinePlot {
 
@@ -47,6 +48,7 @@ export class LinePlot {
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private zAxisLabel: string = "z";
+  private backgroundColor: string = "white";
 
   private points: Point3DArray[] = [];
   private numberOfDataPoints: number = 0;
@@ -392,7 +394,12 @@ export class LinePlot {
   }
 
   setBackgroundColor(color: string): void {
+    this.backgroundColor = color;
     this.renderer.setClearColor(color, 1);
+  }
+
+  getBackgroundColor(): string {
+    return this.backgroundColor;
   }
 
   setBoxSize(boxSize: number): void {
@@ -416,11 +423,12 @@ export class LinePlot {
     this.yAxisArrow = this.addArrow(yArrow, 0x00ff00, r, "y");
     this.zAxisArrow = this.addArrow(zArrow, 0x0000ff, r, "z");
     let fontSize = p * 0.01;
-    this.xLabelSprite = this.addSprite(xArrow.multiplyScalar(1.1), "black", "x");
+    let c = Util.isDarkish(this.backgroundColor) ? "white" : "black";
+    this.xLabelSprite = this.addSprite(xArrow.multiplyScalar(1.1), c, "x");
     this.xLabelSprite.scale.set(fontSize, fontSize, fontSize);
-    this.yLabelSprite = this.addSprite(yArrow.multiplyScalar(1.1), "black", "y");
+    this.yLabelSprite = this.addSprite(yArrow.multiplyScalar(1.1), c, "y");
     this.yLabelSprite.scale.set(fontSize, fontSize, fontSize);
-    this.zLabelSprite = this.addSprite(zArrow.multiplyScalar(1.1), "black", "z");
+    this.zLabelSprite = this.addSprite(zArrow.multiplyScalar(1.1), c, "z");
     this.zLabelSprite.scale.set(fontSize, fontSize, fontSize);
     this.boxSize = boxSize;
   }
@@ -544,7 +552,8 @@ export class LinePlot {
     this.xAxisLabel = xAxisLabel;
     if (this.xAxisArrow !== undefined) {
       if (this.isSceneChild(this.xLabelSprite)) this.scene.remove(this.xLabelSprite);
-      this.xLabelSprite = this.addSprite(this.xAxisArrow.position.multiplyScalar(1.1), "black", "x");
+      let c = Util.isDarkish(this.backgroundColor) ? "white" : "black";
+      this.xLabelSprite = this.addSprite(this.xAxisArrow.position.multiplyScalar(1.1), c, "x");
     }
   }
 
@@ -556,7 +565,8 @@ export class LinePlot {
     this.yAxisLabel = yAxisLabel;
     if (this.yAxisArrow !== undefined) {
       if (this.isSceneChild(this.yLabelSprite)) this.scene.remove(this.yLabelSprite);
-      this.yLabelSprite = this.addSprite(this.yAxisArrow.position.multiplyScalar(1.1), "black", "y");
+      let c = Util.isDarkish(this.backgroundColor) ? "white" : "black";
+      this.yLabelSprite = this.addSprite(this.yAxisArrow.position.multiplyScalar(1.1), c, "y");
     }
   }
 
@@ -568,7 +578,8 @@ export class LinePlot {
     this.zAxisLabel = zAxisLabel;
     if (this.zAxisArrow !== undefined) {
       if (this.isSceneChild(this.zLabelSprite)) this.scene.remove(this.zLabelSprite);
-      this.zLabelSprite = this.addSprite(this.zAxisArrow.position.multiplyScalar(1.1), "black", "z");
+      let c = Util.isDarkish(this.backgroundColor) ? "white" : "black";
+      this.zLabelSprite = this.addSprite(this.zAxisArrow.position.multiplyScalar(1.1), c, "z");
     }
   }
 

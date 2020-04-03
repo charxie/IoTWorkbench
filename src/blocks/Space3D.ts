@@ -17,7 +17,6 @@ export class Space3D extends Block {
   private portZ: Port;
   private portPoints: Port[]; // only used in the point mode (multiple point streams are supported only in this mode)
   private pointInput: boolean = false;
-  private spaceWindowColor: string = "white";
   private spaceWindow: Rectangle;
   private barHeight: number;
   private readonly spaceMargin = {
@@ -75,7 +74,7 @@ export class Space3D extends Block {
       this.yAxisLabel = g.getYAxisLabel();
       this.zAxisLabel = g.getZAxisLabel();
       this.boxSize = g.plot.getBoxSize();
-      this.spaceWindowColor = g.spaceWindowColor;
+      this.spaceWindowColor = g.getSpaceWindowColor();
       this.endSymbolsConnection = g.getEndSymbolsConnection();
       this.pointInput = g.pointInput;
       this.numberOfPoints = g.getNumberOfPoints();
@@ -135,7 +134,7 @@ export class Space3D extends Block {
     copy.setXAxisLabel(this.getXAxisLabel());
     copy.setYAxisLabel(this.getYAxisLabel());
     copy.setZAxisLabel(this.getZAxisLabel());
-    copy.spaceWindowColor = this.spaceWindowColor;
+    copy.setSpaceWindowColor(this.getSpaceWindowColor());
     copy.setPointInput(this.pointInput);
     copy.setNumberOfPoints(this.getNumberOfPoints());
     copy.legends = [...this.legends];
@@ -372,12 +371,11 @@ export class Space3D extends Block {
   }
 
   setSpaceWindowColor(spaceWindowColor: string): void {
-    this.spaceWindowColor = spaceWindowColor;
     this.plot.setBackgroundColor(spaceWindowColor);
   }
 
   getSpaceWindowColor(): string {
-    return this.spaceWindowColor;
+    return this.plot.getBackgroundColor();
   }
 
   setLegends(legends: string[]): void {
@@ -586,7 +584,7 @@ export class Space3D extends Block {
     this.spaceWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
     this.spaceWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
     ctx.rect(this.spaceWindow.x, this.spaceWindow.y, this.spaceWindow.width, this.spaceWindow.height);
-    ctx.fillStyle = this.spaceWindowColor;
+    ctx.fillStyle = this.plot.getBackgroundColor();
     ctx.fill();
     ctx.beginPath();
     ctx.rect(this.spaceWindow.x - 3, this.spaceWindow.y - 3, this.spaceWindow.width + 4, this.spaceWindow.height + 4);
