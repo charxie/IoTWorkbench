@@ -161,6 +161,8 @@ import spherical_pendulum from "./examples/spherical-pendulum.json";
 // @ts-ignore
 import spherical_pendulum_damping from "./examples/spherical-pendulum-damping.json";
 // @ts-ignore
+import foucault_pendulum from "./examples/foucault-pendulum.json";
+// @ts-ignore
 import rlc_circuit from "./examples/rlc-circuit.json";
 // @ts-ignore
 import projectile_motion_1 from "./examples/projectile-motion-1.json";
@@ -358,15 +360,16 @@ export class Examples {
     this.files.push({name: "Mechanics: Harmonic Oscillator", data: harmonic_oscillator});
     this.files.push({name: "Mechanics: Coupled Harmonic Oscillators", data: coupled_harmonic_oscillators});
     this.files.push({name: "Mechanics: Duffing Oscillator", data: duffing_oscillator});
-    this.files.push({name: "Mechanics: Simple Pendulum", data: pendulum});
+    this.files.push({name: "Mechanics: 2D Simple Pendulum", data: pendulum});
     this.files.push({name: "Mechanics: 2D Elastic Pendulum", data: elastic_pendulum_2d});
-    this.files.push({name: "Mechanics: Double Pendulum", data: double_pendulum});
+    this.files.push({name: "Mechanics: 2D Double Pendulum", data: double_pendulum});
     this.files.push({
-      name: "Mechanics: Inverted Pendulum on Oscillatory Base",
+      name: "Mechanics: 2D Inverted Pendulum on Oscillatory Base",
       data: inverted_pendulum_oscillatory_base
     });
     this.files.push({name: "Mechanics: Spherical Pendulum", data: spherical_pendulum});
     this.files.push({name: "Mechanics: Damped Spherical Pendulum", data: spherical_pendulum_damping});
+    this.files.push({name: "Mechanics: Foucault Pendulum", data: foucault_pendulum});
     this.files.push({name: "Electronics: RLC Circuit", data: rlc_circuit});
     this.files.push({name: "Electronics: Chua Circuit", data: chua_circuit});
     this.files.push({name: "Electronics: Van der Pol Oscillator", data: van_der_pol_oscillator});
