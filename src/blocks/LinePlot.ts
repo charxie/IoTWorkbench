@@ -46,7 +46,6 @@ export class LinePlot {
   private yLabelSprite: SpriteText2D;
   private zLabelSprite: SpriteText2D;
   private endSymbolsConnection: string = "None";
-  private numberOfCoils: number[] = [];
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private zAxisLabel: string = "z";
@@ -169,40 +168,38 @@ export class LinePlot {
   }
 
   setPointArrayLength(n: number): void {
-    if (this.endSymbolsConnection !== "None") {
-      if (this.endSymbolConnectors === undefined) {
-        if (n > 1) {
-          this.endSymbolConnectors = new Array();
-          for (let i = 0; i < n - 1; i++) {
-            this.endSymbolConnectors.push(new Mesh());
-          }
-        }
-      } else {
-        if (n < this.points.length) {
-          for (let i = n; i < this.points.length; i++) {
-            let mesh = this.endSymbolConnectors.pop();
-            mesh.geometry.dispose();
-            if (this.isSceneChild(mesh)) {
-              this.scene.remove(mesh);
-            }
-          }
-        } else if (n > this.points.length) {
-          for (let i = this.points.length; i < n; i++) {
-            this.endSymbolConnectors.push(new Mesh());
-          }
+    if (this.endSymbolConnectors === undefined) {
+      if (n > 1) {
+        this.endSymbolConnectors = new Array();
+        for (let i = 0; i < n - 1; i++) {
+          this.endSymbolConnectors.push(new Mesh());
         }
       }
-      let connectorMaterial = new MeshPhongMaterial({
-        color: "dimgray",
-        specular: 0x050505,
-        shininess: 0.1
-      });
-      for (let m of this.endSymbolConnectors) {
-        if (!this.isSceneChild(m)) {
-          this.scene.add(m);
+    } else {
+      if (n < this.points.length) {
+        for (let i = n; i < this.points.length; i++) {
+          let mesh = this.endSymbolConnectors.pop();
+          mesh.geometry.dispose();
+          if (this.isSceneChild(mesh)) {
+            this.scene.remove(mesh);
+          }
         }
-        m.material = connectorMaterial;
+      } else if (n > this.points.length) {
+        for (let i = this.points.length; i < n; i++) {
+          this.endSymbolConnectors.push(new Mesh());
+        }
       }
+    }
+    let connectorMaterial = new MeshPhongMaterial({
+      color: "dimgray",
+      specular: 0x050505,
+      shininess: 0.1
+    });
+    for (let m of this.endSymbolConnectors) {
+      if (!this.isSceneChild(m)) {
+        this.scene.add(m);
+      }
+      m.material = connectorMaterial;
     }
     this.points.length = n;
   }
@@ -235,30 +232,37 @@ export class LinePlot {
     if (this.endSymbolConnectors[k].geometry !== undefined) this.endSymbolConnectors[k].geometry.dispose();
     switch (this.endSymbolsConnection) {
       case "Rod":
+        this.endSymbolConnectors[k].visible = true;
         this.endSymbolConnectors[k].geometry = new CylinderGeometry(0.05, 0.05, h, 5);
         this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeTranslation(0, h / 2, 0));
         this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
         this.endSymbolConnectors[k].position.set(xj, yj, zj);
         this.endSymbolConnectors[k].lookAt(new Vector3(xi, yi, zi));
+        this.endSymbolConnectors[k].material = new MeshPhongMaterial({
+          color: "dimgray",
+          specular: 0x050505,
+          shininess: 0.1
+        });
         break;
       case "Coil":
+        const r = this.endSymbolRadii[i] * 0.75;
         const vertices = [];
-        const count = 100;
-        const r = 0.2;
-        for (let n = 1; n <= count + 5; n++) {
-          let percent = n / count;
-          let cos = r * Math.cos(percent * 20 * Math.PI);
-          let sin = r * Math.sin(percent * 20 * Math.PI);
-          vertices.push(new Vector3(cos, dz * percent, sin));
+        const count = 100; // we really don't know how to set the number of coils, for now just use 100
+        for (let n = 1; n < count; n++) {
+          let angle = 20 * Math.PI * n / count;
+          let cos = r * Math.cos(angle);
+          let sin = r * Math.sin(angle);
+          vertices.push(new Vector3(cos, -h * n / count, sin));
         }
         const line = new MeshLine();
         line.setVertices(vertices);
+        this.endSymbolConnectors[k].visible = true;
         this.endSymbolConnectors[k].geometry = line;
-        this.endSymbolConnectors[k].material = new MeshLineMaterial({lineWidth: 0.05, color: "lightgray"});
         this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeTranslation(0, h, 0));
         this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
         this.endSymbolConnectors[k].position.set(xj, yj, zj);
         this.endSymbolConnectors[k].lookAt(new Vector3(xi, yi, zi));
+        this.endSymbolConnectors[k].material = new MeshLineMaterial({lineWidth: 0.05, color: "gray"});
         break;
     }
   }
@@ -283,6 +287,21 @@ export class LinePlot {
 
   setEndSymbolsConnection(endSymbolsConnection: string): void {
     this.endSymbolsConnection = endSymbolsConnection;
+    if (this.endSymbolConnectors !== undefined) {
+      if (this.endSymbolsConnection !== "None") {
+        for (let i = this.points.length - 1; i > 0; i--) {
+          let j = i - 1;
+          this.setEndSymolConnector(i, j, j);
+        }
+        for (let i = 0; i < this.endSymbolConnectors.length; i++) {
+          this.endSymbolConnectors[i].visible = true;
+        }
+      } else {
+        for (let i = 0; i < this.endSymbolConnectors.length; i++) {
+          this.endSymbolConnectors[i].visible = false;
+        }
+      }
+    }
   }
 
   getEndSymbolsConnection(): string {

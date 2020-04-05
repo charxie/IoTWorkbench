@@ -41,6 +41,8 @@ import three_body_problem from "./examples/three-body-problem.json";
 // @ts-ignore
 import two_body_problem from "./examples/two-body-problem.json";
 // @ts-ignore
+import two_body_problem_3d from "./examples/two-body-problem-3d.json";
+// @ts-ignore
 import simple_math_game from "./examples/simple-math-game.json";
 // @ts-ignore
 import import_datasets from "./examples/import-datasets.json";
@@ -357,7 +359,8 @@ export class Examples {
     this.files.push({name: "Mechanics: Inline Slider-Crank Linkage", data: slider_crank_inline});
     this.files.push({name: "Mechanics: Offset Slider-Crank Linkage", data: slider_crank_offset});
     this.files.push({name: "Mechanics: Crank-Rocker Linkage", data: crank_rocker});
-    this.files.push({name: "Mechanics: Two-Body Problem", data: two_body_problem});
+    this.files.push({name: "Mechanics: Two-Body Problem in 2D", data: two_body_problem});
+    this.files.push({name: "Mechanics: Two-Body Problem in 3D", data: two_body_problem_3d});
     this.files.push({name: "Mechanics: Three-Body Problem", data: three_body_problem});
     this.files.push({name: "Mechanics: Harmonic Oscillator", data: harmonic_oscillator});
     this.files.push({name: "Mechanics: Coupled Harmonic Oscillators", data: coupled_harmonic_oscillators});
