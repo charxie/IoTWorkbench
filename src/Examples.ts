@@ -149,6 +149,8 @@ import harmonic_oscillator from "./examples/harmonic-oscillator.json";
 // @ts-ignore
 import coupled_harmonic_oscillators from "./examples/coupled-harmonic-oscillators.json";
 // @ts-ignore
+import spring_cart_pendulum from "./examples/spring-cart-pendulum.json";
+// @ts-ignore
 import duffing_oscillator from "./examples/duffing-oscillator.json";
 // @ts-ignore
 import van_der_pol_oscillator from "./examples/van-der-pol-oscillator.json";
@@ -367,6 +369,7 @@ export class Examples {
     this.files.push({name: "Mechanics: Three-Body Problem", data: three_body_problem});
     this.files.push({name: "Mechanics: Harmonic Oscillator", data: harmonic_oscillator});
     this.files.push({name: "Mechanics: Coupled Harmonic Oscillators", data: coupled_harmonic_oscillators});
+    this.files.push({name: "Mechanics: Spring-Cart-Pendulum System", data: spring_cart_pendulum});
     this.files.push({name: "Mechanics: Duffing Oscillator", data: duffing_oscillator});
     this.files.push({name: "Mechanics: 2D Simple Pendulum", data: pendulum});
     this.files.push({name: "Mechanics: 2D Elastic Pendulum", data: elastic_pendulum_2d});

@@ -227,7 +227,6 @@ export class StateIO {
           block.setSpaceWindowColor(state.spaceWindowColor);
           block.setPointInput(state.pointInput);
           block.setShowGridLines(state.showGridLines == undefined ? false : state.showGridLines);
-          block.setEndSymbolsConnection(state.endSymbolsConnection === undefined ? "None" : state.endSymbolsConnection);
           if (state.backgroundImageSrc != undefined) block.setBackgroundImageSrc(state.backgroundImageSrc);
           if (state.legends != undefined) block.setLegends(state.legends);
           if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);
@@ -241,6 +240,7 @@ export class StateIO {
           if (state.dataSymbolSpacings != undefined) block.setDataSymbolSpacings(state.dataSymbolSpacings);
           if (state.endSymbolRadii != undefined) block.setEndSymbolRadii(state.endSymbolRadii);
           if (state.endSymbolRotatables != undefined) block.setEndSymbolRotatables(state.endSymbolRotatables);
+          if (state.endSymbolConnections != undefined) block.setEndSymbolConnections(state.endSymbolConnections);
           if (state.numberOfPoints != undefined) block.setNumberOfPoints(state.numberOfPoints);
         } else if (block instanceof Space3D) {
           block.setName(state.name);

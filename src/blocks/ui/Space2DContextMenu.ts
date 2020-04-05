@@ -181,8 +181,9 @@ export class Space2DContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>End Connection:</td>
-                  <td colspan="3">
-                    <select id="space2d-end-symbols-connection-selector" style="width: 100%">
+                  <td><select id="space2d-end-symbol-connection-set-selector" style="width: 65px"></select></td>
+                  <td colspan="2">
+                    <select id="space2d-end-symbol-connection-selector" style="width: 100%">
                       <option value="None" selected>None</option>
                       <option value="Line">Line</option>
                       <option value="Zigzag">Zigzag</option>
@@ -297,6 +298,7 @@ export class Space2DContextMenu extends BlockContextMenu {
       let dataSymbolSpacings: number[] = g.getDataSymbolSpacings();
       let endSymbolRadii: any[] = g.getEndSymbolRadii();
       let endSymbolRotatables: boolean[] = g.getEndSymbolRotatables();
+      let endSymbolConnections: string[] = g.getEndSymbolConnections();
 
       let nameField = document.getElementById("space2d-name-field") as HTMLInputElement;
       nameField.value = g.getName();
@@ -444,8 +446,11 @@ export class Space2DContextMenu extends BlockContextMenu {
         }
       };
 
-      let endSymbolsConnectionSelector = document.getElementById("space2d-end-symbols-connection-selector") as HTMLSelectElement;
-      endSymbolsConnectionSelector.value = g.getEndSymbolsConnection();
+      let endSymbolConnectionSelector = document.getElementById("space2d-end-symbol-connection-selector") as HTMLSelectElement;
+      endSymbolConnectionSelector.value = endSymbolConnections[0];
+      endSymbolConnectionSelector.onchange = () => endSymbolConnections[parseInt(endSymbolConnectionSetSelector.value)] = endSymbolConnectionSelector.value;
+      let endSymbolConnectionSetSelector = this.createSetSelector("space2d-end-symbol-connection-set-selector");
+      endSymbolConnectionSetSelector.onchange = () => endSymbolConnectionSelector.value = endSymbolConnections[parseInt(endSymbolConnectionSetSelector.value)];
 
       let windowColorField = document.getElementById("space2d-window-color-field") as HTMLInputElement;
       windowColorField.value = g.getSpaceWindowColor();
@@ -588,7 +593,6 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setShowGridLines(gridLinesRadioButton.checked);
           g.setAutoScale(autoScaleRadioButton.checked);
           g.setPointInput(pointInputRadioButton.checked);
-          g.setEndSymbolsConnection(endSymbolsConnectionSelector.value);
           for (let i = 0; i < lineTypes.length; i++) {
             g.setLegend(i, legends[i]);
             g.setLineType(i, lineTypes[i]);
@@ -601,6 +605,7 @@ export class Space2DContextMenu extends BlockContextMenu {
             g.setDataSymbolRadius(i, dataSymbolRadii[i] != null ? dataSymbolRadii[i] : 3);
             g.setDataSymbolSpacing(i, dataSymbolSpacings[i] != null ? dataSymbolSpacings[i] : 1);
             g.setEndSymbolRadius(i, endSymbolRadii[i]);
+            g.setEndSymbolConnection(i, endSymbolConnections[i]);
           }
           g.refreshView();
           flowchart.storeBlockStates();

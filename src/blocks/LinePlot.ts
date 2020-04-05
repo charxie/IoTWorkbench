@@ -191,16 +191,18 @@ export class LinePlot {
         }
       }
     }
-    let connectorMaterial = new MeshPhongMaterial({
-      color: "dimgray",
-      specular: 0x050505,
-      shininess: 0.1
-    });
-    for (let m of this.endSymbolConnectors) {
-      if (!this.isSceneChild(m)) {
-        this.scene.add(m);
+    if (this.endSymbolConnectors !== undefined) {
+      let connectorMaterial = new MeshPhongMaterial({
+        color: "dimgray",
+        specular: 0x050505,
+        shininess: 0.1
+      });
+      for (let m of this.endSymbolConnectors) {
+        if (!this.isSceneChild(m)) {
+          this.scene.add(m);
+        }
+        m.material = connectorMaterial;
       }
-      m.material = connectorMaterial;
     }
     this.points.length = n;
   }

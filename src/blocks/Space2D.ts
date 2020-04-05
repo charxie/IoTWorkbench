@@ -28,7 +28,6 @@ export class Space2D extends Block {
   private spaceWindowColor: string = "white";
   private backgroundImage;
   private showGridLines: boolean = false;
-  private endSymbolsConnection: string = "None";
   private spaceWindow: Rectangle;
   private barHeight: number;
   private readonly spaceMargin = {
@@ -53,6 +52,7 @@ export class Space2D extends Block {
   private dataSymbolSpacings: number[] = [];
   private endSymbolRadii: any[] = [];
   private endSymbolRotatables: boolean[] = [];
+  private endSymbolConnections: string[] = [];
 
   static State = class {
     readonly name: string;
@@ -66,7 +66,6 @@ export class Space2D extends Block {
     readonly spaceWindowColor: string;
     readonly backgroundImageSrc: string;
     readonly showGridLines: boolean;
-    readonly endSymbolsConnection: string;
     readonly autoscale: boolean;
     readonly minimumXValue: number;
     readonly maximumXValue: number;
@@ -86,6 +85,7 @@ export class Space2D extends Block {
     readonly dataSymbolSpacings: number[] = [];
     readonly endSymbolRadii: any[] = [];
     readonly endSymbolRotatables: boolean[] = [];
+    readonly endSymbolConnections: string[] = [];
 
     constructor(g: Space2D) {
       this.name = g.name;
@@ -99,7 +99,6 @@ export class Space2D extends Block {
       this.spaceWindowColor = g.spaceWindowColor;
       this.backgroundImageSrc = g.backgroundImage !== undefined ? g.backgroundImage.src : undefined; // base64 image data
       this.showGridLines = g.showGridLines;
-      this.endSymbolsConnection = g.endSymbolsConnection;
       this.autoscale = g.autoscale;
       this.minimumXValue = g.minimumXValue;
       this.maximumXValue = g.maximumXValue;
@@ -119,6 +118,7 @@ export class Space2D extends Block {
       this.dataSymbolSpacings = [...g.dataSymbolSpacings];
       this.endSymbolRadii = [...g.endSymbolRadii];
       this.endSymbolRotatables = [...g.endSymbolRotatables];
+      this.endSymbolConnections = [...g.endSymbolConnections];
     }
   };
 
@@ -146,6 +146,7 @@ export class Space2D extends Block {
     this.dataSymbolSpacings.push(1);
     this.endSymbolRadii.push(0);
     this.endSymbolRotatables.push(false);
+    this.endSymbolConnections.push("None");
   }
 
   getCopy(): Block {
@@ -159,7 +160,6 @@ export class Space2D extends Block {
     copy.yAxisLabel = this.yAxisLabel;
     copy.spaceWindowColor = this.spaceWindowColor;
     copy.showGridLines = this.showGridLines;
-    copy.endSymbolsConnection = this.endSymbolsConnection;
     copy.setPointInput(this.pointInput);
     copy.setNumberOfPoints(this.getNumberOfPoints());
     copy.legends = [...this.legends];
@@ -174,6 +174,7 @@ export class Space2D extends Block {
     copy.dataSymbolSpacings = [...this.dataSymbolSpacings];
     copy.endSymbolRadii = [...this.endSymbolRadii];
     copy.endSymbolRotatables = [...this.endSymbolRotatables];
+    copy.endSymbolConnections = [...this.endSymbolConnections];
     return copy;
   }
 
@@ -257,6 +258,7 @@ export class Space2D extends Block {
               this.dataSymbolSpacings.push(1);
               this.endSymbolRadii.push(0);
               this.endSymbolRotatables.push(false);
+              this.endSymbolConnections.push("None");
             }
           }
         }
@@ -279,6 +281,7 @@ export class Space2D extends Block {
           this.dataSymbolSpacings.pop();
           this.endSymbolRadii.pop();
           this.endSymbolRotatables.pop();
+          this.endSymbolConnections.pop();
         }
       }
       let n = this.portPoints.length;
@@ -295,6 +298,7 @@ export class Space2D extends Block {
       this.dataSymbolSpacings.length = n;
       this.endSymbolRadii.length = n;
       this.endSymbolRotatables.length = n;
+      this.endSymbolConnections.length = n;
       this.refreshView();
     }
   }
@@ -581,12 +585,20 @@ export class Space2D extends Block {
     return this.endSymbolRotatables[i];
   }
 
-  setEndSymbolsConnection(endSymbolsConnection: string): void {
-    this.endSymbolsConnection = endSymbolsConnection;
+  setEndSymbolConnections(endSymbolConnections: string[]): void {
+    this.endSymbolConnections = endSymbolConnections;
   }
 
-  getEndSymbolsConnection(): string {
-    return this.endSymbolsConnection;
+  getEndSymbolConnections(): string[] {
+    return this.endSymbolConnections;
+  }
+
+  setEndSymbolConnection(i: number, endSymbolConnection: string): void {
+    this.endSymbolConnections[i] = endSymbolConnection;
+  }
+
+  getEndSymbolConnection(i: number): string {
+    return this.endSymbolConnections[i];
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -836,7 +848,7 @@ export class Space2D extends Block {
       }
     }
 
-    if (this.endSymbolsConnection !== "None") {
+    if (this.endSymbolConnections !== undefined) {
       let xi, yi, xj, yj;
       if (this.numberOfZigzags === undefined || this.numberOfZigzags.length !== this.points.length - 1) {
         this.numberOfZigzags = new Array(this.points.length - 1);
@@ -850,7 +862,7 @@ export class Space2D extends Block {
         yj = -(this.points[i + 1].getLatestY() - ymin) * dy;
         ctx.beginPath();
         ctx.moveTo(xi, yi);
-        switch (this.endSymbolsConnection) {
+        switch (this.endSymbolConnections[i]) {
           case "Line":
             ctx.lineWidth = 5;
             ctx.lineTo(xj, yj);
