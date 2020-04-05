@@ -161,6 +161,8 @@ import spherical_pendulum from "./examples/spherical-pendulum.json";
 // @ts-ignore
 import spherical_pendulum_damping from "./examples/spherical-pendulum-damping.json";
 // @ts-ignore
+import spherical_elastic_pendulum from "./examples/spherical-elastic-pendulum.json";
+// @ts-ignore
 import foucault_pendulum from "./examples/foucault-pendulum.json";
 // @ts-ignore
 import rlc_circuit from "./examples/rlc-circuit.json";
@@ -369,6 +371,7 @@ export class Examples {
     });
     this.files.push({name: "Mechanics: Spherical Pendulum", data: spherical_pendulum});
     this.files.push({name: "Mechanics: Damped Spherical Pendulum", data: spherical_pendulum_damping});
+    this.files.push({name: "Mechanics: Spherical Elastic Pendulum", data: spherical_elastic_pendulum});
     this.files.push({name: "Mechanics: Foucault Pendulum", data: foucault_pendulum});
     this.files.push({name: "Electronics: RLC Circuit", data: rlc_circuit});
     this.files.push({name: "Electronics: Chua Circuit", data: chua_circuit});

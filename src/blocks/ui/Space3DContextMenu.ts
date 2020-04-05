@@ -170,8 +170,8 @@ export class Space3DContextMenu extends BlockContextMenu {
                   <td colspan="3">
                     <select id="space3d-end-symbols-connection-selector" style="width: 100%">
                       <option value="None" selected>None</option>
-                      <option value="Line">Line</option>
-                      <option value="Zigzag">Zigzag</option>
+                      <option value="Rod">Rod</option>
+                      <option value="Coil">Coil</option>
                     </select>
                   </td>
                 </tr>

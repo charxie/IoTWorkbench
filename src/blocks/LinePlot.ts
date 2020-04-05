@@ -18,6 +18,7 @@ import {
 import {Point3DArray} from "./Point3DArray";
 import {Symbol3DArray} from "./Symbol3DArray";
 import {SpriteText2D, textAlign} from 'three-text2d'
+import {MeshLine, MeshLineMaterial} from 'threejs-meshline';
 import {Util} from "../Util";
 
 export class LinePlot {
@@ -45,6 +46,7 @@ export class LinePlot {
   private yLabelSprite: SpriteText2D;
   private zLabelSprite: SpriteText2D;
   private endSymbolsConnection: string = "None";
+  private numberOfCoils: number[] = [];
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private zAxisLabel: string = "z";
@@ -230,11 +232,35 @@ export class LinePlot {
     let dy = yi - yj;
     let dz = zi - zj;
     let h = Math.sqrt(dx * dx + dy * dy + dz * dz);
-    this.endSymbolConnectors[k].geometry = new CylinderGeometry(0.05, 0.05, h, 5);
-    this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeTranslation(0, h / 2, 0));
-    this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
-    this.endSymbolConnectors[k].position.set(xj, yj, zj);
-    this.endSymbolConnectors[k].lookAt(new Vector3(xi, yi, zi));
+    if (this.endSymbolConnectors[k].geometry !== undefined) this.endSymbolConnectors[k].geometry.dispose();
+    switch (this.endSymbolsConnection) {
+      case "Rod":
+        this.endSymbolConnectors[k].geometry = new CylinderGeometry(0.05, 0.05, h, 5);
+        this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeTranslation(0, h / 2, 0));
+        this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
+        this.endSymbolConnectors[k].position.set(xj, yj, zj);
+        this.endSymbolConnectors[k].lookAt(new Vector3(xi, yi, zi));
+        break;
+      case "Coil":
+        const vertices = [];
+        const count = 100;
+        const r = 0.2;
+        for (let n = 1; n <= count + 5; n++) {
+          let percent = n / count;
+          let cos = r * Math.cos(percent * 20 * Math.PI);
+          let sin = r * Math.sin(percent * 20 * Math.PI);
+          vertices.push(new Vector3(cos, dz * percent, sin));
+        }
+        const line = new MeshLine();
+        line.setVertices(vertices);
+        this.endSymbolConnectors[k].geometry = line;
+        this.endSymbolConnectors[k].material = new MeshLineMaterial({lineWidth: 0.05, color: "lightgray"});
+        this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeTranslation(0, h, 0));
+        this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
+        this.endSymbolConnectors[k].position.set(xj, yj, zj);
+        this.endSymbolConnectors[k].lookAt(new Vector3(xi, yi, zi));
+        break;
+    }
   }
 
   getLatestPoint(i: number): THREE.Vector3 {
