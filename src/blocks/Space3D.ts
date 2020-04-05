@@ -6,7 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
-import {closeAllContextMenus, flowchart, isNumber} from "../Main";
+import {closeAllContextMenus, flowchart} from "../Main";
 import {Vector} from "../math/Vector";
 import {LinePlot} from "./LinePlot";
 
@@ -16,6 +16,7 @@ export class Space3D extends Block {
   private portY: Port;
   private portZ: Port;
   private portPoints: Port[]; // only used in the point mode (multiple point streams are supported only in this mode)
+  private portImages: Port[];
   private pointInput: boolean = false;
   private spaceWindow: Rectangle;
   private barHeight: number;
@@ -285,6 +286,13 @@ export class Space3D extends Block {
       for (let p of this.portPoints) {
         this.ports.push(p);
       }
+      if (this.portImages == undefined) {
+        this.portImages = [];
+        this.portImages.push(new Port(this, true, "AI", 0, this.barHeight + 2 * dh, false));
+      }
+      for (let p of this.portImages) {
+        this.ports.push(p);
+      }
     } else {
       this.ports.push(this.portX);
       this.ports.push(this.portY);
@@ -307,6 +315,9 @@ export class Space3D extends Block {
             this.portPoints.push(p);
             this.ports.push(p);
             this.plot.pushPointArray();
+            let pi = new Port(this, true, String.fromCharCode("A".charCodeAt(0) + i) + "I", 0, 0, false);
+            this.portImages.push(pi);
+            this.ports.push(pi);
             if (notSet) {
               this.legends.push(p.getUid());
             }
@@ -316,6 +327,8 @@ export class Space3D extends Block {
         for (let i = this.portPoints.length - 1; i >= numberOfPoints; i--) {
           this.portPoints.pop();
           this.plot.popPointArray();
+          flowchart.removeConnectorsToPort(this.ports.pop());
+          this.portImages.pop();
           flowchart.removeConnectorsToPort(this.ports.pop());
           this.legends.pop();
         }
@@ -642,6 +655,11 @@ export class Space3D extends Block {
           }
         }
       }
+      if (this.portImages != undefined) {
+        for (let i = 0; i < this.portImages.length; i++) {
+          this.plot.setEndSymbolTexture(i, this.portImages[i].getValue());
+        }
+      }
     } else { // trio input mode (support only one curve, but it can accept arrays as the inputs)
       let vx = this.portX.getValue();
       let vy = this.portY.getValue();
@@ -686,9 +704,10 @@ export class Space3D extends Block {
     this.spaceMargin.left = 24;
     this.spaceMargin.right = 10;
     if (this.pointInput) {
-      let dh = (this.height - this.barHeight) / (this.portPoints.length + 1);
+      let dh = (this.height - this.barHeight) / (2 * this.portPoints.length + 1);
       for (let i = 0; i < this.portPoints.length; i++) {
-        this.portPoints[i].setY(this.barHeight + dh * (i + 1));
+        this.portPoints[i].setY(this.barHeight + dh * (2 * i + 1));
+        this.portImages[i].setY(this.barHeight + dh * (2 * i + 2));
       }
     } else {
       let dh = (this.height - this.barHeight) / 4;

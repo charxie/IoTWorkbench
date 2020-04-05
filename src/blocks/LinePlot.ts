@@ -12,7 +12,7 @@ import {
   Mesh, MeshBasicMaterial,
   MeshPhongMaterial,
   PerspectiveCamera, PointLight,
-  Scene, SphereGeometry, TetrahedronGeometry, Vector3,
+  Scene, SphereGeometry, TetrahedronGeometry, TextureLoader, Vector3,
   WebGLRenderer
 } from "three";
 import {Point3DArray} from "./Point3DArray";
@@ -56,6 +56,7 @@ export class LinePlot {
   private lines: Line[];
   private symbols: Symbol3DArray[] = [];
   private endSymbols: Mesh[];
+  private endSymbolTextureData: string[] = [];
   private endSymbolConnectors: Mesh[];
   private scene: Scene;
   private camera: PerspectiveCamera;
@@ -316,6 +317,29 @@ export class LinePlot {
       if (!this.isSceneChild(this.endSymbols[i])) this.scene.add(this.endSymbols[i]);
     } else {
       this.scene.remove(this.endSymbols[i]);
+    }
+  }
+
+  setEndSymbolTexture(i: number, imgsrc: string): void {
+    if (this.endSymbolTextureData[i] !== undefined && imgsrc !== undefined && this.endSymbolTextureData[i].length === imgsrc.length) return;
+    if (this.endSymbolTextureData[i] === undefined && imgsrc === undefined) return;
+    this.endSymbolTextureData[i] = imgsrc;
+    if (imgsrc !== undefined) {
+      new TextureLoader().load(imgsrc, (texture) => {
+        this.endSymbols[i].material = new MeshPhongMaterial({
+          color: this.dataSymbolColors[i],
+          map: texture,
+          specular: 0x050505,
+          shininess: 0.1
+        })
+        this.render();
+      });
+    } else {
+      this.endSymbols[i].material = new MeshPhongMaterial({
+        color: this.dataSymbolColors[i],
+        specular: 0x050505,
+        shininess: 0.1
+      });
     }
   }
 
