@@ -161,6 +161,8 @@ import elastic_pendulum_2d from "./examples/elastic-pendulum-2d.json";
 // @ts-ignore
 import double_pendulum from "./examples/double-pendulum.json";
 // @ts-ignore
+import pendulums_coupled_by_spring from "./examples/pendulums-coupled-by-spring.json";
+// @ts-ignore
 import inverted_pendulum_oscillatory_base from "./examples/inverted-pendulum-oscillatory-base.json";
 // @ts-ignore
 import spherical_pendulum from "./examples/spherical-pendulum.json";
@@ -374,6 +376,7 @@ export class Examples {
     this.files.push({name: "Mechanics: 2D Simple Pendulum", data: pendulum});
     this.files.push({name: "Mechanics: 2D Elastic Pendulum", data: elastic_pendulum_2d});
     this.files.push({name: "Mechanics: 2D Double Pendulum", data: double_pendulum});
+    this.files.push({name: "Mechanics: Pendulums Coupled by Spring", data: pendulums_coupled_by_spring});
     this.files.push({
       name: "Mechanics: 2D Inverted Pendulum on Oscillatory Base",
       data: inverted_pendulum_oscillatory_base
