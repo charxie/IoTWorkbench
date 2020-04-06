@@ -167,8 +167,9 @@ export class Space3DContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>End Connection:</td>
-                  <td colspan="3">
-                    <select id="space3d-end-symbols-connection-selector" style="width: 100%">
+                  <td><select id="space3d-end-symbol-connection-set-selector" style="width: 65px"></select></td>
+                  <td colspan="2">
+                    <select id="space3d-end-symbol-connection-selector" style="width: 100%">
                       <option value="None" selected>None</option>
                       <option value="Rod">Rod</option>
                       <option value="Coil">Coil</option>
@@ -229,6 +230,7 @@ export class Space3DContextMenu extends BlockContextMenu {
       let dataSymbolColors: string[] = g.getDataSymbolColors();
       let dataSymbolSpacings: number[] = g.getDataSymbolSpacings();
       let endSymbolRadii: any[] = g.getEndSymbolRadii();
+      let endSymbolConnections: string[] = g.getEndSymbolConnections();
 
       let nameField = document.getElementById("space3d-name-field") as HTMLInputElement;
       nameField.value = g.getName();
@@ -320,8 +322,11 @@ export class Space3DContextMenu extends BlockContextMenu {
       let endSymbolRadiusSetSelector = this.createSetSelector("space3d-end-symbol-radius-set-selector");
       endSymbolRadiusSetSelector.onchange = () => endSymbolRadiusField.value = endSymbolRadii[parseInt(endSymbolRadiusSetSelector.value)].toString();
 
-      let endSymbolsConnectionSelector = document.getElementById("space3d-end-symbols-connection-selector") as HTMLSelectElement;
-      endSymbolsConnectionSelector.value = g.getEndSymbolsConnection();
+      let endSymbolConnectionSelector = document.getElementById("space3d-end-symbol-connection-selector") as HTMLSelectElement;
+      endSymbolConnectionSelector.value = endSymbolConnections[0];
+      endSymbolConnectionSelector.onchange = () => endSymbolConnections[parseInt(endSymbolConnectionSetSelector.value)] = endSymbolConnectionSelector.value;
+      let endSymbolConnectionSetSelector = this.createSetSelector("space3d-end-symbol-connection-set-selector");
+      endSymbolConnectionSetSelector.onchange = () => endSymbolConnectionSelector.value = endSymbolConnections[parseInt(endSymbolConnectionSetSelector.value)];
 
       let windowColorField = document.getElementById("space3d-window-color-field") as HTMLInputElement;
       windowColorField.value = g.getSpaceWindowColor();
@@ -433,7 +438,6 @@ export class Space3DContextMenu extends BlockContextMenu {
           g.setBoxSize(Math.max(0, boxSize));
           g.setSpaceWindowColor(windowColorField.value);
           g.setPointInput(pointInputRadioButton.checked);
-          g.setEndSymbolsConnection(endSymbolsConnectionSelector.value);
           for (let i = 0; i < lineTypes.length; i++) {
             g.setLegend(i, legends[i]);
             g.setLineType(i, lineTypes[i]);
@@ -444,6 +448,7 @@ export class Space3DContextMenu extends BlockContextMenu {
             g.setDataSymbolRadius(i, dataSymbolRadii[i] != null ? dataSymbolRadii[i] : 0.5);
             g.setDataSymbolSpacing(i, dataSymbolSpacings[i] != null ? dataSymbolSpacings[i] : 10);
             g.setEndSymbolRadius(i, endSymbolRadii[i]);
+            g.setEndSymbolConnection(i, endSymbolConnections[i]);
           }
           g.locateOverlay();
           g.refreshView();

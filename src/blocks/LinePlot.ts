@@ -31,6 +31,7 @@ export class LinePlot {
   dataSymbolColors: string[] = [];
   dataSymbolSpacings: number[] = [];
   endSymbolRadii: number[] = [];
+  endSymbolConnections: string[] = [];
 
   private boxSize: number = 0; // zero means no box
   private boxBottomFace: Line;
@@ -45,7 +46,6 @@ export class LinePlot {
   private xLabelSprite: SpriteText2D;
   private yLabelSprite: SpriteText2D;
   private zLabelSprite: SpriteText2D;
-  private endSymbolsConnection: string = "None";
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private zAxisLabel: string = "z";
@@ -151,6 +151,7 @@ export class LinePlot {
     this.dataSymbolColors.push("dimgray");
     this.dataSymbolSpacings.push(1);
     this.endSymbolRadii.push(0);
+    this.endSymbolConnections.push("None");
   }
 
   popPointArray(): void {
@@ -166,6 +167,7 @@ export class LinePlot {
     this.dataSymbolColors.pop();
     this.dataSymbolSpacings.pop();
     this.endSymbolRadii.pop();
+    this.endSymbolConnections.pop();
   }
 
   setPointArrayLength(n: number): void {
@@ -215,13 +217,13 @@ export class LinePlot {
     this.lines[i].geometry = new BufferGeometry().setFromPoints(this.points[i].getPoints());
     this.endSymbols[i].position.set(x, y, z);
     if (this.lines[i].material instanceof LineDashedMaterial) this.lines[i].computeLineDistances();
-    if (i > 0 && this.endSymbolsConnection !== "None") {
-      let j = i - 1;
-      this.setEndSymolConnector(i, j, j);
+    if (i > 0) {
+      this.setEndSymolConnector(i, i - 1);
     }
   }
 
-  private setEndSymolConnector(i: number, j: number, k: number): void {
+  private setEndSymolConnector(i: number, j: number): void {
+    if (j >= this.endSymbolConnectors.length) return;
     let xi = this.endSymbols[i].position.x;
     let xj = this.endSymbols[j].position.x;
     let yi = this.endSymbols[i].position.y;
@@ -232,16 +234,19 @@ export class LinePlot {
     let dy = yi - yj;
     let dz = zi - zj;
     let h = Math.sqrt(dx * dx + dy * dy + dz * dz);
-    if (this.endSymbolConnectors[k].geometry !== undefined) this.endSymbolConnectors[k].geometry.dispose();
-    switch (this.endSymbolsConnection) {
+    if (this.endSymbolConnectors[j].geometry !== undefined) this.endSymbolConnectors[j].geometry.dispose();
+    switch (this.endSymbolConnections[j]) {
+      case "None":
+        this.endSymbolConnectors[j].visible = false;
+        break;
       case "Rod":
-        this.endSymbolConnectors[k].visible = true;
-        this.endSymbolConnectors[k].geometry = new CylinderGeometry(0.05, 0.05, h, 5);
-        this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeTranslation(0, h / 2, 0));
-        this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
-        this.endSymbolConnectors[k].position.set(xj, yj, zj);
-        this.endSymbolConnectors[k].lookAt(new Vector3(xi, yi, zi));
-        this.endSymbolConnectors[k].material = new MeshPhongMaterial({
+        this.endSymbolConnectors[j].visible = true;
+        this.endSymbolConnectors[j].geometry = new CylinderGeometry(0.05, 0.05, h, 5);
+        this.endSymbolConnectors[j].geometry.applyMatrix4(new Matrix4().makeTranslation(0, h / 2, 0));
+        this.endSymbolConnectors[j].geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
+        this.endSymbolConnectors[j].position.set(xj, yj, zj);
+        this.endSymbolConnectors[j].lookAt(new Vector3(xi, yi, zi));
+        this.endSymbolConnectors[j].material = new MeshPhongMaterial({
           color: "dimgray",
           specular: 0x050505,
           shininess: 0.1
@@ -259,13 +264,13 @@ export class LinePlot {
         }
         const line = new MeshLine();
         line.setVertices(vertices);
-        this.endSymbolConnectors[k].visible = true;
-        this.endSymbolConnectors[k].geometry = line;
-        this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeTranslation(0, h, 0));
-        this.endSymbolConnectors[k].geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
-        this.endSymbolConnectors[k].position.set(xj, yj, zj);
-        this.endSymbolConnectors[k].lookAt(new Vector3(xi, yi, zi));
-        this.endSymbolConnectors[k].material = new MeshLineMaterial({lineWidth: 0.05, color: "gray"});
+        this.endSymbolConnectors[j].visible = true;
+        this.endSymbolConnectors[j].geometry = line;
+        this.endSymbolConnectors[j].geometry.applyMatrix4(new Matrix4().makeTranslation(0, h, 0));
+        this.endSymbolConnectors[j].geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
+        this.endSymbolConnectors[j].position.set(xj, yj, zj);
+        this.endSymbolConnectors[j].lookAt(new Vector3(xi, yi, zi));
+        this.endSymbolConnectors[j].material = new MeshLineMaterial({lineWidth: 0.05, color: "gray"});
         break;
     }
   }
@@ -288,27 +293,11 @@ export class LinePlot {
     this.drawSymbols(i);
   }
 
-  setEndSymbolsConnection(endSymbolsConnection: string): void {
-    this.endSymbolsConnection = endSymbolsConnection;
+  setEndSymbolConnection(i: number, endSymbolConnection: string): void {
+    this.endSymbolConnections[i] = endSymbolConnection;
     if (this.endSymbolConnectors !== undefined) {
-      if (this.endSymbolsConnection !== "None") {
-        for (let i = this.points.length - 1; i > 0; i--) {
-          let j = i - 1;
-          this.setEndSymolConnector(i, j, j);
-        }
-        for (let i = 0; i < this.endSymbolConnectors.length; i++) {
-          this.endSymbolConnectors[i].visible = true;
-        }
-      } else {
-        for (let i = 0; i < this.endSymbolConnectors.length; i++) {
-          this.endSymbolConnectors[i].visible = false;
-        }
-      }
+      this.setEndSymolConnector(i + 1, i);
     }
-  }
-
-  getEndSymbolsConnection(): string {
-    return this.endSymbolsConnection;
   }
 
   setEndSymbolRadius(i: number, r: number): void {

@@ -45,7 +45,6 @@ export class Space3D extends Block {
     readonly zAxisLabel: string;
     readonly boxSize: number;
     readonly spaceWindowColor: string;
-    readonly endSymbolsConnection: string;
     readonly pointInput: boolean;
     readonly numberOfPoints: number;
     readonly legends: string[] = [];
@@ -57,6 +56,7 @@ export class Space3D extends Block {
     readonly dataSymbolColors: string[] = [];
     readonly dataSymbolSpacings: number[] = [];
     readonly endSymbolRadii: any[] = [];
+    readonly endSymbolConnections: string[] = [];
     readonly cameraPositionX: number;
     readonly cameraPositionY: number;
     readonly cameraPositionZ: number;
@@ -76,7 +76,6 @@ export class Space3D extends Block {
       this.zAxisLabel = g.getZAxisLabel();
       this.boxSize = g.plot.getBoxSize();
       this.spaceWindowColor = g.getSpaceWindowColor();
-      this.endSymbolsConnection = g.getEndSymbolsConnection();
       this.pointInput = g.pointInput;
       this.numberOfPoints = g.getNumberOfPoints();
       this.legends = [...g.legends];
@@ -88,6 +87,7 @@ export class Space3D extends Block {
       this.dataSymbolColors = [...g.plot.dataSymbolColors];
       this.dataSymbolSpacings = [...g.plot.dataSymbolSpacings];
       this.endSymbolRadii = [...g.plot.endSymbolRadii];
+      this.endSymbolConnections = [...g.plot.endSymbolConnections];
       this.cameraPositionX = g.plot.getCameraPositionX();
       this.cameraPositionY = g.plot.getCameraPositionY();
       this.cameraPositionZ = g.plot.getCameraPositionZ();
@@ -147,8 +147,8 @@ export class Space3D extends Block {
     copy.plot.dataSymbolColors = [...this.plot.dataSymbolColors];
     copy.plot.dataSymbolSpacings = [...this.plot.dataSymbolSpacings];
     copy.plot.endSymbolRadii = [...this.plot.endSymbolRadii];
+    copy.plot.endSymbolConnections = [...this.plot.endSymbolConnections];
     copy.setBoxSize(this.getBoxSize());
-    copy.setEndSymbolsConnection(this.getEndSymbolsConnection());
     copy.setWidth(this.getWidth());
     copy.setHeight(this.getHeight());
     copy.plot.render();
@@ -344,6 +344,7 @@ export class Space3D extends Block {
       this.plot.dataSymbolColors.length = n;
       this.plot.dataSymbolSpacings.length = n;
       this.plot.endSymbolRadii.length = n;
+      this.plot.endSymbolConnections.length = n;
       this.refreshView();
     }
   }
@@ -552,12 +553,22 @@ export class Space3D extends Block {
     return this.plot.endSymbolRadii[i];
   }
 
-  setEndSymbolsConnection(endSymbolsConnection: string): void {
-    this.plot.setEndSymbolsConnection(endSymbolsConnection);
+  setEndSymbolConnections(endSymbolConnections: string[]): void {
+    for (let i = 0; i < endSymbolConnections.length; i++) {
+      this.plot.setEndSymbolConnection(i, endSymbolConnections[i]);
+    }
   }
 
-  getEndSymbolsConnection(): string {
-    return this.plot.getEndSymbolsConnection();
+  getEndSymbolConnections(): string[] {
+    return this.plot.endSymbolConnections;
+  }
+
+  setEndSymbolConnection(i: number, endSymbolConnection: string): void {
+    this.plot.setEndSymbolConnection(i, endSymbolConnection);
+  }
+
+  getEndSymbolConnection(i: number): string {
+    return this.plot.endSymbolConnections[i];
   }
 
   draw(ctx: CanvasRenderingContext2D): void {

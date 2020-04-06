@@ -249,12 +249,12 @@ export class StateIO {
           block.setZAxisLabel(state.zAxisLabel);
           block.setSpaceWindowColor(state.spaceWindowColor);
           block.setPointInput(state.pointInput);
-          block.setEndSymbolsConnection(state.endSymbolsConnection);
           block.setNumberOfPoints(state.numberOfPoints);
           block.setLegends(state.legends);
           block.setLineTypes(state.lineTypes);
           block.setLineColors(state.lineColors);
           if (state.lineWidths !== undefined) block.setLineWidths(state.lineWidths);
+          if (state.endSymbolConnections != undefined) block.setEndSymbolConnections(state.endSymbolConnections);
           block.setEndSymbolRadii(state.endSymbolRadii);
           block.setDataSymbols(state.dataSymbols);
           block.setDataSymbolRadii(state.dataSymbolRadii);
