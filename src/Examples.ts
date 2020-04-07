@@ -3,6 +3,10 @@
  */
 
 // @ts-ignore
+import seashell from "./examples/seashell.json";
+// @ts-ignore
+import torus from "./examples/torus.json";
+// @ts-ignore
 import crank_rocker from "./examples/crank-rocker.json";
 // @ts-ignore
 import slider_crank_offset from "./examples/slider-crank-offset.json";
@@ -303,6 +307,8 @@ export class Examples {
     this.files.push({name: "Math: Parametric Generator 1", data: parametric_generator_1});
     this.files.push({name: "Math: Parametric Generator 2", data: parametric_generator_2});
     this.files.push({name: "Math: Spirals", data: spirals});
+    this.files.push({name: "Math: Torus", data: torus});
+    this.files.push({name: "Math: Seashell", data: seashell});
     this.files.push({name: "Math: Recurrence Relation", data: duffing_map});
     this.files.push({name: "Math: Regular Polygon", data: regular_polygon});
     this.files.push({name: "Math: Spider Web", data: spider_web});

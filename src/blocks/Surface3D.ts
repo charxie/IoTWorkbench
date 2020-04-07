@@ -23,14 +23,16 @@ export class Surface3D extends Block {
   private data: number[];
   private x0: number;
   private dx: number;
-  private nx: number;
+  private nu: number;
   private y0: number;
   private dy: number;
-  private ny: number;
+  private nv: number;
   // x,y,z array input
   private portX: Port;
   private portY: Port;
   private portZ: Port;
+  private portNU: Port;
+  private portNV: Port;
   private dataX: number[];
   private dataY: number[];
   private dataZ: number[];
@@ -148,13 +150,17 @@ export class Surface3D extends Block {
       }
       this.ports.length = 0;
       if (tripleArrayInput) {
-        let dh = (this.height - this.barHeight) / 4;
+        let dh = (this.height - this.barHeight) / 6;
         if (this.portX === undefined) this.portX = new Port(this, true, "X", 0, this.barHeight + dh, false)
         if (this.portY === undefined) this.portY = new Port(this, true, "Y", 0, this.barHeight + 2 * dh, false)
         if (this.portZ === undefined) this.portZ = new Port(this, true, "Z", 0, this.barHeight + 3 * dh, false)
+        if (this.portNU === undefined) this.portNU = new Port(this, true, "NU", 0, this.barHeight + 4 * dh, false)
+        if (this.portNV === undefined) this.portNV = new Port(this, true, "NV", 0, this.barHeight + 5 * dh, false)
         this.ports.push(this.portX);
         this.ports.push(this.portY);
         this.ports.push(this.portZ);
+        this.ports.push(this.portNU);
+        this.ports.push(this.portNV);
       } else {
         this.ports.push(this.portI);
         this.ports.push(this.portX0);
@@ -353,7 +359,12 @@ export class Surface3D extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "white";
-      let title = this.name + (this.data === undefined ? "" : " (" + this.data.length + " points)");
+      let title;
+      if (this.tripleArrayInput) {
+        title = this.name + (this.dataZ === undefined ? "" : " (" + this.dataZ.length + " points)");
+      } else {
+        title = this.name + (this.data === undefined ? "" : " (" + this.data.length + " points)");
+      }
       let titleWidth = ctx.measureText(title).width;
       ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
@@ -415,23 +426,25 @@ export class Surface3D extends Block {
 
   updateModel(): void {
     if (this.tripleArrayInput) {
+      this.nu = this.portNU.getValue();
+      this.nv = this.portNV.getValue();
       this.dataX = this.portX.getValue();
       this.dataY = this.portY.getValue();
       this.dataZ = this.portZ.getValue();
-      if (this.dataX !== undefined && this.dataY !== undefined && this.dataZ !== undefined) {
-        this.plot.setXyzData(this.dataX, this.dataY, this.dataZ, this.scaleType);
+      if (this.nu !== undefined && this.nv !== undefined && this.dataX !== undefined && this.dataY !== undefined && this.dataZ !== undefined) {
+        this.plot.setXyzData(this.nu, this.nv, this.dataX, this.dataY, this.dataZ, this.scaleType);
         this.plot.render();
       }
     } else {
       this.data = this.portI.getValue();
       this.x0 = this.portX0.getValue();
       this.dx = this.portDX.getValue();
-      this.nx = this.portNX.getValue();
+      this.nu = this.portNX.getValue();
       this.y0 = this.portY0.getValue();
       this.dy = this.portDY.getValue();
-      this.ny = this.portNY.getValue();
-      if (this.x0 !== undefined && this.y0 !== undefined && this.dx !== undefined && this.dy !== undefined && this.nx !== undefined && this.ny !== undefined && this.data !== undefined) {
-        this.plot.setZData(this.x0, this.y0, this.dx, this.dy, this.nx, this.ny, this.data, this.scaleType);
+      this.nv = this.portNY.getValue();
+      if (this.x0 !== undefined && this.y0 !== undefined && this.dx !== undefined && this.dy !== undefined && this.nu !== undefined && this.nv !== undefined && this.data !== undefined) {
+        this.plot.setZData(this.x0, this.y0, this.dx, this.dy, this.nu, this.nv, this.data, this.scaleType);
         this.plot.render();
       }
     }
@@ -444,10 +457,12 @@ export class Surface3D extends Block {
     this.viewWindowMargin.left = 36;
     this.viewWindowMargin.right = 10;
     if (this.tripleArrayInput) {
-      let dh = (this.height - this.barHeight) / 4;
+      let dh = (this.height - this.barHeight) / 6;
       this.portX.setY(this.barHeight + dh);
       this.portY.setY(this.barHeight + 2 * dh);
       this.portZ.setY(this.barHeight + 3 * dh);
+      this.portNU.setY(this.barHeight + 4 * dh);
+      this.portNV.setY(this.barHeight + 5 * dh);
     } else {
       let dh = (this.height - this.barHeight) / 8;
       this.portI.setY(this.barHeight + dh);

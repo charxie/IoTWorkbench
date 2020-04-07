@@ -66,7 +66,7 @@ export class SurfacePlot {
     this.controls.dispose();
   }
 
-  setXyzData(dataX: number[], dataY: number[], dataZ: number[], scaleType: string): void {
+  setXyzData(nu: number, nv: number, dataX: number[], dataY: number[], dataZ: number[], scaleType: string): void {
     // somehow we have to remove the mesh, recreate the geometry, and re-add them back to the scene to chnage the colors
     this.scene.remove(this.mesh);
     this.geometry.dispose();
@@ -83,14 +83,12 @@ export class SurfacePlot {
       return this.interpolateColor;
     });
 
-    let nx = Math.sqrt(dataX.length);
-    let ny = nx;
     // add cell faces (2 traingles per cell) to geometry
-    for (let j = 0; j < ny - 1; j++) {
-      for (let i = 0; i < nx - 1; i++) {
-        let n0 = j * nx + i;
+    for (let j = 0; j < nv - 1; j++) {
+      for (let i = 0; i < nu - 1; i++) {
+        let n0 = j * nu + i;
         let n1 = n0 + 1;
-        let n2 = (j + 1) * nx + i + 1;
+        let n2 = (j + 1) * nu + i + 1;
         let n3 = n2 - 1;
         let face1 = new THREE.Face3(n0, n1, n2);
         let face2 = new THREE.Face3(n2, n3, n0);
