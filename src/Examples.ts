@@ -3,7 +3,21 @@
  */
 
 // @ts-ignore
+import klein_bottle from "./examples/klein-bottle.json";
+// @ts-ignore
+import astroidal_ellipsoid from "./examples/astroidal-ellipsoid.json";
+// @ts-ignore
+import hyperboloid from "./examples/hyperboloid.json";
+// @ts-ignore
+import dupin_cyclide from "./examples/dupin-cyclide.json";
+// @ts-ignore
+import breather_surface from "./examples/breather-surface.json";
+// @ts-ignore
+import boy_roman_surfaces from "./examples/boy-roman-surfaces.json";
+// @ts-ignore
 import seashell from "./examples/seashell.json";
+// @ts-ignore
+import mobius_strip from "./examples/mobius-strip.json";
 // @ts-ignore
 import torus from "./examples/torus.json";
 // @ts-ignore
@@ -308,7 +322,14 @@ export class Examples {
     this.files.push({name: "Math: Parametric Generator 2", data: parametric_generator_2});
     this.files.push({name: "Math: Spirals", data: spirals});
     this.files.push({name: "Math: Torus", data: torus});
+    this.files.push({name: "Math: Hyperboloid", data: hyperboloid});
+    this.files.push({name: "Math: Astroidal Ellipsoid", data: astroidal_ellipsoid});
+    this.files.push({name: "Math: Möbius Strip", data: mobius_strip});
+    this.files.push({name: "Math: Klein Bottle", data: klein_bottle});
     this.files.push({name: "Math: Seashell", data: seashell});
+    this.files.push({name: "Math: Boy Surface & Roman Surface", data: boy_roman_surfaces});
+    this.files.push({name: "Math: Dupin Cyclide", data: dupin_cyclide});
+    this.files.push({name: "Math: Breather Surface", data: breather_surface});
     this.files.push({name: "Math: Recurrence Relation", data: duffing_map});
     this.files.push({name: "Math: Regular Polygon", data: regular_polygon});
     this.files.push({name: "Math: Spider Web", data: spider_web});

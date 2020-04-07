@@ -139,6 +139,7 @@ export class Surface3D extends Block {
     copy.colorScheme = this.colorScheme;
     copy.setWidth(this.getWidth());
     copy.setHeight(this.getHeight());
+    copy.setTripleArrayInput(this.getTripleArrayInput());
     copy.plot.render();
     return copy;
   }
