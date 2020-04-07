@@ -11,6 +11,8 @@ import {SurfacePlot} from "./SurfacePlot";
 
 export class Surface3D extends Block {
 
+  private tripleArrayInput: boolean;
+  // z array input
   private portI: Port;
   private portX0: Port;
   private portDX: Port;
@@ -25,6 +27,13 @@ export class Surface3D extends Block {
   private y0: number;
   private dy: number;
   private ny: number;
+  // x,y,z array input
+  private portX: Port;
+  private portY: Port;
+  private portZ: Port;
+  private dataX: number[];
+  private dataY: number[];
+  private dataZ: number[];
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private zAxisLabel: string = "z";
@@ -61,6 +70,7 @@ export class Surface3D extends Block {
     readonly cameraRotationX: number;
     readonly cameraRotationY: number;
     readonly cameraRotationZ: number;
+    readonly tripleArrayInput: boolean;
 
     constructor(g: Surface3D) {
       this.name = g.name;
@@ -75,6 +85,7 @@ export class Surface3D extends Block {
       this.viewWindowColor = g.viewWindowColor;
       this.scaleType = g.scaleType;
       this.colorScheme = g.colorScheme;
+      this.tripleArrayInput = g.tripleArrayInput;
       this.cameraPositionX = g.plot.getCameraPositionX();
       this.cameraPositionY = g.plot.getCameraPositionY();
       this.cameraPositionZ = g.plot.getCameraPositionZ();
@@ -128,6 +139,38 @@ export class Surface3D extends Block {
     copy.setHeight(this.getHeight());
     copy.plot.render();
     return copy;
+  }
+
+  setTripleArrayInput(tripleArrayInput: boolean): void {
+    if (this.tripleArrayInput !== tripleArrayInput) {
+      for (let p of this.ports) {
+        flowchart.removeConnectorsToPort(p);
+      }
+      this.ports.length = 0;
+      if (tripleArrayInput) {
+        let dh = (this.height - this.barHeight) / 4;
+        if (this.portX === undefined) this.portX = new Port(this, true, "X", 0, this.barHeight + dh, false)
+        if (this.portY === undefined) this.portY = new Port(this, true, "Y", 0, this.barHeight + 2 * dh, false)
+        if (this.portZ === undefined) this.portZ = new Port(this, true, "Z", 0, this.barHeight + 3 * dh, false)
+        this.ports.push(this.portX);
+        this.ports.push(this.portY);
+        this.ports.push(this.portZ);
+      } else {
+        this.ports.push(this.portI);
+        this.ports.push(this.portX0);
+        this.ports.push(this.portDX);
+        this.ports.push(this.portNX);
+        this.ports.push(this.portY0);
+        this.ports.push(this.portDY);
+        this.ports.push(this.portNY);
+      }
+      this.tripleArrayInput = tripleArrayInput;
+      this.refreshView();
+    }
+  }
+
+  getTripleArrayInput(): boolean {
+    return this.tripleArrayInput;
   }
 
   private overlayMouseDown(e: MouseEvent): void {
@@ -371,16 +414,26 @@ export class Surface3D extends Block {
   }
 
   updateModel(): void {
-    this.data = this.portI.getValue();
-    this.x0 = this.portX0.getValue();
-    this.dx = this.portDX.getValue();
-    this.nx = this.portNX.getValue();
-    this.y0 = this.portY0.getValue();
-    this.dy = this.portDY.getValue();
-    this.ny = this.portNY.getValue();
-    if (this.x0 !== undefined && this.y0 !== undefined && this.dx !== undefined && this.dy !== undefined && this.nx !== undefined && this.ny !== undefined && this.data !== undefined) {
-      this.plot.setData(this.x0, this.y0, this.dx, this.dy, this.nx, this.ny, this.data, this.scaleType);
-      this.plot.render();
+    if (this.tripleArrayInput) {
+      this.dataX = this.portX.getValue();
+      this.dataY = this.portY.getValue();
+      this.dataZ = this.portZ.getValue();
+      if (this.dataX !== undefined && this.dataY !== undefined && this.dataZ !== undefined) {
+        this.plot.setXyzData(this.dataX, this.dataY, this.dataZ, this.scaleType);
+        this.plot.render();
+      }
+    } else {
+      this.data = this.portI.getValue();
+      this.x0 = this.portX0.getValue();
+      this.dx = this.portDX.getValue();
+      this.nx = this.portNX.getValue();
+      this.y0 = this.portY0.getValue();
+      this.dy = this.portDY.getValue();
+      this.ny = this.portNY.getValue();
+      if (this.x0 !== undefined && this.y0 !== undefined && this.dx !== undefined && this.dy !== undefined && this.nx !== undefined && this.ny !== undefined && this.data !== undefined) {
+        this.plot.setZData(this.x0, this.y0, this.dx, this.dy, this.nx, this.ny, this.data, this.scaleType);
+        this.plot.render();
+      }
     }
   }
 
@@ -390,14 +443,21 @@ export class Surface3D extends Block {
     this.viewWindowMargin.bottom = 10;
     this.viewWindowMargin.left = 36;
     this.viewWindowMargin.right = 10;
-    let dh = (this.height - this.barHeight) / 8;
-    this.portI.setY(this.barHeight + dh);
-    this.portX0.setY(this.barHeight + 2 * dh);
-    this.portDX.setY(this.barHeight + 3 * dh);
-    this.portNX.setY(this.barHeight + 4 * dh);
-    this.portY0.setY(this.barHeight + 5 * dh);
-    this.portDY.setY(this.barHeight + 6 * dh);
-    this.portNY.setY(this.barHeight + 7 * dh);
+    if (this.tripleArrayInput) {
+      let dh = (this.height - this.barHeight) / 4;
+      this.portX.setY(this.barHeight + dh);
+      this.portY.setY(this.barHeight + 2 * dh);
+      this.portZ.setY(this.barHeight + 3 * dh);
+    } else {
+      let dh = (this.height - this.barHeight) / 8;
+      this.portI.setY(this.barHeight + dh);
+      this.portX0.setY(this.barHeight + 2 * dh);
+      this.portDX.setY(this.barHeight + 3 * dh);
+      this.portNX.setY(this.barHeight + 4 * dh);
+      this.portY0.setY(this.barHeight + 5 * dh);
+      this.portDY.setY(this.barHeight + 6 * dh);
+      this.portNY.setY(this.barHeight + 7 * dh);
+    }
   }
 
   toCanvas(): HTMLCanvasElement {

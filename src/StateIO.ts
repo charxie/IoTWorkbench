@@ -283,6 +283,7 @@ export class StateIO {
           block.setZAxisLabel(state.zAxisLabel);
           block.setColorScheme(state.colorScheme);
           block.setViewWindowColor(state.viewWindowColor);
+          block.setTripleArrayInput(state.tripleArrayInput);
           if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
             block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
         } else if (block instanceof TurnoutSwitch) {

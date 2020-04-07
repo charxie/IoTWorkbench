@@ -64,7 +64,14 @@ export class Surface3DContextMenu extends BlockContextMenu {
                   <td>Name:</td>
                   <td colspan="2"><input type="text" id="surface3d-name-field" style="width: 100%"></td>
                 </tr>
-               <tr>
+                <tr>
+                  <td>Input Type:</td>
+                  <td colspan="2">
+                    <input type="radio" name="input-type" id="surface3d-z-input-radio-button" checked> Only z
+                    <input type="radio" name="input-type" id="surface3d-xyz-input-radio-button"> xyz
+                  </td>
+                </tr>
+                <tr>
                   <td>Scale:</td>
                   <td colspan="2">
                     <select id="surface3d-scale-type-selector" style="width: 100%">
@@ -73,7 +80,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
                     </select>
                   </td>
                 </tr>
-               <tr>
+                <tr>
                   <td>Color Scheme:</td>
                   <td colspan="2">
                     <select id="surface3d-color-scheme-selector" style="width: 100%">
@@ -155,6 +162,10 @@ export class Surface3DContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("surface3d-name-field") as HTMLInputElement;
       nameField.value = g.getName();
+      let zInputRadioButton = document.getElementById("surface3d-z-input-radio-button") as HTMLInputElement;
+      zInputRadioButton.checked = !g.getTripleArrayInput();
+      let xyzInputRadioButton = document.getElementById("surface3d-xyz-input-radio-button") as HTMLInputElement;
+      xyzInputRadioButton.checked = g.getTripleArrayInput();
       let scaleTypeSelector = document.getElementById("surface3d-scale-type-selector") as HTMLSelectElement;
       scaleTypeSelector.value = g.getScaleType();
       let colorSchemeSelector = document.getElementById("surface3d-color-scheme-selector") as HTMLSelectElement;
@@ -196,6 +207,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           g.setName(nameField.value);
+          g.setTripleArrayInput(xyzInputRadioButton.checked);
           g.setScaleType(scaleTypeSelector.value);
           g.setColorScheme(colorSchemeSelector.value)
           g.setXAxisLabel(xAxisLableField.value);
@@ -228,7 +240,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: g.getUid(),
-        height: 510,
+        height: 550,
         width: 450,
         buttons: {
           'OK': okFunction,

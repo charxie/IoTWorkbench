@@ -66,7 +66,51 @@ export class SurfacePlot {
     this.controls.dispose();
   }
 
-  setData(x0: number, y0: number, dx: number, dy: number, nx: number, ny: number, data: number[], scaleType: string) {
+  setXyzData(dataX: number[], dataY: number[], dataZ: number[], scaleType: string): void {
+    // somehow we have to remove the mesh, recreate the geometry, and re-add them back to the scene to chnage the colors
+    this.scene.remove(this.mesh);
+    this.geometry.dispose();
+    this.geometry = new THREE.Geometry();
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.scene.add(this.mesh);
+
+    for (let k = 0; k < dataX.length; k++) {
+      this.geometry.vertices.push(new THREE.Vector3(dataX[k], dataY[k], dataZ[k]));
+    }
+
+    // scale values to (0, 1) for coloring
+    let color = d3.scaleLinear().domain(d3.extent(dataZ)).interpolate(() => {
+      return this.interpolateColor;
+    });
+
+    let nx = Math.sqrt(dataX.length);
+    let ny = nx;
+    // add cell faces (2 traingles per cell) to geometry
+    for (let j = 0; j < ny - 1; j++) {
+      for (let i = 0; i < nx - 1; i++) {
+        let n0 = j * nx + i;
+        let n1 = n0 + 1;
+        let n2 = (j + 1) * nx + i + 1;
+        let n3 = n2 - 1;
+        let face1 = new THREE.Face3(n0, n1, n2);
+        let face2 = new THREE.Face3(n2, n3, n0);
+        face1.vertexColors[0] = new THREE.Color(color(dataZ[n0]));
+        face1.vertexColors[1] = new THREE.Color(color(dataZ[n1]));
+        face1.vertexColors[2] = new THREE.Color(color(dataZ[n2]));
+        face2.vertexColors[0] = new THREE.Color(color(dataZ[n2]));
+        face2.vertexColors[1] = new THREE.Color(color(dataZ[n3]));
+        face2.vertexColors[2] = new THREE.Color(color(dataZ[n0]));
+        this.geometry.faces.push(face1);
+        this.geometry.faces.push(face2);
+      }
+    }
+
+    // compute normals for shading
+    this.geometry.computeFaceNormals();
+    this.geometry.computeVertexNormals();
+  }
+
+  setZData(x0: number, y0: number, dx: number, dy: number, nx: number, ny: number, data: number[], scaleType: string): void {
     // somehow we have to remove the mesh, recreate the geometry, and re-add them back to the scene to chnage the colors
     this.scene.remove(this.mesh);
     this.geometry.dispose();
@@ -163,7 +207,6 @@ export class SurfacePlot {
     // compute normals for shading
     this.geometry.computeFaceNormals();
     this.geometry.computeVertexNormals();
-
   }
 
   createAxes(): void {
