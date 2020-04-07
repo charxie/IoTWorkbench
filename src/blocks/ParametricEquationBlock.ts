@@ -9,7 +9,8 @@ import {Util} from "../Util";
 
 export class ParametricEquationBlock extends Block {
 
-  private parameterName: string = "t";
+  private parameterName1: string = "t";
+  private parameterName2: string = "";
   private expressionX: string = "cos(t)";
   private expressionY: string = "sin(t)";
   private expressionZ: string = "";
@@ -17,6 +18,7 @@ export class ParametricEquationBlock extends Block {
   private codeY;
   private codeZ;
   private readonly portT: Port;
+  private readonly portV: Port;
   private readonly portX: Port;
   private readonly portY: Port;
   private readonly portZ: Port;
@@ -27,7 +29,8 @@ export class ParametricEquationBlock extends Block {
 
   static State = class {
     readonly uid: string;
-    readonly parameterName: string;
+    readonly parameterName1: string;
+    readonly parameterName2: string;
     readonly expressionX: string;
     readonly expressionY: string;
     readonly expressionZ: string;
@@ -38,7 +41,8 @@ export class ParametricEquationBlock extends Block {
 
     constructor(block: ParametricEquationBlock) {
       this.uid = block.uid;
-      this.parameterName = block.parameterName;
+      this.parameterName1 = block.parameterName1;
+      this.parameterName2 = block.parameterName2;
       this.expressionX = block.expressionX;
       this.expressionY = block.expressionY;
       this.expressionZ = block.expressionZ;
@@ -53,12 +57,14 @@ export class ParametricEquationBlock extends Block {
     super(uid, x, y, width, height);
     this.symbol = "x(t), y(t)";
     this.name = "Parametric Equation Block";
-    this.parameterName = "t";
+    this.parameterName1 = "t";
+    this.parameterName2 = "";
     this.expressionX = "cos(t)";
     this.expressionY = "sin(t)";
     this.expressionZ = "";
     this.color = "#A0522D";
-    this.portT = new Port(this, true, "T", 0, this.height / 2, false);
+    this.portT = new Port(this, true, "T", 0, this.height / 3, false);
+    this.portV = new Port(this, true, "V", 0, this.height * 2 / 3, false);
     this.portX = new Port(this, false, "X", this.width, this.height / 3, true);
     this.portY = new Port(this, false, "Y", this.width, this.height * 2 / 3, true);
     this.portZ = new Port(this, false, "Z", this.width, this.height, true);
@@ -69,7 +75,8 @@ export class ParametricEquationBlock extends Block {
 
   getCopy(): Block {
     let block = new ParametricEquationBlock("Parametric Equation Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
-    block.parameterName = this.parameterName;
+    block.parameterName1 = this.parameterName1;
+    block.parameterName2 = this.parameterName2;
     block.expressionX = this.expressionX;
     block.expressionY = this.expressionY;
     block.expressionZ = this.expressionZ;
@@ -79,12 +86,32 @@ export class ParametricEquationBlock extends Block {
   destroy(): void {
   }
 
-  setParameterName(parameterName: string): void {
-    this.parameterName = parameterName;
+  setParameterName1(parameterName1: string): void {
+    this.parameterName1 = parameterName1;
   }
 
-  getParameterName(): string {
-    return this.parameterName;
+  getParameterName1(): string {
+    return this.parameterName1;
+  }
+
+  setParameterName2(parameterName2: string): void {
+    let index = this.ports.indexOf(this.portV);
+    if (parameterName2.trim() !== "") {
+      this.parameterName2 = parameterName2;
+      if (index === -1) {
+        this.ports.insertAt(1, this.portV);
+      }
+    } else {
+      this.parameterName2 = "";
+      if (index !== -1) {
+        this.ports.removeItem(this.portV);
+      }
+    }
+    this.refreshView();
+  }
+
+  getParameterName2(): string {
+    return this.parameterName2;
   }
 
   setExpressionX(expressionX: string): void {
@@ -111,12 +138,12 @@ export class ParametricEquationBlock extends Block {
       this.expressionZ = expressionZ.replace(/\s/g, "");
       this.createParserZ();
       if (index === -1) {
-        this.ports.push(this.portZ);
+        this.ports.push(this.portZ); // assuming that Z is always the last in the ports array
       }
     } else {
       this.expressionZ = "";
       if (index !== -1) {
-        this.ports.pop();
+        this.ports.pop(); // assuming that Z is always the last in the ports array
       }
     }
     this.refreshView();
@@ -197,7 +224,12 @@ export class ParametricEquationBlock extends Block {
 
   refreshView(): void {
     super.refreshView();
-    this.portT.setY(this.height / 2);
+    if (this.parameterName2 === "") {
+      this.portT.setY(this.height / 2);
+    } else {
+      this.portT.setY(this.height / 3);
+      this.portV.setY(this.height * 2 / 3);
+    }
     this.portX.setX(this.width);
     this.portY.setX(this.width);
     if (this.expressionZ === "") {
@@ -232,44 +264,88 @@ export class ParametricEquationBlock extends Block {
 
   updateModel(): void {
     this.hasError = this.hasParserXError || this.hasParserYError || this.hasParserZError || this.hasDeclarationError;
-    let t = this.portT.getValue();
-    if (this.expressionX && this.expressionY && this.parameterName && t != undefined) {
-      try {
-        if (this.codeX == undefined) this.createParserX();
-        if (this.codeY == undefined) this.createParserY();
-        if (this.expressionZ !== "" && this.codeZ == undefined) this.createParserZ();
-        let param = {...flowchart.globalVariables};
-        if (Array.isArray(t)) {
-          let x = new Array(t.length);
-          let y = new Array(t.length);
-          for (let i = 0; i < t.length; i++) {
-            param[this.parameterName] = t[i];
-            x[i] = this.codeX.evaluate(param);
-            y[i] = this.codeY.evaluate(param);
-          }
-          this.portX.setValue(x);
-          this.portY.setValue(y);
-          if (this.expressionZ !== "") {
-            let z = new Array(t.length);
+    if (this.expressionX && this.expressionY && this.parameterName1) { // minimum requirement
+      if (this.parameterName2.trim() === "") { // parameter 2 is not defined
+        let t = this.portT.getValue();
+        let v = this.portV.getValue();
+        try {
+          if (this.codeX == undefined) this.createParserX();
+          if (this.codeY == undefined) this.createParserY();
+          if (this.expressionZ !== "" && this.codeZ == undefined) this.createParserZ();
+          let param = {...flowchart.globalVariables};
+          if (Array.isArray(t)) {
+            let x = new Array(t.length);
+            let y = new Array(t.length);
             for (let i = 0; i < t.length; i++) {
-              param[this.parameterName] = t[i];
-              z[i] = this.codeZ.evaluate(param);
+              param[this.parameterName1] = t[i];
+              x[i] = this.codeX.evaluate(param);
+              y[i] = this.codeY.evaluate(param);
             }
-            this.portZ.setValue(z);
+            this.portX.setValue(x);
+            this.portY.setValue(y);
+            if (this.expressionZ !== "") {
+              let z = new Array(t.length);
+              for (let i = 0; i < t.length; i++) {
+                param[this.parameterName1] = t[i];
+                z[i] = this.codeZ.evaluate(param);
+              }
+              this.portZ.setValue(z);
+            }
+          } else {
+            param[this.parameterName1] = t;
+            this.portX.setValue(this.codeX.evaluate(param));
+            this.portY.setValue(this.codeY.evaluate(param));
+            if (this.expressionZ !== "") {
+              this.portZ.setValue(this.codeZ.evaluate(param));
+            }
           }
-        } else {
-          param[this.parameterName] = t;
-          this.portX.setValue(this.codeX.evaluate(param));
-          this.portY.setValue(this.codeY.evaluate(param));
-          if (this.expressionZ !== "") {
-            this.portZ.setValue(this.codeZ.evaluate(param));
+          this.updateConnectors();
+        } catch (e) {
+          console.log(e.stack);
+          Util.showBlockError(e.toString());
+          this.hasError = true;
+        }
+      } else { // parameter 2 is defined
+        let u = this.portT.getValue();
+        let v = this.portV.getValue();
+        if (u !== undefined && v !== undefined) {
+          try {
+            if (this.codeX === undefined) this.createParserX();
+            if (this.codeY === undefined) this.createParserY();
+            if (this.codeZ === undefined) this.createParserZ();
+            let param = {...flowchart.globalVariables};
+            if (Array.isArray(u) && Array.isArray(v)) {
+              let n = u.length * v.length;
+              let x = new Array(n);
+              let y = new Array(n);
+              let z = new Array(n);
+              for (let i = 0; i < u.length; i++) {
+                param[this.parameterName1] = u[i];
+                for (let j = 0; j < v.length; j++) {
+                  param[this.parameterName2] = v[j];
+                  let k = i * v.length + j;
+                  x[k] = this.codeX.evaluate(param);
+                  y[k] = this.codeY.evaluate(param);
+                  z[k] = this.codeZ.evaluate(param);
+                }
+              }
+              this.portX.setValue(x);
+              this.portY.setValue(y);
+              this.portZ.setValue(z);
+            } else {
+              param[this.parameterName1] = u;
+              param[this.parameterName2] = v;
+              this.portX.setValue(this.codeX.evaluate(param));
+              this.portY.setValue(this.codeY.evaluate(param));
+              this.portZ.setValue(this.codeZ.evaluate(param));
+            }
+            this.updateConnectors();
+          } catch (e) {
+            console.log(e.stack);
+            Util.showBlockError(e.toString());
+            this.hasError = true;
           }
         }
-        this.updateConnectors();
-      } catch (e) {
-        console.log(e.stack);
-        Util.showBlockError(e.toString());
-        this.hasError = true;
       }
     } else {
       this.portX.setValue(undefined);

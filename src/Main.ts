@@ -45,6 +45,12 @@ declare global {
     fillHalfRoundedRect(x, y, w, h, r, side);
   }
 
+  interface Array<T> {
+    insertAt(index, item);
+
+    removeItem(item);
+  }
+
   interface String {
     removeAllSpaces();
 

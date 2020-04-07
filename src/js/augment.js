@@ -116,6 +116,22 @@ if (typeof Array.prototype.shuffle !== 'function') {
   }
 }
 
+if (typeof Array.prototype.insertAt !== 'function') {
+  Array.prototype.insertAt = function (index, item) {
+    this.splice(index, 0, item);
+  };
+}
+
+if (typeof Array.prototype.removeItem !== 'function') {
+  Array.prototype.removeItem = function (item) {
+    for (let i = this.length - 1; i >= 0; i--) {
+      if (this[i] === item) {
+        this.splice(i, 1);
+      }
+    }
+  };
+}
+
 if (typeof CanvasRenderingContext2D.prototype.fillRoundedRect !== 'function') {
   CanvasRenderingContext2D.prototype.fillRoundedRect = function fillRoundedRect(x, y, w, h, r) {
     this.beginPath();

@@ -228,7 +228,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: g.getUid(),
-        height: 500,
+        height: 510,
         width: 450,
         buttons: {
           'OK': okFunction,

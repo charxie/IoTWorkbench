@@ -19,8 +19,12 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Parameter Name (e.g., t):</td>
-                  <td><input type="text" id="parametric-equation-block-parameter-name-field" style="width: 100%"></td>
+                  <td>Parameter Name1 (e.g., t):</td>
+                  <td><input type="text" id="parametric-equation-block-parameter-name1-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Parameter Name2 (e.g., v):</td>
+                  <td><input type="text" id="parametric-equation-block-parameter-name2-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Expression for X (e.g., cos(t)):</td>
@@ -52,8 +56,10 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof ParametricEquationBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let parameterNameField = document.getElementById("parametric-equation-block-parameter-name-field") as HTMLInputElement;
-      parameterNameField.value = block.getParameterName() ? block.getParameterName().toString() : "t";
+      let parameterName1Field = document.getElementById("parametric-equation-block-parameter-name1-field") as HTMLInputElement;
+      parameterName1Field.value = block.getParameterName1() ? block.getParameterName1().toString() : "t";
+      let parameterName2Field = document.getElementById("parametric-equation-block-parameter-name2-field") as HTMLInputElement;
+      parameterName2Field.value = block.getParameterName2() ? block.getParameterName2().toString() : "";
       let expressionXField = document.getElementById("parametric-equation-block-expression-x-field") as HTMLInputElement;
       expressionXField.value = block.getExpressionX() ? block.getExpressionX() : "cos(t)";
       let expressionYField = document.getElementById("parametric-equation-block-expression-y-field") as HTMLInputElement;
@@ -84,7 +90,8 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
           message = heightField.value + " is not a valid height";
         }
         // set parameter name and expressions
-        block.setParameterName(parameterNameField.value);
+        block.setParameterName1(parameterName1Field.value);
+        block.setParameterName2(parameterName2Field.value);
         block.setExpressionX(expressionXField.value);
         block.setExpressionY(expressionYField.value);
         block.setExpressionZ(expressionZField.value);
@@ -111,7 +118,8 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
-      parameterNameField.addEventListener("keyup", enterKeyUp);
+      parameterName1Field.addEventListener("keyup", enterKeyUp);
+      parameterName2Field.addEventListener("keyup", enterKeyUp);
       expressionXField.addEventListener("keyup", enterKeyUp);
       expressionYField.addEventListener("keyup", enterKeyUp);
       expressionZField.addEventListener("keyup", enterKeyUp);
@@ -121,7 +129,7 @@ export class ParametricEquationBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 400,
+        height: 430,
         width: 500,
         buttons: {
           'OK': okFunction,

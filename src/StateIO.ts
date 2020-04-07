@@ -309,7 +309,9 @@ export class StateIO {
           block.setMarginX(state.marginX === undefined ? 15 : state.marginX);
         } else if (block instanceof ParametricEquationBlock) {
           block.setName(state.name);
-          block.setParameterName(state.parameterName ? state.parameterName : "t");
+          block.setParameterName1(state.parameterName !== undefined ? state.parameterName : "t"); // backward compatible
+          if (state.parameterName1 !== undefined) block.setParameterName1(state.parameterName1);
+          if (state.parameterName2 !== undefined) block.setParameterName2(state.parameterName2);
           block.setExpressionX(state.expressionX ? state.expressionX : "cos(t)");
           block.setExpressionY(state.expressionY ? state.expressionY : "sin(t)");
           block.setExpressionZ(state.expressionZ ? state.expressionZ : "");
