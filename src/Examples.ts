@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import sine_waves_on_surfaces from "./examples/sine-waves-on-surfaces.json";
+// @ts-ignore
 import plucker_conoid from "./examples/plucker-conoid.json";
 // @ts-ignore
 import bohemian_dome from "./examples/bohemian-dome.json";
@@ -26,6 +28,8 @@ import seashell from "./examples/seashell.json";
 import mobius_strip from "./examples/mobius-strip.json";
 // @ts-ignore
 import torus from "./examples/torus.json";
+// @ts-ignore
+import torus_knot from "./examples/torus-knot.json";
 // @ts-ignore
 import crank_rocker from "./examples/crank-rocker.json";
 // @ts-ignore
@@ -321,11 +325,13 @@ export class Examples {
     this.files.push({name: "Math: Multivariate Functions", data: multivariate_functions});
     this.files.push({name: "Math: Heart Function", data: heart_function});
     this.files.push({name: "Math: Declared Functions", data: declared_functions});
-    this.files.push({name: "Math: Parametric Equations 1", data: parametric_equations_1});
-    this.files.push({name: "Math: Parametric Equations 2", data: parametric_equations_2});
-    this.files.push({name: "Math: Parametric Equations 3D", data: parametric_equations_3d});
-    this.files.push({name: "Math: Parametric Generator 1", data: parametric_generator_1});
-    this.files.push({name: "Math: Parametric Generator 2", data: parametric_generator_2});
+    this.files.push({name: "Math: 2D Parametric Equations: 1", data: parametric_equations_1});
+    this.files.push({name: "Math: 2D Parametric Equations: 2", data: parametric_equations_2});
+    this.files.push({name: "Math: 3D Parametric Equations", data: parametric_equations_3d});
+    this.files.push({name: "Math: 2D Parametric Generator: 1", data: parametric_generator_1});
+    this.files.push({name: "Math: 2D Parametric Generator: 2", data: parametric_generator_2});
+    this.files.push({name: "Math: Torus Knot", data: torus_knot});
+    this.files.push({name: "Math: Sine Waves on Surfaces", data: sine_waves_on_surfaces});
     this.files.push({name: "Math: Spirals", data: spirals});
     this.files.push({name: "Math: Torus", data: torus});
     this.files.push({name: "Math: Hyperboloid", data: hyperboloid});
