@@ -3,9 +3,15 @@
  */
 
 // @ts-ignore
+import plucker_conoid from "./examples/plucker-conoid.json";
+// @ts-ignore
+import bohemian_dome from "./examples/bohemian-dome.json";
+// @ts-ignore
 import klein_bottle from "./examples/klein-bottle.json";
 // @ts-ignore
 import astroidal_ellipsoid from "./examples/astroidal-ellipsoid.json";
+// @ts-ignore
+import helicoid from "./examples/helicoid.json";
 // @ts-ignore
 import hyperboloid from "./examples/hyperboloid.json";
 // @ts-ignore
@@ -323,9 +329,12 @@ export class Examples {
     this.files.push({name: "Math: Spirals", data: spirals});
     this.files.push({name: "Math: Torus", data: torus});
     this.files.push({name: "Math: Hyperboloid", data: hyperboloid});
+    this.files.push({name: "Math: Helicoid", data: helicoid});
     this.files.push({name: "Math: Astroidal Ellipsoid", data: astroidal_ellipsoid});
     this.files.push({name: "Math: Möbius Strip", data: mobius_strip});
     this.files.push({name: "Math: Klein Bottle", data: klein_bottle});
+    this.files.push({name: "Math: Bohemian Dome", data: bohemian_dome});
+    this.files.push({name: "Math: Plücker's Conoid", data: plucker_conoid});
     this.files.push({name: "Math: Seashell", data: seashell});
     this.files.push({name: "Math: Boy Surface & Roman Surface", data: boy_roman_surfaces});
     this.files.push({name: "Math: Dupin Cyclide", data: dupin_cyclide});
