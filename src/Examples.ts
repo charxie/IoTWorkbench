@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import clelia from "./examples/clelia.json";
+// @ts-ignore
 import sine_waves_on_surfaces from "./examples/sine-waves-on-surfaces.json";
 // @ts-ignore
 import plucker_conoid from "./examples/plucker-conoid.json";
@@ -29,7 +31,7 @@ import mobius_strip from "./examples/mobius-strip.json";
 // @ts-ignore
 import torus from "./examples/torus.json";
 // @ts-ignore
-import torus_knot from "./examples/torus-knot.json";
+import knots from "./examples/knots.json";
 // @ts-ignore
 import crank_rocker from "./examples/crank-rocker.json";
 // @ts-ignore
@@ -327,12 +329,13 @@ export class Examples {
     this.files.push({name: "Math: Declared Functions", data: declared_functions});
     this.files.push({name: "Math: 2D Parametric Equations: 1", data: parametric_equations_1});
     this.files.push({name: "Math: 2D Parametric Equations: 2", data: parametric_equations_2});
-    this.files.push({name: "Math: 3D Parametric Equations", data: parametric_equations_3d});
+    this.files.push({name: "Math: 3D Parametric Equations: 1", data: parametric_equations_3d});
+    this.files.push({name: "Math: 3D Parametric Equations: 2", data: sine_waves_on_surfaces});
     this.files.push({name: "Math: 2D Parametric Generator: 1", data: parametric_generator_1});
     this.files.push({name: "Math: 2D Parametric Generator: 2", data: parametric_generator_2});
-    this.files.push({name: "Math: Torus Knot", data: torus_knot});
-    this.files.push({name: "Math: Sine Waves on Surfaces", data: sine_waves_on_surfaces});
     this.files.push({name: "Math: Spirals", data: spirals});
+    this.files.push({name: "Math: Knots", data: knots});
+    this.files.push({name: "Math: Clélie", data: clelia});
     this.files.push({name: "Math: Torus", data: torus});
     this.files.push({name: "Math: Hyperboloid", data: hyperboloid});
     this.files.push({name: "Math: Helicoid", data: helicoid});

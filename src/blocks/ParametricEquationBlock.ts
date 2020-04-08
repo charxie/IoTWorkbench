@@ -75,11 +75,12 @@ export class ParametricEquationBlock extends Block {
 
   getCopy(): Block {
     let block = new ParametricEquationBlock("Parametric Equation Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
-    block.parameterName1 = this.parameterName1;
-    block.parameterName2 = this.parameterName2;
-    block.expressionX = this.expressionX;
-    block.expressionY = this.expressionY;
-    block.expressionZ = this.expressionZ;
+    block.setParameterName1(this.parameterName1);
+    block.setParameterName2(this.parameterName2);
+    block.setExpressionX(this.expressionX);
+    block.setExpressionY(this.expressionY);
+    block.setExpressionZ(this.expressionZ);
+    block.useDeclaredFunctions();
     return block;
   }
 
@@ -267,43 +268,44 @@ export class ParametricEquationBlock extends Block {
     if (this.expressionX && this.expressionY && this.parameterName1) { // minimum requirement
       if (this.parameterName2.trim() === "") { // parameter 2 is not defined
         let t = this.portT.getValue();
-        let v = this.portV.getValue();
-        try {
-          if (this.codeX == undefined) this.createParserX();
-          if (this.codeY == undefined) this.createParserY();
-          if (this.expressionZ !== "" && this.codeZ == undefined) this.createParserZ();
-          let param = {...flowchart.globalVariables};
-          if (Array.isArray(t)) {
-            let x = new Array(t.length);
-            let y = new Array(t.length);
-            for (let i = 0; i < t.length; i++) {
-              param[this.parameterName1] = t[i];
-              x[i] = this.codeX.evaluate(param);
-              y[i] = this.codeY.evaluate(param);
-            }
-            this.portX.setValue(x);
-            this.portY.setValue(y);
-            if (this.expressionZ !== "") {
-              let z = new Array(t.length);
+        if (t !== undefined) {
+          try {
+            if (this.codeX == undefined) this.createParserX();
+            if (this.codeY == undefined) this.createParserY();
+            if (this.expressionZ !== "" && this.codeZ == undefined) this.createParserZ();
+            let param = {...flowchart.globalVariables};
+            if (Array.isArray(t)) {
+              let x = new Array(t.length);
+              let y = new Array(t.length);
               for (let i = 0; i < t.length; i++) {
                 param[this.parameterName1] = t[i];
-                z[i] = this.codeZ.evaluate(param);
+                x[i] = this.codeX.evaluate(param);
+                y[i] = this.codeY.evaluate(param);
               }
-              this.portZ.setValue(z);
+              this.portX.setValue(x);
+              this.portY.setValue(y);
+              if (this.expressionZ !== "") {
+                let z = new Array(t.length);
+                for (let i = 0; i < t.length; i++) {
+                  param[this.parameterName1] = t[i];
+                  z[i] = this.codeZ.evaluate(param);
+                }
+                this.portZ.setValue(z);
+              }
+            } else {
+              param[this.parameterName1] = t;
+              this.portX.setValue(this.codeX.evaluate(param));
+              this.portY.setValue(this.codeY.evaluate(param));
+              if (this.expressionZ !== "") {
+                this.portZ.setValue(this.codeZ.evaluate(param));
+              }
             }
-          } else {
-            param[this.parameterName1] = t;
-            this.portX.setValue(this.codeX.evaluate(param));
-            this.portY.setValue(this.codeY.evaluate(param));
-            if (this.expressionZ !== "") {
-              this.portZ.setValue(this.codeZ.evaluate(param));
-            }
+            this.updateConnectors();
+          } catch (e) {
+            console.log(e.stack);
+            Util.showBlockError(e.toString());
+            this.hasError = true;
           }
-          this.updateConnectors();
-        } catch (e) {
-          console.log(e.stack);
-          Util.showBlockError(e.toString());
-          this.hasError = true;
         }
       } else { // parameter 2 is defined
         let u = this.portT.getValue();

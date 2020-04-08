@@ -77,20 +77,20 @@ export class MultivariateFunctionBlock extends FunctionBlock {
 
   getCopy(): Block {
     let block = new MultivariateFunctionBlock("Multivariate Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
-    block.expression = this.expression;
-    block.variables = JSON.parse(JSON.stringify(this.variables));
+    block.setExpression(this.expression);
+    block.setVariables(this.variables);
     block.marginX = this.marginX;
     return block;
   }
 
   setVariables(variables: string[]): void {
-    this.variables = JSON.parse(JSON.stringify(variables));
+    this.variables = [...variables];
     this.setInputPorts();
     this.refreshView();
   }
 
   getVariables(): string[] {
-    return JSON.parse(JSON.stringify(this.variables));
+    return [...this.variables];
   }
 
   refreshView(): void {

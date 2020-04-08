@@ -47,7 +47,7 @@ export class UnivariateFunctionBlock extends FunctionBlock {
 
   getCopy(): Block {
     let block = new UnivariateFunctionBlock("Univariate Function Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
-    block.expression = this.expression;
+    block.setExpression(this.expression);
     block.variableName = this.variableName;
     return block;
   }
