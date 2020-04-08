@@ -54,8 +54,9 @@ export class ActionBlockContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let labelField = document.getElementById("action-block-label-field") as HTMLInputElement;
       labelField.value = act.getSymbol();
-      let typeSelectElement = document.getElementById("action-type-selector") as HTMLSelectElement;
-      typeSelectElement.value = act.getType();
+      let typeSelector = document.getElementById("action-type-selector") as HTMLSelectElement;
+      typeSelector.value = act.getType();
+      typeSelector.onchange = () => labelField.value = typeSelector.value;
       let widthField = document.getElementById("action-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(act.getWidth()).toString();
       let heightField = document.getElementById("action-block-height-field") as HTMLInputElement;
@@ -81,7 +82,7 @@ export class ActionBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
-          act.setType(typeSelectElement.value);
+          act.setType(typeSelector.value);
           act.setSymbol(labelField.value);
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(act);

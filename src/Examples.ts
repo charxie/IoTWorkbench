@@ -5,8 +5,6 @@
 // @ts-ignore
 import clelia from "./examples/clelia.json";
 // @ts-ignore
-import sine_waves_on_surfaces from "./examples/sine-waves-on-surfaces.json";
-// @ts-ignore
 import plucker_conoid from "./examples/plucker-conoid.json";
 // @ts-ignore
 import bohemian_dome from "./examples/bohemian-dome.json";
@@ -283,15 +281,17 @@ import make_sound_with_beepers from "./examples/make-sound-with-beepers.json";
 // @ts-ignore
 import synthesizing_sound from "./examples/synthesizing-sound.json";
 // @ts-ignore
-import parametric_equations_1 from "./examples/parametric-equations-1.json";
+import parametric_equations_2d_1 from "./examples/parametric-equations-2d-1.json";
 // @ts-ignore
-import parametric_equations_2 from "./examples/parametric-equations-2.json";
+import parametric_equations_2d_2 from "./examples/parametric-equations-2d-2.json";
 // @ts-ignore
-import parametric_equations_3d from "./examples/parametric-equations-3d.json";
+import parametric_equations_3d_1 from "./examples/parametric-equations-3d-1.json";
 // @ts-ignore
-import parametric_generator_1 from "./examples/parametric-generator-1.json";
+import parametric_equations_3d_2 from "./examples/parametric-equations-3d-2.json";
 // @ts-ignore
-import parametric_generator_2 from "./examples/parametric-generator-2.json";
+import parametric_generator_2d_1 from "./examples/parametric-generator-2d-1.json";
+// @ts-ignore
+import parametric_generator_2d_2 from "./examples/parametric-generator-2d-2.json";
 
 import {flowchart, system} from "./Main";
 import {StateIO} from "./StateIO";
@@ -327,12 +327,12 @@ export class Examples {
     this.files.push({name: "Math: Multivariate Functions", data: multivariate_functions});
     this.files.push({name: "Math: Heart Function", data: heart_function});
     this.files.push({name: "Math: Declared Functions", data: declared_functions});
-    this.files.push({name: "Math: 2D Parametric Equations: 1", data: parametric_equations_1});
-    this.files.push({name: "Math: 2D Parametric Equations: 2", data: parametric_equations_2});
-    this.files.push({name: "Math: 3D Parametric Equations: 1", data: parametric_equations_3d});
-    this.files.push({name: "Math: 3D Parametric Equations: 2", data: sine_waves_on_surfaces});
-    this.files.push({name: "Math: 2D Parametric Generator: 1", data: parametric_generator_1});
-    this.files.push({name: "Math: 2D Parametric Generator: 2", data: parametric_generator_2});
+    this.files.push({name: "Math: 2D Parametric Equations: 1", data: parametric_equations_2d_1});
+    this.files.push({name: "Math: 2D Parametric Equations: 2", data: parametric_equations_2d_2});
+    this.files.push({name: "Math: 3D Parametric Equations: 1", data: parametric_equations_3d_1});
+    this.files.push({name: "Math: 3D Parametric Equations: 2", data: parametric_equations_3d_2});
+    this.files.push({name: "Math: 2D Parametric Generator: 1", data: parametric_generator_2d_1});
+    this.files.push({name: "Math: 2D Parametric Generator: 2", data: parametric_generator_2d_2});
     this.files.push({name: "Math: Spirals", data: spirals});
     this.files.push({name: "Math: Knots", data: knots});
     this.files.push({name: "Math: Clélie", data: clelia});

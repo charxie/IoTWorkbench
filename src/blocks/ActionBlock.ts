@@ -59,19 +59,24 @@ export class ActionBlock extends Block {
   }
 
   setType(type: string): void {
-    this.type = type;
-    this.symbol = type;
-    this.ports.length = 0;
-    switch (this.type) {
-      case "Stop":
-      case "Stop-And-Reset":
-      case "Repaint":
-        this.ports.push(this.portI);
-        break;
-      case "Reset":
-      case "Reset-Without-Update":
-        this.ports.push(this.portO);
-        break;
+    if (this.type !== type) {
+      this.type = type;
+      this.symbol = type;
+      for (let p of this.ports) {
+        flowchart.removeConnectorsToPort(p);
+      }
+      this.ports.length = 0;
+      switch (this.type) {
+        case "Stop":
+        case "Stop-And-Reset":
+        case "Repaint":
+          this.ports.push(this.portI);
+          break;
+        case "Reset":
+        case "Reset-Without-Update":
+          this.ports.push(this.portO);
+          break;
+      }
     }
   }
 
