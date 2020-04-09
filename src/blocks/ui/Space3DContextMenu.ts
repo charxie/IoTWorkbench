@@ -91,6 +91,14 @@ export class Space3DContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="space3d-box-size-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>View Control:</td>
+                  <td colspan="3">
+                    <select id="space3d-control-selector" style="width: 100%">
+                      <option value="Orbit" selected>Orbit</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
                   <td>X-Axis Label:</td>
                   <td colspan="3"><input type="text" id="space3d-x-axis-label-field" style="width: 100%"></td>
                 </tr>

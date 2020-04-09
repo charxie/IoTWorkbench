@@ -4,6 +4,7 @@
 
 // @ts-ignore
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import {TrackballControls} from "three/examples/jsm/controls/TrackballControls";
 import {
   AmbientLight, BoxGeometry,
   BufferGeometry,
@@ -50,8 +51,8 @@ export class LinePlot {
   private yAxisLabel: string = "y";
   private zAxisLabel: string = "z";
   private backgroundColor: string = "white";
-  private fontSize: number = 0.5;
-  private offset: number = 0;
+  private axisLabelFontSize: number = 0.5;
+  private axisLabelOffset: number = 0;
 
   private points: Point3DArray[] = [];
   private numberOfDataPoints: number = 0;
@@ -63,7 +64,8 @@ export class LinePlot {
   private scene: Scene;
   private camera: PerspectiveCamera;
   private renderer: WebGLRenderer;
-  private controls: OrbitControls;
+  private orbitControls: OrbitControls;
+  private trackballControls: TrackballControls;
 
   constructor() {
     this.scene = new Scene();
@@ -73,11 +75,7 @@ export class LinePlot {
     this.renderer.setSize(500, 500);
     this.camera = new PerspectiveCamera(45, 1, 0.1, 10000);
     this.setCameraPosition(0, 0, 10, 1, 1, 1);
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.addEventListener('change', () => {
-      this.render(); // re-render if controls move/zoom
-    });
-    this.controls.enableZoom = true;
+    this.setControlType("Orbit");
     this.createLights();
     // default scene below
     this.points.push(new Point3DArray());
@@ -139,7 +137,34 @@ export class LinePlot {
     this.scene.remove(this.yLabelSprite);
     this.scene.remove(this.zLabelSprite);
     this.scene.dispose();
-    this.controls.dispose();
+    if (this.orbitControls !== undefined) this.orbitControls.dispose();
+    if (this.trackballControls !== undefined) this.trackballControls.dispose();
+  }
+
+  setControlType(controlType: string) {
+    switch (controlType) {
+      case "Orbit":
+        this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.orbitControls.addEventListener('change', () => {
+          this.render(); // re-render if controls move/zoom
+        });
+        this.orbitControls.enableZoom = true;
+        if (this.trackballControls !== undefined) {
+          this.trackballControls.dispose();
+          this.trackballControls = undefined;
+        }
+        break;
+      case "Trackball": // TODO: Trackball requires an animation loop, which is an overhead for static scenes
+        this.trackballControls = new TrackballControls(this.camera, this.renderer.domElement);
+        this.trackballControls.addEventListener('change', () => {
+          this.render(); // re-render if controls move/zoom
+        });
+        if (this.orbitControls !== undefined) {
+          this.orbitControls.dispose();
+          this.orbitControls = undefined;
+        }
+        break;
+    }
   }
 
   getDataPoints(): number {
@@ -502,12 +527,12 @@ export class LinePlot {
     this.xAxisArrow = this.addArrow(xArrow, 0xff0000, r, "x");
     this.yAxisArrow = this.addArrow(yArrow, 0x00ff00, r, "y");
     this.zAxisArrow = this.addArrow(zArrow, 0x0000ff, r, "z");
-    this.fontSize = p * 0.1;
-    this.offset = this.fontSize / 2;
+    this.axisLabelFontSize = p * 0.1;
+    this.axisLabelOffset = this.axisLabelFontSize / 2;
     let c = Util.isDarkish(this.backgroundColor) ? "white" : "black";
-    this.xLabelSprite = this.addSprite(this.fontSize, this.offset, xArrow, c, "x");
-    this.yLabelSprite = this.addSprite(this.fontSize, this.offset, yArrow, c, "y");
-    this.zLabelSprite = this.addSprite(this.fontSize, this.offset, zArrow, c, "z");
+    this.xLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, xArrow, c, "x");
+    this.yLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, yArrow, c, "y");
+    this.zLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, zArrow, c, "z");
     this.boxSize = boxSize;
   }
 
@@ -640,7 +665,7 @@ export class LinePlot {
     if (this.xAxisArrow !== undefined) {
       if (this.isSceneChild(this.xLabelSprite)) this.scene.remove(this.xLabelSprite);
       let c = Util.isDarkish(this.backgroundColor) ? "white" : "black";
-      this.xLabelSprite = this.addSprite(this.fontSize, this.offset, this.xAxisArrow.position, c, "x");
+      this.xLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, this.xAxisArrow.position, c, "x");
     }
   }
 
@@ -653,7 +678,7 @@ export class LinePlot {
     if (this.yAxisArrow !== undefined) {
       if (this.isSceneChild(this.yLabelSprite)) this.scene.remove(this.yLabelSprite);
       let c = Util.isDarkish(this.backgroundColor) ? "white" : "black";
-      this.yLabelSprite = this.addSprite(this.fontSize, this.offset, this.yAxisArrow.position, c, "y");
+      this.yLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, this.yAxisArrow.position, c, "y");
     }
   }
 
@@ -666,7 +691,7 @@ export class LinePlot {
     if (this.zAxisArrow !== undefined) {
       if (this.isSceneChild(this.zLabelSprite)) this.scene.remove(this.zLabelSprite);
       let c = Util.isDarkish(this.backgroundColor) ? "white" : "black";
-      this.zLabelSprite = this.addSprite(this.fontSize, this.offset, this.zAxisArrow.position, c, "z");
+      this.zLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, this.zAxisArrow.position, c, "z");
     }
   }
 
@@ -705,7 +730,8 @@ export class LinePlot {
   }
 
   resetViewAngle(): void {
-    this.controls.reset();
+    if (this.orbitControls !== undefined) this.orbitControls.reset();
+    if (this.trackballControls !== undefined) this.trackballControls.reset();
   }
 
   setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {

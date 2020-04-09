@@ -48,6 +48,7 @@ import {BoundaryConditionBlock} from "../BoundaryConditionBlock";
 import {ImageBlock} from "../ImageBlock";
 import {AudioBlock} from "../AudioBlock";
 import {DataBlock} from "../DataBlock";
+import {MolecularViewerBlock} from "../MolecularViewerBlock";
 
 export class BlockElementsPanel {
 
@@ -129,6 +130,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="determinant-block" title="Matrix Determinant" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="matrix-transposition-block" title="Matrix Transposition" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="matrix-inversion-block" title="Matrix Inversion" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="molecular-viewer-block" title="Molecular Viewer" width="45px" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -184,6 +186,7 @@ export class BlockElementsPanel {
     this.drawAudioBlock("Audio Block", "♬", "audio-block");
     this.drawDataBlock("Data Block", "Data", "data-block");
     this.drawRandomNumberGeneratorBlock("Random Number Generator Block", "Random", "random-number-generator-block");
+    this.drawMolecularViewerBlock("Molecular Viewer Block", "Molecular Viewer", "molecular-viewer-block");
   }
 
   private drawRandomNumberGeneratorBlock(name: string, symbol: string, canvasId: string): void {
@@ -232,6 +235,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new DataBlock("Data Block Icon", "Data", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawMolecularViewerBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new MolecularViewerBlock("Molecular Viewer Block Icon", "Molecular Viewer", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

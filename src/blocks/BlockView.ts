@@ -60,6 +60,7 @@ import {State} from "../State";
 import {ImageBlock} from "./ImageBlock";
 import {AudioBlock} from "./AudioBlock";
 import {DataBlock} from "./DataBlock";
+import {MolecularViewerBlock} from "./MolecularViewerBlock";
 
 export class BlockView {
 
@@ -251,6 +252,9 @@ export class BlockView {
         break;
       case "data-block":
         b = this.addBlockUndoable(new DataBlock("Data Block #" + timestamp, "Name", x - 40, y - 40, 80, 80));
+        break;
+      case "molecular-viewer-block":
+        b = this.addBlockUndoable(new MolecularViewerBlock("Molecular Viewer Block #" + timestamp, "Name", x - 100, y - 120, 200, 240));
         break;
       case "turnout-switch-block":
         b = this.addBlockUndoable(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 50, y - 30, 100, 60));

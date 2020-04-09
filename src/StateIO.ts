@@ -48,6 +48,7 @@ import {BoundaryConditionBlock} from "./blocks/BoundaryConditionBlock";
 import {ImageBlock} from "./blocks/ImageBlock";
 import {AudioBlock} from "./blocks/AudioBlock";
 import {DataBlock} from "./blocks/DataBlock";
+import {MolecularViewerBlock} from "./blocks/MolecularViewerBlock";
 
 export class StateIO {
 
@@ -338,6 +339,11 @@ export class StateIO {
           block.setData(state.data);
           block.setFormat(state.format);
           if (state.imageSrc !== undefined) block.setImageSrc(state.imageSrc);
+        } else if (block instanceof MolecularViewerBlock) {
+          block.setName(state.name);
+          if (state.boxSize !== undefined) block.setBoxSize(state.boxSize);
+          if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
+            block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

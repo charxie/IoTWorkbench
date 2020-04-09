@@ -168,10 +168,7 @@ export class Space3D extends Block {
 
   private overlayOpenContextMenu(e: MouseEvent): void {
     if (this.overlay !== undefined) {
-      if (Util.getSelectedText() === "") {
-        flowchart.blockView.openContextMenu(e);
-      }
-      // if text is selected, use default
+      flowchart.blockView.openContextMenu(e);
     }
   }
 

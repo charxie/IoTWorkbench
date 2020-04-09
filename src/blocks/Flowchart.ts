@@ -59,6 +59,7 @@ import {BoundaryConditionBlock} from "./BoundaryConditionBlock";
 import {ImageBlock} from "./ImageBlock";
 import {AudioBlock} from "./AudioBlock";
 import {DataBlock} from "./DataBlock";
+import {MolecularViewerBlock} from "./MolecularViewerBlock";
 
 export class Flowchart {
 
@@ -841,6 +842,9 @@ export class Flowchart {
       case "Data Block":
         block = new DataBlock(uid, name, x, y, 80, 60);
         break;
+      case "Molecular Viewer Block":
+        block = new MolecularViewerBlock(uid, name, x, y, 80, 60);
+        break;
       case "Turnout Switch":
         block = new TurnoutSwitch(uid, name, "Turnout", x, y, 60, 100);
         break;
@@ -976,6 +980,8 @@ export class Flowchart {
         blockStates.push(new AudioBlock.State(b));
       } else if (b instanceof DataBlock) {
         blockStates.push(new DataBlock.State(b));
+      } else if (b instanceof MolecularViewerBlock) {
+        blockStates.push(new MolecularViewerBlock.State(b));
       } else if (b instanceof ItemSelector) {
         blockStates.push(new ItemSelector.State(b));
       } else if (b instanceof ToggleSwitch) {
