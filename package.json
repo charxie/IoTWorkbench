@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@seregpie/three.text-sprite": "^2.0.0",
     "d3": "^5.15.0",
     "file-saver": "^2.0.2",
     "html2canvas": "^1.0.0-rc.5",
@@ -24,7 +25,6 @@
     "mathjs": "^6.6.0",
     "parcel": "^1.12.4",
     "three": "^0.115.0",
-    "three-text2d": "^0.6.0",
     "threejs-meshline": "^2.0.10",
     "undo-manager": "^1.0.5"
   },
