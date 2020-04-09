@@ -149,9 +149,7 @@ export class Space3D extends Block {
     copy.plot.endSymbolRadii = [...this.plot.endSymbolRadii];
     copy.plot.endSymbolConnections = [...this.plot.endSymbolConnections];
     copy.setBoxSize(this.getBoxSize());
-    copy.setWidth(this.getWidth());
-    copy.setHeight(this.getHeight());
-    copy.plot.render();
+    copy.locateOverlay();
     return copy;
   }
 

@@ -95,7 +95,7 @@ export class LinePlot {
       specular: 0x050505,
       shininess: 0.1
     });
-    this.scene.add(this.endSymbols[0]);
+    //this.scene.add(this.endSymbols[0]);
   }
 
   erase(): void {

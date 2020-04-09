@@ -46,14 +46,13 @@ export class ActionBlock extends Block {
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 2;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false);
-    this.ports.push(this.portI);
     this.portO = new Port(this, false, "O", this.width, this.barHeight + dh, true);
-    this.ports.push(this.portO);
+    this.ports.push(this.portO); // the default is reset, and it has only the output port
   }
 
   getCopy(): Block {
     let b = new ActionBlock("Action Block #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    b.type = this.type;
+    b.setType(this.type);
     b.symbol = this.symbol;
     return b;
   }
