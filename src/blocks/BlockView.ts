@@ -251,10 +251,12 @@ export class BlockView {
         b = this.addBlockUndoable(new AudioBlock("Audio Block #" + timestamp, "Audio", x - 30, y - 30, 60, 60));
         break;
       case "data-block":
-        b = this.addBlockUndoable(new DataBlock("Data Block #" + timestamp, "Name", x - 40, y - 40, 80, 80));
+        b = this.addBlockUndoable(new DataBlock("Data Block #" + timestamp, "Data", x - 40, y - 40, 80, 80));
         break;
       case "molecular-viewer-block":
-        b = this.addBlockUndoable(new MolecularViewerBlock(false, "Molecular Viewer Block #" + timestamp, "Name", x - 100, y - 120, 200, 240));
+        let molecularViewer = new MolecularViewerBlock(false, "Molecular Viewer Block #" + timestamp, "Molecular Viewer", x - 100, y - 120, 200, 240);
+        this.addBlockUndoable(molecularViewer);
+        molecularViewer.locateOverlay();
         break;
       case "turnout-switch-block":
         b = this.addBlockUndoable(new TurnoutSwitch("Turnout Switch #" + timestamp, "Turnout Switch", "Turnout", x - 50, y - 30, 100, 60));
@@ -318,7 +320,7 @@ export class BlockView {
         break;
       case "space3d-block":
         let space3d = new Space3D(false, "Space3D #" + timestamp, "Space3D", x - 100, y - 110, 200, 220);
-        b = this.addBlockUndoable(space3d);
+        this.addBlockUndoable(space3d);
         space3d.locateOverlay();
         break;
       case "field2d-block":
@@ -326,7 +328,7 @@ export class BlockView {
         break;
       case "surface3d-block":
         let surface3d = new Surface3D(false, "Surface3D #" + timestamp, "Surface Plot", x - 100, y - 110, 200, 220);
-        b = this.addBlockUndoable(surface3d);
+        this.addBlockUndoable(surface3d);
         surface3d.locateOverlay();
         break;
       case "random-number-generator-block":

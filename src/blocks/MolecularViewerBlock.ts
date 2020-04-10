@@ -26,6 +26,7 @@ export class MolecularViewerBlock extends Block {
   };
   private overlay: HTMLCanvasElement;
   private viewer: MolecularViewer;
+  private numberOfAtoms: number = 0;
 
   static State = class {
     readonly name: string;
@@ -233,7 +234,7 @@ export class MolecularViewerBlock extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "white";
-      let title = this.name + " (" + " points)";
+      let title = this.name + " (" + this.numberOfAtoms + " atoms)";
       let titleWidth = ctx.measureText(title).width;
       ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
@@ -285,6 +286,13 @@ export class MolecularViewerBlock extends Block {
     let vy = this.portY.getValue();
     let vz = this.portZ.getValue();
     if (vx !== undefined && vy !== undefined && vz !== undefined) {
+      if (Array.isArray(vx) && Array.isArray(vy) && Array.isArray(vz)) {
+        this.numberOfAtoms = vx.length;
+      } else {
+        this.numberOfAtoms = 0;
+      }
+    } else {
+      this.numberOfAtoms = 0;
     }
     this.viewer.render();
   }
