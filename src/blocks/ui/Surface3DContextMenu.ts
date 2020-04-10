@@ -143,8 +143,8 @@ export class Surface3DContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Background Color:</td>
-                  <td><input type="color" id="surface3d-window-color-chooser" style="width: 50px"></td>
-                  <td><input type="text" id="surface3d-window-color-field" style="width: 100%"></td>
+                  <td><input type="color" id="surface3d-background-color-chooser" style="width: 50px"></td>
+                  <td><input type="text" id="surface3d-background-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
@@ -182,15 +182,15 @@ export class Surface3DContextMenu extends BlockContextMenu {
       yAxisLableField.value = g.getYAxisLabel();
       let zAxisLableField = document.getElementById("surface3d-z-axis-label-field") as HTMLInputElement;
       zAxisLableField.value = g.getZAxisLabel();
-      let windowColorField = document.getElementById("surface3d-window-color-field") as HTMLInputElement;
-      windowColorField.value = g.getViewWindowColor();
-      let windowColorChooser = document.getElementById("surface3d-window-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(windowColorChooser, g.getViewWindowColor());
+      let backgroundColorField = document.getElementById("surface3d-background-color-field") as HTMLInputElement;
+      backgroundColorField.value = g.getBackgroundColor();
+      let backgroundColorChooser = document.getElementById("surface3d-background-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(backgroundColorChooser, g.getBackgroundColor());
       let widthField = document.getElementById("surface3d-width-field") as HTMLInputElement;
       widthField.value = Math.round(g.getWidth()).toString();
       let heightField = document.getElementById("surface3d-height-field") as HTMLInputElement;
       heightField.value = Math.round(g.getHeight()).toString();
-      Util.hookupColorInputs(windowColorField, windowColorChooser);
+      Util.hookupColorInputs(backgroundColorField, backgroundColorChooser);
       const okFunction = () => {
         let success = true;
         let message;
@@ -226,7 +226,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
           g.setYAxisLabel(yAxisLableField.value);
           g.setZAxisLabel(zAxisLableField.value);
           g.setBoxSize(Math.max(0, boxSize));
-          g.setViewWindowColor(windowColorField.value);
+          g.setBackgroundColor(backgroundColorField.value);
           g.locateOverlay();
           g.updateModel();
           g.refreshView();
@@ -247,7 +247,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
       xAxisLableField.addEventListener("keyup", enterKeyUp);
       yAxisLableField.addEventListener("keyup", enterKeyUp);
       zAxisLableField.addEventListener("keyup", enterKeyUp);
-      windowColorField.addEventListener("keyup", enterKeyUp);
+      backgroundColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({

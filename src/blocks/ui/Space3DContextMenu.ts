@@ -185,9 +185,9 @@ export class Space3DContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
-                  <td>Window Color:</td>
-                  <td><input type="color" id="space3d-window-color-chooser" style="width: 50px"></td>
-                  <td colspan="2"><input type="text" id="space3d-window-color-field" style="width: 100%"></td>
+                  <td>Background Color:</td>
+                  <td><input type="color" id="space3d-background-color-chooser" style="width: 50px"></td>
+                  <td colspan="2"><input type="text" id="space3d-background-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
@@ -336,10 +336,10 @@ export class Space3DContextMenu extends BlockContextMenu {
       let endSymbolConnectionSetSelector = this.createSetSelector("space3d-end-symbol-connection-set-selector");
       endSymbolConnectionSetSelector.onchange = () => endSymbolConnectionSelector.value = endSymbolConnections[parseInt(endSymbolConnectionSetSelector.value)];
 
-      let windowColorField = document.getElementById("space3d-window-color-field") as HTMLInputElement;
-      windowColorField.value = g.getSpaceWindowColor();
-      let windowColorChooser = document.getElementById("space3d-window-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(windowColorChooser, g.getSpaceWindowColor());
+      let backgroundColorField = document.getElementById("space3d-background-color-field") as HTMLInputElement;
+      backgroundColorField.value = g.getBackgroundColor();
+      let backgroundColorChooser = document.getElementById("space3d-background-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(backgroundColorChooser, g.getBackgroundColor());
       let widthField = document.getElementById("space3d-width-field") as HTMLInputElement;
       widthField.value = Math.round(g.getWidth()).toString();
       let heightField = document.getElementById("space3d-height-field") as HTMLInputElement;
@@ -347,7 +347,7 @@ export class Space3DContextMenu extends BlockContextMenu {
 
       Util.hookupColorInputs(lineColorField, lineColorChooser);
       Util.hookupColorInputs(symbolColorField, symbolColorChooser);
-      Util.hookupColorInputs(windowColorField, windowColorChooser);
+      Util.hookupColorInputs(backgroundColorField, backgroundColorChooser);
 
       const okFunction = () => {
         let success = true;
@@ -444,7 +444,7 @@ export class Space3DContextMenu extends BlockContextMenu {
           g.setYAxisLabel(yAxisLableField.value);
           g.setZAxisLabel(zAxisLableField.value);
           g.setBoxSize(Math.max(0, boxSize));
-          g.setSpaceWindowColor(windowColorField.value);
+          g.setBackgroundColor(backgroundColorField.value);
           g.setPointInput(pointInputRadioButton.checked);
           for (let i = 0; i < lineTypes.length; i++) {
             g.setLegend(i, legends[i]);
@@ -478,7 +478,7 @@ export class Space3DContextMenu extends BlockContextMenu {
       xAxisLableField.addEventListener("keyup", enterKeyUp);
       yAxisLableField.addEventListener("keyup", enterKeyUp);
       zAxisLableField.addEventListener("keyup", enterKeyUp);
-      windowColorField.addEventListener("keyup", enterKeyUp);
+      backgroundColorField.addEventListener("keyup", enterKeyUp);
       lineColorField.addEventListener("keyup", enterKeyUp);
       lineWidthField.addEventListener("keyup", enterKeyUp);
       legendField.addEventListener("keyup", enterKeyUp);

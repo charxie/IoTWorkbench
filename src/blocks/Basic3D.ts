@@ -150,11 +150,10 @@ export abstract class Basic3D {
   }
 
   setBoxSize(boxSize: number): void {
+    this.removeBox();
     this.boxSize = boxSize;
     if (boxSize > 0) {
       this.createBox(boxSize / 2, 0xcccccc);
-    } else {
-      this.removeBox();
     }
     this.drawAxisArrowsAndLabels();
   }

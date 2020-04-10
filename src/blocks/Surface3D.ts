@@ -4,12 +4,11 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
-import {Util} from "../Util";
-import {Rectangle} from "../math/Rectangle";
-import {closeAllContextMenus, flowchart} from "../Main";
+import {flowchart} from "../Main";
 import {SurfacePlot} from "./SurfacePlot";
+import {Basic3DBlock} from "./Basic3DBlock";
 
-export class Surface3D extends Block {
+export class Surface3D extends Basic3DBlock {
 
   private tripleArrayInput: boolean;
   // z array input
@@ -36,19 +35,8 @@ export class Surface3D extends Block {
   private dataX: number[];
   private dataY: number[];
   private dataZ: number[];
-  private viewWindowColor: string = "white";
-  private viewWindow: Rectangle;
-  private barHeight: number;
   private scaleType: string = "Linear";
   private colorScheme: string = "Turbo";
-  private readonly viewWindowMargin = {
-    left: <number>6,
-    right: <number>2,
-    top: <number>6,
-    bottom: <number>3
-  };
-  private overlay: HTMLCanvasElement;
-  private plot: SurfacePlot;
 
   static State = class {
     readonly name: string;
@@ -61,7 +49,7 @@ export class Surface3D extends Block {
     readonly yAxisLabel: string;
     readonly zAxisLabel: string;
     readonly boxSize: number;
-    readonly viewWindowColor: string;
+    readonly backgroundColor: string;
     readonly scaleType: string;
     readonly colorScheme: string;
     readonly cameraPositionX: number;
@@ -82,26 +70,23 @@ export class Surface3D extends Block {
       this.xAxisLabel = g.getXAxisLabel();
       this.yAxisLabel = g.getYAxisLabel();
       this.zAxisLabel = g.getZAxisLabel();
-      this.boxSize = g.plot.getBoxSize();
-      this.viewWindowColor = g.viewWindowColor;
+      this.boxSize = g.view.getBoxSize();
+      this.backgroundColor = g.getBackgroundColor();
       this.scaleType = g.scaleType;
       this.colorScheme = g.colorScheme;
       this.tripleArrayInput = g.tripleArrayInput;
-      this.cameraPositionX = g.plot.getCameraPositionX();
-      this.cameraPositionY = g.plot.getCameraPositionY();
-      this.cameraPositionZ = g.plot.getCameraPositionZ();
-      this.cameraRotationX = g.plot.getCameraRotationX();
-      this.cameraRotationY = g.plot.getCameraRotationY();
-      this.cameraRotationZ = g.plot.getCameraRotationZ();
+      this.cameraPositionX = g.view.getCameraPositionX();
+      this.cameraPositionY = g.view.getCameraPositionY();
+      this.cameraPositionZ = g.view.getCameraPositionZ();
+      this.cameraRotationX = g.view.getCameraRotationX();
+      this.cameraRotationY = g.view.getCameraRotationY();
+      this.cameraRotationZ = g.view.getCameraRotationZ();
     }
   };
 
   constructor(iconic: boolean, uid: string, name: string, x: number, y: number, width: number, height: number) {
-    super(uid, x, y, width, height);
-    this.iconic = iconic;
-    this.name = name;
+    super(iconic, uid, name, x, y, width, height);
     this.color = "#FEFE8A";
-    this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 8;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false)
     this.portX0 = new Port(this, true, "X0", 0, this.barHeight + 2 * dh, false);
@@ -117,11 +102,10 @@ export class Surface3D extends Block {
     this.ports.push(this.portY0);
     this.ports.push(this.portDY);
     this.ports.push(this.portNY);
-    this.viewWindow = new Rectangle(0, 0, 1, 1);
     this.marginX = 25;
     if (!iconic) {
-      this.plot = new SurfacePlot();
-      this.overlay = this.plot.getDomElement();
+      this.view = new SurfacePlot();
+      this.overlay = this.view.getDomElement();
       this.overlay.tabIndex = 0;
       this.overlay.style.position = "absolute";
       document.getElementById("block-view-wrapper").append(this.overlay);
@@ -136,13 +120,13 @@ export class Surface3D extends Block {
     copy.setXAxisLabel(this.getXAxisLabel());
     copy.setYAxisLabel(this.getYAxisLabel());
     copy.setZAxisLabel(this.getZAxisLabel());
-    copy.viewWindowColor = this.viewWindowColor;
+    copy.setBackgroundColor(this.getBackgroundColor());
     copy.scaleType = this.scaleType;
     copy.colorScheme = this.colorScheme;
     copy.setWidth(this.getWidth());
     copy.setHeight(this.getHeight());
     copy.setTripleArrayInput(this.getTripleArrayInput());
-    copy.plot.render();
+    copy.view.render();
     return copy;
   }
 
@@ -182,112 +166,6 @@ export class Surface3D extends Block {
     return this.tripleArrayInput;
   }
 
-  private overlayMouseDown(e: MouseEvent): void {
-    if (this.overlay !== undefined) {
-      closeAllContextMenus();
-      if (flowchart.blockView.getSelectedBlock() !== null) {
-        flowchart.blockView.getSelectedBlock().setSelected(false);
-      }
-      this.setSelected(true);
-      flowchart.blockView.setSelectedBlock(this);
-      flowchart.blockView.clearResizeName();
-      flowchart.blockView.requestDraw();
-    }
-  }
-
-  private overlayOpenContextMenu(e: MouseEvent): void {
-    if (this.overlay !== undefined) {
-      flowchart.blockView.openContextMenu(e);
-    }
-  }
-
-  private overlayKeyUp(e: KeyboardEvent): void {
-    if (this.overlay !== undefined) {
-      flowchart.blockView.keyUp(e);
-    }
-  }
-
-  locateOverlay(): void {
-    this.viewWindow.x = this.x + this.viewWindowMargin.left;
-    this.viewWindow.y = this.y + this.barHeight + this.viewWindowMargin.top;
-    this.viewWindow.width = this.width - this.viewWindowMargin.left - this.viewWindowMargin.right;
-    this.viewWindow.height = this.height - this.barHeight - this.viewWindowMargin.top - this.viewWindowMargin.bottom;
-    this.setX(this.getX());
-    this.setY(this.getY());
-    this.setWidth(this.getWidth());
-    this.setHeight(this.getHeight());
-  }
-
-  setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
-    this.plot.setCameraPosition(px, py, pz, rx, ry, rz);
-  }
-
-  setX(x: number): void {
-    super.setX(x);
-    if (this.overlay !== undefined) {
-      this.overlay.style.left = this.viewWindow.x + "px";
-    }
-  }
-
-  setY(y: number): void {
-    super.setY(y);
-    if (this.overlay !== undefined) {
-      this.overlay.style.top = this.viewWindow.y + "px";
-    }
-  }
-
-  setWidth(width: number): void {
-    super.setWidth(width);
-    if (this.overlay !== undefined) {
-      this.overlay.style.width = this.viewWindow.width + "px";
-    }
-  }
-
-  setHeight(height: number): void {
-    super.setHeight(height);
-    if (this.overlay !== undefined) {
-      this.overlay.style.height = this.viewWindow.height + "px";
-    }
-  }
-
-  translateBy(dx: number, dy: number): void {
-    super.translateBy(dx, dy);
-    if (this.overlay !== undefined) {
-      this.overlay.style.left = this.viewWindow.x + "px";
-      this.overlay.style.top = this.viewWindow.y + "px";
-    }
-  }
-
-  setRect(rect: Rectangle): void {
-    super.setRect(rect);
-    if (this.overlay !== undefined) {
-      this.overlay.style.left = this.viewWindow.x + "px";
-      this.overlay.style.top = this.viewWindow.y + "px";
-      this.overlay.style.width = this.viewWindow.width + "px";
-      this.overlay.style.height = this.viewWindow.height + "px";
-    }
-  }
-
-  destroy(): void {
-    if (this.overlay !== undefined) {
-      let parent = document.getElementById("block-view-wrapper");
-      if (parent.contains(this.overlay)) parent.removeChild(this.overlay);
-    }
-    this.plot.destroy();
-  }
-
-  reset(): void {
-    super.reset();
-    this.erase();
-  }
-
-  erase(): void {
-  }
-
-  resetViewAngle(): void {
-    this.plot.resetViewAngle();
-  }
-
   setScaleType(scaleType: string): void {
     this.scaleType = scaleType;
   }
@@ -298,72 +176,21 @@ export class Surface3D extends Block {
 
   setColorScheme(colorScheme: string): void {
     this.colorScheme = colorScheme;
-    this.plot.setInterpolateColorScheme(colorScheme);
+    (<SurfacePlot>this.view).setInterpolateColorScheme(colorScheme);
   }
 
   getColorScheme(): string {
     return this.colorScheme;
   }
 
-  setBoxSize(boxSize: number): void {
-    this.plot.setBoxSize(boxSize);
-  }
-
-  getBoxSize(): number {
-    return this.plot.getBoxSize();
-  }
-
-  setXAxisLabel(xAxisLabel: string): void {
-    this.plot.setXAxisLabel(xAxisLabel);
-  }
-
-  getXAxisLabel(): string {
-    return this.plot.getXAxisLabel();
-  }
-
-  setYAxisLabel(yAxisLabel: string): void {
-    this.plot.setYAxisLabel(yAxisLabel);
-  }
-
-  getYAxisLabel(): string {
-    return this.plot.getYAxisLabel();
-  }
-
-  setZAxisLabel(zAxisLabel: string): void {
-    this.plot.setZAxisLabel(zAxisLabel);
-  }
-
-  getZAxisLabel(): string {
-    return this.plot.getZAxisLabel();
-  }
-
-  setViewWindowColor(viewWindowColor: string): void {
-    this.viewWindowColor = viewWindowColor;
-    this.plot.setBackgroundColor(viewWindowColor);
-  }
-
-  getViewWindowColor(): string {
-    return this.viewWindowColor;
-  }
-
   draw(ctx: CanvasRenderingContext2D): void {
-    switch (flowchart.blockView.getBlockStyle()) {
-      case "Shade":
-        let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
-        shade.addColorStop(0, "white");
-        shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
-        shade.addColorStop(1, Util.adjust(this.color, -100));
-        ctx.fillStyle = shade;
-        break;
-      case "Plain":
-        ctx.fillStyle = this.color;
-        break;
-    }
-    ctx.fillHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "black";
-    ctx.drawHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
-    if (!this.iconic) {
+    super.draw(ctx);
+    if (this.iconic) {
+      ctx.fillStyle = "black";
+      ctx.font = "8px Arial";
+      let h = ctx.measureText("M").width - 4;
+      ctx.fillText("3D", this.viewWindow.x + this.viewWindow.width / 2 - ctx.measureText("3D").width / 2, this.viewWindow.y + this.viewWindow.height / 2 + h / 2);
+    } else {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "white";
@@ -376,48 +203,6 @@ export class Surface3D extends Block {
       let titleWidth = ctx.measureText(title).width;
       ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
-
-    // draw the space
-    ctx.fillStyle = "#FDFFFD";
-    ctx.beginPath();
-    ctx.fillHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
-    ctx.lineWidth = 1;
-    ctx.drawHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
-    ctx.beginPath();
-    this.viewWindow.x = this.x + this.viewWindowMargin.left;
-    this.viewWindow.y = this.y + this.barHeight + this.viewWindowMargin.top;
-    this.viewWindow.width = this.width - this.viewWindowMargin.left - this.viewWindowMargin.right;
-    this.viewWindow.height = this.height - this.barHeight - this.viewWindowMargin.top - this.viewWindowMargin.bottom;
-    ctx.rect(this.viewWindow.x, this.viewWindow.y, this.viewWindow.width, this.viewWindow.height);
-    ctx.fillStyle = this.viewWindowColor;
-    ctx.fill();
-    ctx.beginPath();
-    ctx.rect(this.viewWindow.x - 3, this.viewWindow.y - 3, this.viewWindow.width + 2, this.viewWindow.height + 2);
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = this.iconic ? 1 : 2;
-    ctx.stroke();
-    if (this.iconic) {
-      ctx.fillStyle = "black";
-      ctx.font = "8px Arial";
-      let h = ctx.measureText("M").width - 4;
-      ctx.fillText("3D", this.viewWindow.x + this.viewWindow.width / 2 - ctx.measureText("3D").width / 2, this.viewWindow.y + this.viewWindow.height / 2 + h / 2);
-    }
-
-    // draw the port
-    ctx.font = this.iconic ? "9px Arial" : "12px Arial";
-    ctx.strokeStyle = "black";
-    for (let p of this.ports) {
-      p.draw(ctx, this.iconic);
-    }
-
-    if (this.selected) {
-      this.highlightSelection(ctx);
-    }
-
-  }
-
-  onDraggableArea(x: number, y: number): boolean {
-    return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
   }
 
   updateModel(): void {
@@ -428,8 +213,8 @@ export class Surface3D extends Block {
       this.dataY = this.portY.getValue();
       this.dataZ = this.portZ.getValue();
       if (this.nu !== undefined && this.nv !== undefined && this.dataX !== undefined && this.dataY !== undefined && this.dataZ !== undefined) {
-        this.plot.setXyzData(this.nu, this.nv, this.dataX, this.dataY, this.dataZ, this.scaleType);
-        this.plot.render();
+        (<SurfacePlot>this.view).setXyzData(this.nu, this.nv, this.dataX, this.dataY, this.dataZ, this.scaleType);
+        this.view.render();
       }
     } else {
       this.data = this.portI.getValue();
@@ -440,18 +225,18 @@ export class Surface3D extends Block {
       this.dy = this.portDY.getValue();
       this.nv = this.portNY.getValue();
       if (this.x0 !== undefined && this.y0 !== undefined && this.dx !== undefined && this.dy !== undefined && this.nu !== undefined && this.nv !== undefined && this.data !== undefined) {
-        this.plot.setZData(this.x0, this.y0, this.dx, this.dy, this.nu, this.nv, this.data, this.scaleType);
-        this.plot.render();
+        (<SurfacePlot>this.view).setZData(this.x0, this.y0, this.dx, this.dy, this.nu, this.nv, this.data, this.scaleType);
+        this.view.render();
       }
     }
   }
 
   refreshView(): void {
     super.refreshView();
-    this.viewWindowMargin.top = 14;
-    this.viewWindowMargin.bottom = 10;
-    this.viewWindowMargin.left = 36;
-    this.viewWindowMargin.right = 10;
+    this.spaceMargin.top = 14;
+    this.spaceMargin.bottom = 10;
+    this.spaceMargin.left = 36;
+    this.spaceMargin.right = 10;
     if (this.tripleArrayInput) {
       let dh = (this.height - this.barHeight) / 6;
       this.portX.setY(this.barHeight + dh);
@@ -469,10 +254,6 @@ export class Surface3D extends Block {
       this.portDY.setY(this.barHeight + 6 * dh);
       this.portNY.setY(this.barHeight + 7 * dh);
     }
-  }
-
-  toCanvas(): HTMLCanvasElement {
-    return this.overlay;
   }
 
 }

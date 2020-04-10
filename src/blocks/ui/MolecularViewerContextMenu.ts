@@ -62,32 +62,32 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td style="width: 160px">Name:</td>
-                  <td colspan="3"><input type="text" id="space3d-name-field" style="width: 100%"></td>
+                  <td colspan="3"><input type="text" id="molecular-viewer-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Box Size:</td>
-                  <td colspan="3"><input type="text" id="space3d-box-size-field" style="width: 100%"></td>
+                  <td colspan="3"><input type="text" id="molecular-viewer-box-size-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>View Control:</td>
                   <td colspan="3">
-                    <select id="space3d-control-selector" style="width: 100%">
+                    <select id="molecular-viewer-control-selector" style="width: 100%">
                       <option value="Orbit" selected>Orbit</option>
                     </select>
                   </td>
                 </tr>
                 <tr>
-                  <td>Window Color:</td>
-                  <td><input type="color" id="space3d-window-color-chooser" style="width: 50px"></td>
-                  <td colspan="2"><input type="text" id="space3d-window-color-field" style="width: 100%"></td>
+                  <td>Background Color:</td>
+                  <td><input type="color" id="molecular-viewer-background-color-chooser" style="width: 50px"></td>
+                  <td colspan="2"><input type="text" id="molecular-viewer-background-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td colspan="3"><input type="text" id="space3d-width-field" style="width: 100%"></td>
+                  <td colspan="3"><input type="text" id="molecular-viewer-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td colspan="3"><input type="text" id="space3d-height-field" style="width: 100%"></td>
+                  <td colspan="3"><input type="text" id="molecular-viewer-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -99,18 +99,19 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
     if (this.block instanceof MolecularViewerBlock) {
       const g = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameField = document.getElementById("space3d-name-field") as HTMLInputElement;
+      let nameField = document.getElementById("molecular-viewer-name-field") as HTMLInputElement;
       nameField.value = g.getName();
-      let boxSizeField = document.getElementById("space3d-box-size-field") as HTMLInputElement;
+      let boxSizeField = document.getElementById("molecular-viewer-box-size-field") as HTMLInputElement;
       boxSizeField.value = g.getBoxSize().toString();
-      let windowColorField = document.getElementById("space3d-window-color-field") as HTMLInputElement;
-      windowColorField.value = g.getSpaceWindowColor();
-      let windowColorChooser = document.getElementById("space3d-window-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(windowColorChooser, g.getSpaceWindowColor());
-      let widthField = document.getElementById("space3d-width-field") as HTMLInputElement;
+      let backgroundColorField = document.getElementById("molecular-viewer-background-color-field") as HTMLInputElement;
+      backgroundColorField.value = g.getBackgroundColor();
+      let backgroundColorChooser = document.getElementById("molecular-viewer-background-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(backgroundColorChooser, g.getBackgroundColor());
+      let widthField = document.getElementById("molecular-viewer-width-field") as HTMLInputElement;
       widthField.value = Math.round(g.getWidth()).toString();
-      let heightField = document.getElementById("space3d-height-field") as HTMLInputElement;
+      let heightField = document.getElementById("molecular-viewer-height-field") as HTMLInputElement;
       heightField.value = Math.round(g.getHeight()).toString();
+      Util.hookupColorInputs(backgroundColorField, backgroundColorChooser);
 
       const okFunction = () => {
         let success = true;
@@ -141,7 +142,7 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
         if (success) {
           g.setName(nameField.value);
           g.setBoxSize(Math.max(0, boxSize));
-          g.setSpaceWindowColor(windowColorField.value);
+          g.setBackgroundColor(backgroundColorField.value);
           g.locateOverlay();
           g.refreshView();
           flowchart.storeBlockStates();
@@ -158,7 +159,7 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
       };
       nameField.addEventListener("keyup", enterKeyUp);
       boxSizeField.addEventListener("keyup", enterKeyUp);
-      windowColorField.addEventListener("keyup", enterKeyUp);
+      backgroundColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({

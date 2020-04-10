@@ -248,7 +248,7 @@ export class StateIO {
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
           block.setZAxisLabel(state.zAxisLabel);
-          block.setSpaceWindowColor(state.spaceWindowColor);
+          if (state.backgroundColor !== undefined) block.setBackgroundColor(state.backgroundColor);
           block.setPointInput(state.pointInput);
           block.setNumberOfPoints(state.numberOfPoints);
           block.setLegends(state.legends);
@@ -285,7 +285,7 @@ export class StateIO {
           block.setZAxisLabel(state.zAxisLabel);
           if (state.boxSize !== undefined) block.setBoxSize(state.boxSize);
           block.setColorScheme(state.colorScheme);
-          block.setViewWindowColor(state.viewWindowColor);
+          if (state.backgroundColor !== undefined) block.setBackgroundColor(state.backgroundColor);
           if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
             block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
         } else if (block instanceof TurnoutSwitch) {
@@ -342,6 +342,7 @@ export class StateIO {
           if (state.imageSrc !== undefined) block.setImageSrc(state.imageSrc);
         } else if (block instanceof MolecularViewerBlock) {
           block.setName(state.name);
+          if (state.backgroundColor !== undefined) block.setBackgroundColor(state.backgroundColor);
           if (state.boxSize !== undefined) block.setBoxSize(state.boxSize);
           if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
             block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
