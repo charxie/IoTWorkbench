@@ -51,6 +51,7 @@ export abstract class Basic3D {
   constructor() {
     this.scene = new Scene();
     this.createAxes();
+    this.drawAxisArrowsAndLabels();
     this.renderer = new WebGLRenderer({alpha: true, antialias: true, preserveDrawingBuffer: true});
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(500, 500);
@@ -105,6 +106,16 @@ export abstract class Basic3D {
 
   setBackgroundColor(color: string): void {
     this.backgroundColor = color;
+    let c = Util.isDarkish(this.backgroundColor) ? "white" : "black";
+    if (this.xAxisLabel !== undefined) {
+      this.xLabelSprite.fillStyle = c;
+    }
+    if (this.yAxisLabel !== undefined) {
+      this.yLabelSprite.fillStyle = c;
+    }
+    if (this.zAxisLabel !== undefined) {
+      this.zLabelSprite.fillStyle = c;
+    }
     this.renderer.setClearColor(color, 1);
   }
 
@@ -112,16 +123,14 @@ export abstract class Basic3D {
     return this.backgroundColor;
   }
 
-  setBoxSize(boxSize: number): void {
-    this.removeBox();
+  private drawAxisArrowsAndLabels(): void {
     this.removeArrows();
     this.removeSprites();
     let p;
     let r;
-    if (boxSize > 0) {
-      p = boxSize;
-      r = boxSize * 0.02;
-      this.createBox(boxSize / 2, 0xcccccc);
+    if (this.boxSize > 0) {
+      p = this.boxSize;
+      r = this.boxSize * 0.02;
     } else {
       p = 50;
       r = 1;
@@ -138,7 +147,16 @@ export abstract class Basic3D {
     this.xLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, xArrow, c, "x");
     this.yLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, yArrow, c, "y");
     this.zLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, zArrow, c, "z");
+  }
+
+  setBoxSize(boxSize: number): void {
     this.boxSize = boxSize;
+    if (boxSize > 0) {
+      this.createBox(boxSize / 2, 0xcccccc);
+    } else {
+      this.removeBox();
+    }
+    this.drawAxisArrowsAndLabels();
   }
 
   getBoxSize(): number {
@@ -202,9 +220,9 @@ export abstract class Basic3D {
   }
 
   private addArrow(p: Vector3, c: number, r: number, axis: string): Mesh {
-    let cone = new Mesh(new ConeGeometry(r, 4 * r, 8), new MeshBasicMaterial({
+    let cone = new Mesh(new ConeGeometry(r / 2, 4 * r, 8), new MeshBasicMaterial({
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.9,
       color: c
     }));
     cone.position.copy(p);
@@ -267,11 +285,6 @@ export abstract class Basic3D {
 
   setXAxisLabel(xAxisLabel: string): void {
     this.xAxisLabel = xAxisLabel;
-    if (this.xAxisArrow !== undefined) {
-      if (this.isSceneChild(this.xLabelSprite)) this.scene.remove(this.xLabelSprite);
-      let c = Util.isDarkish(this.backgroundColor) ? "white" : "black";
-      this.xLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, this.xAxisArrow.position, c, "x");
-    }
   }
 
   getXAxisLabel(): string {
@@ -280,11 +293,6 @@ export abstract class Basic3D {
 
   setYAxisLabel(yAxisLabel: string): void {
     this.yAxisLabel = yAxisLabel;
-    if (this.yAxisArrow !== undefined) {
-      if (this.isSceneChild(this.yLabelSprite)) this.scene.remove(this.yLabelSprite);
-      let c = Util.isDarkish(this.backgroundColor) ? "white" : "black";
-      this.yLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, this.yAxisArrow.position, c, "y");
-    }
   }
 
   getYAxisLabel(): string {
@@ -293,11 +301,6 @@ export abstract class Basic3D {
 
   setZAxisLabel(zAxisLabel: string): void {
     this.zAxisLabel = zAxisLabel;
-    if (this.zAxisArrow !== undefined) {
-      if (this.isSceneChild(this.zLabelSprite)) this.scene.remove(this.zLabelSprite);
-      let c = Util.isDarkish(this.backgroundColor) ? "white" : "black";
-      this.zLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, this.zAxisArrow.position, c, "z");
-    }
   }
 
   getZAxisLabel(): string {
