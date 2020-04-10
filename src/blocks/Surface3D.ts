@@ -97,8 +97,9 @@ export class Surface3D extends Block {
     }
   };
 
-  constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
+  constructor(iconic: boolean, uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
+    this.iconic = iconic;
     this.name = name;
     this.color = "#FEFE8A";
     this.barHeight = Math.min(30, this.height / 3);
@@ -119,18 +120,20 @@ export class Surface3D extends Block {
     this.ports.push(this.portNY);
     this.viewWindow = new Rectangle(0, 0, 1, 1);
     this.marginX = 25;
-    this.plot = new SurfacePlot();
-    this.overlay = this.plot.getDomElement();
-    this.overlay.tabIndex = 0;
-    this.overlay.style.position = "absolute";
-    document.getElementById("block-view-wrapper").append(this.overlay);
-    //this.overlay.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
-    this.overlay.addEventListener("keyup", this.overlayKeyUp.bind(this), false);
-    this.overlay.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
+    if (!iconic) {
+      this.plot = new SurfacePlot();
+      this.overlay = this.plot.getDomElement();
+      this.overlay.tabIndex = 0;
+      this.overlay.style.position = "absolute";
+      document.getElementById("block-view-wrapper").append(this.overlay);
+      //this.overlay.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
+      this.overlay.addEventListener("keyup", this.overlayKeyUp.bind(this), false);
+      this.overlay.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
+    }
   }
 
   getCopy(): Block {
-    let copy = new Surface3D("Surface3D #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    let copy = new Surface3D(false, "Surface3D #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.zAxisLabel = this.zAxisLabel;

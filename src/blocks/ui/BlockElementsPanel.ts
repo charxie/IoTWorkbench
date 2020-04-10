@@ -130,7 +130,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="determinant-block" title="Matrix Determinant" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="matrix-transposition-block" title="Matrix Transposition" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="matrix-inversion-block" title="Matrix Inversion" width="45px" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="molecular-viewer-block" title="Molecular Viewer" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="molecular-viewer-block" title="Molecular Viewer" width="45px" height="45px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -242,8 +242,7 @@ export class BlockElementsPanel {
   private drawMolecularViewerBlock(name: string, symbol: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new MolecularViewerBlock("Molecular Viewer Block Icon", "Molecular Viewer", 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setIconic(true);
+    let block = new MolecularViewerBlock(true, "Molecular Viewer Block Icon", "Molecular Viewer", 8, 8, canvas.width - 16, canvas.height - 16);
     block.draw(ctx);
   }
 
@@ -442,8 +441,7 @@ export class BlockElementsPanel {
   private drawSpace3D(name: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new Space3D("Space3D Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setIconic(true);
+    let block = new Space3D(true, "Space3D Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.draw(ctx);
   }
 
@@ -458,8 +456,7 @@ export class BlockElementsPanel {
   private drawSurface3D(name: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new Surface3D("Surface3D Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setIconic(true);
+    let block = new Surface3D(true, "Surface3D Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.draw(ctx);
   }
 

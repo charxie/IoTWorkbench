@@ -61,10 +61,11 @@ export class MolecularViewerBlock extends Block {
     }
   };
 
-  constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
+  constructor(iconic: boolean, uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
+    this.iconic = iconic;
     this.name = name;
-    this.color = "#A78ECA";
+    this.color = "#778EAA";
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 4;
     this.portX = new Port(this, true, "X", 0, this.barHeight + dh, false)
@@ -74,17 +75,19 @@ export class MolecularViewerBlock extends Block {
     this.ports.push(this.portY);
     this.ports.push(this.portZ);
     this.spaceWindow = new Rectangle(0, 0, 1, 1);
-    this.viewer = new MolecularViewer();
-    this.overlay = this.viewer.getDomElement();
-    this.overlay.tabIndex = 0;
-    this.overlay.style.position = "absolute";
-    document.getElementById("block-view-wrapper").append(this.overlay);
-    this.overlay.addEventListener("keyup", this.overlayKeyUp.bind(this), false);
-    this.overlay.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
+    if (!iconic) {
+      this.viewer = new MolecularViewer();
+      this.overlay = this.viewer.getDomElement();
+      this.overlay.tabIndex = 0;
+      this.overlay.style.position = "absolute";
+      document.getElementById("block-view-wrapper").append(this.overlay);
+      this.overlay.addEventListener("keyup", this.overlayKeyUp.bind(this), false);
+      this.overlay.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
+    }
   }
 
   getCopy(): Block {
-    let copy = new MolecularViewerBlock("Molecular Viewer #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    let copy = new MolecularViewerBlock(false, "Molecular Viewer #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.setSpaceWindowColor(this.getSpaceWindowColor());
     copy.setBoxSize(this.getBoxSize());
     copy.locateOverlay();
@@ -247,7 +250,7 @@ export class MolecularViewerBlock extends Block {
     this.spaceWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
     this.spaceWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
     ctx.rect(this.spaceWindow.x, this.spaceWindow.y, this.spaceWindow.width, this.spaceWindow.height);
-    ctx.fillStyle = this.viewer.getBackgroundColor();
+    ctx.fillStyle = this.viewer !== undefined ? this.viewer.getBackgroundColor() : "white";
     ctx.fill();
     ctx.beginPath();
     ctx.rect(this.spaceWindow.x - 3, this.spaceWindow.y - 3, this.spaceWindow.width + 4, this.spaceWindow.height + 4);
@@ -257,7 +260,7 @@ export class MolecularViewerBlock extends Block {
       ctx.fillStyle = "black";
       ctx.font = "8px Arial";
       let h = ctx.measureText("M").width - 2;
-      ctx.fillText("3D", this.spaceWindow.x + this.spaceWindow.width / 2 - ctx.measureText("3D").width / 2, this.spaceWindow.y + this.spaceWindow.height / 2 + h / 2);
+      ctx.fillText("Mol", this.spaceWindow.x + this.spaceWindow.width / 2 - ctx.measureText("Mol").width / 2, this.spaceWindow.y + this.spaceWindow.height / 2 + h / 2);
     }
 
     // draw the port

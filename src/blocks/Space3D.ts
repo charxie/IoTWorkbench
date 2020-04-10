@@ -97,8 +97,9 @@ export class Space3D extends Block {
     }
   };
 
-  constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
+  constructor(iconic: boolean, uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
+    this.iconic = iconic;
     this.name = name;
     this.color = "#A78ECA";
     this.barHeight = Math.min(30, this.height / 3);
@@ -111,27 +112,29 @@ export class Space3D extends Block {
     this.ports.push(this.portZ);
     this.spaceWindow = new Rectangle(0, 0, 1, 1);
     this.legends.push("A");
-    this.plot = new LinePlot();
-    this.plot.pushPointArray();
-    this.plot.lineTypes.push("Solid");
-    this.plot.lineColors.push("black");
-    this.plot.lineWidths.push(1);
-    this.plot.dataSymbols.push("None");
-    this.plot.dataSymbolRadii.push(3);
-    this.plot.dataSymbolColors.push("white");
-    this.plot.dataSymbolSpacings.push(1);
-    this.plot.endSymbolRadii.push(0);
-    this.overlay = this.plot.getDomElement();
-    this.overlay.tabIndex = 0;
-    this.overlay.style.position = "absolute";
-    document.getElementById("block-view-wrapper").append(this.overlay);
-    //this.overlay.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
-    this.overlay.addEventListener("keyup", this.overlayKeyUp.bind(this), false);
-    this.overlay.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
+    if (!iconic) {
+      this.plot = new LinePlot();
+      this.plot.pushPointArray();
+      this.plot.lineTypes.push("Solid");
+      this.plot.lineColors.push("black");
+      this.plot.lineWidths.push(1);
+      this.plot.dataSymbols.push("None");
+      this.plot.dataSymbolRadii.push(3);
+      this.plot.dataSymbolColors.push("white");
+      this.plot.dataSymbolSpacings.push(1);
+      this.plot.endSymbolRadii.push(0);
+      this.overlay = this.plot.getDomElement();
+      this.overlay.tabIndex = 0;
+      this.overlay.style.position = "absolute";
+      document.getElementById("block-view-wrapper").append(this.overlay);
+      //this.overlay.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
+      this.overlay.addEventListener("keyup", this.overlayKeyUp.bind(this), false);
+      this.overlay.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
+    }
   }
 
   getCopy(): Block {
-    let copy = new Space3D("Space3D #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    let copy = new Space3D(false, "Space3D #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.setXAxisLabel(this.getXAxisLabel());
     copy.setYAxisLabel(this.getYAxisLabel());
     copy.setZAxisLabel(this.getZAxisLabel());
@@ -604,7 +607,7 @@ export class Space3D extends Block {
     this.spaceWindow.width = this.width - this.spaceMargin.left - this.spaceMargin.right;
     this.spaceWindow.height = this.height - this.barHeight - this.spaceMargin.top - this.spaceMargin.bottom;
     ctx.rect(this.spaceWindow.x, this.spaceWindow.y, this.spaceWindow.width, this.spaceWindow.height);
-    ctx.fillStyle = this.plot.getBackgroundColor();
+    ctx.fillStyle = this.plot !== undefined ? this.plot.getBackgroundColor() : "white";
     ctx.fill();
     ctx.beginPath();
     ctx.rect(this.spaceWindow.x - 3, this.spaceWindow.y - 3, this.spaceWindow.width + 4, this.spaceWindow.height + 4);

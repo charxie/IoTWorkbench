@@ -843,7 +843,7 @@ export class Flowchart {
         block = new DataBlock(uid, name, x, y, 80, 60);
         break;
       case "Molecular Viewer Block":
-        block = new MolecularViewerBlock(uid, name, x, y, 80, 60);
+        block = new MolecularViewerBlock(false, uid, name, x, y, 80, 60);
         break;
       case "Turnout Switch":
         block = new TurnoutSwitch(uid, name, "Turnout", x, y, 60, 100);
@@ -894,13 +894,13 @@ export class Flowchart {
         block = new Space2D(uid, name, x, y, 200, 220);
         break;
       case "Space3D":
-        block = new Space3D(uid, name, x, y, 200, 220);
+        block = new Space3D(false, uid, name, x, y, 200, 220);
         break;
       case "Field2D":
         block = new Field2D(uid, name, x, y, 200, 220);
         break;
       case "Surface3D":
-        block = new Surface3D(uid, name, x, y, 200, 220);
+        block = new Surface3D(false, uid, name, x, y, 200, 220);
         break;
       case "Random Number Generator Block":
         block = new RandomNumberGeneratorBlock(uid, x, y, 200, 220);

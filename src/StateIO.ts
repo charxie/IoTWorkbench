@@ -516,7 +516,7 @@ export class StateIO {
         if (b.getUseHtml()) {
           b.locateHtmlOverlay();
         }
-      } else if (b instanceof Surface3D || b instanceof Space3D) {
+      } else if (b instanceof Surface3D || b instanceof Space3D || b instanceof MolecularViewerBlock) {
         b.locateOverlay();
       }
     }
