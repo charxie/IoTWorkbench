@@ -10,7 +10,8 @@ import {DataArray} from "./DataArray";
 
 export class DataBlock extends Block {
 
-  private dataArray: DataArray[];
+  private dataArray: DataArray[]; // an array of data such as CSV
+  private content: string; // a string of data such as PDB
   private format: string = "CSV";
   private barHeight: number;
   private portO: Port[];
@@ -25,6 +26,7 @@ export class DataBlock extends Block {
     readonly width: number;
     readonly height: number;
     readonly data: number[][];
+    readonly content: string;
     readonly format: string;
     readonly imageSrc: string;
 
@@ -42,6 +44,7 @@ export class DataBlock extends Block {
           this.data[i] = block.dataArray[i].data.slice();
         }
       }
+      this.content = block.content;
       this.imageSrc = block.image !== undefined ? block.image.src : undefined; // base64 image data
     }
   };
@@ -53,7 +56,6 @@ export class DataBlock extends Block {
     this.color = "#A2A4C4";
     this.source = true;
     this.barHeight = Math.min(30, this.height / 3);
-    this.setOutputPorts();
   }
 
   private setOutputPorts(): void {
@@ -75,6 +77,21 @@ export class DataBlock extends Block {
           this.ports.push(this.portO[i]);
         }
       }
+    } else if (this.content !== undefined) {
+      if (this.portO === undefined || this.portO.length !== 1) {
+        if (this.portO) {
+          for (let p of this.portO) { // disconnect all the port connectors as the ports will be recreated
+            flowchart.removeAllConnectors(p);
+          }
+          for (let p of this.portO) {
+            this.ports.pop();
+          }
+        }
+        this.portO = new Array(1);
+        let dh = (this.height - this.barHeight) / 2;
+        this.portO[0] = new Port(this, false, "O", this.width, this.barHeight + dh, true);
+        this.ports.push(this.portO[0]);
+      }
     }
   }
 
@@ -87,6 +104,7 @@ export class DataBlock extends Block {
         b.dataArray[i].data = this.dataArray[i].data.slice();
       }
     }
+    b.content = this.content;
     b.format = this.format;
     b.image = this.image;
     return b;
@@ -139,6 +157,10 @@ export class DataBlock extends Block {
       }
       this.setOutputPorts();
     }
+  }
+
+  setContent(content: string): void {
+    this.content = content;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -220,13 +242,18 @@ export class DataBlock extends Block {
   }
 
   updateModel(): void {
-    if (this.portO !== undefined && this.dataArray !== undefined) {
-      for (let i = 0; i < this.portO.length; i++) {
-        if (this.dataArray[i] !== undefined) {
-          this.portO[i].setValue(this.dataArray[i].data);
+    if (this.portO !== undefined) {
+      if (this.dataArray !== undefined) {
+        for (let i = 0; i < this.portO.length; i++) {
+          if (this.dataArray[i] !== undefined) {
+            this.portO[i].setValue(this.dataArray[i].data);
+          }
         }
+        this.updateConnectors();
+      } else if (this.content !== undefined) {
+        this.portO[0].setValue(this.content);
+        this.updateConnectors();
       }
-      this.updateConnectors();
     }
   }
 

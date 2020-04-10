@@ -32,6 +32,7 @@ export class DataBlockContextMenu extends BlockContextMenu {
                   <td colspan="2">
                     <select id="data-block-format-selector" style="width: 100%">
                       <option value="CSV" selected>CSV</option>
+                      <option value="PDB">PDB</option>
                     </select>
                   </td>
                 </tr>
@@ -54,13 +55,29 @@ export class DataBlockContextMenu extends BlockContextMenu {
 
   private openSourceFile(): void {
     let fileDialog = document.getElementById('data-file-dialog') as HTMLInputElement;
+    let formatSelectElement = document.getElementById("data-block-format-selector") as HTMLSelectElement;
+    switch (formatSelectElement.value) {
+      case "CSV":
+        fileDialog.accept = ".csv";
+        break;
+      case "PDB":
+        fileDialog.accept = ".pdb";
+        break;
+    }
     fileDialog.onchange = e => {
       let target = <HTMLInputElement>event.target;
       if (target.files.length) {
         let reader: FileReader = new FileReader();
         reader.readAsText(target.files[0]);
         reader.onload = (e) => {
-          (<DataBlock>this.block).setDataInput(reader.result.toString());
+          switch (formatSelectElement.value) {
+            case "CSV":
+              (<DataBlock>this.block).setDataInput(reader.result.toString());
+              break;
+            case "PDB":
+              (<DataBlock>this.block).setContent(reader.result.toString());
+              break;
+          }
           target.value = "";
         };
         document.getElementById("data-block-source-file-name-label").innerHTML = target.files[0].name;

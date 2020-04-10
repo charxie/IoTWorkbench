@@ -3,7 +3,7 @@
  */
 
 import {
-  AmbientLight,
+  AmbientLight, Box3,
   BufferGeometry,
   ConeGeometry,
   Line,
@@ -47,6 +47,7 @@ export abstract class Basic3D {
   protected renderer: WebGLRenderer;
   protected orbitControls: OrbitControls;
   protected trackballControls: TrackballControls;
+  protected boundingBox: Box3;
 
   constructor() {
     this.scene = new Scene();
@@ -123,7 +124,7 @@ export abstract class Basic3D {
     return this.backgroundColor;
   }
 
-  private drawAxisArrowsAndLabels(): void {
+  protected drawAxisArrowsAndLabels(): void {
     this.removeArrows();
     this.removeSprites();
     let p;
@@ -132,8 +133,25 @@ export abstract class Basic3D {
       p = this.boxSize;
       r = this.boxSize * 0.02;
     } else {
-      p = 50;
-      r = 1;
+      if (this.boundingBox !== undefined) {
+        let xmin = Math.abs(this.boundingBox.min.x);
+        let ymin = Math.abs(this.boundingBox.min.y);
+        let zmin = Math.abs(this.boundingBox.min.z);
+        let xmax = Math.abs(this.boundingBox.max.x);
+        let ymax = Math.abs(this.boundingBox.max.y);
+        let zmax = Math.abs(this.boundingBox.max.z);
+        if (xmin > p) p = xmin;
+        if (ymin > p) p = ymin;
+        if (zmin > p) p = zmin;
+        if (xmax > p) p = xmax;
+        if (ymax > p) p = ymax;
+        if (zmax > p) p = zmax;
+        p = p * 1.2;
+        r = p * 0.02;
+      } else {
+        p = 50;
+        r = 1;
+      }
     }
     let xArrow = new Vector3(p, 0, 0);
     let yArrow = new Vector3(0, p, 0);

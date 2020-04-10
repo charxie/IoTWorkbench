@@ -487,34 +487,26 @@ export class BlockView {
       }
     }
 
-    let code: any;
-    if (e.key !== undefined) {
-      code = e.key;
-    } else if (e.keyCode !== undefined) { // key doesn't work on the Mac
-      code = e.keyCode;
-    }
+    let code = e.key;
     switch (code) {
       case "Enter":
-      case 13:
         if (this.selectedBlock != null) {
           BlockUtilities.getMenu(this.selectedBlock).openPropertiesWindow(this.selectedBlock);
         }
         break;
       case "Delete":
-      case 46:
+      case "Backspace":
         if (this.selectedBlock != null) {
           flowchart.askToDeleteBlock(this.selectedBlock);
           this.selectedBlock = null;
         }
         break;
       case "c": // ctrl+C for copy
-      case 67:
         if (e.ctrlKey || e.metaKey) {
           this.copiedBlock = this.selectedBlock;
         }
         break;
       case "v": // ctrl+V for paste
-      case 86:
         if (e.ctrlKey || e.metaKey) {
           if (this.copiedBlock != null) {
             this.pasteTo(this.copiedBlock.getX() + 20, this.copiedBlock.getY() + 20);
@@ -522,7 +514,6 @@ export class BlockView {
         }
         break;
       case "z":
-      case 90:
         if (e.shiftKey) {
           if (e.ctrlKey || e.metaKey) { // ctrl+shift+Z for redo
             if (undoManager.hasRedo()) {
@@ -538,7 +529,6 @@ export class BlockView {
         }
         break;
       case "y": // ctrl+Y for redo
-      case 89:
         if (e.ctrlKey || e.metaKey) {
           if (undoManager.hasRedo()) {
             undoManager.redo();
@@ -546,29 +536,18 @@ export class BlockView {
         }
         break;
       case "s": // ctrl+S for save
-      case 83:
         if (e.ctrlKey || e.metaKey) {
           StateIO.saveAs(JSON.stringify(new State()));
         }
         break;
       case "o": // ctrl+O for open
-      case 79:
         if (e.ctrlKey || e.metaKey) {
           StateIO.open();
         }
         break;
       case "n": // ctrl+N for new file (not working in Chrome as it cannot be overridden)
-      case 78:
         if (e.ctrlKey || e.metaKey) {
           flowchart.askToClear();
-        }
-        break;
-      case "Backspace": // alt+backspace for undo
-      case 8:
-        if (e.altKey) {
-          if (undoManager.hasUndo()) {
-            undoManager.undo();
-          }
         }
         break;
     }

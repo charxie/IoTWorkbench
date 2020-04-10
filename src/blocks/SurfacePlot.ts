@@ -90,6 +90,9 @@ export class SurfacePlot extends Basic3D {
     // compute normals for shading
     this.geometry.computeFaceNormals();
     this.geometry.computeVertexNormals();
+    // this.geometry.computeBoundingBox();
+    // this.boundingBox = this.geometry.boundingBox;
+    // this.drawAxisArrowsAndLabels();
   }
 
   setZData(x0: number, y0: number, dx: number, dy: number, nx: number, ny: number, data: number[], scaleType: string): void {

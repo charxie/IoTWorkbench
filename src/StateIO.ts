@@ -49,6 +49,7 @@ import {ImageBlock} from "./blocks/ImageBlock";
 import {AudioBlock} from "./blocks/AudioBlock";
 import {DataBlock} from "./blocks/DataBlock";
 import {MolecularViewerBlock} from "./blocks/MolecularViewerBlock";
+import {Basic3DBlock} from "./blocks/Basic3DBlock";
 
 export class StateIO {
 
@@ -518,7 +519,7 @@ export class StateIO {
         if (b.getUseHtml()) {
           b.locateHtmlOverlay();
         }
-      } else if (b instanceof Surface3D || b instanceof Space3D || b instanceof MolecularViewerBlock) {
+      } else if (b instanceof Basic3DBlock) {
         b.locateOverlay();
       }
     }
