@@ -21,21 +21,9 @@ export class MolecularViewer extends Basic3D {
   }
 
   destroy(): void {
+    super.destroy();
     this.clear();
-    this.scene.remove(this.boxBottomFace);
-    this.scene.remove(this.boxTopFace);
-    this.scene.remove(this.boxLine1);
-    this.scene.remove(this.boxLine2);
-    this.scene.remove(this.boxLine3);
-    this.scene.remove(this.boxLine4);
-    this.scene.remove(this.xAxisArrow);
-    this.scene.remove(this.yAxisArrow);
-    this.scene.remove(this.zAxisArrow);
-    this.scene.remove(this.xLabelSprite);
-    this.scene.remove(this.yLabelSprite);
-    this.scene.remove(this.zLabelSprite);
     this.scene.dispose();
-    this.orbitControls.dispose();
   }
 
   private clear(): void {

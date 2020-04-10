@@ -278,13 +278,14 @@ export class StateIO {
           block.setFieldWindowColor(state.fieldWindowColor === undefined ? "white" : state.fieldWindowColor);
         } else if (block instanceof Surface3D) {
           block.setName(state.name);
+          block.setTripleArrayInput(state.tripleArrayInput);
           block.setScaleType(state.scaleType);
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
           block.setZAxisLabel(state.zAxisLabel);
+          if (state.boxSize !== undefined) block.setBoxSize(state.boxSize);
           block.setColorScheme(state.colorScheme);
           block.setViewWindowColor(state.viewWindowColor);
-          block.setTripleArrayInput(state.tripleArrayInput);
           if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
             block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
         } else if (block instanceof TurnoutSwitch) {

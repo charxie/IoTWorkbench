@@ -36,9 +36,6 @@ export class Surface3D extends Block {
   private dataX: number[];
   private dataY: number[];
   private dataZ: number[];
-  private xAxisLabel: string = "x";
-  private yAxisLabel: string = "y";
-  private zAxisLabel: string = "z";
   private viewWindowColor: string = "white";
   private viewWindow: Rectangle;
   private barHeight: number;
@@ -63,6 +60,7 @@ export class Surface3D extends Block {
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly zAxisLabel: string;
+    readonly boxSize: number;
     readonly viewWindowColor: string;
     readonly scaleType: string;
     readonly colorScheme: string;
@@ -81,9 +79,10 @@ export class Surface3D extends Block {
       this.y = g.y;
       this.width = g.width;
       this.height = g.height;
-      this.xAxisLabel = g.xAxisLabel;
-      this.yAxisLabel = g.yAxisLabel;
-      this.zAxisLabel = g.zAxisLabel;
+      this.xAxisLabel = g.getXAxisLabel();
+      this.yAxisLabel = g.getYAxisLabel();
+      this.zAxisLabel = g.getZAxisLabel();
+      this.boxSize = g.plot.getBoxSize();
       this.viewWindowColor = g.viewWindowColor;
       this.scaleType = g.scaleType;
       this.colorScheme = g.colorScheme;
@@ -134,9 +133,9 @@ export class Surface3D extends Block {
 
   getCopy(): Block {
     let copy = new Surface3D(false, "Surface3D #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    copy.xAxisLabel = this.xAxisLabel;
-    copy.yAxisLabel = this.yAxisLabel;
-    copy.zAxisLabel = this.zAxisLabel;
+    copy.setXAxisLabel(this.getXAxisLabel());
+    copy.setYAxisLabel(this.getYAxisLabel());
+    copy.setZAxisLabel(this.getZAxisLabel());
     copy.viewWindowColor = this.viewWindowColor;
     copy.scaleType = this.scaleType;
     copy.colorScheme = this.colorScheme;
@@ -306,28 +305,36 @@ export class Surface3D extends Block {
     return this.colorScheme;
   }
 
+  setBoxSize(boxSize: number): void {
+    this.plot.setBoxSize(boxSize);
+  }
+
+  getBoxSize(): number {
+    return this.plot.getBoxSize();
+  }
+
   setXAxisLabel(xAxisLabel: string): void {
-    this.xAxisLabel = xAxisLabel;
+    this.plot.setXAxisLabel(xAxisLabel);
   }
 
   getXAxisLabel(): string {
-    return this.xAxisLabel;
+    return this.plot.getXAxisLabel();
   }
 
   setYAxisLabel(yAxisLabel: string): void {
-    this.yAxisLabel = yAxisLabel;
+    this.plot.setYAxisLabel(yAxisLabel);
   }
 
   getYAxisLabel(): string {
-    return this.yAxisLabel;
+    return this.plot.getYAxisLabel();
   }
 
   setZAxisLabel(zAxisLabel: string): void {
-    this.zAxisLabel = zAxisLabel;
+    this.plot.setZAxisLabel(zAxisLabel);
   }
 
   getZAxisLabel(): string {
-    return this.zAxisLabel;
+    return this.plot.getZAxisLabel();
   }
 
   setViewWindowColor(viewWindowColor: string): void {
@@ -407,18 +414,6 @@ export class Surface3D extends Block {
       this.highlightSelection(ctx);
     }
 
-  }
-
-  private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
-    ctx.font = "italic 15px Times New Roman";
-    ctx.fillStyle = "black";
-    let horizontalAxisY = this.height - this.viewWindowMargin.bottom;
-    ctx.fillText(this.xAxisLabel, this.viewWindow.x + (this.viewWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 30);
-    ctx.save();
-    ctx.translate(this.x + 35, this.viewWindow.y + (this.viewWindow.height + ctx.measureText(this.yAxisLabel).width) / 2 + 10);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillText(this.yAxisLabel, 0, 0);
-    ctx.restore();
   }
 
   onDraggableArea(x: number, y: number): boolean {

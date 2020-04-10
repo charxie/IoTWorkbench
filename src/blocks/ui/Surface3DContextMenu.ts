@@ -138,6 +138,10 @@ export class Surface3DContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="surface3d-z-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Box Size:</td>
+                  <td colspan="2"><input type="text" id="surface3d-box-size-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Background Color:</td>
                   <td><input type="color" id="surface3d-window-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="surface3d-window-color-field" style="width: 100%"></td>
@@ -170,6 +174,8 @@ export class Surface3DContextMenu extends BlockContextMenu {
       scaleTypeSelector.value = g.getScaleType();
       let colorSchemeSelector = document.getElementById("surface3d-color-scheme-selector") as HTMLSelectElement;
       colorSchemeSelector.value = g.getColorScheme();
+      let boxSizeField = document.getElementById("surface3d-box-size-field") as HTMLInputElement;
+      boxSizeField.value = g.getBoxSize().toString();
       let xAxisLableField = document.getElementById("surface3d-x-axis-label-field") as HTMLInputElement;
       xAxisLableField.value = g.getXAxisLabel();
       let yAxisLableField = document.getElementById("surface3d-y-axis-label-field") as HTMLInputElement;
@@ -188,6 +194,12 @@ export class Surface3DContextMenu extends BlockContextMenu {
       const okFunction = () => {
         let success = true;
         let message;
+        // set box size
+        let boxSize = parseInt(boxSizeField.value);
+        if (!isNumber(boxSize)) {
+          success = false;
+          message = boxSizeField.value + " is not a valid box size";
+        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -213,6 +225,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
           g.setXAxisLabel(xAxisLableField.value);
           g.setYAxisLabel(yAxisLableField.value);
           g.setZAxisLabel(zAxisLableField.value);
+          g.setBoxSize(Math.max(0, boxSize));
           g.setViewWindowColor(windowColorField.value);
           g.locateOverlay();
           g.updateModel();
@@ -230,6 +243,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
         }
       };
       nameField.addEventListener("keyup", enterKeyUp);
+      boxSizeField.addEventListener("keyup", enterKeyUp);
       xAxisLableField.addEventListener("keyup", enterKeyUp);
       yAxisLableField.addEventListener("keyup", enterKeyUp);
       zAxisLableField.addEventListener("keyup", enterKeyUp);

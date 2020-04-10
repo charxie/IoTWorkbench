@@ -66,6 +66,7 @@ export class LinePlot extends Basic3D {
   }
 
   destroy(): void {
+    super.destroy();
     this.erase();
     if (this.lines !== undefined) {
       for (let l of this.lines) {
@@ -85,21 +86,7 @@ export class LinePlot extends Basic3D {
         this.scene.remove(c);
       }
     }
-    this.scene.remove(this.boxBottomFace);
-    this.scene.remove(this.boxTopFace);
-    this.scene.remove(this.boxLine1);
-    this.scene.remove(this.boxLine2);
-    this.scene.remove(this.boxLine3);
-    this.scene.remove(this.boxLine4);
-    this.scene.remove(this.xAxisArrow);
-    this.scene.remove(this.yAxisArrow);
-    this.scene.remove(this.zAxisArrow);
-    this.scene.remove(this.xLabelSprite);
-    this.scene.remove(this.yLabelSprite);
-    this.scene.remove(this.zLabelSprite);
     this.scene.dispose();
-    if (this.orbitControls !== undefined) this.orbitControls.dispose();
-    if (this.trackballControls !== undefined) this.trackballControls.dispose();
   }
 
   getDataPoints(): number {

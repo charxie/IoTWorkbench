@@ -60,6 +60,23 @@ export abstract class Basic3D {
     this.createLights();
   }
 
+  destroy(): void {
+    this.scene.remove(this.boxBottomFace);
+    this.scene.remove(this.boxTopFace);
+    this.scene.remove(this.boxLine1);
+    this.scene.remove(this.boxLine2);
+    this.scene.remove(this.boxLine3);
+    this.scene.remove(this.boxLine4);
+    this.scene.remove(this.xAxisArrow);
+    this.scene.remove(this.yAxisArrow);
+    this.scene.remove(this.zAxisArrow);
+    this.scene.remove(this.xLabelSprite);
+    this.scene.remove(this.yLabelSprite);
+    this.scene.remove(this.zLabelSprite);
+    if (this.orbitControls !== undefined) this.orbitControls.dispose();
+    if (this.trackballControls !== undefined) this.trackballControls.dispose();
+  }
+
   setControlType(controlType: string) {
     switch (controlType) {
       case "Orbit":
@@ -354,7 +371,5 @@ export abstract class Basic3D {
   getCameraRotationZ(): number {
     return this.camera.rotation.z;
   }
-
-  abstract destroy(): void;
 
 }
