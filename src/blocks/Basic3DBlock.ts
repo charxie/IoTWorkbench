@@ -54,6 +54,14 @@ export abstract class Basic3DBlock extends Block {
     }
   }
 
+  resetViewAngle(): void {
+    this.view.resetViewAngle();
+  }
+
+  setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
+    this.view.setCameraPosition(px, py, pz, rx, ry, rz);
+  }
+
   locateOverlay(): void {
     this.viewWindow.x = this.x + this.spaceMargin.left;
     this.viewWindow.y = this.y + this.barHeight + this.spaceMargin.top;
@@ -64,14 +72,6 @@ export abstract class Basic3DBlock extends Block {
     this.setWidth(this.getWidth());
     this.setHeight(this.getHeight());
     this.view.render();
-  }
-
-  resetViewAngle(): void {
-    this.view.resetViewAngle();
-  }
-
-  setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
-    this.view.setCameraPosition(px, py, pz, rx, ry, rz);
   }
 
   setX(x: number): void {

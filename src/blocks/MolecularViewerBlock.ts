@@ -6,6 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {MolecularViewer} from "./MolecularViewer";
 import {Basic3DBlock} from "./Basic3DBlock";
+import {Rectangle} from "../math/Rectangle";
 
 export class MolecularViewerBlock extends Basic3DBlock {
 
@@ -123,6 +124,36 @@ export class MolecularViewerBlock extends Basic3DBlock {
     this.portX.setY(this.barHeight + 2 * dh);
     this.portY.setY(this.barHeight + 3 * dh);
     this.portZ.setY(this.barHeight + 4 * dh);
+  }
+
+  setX(x: number): void {
+    super.setX(x);
+    (<MolecularViewer>this.view).setX(this.viewWindow.x);
+  }
+
+  setY(y: number): void {
+    super.setY(y);
+    (<MolecularViewer>this.view).setY(this.viewWindow.y);
+  }
+
+  setWidth(width: number): void {
+    super.setWidth(width);
+    (<MolecularViewer>this.view).setWidth(this.viewWindow.width);
+  }
+
+  setHeight(height: number): void {
+    super.setHeight(height);
+    (<MolecularViewer>this.view).setHeight(this.viewWindow.height);
+  }
+
+  translateBy(dx: number, dy: number): void {
+    super.translateBy(dx, dy);
+    (<MolecularViewer>this.view).translateTo(this.viewWindow.x, this.viewWindow.y);
+  }
+
+  setRect(rect: Rectangle): void {
+    super.setRect(rect);
+    (<MolecularViewer>this.view).setRect(this.viewWindow.x, this.viewWindow.y, this.viewWindow.width, this.viewWindow.height);
   }
 
 }
