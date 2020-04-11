@@ -7,6 +7,7 @@ import {flowchart} from "../Main";
 import {Util} from "../Util";
 import {Port} from "./Port";
 import {DataArray} from "./DataArray";
+import {CsvLoader} from "./loaders/CsvLoader";
 
 export class DataBlock extends Block {
 
@@ -145,7 +146,7 @@ export class DataBlock extends Block {
 
   setDataInput(data: string): void {
     if (data !== undefined) {
-      let csv = Util.parseCSV(data);
+      let csv = new CsvLoader().parse(data);
       let ncol = csv[0].length;
       let nrow = csv.length;
       this.dataArray = new Array(ncol);

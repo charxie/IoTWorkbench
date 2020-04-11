@@ -3,14 +3,14 @@
  */
 
 import {BoxBufferGeometry, Color, Group, IcosahedronBufferGeometry, Mesh, MeshPhongMaterial, Vector3} from "three";
-import {PDBLoader} from "three/examples/jsm/loaders/PDBLoader";
 import {CSS2DObject} from "three/examples/jsm/renderers/CSS2DRenderer";
 import {Basic3D} from "./Basic3D";
+import {PdbLoader} from "./loaders/PdbLoader";
 
 export class MolecularViewer extends Basic3D {
 
   private root: Group;
-  private loader: PDBLoader;
+  private loader: PdbLoader;
   private offset = new Vector3();
   private numberOfAtoms: number = 0;
 
@@ -18,7 +18,7 @@ export class MolecularViewer extends Basic3D {
     super();
     this.root = new Group();
     this.scene.add(this.root);
-    this.loader = new PDBLoader();
+    this.loader = new PdbLoader();
   }
 
   destroy(): void {
@@ -39,9 +39,8 @@ export class MolecularViewer extends Basic3D {
 
     let pdb = this.loader.parse(content);
 
-    let geometryAtoms = pdb.geometryAtoms;
-    let geometryBonds = pdb.geometryBonds;
-    let json = pdb.json;
+    let geometryAtoms = this.loader.geometryAtoms;
+    let geometryBonds = this.loader.geometryBonds;
     let boxGeometry = new BoxBufferGeometry(1, 1, 1);
     let sphereGeometry = new IcosahedronBufferGeometry(1, 2);
     geometryAtoms.computeBoundingBox();
@@ -68,7 +67,7 @@ export class MolecularViewer extends Basic3D {
       object.scale.multiplyScalar(25);
       this.root.add(object);
 
-      let atom = json.atoms[i];
+      let atom = this.loader.atoms[i];
 
       let text = document.createElement('div');
       text.className = 'label';
@@ -106,7 +105,6 @@ export class MolecularViewer extends Basic3D {
     }
 
     this.render();
-
   }
 
   getNumberOfAtoms(): number {

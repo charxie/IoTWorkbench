@@ -149,6 +149,7 @@ export class DataBlockContextMenu extends BlockContextMenu {
           dataBlock.setFormat(formatSelectElement.value);
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(dataBlock);
+          flowchart.traverse(dataBlock);
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');
