@@ -487,8 +487,7 @@ export class BlockView {
       }
     }
 
-    let code = e.key;
-    switch (code) {
+    switch (e.key) { // single keys
       case "Enter":
         if (this.selectedBlock != null) {
           BlockUtilities.getMenu(this.selectedBlock).openPropertiesWindow(this.selectedBlock);
@@ -499,55 +498,6 @@ export class BlockView {
         if (this.selectedBlock != null) {
           flowchart.askToDeleteBlock(this.selectedBlock);
           this.selectedBlock = null;
-        }
-        break;
-      case "c": // ctrl+C for copy
-        if (e.ctrlKey || e.metaKey) {
-          this.copiedBlock = this.selectedBlock;
-        }
-        break;
-      case "v": // ctrl+V for paste
-        if (e.ctrlKey || e.metaKey) {
-          if (this.copiedBlock != null) {
-            this.pasteTo(this.copiedBlock.getX() + 20, this.copiedBlock.getY() + 20);
-          }
-        }
-        break;
-      case "z":
-        if (e.shiftKey) {
-          if (e.ctrlKey || e.metaKey) { // ctrl+shift+Z for redo
-            if (undoManager.hasRedo()) {
-              undoManager.redo();
-            }
-          }
-        } else {
-          if (e.ctrlKey || e.metaKey) { // ctrl+Z for undo
-            if (undoManager.hasUndo()) {
-              undoManager.undo();
-            }
-          }
-        }
-        break;
-      case "y": // ctrl+Y for redo
-        if (e.ctrlKey || e.metaKey) {
-          if (undoManager.hasRedo()) {
-            undoManager.redo();
-          }
-        }
-        break;
-      case "s": // ctrl+S for save
-        if (e.ctrlKey || e.metaKey) {
-          StateIO.saveAs(JSON.stringify(new State()));
-        }
-        break;
-      case "o": // ctrl+O for open
-        if (e.ctrlKey || e.metaKey) {
-          StateIO.open();
-        }
-        break;
-      case "n": // ctrl+N for new file (not working in Chrome as it cannot be overridden)
-        if (e.ctrlKey || e.metaKey) {
-          flowchart.askToClear();
         }
         break;
     }
@@ -573,9 +523,57 @@ export class BlockView {
           this.moveByArrowKey(e);
         }
       }
-      this.requestDraw();
-      e.stopPropagation();
     }
+
+    switch (e.key) { // multiple keys
+      case "c": // ctrl+C for copy
+        if (this.selectedBlock != null) {
+          if (e.ctrlKey || e.metaKey) {
+            this.copiedBlock = this.selectedBlock;
+          }
+        }
+        break;
+      case "v": // ctrl+V for paste
+        if (this.copiedBlock != null) {
+          if (e.ctrlKey || e.metaKey) {
+            this.pasteTo(this.copiedBlock.getX() + 20, this.copiedBlock.getY() + 20);
+          }
+        }
+        break;
+      case "z": // ctrl+Z for undo
+        if (e.ctrlKey || e.metaKey) {
+          if (undoManager.hasUndo()) {
+            undoManager.undo();
+          }
+        }
+        break;
+      case "Z": // ctrl+shift+Z for redo
+      case "y": // ctrl+Y for redo
+        if (e.ctrlKey || e.metaKey) {
+          if (undoManager.hasRedo()) {
+            undoManager.redo();
+          }
+        }
+        break;
+      case "s": // ctrl+S for save
+        if (e.ctrlKey || e.metaKey) {
+          StateIO.saveAs(JSON.stringify(new State()));
+        }
+        break;
+      case "o": // ctrl+O for open
+        if (e.ctrlKey || e.metaKey) {
+          StateIO.open();
+        }
+        break;
+      case "n": // ctrl+N for new file (not working in Chrome as it cannot be overridden)
+        if (e.ctrlKey || e.metaKey) {
+          flowchart.askToClear();
+        }
+        break;
+    }
+
+    this.requestDraw();
+    e.stopPropagation();
   }
 
   private processMoveByArrowKey(e: KeyboardEvent): void {
