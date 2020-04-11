@@ -69,13 +69,16 @@ export class DataBlockContextMenu extends BlockContextMenu {
       if (target.files.length) {
         let reader: FileReader = new FileReader();
         reader.readAsText(target.files[0]);
+        let b = <DataBlock>this.block;
         reader.onload = (e) => {
           switch (formatSelectElement.value) {
             case "CSV":
-              (<DataBlock>this.block).setDataInput(reader.result.toString());
+              b.setContent(undefined);
+              b.setDataInput(reader.result.toString());
               break;
             case "PDB":
-              (<DataBlock>this.block).setContent(reader.result.toString());
+              b.setDataInput(undefined);
+              b.setContent(reader.result.toString());
               break;
           }
           target.value = "";

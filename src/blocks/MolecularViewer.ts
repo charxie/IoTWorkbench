@@ -12,6 +12,7 @@ export class MolecularViewer extends Basic3D {
   private root: Group;
   private loader: PDBLoader;
   private offset = new Vector3();
+  private numberOfAtoms: number = 0;
 
   constructor() {
     super();
@@ -33,7 +34,7 @@ export class MolecularViewer extends Basic3D {
     }
   }
 
-  private loadMolecule(content: string) {
+  loadMolecule(content: string) {
     this.clear();
 
     let pdb = this.loader.parse(content);
@@ -51,6 +52,7 @@ export class MolecularViewer extends Basic3D {
     let colors = geometryAtoms.getAttribute('color');
     let position = new Vector3();
     let color = new Color();
+    this.numberOfAtoms = positions.count;
 
     for (let i = 0; i < positions.count; i++) {
       position.x = positions.getX(i);
@@ -105,6 +107,10 @@ export class MolecularViewer extends Basic3D {
 
     this.render();
 
+  }
+
+  getNumberOfAtoms(): number {
+    return this.numberOfAtoms;
   }
 
   render(): void {

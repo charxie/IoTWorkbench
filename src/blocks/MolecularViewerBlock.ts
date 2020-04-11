@@ -13,7 +13,6 @@ export class MolecularViewerBlock extends Basic3DBlock {
   private portX: Port; // x, y, z ports are only used in the dual mode (which is the default)
   private portY: Port;
   private portZ: Port;
-  private numberOfAtoms: number = 0;
 
   static State = class {
     readonly name: string;
@@ -73,7 +72,7 @@ export class MolecularViewerBlock extends Basic3DBlock {
   }
 
   getCopy(): Block {
-    let copy = new MolecularViewerBlock(false, "Molecular Viewer #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    let copy = new MolecularViewerBlock(false, "Molecular Viewer Block #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.setBackgroundColor(this.getBackgroundColor());
     copy.setBoxSize(this.getBoxSize());
     copy.locateOverlay();
@@ -91,26 +90,26 @@ export class MolecularViewerBlock extends Basic3DBlock {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "white";
-      let title = this.name + " (" + this.numberOfAtoms + " atoms)";
+      let title = this.name + " (" + (<MolecularViewer>this.view).getNumberOfAtoms() + " atoms)";
       let titleWidth = ctx.measureText(title).width;
       ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
   }
 
   updateModel(): void {
-    let vx = this.portX.getValue();
-    let vy = this.portY.getValue();
-    let vz = this.portZ.getValue();
-    if (vx !== undefined && vy !== undefined && vz !== undefined) {
-      if (Array.isArray(vx) && Array.isArray(vy) && Array.isArray(vz)) {
-        this.numberOfAtoms = vx.length;
-      } else {
-        this.numberOfAtoms = 0;
+    let vi = this.portI.getValue();
+    if (vi !== undefined) {
+      let viewer = <MolecularViewer>this.view;
+      viewer.loadMolecule(vi);
+      let vx = this.portX.getValue();
+      let vy = this.portY.getValue();
+      let vz = this.portZ.getValue();
+      if (vx !== undefined && vy !== undefined && vz !== undefined) {
+        if (Array.isArray(vx) && Array.isArray(vy) && Array.isArray(vz)) {
+        }
       }
-    } else {
-      this.numberOfAtoms = 0;
+      this.view.render();
     }
-    this.view.render();
   }
 
   refreshView(): void {

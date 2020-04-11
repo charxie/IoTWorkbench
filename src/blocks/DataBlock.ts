@@ -156,11 +156,14 @@ export class DataBlock extends Block {
         }
       }
       this.setOutputPorts();
+    } else {
+      this.dataArray = undefined;
     }
   }
 
   setContent(content: string): void {
     this.content = content;
+    this.setOutputPorts();
   }
 
   draw(ctx: CanvasRenderingContext2D): void {

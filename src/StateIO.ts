@@ -339,6 +339,7 @@ export class StateIO {
         } else if (block instanceof DataBlock) {
           block.setName(state.name);
           block.setData(state.data);
+          block.setContent(state.content);
           block.setFormat(state.format);
           if (state.imageSrc !== undefined) block.setImageSrc(state.imageSrc);
         } else if (block instanceof MolecularViewerBlock) {
