@@ -13,7 +13,7 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "molecular-viewer-context-menu";
+    this.id = "molecular-viewer-block-context-menu";
   }
 
   getUi(): string {

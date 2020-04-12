@@ -57,8 +57,9 @@ export class PdbLoader {
 
     // if bonds are not specified through the CONNECT lines, we should try to automatically construct them
     if (this.bonds.length === 0) {
-      let minDistanceSqure = Number.MAX_VALUE;
-      // first find the minimum distance between atoms
+      let minDistanceSqures: number[] = new Array(nAtoms);
+      minDistanceSqures.fill(Number.MAX_VALUE);
+      // first find the minimum distance to a neighboring atom for each atom
       let xi, yi, zi, dx, dy, dz, r2;
       for (let i = 0; i < nAtoms; i++) {
         if (this.atoms[i] !== undefined) {
@@ -71,12 +72,13 @@ export class PdbLoader {
               dy = this.atoms[j][1] - yi;
               dz = this.atoms[j][2] - zi;
               r2 = dx * dx + dy * dy + dz * dz;
-              if (r2 < minDistanceSqure) minDistanceSqure = r2;
+              if (r2 < minDistanceSqures[i]) minDistanceSqures[i] = r2;
+              if (r2 < minDistanceSqures[j]) minDistanceSqures[j] = r2;
             }
           }
         }
       }
-      minDistanceSqure = minDistanceSqure * 2;
+      minDistanceSqures = minDistanceSqures.map(x => x * 2);
       // any pair of atoms within the minimum square distance should be bonded
       for (let i = 0; i < nAtoms; i++) {
         if (this.atoms[i] !== undefined) {
@@ -89,7 +91,7 @@ export class PdbLoader {
               dy = this.atoms[j][1] - yi;
               dz = this.atoms[j][2] - zi;
               r2 = dx * dx + dy * dy + dz * dz;
-              if (r2 < minDistanceSqure) {
+              if (r2 <= minDistanceSqures[i]) {
                 this.bonds.push([i, j, 1]);
               }
             }

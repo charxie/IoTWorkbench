@@ -49,6 +49,8 @@ declare global {
     insertAt(index, item);
 
     removeItem(item);
+
+    fill(value);
   }
 
   interface String {

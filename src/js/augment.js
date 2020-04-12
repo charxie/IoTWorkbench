@@ -116,6 +116,15 @@ if (typeof Array.prototype.shuffle !== 'function') {
   }
 }
 
+if (typeof Array.prototype.fill !== 'function') {
+  Array.prototype.fill = function (value) {
+    for (var i = 0; i < this.length; i++) {
+      this[i] = value;
+    }
+    return this;
+  };
+}
+
 if (typeof Array.prototype.insertAt !== 'function') {
   Array.prototype.insertAt = function (index, item) {
     this.splice(index, 0, item);
