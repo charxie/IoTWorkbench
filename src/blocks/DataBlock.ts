@@ -255,7 +255,7 @@ export class DataBlock extends Block {
         }
         this.updateConnectors();
       } else if (this.content !== undefined) {
-        this.portO[0].setValue(this.content);
+        this.portO[0].setValue("Format:" + this.format + "\n" + this.content);
         this.updateConnectors();
       }
     }

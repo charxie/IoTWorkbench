@@ -13,11 +13,14 @@ import {
 import {CSS2DObject, CSS2DRenderer} from "three/examples/jsm/renderers/CSS2DRenderer";
 import {Basic3D} from "./Basic3D";
 import {PdbLoader} from "./loaders/PdbLoader";
+import {XyzLoader} from "./loaders/XyzLoader";
+import {MolecularLoader} from "./loaders/MolecularLoader";
 
 export class MolecularViewer extends Basic3D {
 
   private root: Group;
-  private atomicRadiusScale: number = 0.5;
+  private ballRadiusScale: number = 0.01 * 0.75; // input is pm, but coordinates are in angstrom (100pm)
+  private stickWidth: number = 0.25;
   private offset = new Vector3();
   private numberOfAtoms: number = 0;
   private showLabel: boolean = false;
@@ -53,7 +56,13 @@ export class MolecularViewer extends Basic3D {
   loadMolecule(content: string) {
     this.clear();
 
-    let loader = new PdbLoader();
+    let loader: MolecularLoader;
+    if (content.startsWith("Format:PDB")) {
+      loader = new PdbLoader();
+    } else if (content.startsWith("Format:XYZ")) {
+      loader = new XyzLoader();
+    }
+    if (loader === undefined) return;
     loader.parse(content);
 
     let geometryAtoms = loader.geometryAtoms;
@@ -65,7 +74,6 @@ export class MolecularViewer extends Basic3D {
     geometryBonds.translate(this.offset.x, this.offset.y, this.offset.z);
 
     // draw atoms as balls
-    let stickWidth = 15;
     let positions = geometryAtoms.getAttribute('position');
     let position = new Vector3();
     this.numberOfAtoms = positions.count;
@@ -77,8 +85,7 @@ export class MolecularViewer extends Basic3D {
       let material = new MeshPhongMaterial({color: loader.atoms[i][3]});
       let object = new Mesh(ballGeometry, material);
       object.position.copy(position);
-      object.position.multiplyScalar(75);
-      object.scale.multiplyScalar(loader.atoms[i][5] * this.atomicRadiusScale);
+      object.scale.multiplyScalar(loader.atoms[i][5] * this.ballRadiusScale);
       this.root.add(object);
 
       if (this.showLabel) {
@@ -105,14 +112,12 @@ export class MolecularViewer extends Basic3D {
       bond2.x = positions.getX(i + 1);
       bond2.y = positions.getY(i + 1);
       bond2.z = positions.getZ(i + 1);
-      bond1.multiplyScalar(75);
-      bond2.multiplyScalar(75);
       let object = new Mesh(stickGeometry, new MeshPhongMaterial({
         color: 0xcccccc, specular: 0x050505, shininess: 0.1
       }));
       object.position.copy(bond1);
       object.position.lerp(bond2, 0.5);
-      object.scale.set(stickWidth, stickWidth, bond1.distanceTo(bond2));
+      object.scale.set(this.stickWidth, this.stickWidth, bond1.distanceTo(bond2));
       object.lookAt(bond2);
       this.root.add(object);
     }

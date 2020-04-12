@@ -33,6 +33,7 @@ export class DataBlockContextMenu extends BlockContextMenu {
                     <select id="data-block-format-selector" style="width: 100%">
                       <option value="CSV" selected>CSV</option>
                       <option value="PDB">PDB</option>
+                      <option value="XYZ">XYZ</option>
                     </select>
                   </td>
                 </tr>
@@ -63,6 +64,9 @@ export class DataBlockContextMenu extends BlockContextMenu {
       case "PDB":
         fileDialog.accept = ".pdb";
         break;
+      case "XYZ":
+        fileDialog.accept = ".xyz";
+        break;
     }
     fileDialog.onchange = e => {
       let target = <HTMLInputElement>event.target;
@@ -77,6 +81,7 @@ export class DataBlockContextMenu extends BlockContextMenu {
               b.setDataInput(reader.result.toString());
               break;
             case "PDB":
+            case "XYZ":
               b.setDataInput(undefined);
               b.setContent(reader.result.toString());
               break;
