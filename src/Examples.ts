@@ -3,6 +3,10 @@
  */
 
 // @ts-ignore
+import nano_gear from "./examples/nano-gear.json";
+// @ts-ignore
+import crystal_structure from "./examples/crystal-structure.json";
+// @ts-ignore
 import molecular_structure from "./examples/molecular-structure.json";
 // @ts-ignore
 import clelia from "./examples/clelia.json";
@@ -394,6 +398,8 @@ export class Examples {
     this.files.push({name: "Chemistry: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
     this.files.push({name: "Chemistry: Brusselator", data: brusselator});
     this.files.push({name: "Chemistry: Molecular Structures Formed by Carbon", data: molecular_structure});
+    this.files.push({name: "Chemistry: Crystal Structure", data: crystal_structure});
+    this.files.push({name: "Chemistry: Nano Gear", data: nano_gear});
     this.files.push({name: "Chaos: Logistic Map", data: logistic_map});
     this.files.push({name: "Chaos: Hénon Map", data: henon_map});
     this.files.push({name: "Chaos: Ikeda Map", data: ikeda_map});

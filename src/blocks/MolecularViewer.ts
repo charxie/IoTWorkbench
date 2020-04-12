@@ -3,8 +3,7 @@
  */
 
 import {
-  Color,
-  CylinderBufferGeometry,
+  BoxBufferGeometry,
   Group,
   IcosahedronBufferGeometry,
   Mesh,
@@ -18,6 +17,7 @@ import {PdbLoader} from "./loaders/PdbLoader";
 export class MolecularViewer extends Basic3D {
 
   private root: Group;
+  private atomicRadiusScale: number = 0.5;
   private offset = new Vector3();
   private numberOfAtoms: number = 0;
   private showLabel: boolean = false;
@@ -65,31 +65,27 @@ export class MolecularViewer extends Basic3D {
     geometryBonds.translate(this.offset.x, this.offset.y, this.offset.z);
 
     // draw atoms as balls
-    let radius = 25;
+    let stickWidth = 15;
     let positions = geometryAtoms.getAttribute('position');
-    let colors = geometryAtoms.getAttribute('color');
     let position = new Vector3();
-    let color = new Color();
     this.numberOfAtoms = positions.count;
     for (let i = 0; i < positions.count; i++) {
+      if (loader.atoms[i] === undefined) continue;
       position.x = positions.getX(i);
       position.y = positions.getY(i);
       position.z = positions.getZ(i);
-      color.r = colors.getX(i);
-      color.g = colors.getY(i);
-      color.b = colors.getZ(i);
-      let material = new MeshPhongMaterial({color: color});
+      let material = new MeshPhongMaterial({color: loader.atoms[i][3]});
       let object = new Mesh(ballGeometry, material);
       object.position.copy(position);
       object.position.multiplyScalar(75);
-      object.scale.multiplyScalar(radius);
+      object.scale.multiplyScalar(loader.atoms[i][5] * this.atomicRadiusScale);
       this.root.add(object);
 
       if (this.showLabel) {
         let atom = loader.atoms[i];
         let text = document.createElement('div');
         text.className = 'label';
-        text.style.color = 'rgb(' + atom[3][0] + ',' + atom[3][1] + ',' + atom[3][2] + ')';
+        text.style.color = atom[3];
         text.textContent = atom[4];
         let label = new CSS2DObject(text);
         label.position.copy(object.position);
@@ -98,7 +94,7 @@ export class MolecularViewer extends Basic3D {
     }
 
     // draw bonds as sticks
-    let stickGeometry = new CylinderBufferGeometry(1, 1, 1, 8, 1);
+    let stickGeometry = new BoxBufferGeometry(1, 1, 1);
     positions = geometryBonds.getAttribute('position');
     let bond1 = new Vector3();
     let bond2 = new Vector3();
@@ -116,7 +112,7 @@ export class MolecularViewer extends Basic3D {
       }));
       object.position.copy(bond1);
       object.position.lerp(bond2, 0.5);
-      object.scale.set(5, 5, bond1.distanceTo(bond2) - 2 * radius);
+      object.scale.set(stickWidth, stickWidth, bond1.distanceTo(bond2));
       object.lookAt(bond2);
       this.root.add(object);
     }
