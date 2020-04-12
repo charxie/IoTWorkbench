@@ -25,6 +25,7 @@ export class MolecularViewerBlock extends Basic3DBlock {
     readonly boxSizeX: number;
     readonly boxSizeY: number;
     readonly boxSizeZ: number;
+    readonly style: string;
     readonly backgroundColor: string;
     readonly cameraPositionX: number;
     readonly cameraPositionY: number;
@@ -43,6 +44,7 @@ export class MolecularViewerBlock extends Basic3DBlock {
       this.boxSizeX = m.view.getBoxSizeX();
       this.boxSizeY = m.view.getBoxSizeY();
       this.boxSizeZ = m.view.getBoxSizeZ();
+      this.style = m.getStyle();
       this.backgroundColor = m.getBackgroundColor();
       this.cameraPositionX = m.view.getCameraPositionX();
       this.cameraPositionY = m.view.getCameraPositionY();
@@ -79,6 +81,7 @@ export class MolecularViewerBlock extends Basic3DBlock {
   getCopy(): Block {
     let copy = new MolecularViewerBlock(false, "Molecular Viewer Block #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.setBackgroundColor(this.getBackgroundColor());
+    copy.setStyle(this.getStyle());
     copy.setBoxSizes(this.getBoxSizeX(), this.getBoxSizeY(), this.getBoxSizeZ());
     copy.locateOverlay();
     return copy;
@@ -128,6 +131,14 @@ export class MolecularViewerBlock extends Basic3DBlock {
     this.portX.setY(this.barHeight + 2 * dh);
     this.portY.setY(this.barHeight + 3 * dh);
     this.portZ.setY(this.barHeight + 4 * dh);
+  }
+
+  setStyle(style: string): void {
+    (<MolecularViewer>this.view).setStyle(style);
+  }
+
+  getStyle(): string {
+    return (<MolecularViewer>this.view).getStyle();
   }
 
   setX(x: number): void {

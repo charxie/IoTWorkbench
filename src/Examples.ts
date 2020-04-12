@@ -15,6 +15,8 @@ import crystal_structure from "./examples/crystal-structure.json";
 // @ts-ignore
 import molecular_structure from "./examples/molecular-structure.json";
 // @ts-ignore
+import molecular_visualization from "./examples/molecular-visualization.json";
+// @ts-ignore
 import clelia from "./examples/clelia.json";
 // @ts-ignore
 import plucker_conoid from "./examples/plucker-conoid.json";
@@ -403,6 +405,7 @@ export class Examples {
     this.files.push({name: "Chemistry: Irreversible Reaction", data: chemical_kinetics_irreversible_reaction});
     this.files.push({name: "Chemistry: Reversible Reaction", data: chemical_kinetics_reversible_reaction});
     this.files.push({name: "Chemistry: Brusselator", data: brusselator});
+    this.files.push({name: "Chemistry: Molecular Visualization", data: molecular_visualization});
     this.files.push({name: "Chemistry: Molecular Structures Formed by Carbon", data: molecular_structure});
     this.files.push({name: "Chemistry: Crystal Structure", data: crystal_structure});
     this.files.push({name: "Chemistry: DNA Molecule", data: dna_molecule});

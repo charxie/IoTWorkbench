@@ -19,12 +19,14 @@ import {MolecularLoader} from "./loaders/MolecularLoader";
 export class MolecularViewer extends Basic3D {
 
   private root: Group;
+  private style: string = "Ball-and-Stick";
   private ballRadiusScale: number = 0.01 * 0.75; // input is pm, but coordinates are in angstrom (100pm)
   private stickWidth: number = 0.25;
   private offset = new Vector3();
   private numberOfAtoms: number = 0;
   private showLabel: boolean = false;
   private labelRenderer: CSS2DRenderer;
+  private loader: MolecularLoader;
 
   constructor() {
     super();
@@ -44,6 +46,7 @@ export class MolecularViewer extends Basic3D {
     super.destroy();
     this.clear();
     this.scene.dispose();
+    if (this.loader !== undefined) this.loader.dispose();
   }
 
   private clear(): void {
@@ -53,20 +56,45 @@ export class MolecularViewer extends Basic3D {
     }
   }
 
-  loadMolecule(content: string) {
-    this.clear();
-
-    let loader: MolecularLoader;
-    if (content.startsWith("Format:PDB")) {
-      loader = new PdbLoader();
-    } else if (content.startsWith("Format:XYZ")) {
-      loader = new XyzLoader();
+  setStyle(style: string): void {
+    if (this.style === style) return;
+    this.style = style;
+    switch (style) {
+      case "Ball-and-Stick":
+        this.ballRadiusScale = 0.01 * 0.75;
+        this.stickWidth = 0.25;
+        break;
+      case "Space-Filling":
+        this.ballRadiusScale = 0.01 * 1.5;
+        this.stickWidth = 0;
+        break;
     }
-    if (loader === undefined) return;
-    loader.parse(content);
+    if (this.loader !== undefined) this.setFromLoader();
+  }
 
-    let geometryAtoms = loader.geometryAtoms;
-    let geometryBonds = loader.geometryBonds;
+  getStyle(): string {
+    return this.style;
+  }
+
+  loadMolecule(content: string) {
+    if (this.loader !== undefined) {
+      this.loader.dispose();
+      this.loader = undefined;
+    }
+    if (content.startsWith("Format:PDB")) {
+      this.loader = new PdbLoader();
+    } else if (content.startsWith("Format:XYZ")) {
+      this.loader = new XyzLoader();
+    }
+    if (this.loader === undefined) return;
+    this.loader.parse(content);
+    this.setFromLoader();
+  }
+
+  private setFromLoader(): void {
+    this.clear();
+    let geometryAtoms = this.loader.geometryAtoms;
+    let geometryBonds = this.loader.geometryBonds;
     let ballGeometry = new IcosahedronBufferGeometry(1, 2);
     geometryAtoms.computeBoundingBox();
     geometryAtoms.boundingBox.getCenter(this.offset).negate();
@@ -78,18 +106,18 @@ export class MolecularViewer extends Basic3D {
     let position = new Vector3();
     this.numberOfAtoms = positions.count;
     for (let i = 0; i < positions.count; i++) {
-      if (loader.atoms[i] === undefined) continue;
+      if (this.loader.atoms[i] === undefined) continue;
       position.x = positions.getX(i);
       position.y = positions.getY(i);
       position.z = positions.getZ(i);
-      let material = new MeshPhongMaterial({color: loader.atoms[i][3]});
+      let material = new MeshPhongMaterial({color: this.loader.atoms[i][3]});
       let object = new Mesh(ballGeometry, material);
       object.position.copy(position);
-      object.scale.multiplyScalar(loader.atoms[i][5] * this.ballRadiusScale);
+      object.scale.multiplyScalar(this.loader.atoms[i][5] * this.ballRadiusScale);
       this.root.add(object);
 
       if (this.showLabel) {
-        let atom = loader.atoms[i];
+        let atom = this.loader.atoms[i];
         let text = document.createElement('div');
         text.className = 'label';
         text.style.color = atom[3];
@@ -125,7 +153,6 @@ export class MolecularViewer extends Basic3D {
     }
 
     this.render();
-    loader.dispose();
   }
 
   getNumberOfAtoms(): number {

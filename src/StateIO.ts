@@ -348,6 +348,7 @@ export class StateIO {
           if (state.imageSrc !== undefined) block.setImageSrc(state.imageSrc);
         } else if (block instanceof MolecularViewerBlock) {
           block.setName(state.name);
+          if (state.style !== undefined) block.setStyle(state.style);
           if (state.backgroundColor !== undefined) block.setBackgroundColor(state.backgroundColor);
           if (state.boxSize !== undefined) block.setBoxSizes(state.boxSize, state.boxSize, state.boxSize);
           if (state.boxSizeX !== undefined && state.boxSizeY !== undefined && state.boxSizeZ !== undefined)

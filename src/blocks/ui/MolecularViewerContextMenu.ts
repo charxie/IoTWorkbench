@@ -65,6 +65,15 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="molecular-viewer-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Style:</td>
+                  <td colspan="3">
+                    <select id="molecular-viewer-style-selector" style="width: 100%">
+                      <option value="Ball-and-Stick" selected>Ball-and-Stick</option>
+                      <option value="Space-Filling">Space-Filling</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
                   <td>Box Size:</td>
                   <td colspan="3"><input type="text" id="molecular-viewer-box-size-field" style="width: 100%"></td>
                 </tr>
@@ -101,6 +110,8 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("molecular-viewer-name-field") as HTMLInputElement;
       nameField.value = g.getName();
+      let styleSelectElement = document.getElementById("molecular-viewer-style-selector") as HTMLSelectElement;
+      styleSelectElement.value = g.getStyle();
       let boxSizeField = document.getElementById("molecular-viewer-box-size-field") as HTMLInputElement;
       boxSizeField.value = JSON.stringify([g.getBoxSizeX(), g.getBoxSizeY(), g.getBoxSizeZ()]);
       let backgroundColorField = document.getElementById("molecular-viewer-background-color-field") as HTMLInputElement;
@@ -153,6 +164,7 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           g.setName(nameField.value);
+          g.setStyle(styleSelectElement.value);
           g.setBoxSizes(Math.max(0, boxSizes[0]), Math.max(0, boxSizes[1]), Math.max(0, boxSizes[2]));
           g.setBackgroundColor(backgroundColorField.value);
           g.locateOverlay();
@@ -178,7 +190,7 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: g.getUid(),
-        height: 400,
+        height: 420,
         width: 480,
         buttons: {
           'OK': okFunction,
