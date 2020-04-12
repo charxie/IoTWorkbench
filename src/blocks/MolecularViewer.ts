@@ -101,25 +101,27 @@ export class MolecularViewer extends Basic3D {
     }
 
     // draw bonds as sticks
-    let stickGeometry = new BoxBufferGeometry(1, 1, 1);
-    positions = geometryBonds.getAttribute('position');
-    let bond1 = new Vector3();
-    let bond2 = new Vector3();
-    for (let i = 0; i < positions.count; i += 2) {
-      bond1.x = positions.getX(i);
-      bond1.y = positions.getY(i);
-      bond1.z = positions.getZ(i);
-      bond2.x = positions.getX(i + 1);
-      bond2.y = positions.getY(i + 1);
-      bond2.z = positions.getZ(i + 1);
-      let object = new Mesh(stickGeometry, new MeshPhongMaterial({
-        color: 0xcccccc, specular: 0x050505, shininess: 0.1
-      }));
-      object.position.copy(bond1);
-      object.position.lerp(bond2, 0.5);
-      object.scale.set(this.stickWidth, this.stickWidth, bond1.distanceTo(bond2));
-      object.lookAt(bond2);
-      this.root.add(object);
+    if (this.stickWidth > 0) {
+      let stickGeometry = new BoxBufferGeometry(1, 1, 1);
+      positions = geometryBonds.getAttribute('position');
+      let bond1 = new Vector3();
+      let bond2 = new Vector3();
+      for (let i = 0; i < positions.count; i += 2) {
+        bond1.x = positions.getX(i);
+        bond1.y = positions.getY(i);
+        bond1.z = positions.getZ(i);
+        bond2.x = positions.getX(i + 1);
+        bond2.y = positions.getY(i + 1);
+        bond2.z = positions.getZ(i + 1);
+        let object = new Mesh(stickGeometry, new MeshPhongMaterial({
+          color: 0xcccccc, specular: 0x050505, shininess: 0.1
+        }));
+        object.position.copy(bond1);
+        object.position.lerp(bond2, 0.5);
+        object.scale.set(this.stickWidth, this.stickWidth, bond1.distanceTo(bond2));
+        object.lookAt(bond2);
+        this.root.add(object);
+      }
     }
 
     this.render();

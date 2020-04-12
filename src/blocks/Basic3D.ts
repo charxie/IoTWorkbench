@@ -24,6 +24,9 @@ import {Util} from "../Util";
 export abstract class Basic3D {
 
   protected boxSize: number = 0; // zero means no box
+  protected boxSizeX: number = 0;
+  protected boxSizeY: number = 0;
+  protected boxSizeZ: number = 0;
   protected boxBottomFace: Line;
   protected boxTopFace: Line;
   protected boxLine1: Line;
@@ -167,17 +170,27 @@ export abstract class Basic3D {
     this.zLabelSprite = this.addSprite(this.axisLabelFontSize, this.axisLabelOffset, zArrow, c, "z");
   }
 
-  setBoxSize(boxSize: number): void {
+  setBoxSizes(boxSizeX: number, boxSizeY: number, boxSizeZ: number): void {
     this.removeBox();
-    this.boxSize = boxSize;
-    if (boxSize > 0) {
-      this.createBox(boxSize / 2, 0xcccccc);
+    this.boxSizeX = boxSizeX;
+    this.boxSizeY = boxSizeY;
+    this.boxSizeZ = boxSizeZ;
+    if (boxSizeX > 0 && boxSizeY > 0 && boxSizeZ > 0) {
+      this.createBox(boxSizeX / 2, boxSizeY / 2, boxSizeZ / 2, 0xcccccc);
     }
     this.drawAxisArrowsAndLabels();
   }
 
-  getBoxSize(): number {
-    return this.boxSize;
+  getBoxSizeX(): number {
+    return this.boxSizeX;
+  }
+
+  getBoxSizeY(): number {
+    return this.boxSizeY;
+  }
+
+  getBoxSizeZ(): number {
+    return this.boxSizeZ;
   }
 
   private removeArrows(): void {
@@ -201,15 +214,15 @@ export abstract class Basic3D {
     if (this.isSceneChild(this.boxLine4)) this.scene.remove(this.boxLine4);
   }
 
-  private createBox(a: number, c: number): void {
-    let p1 = new Vector3(-a, -a, -a);
-    let p2 = new Vector3(-a, a, -a);
-    let p3 = new Vector3(a, a, -a);
-    let p4 = new Vector3(a, -a, -a);
-    let q1 = new Vector3(-a, -a, a);
-    let q2 = new Vector3(-a, a, a);
-    let q3 = new Vector3(a, a, a);
-    let q4 = new Vector3(a, -a, a);
+  private createBox(ax: number, ay: number, az: number, c: number): void {
+    let p1 = new Vector3(-ax, -ay, -az);
+    let p2 = new Vector3(-ax, ay, -az);
+    let p3 = new Vector3(ax, ay, -az);
+    let p4 = new Vector3(ax, -ay, -az);
+    let q1 = new Vector3(-ax, -ay, az);
+    let q2 = new Vector3(-ax, ay, az);
+    let q3 = new Vector3(ax, ay, az);
+    let q4 = new Vector3(ax, -ay, az);
     this.boxBottomFace = this.addRectangle(p1, p2, p3, p4, c);
     this.boxTopFace = this.addRectangle(q1, q2, q3, q4, c);
     this.boxLine1 = this.addLine(p1, q1, c);

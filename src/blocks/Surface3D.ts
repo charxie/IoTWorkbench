@@ -48,7 +48,9 @@ export class Surface3D extends Basic3DBlock {
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly zAxisLabel: string;
-    readonly boxSize: number;
+    readonly boxSizeX: number;
+    readonly boxSizeY: number;
+    readonly boxSizeZ: number;
     readonly backgroundColor: string;
     readonly scaleType: string;
     readonly colorScheme: string;
@@ -70,7 +72,9 @@ export class Surface3D extends Basic3DBlock {
       this.xAxisLabel = g.getXAxisLabel();
       this.yAxisLabel = g.getYAxisLabel();
       this.zAxisLabel = g.getZAxisLabel();
-      this.boxSize = g.view.getBoxSize();
+      this.boxSizeX = g.view.getBoxSizeX();
+      this.boxSizeY = g.view.getBoxSizeY();
+      this.boxSizeZ = g.view.getBoxSizeZ();
       this.backgroundColor = g.getBackgroundColor();
       this.scaleType = g.scaleType;
       this.colorScheme = g.colorScheme;

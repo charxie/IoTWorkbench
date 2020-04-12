@@ -69,7 +69,9 @@ export abstract class MolecularLoader {
           }
         }
       }
-      minDistanceSqures = minDistanceSqures.map(x => Math.min(4, x * 2));
+      for (let i = 0; i < minDistanceSqures.length; i++) {
+        minDistanceSqures[i] = Math.min(2 * minDistanceSqures[i], this.atoms[i][5] * this.atoms[i][5] * 0.0004); // atomic radius is in pm
+      }
       // any pair of atoms within the minimum square distance should be bonded
       for (let i = 0; i < nAtoms; i++) {
         if (this.atoms[i] !== undefined) {

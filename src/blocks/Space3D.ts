@@ -32,7 +32,9 @@ export class Space3D extends Basic3DBlock {
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly zAxisLabel: string;
-    readonly boxSize: number;
+    readonly boxSizeX: number;
+    readonly boxSizeY: number;
+    readonly boxSizeZ: number;
     readonly backgroundColor: string;
     readonly pointInput: boolean;
     readonly numberOfPoints: number;
@@ -63,7 +65,9 @@ export class Space3D extends Basic3DBlock {
       this.xAxisLabel = g.getXAxisLabel();
       this.yAxisLabel = g.getYAxisLabel();
       this.zAxisLabel = g.getZAxisLabel();
-      this.boxSize = g.view.getBoxSize();
+      this.boxSizeX = g.view.getBoxSizeX();
+      this.boxSizeY = g.view.getBoxSizeY();
+      this.boxSizeZ = g.view.getBoxSizeZ();
       this.backgroundColor = g.getBackgroundColor();
       this.pointInput = g.pointInput;
       this.numberOfPoints = g.getNumberOfPoints();
@@ -140,7 +144,7 @@ export class Space3D extends Basic3DBlock {
     p.dataSymbolSpacings = [...q.dataSymbolSpacings];
     p.endSymbolRadii = [...q.endSymbolRadii];
     p.endSymbolConnections = [...q.endSymbolConnections];
-    copy.setBoxSize(this.getBoxSize());
+    copy.setBoxSizes(this.getBoxSizeX(), this.getBoxSizeY(), this.getBoxSizeZ());
     copy.locateOverlay();
     return copy;
   }

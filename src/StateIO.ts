@@ -262,7 +262,9 @@ export class StateIO {
           block.setDataSymbolRadii(state.dataSymbolRadii);
           block.setDataSymbolColors(state.dataSymbolColors);
           block.setDataSymbolSpacings(state.dataSymbolSpacings);
-          if (state.boxSize !== undefined) block.setBoxSize(state.boxSize);
+          if (state.boxSize !== undefined) block.setBoxSizes(state.boxSize, state.boxSize, state.boxSize);
+          if (state.boxSizeX !== undefined && state.boxSizeY !== undefined && state.boxSizeZ !== undefined)
+            block.setBoxSizes(state.boxSizeX, state.boxSizeY, state.boxSizeZ);
           if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
             block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
         } else if (block instanceof Field2D) {
@@ -284,7 +286,9 @@ export class StateIO {
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
           block.setZAxisLabel(state.zAxisLabel);
-          if (state.boxSize !== undefined) block.setBoxSize(state.boxSize);
+          if (state.boxSize !== undefined) block.setBoxSizes(state.boxSize, state.boxSize, state.boxSize);
+          if (state.boxSizeX !== undefined && state.boxSizeY !== undefined && state.boxSizeZ !== undefined)
+            block.setBoxSizes(state.boxSizeX, state.boxSizeY, state.boxSizeZ);
           block.setColorScheme(state.colorScheme);
           if (state.backgroundColor !== undefined) block.setBackgroundColor(state.backgroundColor);
           if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
@@ -345,7 +349,9 @@ export class StateIO {
         } else if (block instanceof MolecularViewerBlock) {
           block.setName(state.name);
           if (state.backgroundColor !== undefined) block.setBackgroundColor(state.backgroundColor);
-          if (state.boxSize !== undefined) block.setBoxSize(state.boxSize);
+          if (state.boxSize !== undefined) block.setBoxSizes(state.boxSize, state.boxSize, state.boxSize);
+          if (state.boxSizeX !== undefined && state.boxSizeY !== undefined && state.boxSizeZ !== undefined)
+            block.setBoxSizes(state.boxSizeX, state.boxSizeY, state.boxSizeZ);
           if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
             block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
         } else if (block instanceof RainbowHatBlock) {

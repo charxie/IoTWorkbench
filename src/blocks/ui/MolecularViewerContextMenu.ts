@@ -102,7 +102,7 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
       let nameField = document.getElementById("molecular-viewer-name-field") as HTMLInputElement;
       nameField.value = g.getName();
       let boxSizeField = document.getElementById("molecular-viewer-box-size-field") as HTMLInputElement;
-      boxSizeField.value = g.getBoxSize().toString();
+      boxSizeField.value = JSON.stringify([g.getBoxSizeX(), g.getBoxSizeY(), g.getBoxSizeZ()]);
       let backgroundColorField = document.getElementById("molecular-viewer-background-color-field") as HTMLInputElement;
       backgroundColorField.value = g.getBackgroundColor();
       let backgroundColorChooser = document.getElementById("molecular-viewer-background-color-chooser") as HTMLInputElement;
@@ -116,12 +116,6 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
       const okFunction = () => {
         let success = true;
         let message;
-        // set box size
-        let boxSize = parseInt(boxSizeField.value);
-        if (!isNumber(boxSize)) {
-          success = false;
-          message = boxSizeField.value + " is not a valid box size";
-        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -138,10 +132,28 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
           success = false;
           message = heightField.value + " is not a valid height";
         }
+        // set box size
+        let boxSizes;
+        try {
+          boxSizes = JSON.parse(boxSizeField.value);
+        } catch (err) {
+          console.log(err.stack);
+          success = false;
+          message = boxSizeField.value + " is not a valid array";
+        }
+        if (Array.isArray(boxSizes)) {
+          if (boxSizes.length !== 3) {
+            success = false;
+            message = boxSizeField.value + " must have three elements";
+          }
+        } else {
+          success = false;
+          message = boxSizeField.value + " is not an array";
+        }
         // finish
         if (success) {
           g.setName(nameField.value);
-          g.setBoxSize(Math.max(0, boxSize));
+          g.setBoxSizes(Math.max(0, boxSizes[0]), Math.max(0, boxSizes[1]), Math.max(0, boxSizes[2]));
           g.setBackgroundColor(backgroundColorField.value);
           g.locateOverlay();
           g.refreshView();

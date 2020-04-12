@@ -128,12 +128,20 @@ export abstract class Basic3DBlock extends Block {
     this.view.destroy();
   }
 
-  setBoxSize(boxSize: number): void {
-    this.view.setBoxSize(boxSize);
+  setBoxSizes(boxSizeX: number, boxSizeY: number, boxSizeZ: number): void {
+    this.view.setBoxSizes(boxSizeX, boxSizeY, boxSizeZ);
   }
 
-  getBoxSize(): number {
-    return this.view.getBoxSize();
+  getBoxSizeX(): number {
+    return this.view.getBoxSizeX();
+  }
+
+  getBoxSizeY(): number {
+    return this.view.getBoxSizeY();
+  }
+
+  getBoxSizeZ(): number {
+    return this.view.getBoxSizeZ();
   }
 
   setXAxisLabel(xAxisLabel: string): void {

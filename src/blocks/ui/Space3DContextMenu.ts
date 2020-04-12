@@ -243,7 +243,7 @@ export class Space3DContextMenu extends BlockContextMenu {
       let nameField = document.getElementById("space3d-name-field") as HTMLInputElement;
       nameField.value = g.getName();
       let boxSizeField = document.getElementById("space3d-box-size-field") as HTMLInputElement;
-      boxSizeField.value = g.getBoxSize().toString();
+      boxSizeField.value = JSON.stringify([g.getBoxSizeX(), g.getBoxSizeY(), g.getBoxSizeZ()]);
       let xAxisLableField = document.getElementById("space3d-x-axis-label-field") as HTMLInputElement;
       xAxisLableField.value = g.getXAxisLabel();
       let yAxisLableField = document.getElementById("space3d-y-axis-label-field") as HTMLInputElement;
@@ -437,13 +437,31 @@ export class Space3DContextMenu extends BlockContextMenu {
             break;
           }
         }
+        // set box
+        let boxSizes;
+        try {
+          boxSizes = JSON.parse(boxSizeField.value);
+        } catch (err) {
+          console.log(err.stack);
+          success = false;
+          message = boxSizeField.value + " is not a valid array";
+        }
+        if (Array.isArray(boxSizes)) {
+          if (boxSizes.length !== 3) {
+            success = false;
+            message = boxSizeField.value + " must have three elements";
+          }
+        } else {
+          success = false;
+          message = boxSizeField.value + " is not an array";
+        }
         // finish
         if (success) {
           g.setName(nameField.value);
           g.setXAxisLabel(xAxisLableField.value);
           g.setYAxisLabel(yAxisLableField.value);
           g.setZAxisLabel(zAxisLableField.value);
-          g.setBoxSize(Math.max(0, boxSize));
+          g.setBoxSizes(Math.max(0, boxSizes[0]), Math.max(0, boxSizes[1]), Math.max(0, boxSizes[2]));
           g.setBackgroundColor(backgroundColorField.value);
           g.setPointInput(pointInputRadioButton.checked);
           for (let i = 0; i < lineTypes.length; i++) {

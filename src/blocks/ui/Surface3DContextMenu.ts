@@ -175,7 +175,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
       let colorSchemeSelector = document.getElementById("surface3d-color-scheme-selector") as HTMLSelectElement;
       colorSchemeSelector.value = g.getColorScheme();
       let boxSizeField = document.getElementById("surface3d-box-size-field") as HTMLInputElement;
-      boxSizeField.value = g.getBoxSize().toString();
+      boxSizeField.value = JSON.stringify([g.getBoxSizeX(), g.getBoxSizeY(), g.getBoxSizeZ()]);
       let xAxisLableField = document.getElementById("surface3d-x-axis-label-field") as HTMLInputElement;
       xAxisLableField.value = g.getXAxisLabel();
       let yAxisLableField = document.getElementById("surface3d-y-axis-label-field") as HTMLInputElement;
@@ -216,6 +216,24 @@ export class Surface3DContextMenu extends BlockContextMenu {
           success = false;
           message = heightField.value + " is not a valid height";
         }
+        // set box
+        let boxSizes;
+        try {
+          boxSizes = JSON.parse(boxSizeField.value);
+        } catch (err) {
+          console.log(err.stack);
+          success = false;
+          message = boxSizeField.value + " is not a valid array";
+        }
+        if (Array.isArray(boxSizes)) {
+          if (boxSizes.length !== 3) {
+            success = false;
+            message = boxSizeField.value + " must have three elements";
+          }
+        } else {
+          success = false;
+          message = boxSizeField.value + " is not an array";
+        }
         // finish
         if (success) {
           g.setName(nameField.value);
@@ -225,7 +243,7 @@ export class Surface3DContextMenu extends BlockContextMenu {
           g.setXAxisLabel(xAxisLableField.value);
           g.setYAxisLabel(yAxisLableField.value);
           g.setZAxisLabel(zAxisLableField.value);
-          g.setBoxSize(Math.max(0, boxSize));
+          g.setBoxSizes(Math.max(0, boxSizes[0]), Math.max(0, boxSizes[1]), Math.max(0, boxSizes[2]));
           g.setBackgroundColor(backgroundColorField.value);
           g.locateOverlay();
           g.updateModel();

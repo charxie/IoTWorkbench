@@ -28,10 +28,10 @@ export class XyzLoader extends MolecularLoader {
           this.bonds.push([parseFloat(items[1]), parseFloat(items[2]), 1]);
         } else {
           if (items.length >= 4) {
+            e = items[0].toLowerCase();
             x = parseFloat(items[1]);
             y = parseFloat(items[2]);
             z = parseFloat(items[3]);
-            e = items[0].toLowerCase();
             let cpkHexColor = this.getAtomColor(e);
             if (cpkHexColor === undefined) {
               e = e.substr(0, 1);
