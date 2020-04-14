@@ -46,12 +46,12 @@ export abstract class MolecularLoader {
       }
     }
 
-    // if bonds are not specified through the CONNECT lines, we should try to automatically construct them
+    // if bonds are not specified through the CONECT lines, we should try to automatically construct them
     if (this.bonds.length === 0) {
       let minDistanceSqures: number[] = new Array(nAtoms);
       minDistanceSqures.fill(Number.MAX_VALUE);
       // first find the minimum distance to a neighboring atom for each atom
-      let xi, yi, zi, dx, dy, dz, r2;
+      let xi, yi, zi, dx, dy, dz, r2, d2;
       for (let i = 0; i < nAtoms; i++) {
         if (this.atoms[i] !== undefined) {
           xi = this.atoms[i][0];
@@ -70,11 +70,7 @@ export abstract class MolecularLoader {
         }
       }
       for (let i = 0; i < minDistanceSqures.length; i++) {
-        if (this.atoms[i] !== undefined) {
-          minDistanceSqures[i] = Math.min(2 * minDistanceSqures[i], this.atoms[i][5] * this.atoms[i][5] * 0.0004); // atomic radius is in pm
-        } else {
-          minDistanceSqures[i] *= 2;
-        }
+        minDistanceSqures[i] *= 2.4;
       }
       // any pair of atoms within the minimum square distance should be bonded
       for (let i = 0; i < nAtoms; i++) {
@@ -88,7 +84,9 @@ export abstract class MolecularLoader {
               dy = this.atoms[j][1] - yi;
               dz = this.atoms[j][2] - zi;
               r2 = dx * dx + dy * dy + dz * dz;
-              if (r2 <= minDistanceSqures[i]) {
+              d2 = this.atoms[i][5] + this.atoms[j][5];
+              d2 *= d2;
+              if (r2 <= Math.min(minDistanceSqures[i], d2 * 0.00015)) { // atomic radius is in pm)
                 this.bonds.push([i, j, 1]);
               }
             }

@@ -21,9 +21,10 @@ export class PdbLoader extends MolecularLoader {
   parse(content: string): void {
     let x, y, z, index, e;
     let lines = content.split('\n');
+    let count = 0;
+    let hasConect = content.indexOf("CONECT") !== -1;
     for (let i = 0; i < lines.length; i++) {
       if (lines[i].substr(0, 4).toUpperCase() === 'ATOM' || lines[i].substr(0, 6).toUpperCase() === 'HETATM') {
-        //let items = lines[i].split(/(\s+)/).filter( e => e.trim().length > 0);
         x = parseFloat(lines[i].substr(30, 7));
         y = parseFloat(lines[i].substr(38, 7));
         z = parseFloat(lines[i].substr(46, 7));
@@ -35,7 +36,8 @@ export class PdbLoader extends MolecularLoader {
           e = e.substr(0, 1);
           cpkHexColor = this.getAtomColor(e);
         }
-        this.atoms[index] = [x, y, z, cpkHexColor === undefined ? this.getAtomColor('c') : cpkHexColor, MolecularLoader.capitalize(e), this.getAtomRadius(e)];
+        this.atoms[hasConect ? index : count] = [x, y, z, cpkHexColor === undefined ? this.getAtomColor('c') : cpkHexColor, MolecularLoader.capitalize(e), this.getAtomRadius(e)];
+        count++;
       } else if (lines[i].substr(0, 6).toUpperCase() === 'CONECT') {
         this.parseBond(lines[i], 11, 5);
         this.parseBond(lines[i], 16, 5);
