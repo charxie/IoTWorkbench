@@ -337,7 +337,7 @@ export abstract class Basic3D {
     return this.zAxisLabel;
   }
 
-  private createLights(): void {
+  protected createLights(): void {
     // Light above
     let light = new PointLight(0xffffff);
     light.position.set(0, 0, 1000);
@@ -346,7 +346,6 @@ export abstract class Basic3D {
     light = new PointLight(0xffffff);
     light.position.set(0, 0, -1000);
     this.scene.add(light);
-    // Ambient light
     this.scene.add(new AmbientLight(0xffffff));
   }
 
