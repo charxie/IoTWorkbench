@@ -11,6 +11,7 @@ import {Rectangle} from "../math/Rectangle";
 export class MolecularViewerBlock extends Basic3DBlock {
 
   private portI: Port; // initial conformation
+  private portS: Port; // spin the view
   private portX: Port; // x, y, z ports are only used in the dual mode (which is the default)
   private portY: Port;
   private portZ: Port;
@@ -26,6 +27,7 @@ export class MolecularViewerBlock extends Basic3DBlock {
     readonly boxSizeY: number;
     readonly boxSizeZ: number;
     readonly style: string;
+    readonly controlType: string;
     readonly backgroundColor: string;
     readonly cameraPositionX: number;
     readonly cameraPositionY: number;
@@ -33,6 +35,7 @@ export class MolecularViewerBlock extends Basic3DBlock {
     readonly cameraRotationX: number;
     readonly cameraRotationY: number;
     readonly cameraRotationZ: number;
+    readonly spin: boolean;
 
     constructor(m: MolecularViewerBlock) {
       this.name = m.name;
@@ -45,6 +48,7 @@ export class MolecularViewerBlock extends Basic3DBlock {
       this.boxSizeY = m.view.getBoxSizeY();
       this.boxSizeZ = m.view.getBoxSizeZ();
       this.style = m.getStyle();
+      this.controlType = m.view.getControlType();
       this.backgroundColor = m.getBackgroundColor();
       this.cameraPositionX = m.view.getCameraPositionX();
       this.cameraPositionY = m.view.getCameraPositionY();
@@ -52,6 +56,7 @@ export class MolecularViewerBlock extends Basic3DBlock {
       this.cameraRotationX = m.view.getCameraRotationX();
       this.cameraRotationY = m.view.getCameraRotationY();
       this.cameraRotationZ = m.view.getCameraRotationZ();
+      this.spin = (<MolecularViewer>m.view).getSpin();
     }
   };
 
@@ -60,10 +65,12 @@ export class MolecularViewerBlock extends Basic3DBlock {
     this.color = "#778EAA";
     let dh = (this.height - this.barHeight) / 5;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false)
-    this.portX = new Port(this, true, "X", 0, this.barHeight + 2 * dh, false)
-    this.portY = new Port(this, true, "Y", 0, this.barHeight + 3 * dh, false)
-    this.portZ = new Port(this, true, "Z", 0, this.barHeight + 4 * dh, false)
+    this.portS = new Port(this, true, "S", 0, this.barHeight + 2 * dh, false)
+    this.portX = new Port(this, true, "X", 0, this.barHeight + 3 * dh, false)
+    this.portY = new Port(this, true, "Y", 0, this.barHeight + 4 * dh, false)
+    this.portZ = new Port(this, true, "Z", 0, this.barHeight + 5 * dh, false)
     this.ports.push(this.portI);
+    this.ports.push(this.portS);
     this.ports.push(this.portX);
     this.ports.push(this.portY);
     this.ports.push(this.portZ);
@@ -139,6 +146,14 @@ export class MolecularViewerBlock extends Basic3DBlock {
 
   getStyle(): string {
     return (<MolecularViewer>this.view).getStyle();
+  }
+
+  setSpin(spin: boolean): void {
+    (<MolecularViewer>this.view).setSpin(spin);
+  }
+
+  getSpin(): boolean {
+    return (<MolecularViewer>this.view).getSpin();
   }
 
   setX(x: number): void {

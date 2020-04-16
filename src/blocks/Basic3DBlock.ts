@@ -74,6 +74,14 @@ export abstract class Basic3DBlock extends Block {
     this.view.render();
   }
 
+  setControlType(controlType: string): void {
+    this.view.setControlType(controlType);
+  }
+
+  getControlType(): string {
+    return this.view.getControlType();
+  }
+
   setX(x: number): void {
     super.setX(x);
     if (this.overlay !== undefined) {

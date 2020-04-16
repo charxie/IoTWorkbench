@@ -3,10 +3,12 @@
  */
 
 import {
-  AmbientLight, Box3,
+  AmbientLight,
+  Box3,
   BufferGeometry,
   ConeGeometry,
   DirectionalLight,
+  Light,
   Line,
   LineBasicMaterial,
   Mesh,
@@ -51,7 +53,8 @@ export abstract class Basic3D {
   private boxLine3: Line;
   private boxLine4: Line;
   private boundingBox: Box3;
-  private cameraLight;
+  private cameraLight: Light;
+  private controlType: string = "Orbit";
 
   constructor() {
     this.scene = new Scene();
@@ -84,9 +87,13 @@ export abstract class Basic3D {
   }
 
   setControlType(controlType: string) {
+    console.log(controlType)
+    this.controlType = controlType;
     switch (controlType) {
       case "Orbit":
         this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.orbitControls.enableDamping = true;
+        this.orbitControls.dampingFactor = 0.05;
         this.orbitControls.addEventListener('change', () => {
           this.render(); // re-render if controls move/zoom
         });
@@ -98,6 +105,7 @@ export abstract class Basic3D {
         break;
       case "Trackball": // TODO: Trackball requires an animation loop, which is an overhead for static scenes
         this.trackballControls = new TrackballControls(this.camera, this.renderer.domElement);
+        this.trackballControls.dynamicDampingFactor = 0.05;
         this.trackballControls.addEventListener('change', () => {
           this.render(); // re-render if controls move/zoom
         });
@@ -107,6 +115,10 @@ export abstract class Basic3D {
         }
         break;
     }
+  }
+
+  getControlType(): string {
+    return this.controlType;
   }
 
   setBackgroundColor(color: string): void {
@@ -365,8 +377,14 @@ export abstract class Basic3D {
   }
 
   resetViewAngle(): void {
-    if (this.orbitControls !== undefined) this.orbitControls.reset();
-    if (this.trackballControls !== undefined) this.trackballControls.reset();
+    switch (this.controlType) {
+      case "Orbit":
+        if (this.orbitControls !== undefined) this.orbitControls.reset();
+        break;
+      case "Trackball":
+        if (this.trackballControls !== undefined) this.trackballControls.reset();
+        break;
+    }
   }
 
   setCameraPosition(px: number, py: number, pz: number, rx: number, ry: number, rz: number): void {
@@ -400,6 +418,26 @@ export abstract class Basic3D {
   // return Euler angle
   getCameraRotationZ(): number {
     return this.camera.rotation.z;
+  }
+
+  animate(): void {
+    requestAnimationFrame(() => {
+      this.animate();
+    });
+    // only required if controls.enableDamping = true, or if controls.autoRotate = true
+    switch (this.controlType) {
+      case "Orbit":
+        if (this.orbitControls !== undefined) {
+          this.orbitControls.update();
+        }
+        break;
+      case "Trackball":
+        if (this.trackballControls !== undefined) {
+          this.trackballControls.update();
+        }
+        break;
+    }
+    this.render();
   }
 
 }

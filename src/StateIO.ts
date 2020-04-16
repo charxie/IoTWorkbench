@@ -349,12 +349,16 @@ export class StateIO {
         } else if (block instanceof MolecularViewerBlock) {
           block.setName(state.name);
           if (state.style !== undefined) block.setStyle(state.style);
+          if (state.controlType !== undefined) block.setControlType(state.controlType);
+          if (state.spin !== undefined) block.setSpin(state.spin);
           if (state.backgroundColor !== undefined) block.setBackgroundColor(state.backgroundColor);
           if (state.boxSize !== undefined) block.setBoxSizes(state.boxSize, state.boxSize, state.boxSize);
-          if (state.boxSizeX !== undefined && state.boxSizeY !== undefined && state.boxSizeZ !== undefined)
+          if (state.boxSizeX !== undefined && state.boxSizeY !== undefined && state.boxSizeZ !== undefined) {
             block.setBoxSizes(state.boxSizeX, state.boxSizeY, state.boxSizeZ);
-          if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined)
+          }
+          if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined) {
             block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
+          }
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

@@ -82,6 +82,7 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
                   <td colspan="3">
                     <select id="molecular-viewer-control-selector" style="width: 100%">
                       <option value="Orbit" selected>Orbit</option>
+                      <option value="Trackball">Trackball</option>
                     </select>
                   </td>
                 </tr>
@@ -110,8 +111,10 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("molecular-viewer-name-field") as HTMLInputElement;
       nameField.value = g.getName();
-      let styleSelectElement = document.getElementById("molecular-viewer-style-selector") as HTMLSelectElement;
-      styleSelectElement.value = g.getStyle();
+      let styleSelector = document.getElementById("molecular-viewer-style-selector") as HTMLSelectElement;
+      styleSelector.value = g.getStyle();
+      let controlSelector = document.getElementById("molecular-viewer-control-selector") as HTMLSelectElement;
+      controlSelector.value = g.getControlType();
       let boxSizeField = document.getElementById("molecular-viewer-box-size-field") as HTMLInputElement;
       boxSizeField.value = JSON.stringify([g.getBoxSizeX(), g.getBoxSizeY(), g.getBoxSizeZ()]);
       let backgroundColorField = document.getElementById("molecular-viewer-background-color-field") as HTMLInputElement;
@@ -164,7 +167,8 @@ export class MolecularViewerContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           g.setName(nameField.value);
-          g.setStyle(styleSelectElement.value);
+          g.setStyle(styleSelector.value);
+          g.setControlType(controlSelector.value);
           g.setBoxSizes(Math.max(0, boxSizes[0]), Math.max(0, boxSizes[1]), Math.max(0, boxSizes[2]));
           g.setBackgroundColor(backgroundColorField.value);
           g.locateOverlay();
