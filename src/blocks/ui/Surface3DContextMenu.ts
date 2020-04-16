@@ -194,12 +194,6 @@ export class Surface3DContextMenu extends BlockContextMenu {
       const okFunction = () => {
         let success = true;
         let message;
-        // set box size
-        let boxSize = parseInt(boxSizeField.value);
-        if (!isNumber(boxSize)) {
-          success = false;
-          message = boxSizeField.value + " is not a valid box size";
-        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {

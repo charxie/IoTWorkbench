@@ -29,16 +29,18 @@ export class XyzLoader extends MolecularLoader {
         } else {
           if (items.length >= 4) {
             e = items[0].toLowerCase();
-            x = parseFloat(items[1]);
-            y = parseFloat(items[2]);
-            z = parseFloat(items[3]);
-            let cpkHexColor = this.getAtomColor(e);
-            if (cpkHexColor === undefined) {
-              e = e.substr(0, 1);
-              cpkHexColor = this.getAtomColor(e);
+            if (!e.startsWith("#")) {
+              x = parseFloat(items[1]);
+              y = parseFloat(items[2]);
+              z = parseFloat(items[3]);
+              let cpkHexColor = this.getAtomColor(e);
+              if (cpkHexColor === undefined) {
+                e = e.substr(0, 1);
+                cpkHexColor = this.getAtomColor(e);
+              }
+              this.atoms[index++] = [x, y, z, cpkHexColor === undefined ? this.getAtomColor('c') : cpkHexColor, MolecularLoader.capitalize(e), this.getAtomRadius(e)];
+              if (index === nAtoms) break;
             }
-            this.atoms[index++] = [x, y, z, cpkHexColor === undefined ? this.getAtomColor('c') : cpkHexColor, MolecularLoader.capitalize(e), this.getAtomRadius(e)];
-            if (index === nAtoms) break;
           }
         }
       }

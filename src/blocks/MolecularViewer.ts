@@ -3,12 +3,11 @@
  */
 
 import {
-  AmbientLight,
   BoxBufferGeometry,
   Group,
   IcosahedronBufferGeometry,
   Mesh,
-  MeshPhongMaterial, PointLight,
+  MeshPhongMaterial,
   Vector3
 } from "three";
 import {CSS2DObject, CSS2DRenderer} from "three/examples/jsm/renderers/CSS2DRenderer";
@@ -203,13 +202,6 @@ export class MolecularViewer extends Basic3D {
       this.labelRenderer.domElement.style.width = width + "px";
       this.labelRenderer.domElement.style.height = height + "px";
     }
-  }
-
-  protected createLights(): void {
-    let light = new PointLight(0xffffff);
-    light.position.set(0, 0, 1000);
-    this.scene.add(light);
-    this.scene.add(new AmbientLight(0x666666));
   }
 
 }

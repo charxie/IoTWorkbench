@@ -365,12 +365,6 @@ export class Space3DContextMenu extends BlockContextMenu {
           success = false;
           message = pointsField.value + " is not a valid value for number of points";
         }
-        // set box size
-        let boxSize = parseInt(boxSizeField.value);
-        if (!isNumber(boxSize)) {
-          success = false;
-          message = boxSizeField.value + " is not a valid box size";
-        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {

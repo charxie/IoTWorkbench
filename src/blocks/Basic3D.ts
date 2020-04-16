@@ -6,12 +6,12 @@ import {
   AmbientLight, Box3,
   BufferGeometry,
   ConeGeometry,
+  DirectionalLight,
   Line,
   LineBasicMaterial,
   Mesh,
   MeshBasicMaterial,
   PerspectiveCamera,
-  PointLight,
   Scene,
   Vector3,
   WebGLRenderer
@@ -23,34 +23,35 @@ import {Util} from "../Util";
 
 export abstract class Basic3D {
 
-  protected boxSize: number = 0; // zero means no box
-  protected boxSizeX: number = 0;
-  protected boxSizeY: number = 0;
-  protected boxSizeZ: number = 0;
-  protected boxBottomFace: Line;
-  protected boxTopFace: Line;
-  protected boxLine1: Line;
-  protected boxLine2: Line;
-  protected boxLine3: Line;
-  protected boxLine4: Line;
-  protected xAxisArrow: Mesh;
-  protected yAxisArrow: Mesh;
-  protected zAxisArrow: Mesh;
-  protected xLabelSprite: TextSprite;
-  protected yLabelSprite: TextSprite;
-  protected zLabelSprite: TextSprite;
-  protected xAxisLabel: string = "x";
-  protected yAxisLabel: string = "y";
-  protected zAxisLabel: string = "z";
-  protected backgroundColor: string = "white";
-  protected axisLabelFontSize: number = 0.5;
-  protected axisLabelOffset: number = 0;
+  private backgroundColor: string = "white";
+  private axisLabelFontSize: number = 0.5;
+  private axisLabelOffset: number = 0;
   protected scene: Scene;
   protected camera: PerspectiveCamera;
   protected renderer: WebGLRenderer;
   protected orbitControls: OrbitControls;
   protected trackballControls: TrackballControls;
-  protected boundingBox: Box3;
+
+  private boxSizeX: number = 0; // zero means no box
+  private boxSizeY: number = 0;
+  private boxSizeZ: number = 0;
+  private xLabelSprite: TextSprite;
+  private yLabelSprite: TextSprite;
+  private zLabelSprite: TextSprite;
+  private xAxisLabel: string = "x";
+  private yAxisLabel: string = "y";
+  private zAxisLabel: string = "z";
+  private xAxisArrow: Mesh;
+  private yAxisArrow: Mesh;
+  private zAxisArrow: Mesh;
+  private boxBottomFace: Line;
+  private boxTopFace: Line;
+  private boxLine1: Line;
+  private boxLine2: Line;
+  private boxLine3: Line;
+  private boxLine4: Line;
+  private boundingBox: Box3;
+  private cameraLight;
 
   constructor() {
     this.scene = new Scene();
@@ -132,9 +133,9 @@ export abstract class Basic3D {
     this.removeSprites();
     let p;
     let r;
-    if (this.boxSize > 0) {
-      p = this.boxSize;
-      r = this.boxSize * 0.02;
+    if (this.boxSizeX > 0 && this.boxSizeY > 0 && this.boxSizeZ > 0) {
+      p = Math.min(this.boxSizeX, this.boxSizeY, this.boxSizeZ);
+      r = p * 0.02;
     } else {
       if (this.boundingBox !== undefined) {
         let xmin = Math.abs(this.boundingBox.min.x);
@@ -337,19 +338,16 @@ export abstract class Basic3D {
     return this.zAxisLabel;
   }
 
-  protected createLights(): void {
-    // Light above
-    let light = new PointLight(0xffffff);
-    light.position.set(0, 0, 1000);
-    this.scene.add(light);
-    // Light below
-    light = new PointLight(0xffffff);
-    light.position.set(0, 0, -1000);
-    this.scene.add(light);
-    this.scene.add(new AmbientLight(0xffffff));
+  private createLights(): void {
+    this.cameraLight = new DirectionalLight(0xffffff, 1);
+    this.cameraLight.position.set(0, 0, 10);
+    // this.camera.add(this.cameraLight); // adding cameraLight to camera doesn't seem to work for me
+    this.scene.add(this.cameraLight);
+    this.scene.add(new AmbientLight(0x666666));
   }
 
   render(): void {
+    this.cameraLight.position.copy(this.camera.position);   // adding cameraLight to camera doesn't seem to work for me
     this.renderer.render(this.scene, this.camera);
   }
 
