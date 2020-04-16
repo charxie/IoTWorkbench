@@ -41,7 +41,6 @@ export class MolecularViewer extends Basic3D {
       this.labelRenderer.domElement.style.pointerEvents = 'none';
       document.getElementById("block-view-wrapper").appendChild(this.labelRenderer.domElement);
     }
-    this.animate();
   }
 
   destroy(): void {

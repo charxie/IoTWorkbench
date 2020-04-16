@@ -63,7 +63,7 @@ export class MolecularViewerBlock extends Basic3DBlock {
   constructor(iconic: boolean, uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(iconic, uid, name, x, y, width, height);
     this.color = "#778EAA";
-    let dh = (this.height - this.barHeight) / 5;
+    let dh = (this.height - this.barHeight) / 6;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false)
     this.portS = new Port(this, true, "S", 0, this.barHeight + 2 * dh, false)
     this.portX = new Port(this, true, "X", 0, this.barHeight + 3 * dh, false)
@@ -133,11 +133,12 @@ export class MolecularViewerBlock extends Basic3DBlock {
     this.spaceMargin.bottom = 10;
     this.spaceMargin.left = 24;
     this.spaceMargin.right = 10;
-    let dh = (this.height - this.barHeight) / 5;
+    let dh = (this.height - this.barHeight) / 6;
     this.portI.setY(this.barHeight + dh);
-    this.portX.setY(this.barHeight + 2 * dh);
-    this.portY.setY(this.barHeight + 3 * dh);
-    this.portZ.setY(this.barHeight + 4 * dh);
+    this.portS.setY(this.barHeight + 2 * dh);
+    this.portX.setY(this.barHeight + 3 * dh);
+    this.portY.setY(this.barHeight + 4 * dh);
+    this.portZ.setY(this.barHeight + 5 * dh);
   }
 
   setStyle(style: string): void {

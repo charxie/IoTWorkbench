@@ -55,6 +55,7 @@ export abstract class Basic3D {
   private boundingBox: Box3;
   private cameraLight: Light;
   private controlType: string = "Orbit";
+  private requestAnimationId: number;
 
   constructor() {
     this.scene = new Scene();
@@ -84,13 +85,22 @@ export abstract class Basic3D {
     this.scene.remove(this.zLabelSprite);
     if (this.orbitControls !== undefined) this.orbitControls.dispose();
     if (this.trackballControls !== undefined) this.trackballControls.dispose();
+    this.stopAnimation();
   }
 
   setControlType(controlType: string) {
-    console.log(controlType)
     this.controlType = controlType;
+    if (this.orbitControls !== undefined) {
+      this.orbitControls.dispose();
+      this.orbitControls = undefined;
+    }
+    if (this.trackballControls !== undefined) {
+      this.trackballControls.dispose();
+      this.trackballControls = undefined;
+    }
     switch (controlType) {
       case "Orbit":
+        this.stopAnimation();
         this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
         this.orbitControls.enableDamping = true;
         this.orbitControls.dampingFactor = 0.05;
@@ -98,21 +108,11 @@ export abstract class Basic3D {
           this.render(); // re-render if controls move/zoom
         });
         this.orbitControls.enableZoom = true;
-        if (this.trackballControls !== undefined) {
-          this.trackballControls.dispose();
-          this.trackballControls = undefined;
-        }
         break;
-      case "Trackball": // TODO: Trackball requires an animation loop, which is an overhead for static scenes
+      case "Trackball": // Trackball requires an animation loop, which is an overhead for static scenes
         this.trackballControls = new TrackballControls(this.camera, this.renderer.domElement);
         this.trackballControls.dynamicDampingFactor = 0.05;
-        this.trackballControls.addEventListener('change', () => {
-          this.render(); // re-render if controls move/zoom
-        });
-        if (this.orbitControls !== undefined) {
-          this.orbitControls.dispose();
-          this.orbitControls = undefined;
-        }
+        this.startAnimation();
         break;
     }
   }
@@ -420,24 +420,36 @@ export abstract class Basic3D {
     return this.camera.rotation.z;
   }
 
-  animate(): void {
-    requestAnimationFrame(() => {
-      this.animate();
-    });
+  stopAnimation(): void {
+    if (this.requestAnimationId) {
+      cancelAnimationFrame(this.requestAnimationId);
+      this.requestAnimationId = undefined;
+    }
+  }
+
+  startAnimation(): void {
+    if (!this.requestAnimationId) {
+      this.requestAnimationId = requestAnimationFrame(() => this.loopAnimation());
+    }
+  }
+
+  private loopAnimation(): void {
+    this.requestAnimationId = undefined;
     // only required if controls.enableDamping = true, or if controls.autoRotate = true
     switch (this.controlType) {
       case "Orbit":
-        if (this.orbitControls !== undefined) {
+        if (this.orbitControls !== undefined && this.orbitControls.enabled) {
           this.orbitControls.update();
         }
         break;
       case "Trackball":
-        if (this.trackballControls !== undefined) {
+        if (this.trackballControls !== undefined && this.trackballControls.enabled) {
           this.trackballControls.update();
         }
         break;
     }
     this.render();
+    this.startAnimation();
   }
 
 }
