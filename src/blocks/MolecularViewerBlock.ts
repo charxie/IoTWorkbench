@@ -35,7 +35,6 @@ export class MolecularViewerBlock extends Basic3DBlock {
     readonly cameraRotationX: number;
     readonly cameraRotationY: number;
     readonly cameraRotationZ: number;
-    readonly spin: boolean;
 
     constructor(m: MolecularViewerBlock) {
       this.name = m.name;
@@ -56,7 +55,6 @@ export class MolecularViewerBlock extends Basic3DBlock {
       this.cameraRotationX = m.view.getCameraRotationX();
       this.cameraRotationY = m.view.getCameraRotationY();
       this.cameraRotationZ = m.view.getCameraRotationZ();
-      this.spin = (<MolecularViewer>m.view).getSpin();
     }
   };
 
@@ -112,9 +110,9 @@ export class MolecularViewerBlock extends Basic3DBlock {
   }
 
   updateModel(): void {
+    let viewer = <MolecularViewer>this.view;
     let vi = this.portI.getValue();
     if (vi !== undefined) {
-      let viewer = <MolecularViewer>this.view;
       viewer.loadMolecule(vi);
       let vx = this.portX.getValue();
       let vy = this.portY.getValue();
@@ -127,11 +125,19 @@ export class MolecularViewerBlock extends Basic3DBlock {
     }
     let vs = this.portS.getValue();
     if (vs !== undefined) {
-      let viewer = <MolecularViewer>this.view;
-      if (vs) {
-        viewer.startSpin();
-      } else {
-        viewer.stopSpin();
+      if (typeof vs === "boolean") {
+        if (vs) {
+          viewer.startSpin();
+        } else {
+          viewer.stopSpin();
+        }
+      } else if (typeof vs === "number") {
+        viewer.setSpinStep(vs);
+        if (vs !== 0) {
+          viewer.startSpin();
+        } else {
+          viewer.stopSpin();
+        }
       }
     }
   }
@@ -156,14 +162,6 @@ export class MolecularViewerBlock extends Basic3DBlock {
 
   getStyle(): string {
     return (<MolecularViewer>this.view).getStyle();
-  }
-
-  setSpin(spin: boolean): void {
-    (<MolecularViewer>this.view).setSpin(spin);
-  }
-
-  getSpin(): boolean {
-    return (<MolecularViewer>this.view).getSpin();
   }
 
   setX(x: number): void {

@@ -350,7 +350,6 @@ export class StateIO {
           block.setName(state.name);
           if (state.style !== undefined) block.setStyle(state.style);
           if (state.controlType !== undefined) block.setControlType(state.controlType);
-          if (state.spin !== undefined) block.setSpin(state.spin);
           if (state.backgroundColor !== undefined) block.setBackgroundColor(state.backgroundColor);
           if (state.boxSize !== undefined) block.setBoxSizes(state.boxSize, state.boxSize, state.boxSize);
           if (state.boxSizeX !== undefined && state.boxSizeY !== undefined && state.boxSizeZ !== undefined) {

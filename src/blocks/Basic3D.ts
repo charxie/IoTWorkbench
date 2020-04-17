@@ -58,8 +58,8 @@ export abstract class Basic3D {
   private controlType: string = "Orbit";
   private requestInertiaId: number;
   private requestSpinId: number;
-  private rotationAngleStep: number = 0.01 * Math.PI;
-  private rotationAxis: Vector3 = new Vector3(0, 1, 0);
+  private spinStep: number = 0.01 * Math.PI;
+  private spinAxis: Vector3 = new Vector3(0, 1, 0);
 
   constructor() {
     this.scene = new Scene();
@@ -424,6 +424,14 @@ export abstract class Basic3D {
     return this.camera.rotation.z;
   }
 
+  setSpinStep(spinStep: number): void {
+    this.spinStep = spinStep;
+  }
+
+  getSpinStep(): number {
+    return this.spinStep;
+  }
+
   stopSpin(): void {
     if (this.requestSpinId) {
       cancelAnimationFrame(this.requestSpinId);
@@ -438,7 +446,7 @@ export abstract class Basic3D {
   }
 
   private animateSpin(): void {
-    this.camera.position.applyQuaternion(new Quaternion().setFromAxisAngle(this.rotationAxis, this.rotationAngleStep));
+    this.camera.position.applyQuaternion(new Quaternion().setFromAxisAngle(this.spinAxis, this.spinStep));
     this.camera.lookAt(this.scene.position);
     this.requestSpinId = undefined;
     this.render();

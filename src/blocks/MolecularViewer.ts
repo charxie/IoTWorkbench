@@ -20,7 +20,6 @@ export class MolecularViewer extends Basic3D {
 
   private root: Group;
   private style: string = "Ball-and-Stick";
-  private spin: boolean = false;
   private ballRadiusScale: number = 0.01 * 0.75; // input is pm, but coordinates are in angstrom (100pm)
   private stickWidth: number = 0.25;
   private offset = new Vector3();
@@ -55,14 +54,6 @@ export class MolecularViewer extends Basic3D {
       let object = this.root.children[0];
       object.parent.remove(object);
     }
-  }
-
-  setSpin(spin: boolean): void {
-    this.spin = spin;
-  }
-
-  getSpin(): boolean {
-    return this.spin;
   }
 
   setStyle(style: string): void {
