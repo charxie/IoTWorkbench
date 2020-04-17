@@ -14,6 +14,7 @@ import {
   Mesh,
   MeshBasicMaterial,
   PerspectiveCamera,
+  Quaternion,
   Scene,
   Vector3,
   WebGLRenderer
@@ -55,7 +56,10 @@ export abstract class Basic3D {
   private boundingBox: Box3;
   private cameraLight: Light;
   private controlType: string = "Orbit";
-  private requestAnimationId: number;
+  private requestInertiaId: number;
+  private requestSpinId: number;
+  private rotationAngleStep: number = 0.01 * Math.PI;
+  private rotationAxis: Vector3 = new Vector3(0, 1, 0);
 
   constructor() {
     this.scene = new Scene();
@@ -85,7 +89,7 @@ export abstract class Basic3D {
     this.scene.remove(this.zLabelSprite);
     if (this.orbitControls !== undefined) this.orbitControls.dispose();
     if (this.trackballControls !== undefined) this.trackballControls.dispose();
-    this.stopAnimation();
+    this.stopInertia();
   }
 
   setControlType(controlType: string) {
@@ -100,7 +104,7 @@ export abstract class Basic3D {
     }
     switch (controlType) {
       case "Orbit":
-        this.stopAnimation();
+        this.stopInertia();
         this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
         this.orbitControls.enableDamping = true;
         this.orbitControls.dampingFactor = 0.05;
@@ -111,8 +115,8 @@ export abstract class Basic3D {
         break;
       case "Trackball": // Trackball requires an animation loop, which is an overhead for static scenes
         this.trackballControls = new TrackballControls(this.camera, this.renderer.domElement);
-        this.trackballControls.dynamicDampingFactor = 0.05;
-        this.startAnimation();
+        this.trackballControls.dynamicDampingFactor = 0.1;
+        this.startInertia();
         break;
     }
   }
@@ -359,7 +363,7 @@ export abstract class Basic3D {
   }
 
   render(): void {
-    this.cameraLight.position.copy(this.camera.position);   // adding cameraLight to camera doesn't seem to work for me
+    this.cameraLight.position.copy(this.camera.position); // adding cameraLight to camera doesn't seem to work for me
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -420,21 +424,42 @@ export abstract class Basic3D {
     return this.camera.rotation.z;
   }
 
-  stopAnimation(): void {
-    if (this.requestAnimationId) {
-      cancelAnimationFrame(this.requestAnimationId);
-      this.requestAnimationId = undefined;
+  stopSpin(): void {
+    if (this.requestSpinId) {
+      cancelAnimationFrame(this.requestSpinId);
+      this.requestSpinId = undefined;
     }
   }
 
-  startAnimation(): void {
-    if (!this.requestAnimationId) {
-      this.requestAnimationId = requestAnimationFrame(() => this.loopAnimation());
+  startSpin(): void {
+    if (!this.requestSpinId) {
+      this.requestSpinId = requestAnimationFrame(() => this.animateSpin());
     }
   }
 
-  private loopAnimation(): void {
-    this.requestAnimationId = undefined;
+  private animateSpin(): void {
+    this.camera.position.applyQuaternion(new Quaternion().setFromAxisAngle(this.rotationAxis, this.rotationAngleStep));
+    this.camera.lookAt(this.scene.position);
+    this.requestSpinId = undefined;
+    this.render();
+    this.startSpin();
+  }
+
+  stopInertia(): void {
+    if (this.requestInertiaId) {
+      cancelAnimationFrame(this.requestInertiaId);
+      this.requestInertiaId = undefined;
+    }
+  }
+
+  startInertia(): void {
+    if (!this.requestInertiaId) {
+      this.requestInertiaId = requestAnimationFrame(() => this.animateInertia());
+    }
+  }
+
+  private animateInertia(): void {
+    this.requestInertiaId = undefined;
     // only required if controls.enableDamping = true, or if controls.autoRotate = true
     switch (this.controlType) {
       case "Orbit":
@@ -449,7 +474,7 @@ export abstract class Basic3D {
         break;
     }
     this.render();
-    this.startAnimation();
+    this.startInertia();
   }
 
 }

@@ -125,6 +125,15 @@ export class MolecularViewerBlock extends Basic3DBlock {
       }
       this.view.render();
     }
+    let vs = this.portS.getValue();
+    if (vs !== undefined) {
+      let viewer = <MolecularViewer>this.view;
+      if (vs) {
+        viewer.startSpin();
+      } else {
+        viewer.stopSpin();
+      }
+    }
   }
 
   refreshView(): void {
