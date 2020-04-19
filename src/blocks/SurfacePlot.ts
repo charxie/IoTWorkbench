@@ -3,10 +3,9 @@
  */
 
 // @ts-ignore
-import * as THREE from 'three';
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import * as d3 from 'd3';
 import {Basic3D} from "./Basic3D";
+import {Color, DoubleSide, Face3, Geometry, Material, Mesh, MeshPhongMaterial, Vector3} from "three";
 
 export class SurfacePlot extends Basic3D {
 
@@ -16,19 +15,19 @@ export class SurfacePlot extends Basic3D {
   private scaledValues: number[];
   private interpolateColor = d3.interpolateTurbo;
 
-  private mesh: THREE.Mesh;
-  private geometry: THREE.Geometry;
-  private material: THREE.Material;
+  private mesh: Mesh;
+  private geometry: Geometry;
+  private material: Material;
 
   constructor() {
     super();
-    this.geometry = new THREE.Geometry();
+    this.geometry = new Geometry();
     // let wireframeTexture = new THREE.TextureLoader().load(squareImage);
     // wireframeTexture.wrapS = THREE.RepeatWrapping;
     // wireframeTexture.wrapT = THREE.RepeatWrapping;
     // wireframeTexture.repeat.set(40, 40);
-    this.material = new THREE.MeshPhongMaterial({
-      side: THREE.DoubleSide,
+    this.material = new MeshPhongMaterial({
+      side: DoubleSide,
       color: 0xffffff,
       vertexColors: true,
       transparent: true,
@@ -38,7 +37,7 @@ export class SurfacePlot extends Basic3D {
       shininess: 1,
       emissive: 0x111111
     });
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh = new Mesh(this.geometry, this.material);
     this.scene.add(this.mesh);
   }
 
@@ -54,12 +53,12 @@ export class SurfacePlot extends Basic3D {
     // somehow we have to remove the mesh, recreate the geometry, and re-add them back to the scene to chnage the colors
     this.scene.remove(this.mesh);
     this.geometry.dispose();
-    this.geometry = new THREE.Geometry();
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.geometry = new Geometry();
+    this.mesh = new Mesh(this.geometry, this.material);
     this.scene.add(this.mesh);
 
     for (let k = 0; k < dataX.length; k++) {
-      this.geometry.vertices.push(new THREE.Vector3(dataX[k], dataY[k], dataZ[k]));
+      this.geometry.vertices.push(new Vector3(dataX[k], dataY[k], dataZ[k]));
     }
 
     // scale values to (0, 1) for coloring
@@ -74,14 +73,14 @@ export class SurfacePlot extends Basic3D {
         let n1 = n0 + 1;
         let n2 = (j + 1) * nu + i + 1;
         let n3 = n2 - 1;
-        let face1 = new THREE.Face3(n0, n1, n2);
-        let face2 = new THREE.Face3(n2, n3, n0);
-        face1.vertexColors[0] = new THREE.Color(color(dataZ[n0]));
-        face1.vertexColors[1] = new THREE.Color(color(dataZ[n1]));
-        face1.vertexColors[2] = new THREE.Color(color(dataZ[n2]));
-        face2.vertexColors[0] = new THREE.Color(color(dataZ[n2]));
-        face2.vertexColors[1] = new THREE.Color(color(dataZ[n3]));
-        face2.vertexColors[2] = new THREE.Color(color(dataZ[n0]));
+        let face1 = new Face3(n0, n1, n2);
+        let face2 = new Face3(n2, n3, n0);
+        face1.vertexColors[0] = new Color(color(dataZ[n0]));
+        face1.vertexColors[1] = new Color(color(dataZ[n1]));
+        face1.vertexColors[2] = new Color(color(dataZ[n2]));
+        face2.vertexColors[0] = new Color(color(dataZ[n2]));
+        face2.vertexColors[1] = new Color(color(dataZ[n3]));
+        face2.vertexColors[2] = new Color(color(dataZ[n0]));
         this.geometry.faces.push(face1);
         this.geometry.faces.push(face2);
       }
@@ -99,8 +98,8 @@ export class SurfacePlot extends Basic3D {
     // somehow we have to remove the mesh, recreate the geometry, and re-add them back to the scene to chnage the colors
     this.scene.remove(this.mesh);
     this.geometry.dispose();
-    this.geometry = new THREE.Geometry();
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.geometry = new Geometry();
+    this.mesh = new Mesh(this.geometry, this.material);
     this.scene.add(this.mesh);
 
     let n = nx * ny;
@@ -139,12 +138,12 @@ export class SurfacePlot extends Basic3D {
           for (let k = 0; k < n; k++) {
             tmp = Math.log((this.values[k] - zmin + 1));
             this.scaledValues[k] = tmp * scale;
-            this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], tmp));
+            this.geometry.vertices.push(new Vector3(this.xgrid[k], this.ygrid[k], tmp));
           }
         } else {
           for (let k = 0; k < n; k++) {
             this.scaledValues[k] = this.values[k];
-            this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], this.values[k]));
+            this.geometry.vertices.push(new Vector3(this.xgrid[k], this.ygrid[k], this.values[k]));
           }
         }
         break;
@@ -153,12 +152,12 @@ export class SurfacePlot extends Basic3D {
           let scale = 1 / (zmax - zmin);
           for (let k = 0; k < n; k++) {
             this.scaledValues[k] = (this.values[k] - zmin) * scale;
-            this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], this.values[k]));
+            this.geometry.vertices.push(new Vector3(this.xgrid[k], this.ygrid[k], this.values[k]));
           }
         } else {
           for (let k = 0; k < n; k++) {
             this.scaledValues[k] = this.values[k];
-            this.geometry.vertices.push(new THREE.Vector3(this.xgrid[k], this.ygrid[k], this.values[k]));
+            this.geometry.vertices.push(new Vector3(this.xgrid[k], this.ygrid[k], this.values[k]));
           }
         }
         break;
@@ -176,14 +175,14 @@ export class SurfacePlot extends Basic3D {
         let n1 = n0 + 1;
         let n2 = (j + 1) * nx + i + 1;
         let n3 = n2 - 1;
-        let face1 = new THREE.Face3(n0, n1, n2);
-        let face2 = new THREE.Face3(n2, n3, n0);
-        face1.vertexColors[0] = new THREE.Color(color(this.scaledValues[n0]));
-        face1.vertexColors[1] = new THREE.Color(color(this.scaledValues[n1]));
-        face1.vertexColors[2] = new THREE.Color(color(this.scaledValues[n2]));
-        face2.vertexColors[0] = new THREE.Color(color(this.scaledValues[n2]));
-        face2.vertexColors[1] = new THREE.Color(color(this.scaledValues[n3]));
-        face2.vertexColors[2] = new THREE.Color(color(this.scaledValues[n0]));
+        let face1 = new Face3(n0, n1, n2);
+        let face2 = new Face3(n2, n3, n0);
+        face1.vertexColors[0] = new Color(color(this.scaledValues[n0]));
+        face1.vertexColors[1] = new Color(color(this.scaledValues[n1]));
+        face1.vertexColors[2] = new Color(color(this.scaledValues[n2]));
+        face2.vertexColors[0] = new Color(color(this.scaledValues[n2]));
+        face2.vertexColors[1] = new Color(color(this.scaledValues[n3]));
+        face2.vertexColors[2] = new Color(color(this.scaledValues[n0]));
         this.geometry.faces.push(face1);
         this.geometry.faces.push(face2);
       }

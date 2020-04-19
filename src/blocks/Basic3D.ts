@@ -6,7 +6,7 @@ import {
   AmbientLight,
   Box3,
   BufferGeometry,
-  ConeGeometry,
+  ConeBufferGeometry,
   DirectionalLight,
   Light,
   Line,
@@ -267,7 +267,7 @@ export abstract class Basic3D {
   }
 
   private addArrow(p: Vector3, c: number, r: number, axis: string): Mesh {
-    let cone = new Mesh(new ConeGeometry(r / 2, 4 * r, 8), new MeshBasicMaterial({
+    let cone = new Mesh(new ConeBufferGeometry(r / 2, 4 * r, 8), new MeshBasicMaterial({
       transparent: true,
       opacity: 0.9,
       color: c

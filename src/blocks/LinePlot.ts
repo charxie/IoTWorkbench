@@ -3,13 +3,21 @@
  */
 
 import {
-  BoxGeometry,
+  BoxBufferGeometry,
   BufferGeometry,
-  Color, ConeGeometry, CylinderGeometry, Geometry,
-  Line, LineBasicMaterial, LineDashedMaterial, Matrix4,
+  Color,
+  ConeBufferGeometry,
+  CylinderBufferGeometry,
+  Line,
+  LineBasicMaterial,
+  LineDashedMaterial,
+  Matrix4,
   Mesh,
   MeshPhongMaterial,
-  SphereGeometry, TetrahedronGeometry, TextureLoader, Vector3
+  SphereBufferGeometry,
+  TetrahedronBufferGeometry,
+  TextureLoader,
+  Vector3
 } from "three";
 import {Point3DArray} from "./Point3DArray";
 import {Symbol3DArray} from "./Symbol3DArray";
@@ -48,7 +56,7 @@ export class LinePlot extends Basic3D {
     this.symbols.push(new Symbol3DArray());
     this.endSymbols = new Array(1);
     this.endSymbols[0] = new Mesh();
-    this.endSymbols[0].geometry = new SphereGeometry(0.5, 32, 32);
+    this.endSymbols[0].geometry = new SphereBufferGeometry(0.5, 32, 32);
     this.endSymbols[0].material = new MeshPhongMaterial({
       color: "dimgray",
       specular: 0x050505,
@@ -102,7 +110,7 @@ export class LinePlot extends Basic3D {
     this.scene.add(line);
     let endSymbol = new Mesh();
     this.endSymbols.push(endSymbol);
-    endSymbol.geometry = new SphereGeometry(0.01, 32, 32);
+    endSymbol.geometry = new SphereBufferGeometry(0.01, 32, 32);
     endSymbol.material = new MeshPhongMaterial({
       color: "dimgray",
       specular: 0x050505,
@@ -208,7 +216,7 @@ export class LinePlot extends Basic3D {
         break;
       case "Rod":
         this.endSymbolConnectors[j].visible = true;
-        this.endSymbolConnectors[j].geometry = new CylinderGeometry(0.05, 0.05, h, 5);
+        this.endSymbolConnectors[j].geometry = new CylinderBufferGeometry(0.05, 0.05, h, 5);
         this.endSymbolConnectors[j].geometry.applyMatrix4(new Matrix4().makeTranslation(0, h / 2, 0));
         this.endSymbolConnectors[j].geometry.applyMatrix4(new Matrix4().makeRotationX(Math.PI / 2));
         this.endSymbolConnectors[j].position.set(xj, yj, zj);
@@ -271,7 +279,7 @@ export class LinePlot extends Basic3D {
     this.endSymbolRadii[i] = r;
     if (this.endSymbols[i].geometry !== undefined) this.endSymbols[i].geometry.dispose();
     if (r > 0.000001) {
-      this.endSymbols[i].geometry = new SphereGeometry(r, 16, 16);
+      this.endSymbols[i].geometry = new SphereBufferGeometry(r, 16, 16);
       if (!this.isSceneChild(this.endSymbols[i])) this.scene.add(this.endSymbols[i]);
     } else {
       this.scene.remove(this.endSymbols[i]);
@@ -301,19 +309,19 @@ export class LinePlot extends Basic3D {
     }
   }
 
-  private getSymbolGeometry(i: number, r: number): Geometry {
+  private getSymbolGeometry(i: number, r: number): BufferGeometry {
     switch (this.dataSymbols[i]) {
       case "Sphere":
-        return new SphereGeometry(r, 8, 8);
+        return new SphereBufferGeometry(r, 8, 8);
       case "Cube":
         let l = r * 2;
-        return new BoxGeometry(l, l, l);
+        return new BoxBufferGeometry(l, l, l);
       case "Cone":
-        return new ConeGeometry(r, 2 * r, 8);
+        return new ConeBufferGeometry(r, 2 * r, 8);
       case "Cylinder":
-        return new CylinderGeometry(r, r, 2 * r, 8);
+        return new CylinderBufferGeometry(r, r, 2 * r, 8);
       case "Tetrahedron":
-        return new TetrahedronGeometry(r);
+        return new TetrahedronBufferGeometry(r);
     }
     return undefined;
   }
@@ -337,7 +345,7 @@ export class LinePlot extends Basic3D {
     if (this.dataSymbols[i] === "None") return;
     let iLength = this.points[i].length();
     if (iLength <= 0) return;
-    let g: Geometry = this.getSymbolGeometry(i, this.dataSymbolRadii[i]);
+    let g: BufferGeometry = this.getSymbolGeometry(i, this.dataSymbolRadii[i]);
     if (g !== undefined) {
       let symbolMaterial = new MeshPhongMaterial({
         color: this.dataSymbolColors[i],
