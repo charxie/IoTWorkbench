@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import symplectic_integrator from "./examples/symplectic-integrator.json";
+// @ts-ignore
 import gas_molecules from "./examples/gas-molecules.json";
 // @ts-ignore
 import dna_molecule from "./examples/dna-molecule.json";
@@ -439,6 +441,7 @@ export class Examples {
     this.files.push({name: "Mechanics: Satellite Orbits", data: satellite_orbits});
     this.files.push({name: "Mechanics: Three-Body Problem", data: three_body_problem});
     this.files.push({name: "Mechanics: Harmonic Oscillator", data: harmonic_oscillator});
+    this.files.push({name: "Mechanics: Symplectic Integrator", data: symplectic_integrator});
     this.files.push({name: "Mechanics: Coupled Harmonic Oscillators", data: coupled_harmonic_oscillators});
     this.files.push({name: "Mechanics: Spring-Cart-Pendulum System", data: spring_cart_pendulum});
     this.files.push({name: "Mechanics: Duffing Oscillator", data: duffing_oscillator});
