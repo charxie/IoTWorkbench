@@ -7,6 +7,7 @@ import {Block} from "./Block";
 import {Util} from "../Util";
 import {flowchart, math} from "../Main";
 import {SolverBlock} from "./SolverBlock";
+import {ExpressionPair} from "./ExpressionPair";
 
 export class ODESolverBlock extends SolverBlock {
 
@@ -15,7 +16,6 @@ export class ODESolverBlock extends SolverBlock {
   private functions: string[] = []; // store the left-hand-side function names
   private expressions: string[] = []; // store the right-hand-side expressions
   private values: number[];
-  private velocities: number[];
   private derivativeOrders: number[];
   private readonly portN: Port;
   private readonly portH: Port;
@@ -25,6 +25,7 @@ export class ODESolverBlock extends SolverBlock {
   private hasEquationError: boolean = false;
   private hasParserError: boolean = false;
   private hasDeclarationError: boolean = false;
+  private expressionPairs: ExpressionPair[] = [];
 
   static State = class {
     readonly uid: string;
@@ -105,6 +106,11 @@ export class ODESolverBlock extends SolverBlock {
     return this.variableName;
   }
 
+  setMethod(method: string): void {
+    super.setMethod(method);
+    this.createExpressionPairs();
+  }
+
   setEquations(equations: string[]): void {
     this.equations = equations.slice();
     let n = this.equations.length;
@@ -136,9 +142,32 @@ export class ODESolverBlock extends SolverBlock {
     if (this.values === undefined || this.values.length !== n) {
       this.values = new Array(n);
     }
+    this.createExpressionPairs();
     this.createParsers();
     this.setOutputPorts();
     this.refreshView();
+  }
+
+  private createExpressionPairs(): void {
+    if (this.method === "Velocity-Verlet") {
+      this.expressionPairs.length = 0;
+      let n = this.equations.length;
+      if (n > 0) {
+        for (let i = 0; i < n; i++) {
+          let pair = new ExpressionPair();
+          pair.velocity = i;
+          for (let j = 0; j < n; j++) {
+            if (this.expressions[j] === this.functions[i]) {
+              pair.position = j;
+              break;
+            }
+          }
+          if (pair.position !== undefined && pair.velocity !== undefined) {
+            this.expressionPairs.push(pair);
+          }
+        }
+      }
+    }
   }
 
   getEquations(): string[] {
@@ -215,22 +244,16 @@ export class ODESolverBlock extends SolverBlock {
       try {
         switch (this.method) {
           case "Velocity-Verlet":
-            if (this.velocities === undefined || this.velocities.length !== count) {
-              this.velocities = new Array(count);
-              for (let i = 0; i < count; i++) {
-                this.velocities[i] = 0;
-              }
-            }
-            let vm;
-            for (let i = 0; i < count; i++) {
-              if (this.derivativeOrders[i] === 2) {
-                vm = this.velocities[i] + this.codes[i].evaluate(param) * h / 2;
-                this.values[i] += vm * h;
-                param[this.functions[i]] = this.values[i];
-                this.velocities[i] = vm + this.codes[i].evaluate(param) * h / 2;
-              } else if (this.derivativeOrders[i] === 1) {
-                this.values[i] = this.velocities[i - 1];
-                param[this.expressions[i]] = this.values[i];
+            if (this.expressionPairs.length > 0) {
+              let vm;
+              for (let pair of this.expressionPairs) {
+                let vel = pair.velocity;
+                let pos = pair.position;
+                vm = this.values[vel] + this.codes[vel].evaluate(param) * h / 2;
+                this.values[pos] += vm * h;
+                param[this.functions[pos]] = this.values[pos];
+                this.values[vel] = vm + this.codes[vel].evaluate(param) * h / 2;
+                param[this.functions[vel]] = this.values[vel];
               }
             }
             break;
