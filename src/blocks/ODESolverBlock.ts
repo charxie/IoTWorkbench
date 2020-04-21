@@ -15,6 +15,7 @@ export class ODESolverBlock extends SolverBlock {
   private functions: string[] = []; // store the left-hand-side function names
   private expressions: string[] = []; // store the right-hand-side expressions
   private values: number[];
+  private velocities: number[];
   private derivativeOrders: number[];
   private readonly portN: Port;
   private readonly portH: Port;
@@ -121,13 +122,13 @@ export class ODESolverBlock extends SolverBlock {
       } else {
         let lhs = this.equations[i].substring(0, equalSignIndex);
         let rhs = this.equations[i].substring(equalSignIndex + 1);
-        let derivativeSignIndex = lhs.indexOf("'");
-        if (derivativeSignIndex < 0) {
+        let apostropheCount = (lhs.match(/'/g) || []).length;
+        if (apostropheCount <= 0) {
           this.derivativeOrders[i] = 0;
           this.functions.push(lhs);
         } else {
-          this.derivativeOrders[i] = 1;
-          this.functions.push(lhs.substring(0, derivativeSignIndex));
+          this.derivativeOrders[i] = apostropheCount;
+          this.functions.push(lhs.substring(0, lhs.indexOf("'")));
         }
         this.expressions.push(rhs);
       }
@@ -213,6 +214,26 @@ export class ODESolverBlock extends SolverBlock {
       }
       try {
         switch (this.method) {
+          case "Velocity-Verlet":
+            if (this.velocities === undefined || this.velocities.length !== count) {
+              this.velocities = new Array(count);
+              for (let i = 0; i < count; i++) {
+                this.velocities[i] = 0;
+              }
+            }
+            let vm;
+            for (let i = 0; i < count; i++) {
+              if (this.derivativeOrders[i] === 2) {
+                vm = this.velocities[i] + this.codes[i].evaluate(param) * h / 2;
+                this.values[i] += vm * h;
+                param[this.functions[i]] = this.values[i];
+                this.velocities[i] = vm + this.codes[i].evaluate(param) * h / 2;
+              } else if (this.derivativeOrders[i] === 1) {
+                this.values[i] = this.velocities[i - 1];
+                param[this.expressions[i]] = this.values[i];
+              }
+            }
+            break;
           case "Euler":
             for (let i = 0; i < count; i++) {
               if (this.derivativeOrders[i] === 1) {

@@ -36,6 +36,7 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
                     <select id="ode-solver-block-method-selector" style="width: 100%">
                       <option value="Euler" selected>Euler</option>
                       <option value="RK4">Runge-Kutta (RK4)</option>
+                      <option value="Velocity-Verlet">Velocity Verlet</option>
                     </select>
                   </td>
                 </tr>
@@ -62,7 +63,7 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
       let variableNameField = document.getElementById("ode-solver-block-variable-name-field") as HTMLInputElement;
       variableNameField.value = block.getVariableName() ? block.getVariableName() : "x";
       let equationsField = document.getElementById("ode-solver-block-equations-field") as HTMLTextAreaElement;
-      equationsField.value = JSON.stringify(block.getEquations()).replaceAll(',', ',\n');
+      equationsField.value = JSON.stringify(block.getEquations());//.replaceAll(',', ',\n');
       let widthField = document.getElementById("ode-solver-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("ode-solver-block-height-field") as HTMLInputElement;
