@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import lennard_jones_potential from "./examples/lennard-jones-potential.json";
+// @ts-ignore
 import symplectic_integrator from "./examples/symplectic-integrator.json";
 // @ts-ignore
 import gas_molecules from "./examples/gas-molecules.json";
@@ -417,6 +419,7 @@ export class Examples {
     this.files.push({name: "Chemistry: Alloys", data: alloy});
     this.files.push({name: "Chemistry: Nano Gear", data: nano_gear});
     this.files.push({name: "Chemistry: Nano Car", data: nanocar});
+    this.files.push({name: "Chemistry: Lennard-Jones Potential", data: lennard_jones_potential});
     this.files.push({name: "Chaos: Logistic Map", data: logistic_map});
     this.files.push({name: "Chaos: Hénon Map", data: henon_map});
     this.files.push({name: "Chaos: Ikeda Map", data: ikeda_map});

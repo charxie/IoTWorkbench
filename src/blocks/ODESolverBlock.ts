@@ -249,11 +249,18 @@ export class ODESolverBlock extends SolverBlock {
               for (let pair of this.expressionPairs) {
                 let vel = pair.velocity;
                 let pos = pair.position;
+                //console.log(this.functions[pos] + ',' + this.expressions[pos] + ',' + this.functions[vel] + ',' + this.expressions[vel])
                 vm = this.values[vel] + this.codes[vel].evaluate(param) * h / 2;
                 this.values[pos] += vm * h;
                 param[this.functions[pos]] = this.values[pos];
                 this.values[vel] = vm + this.codes[vel].evaluate(param) * h / 2;
                 param[this.functions[vel]] = this.values[vel];
+              }
+            }
+            for (let i = 0; i < count; i++) {
+              if (this.derivativeOrders[i] === 0) {
+                this.values[i] = this.codes[i].evaluate(param);
+                param[this.functions[i]] = this.values[i];
               }
             }
             break;

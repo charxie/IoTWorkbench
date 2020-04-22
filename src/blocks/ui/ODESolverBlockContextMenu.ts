@@ -28,7 +28,7 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
                 <tr>
                   <td>Equations:<div style="font-size: 70%">(The left-hand-side must be only<br>the first-order derivative of a function<br>to be solved and the rest goes to<br>the right-hand-side, e.g., ["x'=a*x"].
                   <br>Higher-order ODEs must be<br>decomposed into a system of<br>first-order ODEs.)</div></td>
-                  <td><textarea id="ode-solver-block-equations-field" rows="6" style="width: 100%"></textarea></td>
+                  <td><textarea id="ode-solver-block-equations-field" rows="6" style="width: 100%;"></textarea></td>
                 </tr>
                 <tr>
                   <td>Method:</td>
