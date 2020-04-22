@@ -56,7 +56,7 @@ export class ItemSelectorContextMenu extends BlockContextMenu {
       let notSourceRadioButton = document.getElementById("item-selector-not-source-radio-button") as HTMLInputElement;
       notSourceRadioButton.checked = !itemSelector.isSource();
       let itemsField = document.getElementById("item-selector-block-items-field") as HTMLTextAreaElement;
-      itemsField.value = JSON.stringify(itemSelector.getItems());
+      itemsField.value = JSON.stringify(itemSelector.getItems(), null, 2);
       itemsField.disabled = itemSelector.hasInput();
       let widthField = document.getElementById("item-selector-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(itemSelector.getWidth()).toString();

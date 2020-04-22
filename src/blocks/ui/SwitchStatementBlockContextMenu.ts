@@ -41,7 +41,7 @@ export class SwitchStatementBlockContextMenu extends BlockContextMenu {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let casesField = document.getElementById("switch-statement-block-cases-field") as HTMLTextAreaElement;
-      casesField.value = JSON.stringify(block.getCases()).replaceAll('",', '",\n');
+      casesField.value = JSON.stringify(block.getCases(), null, 2);
       let widthField = document.getElementById("switch-statement-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("switch-statement-block-height-field") as HTMLInputElement;
