@@ -70,7 +70,7 @@ export class SteadyStateFDMSolverBlockContextMenu extends BlockContextMenu {
       let variablesField = document.getElementById("steady-state-fdm-solver-block-variables-field") as HTMLInputElement;
       variablesField.value = block.getVariables() ? JSON.stringify(block.getVariables()) : "['x', 'y']";
       let equationsField = document.getElementById("steady-state-fdm-solver-block-equations-field") as HTMLTextAreaElement;
-      equationsField.value = JSON.stringify(block.getEquations()).replaceAll(',', ',\n');
+      equationsField.value = JSON.stringify(block.getEquations(), null, 2);
       let relaxationStepsField = document.getElementById("steady-state-fdm-solver-block-relaxation-steps-field") as HTMLInputElement;
       relaxationStepsField.value = block.getRelaxationSteps().toString();
       let relaxationFactorField = document.getElementById("steady-state-fdm-solver-block-relaxation-factor-field") as HTMLInputElement;

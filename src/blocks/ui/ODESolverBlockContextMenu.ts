@@ -63,7 +63,7 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
       let variableNameField = document.getElementById("ode-solver-block-variable-name-field") as HTMLInputElement;
       variableNameField.value = block.getVariableName() ? block.getVariableName() : "x";
       let equationsField = document.getElementById("ode-solver-block-equations-field") as HTMLTextAreaElement;
-      equationsField.value = JSON.stringify(block.getEquations());//.replaceAll(',', ',\n');
+      equationsField.value = JSON.stringify(block.getEquations(), null, 2);
       let widthField = document.getElementById("ode-solver-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("ode-solver-block-height-field") as HTMLInputElement;

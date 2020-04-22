@@ -57,7 +57,7 @@ export class BundledFunctionsBlockContextMenu extends BlockContextMenu {
       let inputNameField = document.getElementById("bundled-functions-block-input-name-field") as HTMLInputElement;
       inputNameField.value = block.getInputName() ? block.getInputName().toString() : "t";
       let expressionsField = document.getElementById("bundled-functions-block-expressions-field") as HTMLTextAreaElement;
-      expressionsField.value = JSON.stringify(block.getExpressions());//.replaceAll(',', ',\n');
+      expressionsField.value = JSON.stringify(block.getExpressions(), null, 2);
       let updateImmediatelyRadioButton = document.getElementById("bundled-functions-block-update-immediately-radio-button") as HTMLInputElement;
       updateImmediatelyRadioButton.checked = block.getUpdateImmediately();
       let notUpdateImmediatelyRadioButton = document.getElementById("bundled-functions-block-not-update-immediately-radio-button") as HTMLInputElement;
