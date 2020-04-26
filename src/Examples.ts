@@ -289,6 +289,10 @@ import declared_functions from "./examples/declared-functions.json";
 // @ts-ignore
 import toggle_vs_momentary_switch from "./examples/toggle-vs-momentary-switch.json";
 // @ts-ignore
+import for_loop from "./examples/for-loop.json";
+// @ts-ignore
+import do_while_loop from "./examples/do-while-loop.json";
+// @ts-ignore
 import turnout_switch from "./examples/turnout-switch.json";
 // @ts-ignore
 import switch_statements from "./examples/switch-statements.json";
@@ -337,6 +341,8 @@ export class Examples {
     this.files.push({name: "Basics: Turnout Switch", data: turnout_switch});
     this.files.push({name: "Basics: If-Else Statements", data: if_else_statements});
     this.files.push({name: "Basics: Switch Statements", data: switch_statements});
+    this.files.push({name: "Basics: For Loops", data: for_loop});
+    this.files.push({name: "Basics: Do...While Loop", data: do_while_loop});
     this.files.push({name: "Math: Univariate Functions", data: univariate_functions});
     this.files.push({name: "Math: Bundled Functions", data: bundled_functions});
     this.files.push({name: "Math: Bivariate Function 1D Output", data: bivariate_functions});

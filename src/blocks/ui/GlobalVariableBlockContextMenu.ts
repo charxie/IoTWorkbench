@@ -20,15 +20,15 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="global-variable-key-field" style="width: 120px"></td>
+                  <td><input type="text" id="global-variable-key-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Current Value:</td>
-                  <td><input type="text" id="global-variable-value-field" style="width: 120px"></td>
+                  <td><input type="text" id="global-variable-value-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Initial Value:</td>
-                  <td><input type="text" id="global-variable-initial-value-field" style="width: 120px"></td>
+                  <td><input type="text" id="global-variable-initial-value-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Show Value:</td>
@@ -39,11 +39,11 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="global-variable-block-width-field" style="width: 120px"></td>
+                  <td><input type="text" id="global-variable-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="global-variable-block-height-field" style="width: 120px"></td>
+                  <td><input type="text" id="global-variable-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;

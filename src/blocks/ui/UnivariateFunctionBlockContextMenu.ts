@@ -104,7 +104,7 @@ export class UnivariateFunctionBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 300,
+        height: 310,
         width: 450,
         buttons: {
           'OK': okFunction,

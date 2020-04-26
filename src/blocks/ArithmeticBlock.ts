@@ -70,6 +70,16 @@ export class ArithmeticBlock extends Block {
   private getResult(a, b): any {
     switch (this.name) {
       case "Add Block":
+        if (Array.isArray(a) && typeof b === "number") {
+          return a.map(x => {
+            return x + b;
+          });
+        }
+        if (typeof a === "number" && Array.isArray(b)) {
+          return b.map(x => {
+            return a + x;
+          });
+        }
         if (typeof a === "number" && typeof b === "number") {
           return a + b;
         }
@@ -102,6 +112,16 @@ export class ArithmeticBlock extends Block {
         }
         throw new Error("Cannot add " + b + " to " + a);
       case "Subtract Block":
+        if (Array.isArray(a) && typeof b === "number") {
+          return a.map(x => {
+            return x - b;
+          });
+        }
+        if (typeof a === "number" && Array.isArray(b)) {
+          return b.map(x => {
+            return a - x;
+          });
+        }
         if (typeof a === "number" && typeof b === "number") {
           return a - b;
         }
@@ -134,6 +154,16 @@ export class ArithmeticBlock extends Block {
         }
         throw new Error("Cannot subtract " + b + " from " + a);
       case "Multiply Block":
+        if (Array.isArray(a) && typeof b === "number") {
+          return a.map(x => {
+            return x * b;
+          });
+        }
+        if (typeof a === "number" && Array.isArray(b)) {
+          return b.map(x => {
+            return a * x;
+          });
+        }
         if (typeof a === "number" && typeof b === "number") {
           return a * b;
         }
@@ -169,6 +199,16 @@ export class ArithmeticBlock extends Block {
         }
         throw new Error("Cannot multiply " + a + " by " + b);
       case "Divide Block":
+        if (Array.isArray(a) && typeof b === "number") {
+          return a.map(x => {
+            return x / b;
+          });
+        }
+        if (typeof a === "number" && Array.isArray(b)) {
+          return b.map(x => {
+            return a / x;
+          });
+        }
         if (typeof a === "number" && typeof b === "number") {
           return a / b;
         }
@@ -195,6 +235,16 @@ export class ArithmeticBlock extends Block {
         }
         throw new Error("Cannot divide " + a + " by " + b);
       case "Modulus Block":
+        if (Array.isArray(a) && typeof b === "number") {
+          return a.map(x => {
+            return x % b;
+          });
+        }
+        if (typeof a === "number" && Array.isArray(b)) {
+          return b.map(x => {
+            return a % x;
+          });
+        }
         if (typeof a === "number" && typeof b === "number") {
           return a % b;
         }
