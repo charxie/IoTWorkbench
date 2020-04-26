@@ -401,7 +401,9 @@ export class Sticker extends Block {
         }
       }
     } else {
-      this.text = undefined;
+      if (!this.keepResult) {
+        this.text = undefined;
+      }
     }
   }
 

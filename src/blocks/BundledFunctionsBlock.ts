@@ -208,7 +208,6 @@ export class BundledFunctionsBlock extends Block {
             }
           }
         }
-        this.updateConnectors();
       } catch (e) {
         console.log(e.stack);
         Util.showBlockError(e.toString());
@@ -219,6 +218,7 @@ export class BundledFunctionsBlock extends Block {
         this.portO[n].setValue(undefined);
       }
     }
+    this.updateConnectors();
   }
 
 }

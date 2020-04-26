@@ -341,7 +341,6 @@ export class ParametricEquationBlock extends Block {
               this.portY.setValue(this.codeY.evaluate(param));
               this.portZ.setValue(this.codeZ.evaluate(param));
             }
-            this.updateConnectors();
           } catch (e) {
             console.log(e.stack);
             Util.showBlockError(e.toString());
@@ -354,6 +353,7 @@ export class ParametricEquationBlock extends Block {
       this.portY.setValue(undefined);
       this.portZ.setValue(undefined);
     }
+    this.updateConnectors();
   }
 
 }

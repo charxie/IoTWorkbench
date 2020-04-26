@@ -182,7 +182,6 @@ export class MultivariateFunctionBlock extends FunctionBlock {
           }
           this.portR.setValue(this.code.evaluate(param));
         }
-        this.updateConnectors();
       } catch (e) {
         console.log(e.stack);
         Util.showBlockError(e.toString());
@@ -191,6 +190,7 @@ export class MultivariateFunctionBlock extends FunctionBlock {
     } else {
       this.portR.setValue(undefined);
     }
+    this.updateConnectors();
   }
 
 }
