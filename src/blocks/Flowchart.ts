@@ -294,13 +294,15 @@ export class Flowchart {
     return this.blockConnectionFlag;
   }
 
-  erase(): void {
+  erase(invoker: Block): void {
     for (let b of this.blocks) {
-      if (b instanceof Space2D || b instanceof Space3D) {
-        b.erase();
-      } else if (b instanceof Sticker) {
-        if (b.getKeepResult()) {
+      if (flowchart.areBlocksConnected(invoker, b)) {
+        if (b instanceof Space2D || b instanceof Space3D) {
           b.erase();
+        } else if (b instanceof Sticker) {
+          if (b.getKeepResult()) {
+            b.erase();
+          }
         }
       }
     }

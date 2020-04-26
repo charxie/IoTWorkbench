@@ -182,15 +182,15 @@ export class ActionBlock extends Block {
     switch (this.type) {
       case "Reset":
         flowchart.reset(this);
-        flowchart.updateResults();
-        flowchart.erase();
+        flowchart.updateResultsForBlock(this);
+        flowchart.erase(this);
         flowchart.storeBlockStates();
         break;
       case "Reset-Without-Update":
         flowchart.reset(this);
         flowchart.updateResultsExcludingAllWorkerBlocks();
         flowchart.updateGlobalBlockChildren();
-        flowchart.erase();
+        flowchart.erase(this);
         flowchart.storeBlockStates();
         break;
       case "Stop":
