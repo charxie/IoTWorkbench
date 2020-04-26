@@ -291,7 +291,7 @@ import toggle_vs_momentary_switch from "./examples/toggle-vs-momentary-switch.js
 // @ts-ignore
 import for_loop from "./examples/for-loop.json";
 // @ts-ignore
-import do_while_loop from "./examples/do-while-loop.json";
+import while_loop from "./examples/while-loop.json";
 // @ts-ignore
 import turnout_switch from "./examples/turnout-switch.json";
 // @ts-ignore
@@ -342,7 +342,7 @@ export class Examples {
     this.files.push({name: "Basics: If-Else Statements", data: if_else_statements});
     this.files.push({name: "Basics: Switch Statements", data: switch_statements});
     this.files.push({name: "Basics: For Loops", data: for_loop});
-    this.files.push({name: "Basics: Do...While Loop", data: do_while_loop});
+    this.files.push({name: "Basics: While Loop", data: while_loop});
     this.files.push({name: "Math: Univariate Functions", data: univariate_functions});
     this.files.push({name: "Math: Bundled Functions", data: bundled_functions});
     this.files.push({name: "Math: Bivariate Function 1D Output", data: bivariate_functions});
