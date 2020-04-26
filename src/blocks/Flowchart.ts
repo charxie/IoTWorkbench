@@ -298,6 +298,10 @@ export class Flowchart {
     for (let b of this.blocks) {
       if (b instanceof Space2D || b instanceof Space3D) {
         b.erase();
+      } else if (b instanceof Sticker) {
+        if (b.getKeepResult()) {
+          b.erase();
+        }
       }
     }
   }

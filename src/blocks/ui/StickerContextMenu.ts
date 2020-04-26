@@ -18,6 +18,37 @@ export class StickerContextMenu extends BlockContextMenu {
     this.id = "sticker-context-menu";
   }
 
+  getUi(): string {
+    return `<menu id="${this.id}" class="menu" style="width: 140px; z-index: 10000">
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-copy-button"><i class="fas fa-copy"></i><span class="menu-text">Copy</span></button>
+              </li>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-delete-button"><i class="fas fa-trash"></i><span class="menu-text">Delete</span></button>
+              </li>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-erase-button"><i class="fas fa-eraser"></i><span class="menu-text">Erase</span></button>
+              </li>
+              <li class="menu-separator"></li>` + this.getLayerMenu() + `<li class="menu-separator"></li>
+              <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-properties-button"><i class="fas fa-cog"></i><span class="menu-text">Properties</span></button>
+              </li>
+            </menu>`;
+  }
+
+  addListeners(): void {
+    super.addListeners();
+    let eraseButton = document.getElementById(this.id + "-erase-button");
+    eraseButton.addEventListener("click", this.eraseButtonClick.bind(this), false);
+  }
+
+  private eraseButtonClick(): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    (<Sticker>this.block).erase();
+    flowchart.blockView.requestDraw();
+  }
+
   protected getPropertiesUI(): string {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
@@ -28,6 +59,13 @@ export class StickerContextMenu extends BlockContextMenu {
                 <tr>
                   <td>Fraction Digits:</td>
                   <td colspan="2"><input type="text" id="sticker-decimals-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Keep Result:</td>
+                  <td colspan="2">
+                    <input type="radio" name="keep-result" id="sticker-keep-no-result-radio-button" checked> No
+                    <input type="radio" name="keep-result" id="sticker-keep-result-radio-button"> Yes
+                  </td>
                 </tr>
                 <tr>
                   <td>Text Type:</td>
@@ -80,6 +118,12 @@ export class StickerContextMenu extends BlockContextMenu {
       nameField.value = sticker.getName();
       let decimalsField = document.getElementById("sticker-decimals-field") as HTMLInputElement;
       decimalsField.value = sticker.getDecimals() != undefined ? sticker.getDecimals().toString() : "3";
+      let keepNoResultRadioButton = document.getElementById("sticker-keep-no-result-radio-button") as HTMLInputElement;
+      keepNoResultRadioButton.checked = !sticker.getKeepResult();
+      keepNoResultRadioButton.disabled = sticker.getUserText() !== undefined;
+      let keepResultRadioButton = document.getElementById("sticker-keep-result-radio-button") as HTMLInputElement;
+      keepResultRadioButton.checked = sticker.getKeepResult();
+      keepResultRadioButton.disabled = sticker.getUserText() !== undefined;
       let plainTextRadioButton = document.getElementById("sticker-plain-text-radio-button") as HTMLInputElement;
       plainTextRadioButton.checked = !sticker.getUseHtml();
       let htmlTextRadioButton = document.getElementById("sticker-html-text-radio-button") as HTMLInputElement;
@@ -166,6 +210,7 @@ export class StickerContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           sticker.setName(nameField.value);
+          sticker.setKeepResult(keepResultRadioButton.checked);
           sticker.setUseHtml(htmlTextRadioButton.checked);
           sticker.setUserText(userTextArea.value.trim() == "" ? undefined : userTextArea.value);
           if (sticker.getUseHtml()) {

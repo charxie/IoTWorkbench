@@ -190,6 +190,7 @@ export class ActionBlock extends Block {
         flowchart.reset(this);
         flowchart.updateResultsExcludingAllWorkerBlocks();
         flowchart.updateGlobalBlockChildren();
+        flowchart.erase();
         flowchart.storeBlockStates();
         break;
       case "Stop":

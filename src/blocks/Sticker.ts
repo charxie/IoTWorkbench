@@ -15,6 +15,7 @@ import {Rectangle} from "../math/Rectangle";
 export class Sticker extends Block {
 
   private text: string;
+  private keepResult: boolean = false;
   private arrayLength: number;
   private userText: string;
   protected textColor: string = "black";
@@ -38,6 +39,7 @@ export class Sticker extends Block {
     readonly color: string;
     readonly textColor: string;
     readonly useHtml: boolean;
+    readonly keepResult: boolean;
 
     constructor(sticker: Sticker) {
       this.name = sticker.name;
@@ -53,7 +55,8 @@ export class Sticker extends Block {
       this.decimals = sticker.decimals;
       this.color = sticker.color;
       this.textColor = sticker.textColor;
-      this.useHtml = sticker.htmlOverlay !== undefined;
+      this.useHtml = sticker.getUseHtml();
+      this.keepResult = sticker.keepResult;
     }
   };
 
@@ -71,9 +74,12 @@ export class Sticker extends Block {
     copy.decimals = this.decimals;
     copy.color = this.color;
     copy.textColor = this.textColor;
-    copy.userText = this.userText;
     copy.marginX = this.marginX;
     copy.marginY = this.marginY;
+    copy.keepResult = this.keepResult;
+    copy.setUseHtml(this.getUseHtml());
+    copy.setUserText(this.userText);
+    copy.locateHtmlOverlay();
     return copy;
   }
 
@@ -82,6 +88,14 @@ export class Sticker extends Block {
       let parent = document.getElementById("block-view-wrapper");
       if (parent.contains(this.htmlOverlay)) parent.removeChild(this.htmlOverlay);
     }
+  }
+
+  setKeepResult(keepResult: boolean): void {
+    this.keepResult = keepResult;
+  }
+
+  getKeepResult(): boolean {
+    return this.keepResult;
   }
 
   setUseHtml(useHtml: boolean): void {
@@ -352,21 +366,37 @@ export class Sticker extends Block {
         }
         this.text = this.text.substring(0, this.text.length - 1);
       } else {
-        if (v instanceof Complex) {
-          this.text = v.toFixed(this.decimals);
-        } else if (v instanceof Vector) {
-          this.text = v.toFixed(this.decimals);
-        } else if (v instanceof Matrix) {
-          this.text = v.toFixed(this.decimals);
+        if (this.keepResult) {
           this.isArray = true;
-        } else if (v instanceof BoundaryCondition) {
-          this.text = v.toString();
-          this.isArray = true;
+          if (this.text === undefined) this.text = "";
+          if (v instanceof Complex) {
+            this.text += v.toFixed(this.decimals) + ",";
+          } else if (v instanceof Vector) {
+            this.text += v.toFixed(this.decimals) + ",";
+          } else {
+            try {
+              this.text += v.toFixed(this.decimals) + ",";
+            } catch (e) {
+              this.text += v + ","; // value is a boolean or string
+            }
+          }
         } else {
-          try {
+          if (v instanceof Complex) {
             this.text = v.toFixed(this.decimals);
-          } catch (e) {
-            this.text = "" + v; // value is a boolean or string
+          } else if (v instanceof Vector) {
+            this.text = v.toFixed(this.decimals);
+          } else if (v instanceof Matrix) {
+            this.text = v.toFixed(this.decimals);
+            this.isArray = true;
+          } else if (v instanceof BoundaryCondition) {
+            this.text = v.toString();
+            this.isArray = true;
+          } else {
+            try {
+              this.text = v.toFixed(this.decimals);
+            } catch (e) {
+              this.text = "" + v; // value is a boolean or string
+            }
           }
         }
       }
@@ -378,8 +408,12 @@ export class Sticker extends Block {
   refreshView(): void {
     super.refreshView();
     this.barHeight = Math.min(30, this.height / 3);
-    this.updateModel();
+    //this.updateModel();
     this.ports[0].setY(this.height / 2);
+  }
+
+  erase(): void {
+    this.text = "";
   }
 
 }

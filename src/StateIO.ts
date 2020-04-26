@@ -165,6 +165,7 @@ export class StateIO {
           if (state.color != undefined) block.setColor(state.color);
           if (state.textColor != undefined) block.setTextColor(state.textColor);
           if (state.useHtml != undefined) block.setUseHtml(state.useHtml);
+          if (state.keepResult != undefined) block.setKeepResult(state.keepResult);
           block.setUserText(state.userText);
         } else if (block instanceof Grapher) {
           block.setName(state.name);
