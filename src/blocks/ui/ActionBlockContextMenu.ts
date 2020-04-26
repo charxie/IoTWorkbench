@@ -30,6 +30,7 @@ export class ActionBlockContextMenu extends BlockContextMenu {
                       <option value="Stop">Stop</option>
                       <option value="Repaint">Repaint</option>
                       <option value="Stop-And-Reset">Stop & Reset</option>
+                      <option value="Reset-Connected-Blocks">Reset Connected Blocks</option>
                       <option value="Reset-Without-Update">Reset Without Update</option>
                     </select>
                   </td>

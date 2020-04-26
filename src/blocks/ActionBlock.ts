@@ -72,6 +72,7 @@ export class ActionBlock extends Block {
           this.ports.push(this.portI);
           break;
         case "Reset":
+        case "Reset-Connected-Blocks":
         case "Reset-Without-Update":
           this.ports.push(this.portO);
           break;
@@ -147,6 +148,7 @@ export class ActionBlock extends Block {
         this.portI.draw(ctx, this.iconic);
         break;
       case "Reset":
+      case "Reset-Connected-Blocks":
       case "Reset-Without-Update":
         this.portO.draw(ctx, this.iconic);
         break;
@@ -181,6 +183,12 @@ export class ActionBlock extends Block {
   updateModel(): void {
     switch (this.type) {
       case "Reset":
+        flowchart.reset(this);
+        flowchart.updateResults();
+        flowchart.erase(this);
+        flowchart.storeBlockStates();
+        break;
+      case "Reset-Connected-Blocks":
         flowchart.reset(this);
         flowchart.updateResultsForBlock(this);
         flowchart.erase(this);
