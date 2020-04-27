@@ -863,12 +863,11 @@ export class Space2D extends Block {
         ctx.beginPath();
         ctx.moveTo(xi, yi);
         switch (this.endSymbolConnections[i]) {
-          case "Line":
           case "Rod":
             ctx.lineWidth = 5;
             ctx.lineTo(xj, yj);
             break;
-          case "Thin Line":
+          case "Line":
             ctx.lineWidth = 2;
             ctx.lineTo(xj, yj);
             break;
@@ -894,6 +893,16 @@ export class Space2D extends Block {
               }
               ctx.lineTo(xk, yk);
             }
+            break;
+        }
+        ctx.stroke();
+        ctx.strokeStyle = "white";
+        ctx.beginPath();
+        ctx.moveTo(xi, yi);
+        switch (this.endSymbolConnections[i]) {
+          case "Rod":
+            ctx.lineWidth = 2;
+            ctx.lineTo(xj, yj);
             break;
         }
         ctx.stroke();

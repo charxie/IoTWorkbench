@@ -187,7 +187,6 @@ export class Space2DContextMenu extends BlockContextMenu {
                       <option value="None" selected>None</option>
                       <option value="Rod">Rod</option>
                       <option value="Line">Line</option>
-                      <option value="Thin Line">Thin Line</option>
                       <option value="Zigzag">Zigzag</option>
                     </select>
                   </td>
