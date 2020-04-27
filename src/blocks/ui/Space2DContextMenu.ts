@@ -185,7 +185,9 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td colspan="2">
                     <select id="space2d-end-symbol-connection-selector" style="width: 100%">
                       <option value="None" selected>None</option>
+                      <option value="Rod">Rod</option>
                       <option value="Line">Line</option>
+                      <option value="Thin Line">Thin Line</option>
                       <option value="Zigzag">Zigzag</option>
                     </select>
                   </td>

@@ -864,7 +864,12 @@ export class Space2D extends Block {
         ctx.moveTo(xi, yi);
         switch (this.endSymbolConnections[i]) {
           case "Line":
+          case "Rod":
             ctx.lineWidth = 5;
+            ctx.lineTo(xj, yj);
+            break;
+          case "Thin Line":
+            ctx.lineWidth = 2;
             ctx.lineTo(xj, yj);
             break;
           case "Zigzag":

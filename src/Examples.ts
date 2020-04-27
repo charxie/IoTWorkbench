@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import helicopter_retrieval from "./examples/helicopter-retrieval.json";
+// @ts-ignore
 import metronome from "./examples/metronome.json";
 // @ts-ignore
 import lennard_jones_potential from "./examples/lennard-jones-potential.json";
@@ -468,6 +470,7 @@ export class Examples {
       data: inverted_pendulum_oscillatory_base
     });
     this.files.push({name: "Mechanics: Metronome", data: metronome});
+    this.files.push({name: "Mechanics: Helicopter Retrieval", data: helicopter_retrieval});
     this.files.push({name: "Mechanics: Spherical Pendulum", data: spherical_pendulum});
     this.files.push({name: "Mechanics: Damped Spherical Pendulum", data: spherical_pendulum_damping});
     this.files.push({name: "Mechanics: Spherical Elastic Pendulum", data: spherical_elastic_pendulum});
