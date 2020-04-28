@@ -549,6 +549,15 @@ export class Examples {
     selectElement.selectedIndex = 0;
   }
 
+  loadByTitle(title: string): void {
+    for (let f of this.files) {
+      if (f.name === title) {
+        this.load(f.data);
+        break;
+      }
+    }
+  }
+
   load(s): void {
     flowchart.destroy();
     StateIO.restore(s);

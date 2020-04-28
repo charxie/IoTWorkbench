@@ -92,7 +92,7 @@ export function closeAllContextMenus() {
   });
 }
 
-export function getInstanceString(s: string) {
+export function getInstanceString(s: string): string {
   if (query.instanceid) s += ":" + query.instanceid;
   return s;
 }
@@ -203,19 +203,23 @@ window.onload = function () {
   let elementsPanel = new BlockElementsPanel();
   elementsPanel.render("block-elements-panel");
 
-  // read locally stored properties
-  StateIO.restoreMcus(localStorage.getItem(getInstanceString("MCU States")));
-  StateIO.restoreHats(localStorage.getItem(getInstanceString("HAT States")));
-  StateIO.restoreAttachments(localStorage.getItem(getInstanceString("Attachments")));
-  StateIO.restoreBlockView(localStorage.getItem(getInstanceString("Block View State")));
-  StateIO.restoreBlocks(localStorage.getItem(getInstanceString("Block States")));
-  StateIO.restoreFunctionDeclarations();
-  StateIO.restoreGlobalVariables();
-  StateIO.restoreWorkbench(localStorage.getItem(getInstanceString("Workbench State")));
-  StateIO.restoreConnectors(localStorage.getItem(getInstanceString("Connector States"))); // connectors must be restored after loading HATs
-  StateIO.finishLoading();
-  flowchart.updateResultsExcludingAllWorkerBlocks();
-  // flowchart.reset(); // FIXME: why did I call this?
+  if (query.example !== undefined) {
+    examples.loadByTitle(query.example.toString());
+  } else {
+    // read locally stored properties
+    StateIO.restoreMcus(localStorage.getItem(getInstanceString("MCU States")));
+    StateIO.restoreHats(localStorage.getItem(getInstanceString("HAT States")));
+    StateIO.restoreAttachments(localStorage.getItem(getInstanceString("Attachments")));
+    StateIO.restoreBlockView(localStorage.getItem(getInstanceString("Block View State")));
+    StateIO.restoreBlocks(localStorage.getItem(getInstanceString("Block States")));
+    StateIO.restoreFunctionDeclarations();
+    StateIO.restoreGlobalVariables();
+    StateIO.restoreWorkbench(localStorage.getItem(getInstanceString("Workbench State")));
+    StateIO.restoreConnectors(localStorage.getItem(getInstanceString("Connector States"))); // connectors must be restored after loading HATs
+    StateIO.finishLoading();
+    flowchart.updateResultsExcludingAllWorkerBlocks();
+    // flowchart.reset(); // FIXME: why did I call this?
+  }
 
   setTimeout(() => { // call this to refresh after inserting canvases
     let startTab = localStorage.getItem(getInstanceString("Start Tab"));
