@@ -15,7 +15,7 @@ import {CrickitHat} from "./CrickitHat";
 import {PanTiltHat} from "./PanTiltHat";
 import {Attachment} from "./Attachment";
 import {Movable} from "../Movable";
-import {closeAllContextMenus, flowchart} from "../Main";
+import {closeAllContextMenus, flowchart, getInstanceString} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 import {ColorPicker} from "../tools/ColorPicker";
 import {SensorLineChart} from "./SensorLineChart";
@@ -542,7 +542,7 @@ export class System {
   storeMcuStates(): void {
     let mcuStates = [];
     this.saveMcuStatesTo(mcuStates);
-    localStorage.setItem("MCU States", JSON.stringify(mcuStates));
+    localStorage.setItem(getInstanceString("MCU States"), JSON.stringify(mcuStates));
   }
 
   saveHatStatesTo(hatStates): void {
@@ -554,7 +554,7 @@ export class System {
   storeHatStates(): void {
     let hatStates = [];
     this.saveHatStatesTo(hatStates);
-    localStorage.setItem("HAT States", JSON.stringify(hatStates));
+    localStorage.setItem(getInstanceString("HAT States"), JSON.stringify(hatStates));
   }
 
   saveAttachments(attachmentStates): void {
@@ -568,7 +568,7 @@ export class System {
   storeAttachments(): void {
     let attachmentStates = [];
     this.saveAttachments(attachmentStates);
-    localStorage.setItem("Attachments", JSON.stringify(attachmentStates));
+    localStorage.setItem(getInstanceString("Attachments"), JSON.stringify(attachmentStates));
   }
 
   storeLineChartStates(): void {
@@ -579,7 +579,7 @@ export class System {
         states.push(new SensorLineChart.State(h.pressureGraph));
       }
     }
-    localStorage.setItem("Line Chart States", JSON.stringify(states));
+    localStorage.setItem(getInstanceString("Line Chart States"), JSON.stringify(states));
   }
 
 }

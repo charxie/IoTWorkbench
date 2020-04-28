@@ -11,6 +11,7 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import {create, all} from "mathjs";
 import html2canvas from "html2canvas";
 import UndoManager from "undo-manager";
+import queryString from "query-string";
 // @ts-ignore
 import clickSound from "./sound/stapler.mp3";
 
@@ -26,7 +27,6 @@ import {Util} from "./Util";
 import {System} from "./components/System";
 import {ComponentsPanel} from "./components/ui/ComponentsPanel";
 import {LineChartContextMenu} from "./components/ui/LineChartContextMenu";
-
 import {ColorPickerContextMenu} from "./components/ui/ColorPickerContextMenu";
 import {Flowchart} from "./blocks/Flowchart";
 import {BlockElementsPanel} from "./blocks/ui/BlockElementsPanel";
@@ -83,13 +83,18 @@ export const sound = new Sound();
 export const math = create(all, {});
 export const undoManager = new UndoManager();
 export const examples = new Examples();
-export const instanceId = Util.getParameterByName("instanceid");
+export const query = queryString.parse(location.search);
 
 export function closeAllContextMenus() {
   Object.keys(contextMenus).forEach(key => {
     let menu = document.getElementById(contextMenus[key].id) as HTMLMenuElement;
     menu.classList.remove("show-menu");
   });
+}
+
+export function getInstanceString(s: string) {
+  if (query.instanceid) s += ":" + query.instanceid;
+  return s;
 }
 
 export function isNumber(x: any) {
@@ -199,27 +204,21 @@ window.onload = function () {
   elementsPanel.render("block-elements-panel");
 
   // read locally stored properties
-  StateIO.restoreMcus(localStorage.getItem("MCU States"));
-  StateIO.restoreHats(localStorage.getItem("HAT States"));
-  StateIO.restoreAttachments(localStorage.getItem("Attachments"));
-  let s = "Block View State";
-  if (instanceId) s += ":" + instanceId;
-  StateIO.restoreBlockView(localStorage.getItem(s));
-  s = "Block States";
-  if (instanceId) s += ":" + instanceId;
-  StateIO.restoreBlocks(localStorage.getItem(s));
+  StateIO.restoreMcus(localStorage.getItem(getInstanceString("MCU States")));
+  StateIO.restoreHats(localStorage.getItem(getInstanceString("HAT States")));
+  StateIO.restoreAttachments(localStorage.getItem(getInstanceString("Attachments")));
+  StateIO.restoreBlockView(localStorage.getItem(getInstanceString("Block View State")));
+  StateIO.restoreBlocks(localStorage.getItem(getInstanceString("Block States")));
   StateIO.restoreFunctionDeclarations();
   StateIO.restoreGlobalVariables();
-  StateIO.restoreWorkbench(localStorage.getItem("Workbench State"));
-  s = "Connector States";
-  if (instanceId) s += ":" + instanceId;
-  StateIO.restoreConnectors(localStorage.getItem(s)); // connectors must be restored after loading HATs
+  StateIO.restoreWorkbench(localStorage.getItem(getInstanceString("Workbench State")));
+  StateIO.restoreConnectors(localStorage.getItem(getInstanceString("Connector States"))); // connectors must be restored after loading HATs
   StateIO.finishLoading();
   flowchart.updateResultsExcludingAllWorkerBlocks();
   // flowchart.reset(); // FIXME: why did I call this?
 
-  setTimeout(function () { // call this to refresh after inserting canvases
-    let startTab = localStorage.getItem("Start Tab");
+  setTimeout(() => { // call this to refresh after inserting canvases
+    let startTab = localStorage.getItem(getInstanceString("Start Tab"));
     if (startTab) {
       switch (startTab) {
         case "model-playground":
@@ -260,7 +259,7 @@ function selectTab(button: HTMLButtonElement, tabId: string) {
   // Show the current tab, and add an "active" class to the button that opened the tab
   document.getElementById(tabId).style.display = "block";
   button.className += " active";
-  localStorage.setItem("Start Tab", tabId);
+  localStorage.setItem(getInstanceString("Start Tab"), tabId);
 }
 
 window.onresize = function () {

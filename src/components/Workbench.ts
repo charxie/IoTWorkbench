@@ -2,7 +2,7 @@
  * @author Charles Xie
  */
 
-import {contextMenus, system} from "../Main";
+import {contextMenus, getInstanceString, system} from "../Main";
 
 export class Workbench {
 
@@ -27,7 +27,7 @@ export class Workbench {
   }
 
   storeState() {
-    localStorage.setItem("Workbench State", JSON.stringify(new Workbench.State(this)));
+    localStorage.setItem(getInstanceString("Workbench State"), JSON.stringify(new Workbench.State(this)));
   }
 
   public draw(): void {
