@@ -123,38 +123,8 @@ let social = `<span style="font-size: 2em; vertical-align: middle; cursor: point
 
 window.onload = function () {
 
-  document.getElementById("sign-in-label").innerHTML = "Hi, " + user.firstName;
-  document.getElementById("name-label").innerHTML = Constants.Software.name;
-  document.getElementById("tagline-label").innerHTML = Constants.Software.tagline;
-  document.getElementById('credit').innerHTML = social + "<div class='horizontal-divider'></div>"
-    + Constants.Software.name + " Version " + Constants.Software.version
-    + ", created by <a href='https://charxie.github.io/' style='text-decoration: none;'>Dr. Charles Xie</a>, " + new Date().getFullYear();
-
-  document.getElementById("main-page-previous-tutorial-button").onclick = () => examples.loadPrevious();
-  document.getElementById("main-page-next-tutorial-button").onclick = () => examples.loadNext();
-  document.getElementById("main-page-new-file-button").onclick = () => flowchart.askToClear();
-  document.getElementById("main-page-undo-button").onclick = () => {
-    if (undoManager.hasUndo()) {
-      undoManager.undo();
-    }
-  };
-  document.getElementById("main-page-redo-button").onclick = () => {
-    if (undoManager.hasRedo()) {
-      undoManager.redo();
-    }
-  };
-  document.getElementById("main-page-home-button").onclick = showUnderConstructionMessage;
-  document.getElementById("main-page-camera-button").onclick = () => {
-    html2canvas(document.body).then(function (canvas) {
-      PngSaver.saveAs(canvas);
-    });
-  };
-  document.getElementById("main-page-share-button").onclick = showUnderConstructionMessage;
-  document.getElementById("main-page-open-file-button").onclick = () => StateIO.open();
-  document.getElementById("main-page-download-button").onclick = () => StateIO.saveAs(JSON.stringify(new State()));
-  document.getElementById("main-page-settings-button").onclick = showUnderConstructionMessage;
-  document.getElementById("main-page-help-button").onclick = showUnderConstructionMessage;
-  document.getElementById("main-page-signout-button").onclick = showUnderConstructionMessage;
+  setupHeader();
+  setupFooter();
 
   let modelTabButton = document.getElementById("model-tab-button") as HTMLButtonElement;
   modelTabButton.addEventListener("click", () => {
@@ -173,14 +143,14 @@ window.onload = function () {
   codeTabButton.addEventListener("click", () => {
     selectTab(codeTabButton, "code-playground");
   });
+  document.getElementById("main-page-previous-tutorial-button").onclick = () => examples.loadPrevious();
+  document.getElementById("main-page-next-tutorial-button").onclick = () => examples.loadNext();
 
   createContextMenusForModels();
   createContextMenusForBlocks();
-
   let lineChartContextMenu = new LineChartContextMenu();
   lineChartContextMenu.render("linechart-context-menu-placeholder");
   contextMenus.lineChart = lineChartContextMenu;
-
   let colorPickerContextMenu = new ColorPickerContextMenu();
   colorPickerContextMenu.render("colorpicker-context-menu-placeholder");
   contextMenus.colorPicker = colorPickerContextMenu;
@@ -237,6 +207,41 @@ window.onload = function () {
 
 };
 
+function setupFooter() {
+  document.getElementById('credit').innerHTML = social + "<div class='horizontal-divider'></div>"
+    + Constants.Software.name + " Version " + Constants.Software.version
+    + ", created by <a href='https://charxie.github.io/' style='text-decoration: none;'>Dr. Charles Xie</a>, " + new Date().getFullYear();
+}
+
+function setupHeader() {
+  document.getElementById("sign-in-label").innerHTML = "Hi, " + user.firstName;
+  document.getElementById("name-label").innerHTML = Constants.Software.name;
+  document.getElementById("tagline-label").innerHTML = Constants.Software.tagline;
+  document.getElementById("main-page-new-file-button").onclick = () => flowchart.askToClear();
+  document.getElementById("main-page-undo-button").onclick = () => {
+    if (undoManager.hasUndo()) {
+      undoManager.undo();
+    }
+  };
+  document.getElementById("main-page-redo-button").onclick = () => {
+    if (undoManager.hasRedo()) {
+      undoManager.redo();
+    }
+  };
+  document.getElementById("main-page-home-button").onclick = showUnderConstructionMessage;
+  document.getElementById("main-page-camera-button").onclick = () => {
+    html2canvas(document.body).then(function (canvas) {
+      PngSaver.saveAs(canvas);
+    });
+  };
+  document.getElementById("main-page-share-button").onclick = showUnderConstructionMessage;
+  document.getElementById("main-page-open-file-button").onclick = () => StateIO.open();
+  document.getElementById("main-page-download-button").onclick = () => StateIO.saveAs(JSON.stringify(new State()));
+  document.getElementById("main-page-settings-button").onclick = showUnderConstructionMessage;
+  document.getElementById("main-page-help-button").onclick = showUnderConstructionMessage;
+  document.getElementById("main-page-signout-button").onclick = showUnderConstructionMessage;
+}
+
 function selectTab(button: HTMLButtonElement, tabId: string) {
   // Get all elements with class="tabcontent" and hide them
   let tabcontent = document.getElementsByClassName("tabcontent") as HTMLCollectionOf<HTMLElement>;
@@ -254,7 +259,7 @@ function selectTab(button: HTMLButtonElement, tabId: string) {
   localStorage.setItem(getInstanceString("Start Tab"), tabId);
 }
 
-window.onresize = function () {
+window.onresize = () => {
   resize();
   draw();
 };
