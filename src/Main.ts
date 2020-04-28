@@ -22,11 +22,12 @@ import {StateIO} from "./StateIO";
 import {Examples} from "./Examples";
 import {PngSaver} from "./tools/PngSaver";
 
+import {Util} from "./Util";
 import {System} from "./components/System";
 import {ComponentsPanel} from "./components/ui/ComponentsPanel";
 import {LineChartContextMenu} from "./components/ui/LineChartContextMenu";
-import {ColorPickerContextMenu} from "./components/ui/ColorPickerContextMenu";
 
+import {ColorPickerContextMenu} from "./components/ui/ColorPickerContextMenu";
 import {Flowchart} from "./blocks/Flowchart";
 import {BlockElementsPanel} from "./blocks/ui/BlockElementsPanel";
 import {createContextMenusForBlocks} from "./BlockContextMenusMaker";
@@ -82,6 +83,7 @@ export const sound = new Sound();
 export const math = create(all, {});
 export const undoManager = new UndoManager();
 export const examples = new Examples();
+export const instanceId = Util.getParameterByName("instanceid");
 
 export function closeAllContextMenus() {
   Object.keys(contextMenus).forEach(key => {
@@ -200,12 +202,18 @@ window.onload = function () {
   StateIO.restoreMcus(localStorage.getItem("MCU States"));
   StateIO.restoreHats(localStorage.getItem("HAT States"));
   StateIO.restoreAttachments(localStorage.getItem("Attachments"));
-  StateIO.restoreBlockView(localStorage.getItem("Block View State"));
-  StateIO.restoreBlocks(localStorage.getItem("Block States"));
+  let s = "Block View State";
+  if (instanceId) s += ":" + instanceId;
+  StateIO.restoreBlockView(localStorage.getItem(s));
+  s = "Block States";
+  if (instanceId) s += ":" + instanceId;
+  StateIO.restoreBlocks(localStorage.getItem(s));
   StateIO.restoreFunctionDeclarations();
   StateIO.restoreGlobalVariables();
   StateIO.restoreWorkbench(localStorage.getItem("Workbench State"));
-  StateIO.restoreConnectors(localStorage.getItem("Connector States")); // connectors must be restored after loading HATs
+  s = "Connector States";
+  if (instanceId) s += ":" + instanceId;
+  StateIO.restoreConnectors(localStorage.getItem(s)); // connectors must be restored after loading HATs
   StateIO.finishLoading();
   flowchart.updateResultsExcludingAllWorkerBlocks();
   // flowchart.reset(); // FIXME: why did I call this?

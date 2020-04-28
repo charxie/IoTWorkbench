@@ -3,7 +3,7 @@
  */
 
 import $ from "jquery";
-import {closeAllContextMenus, examples, flowchart, math, system} from "../Main";
+import {closeAllContextMenus, examples, flowchart, math, system, instanceId} from "../Main";
 import {Util} from "../Util";
 import {BlockView} from "./BlockView";
 import {Block} from "./Block";
@@ -947,13 +947,17 @@ export class Flowchart {
         connectorStates.push(new PortConnector.State(c));
       }
     }
-    localStorage.setItem("Connector States", JSON.stringify(connectorStates));
+    let s = "Connector States";
+    if (instanceId) s += ":" + instanceId;
+    localStorage.setItem(s, JSON.stringify(connectorStates));
   }
 
   storeBlockStates(): void {
     let blockStates = [];
     this.saveBlockStatesTo(blockStates);
-    localStorage.setItem("Block States", JSON.stringify(blockStates));
+    let s = "Block States";
+    if (instanceId) s += ":" + instanceId;
+    localStorage.setItem(s, JSON.stringify(blockStates));
   }
 
   saveBlockStatesTo(blockStates): void {
@@ -1043,7 +1047,9 @@ export class Flowchart {
   }
 
   storeViewState(): void {
-    localStorage.setItem("Block View State", JSON.stringify(new BlockView.State(this.blockView)));
+    let s = "Block View State";
+    if (instanceId) s += ":" + instanceId;
+    localStorage.setItem(s, JSON.stringify(new BlockView.State(this.blockView)));
   }
 
   destroy(): void {

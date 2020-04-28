@@ -6,6 +6,15 @@ import $ from "jquery";
 
 export class Util {
 
+  static getParameterByName(name: string): string {
+    let url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'), results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
+
   static getSelectedText(): string {
     let text = "";
     if (typeof window.getSelection != "undefined") {
