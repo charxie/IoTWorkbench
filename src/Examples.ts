@@ -550,11 +550,17 @@ export class Examples {
   }
 
   loadByTitle(title: string): void {
+    let selectedIndex = -1;
     for (let f of this.files) {
       if (f.name === title) {
         this.load(f.data);
+        selectedIndex = this.files.indexOf(f);
         break;
       }
+    }
+    if (selectedIndex >= 0) {
+      let selectElement = document.getElementById("example-list") as HTMLSelectElement;
+      selectElement.selectedIndex = selectedIndex + 1;
     }
   }
 

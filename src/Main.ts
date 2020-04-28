@@ -102,16 +102,15 @@ export function isNumber(x: any) {
 }
 
 function showUnderConstructionMessage() {
-  $("#modal-dialog").html("<div style='font-size: 90%;'>Under construction...</div>").dialog({
+  let d = $("#modal-dialog");
+  d.html("<div style='font-size: 90%;'>Under construction...</div>").dialog({
     resizable: false,
     modal: true,
     title: "Sorry",
     height: 150,
     width: 200,
     buttons: {
-      'OK': function () {
-        $(this).dialog('close');
-      }
+      'OK': () => d.dialog('close')
     }
   });
 }
@@ -131,58 +130,47 @@ window.onload = function () {
     + Constants.Software.name + " Version " + Constants.Software.version
     + ", created by <a href='https://charxie.github.io/' style='text-decoration: none;'>Dr. Charles Xie</a>, " + new Date().getFullYear();
 
-  document.getElementById("main-page-previous-tutorial-button").onclick = function () {
-    examples.loadPrevious();
-  };
-  document.getElementById("main-page-next-tutorial-button").onclick = function () {
-    examples.loadNext();
-  };
-
-  document.getElementById("main-page-new-file-button").onclick = function () {
-    flowchart.askToClear();
-  };
-  document.getElementById("main-page-undo-button").onclick = function () {
+  document.getElementById("main-page-previous-tutorial-button").onclick = () => examples.loadPrevious();
+  document.getElementById("main-page-next-tutorial-button").onclick = () => examples.loadNext();
+  document.getElementById("main-page-new-file-button").onclick = () => flowchart.askToClear();
+  document.getElementById("main-page-undo-button").onclick = () => {
     if (undoManager.hasUndo()) {
       undoManager.undo();
     }
   };
-  document.getElementById("main-page-redo-button").onclick = function () {
+  document.getElementById("main-page-redo-button").onclick = () => {
     if (undoManager.hasRedo()) {
       undoManager.redo();
     }
   };
   document.getElementById("main-page-home-button").onclick = showUnderConstructionMessage;
-  document.getElementById("main-page-camera-button").onclick = function () {
+  document.getElementById("main-page-camera-button").onclick = () => {
     html2canvas(document.body).then(function (canvas) {
       PngSaver.saveAs(canvas);
     });
   };
   document.getElementById("main-page-share-button").onclick = showUnderConstructionMessage;
-  document.getElementById("main-page-open-file-button").onclick = function () {
-    StateIO.open();
-  };
-  document.getElementById("main-page-download-button").onclick = function () {
-    StateIO.saveAs(JSON.stringify(new State()));
-  };
+  document.getElementById("main-page-open-file-button").onclick = () => StateIO.open();
+  document.getElementById("main-page-download-button").onclick = () => StateIO.saveAs(JSON.stringify(new State()));
   document.getElementById("main-page-settings-button").onclick = showUnderConstructionMessage;
   document.getElementById("main-page-help-button").onclick = showUnderConstructionMessage;
   document.getElementById("main-page-signout-button").onclick = showUnderConstructionMessage;
 
   let modelTabButton = document.getElementById("model-tab-button") as HTMLButtonElement;
-  modelTabButton.addEventListener("click", function () {
+  modelTabButton.addEventListener("click", () => {
     selectTab(modelTabButton, "model-playground");
     resize();
     system.draw();
   });
   let blockTabButton = document.getElementById("block-tab-button") as HTMLButtonElement;
-  blockTabButton.addEventListener("click", function () {
+  blockTabButton.addEventListener("click", () => {
     selectTab(blockTabButton, "block-playground");
     resize();
     flowchart.addModelBlockIfMissing();
     flowchart.blockView.requestDraw();
   });
   let codeTabButton = document.getElementById("code-tab-button") as HTMLButtonElement;
-  codeTabButton.addEventListener("click", function () {
+  codeTabButton.addEventListener("click", () => {
     selectTab(codeTabButton, "code-playground");
   });
 
