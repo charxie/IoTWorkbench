@@ -179,6 +179,13 @@ window.onload = function () {
     // flowchart.reset(); // FIXME: why did I call this?
   }
 
+  if (query.tab === "flow") {
+    document.getElementById("tabs").style.display = "none";
+    let blockElementsPanel = document.getElementById("block-elements-panel");
+    blockElementsPanel.style.top = "5px";
+    blockElementsPanel.style.bottom = "5px";
+  }
+
   setTimeout(() => { // call this to refresh after inserting canvases
     let startTab = localStorage.getItem(getInstanceString("Start Tab"));
     if (startTab) {
@@ -208,9 +215,13 @@ window.onload = function () {
 };
 
 function setupFooter() {
-  document.getElementById('credit').innerHTML = social + "<div class='horizontal-divider'></div>"
+  let footer = document.getElementById('footer');
+  footer.innerHTML = social + "<div class='horizontal-divider'></div>"
     + Constants.Software.name + " Version " + Constants.Software.version
     + ", created by <a href='https://charxie.github.io/' style='text-decoration: none;'>Dr. Charles Xie</a>, " + new Date().getFullYear();
+  if (query.footer === "no") {
+    footer.style.display = "none";
+  }
 }
 
 function setupHeader() {
@@ -240,6 +251,9 @@ function setupHeader() {
   document.getElementById("main-page-settings-button").onclick = showUnderConstructionMessage;
   document.getElementById("main-page-help-button").onclick = showUnderConstructionMessage;
   document.getElementById("main-page-signout-button").onclick = showUnderConstructionMessage;
+  if (query.header === "no") {
+    document.getElementById("header").style.display = "none";
+  }
 }
 
 function selectTab(button: HTMLButtonElement, tabId: string) {
@@ -269,16 +283,17 @@ function resize() {
     let componentsPanelRect = document.getElementById("model-playground-components-panel").getBoundingClientRect() as DOMRect;
     let workbenchRect = system.workbench.canvas.getBoundingClientRect() as DOMRect;
     system.workbench.canvas.width = window.innerWidth - componentsPanelRect.right - 16;
-    system.workbench.canvas.height = window.innerHeight - workbenchRect.top - 50;
+    system.workbench.canvas.height = window.innerHeight - workbenchRect.top - 30;
     let componentsScroller = document.getElementById("components-scroller") as HTMLDivElement;
     componentsScroller.style.height = system.workbench.canvas.height * 0.85 + "px";
   }
   if (document.getElementById("block-playground").style.display == "block") {
+    let onlyFlowTab = query.tab === "flow";
     let blockViewWrapper = document.getElementById("block-view-wrapper");
     let blockElementsPanelRect = document.getElementById("block-elements-panel").getBoundingClientRect() as DOMRect;
     let blockViewWrapperRect = blockViewWrapper.getBoundingClientRect() as DOMRect;
     let w = window.innerWidth - blockElementsPanelRect.right - 15;
-    let h = window.innerHeight - blockViewWrapperRect.top - 45;
+    let h = window.innerHeight - blockViewWrapperRect.top - (onlyFlowTab ? 5 : 25);
     blockViewWrapper.style.width = w + "px";
     blockViewWrapper.style.height = h + "px";
     let elementsScroller = document.getElementById("elements-scroller") as HTMLDivElement;

@@ -55,7 +55,7 @@ export class BlockElementsPanel {
   getUi(): string {
     return `<h2 style="text-align: left; font-size: 18px; vertical-align: top; margin-top: 0; margin-bottom: 10px">
                 <span style="font-size: 1.2em; color: teal; vertical-align: middle;"><i class="fas fa-cubes"></i></span> Blocks</h2>
-            <div id="elements-scroller" class="vertical-scroll" style="height: 380px; margin-top: 0; border-bottom: 2px solid lightgray; border-top: 2px solid lightgray">
+            <div id="elements-scroller" class="vertical-scroll" style="height: 400px; margin-top: 0; border-bottom: 2px solid lightgray; border-top: 2px solid lightgray">
               <h3 style="text-align: left; font-size: 12px;"><span style="font-size: 1.2em; color: teal; vertical-align: middle"><i class="fas fa-cube"></i></span> Operators & Functions</h3>
               <div class="horizontal-scroll" style="margin-right: 10px; background-color: aquamarine; border: 1px solid #b81900; border-radius: 4px">
                 <table style="width: 100%">

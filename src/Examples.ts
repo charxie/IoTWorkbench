@@ -518,7 +518,6 @@ export class Examples {
       option.value = a.name;
       option.innerHTML = i++ + ". " + a.name;
       selectElement.appendChild(option);
-
     }
 
     selectElement.onchange = () => {
