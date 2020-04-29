@@ -6,6 +6,23 @@ import $ from "jquery";
 
 export class Util {
 
+  static copyStringToClipboard(s: string): void {
+    const textArea = document.createElement('textarea');
+    textArea.value = s;
+    textArea.setAttribute('readonly', '');
+    textArea.style.position = 'absolute';
+    textArea.style.left = '-9999px'; // Move outside the screen to make it invisible
+    document.body.appendChild(textArea);
+    const selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    if (selected) {
+      document.getSelection().removeAllRanges();
+      document.getSelection().addRange(selected);
+    }
+  }
+
   static getParameterByName(name: string): string {
     let url = window.location.href;
     name = name.replace(/[\[\]]/g, '\\$&');

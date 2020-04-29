@@ -245,7 +245,40 @@ function setupHeader() {
       PngSaver.saveAs(canvas);
     });
   };
-  document.getElementById("main-page-share-button").onclick = showUnderConstructionMessage;
+  document.getElementById("main-page-share-button").onclick = () => {
+    let url = document.location.href;
+    let title = examples.getCurrentTitle();
+    if (title) {
+      let hasQuery = url.indexOf("?") > 0;
+      if (hasQuery) {
+        let index = url.indexOf("example=");
+        if (index > 0) {
+          let s = url.substring(index + 8);
+          let nextIndex = s.indexOf("&");
+          if (nextIndex >= 0) {
+            s = s.substr(0, nextIndex);
+          }
+          url = url.replace(s, encodeURIComponent(title));
+        } else {
+          url += "&example=" + encodeURIComponent(title);
+        }
+      } else {
+        url += "?example=" + encodeURIComponent(title);
+      }
+    }
+    Util.copyStringToClipboard(url);
+    let d = $("#modal-dialog");
+    d.html("<div style='font-size: 90%;'>" + url + "<br>was copied to the clipboard.</div>").dialog({
+      resizable: false,
+      modal: true,
+      title: "Share Link",
+      height: 200,
+      width: 400,
+      buttons: {
+        'OK': () => d.dialog('close')
+      }
+    });
+  };
   document.getElementById("main-page-open-file-button").onclick = () => StateIO.open();
   document.getElementById("main-page-download-button").onclick = () => StateIO.saveAs(JSON.stringify(new State()));
   document.getElementById("main-page-settings-button").onclick = showUnderConstructionMessage;

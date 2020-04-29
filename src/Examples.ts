@@ -548,6 +548,14 @@ export class Examples {
     selectElement.selectedIndex = 0;
   }
 
+  getCurrentTitle(): string {
+    let selectElement = document.getElementById("example-list") as HTMLSelectElement;
+    if (selectElement.selectedIndex < selectElement.length && selectElement.selectedIndex > 0) {
+      return this.files[selectElement.selectedIndex - 1].name;
+    }
+    return null;
+  }
+
   loadByTitle(title: string): void {
     let selectedIndex = -1;
     for (let f of this.files) {
