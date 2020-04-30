@@ -480,17 +480,17 @@ export class Space3D extends Basic3DBlock {
       if (vx !== undefined && vy !== undefined && vz !== undefined) {
         let v = (<LinePlot>this.view).getLatestPoint(0);
         if (!Array.isArray(vx)) {
-          if (vx != v.x) { // TODO: Not a reliable way to store x and y at the same time
+          if (!v || vx != v.x) { // TODO: Not a reliable way to store x and y at the same time
             this.tempX = vx;
           }
         }
         if (!Array.isArray(vy)) {
-          if (vy != v.y) { // TODO: Not a reliable way to store x and y at the same time
+          if (!v || vy != v.y) { // TODO: Not a reliable way to store x and y at the same time
             this.tempY = vy;
           }
         }
         if (!Array.isArray(vz)) {
-          if (vy != v.z) { // TODO: Not a reliable way to store x and y at the same time
+          if (!v || vy != v.z) { // TODO: Not a reliable way to store x and y at the same time
             this.tempZ = vz;
           }
         }

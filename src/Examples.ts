@@ -139,6 +139,8 @@ import pde_numerical_stability from "./examples/pde-numerical-stability.json";
 // @ts-ignore
 import normal_distributions from "./examples/normal-distributions.json";
 // @ts-ignore
+import normal_distribution_3d from "./examples/normal-distribution-3d.json";
+// @ts-ignore
 import poisson_distribution from "./examples/poisson-distribution.json";
 // @ts-ignore
 import box_muller_transform from "./examples/box-muller-transform.json";
@@ -408,6 +410,7 @@ export class Examples {
     this.files.push({name: "Optimization: Gradient Descent in Two Dimensions", data: gradient_descent_2d});
     this.files.push({name: "Statistics: Box-Muller Transform", data: box_muller_transform});
     this.files.push({name: "Statistics: Normal Distributions", data: normal_distributions});
+    this.files.push({name: "Statistics: Normal Distribution in 3D", data: normal_distribution_3d});
     this.files.push({name: "Statistics: Poisson Distribution", data: poisson_distribution});
     this.files.push({name: "Statistics: Random Walk in 2D", data: random_walk});
     this.files.push({name: "Statistics: Random Walk in 3D", data: random_walk_3d});

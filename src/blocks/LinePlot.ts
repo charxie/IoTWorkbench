@@ -71,6 +71,14 @@ export class LinePlot extends Basic3D {
         p.clear();
       }
     }
+    if (this.symbols !== undefined) {
+      for (let s of this.symbols) {
+        for (let i = 0; i < s.length(); i++) {
+          this.scene.remove(s.getSymbol(i));
+        }
+        s.clear();
+      }
+    }
   }
 
   destroy(): void {
@@ -195,6 +203,7 @@ export class LinePlot extends Basic3D {
     if (i > 0) {
       this.setEndSymolConnector(i, i - 1);
     }
+    this.drawSymbols(i);
   }
 
   private setEndSymolConnector(i: number, j: number): void {
