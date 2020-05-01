@@ -10,8 +10,6 @@ import {Rectangle} from "../math/Rectangle";
 
 export class ArrayInput extends Block {
 
-  private array: any[] = [];
-  private text: string;
   private textColor: string = "black";
   private barHeight: number;
   private textArea: HTMLTextAreaElement;
@@ -25,9 +23,8 @@ export class ArrayInput extends Block {
     readonly height: number;
     readonly marginX: number;
     readonly marginY: number;
-    readonly text: string;
-    readonly color: string;
     readonly textColor: string;
+    readonly text: string;
 
     constructor(b: ArrayInput) {
       this.name = b.name;
@@ -38,9 +35,8 @@ export class ArrayInput extends Block {
       this.height = b.height;
       this.marginX = b.marginX;
       this.marginY = b.marginY;
-      this.text = b.text;
-      this.color = b.color;
       this.textColor = b.textColor;
+      this.text = b.textArea.value;
     }
   };
 
@@ -48,13 +44,15 @@ export class ArrayInput extends Block {
     super(uid, x, y, width, height);
     this.name = name;
     this.color = "#CC9";
+    this.source = true;
+    this.initiator = true;
     this.barHeight = Math.min(30, this.height / 3);
     this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
     this.textArea = document.createElement("textarea");
     this.textArea.tabIndex = 0;
     this.textArea.style.overflowY = "auto";
     this.textArea.style.position = "absolute";
-    this.textArea.style.fontFamily = "Arial";
+    this.textArea.style.fontFamily = "Courier New";
     this.textArea.style.fontSize = "12px";
     this.textArea.style.color = this.textColor;
     this.textArea.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
@@ -64,9 +62,7 @@ export class ArrayInput extends Block {
   }
 
   getCopy(): Block {
-    let copy = new ArrayInput("Sticker #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    copy.text = this.text;
-    copy.color = this.color;
+    let copy = new ArrayInput("Array Input #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.textColor = this.textColor;
     copy.marginX = this.marginX;
     copy.marginY = this.marginY;
@@ -75,10 +71,8 @@ export class ArrayInput extends Block {
   }
 
   destroy(): void {
-    if (this.textArea !== undefined) {
-      let parent = document.getElementById("block-view-wrapper");
-      if (parent.contains(this.textArea)) parent.removeChild(this.textArea);
-    }
+    let parent = document.getElementById("block-view-wrapper");
+    if (parent.contains(this.textArea)) parent.removeChild(this.textArea);
   }
 
   private overlayMouseDown(e: MouseEvent): void {
@@ -100,7 +94,20 @@ export class ArrayInput extends Block {
   }
 
   private overlayKeyUp(e: KeyboardEvent): void {
-    flowchart.blockView.keyUp(e);
+    switch (e.key) { // single keys
+      case "Enter":
+        this.updateAll();
+        break;
+    }
+  }
+
+  private updateAll(): void {
+    flowchart.traverse(this);
+    if (flowchart.isConnectedToGlobalBlock(this)) {
+      flowchart.updateResultsExcludingAllWorkerBlocks();
+    }
+    flowchart.storeBlockStates();
+    flowchart.blockView.requestDraw();
   }
 
   setTextColor(textColor: string): void {
@@ -109,6 +116,14 @@ export class ArrayInput extends Block {
 
   getTextColor(): string {
     return this.textColor;
+  }
+
+  setText(text: string) {
+    this.textArea.value = text;
+  }
+
+  getText(): string {
+    return this.textArea.value;
   }
 
   locateOverlay(): void {
@@ -173,7 +188,7 @@ export class ArrayInput extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = this.textColor;
-      let name2 = this.name + " (" + this.array.length + ")";
+      let name2 = this.name + " (" + ")";
       let titleWidth = ctx.measureText(name2).width;
       ctx.fillText(name2, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
@@ -199,25 +214,6 @@ export class ArrayInput extends Block {
       ctx.fillStyle = "black";
       ctx.font = "8px Arial";
       ctx.fillText("[...]", x + 4, y + 7.5);
-    } else {
-      if (this.textArea) {
-        if (this.text != undefined) {
-          this.textArea.style.fontFamily = "Courier New";
-          let lines = this.text.split(",");
-          let htmlLines = "<p style='line-height: 1.2; margin: 0; padding: 0;'>";
-          for (let i = 0; i < lines.length; i++) {
-            if (i % 2 === 0) {
-              htmlLines += "<mark style='background-color: lightgreen; color:" + this.textColor + "'>" + lines[i] + "</mark>";
-            } else {
-              htmlLines += lines[i];
-            }
-            if (i < lines.length - 1) {
-              htmlLines += "<br>";
-            }
-          }
-          this.textArea.innerHTML = htmlLines;
-        }
-      }
     }
 
     // draw the port
@@ -236,18 +232,28 @@ export class ArrayInput extends Block {
   }
 
   updateModel(): void {
-    this.ports[0].setValue(this.text);
+    let array = this.textArea.value.trim().split(/[ ,\n]+/);
+    let numbers = new Array(array.length);
+    for (let i = 0; i < numbers.length; i++) {
+      try {
+        numbers[i] = parseFloat(array[i]);
+      } catch (e) {
+        numbers[i] = array[i];
+      }
+    }
+    this.ports[0].setValue(numbers);
     this.updateConnectors();
   }
 
   refreshView(): void {
     super.refreshView();
     this.barHeight = Math.min(30, this.height / 3);
+    this.ports[0].setX(this.width);
     this.ports[0].setY((this.height + this.barHeight) / 2);
   }
 
   erase(): void {
-    this.text = "";
+    this.textArea.value = "";
   }
 
 }

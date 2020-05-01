@@ -360,7 +360,7 @@ export class Sticker extends Block {
             try {
               this.text += i.toFixed(this.decimals) + ",";
             } catch (e) {
-              this.text = i + ","; // value is a boolean or string
+              this.text += i + ","; // value is a boolean or string
             }
           }
         }

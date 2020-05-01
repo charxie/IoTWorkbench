@@ -362,9 +362,10 @@ export class StateIO {
           }
         } else if (block instanceof ArrayInput) {
           block.setName(state.name);
-          block.setMarginX(state.marginX === undefined ? 15 : state.marginX);
-          block.setMarginY(state.marginY === undefined ? 15 : state.marginY);
-          if (state.textColor != undefined) block.setTextColor(state.textColor);
+          block.setText(state.text !== undefined ? state.text : "");
+          block.setMarginX(state.marginX);
+          block.setMarginY(state.marginY);
+          block.setTextColor(state.textColor);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }
