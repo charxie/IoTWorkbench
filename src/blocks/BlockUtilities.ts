@@ -53,6 +53,7 @@ import {ImageBlock} from "./ImageBlock";
 import {AudioBlock} from "./AudioBlock";
 import {DataBlock} from "./DataBlock";
 import {MolecularViewerBlock} from "./MolecularViewerBlock";
+import {ArrayInput} from "./ArrayInput";
 
 export class BlockUtilities {
 
@@ -197,6 +198,9 @@ export class BlockUtilities {
     }
     if (block instanceof MolecularViewerBlock) {
       return contextMenus.molecularViewerBlock;
+    }
+    if (block instanceof ArrayInput) {
+      return contextMenus.arrayInput;
     }
     if (block instanceof RainbowHatBlock) {
       return contextMenus.rainbowHatBlock;
@@ -396,6 +400,10 @@ export class BlockUtilities {
     if (block instanceof MolecularViewerBlock) {
       contextMenus.molecularViewerBlock.block = block;
       return document.getElementById("molecular-viewer-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof ArrayInput) {
+      contextMenus.arrayInput.block = block;
+      return document.getElementById("array-input-context-menu") as HTMLMenuElement;
     }
     return null;
   }

@@ -52,6 +52,7 @@ import {ImageBlockContextMenu} from "./blocks/ui/ImageBlockContextMenu";
 import {AudioBlockContextMenu} from "./blocks/ui/AudioBlockContextMenu";
 import {DataBlockContextMenu} from "./blocks/ui/DataBlockContextMenu";
 import {MolecularViewerContextMenu} from "./blocks/ui/MolecularViewerContextMenu";
+import {ArrayInputContextMenu} from "./blocks/ui/ArrayInputContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -105,6 +106,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("audio-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("data-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("molecular-viewer-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("array-input-context-menu-placeholder", blockPlayground);
 
   setupContextMenuForBlocks();
 
@@ -356,6 +358,11 @@ function setupContextMenuForBlocks() {
   molecularViewerBlockContextMenu.render("molecular-viewer-block-context-menu-placeholder");
   molecularViewerBlockContextMenu.addListeners();
   contextMenus.molecularViewerBlock = molecularViewerBlockContextMenu;
+
+  let arrayInputContextMenu = new ArrayInputContextMenu();
+  arrayInputContextMenu.render("array-input-context-menu-placeholder");
+  arrayInputContextMenu.addListeners();
+  contextMenus.arrayInput = arrayInputContextMenu;
 
 }
 

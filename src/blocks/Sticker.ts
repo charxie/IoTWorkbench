@@ -18,7 +18,7 @@ export class Sticker extends Block {
   private keepResult: boolean = false;
   private arrayLength: number;
   private userText: string;
-  protected textColor: string = "black";
+  private textColor: string = "black";
   private isArray: boolean;
   private decimals: number = 3;
   private barHeight: number;
@@ -65,7 +65,7 @@ export class Sticker extends Block {
     this.name = name;
     this.color = "#FFF86B";
     this.barHeight = Math.min(30, this.height / 3);
-    this.ports.push(new Port(this, true, "I", 0, this.height / 2, false));
+    this.ports.push(new Port(this, true, "I", 0, (this.height + this.barHeight) / 2, false));
   }
 
   getCopy(): Block {
@@ -411,7 +411,7 @@ export class Sticker extends Block {
     super.refreshView();
     this.barHeight = Math.min(30, this.height / 3);
     //this.updateModel();
-    this.ports[0].setY(this.height / 2);
+    this.ports[0].setY((this.height + this.barHeight) / 2);
   }
 
   erase(): void {

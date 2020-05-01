@@ -61,6 +61,7 @@ import {ImageBlock} from "./ImageBlock";
 import {AudioBlock} from "./AudioBlock";
 import {DataBlock} from "./DataBlock";
 import {MolecularViewerBlock} from "./MolecularViewerBlock";
+import {ArrayInput} from "./ArrayInput";
 
 export class BlockView {
 
@@ -333,6 +334,11 @@ export class BlockView {
         break;
       case "random-number-generator-block":
         b = this.addBlockUndoable(new RandomNumberGeneratorBlock("Random Number Generator Block #" + timestamp, x - 30, y - 40, 60, 80));
+        break;
+      case "array-input-block":
+        let arrayInput = new ArrayInput("Array Input #" + timestamp, "Array Input", x - 60, y - 60, 120, 120);
+        this.addBlockUndoable(arrayInput);
+        arrayInput.locateOverlay();
         break;
     }
     return b;

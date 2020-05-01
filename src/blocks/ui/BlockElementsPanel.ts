@@ -49,6 +49,7 @@ import {ImageBlock} from "../ImageBlock";
 import {AudioBlock} from "../AudioBlock";
 import {DataBlock} from "../DataBlock";
 import {MolecularViewerBlock} from "../MolecularViewerBlock";
+import {ArrayInput} from "../ArrayInput";
 
 export class BlockElementsPanel {
 
@@ -80,6 +81,7 @@ export class BlockElementsPanel {
                   <tr>
                   <td><canvas draggable="true" id="slider-block" title="Slider" width="60x" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="item-selector-block" title="Item Selector" width="50x" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="array-input-block" title="Array Input" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="toggle-switch-block" title="Toggle Switch" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="momentary-switch-block" title="Momentary Switch" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="sticker-block" title="Text Display" width="45px" height="45px" style="cursor: pointer;"/></td>
@@ -153,6 +155,7 @@ export class BlockElementsPanel {
     this.drawMomentarySwitch("Momentary Switch", "momentary-switch-block");
     this.drawSlider("Slider", "slider-block");
     this.drawItemSelector("Item Selector", "item-selector-block");
+    this.drawArrayInput("Array Input", "array-input-block");
     this.drawSticker("Sticker", "sticker-block");
     this.drawBeeper("Beeper", "beeper-block");
     this.drawGrapher("Grapher", "grapher-block");
@@ -354,6 +357,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new TurnoutSwitch("Turnout Switch Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawArrayInput(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new ArrayInput("Array Input Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

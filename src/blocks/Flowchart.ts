@@ -60,6 +60,7 @@ import {ImageBlock} from "./ImageBlock";
 import {AudioBlock} from "./AudioBlock";
 import {DataBlock} from "./DataBlock";
 import {MolecularViewerBlock} from "./MolecularViewerBlock";
+import {ArrayInput} from "./ArrayInput";
 
 export class Flowchart {
 
@@ -911,6 +912,9 @@ export class Flowchart {
       case "Random Number Generator Block":
         block = new RandomNumberGeneratorBlock(uid, x, y, 200, 220);
         break;
+      case "Array Input":
+        block = new ArrayInput(uid, name, x, y, 80, 80);
+        break;
       case "Rainbow HAT Block":
         block = new RainbowHatBlock(uid, x, y);
         break;
@@ -1036,6 +1040,8 @@ export class Flowchart {
         blockStates.push(new BundledFunctionsBlock.State(b));
       } else if (b instanceof RandomNumberGeneratorBlock) {
         blockStates.push(new RandomNumberGeneratorBlock.State(b));
+      } else if (b instanceof ArrayInput) {
+        blockStates.push(new ArrayInput.State(b));
       } else {
         blockStates.push(new Block.State(b));
       }

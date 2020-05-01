@@ -50,6 +50,7 @@ import {AudioBlock} from "./blocks/AudioBlock";
 import {DataBlock} from "./blocks/DataBlock";
 import {MolecularViewerBlock} from "./blocks/MolecularViewerBlock";
 import {Basic3DBlock} from "./blocks/Basic3DBlock";
+import {ArrayInput} from "./blocks/ArrayInput";
 
 export class StateIO {
 
@@ -359,6 +360,11 @@ export class StateIO {
           if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined) {
             block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
           }
+        } else if (block instanceof ArrayInput) {
+          block.setName(state.name);
+          block.setMarginX(state.marginX === undefined ? 15 : state.marginX);
+          block.setMarginY(state.marginY === undefined ? 15 : state.marginY);
+          if (state.textColor != undefined) block.setTextColor(state.textColor);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }
@@ -532,6 +538,8 @@ export class StateIO {
           b.locateHtmlOverlay();
         }
       } else if (b instanceof Basic3DBlock) {
+        b.locateOverlay();
+      } else if (b instanceof ArrayInput) {
         b.locateOverlay();
       }
     }
