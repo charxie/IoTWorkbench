@@ -91,6 +91,9 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="field2d-block" title="Contour Plot" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="surface3d-block" title="Surface Plot" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="beeper-block" title="Beeper" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="image-block" title="Image" width="60x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="audio-block" title="Audio" width="60x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="data-block" title="Data" width="60x" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -102,13 +105,11 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="global-variable-block" title="Global Variable" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="global-object-block" title="Global Object" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="series-block" title="Series" width="45x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="function-declaration-block" title="Function Declaration" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="rgba-color-block" title="RGBA Color" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="complex-number-block" title="Complex Number" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="vector-block" title="Vector" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="matrix-block" title="Matrix" width="60x" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="image-block" title="Image" width="60x" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="audio-block" title="Audio" width="60x" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="data-block" title="Data" width="60x" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -122,7 +123,6 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="worker-block" title="Worker" width="45x" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="action-block" title="Action" width="45x" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="random-number-generator-block" title="Random Number Generator" width="45x" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="function-declaration-block" title="Function Declaration" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="ode-solver-block" title="ODE Solver" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="transient-state-fdm-solver-block" title="Transient State FDM Solver" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="steady-state-fdm-solver-block" title="Steady State FDM Solver" width="45px" height="60px" style="cursor: pointer;"/></td>

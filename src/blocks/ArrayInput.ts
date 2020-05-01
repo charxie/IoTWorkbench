@@ -13,7 +13,9 @@ export class ArrayInput extends Block {
   private textColor: string = "black";
   private barHeight: number;
   private button: Rectangle;
-  private arrayLength: number = 0;
+  private array: any[][];
+  private rowCount: number = 0;
+  private colCount: number = 0;
   private textArea: HTMLTextAreaElement;
 
   static State = class {
@@ -49,7 +51,7 @@ export class ArrayInput extends Block {
     this.source = true;
     this.initiator = true;
     this.barHeight = Math.min(30, this.height / 3);
-    this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
+    this.ports.push(new Port(this, false, "A", this.width, this.height / 2, true));
     this.textArea = document.createElement("textarea");
     this.textArea.tabIndex = 0;
     this.textArea.style.overflowY = "auto";
@@ -65,6 +67,7 @@ export class ArrayInput extends Block {
 
   getCopy(): Block {
     let copy = new ArrayInput("Array Input #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    copy.setText(this.getText());
     copy.textColor = this.textColor;
     copy.marginX = this.marginX;
     copy.marginY = this.marginY;
@@ -85,15 +88,47 @@ export class ArrayInput extends Block {
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
     if (this.button.contains(x, y)) {
-      this.trimText();
+      this.parseText();
       this.updateAll();
       return true;
     }
     return false;
   }
 
-  private trimText(): void {
+  private parseText(): void {
     this.textArea.value = this.textArea.value.trim();
+    let rows = this.textArea.value.split(/\n+/);
+    this.rowCount = rows.length;
+    for (let i = 0; i < this.rowCount; i++) {
+      let columnValues = rows[i].split(/[ ,\t]+/);
+      if (i === 0) {
+        this.colCount = columnValues.length;
+        this.array = new Array(this.colCount);
+        for (let col = 0; col < this.colCount; col++) {
+          this.array[col] = new Array(this.rowCount);
+        }
+      }
+      for (let j = 0; j < this.colCount; j++) {
+        this.array[j][i] = columnValues[j];
+      }
+    }
+    this.setOutputPorts();
+  }
+
+  private setOutputPorts(): void {
+    if (this.ports.length !== this.colCount) {
+      for (let p of this.ports) { // disconnect all the port connectors as the ports will be recreated
+        flowchart.removeAllConnectors(p);
+      }
+      this.ports.length = 0;
+      let dh = this.height / (this.colCount + 1);
+      let firstPortName = "A";
+      let k = firstPortName.charCodeAt(0);
+      for (let i = 0; i < this.colCount; i++) {
+        let id = String.fromCharCode(k++);
+        this.ports.push(new Port(this, false, id, this.width, (i + 1) * dh, true));
+      }
+    }
   }
 
   private updateAll(): void {
@@ -109,7 +144,9 @@ export class ArrayInput extends Block {
     let rect = flowchart.blockView.canvas.getBoundingClientRect();
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
-    flowchart.blockView.canvas.style.cursor = this.button.contains(x, y) ? "pointer" : "default";
+    if (this.button.contains(x, y)) {
+      flowchart.blockView.canvas.style.cursor = "pointer";
+    }
   }
 
   private overlayMouseDown(e: MouseEvent): void {
@@ -140,6 +177,7 @@ export class ArrayInput extends Block {
 
   setText(text: string) {
     this.textArea.value = text;
+    this.parseText();
   }
 
   getText(): string {
@@ -208,7 +246,7 @@ export class ArrayInput extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = this.textColor;
-      let name2 = this.name + " (" + this.arrayLength + ")";
+      let name2 = this.name + " (" + this.rowCount + ")";
       let titleWidth = ctx.measureText(name2).width;
       ctx.fillText(name2, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
@@ -258,7 +296,9 @@ export class ArrayInput extends Block {
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
-    this.ports[0].draw(ctx, this.iconic);
+    for (let p of this.ports) {
+      p.draw(ctx, this.iconic);
+    }
 
     if (this.selected) {
       this.highlightSelection(ctx);
@@ -271,25 +311,28 @@ export class ArrayInput extends Block {
   }
 
   updateModel(): void {
-    let array = this.textArea.value.trim().split(/[ ,\n]+/);
-    this.arrayLength = array.length;
-    let numbers = new Array(this.arrayLength);
-    for (let i = 0; i < this.arrayLength; i++) {
-      try {
-        numbers[i] = parseFloat(array[i]);
-      } catch (e) {
-        numbers[i] = array[i];
+    for (let col = 0; col < this.ports.length; col++) {
+      let numbers = new Array(this.array[col].length);
+      for (let row = 0; row < numbers.length; row++) {
+        try {
+          numbers[row] = parseFloat(this.array[col][row]);
+        } catch (e) {
+          numbers[row] = this.array[col][row];
+        }
       }
+      this.ports[col].setValue(numbers);
     }
-    this.ports[0].setValue(numbers);
     this.updateConnectors();
   }
 
   refreshView(): void {
     super.refreshView();
     this.barHeight = Math.min(30, this.height / 3);
-    this.ports[0].setX(this.width);
-    this.ports[0].setY((this.height + this.barHeight) / 2);
+    let dh = (this.height - this.barHeight) / (this.ports.length + 1);
+    for (let i = 0; i < this.ports.length; i++) {
+      this.ports[i].setX(this.width);
+      this.ports[i].setY(this.barHeight + (i + 1) * dh);
+    }
   }
 
   erase(): void {
