@@ -725,13 +725,17 @@ export class BlockView {
     }
     let grab = false;
     for (let b of flowchart.blocks) {
-      if (b.isSelected()) {
-        if (b.mouseDown(e)) {
-          grab = true;
-          if (b.isSource()) {
-            this.highlightedPortConnectors = flowchart.getConnectors(b.getPorts()[0]);
+      if (b instanceof ArrayInput) {
+        b.mouseDown(e);
+      } else {
+        if (b.isSelected()) {
+          if (b.mouseDown(e)) {
+            grab = true;
+            if (b.isSource()) {
+              this.highlightedPortConnectors = flowchart.getConnectors(b.getPorts()[0]);
+            }
+            break;
           }
-          break;
         }
       }
     }
@@ -895,15 +899,19 @@ export class BlockView {
     }
 
     for (let b of flowchart.blocks) {
-      if (b.isSelected()) {
-        if (b instanceof MomentarySwitch) { // special treatment for momentary switch
-          if (b.isPressed() && !b.contains(x, y)) {
-            b.setPressed(false);
-            b.updateImmediately();
-          }
-        } else {
-          if (b.contains(x, y)) {
-            b.mouseMove(e);
+      if (b instanceof ArrayInput) {
+        b.mouseMove(e);
+      } else {
+        if (b.isSelected()) {
+          if (b instanceof MomentarySwitch) { // special treatment for momentary switch
+            if (b.isPressed() && !b.contains(x, y)) {
+              b.setPressed(false);
+              b.updateImmediately();
+            }
+          } else {
+            if (b.contains(x, y)) {
+              b.mouseMove(e);
+            }
           }
         }
       }

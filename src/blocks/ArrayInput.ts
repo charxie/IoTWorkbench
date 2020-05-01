@@ -12,6 +12,8 @@ export class ArrayInput extends Block {
 
   private textColor: string = "black";
   private barHeight: number;
+  private button: Rectangle;
+  private arrayLength: number = 0;
   private textArea: HTMLTextAreaElement;
 
   static State = class {
@@ -57,8 +59,8 @@ export class ArrayInput extends Block {
     this.textArea.style.color = this.textColor;
     this.textArea.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
     this.textArea.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
-    this.textArea.addEventListener("keyup", this.overlayKeyUp.bind(this), false);
     document.getElementById("block-view-wrapper").append(this.textArea);
+    this.button = new Rectangle(0, 0, 1, 1);
   }
 
   getCopy(): Block {
@@ -73,6 +75,41 @@ export class ArrayInput extends Block {
   destroy(): void {
     let parent = document.getElementById("block-view-wrapper");
     if (parent.contains(this.textArea)) parent.removeChild(this.textArea);
+  }
+
+  // return true if the button is clicked
+  mouseDown(e: MouseEvent): boolean {
+    if (e.which == 3 || e.button == 2) return false; // if this is a right-click event
+    // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+    let rect = flowchart.blockView.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+    if (this.button.contains(x, y)) {
+      this.trimText();
+      this.updateAll();
+      return true;
+    }
+    return false;
+  }
+
+  private trimText(): void {
+    this.textArea.value = this.textArea.value.trim();
+  }
+
+  private updateAll(): void {
+    flowchart.traverse(this);
+    if (flowchart.isConnectedToGlobalBlock(this)) {
+      flowchart.updateResultsExcludingAllWorkerBlocks();
+    }
+    flowchart.storeBlockStates();
+    flowchart.blockView.requestDraw();
+  }
+
+  mouseMove(e: MouseEvent): void {
+    let rect = flowchart.blockView.canvas.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    let y = e.clientY - rect.top;
+    flowchart.blockView.canvas.style.cursor = this.button.contains(x, y) ? "pointer" : "default";
   }
 
   private overlayMouseDown(e: MouseEvent): void {
@@ -91,23 +128,6 @@ export class ArrayInput extends Block {
       flowchart.blockView.openContextMenu(e);
     }
     // if text is selected, use default
-  }
-
-  private overlayKeyUp(e: KeyboardEvent): void {
-    switch (e.key) { // single keys
-      case "Enter":
-        this.updateAll();
-        break;
-    }
-  }
-
-  private updateAll(): void {
-    flowchart.traverse(this);
-    if (flowchart.isConnectedToGlobalBlock(this)) {
-      flowchart.updateResultsExcludingAllWorkerBlocks();
-    }
-    flowchart.storeBlockStates();
-    flowchart.blockView.requestDraw();
   }
 
   setTextColor(textColor: string): void {
@@ -150,7 +170,7 @@ export class ArrayInput extends Block {
 
   setHeight(height: number): void {
     super.setHeight(height);
-    this.textArea.style.height = (this.height - this.barHeight - 2 * this.marginY) + "px";
+    this.textArea.style.height = (this.height - 2 * this.barHeight - 2 * this.marginY) + "px";
   }
 
   translateBy(dx: number, dy: number): void {
@@ -188,7 +208,7 @@ export class ArrayInput extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = this.textColor;
-      let name2 = this.name + " (" + ")";
+      let name2 = this.name + " (" + this.arrayLength + ")";
       let titleWidth = ctx.measureText(name2).width;
       ctx.fillText(name2, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
@@ -211,9 +231,28 @@ export class ArrayInput extends Block {
       ctx.fill();
       ctx.strokeStyle = "black";
       ctx.stroke();
+      this.button.width = 8;
+      this.button.height = 4;
+      this.button.x = this.x + (this.width - this.button.width) / 2;
+      this.button.y = this.y + this.height - this.button.height - 1.5;
+      ctx.fillStyle = "lightgray";
+      ctx.fillRoundedRect(this.button.x, this.button.y, this.button.width, this.button.height, 1);
+      ctx.strokeStyle = "black";
+      ctx.drawRoundedRect(this.button.x, this.button.y, this.button.width, this.button.height, 1);
+    } else {
+      // draw button
+      this.button.width = Math.max(10, this.width / 4);
+      this.button.height = this.barHeight * 0.9;
+      this.button.x = this.x + (this.width - this.button.width) / 2;
+      this.button.y = this.y + this.height - this.marginY * 3 / 4 + (this.barHeight - 3 * this.button.height) / 2;
+      ctx.fillStyle = "lightgray";
+      ctx.fillRoundedRect(this.button.x, this.button.y, this.button.width, this.button.height, 5);
+      ctx.strokeStyle = "black";
+      ctx.drawRoundedRect(this.button.x, this.button.y, this.button.width, this.button.height, 5);
+      ctx.font = "10px Arial";
       ctx.fillStyle = "black";
-      ctx.font = "8px Arial";
-      ctx.fillText("[...]", x + 4, y + 7.5);
+      let buttonNameWidth = ctx.measureText("Update").width;
+      ctx.fillText("Update", this.button.x + (this.button.width - buttonNameWidth) / 2, this.button.y + this.button.height - 10);
     }
 
     // draw the port
@@ -233,8 +272,9 @@ export class ArrayInput extends Block {
 
   updateModel(): void {
     let array = this.textArea.value.trim().split(/[ ,\n]+/);
-    let numbers = new Array(array.length);
-    for (let i = 0; i < numbers.length; i++) {
+    this.arrayLength = array.length;
+    let numbers = new Array(this.arrayLength);
+    for (let i = 0; i < this.arrayLength; i++) {
       try {
         numbers[i] = parseFloat(array[i]);
       } catch (e) {

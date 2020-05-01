@@ -681,6 +681,7 @@ export class Grapher extends Block {
     for (let i = 0; i <= maxLength; i++) {
       if (i % spacing == 0) {
         tmpX = this.graphWindow.x + dx * i;
+        if (dx * i > this.width) continue;
         ctx.beginPath();
         ctx.moveTo(tmpX, horizontalAxisY);
         ctx.lineTo(tmpX, horizontalAxisY - 4);
