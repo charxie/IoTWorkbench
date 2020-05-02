@@ -54,6 +54,7 @@ import {DataBlockContextMenu} from "./blocks/ui/DataBlockContextMenu";
 import {MolecularViewerContextMenu} from "./blocks/ui/MolecularViewerContextMenu";
 import {ArrayInputContextMenu} from "./blocks/ui/ArrayInputContextMenu";
 import {MeanBlockContextMenu} from "./blocks/ui/MeanBlockContextMenu";
+import {MedianBlockContextMenu} from "./blocks/ui/MedianBlockContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -109,6 +110,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("molecular-viewer-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("array-input-context-menu-placeholder", blockPlayground);
   addPlaceholder("mean-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("median-block-context-menu-placeholder", blockPlayground);
 
   setupContextMenuForBlocks();
 
@@ -370,6 +372,11 @@ function setupContextMenuForBlocks() {
   meanBlockContextMenu.render("mean-block-context-menu-placeholder");
   meanBlockContextMenu.addListeners();
   contextMenus.meanBlock = meanBlockContextMenu;
+
+  let medianBlockContextMenu = new MedianBlockContextMenu();
+  medianBlockContextMenu.render("median-block-context-menu-placeholder");
+  medianBlockContextMenu.addListeners();
+  contextMenus.medianBlock = medianBlockContextMenu;
 
 }
 

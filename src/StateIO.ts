@@ -52,6 +52,7 @@ import {MolecularViewerBlock} from "./blocks/MolecularViewerBlock";
 import {Basic3DBlock} from "./blocks/Basic3DBlock";
 import {ArrayInput} from "./blocks/ArrayInput";
 import {MeanBlock} from "./blocks/MeanBlock";
+import {MedianBlock} from "./blocks/MedianBlock";
 
 export class StateIO {
 
@@ -368,7 +369,10 @@ export class StateIO {
           block.setMarginY(state.marginY);
           block.setTextColor(state.textColor);
         } else if (block instanceof MeanBlock) {
+          if (state.symbol !== undefined) block.setSymbol(state.symbol);
           block.setType(state.type);
+        } else if (block instanceof MedianBlock) {
+          block.setSymbol(state.symbol);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

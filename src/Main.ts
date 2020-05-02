@@ -53,6 +53,8 @@ declare global {
 
     fill(value);
 
+    median();
+
     arithmeticMean();
 
     geometricMean();

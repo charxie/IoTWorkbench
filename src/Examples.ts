@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import mean_vs_median from "./examples/mean-vs-median.json";
+// @ts-ignore
 import means from "./examples/means.json";
 // @ts-ignore
 import helicopter_retrieval from "./examples/helicopter-retrieval.json";
@@ -407,6 +409,7 @@ export class Examples {
     this.files.push({name: "Data Science: Import Datasets", data: import_datasets});
     this.files.push({name: "Data Science: Array Inputs", data: array_inputs});
     this.files.push({name: "Statistics: Means", data: means});
+    this.files.push({name: "Statistics: Mean vs. Median", data: mean_vs_median});
     this.files.push({name: "Statistics: Box-Muller Transform", data: box_muller_transform});
     this.files.push({name: "Statistics: Normal Distributions", data: normal_distributions});
     this.files.push({name: "Statistics: Normal Distribution in 3D", data: normal_distribution_3d});

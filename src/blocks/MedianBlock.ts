@@ -6,9 +6,8 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {Vector} from "../math/Vector";
 
-export class MeanBlock extends Block {
+export class MedianBlock extends Block {
 
-  private type: string = "Arithmetic";
   private readonly portI: Port;
   private readonly portO: Port;
 
@@ -19,24 +18,22 @@ export class MeanBlock extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
-    readonly type: string;
 
-    constructor(block: MeanBlock) {
+    constructor(block: MedianBlock) {
       this.symbol = block.symbol;
       this.uid = block.uid;
       this.x = block.x;
       this.y = block.y;
       this.width = block.width;
       this.height = block.height;
-      this.type = block.type;
     }
   };
 
   constructor(uid: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
-    this.name = "Mean Block";
-    this.symbol = "⟨x⟩";
-    this.color = "#0CF";
+    this.name = "Median Block";
+    this.symbol = "Med(x)";
+    this.color = "#FC3";
     this.portI = new Port(this, true, "I", 0, this.height / 2, false);
     this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
     this.ports.push(this.portI);
@@ -44,20 +41,10 @@ export class MeanBlock extends Block {
   }
 
   getCopy(): Block {
-    let b = new MeanBlock(this.name + " #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
-    b.type = this.type;
-    return b;
+    return new MedianBlock(this.name + " #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
   }
 
   destroy(): void {
-  }
-
-  setType(type: string): void {
-    this.type = type;
-  }
-
-  getType(): string {
-    return this.type;
   }
 
   refreshView(): void {
@@ -70,30 +57,10 @@ export class MeanBlock extends Block {
   updateModel(): void {
     let x = this.portI.getValue();
     if (x instanceof Vector) {
-      switch (this.type) {
-        case "Arithmetic":
-          this.portO.setValue(x.arithmeticMean());
-          break;
-        case "Geometric":
-          this.portO.setValue(x.geometricMean());
-          break;
-        case "Harmonic":
-          this.portO.setValue(x.harmonicMean());
-          break;
-      }
+      this.portO.setValue(x.median());
     } else {
       if (Array.isArray(x)) {
-        switch (this.type) {
-          case "Arithmetic":
-            this.portO.setValue(x.arithmeticMean());
-            break;
-          case "Geometric":
-            this.portO.setValue(x.geometricMean());
-            break;
-          case "Harmonic":
-            this.portO.setValue(x.harmonicMean());
-            break;
-        }
+        this.portO.setValue(x.median());
       } else {
         this.portO.setValue(x);
       }

@@ -6,13 +6,13 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
-import {MeanBlock} from "../MeanBlock";
+import {MedianBlock} from "../MedianBlock";
 
-export class MeanBlockContextMenu extends BlockContextMenu {
+export class MedianBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "mean-block-context-menu";
+    this.id = "median-block-context-menu";
   }
 
   getPropertiesUI(): string {
@@ -20,25 +20,15 @@ export class MeanBlockContextMenu extends BlockContextMenu {
              <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="mean-block-name-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Type:</td>
-                  <td>
-                    <select id="mean-block-type-selector" style="width: 100%">
-                      <option value="Arithmetic">Arithmetic</option>
-                      <option value="Geometric">Geometric</option>
-                      <option value="Harmonic">Harmonic</option>
-                    </select>
-                  </td>
+                  <td><input type="text" id="median-block-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="mean-block-width-field" style="width: 100%"></td>
+                  <td><input type="text" id="median-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="mean-block-height-field" style="width: 100%"></td>
+                  <td><input type="text" id="median-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -47,16 +37,14 @@ export class MeanBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof MeanBlock) {
+    if (this.block instanceof MedianBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let symbolField = document.getElementById("mean-block-name-field") as HTMLInputElement;
+      let symbolField = document.getElementById("median-block-name-field") as HTMLInputElement;
       symbolField.value = block.getSymbol();
-      let typeSelector = document.getElementById("mean-block-type-selector") as HTMLSelectElement;
-      typeSelector.value = block.getType();
-      let widthField = document.getElementById("mean-block-width-field") as HTMLInputElement;
+      let widthField = document.getElementById("median-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
-      let heightField = document.getElementById("mean-block-height-field") as HTMLInputElement;
+      let heightField = document.getElementById("median-block-height-field") as HTMLInputElement;
       heightField.value = Math.round(block.getHeight()).toString();
       const okFunction = () => {
         let success = true;
@@ -80,7 +68,6 @@ export class MeanBlockContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           block.setSymbol(symbolField.value);
-          block.setType(typeSelector.options[typeSelector.selectedIndex].value);
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(block);

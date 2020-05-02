@@ -55,6 +55,7 @@ import {DataBlock} from "./DataBlock";
 import {MolecularViewerBlock} from "./MolecularViewerBlock";
 import {ArrayInput} from "./ArrayInput";
 import {MeanBlock} from "./MeanBlock";
+import {MedianBlock} from "./MedianBlock";
 
 export class BlockUtilities {
 
@@ -205,6 +206,9 @@ export class BlockUtilities {
     }
     if (block instanceof MeanBlock) {
       return contextMenus.meanBlock;
+    }
+    if (block instanceof MedianBlock) {
+      return contextMenus.medianBlock;
     }
     if (block instanceof RainbowHatBlock) {
       return contextMenus.rainbowHatBlock;
@@ -412,6 +416,10 @@ export class BlockUtilities {
     if (block instanceof MeanBlock) {
       contextMenus.meanBlock.block = block;
       return document.getElementById("mean-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof MedianBlock) {
+      contextMenus.medianBlock.block = block;
+      return document.getElementById("median-block-context-menu") as HTMLMenuElement;
     }
     return null;
   }

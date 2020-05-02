@@ -164,14 +164,15 @@ if (typeof Array.prototype.mode !== 'function') {
 
 if (typeof Array.prototype.median !== 'function') {
   Array.prototype.median = function () {
-    this.sort();
-    let m;
-    if (this.length % 2 === 0) {
-      m = (this[this.length / 2 - 1] + this[this.length / 2]) / 2;
+    let n = this.length;
+    if (n <= 0) return undefined;
+    let copy = [...this];
+    copy.sort();
+    if (n % 2 === 0) {
+      return (copy[n / 2 - 1] + copy[n / 2]) / 2;
     } else {
-      m = this[(this.length - 1) / 2];
+      return copy[(n - 1) / 2];
     }
-    return m;
   };
 }
 

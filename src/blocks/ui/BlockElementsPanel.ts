@@ -51,6 +51,7 @@ import {DataBlock} from "../DataBlock";
 import {MolecularViewerBlock} from "../MolecularViewerBlock";
 import {ArrayInput} from "../ArrayInput";
 import {MeanBlock} from "../MeanBlock";
+import {MedianBlock} from "../MedianBlock";
 
 export class BlockElementsPanel {
 
@@ -73,6 +74,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="bundled-functions-block" title="Bundled Functions" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="fft-block" title="Fourier Transform" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="mean-block" title="Mean" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="median-block" title="Median" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="normalization-block" title="Vector Normalization" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="determinant-block" title="Matrix Determinant" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="matrix-transposition-block" title="Matrix Transposition" width="45px" height="60px" style="cursor: pointer;"/></td>
@@ -192,6 +194,7 @@ export class BlockElementsPanel {
     this.drawRandomNumberGeneratorBlock("Random Number Generator Block", "Random", "random-number-generator-block");
     this.drawArrayInput("Array Input", "array-input-block");
     this.drawMeanBlock("mean-block");
+    this.drawMedianBlock("median-block");
     this.drawMolecularViewerBlock("Molecular Viewer Block", "Molecular Viewer", "molecular-viewer-block");
   }
 
@@ -595,6 +598,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new MeanBlock("Mean Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawMedianBlock(canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new MedianBlock("Median Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

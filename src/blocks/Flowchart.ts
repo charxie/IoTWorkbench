@@ -62,6 +62,7 @@ import {DataBlock} from "./DataBlock";
 import {MolecularViewerBlock} from "./MolecularViewerBlock";
 import {ArrayInput} from "./ArrayInput";
 import {MeanBlock} from "./MeanBlock";
+import {MedianBlock} from "./MedianBlock";
 
 export class Flowchart {
 
@@ -919,6 +920,9 @@ export class Flowchart {
       case "Mean Block":
         block = new MeanBlock(uid, x, y, 60, 60);
         break;
+      case "Median Block":
+        block = new MedianBlock(uid, x, y, 60, 60);
+        break;
       case "Rainbow HAT Block":
         block = new RainbowHatBlock(uid, x, y);
         break;
@@ -1048,6 +1052,8 @@ export class Flowchart {
         blockStates.push(new ArrayInput.State(b));
       } else if (b instanceof MeanBlock) {
         blockStates.push(new MeanBlock.State(b));
+      } else if (b instanceof MedianBlock) {
+        blockStates.push(new MedianBlock.State(b));
       } else {
         blockStates.push(new Block.State(b));
       }

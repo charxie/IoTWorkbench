@@ -216,6 +216,7 @@ export class StickerContextMenu extends BlockContextMenu {
           if (sticker.getUseHtml()) {
             sticker.locateHtmlOverlay();
           }
+          sticker.updateModel();
           sticker.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();

@@ -18,6 +18,18 @@ export class Vector {
     return Math.sqrt(s);
   }
 
+  public median(): number {
+    let length = this.values.length;
+    if (length <= 0) return undefined;
+    let copy = [...this.values];
+    copy.sort();
+    if (length % 2 === 0) {
+      return (copy[length / 2 - 1] + copy[length / 2]) / 2;
+    } else {
+      return copy[(length - 1) / 2];
+    }
+  }
+
   public arithmeticMean(): number {
     if (this.values === undefined || this.values.length === 0) return undefined;
     let m = 0;
