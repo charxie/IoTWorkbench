@@ -54,6 +54,7 @@ import {AudioBlock} from "./AudioBlock";
 import {DataBlock} from "./DataBlock";
 import {MolecularViewerBlock} from "./MolecularViewerBlock";
 import {ArrayInput} from "./ArrayInput";
+import {MeanBlock} from "./MeanBlock";
 
 export class BlockUtilities {
 
@@ -201,6 +202,9 @@ export class BlockUtilities {
     }
     if (block instanceof ArrayInput) {
       return contextMenus.arrayInput;
+    }
+    if (block instanceof MeanBlock) {
+      return contextMenus.meanBlock;
     }
     if (block instanceof RainbowHatBlock) {
       return contextMenus.rainbowHatBlock;
@@ -404,6 +408,10 @@ export class BlockUtilities {
     if (block instanceof ArrayInput) {
       contextMenus.arrayInput.block = block;
       return document.getElementById("array-input-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof MeanBlock) {
+      contextMenus.meanBlock.block = block;
+      return document.getElementById("mean-block-context-menu") as HTMLMenuElement;
     }
     return null;
   }

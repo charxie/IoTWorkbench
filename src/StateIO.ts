@@ -51,6 +51,7 @@ import {DataBlock} from "./blocks/DataBlock";
 import {MolecularViewerBlock} from "./blocks/MolecularViewerBlock";
 import {Basic3DBlock} from "./blocks/Basic3DBlock";
 import {ArrayInput} from "./blocks/ArrayInput";
+import {MeanBlock} from "./blocks/MeanBlock";
 
 export class StateIO {
 
@@ -366,6 +367,8 @@ export class StateIO {
           block.setMarginX(state.marginX);
           block.setMarginY(state.marginY);
           block.setTextColor(state.textColor);
+        } else if (block instanceof MeanBlock) {
+          block.setType(state.type);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

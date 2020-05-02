@@ -52,6 +52,12 @@ declare global {
     removeItem(item);
 
     fill(value);
+
+    arithmeticMean();
+
+    geometricMean();
+
+    harmonicMean();
   }
 
   interface String {

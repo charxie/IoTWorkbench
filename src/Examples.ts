@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import means from "./examples/means.json";
+// @ts-ignore
 import helicopter_retrieval from "./examples/helicopter-retrieval.json";
 // @ts-ignore
 import metronome from "./examples/metronome.json";
@@ -390,15 +392,6 @@ export class Examples {
     this.files.push({name: "Math: Spider Web", data: spider_web});
     this.files.push({name: "Math: Sunflower Pattern", data: sunflower_vogel_model});
     this.files.push({name: "Math: Make a Simple Game", data: simple_math_game});
-    this.files.push({name: "Data Science: Import Datasets", data: import_datasets});
-    this.files.push({name: "Data Science: Array Inputs", data: array_inputs});
-    this.files.push({name: "Sound: Make Sound with Beepers", data: make_sound_with_beepers});
-    this.files.push({name: "Sound: Synthesizing Sound", data: synthesizing_sound});
-    this.files.push({name: "IoT: RGB LED Array", data: rainbow_hat_rgb_led_array});
-    this.files.push({name: "IoT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
-    this.files.push({name: "IoT: Fading LED Array", data: rainbow_hat_fading_led_array});
-    this.files.push({name: "IoT: Sensor Data", data: rainbow_hat_sensor_data});
-    this.files.push({name: "IoT: Mixed-Reality Brownian Motion", data: rainbow_hat_brownian_motion});
     this.files.push({name: "Root Finding: Bisection Method", data: root_finding_bisection_method});
     this.files.push({name: "Root Finding: Newton-Raphson Method", data: root_finding_newton_raphson});
     this.files.push({name: "Linear Algebra: Vectors", data: vectors});
@@ -411,12 +404,22 @@ export class Examples {
     this.files.push({name: "Calculus: ODE Solver", data: ode_solver});
     this.files.push({name: "Optimization: Gradient Descent in One Dimension", data: gradient_descent_1d});
     this.files.push({name: "Optimization: Gradient Descent in Two Dimensions", data: gradient_descent_2d});
+    this.files.push({name: "Data Science: Import Datasets", data: import_datasets});
+    this.files.push({name: "Data Science: Array Inputs", data: array_inputs});
+    this.files.push({name: "Statistics: Means", data: means});
     this.files.push({name: "Statistics: Box-Muller Transform", data: box_muller_transform});
     this.files.push({name: "Statistics: Normal Distributions", data: normal_distributions});
     this.files.push({name: "Statistics: Normal Distribution in 3D", data: normal_distribution_3d});
     this.files.push({name: "Statistics: Poisson Distribution", data: poisson_distribution});
     this.files.push({name: "Statistics: Random Walk in 2D", data: random_walk});
     this.files.push({name: "Statistics: Random Walk in 3D", data: random_walk_3d});
+    this.files.push({name: "Sound: Make Sound with Beepers", data: make_sound_with_beepers});
+    this.files.push({name: "Sound: Synthesizing Sound", data: synthesizing_sound});
+    this.files.push({name: "IoT: RGB LED Array", data: rainbow_hat_rgb_led_array});
+    this.files.push({name: "IoT: Blinking LED Lights", data: rainbow_hat_blinking_led_lights});
+    this.files.push({name: "IoT: Fading LED Array", data: rainbow_hat_fading_led_array});
+    this.files.push({name: "IoT: Sensor Data", data: rainbow_hat_sensor_data});
+    this.files.push({name: "IoT: Mixed-Reality Brownian Motion", data: rainbow_hat_brownian_motion});
     this.files.push({name: "Ecology: Logistic Population Model", data: logistic_population_equation});
     this.files.push({name: "Ecology: Predator-Prey Equations", data: predator_prey_equations});
     this.files.push({
@@ -486,6 +489,8 @@ export class Examples {
     this.files.push({name: "Electronics: Van der Pol Oscillator", data: van_der_pol_oscillator});
     this.files.push({name: "Electromagnetism: Lorentz Force in 2D", data: lorentz_force});
     this.files.push({name: "Electromagnetism: Lorentz Force in 3D", data: lorentz_force_3d});
+    this.files.push({name: "Signal Processing: Fourier Transform", data: fourier_transform});
+    this.files.push({name: "Signal Processing: Convolution Theorem", data: convolution_theorem});
     this.files.push({name: "Biology: Brownian Motion", data: brownian_motion_single_particle});
     this.files.push({name: "Biology: Langevin Equation", data: langevin_equation});
     this.files.push({
@@ -493,23 +498,21 @@ export class Examples {
       data: brownian_motion_multiple_particles
     });
     this.files.push({name: "Biology: Hindmarsh–Rose Model of Neuronal Activity", data: hindmarsh_rose_model});
-    this.files.push({name: "Signal Processing: Fourier Transform", data: fourier_transform});
-    this.files.push({name: "Signal Processing: Convolution Theorem", data: convolution_theorem});
-    this.files.push({name: "1D Simulation: Transient State Finite Difference Method", data: pde_fdm_solver});
-    this.files.push({name: "1D Simulation: Numerical Stability", data: pde_numerical_stability});
-    this.files.push({name: "1D Simulation: Heat Equation", data: heat_equation});
-    this.files.push({name: "1D Simulation: Fisher Equation", data: fisher_equation});
-    this.files.push({name: "1D Simulation: Wave Equation", data: wave_equation});
-    this.files.push({name: "1D Simulation: Transport Equation", data: transport_equation});
-    this.files.push({name: "1D Simulation: Standing Waves", data: standing_waves});
-    this.files.push({name: "2D Simulation: Steady State Finite Difference Method", data: laplace_equation});
-    this.files.push({name: "2D Simulation: Numerical Stabilization", data: fdm_stabilization});
-    this.files.push({name: "2D Simulation: Compare Iterative Methods", data: compare_iterative_methods});
-    this.files.push({name: "2D Simulation: Poisson Equation", data: poisson_equation});
-    this.files.push({name: "2D Simulation: Boundary Value Problems", data: boundary_value_problems});
-    this.files.push({name: "2D Simulation: Mixed Boundary Condition", data: mixed_boundary_condition});
-    this.files.push({name: "2D Simulation: Convection-Diffusion Equation", data: convection_diffusion_equation});
-    this.files.push({name: "2D Simulation: Rayleigh–Bénard Convection", data: rayleigh_benard_convection});
+    this.files.push({name: "Engineering: Transient State Finite Difference Method", data: pde_fdm_solver});
+    this.files.push({name: "Engineering: Numerical Stability", data: pde_numerical_stability});
+    this.files.push({name: "Engineering: Heat Equation", data: heat_equation});
+    this.files.push({name: "Engineering: Fisher Equation", data: fisher_equation});
+    this.files.push({name: "Engineering: Wave Equation", data: wave_equation});
+    this.files.push({name: "Engineering: Transport Equation", data: transport_equation});
+    this.files.push({name: "Engineering: Standing Waves", data: standing_waves});
+    this.files.push({name: "Engineering: Steady State Finite Difference Method", data: laplace_equation});
+    this.files.push({name: "Engineering: Numerical Stabilization", data: fdm_stabilization});
+    this.files.push({name: "Engineering: Compare Iterative Methods", data: compare_iterative_methods});
+    this.files.push({name: "Engineering: Poisson Equation", data: poisson_equation});
+    this.files.push({name: "Engineering: Boundary Value Problems", data: boundary_value_problems});
+    this.files.push({name: "Engineering: Mixed Boundary Condition", data: mixed_boundary_condition});
+    this.files.push({name: "Engineering: Convection-Diffusion Equation", data: convection_diffusion_equation});
+    this.files.push({name: "Engineering: Rayleigh–Bénard Convection", data: rayleigh_benard_convection});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 

@@ -6,57 +6,51 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
-import {ArithmeticBlock} from "../ArithmeticBlock";
+import {MeanBlock} from "../MeanBlock";
 
-export class ArithmeticBlockContextMenu extends BlockContextMenu {
+export class MeanBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "arithmetic-block-context-menu";
+    this.id = "mean-block-context-menu";
   }
 
-  protected getPropertiesUI(): string {
+  getPropertiesUI(): string {
     return `<div style="font-size: 90%;">
-              <table class="w3-table-all w3-left w3-hoverable">
+             <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
-                  <td>Operator:</td>
+                  <td>Type:</td>
                   <td>
-                    R<div class='horizontal-divider'></div>=<div class='horizontal-divider'></div>A<div class='horizontal-divider'></div>
-                    <select id="arithmetic-block-operator">
-                      <option value="Add Block">+</option>
-                      <option value="Subtract Block">−</option>
-                      <option value="Multiply Block">×</option>
-                      <option value="Divide Block">÷</option>
-                      <option value="Modulus Block">%</option>
-                      <option value="Exponentiation Block">^</option>
-                      <option value="Dot Product Block">•</option>
+                    <select id="mean-block-type-selector" style="width: 100%">
+                      <option value="Arithmetic">Arithmetic</option>
+                      <option value="Geometric">Geometric</option>
+                      <option value="Harmonic">Harmonic</option>
                     </select>
-                    <div class='horizontal-divider'></div>B
                   </td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="arithmetic-block-width-field" style="width: 100%"></td>
+                  <td><input type="text" id="mean-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="arithmetic-block-height-field" style="width: 100%"></td>
+                  <td><input type="text" id="mean-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
   }
 
-  protected propertiesButtonClick(): void {
+  propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof ArithmeticBlock) {
+    if (this.block instanceof MeanBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let operatorSelector = document.getElementById("arithmetic-block-operator") as HTMLSelectElement;
-      operatorSelector.value = block.getName();
-      let widthField = document.getElementById("arithmetic-block-width-field") as HTMLInputElement;
+      let typeSelector = document.getElementById("mean-block-type-selector") as HTMLSelectElement;
+      typeSelector.value = block.getType();
+      let widthField = document.getElementById("mean-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
-      let heightField = document.getElementById("arithmetic-block-height-field") as HTMLInputElement;
+      let heightField = document.getElementById("mean-block-height-field") as HTMLInputElement;
       heightField.value = Math.round(block.getHeight()).toString();
       const okFunction = () => {
         let success = true;
@@ -79,15 +73,10 @@ export class ArithmeticBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
-          let name = operatorSelector.options[operatorSelector.selectedIndex].value;
-          if (name !== block.getName()) {
-            block.setName(name);
-            block.setSymbol(operatorSelector.options[operatorSelector.selectedIndex].text);
-            block.setUid(block.getName() + " #" + Date.now().toString(16));
-          }
+          block.setType(typeSelector.options[typeSelector.selectedIndex].value);
           block.refreshView();
-          flowchart.updateResultsForBlock(block);
           flowchart.blockView.requestDraw();
+          flowchart.updateResultsForBlock(block);
           flowchart.storeBlockStates();
           flowchart.storeConnectorStates();
           d.dialog('close');
@@ -107,7 +96,7 @@ export class ArithmeticBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 300,
-        width: 300,
+        width: 360,
         buttons: {
           'OK': okFunction,
           'Cancel': () => d.dialog('close')

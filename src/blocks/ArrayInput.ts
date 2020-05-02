@@ -10,7 +10,6 @@ import {Rectangle} from "../math/Rectangle";
 
 export class ArrayInput extends Block {
 
-  private textColor: string = "black";
   private barHeight: number;
   private button: Rectangle;
   private array: any[][];
@@ -39,7 +38,7 @@ export class ArrayInput extends Block {
       this.height = b.height;
       this.marginX = b.marginX;
       this.marginY = b.marginY;
-      this.textColor = b.textColor;
+      this.textColor = b.textArea.style.color;
       this.text = b.textArea.value;
     }
   };
@@ -58,7 +57,7 @@ export class ArrayInput extends Block {
     this.textArea.style.position = "absolute";
     this.textArea.style.fontFamily = "Courier New";
     this.textArea.style.fontSize = "12px";
-    this.textArea.style.color = this.textColor;
+    this.textArea.style.color = "black";
     this.textArea.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
     this.textArea.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
     document.getElementById("block-view-wrapper").append(this.textArea);
@@ -68,7 +67,7 @@ export class ArrayInput extends Block {
   getCopy(): Block {
     let copy = new ArrayInput("Array Input #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.setText(this.getText());
-    copy.textColor = this.textColor;
+    copy.setTextColor(this.getTextColor());
     copy.marginX = this.marginX;
     copy.marginY = this.marginY;
     copy.locateOverlay();
@@ -168,11 +167,11 @@ export class ArrayInput extends Block {
   }
 
   setTextColor(textColor: string): void {
-    this.textColor = textColor;
+    this.textArea.style.color = textColor;
   }
 
   getTextColor(): string {
-    return this.textColor;
+    return this.textArea.style.color;
   }
 
   setText(text: string) {
@@ -245,7 +244,7 @@ export class ArrayInput extends Block {
     if (!this.iconic) {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
-      ctx.fillStyle = this.textColor;
+      ctx.fillStyle = "white";
       let name2 = this.name + " (" + this.rowCount + ")";
       let titleWidth = ctx.measureText(name2).width;
       ctx.fillText(name2, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
@@ -279,7 +278,9 @@ export class ArrayInput extends Block {
       ctx.drawRoundedRect(this.button.x, this.button.y, this.button.width, this.button.height, 1);
     } else {
       // draw button
-      this.button.width = Math.max(10, this.width / 4);
+      ctx.font = "10px Arial";
+      let buttonNameWidth = ctx.measureText("Update").width;
+      this.button.width = buttonNameWidth + 16;
       this.button.height = this.barHeight * 0.9;
       this.button.x = this.x + (this.width - this.button.width) / 2;
       this.button.y = this.y + this.height - this.marginY * 3 / 4 + (this.barHeight - 3 * this.button.height) / 2;
@@ -287,9 +288,7 @@ export class ArrayInput extends Block {
       ctx.fillRoundedRect(this.button.x, this.button.y, this.button.width, this.button.height, 5);
       ctx.strokeStyle = "black";
       ctx.drawRoundedRect(this.button.x, this.button.y, this.button.width, this.button.height, 5);
-      ctx.font = "10px Arial";
       ctx.fillStyle = "black";
-      let buttonNameWidth = ctx.measureText("Update").width;
       ctx.fillText("Update", this.button.x + (this.button.width - buttonNameWidth) / 2, this.button.y + this.button.height - 10);
     }
 
@@ -311,7 +310,7 @@ export class ArrayInput extends Block {
   }
 
   updateModel(): void {
-    for (let col = 0; col < this.ports.length; col++) {
+    for (let col = 0; col < this.array.length; col++) {
       let numbers = new Array(this.array[col].length);
       for (let row = 0; row < numbers.length; row++) {
         try {

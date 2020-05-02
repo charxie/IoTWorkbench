@@ -29,8 +29,8 @@ if (typeof Math.hypot !== 'function') {
 // A convenient method for counting the number of members of an object
 if (typeof Object.size !== 'function') {
   Object.size = function (obj) {
-    var count = 0;
-    for (var key in obj) {
+    let count = 0;
+    for (let key in obj) {
       if (obj.hasOwnProperty(key))
         count++;
     }
@@ -42,8 +42,8 @@ if (typeof Object.indexOf !== 'function') {
   Object.indexOf = function (key, obj) {
     if (!obj.hasOwnProperty(key))
       return -1;
-    var index = -1;
-    for (var x in obj) {
+    let index = -1;
+    for (let x in obj) {
       if (obj.hasOwnProperty(x)) {
         index++;
         if (key === x) {
@@ -56,8 +56,8 @@ if (typeof Object.indexOf !== 'function') {
 }
 
 Object.getPropertyByIndex = function (index, obj) {
-  var i = -1;
-  for (var x in obj) {
+  let i = -1;
+  for (let x in obj) {
     if (obj.hasOwnProperty(x)) {
       i++;
       if (i === index) {
@@ -69,7 +69,7 @@ Object.getPropertyByIndex = function (index, obj) {
 }
 
 Object.getFirstValue = function (obj) {
-  for (var x in obj) {
+  for (let x in obj) {
     if (obj.hasOwnProperty(x)) {
       return obj[x];
     }
@@ -102,7 +102,7 @@ String.prototype.replaceFromTo = function (start, end, replacement) {
 // Fisher–Yates shuffle of an array
 if (typeof Array.prototype.shuffle !== 'function') {
   Array.prototype.shuffle = function shuffle() {
-    var currentIndex = this.length, temporaryValue, randomIndex;
+    let currentIndex = this.length, temporaryValue, randomIndex;
     // While there remain elements to shuffle...
     while (currentIndex !== 0) {
       // Pick a remaining element...
@@ -118,7 +118,7 @@ if (typeof Array.prototype.shuffle !== 'function') {
 
 if (typeof Array.prototype.fill !== 'function') {
   Array.prototype.fill = function (value) {
-    for (var i = 0; i < this.length; i++) {
+    for (let i = 0; i < this.length; i++) {
       this[i] = value;
     }
     return this;
@@ -138,6 +138,70 @@ if (typeof Array.prototype.removeItem !== 'function') {
         this.splice(i, 1);
       }
     }
+  };
+}
+
+if (typeof Array.prototype.mode !== 'function') {
+  Array.prototype.mode = function () {
+    let modes = [], count = [], number, maxIndex = 0;
+    for (let i = 0; i < this.length; i += 1) {
+      number = this[i];
+      count[number] = (count[number] || 0) + 1;
+      if (count[number] > maxIndex) {
+        maxIndex = count[number];
+      }
+    }
+    for (let i in count) {
+      if (count.hasOwnProperty(i)) {
+        if (count[i] === maxIndex) {
+          modes.push(Number(i));
+        }
+      }
+    }
+    return modes;
+  };
+}
+
+if (typeof Array.prototype.median !== 'function') {
+  Array.prototype.median = function () {
+    this.sort();
+    let m;
+    if (this.length % 2 === 0) {
+      m = (this[this.length / 2 - 1] + this[this.length / 2]) / 2;
+    } else {
+      m = this[(this.length - 1) / 2];
+    }
+    return m;
+  };
+}
+
+if (typeof Array.prototype.arithmeticMean !== 'function') {
+  Array.prototype.arithmeticMean = function () {
+    let m = 0;
+    for (let i = 0; i < this.length; i++) {
+      m += this[i];
+    }
+    return m / this.length;
+  };
+}
+
+if (typeof Array.prototype.geometricMean !== 'function') {
+  Array.prototype.geometricMean = function () {
+    let m = 1;
+    for (let i = 0; i < this.length; i++) {
+      m *= this[i];
+    }
+    return Math.pow(m, 1 / this.length);
+  };
+}
+
+if (typeof Array.prototype.harmonicMean !== 'function') {
+  Array.prototype.harmonicMean = function () {
+    let m = 0;
+    for (let i = 0; i < this.length; i++) {
+      m += 1 / this[i];
+    }
+    return this.length / m;
   };
 }
 
@@ -273,7 +337,7 @@ CanvasRenderingContext2D.prototype.drawTooltip = function drawTooltip(x, y, h, r
   this.shadowBlur = 8;
   this.shadowOffsetX = 2;
   this.shadowOffsetY = 2;
-  var tooltipWidth = this.measureText(text).width + 2 * margin;
+  let tooltipWidth = this.measureText(text).width + 2 * margin;
   this.fillStyle = 'rgba(255, 202, 0, 0.5)';
   this.fillRoundedRect(centered ? x - tooltipWidth / 2 : x, y, tooltipWidth, h, r);
   this.strokeStyle = 'lightGray';
@@ -298,7 +362,7 @@ if (typeof String.prototype.startsWith !== 'function') {
 }
 
 navigator.sayswho = (function () {
-  var ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+  let ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
   if (/trident/i.test(M[1])) {
     tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
     return 'IE ' + (tem[1] || '');

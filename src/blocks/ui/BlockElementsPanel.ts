@@ -50,6 +50,7 @@ import {AudioBlock} from "../AudioBlock";
 import {DataBlock} from "../DataBlock";
 import {MolecularViewerBlock} from "../MolecularViewerBlock";
 import {ArrayInput} from "../ArrayInput";
+import {MeanBlock} from "../MeanBlock";
 
 export class BlockElementsPanel {
 
@@ -71,6 +72,11 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="parametric-equation-block" title="Parametric Equations" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="bundled-functions-block" title="Bundled Functions" width="45px" height="80px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="fft-block" title="Fourier Transform" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="mean-block" title="Mean" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="normalization-block" title="Vector Normalization" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="determinant-block" title="Matrix Determinant" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="matrix-transposition-block" title="Matrix Transposition" width="45px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="matrix-inversion-block" title="Matrix Inversion" width="45px" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -81,10 +87,10 @@ export class BlockElementsPanel {
                   <tr>
                   <td><canvas draggable="true" id="slider-block" title="Slider" width="60x" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="item-selector-block" title="Item Selector" width="50x" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="array-input-block" title="Array Input" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="toggle-switch-block" title="Toggle Switch" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="momentary-switch-block" title="Momentary Switch" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="sticker-block" title="Text Display" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="array-input-block" title="Array Input" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="grapher-block" title="Grapher" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="space2d-block" title="Space2D" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="space3d-block" title="Space3D" width="45px" height="45px" style="cursor: pointer;"/></td>
@@ -128,10 +134,6 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="steady-state-fdm-solver-block" title="Steady State FDM Solver" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="boundary-condition-block" title="Boundary Condition" width="45px" height="75px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="integral-block" title="Integration" width="45px" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="normalization-block" title="Vector Normalization" width="45px" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="determinant-block" title="Matrix Determinant" width="45px" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="matrix-transposition-block" title="Matrix Transposition" width="45px" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="matrix-inversion-block" title="Matrix Inversion" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="molecular-viewer-block" title="Molecular Viewer" width="45px" height="45px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
@@ -155,7 +157,6 @@ export class BlockElementsPanel {
     this.drawMomentarySwitch("Momentary Switch", "momentary-switch-block");
     this.drawSlider("Slider", "slider-block");
     this.drawItemSelector("Item Selector", "item-selector-block");
-    this.drawArrayInput("Array Input", "array-input-block");
     this.drawSticker("Sticker", "sticker-block");
     this.drawBeeper("Beeper", "beeper-block");
     this.drawGrapher("Grapher", "grapher-block");
@@ -189,6 +190,8 @@ export class BlockElementsPanel {
     this.drawAudioBlock("Audio Block", "♬", "audio-block");
     this.drawDataBlock("Data Block", "Data", "data-block");
     this.drawRandomNumberGeneratorBlock("Random Number Generator Block", "Random", "random-number-generator-block");
+    this.drawArrayInput("Array Input", "array-input-block");
+    this.drawMeanBlock("mean-block");
     this.drawMolecularViewerBlock("Molecular Viewer Block", "Molecular Viewer", "molecular-viewer-block");
   }
 
@@ -586,6 +589,14 @@ export class BlockElementsPanel {
       block.setIconic(true);
       block.draw(ctx);
     }
+  }
+
+  private drawMeanBlock(canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new MeanBlock("Mean Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
   }
 
 }

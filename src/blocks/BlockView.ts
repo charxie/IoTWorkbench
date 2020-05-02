@@ -62,6 +62,7 @@ import {AudioBlock} from "./AudioBlock";
 import {DataBlock} from "./DataBlock";
 import {MolecularViewerBlock} from "./MolecularViewerBlock";
 import {ArrayInput} from "./ArrayInput";
+import {MeanBlock} from "./MeanBlock";
 
 export class BlockView {
 
@@ -339,6 +340,9 @@ export class BlockView {
         let arrayInput = new ArrayInput("Array Input #" + timestamp, "Array Input", x - 100, y - 100, 200, 200);
         this.addBlockUndoable(arrayInput);
         arrayInput.locateOverlay();
+        break;
+      case "mean-block":
+        b = this.addBlockUndoable(new MeanBlock("Mean Block #" + timestamp, x - 30, y - 30, 60, 60));
         break;
     }
     return b;
