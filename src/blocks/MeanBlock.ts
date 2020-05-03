@@ -71,37 +71,29 @@ export class MeanBlock extends Block {
   updateModel(): void {
     let x = this.portI.getValue();
     if (x instanceof Vector) {
-      let uds = new UnivariateDescriptiveStatistics(x.getValues());
-      switch (this.type) {
-        case "Arithmetic":
-          this.portO.setValue(uds.arithmeticMean());
-          break;
-        case "Geometric":
-          this.portO.setValue(uds.geometricMean());
-          break;
-        case "Harmonic":
-          this.portO.setValue(uds.harmonicMean());
-          break;
-      }
+      this.setPortValue(new UnivariateDescriptiveStatistics(x.getValues()));
     } else {
       if (Array.isArray(x)) {
-        let uds = new UnivariateDescriptiveStatistics(x);
-        switch (this.type) {
-          case "Arithmetic":
-            this.portO.setValue(uds.arithmeticMean());
-            break;
-          case "Geometric":
-            this.portO.setValue(uds.geometricMean());
-            break;
-          case "Harmonic":
-            this.portO.setValue(uds.harmonicMean());
-            break;
-        }
+        this.setPortValue(new UnivariateDescriptiveStatistics(x));
       } else {
         this.portO.setValue(x);
       }
     }
     this.updateConnectors();
+  }
+
+  private setPortValue(uds: UnivariateDescriptiveStatistics): void {
+    switch (this.type) {
+      case "Arithmetic":
+        this.portO.setValue(uds.arithmeticMean());
+        break;
+      case "Geometric":
+        this.portO.setValue(uds.geometricMean());
+        break;
+      case "Harmonic":
+        this.portO.setValue(uds.harmonicMean());
+        break;
+    }
   }
 
 }

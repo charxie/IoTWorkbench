@@ -28,18 +28,63 @@ export class UnivariateDescriptiveStatistics {
     return modes;
   }
 
-  public medianAndRange(): number[] {
+  // return percentiles at 0, 1/4, 1/2, 3/4, and 1
+  public percentiles(): number[] {
     let length = this.values.length;
     if (length <= 0) return undefined;
     let copy = [...this.values];
     copy.sort((a, b) => a - b);
-    let m;
+    let q2;
     if (length % 2 === 0) {
-      m = (copy[length / 2 - 1] + copy[length / 2]) / 2;
+      q2 = (copy[length / 2 - 1] + copy[length / 2]) / 2;
     } else {
-      m = copy[(length - 1) / 2];
+      q2 = copy[(length - 1) / 2];
     }
-    return [m, copy[length - 1] - copy[0]];
+    let q1 = copy[Math.floor(length * 0.25) - 1];
+    let q3 = copy[Math.floor(length * 0.75) - 1];
+    return [copy[0], q1, q2, q3, copy[length - 1]];
+  }
+
+  // uncorrected
+  public standardDeviation(mean: number): number {
+    if (this.values.length <= 0) return undefined;
+    if (this.values.length == 1) return 0;
+    if (mean === undefined) mean = this.arithmeticMean();
+    let dv;
+    let sum = 0;
+    for (let v of this.values) {
+      dv = v - mean;
+      sum += dv * dv;
+    }
+    return Math.sqrt(sum / this.values.length);
+  }
+
+  public skewness(mean: number, sd: number): number {
+    if (this.values.length <= 0) return undefined;
+    if (this.values.length == 1) return 0;
+    if (mean === undefined) mean = this.arithmeticMean();
+    if (sd === undefined) sd = this.standardDeviation(mean);
+    let dv;
+    let sum = 0;
+    for (let v of this.values) {
+      dv = v - mean;
+      sum += dv * dv * dv;
+    }
+    return sum / (this.values.length * sd * sd * sd);
+  }
+
+  public kurtosis(mean: number, sd: number): number {
+    if (this.values.length <= 0) return undefined;
+    if (this.values.length == 1) return 0;
+    if (mean === undefined) mean = this.arithmeticMean();
+    if (sd === undefined) sd = this.standardDeviation(mean);
+    let dv;
+    let sum = 0;
+    for (let v of this.values) {
+      dv = v - mean;
+      sum += dv * dv * dv * dv;
+    }
+    return sum / (this.values.length * sd * sd * sd * sd);
   }
 
   public arithmeticMean(): number {

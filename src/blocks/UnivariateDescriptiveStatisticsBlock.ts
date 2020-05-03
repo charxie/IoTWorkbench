@@ -87,28 +87,36 @@ export class UnivariateDescriptiveStatisticsBlock extends Block {
   updateModel(): void {
     let x = this.portI.getValue();
     if (x instanceof Vector) {
-      let uds = new UnivariateDescriptiveStatistics(x.getValues());
-      let medianAndRange = uds.medianAndRange();
-      this.portMean.setValue(uds.arithmeticMean());
-      this.portMedian.setValue(medianAndRange[0]);
-      this.portMode.setValue(uds.mode());
-      this.portRange.setValue(medianAndRange[1]);
+      this.setPortValues(new UnivariateDescriptiveStatistics(x.getValues()));
     } else {
       if (Array.isArray(x)) {
-        let uds = new UnivariateDescriptiveStatistics(x);
-        let medianAndRange = uds.medianAndRange();
-        this.portMean.setValue(uds.arithmeticMean());
-        this.portMedian.setValue(medianAndRange[0]);
-        this.portMode.setValue(uds.mode());
-        this.portRange.setValue(medianAndRange[1]);
+        this.setPortValues(new UnivariateDescriptiveStatistics(x));
       } else {
         this.portMean.setValue(x);
         this.portMedian.setValue(x);
         this.portMode.setValue(x);
         this.portRange.setValue(0);
+        this.portQ1.setValue(x);
+        this.portQ3.setValue(x);
+        this.portSD.setValue(0);
+        this.portSkewness.setValue(0);
+        this.portKurtosis.setValue(0);
       }
     }
     this.updateConnectors();
+  }
+
+  private setPortValues(uds: UnivariateDescriptiveStatistics): void {
+    let percentiles = uds.percentiles();
+    this.portMean.setValue(uds.arithmeticMean());
+    this.portMedian.setValue(percentiles[2]);
+    this.portMode.setValue(uds.mode());
+    this.portRange.setValue(percentiles[4] - percentiles[0]);
+    this.portQ1.setValue(percentiles[1]);
+    this.portQ3.setValue(percentiles[3]);
+    this.portSD.setValue(uds.standardDeviation(this.portMean.getValue()));
+    this.portSkewness.setValue(uds.skewness(this.portMean.getValue(), this.portSD.getValue()));
+    this.portKurtosis.setValue(uds.kurtosis(this.portMean.getValue(), this.portSD.getValue()));
   }
 
 }
