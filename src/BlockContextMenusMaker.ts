@@ -54,7 +54,7 @@ import {DataBlockContextMenu} from "./blocks/ui/DataBlockContextMenu";
 import {MolecularViewerContextMenu} from "./blocks/ui/MolecularViewerContextMenu";
 import {ArrayInputContextMenu} from "./blocks/ui/ArrayInputContextMenu";
 import {MeanBlockContextMenu} from "./blocks/ui/MeanBlockContextMenu";
-import {MedianBlockContextMenu} from "./blocks/ui/MedianBlockContextMenu";
+import {UnivariateDescriptiveStatisticsBlockContextMenu} from "./blocks/ui/UnivariateDescriptiveStatisticsBlockContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -110,7 +110,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("molecular-viewer-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("array-input-context-menu-placeholder", blockPlayground);
   addPlaceholder("mean-block-context-menu-placeholder", blockPlayground);
-  addPlaceholder("median-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("univariate-descriptive-statistics-block-context-menu-placeholder", blockPlayground);
 
   setupContextMenuForBlocks();
 
@@ -373,10 +373,10 @@ function setupContextMenuForBlocks() {
   meanBlockContextMenu.addListeners();
   contextMenus.meanBlock = meanBlockContextMenu;
 
-  let medianBlockContextMenu = new MedianBlockContextMenu();
-  medianBlockContextMenu.render("median-block-context-menu-placeholder");
-  medianBlockContextMenu.addListeners();
-  contextMenus.medianBlock = medianBlockContextMenu;
+  let univariateDescriptiveStatisticsBlockContextMenu = new UnivariateDescriptiveStatisticsBlockContextMenu();
+  univariateDescriptiveStatisticsBlockContextMenu.render("univariate-descriptive-statistics-block-context-menu-placeholder");
+  univariateDescriptiveStatisticsBlockContextMenu.addListeners();
+  contextMenus.univariateDescriptiveStatisticsBlock = univariateDescriptiveStatisticsBlockContextMenu;
 
 }
 

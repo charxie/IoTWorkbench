@@ -18,45 +18,6 @@ export class Vector {
     return Math.sqrt(s);
   }
 
-  public median(): number {
-    let length = this.values.length;
-    if (length <= 0) return undefined;
-    let copy = [...this.values];
-    copy.sort();
-    if (length % 2 === 0) {
-      return (copy[length / 2 - 1] + copy[length / 2]) / 2;
-    } else {
-      return copy[(length - 1) / 2];
-    }
-  }
-
-  public arithmeticMean(): number {
-    if (this.values === undefined || this.values.length === 0) return undefined;
-    let m = 0;
-    for (let x of this.values) {
-      m += x;
-    }
-    return m / this.values.length;
-  }
-
-  public geometricMean(): number {
-    if (this.values === undefined || this.values.length === 0) return undefined;
-    let m = 1;
-    for (let x of this.values) {
-      m *= x;
-    }
-    return Math.pow(m, 1 / this.values.length);
-  }
-
-  public harmonicMean(): number {
-    if (this.values === undefined || this.values.length === 0) return undefined;
-    let m = 0;
-    for (let x of this.values) {
-      m += 1 / x;
-    }
-    return this.values.length / m;
-  }
-
   public normalize(): Vector {
     let length = this.length();
     if (length === 0) return null;

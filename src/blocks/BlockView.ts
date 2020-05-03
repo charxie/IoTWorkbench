@@ -63,7 +63,7 @@ import {DataBlock} from "./DataBlock";
 import {MolecularViewerBlock} from "./MolecularViewerBlock";
 import {ArrayInput} from "./ArrayInput";
 import {MeanBlock} from "./MeanBlock";
-import {MedianBlock} from "./MedianBlock";
+import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStatisticsBlock";
 
 export class BlockView {
 
@@ -345,8 +345,8 @@ export class BlockView {
       case "mean-block":
         b = this.addBlockUndoable(new MeanBlock("Mean Block #" + timestamp, x - 30, y - 30, 60, 60));
         break;
-      case "median-block":
-        b = this.addBlockUndoable(new MedianBlock("Median Block #" + timestamp, x - 45, y - 30, 90, 60));
+      case "univariate-descriptive-statistics-block":
+        b = this.addBlockUndoable(new UnivariateDescriptiveStatisticsBlock("Univariate Descriptive Statistics Block #" + timestamp, x - 50, y - 100, 100, 200));
         break;
     }
     return b;

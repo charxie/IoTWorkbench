@@ -6,13 +6,13 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
-import {MedianBlock} from "../MedianBlock";
+import {UnivariateDescriptiveStatisticsBlock} from "../UnivariateDescriptiveStatisticsBlock";
 
-export class MedianBlockContextMenu extends BlockContextMenu {
+export class UnivariateDescriptiveStatisticsBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "median-block-context-menu";
+    this.id = "uds-block-context-menu";
   }
 
   getPropertiesUI(): string {
@@ -20,15 +20,15 @@ export class MedianBlockContextMenu extends BlockContextMenu {
              <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td><input type="text" id="median-block-name-field" style="width: 100%"></td>
+                  <td><input type="text" id="uds-block-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="median-block-width-field" style="width: 100%"></td>
+                  <td><input type="text" id="uds-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="median-block-height-field" style="width: 100%"></td>
+                  <td><input type="text" id="uds-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -37,14 +37,14 @@ export class MedianBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof MedianBlock) {
+    if (this.block instanceof UnivariateDescriptiveStatisticsBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let symbolField = document.getElementById("median-block-name-field") as HTMLInputElement;
+      let symbolField = document.getElementById("uds-block-name-field") as HTMLInputElement;
       symbolField.value = block.getSymbol();
-      let widthField = document.getElementById("median-block-width-field") as HTMLInputElement;
+      let widthField = document.getElementById("uds-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
-      let heightField = document.getElementById("median-block-height-field") as HTMLInputElement;
+      let heightField = document.getElementById("uds-block-height-field") as HTMLInputElement;
       heightField.value = Math.round(block.getHeight()).toString();
       const okFunction = () => {
         let success = true;
@@ -91,7 +91,7 @@ export class MedianBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 300,
-        width: 360,
+        width: 480,
         buttons: {
           'OK': okFunction,
           'Cancel': () => d.dialog('close')

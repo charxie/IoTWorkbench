@@ -52,14 +52,6 @@ declare global {
     removeItem(item);
 
     fill(value);
-
-    median();
-
-    arithmeticMean();
-
-    geometricMean();
-
-    harmonicMean();
   }
 
   interface String {
