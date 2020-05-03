@@ -328,9 +328,6 @@ export class BoxPlot extends Block {
       ctx.stroke();
     } else {
       this.drawAxisLabels(ctx);
-      if (this.portI.length > 1) {
-        this.drawLegends(ctx);
-      }
       if (maxLength > 1) {
         this.drawBox(ctx);
       }
@@ -411,10 +408,18 @@ export class BoxPlot extends Block {
       ctx.moveTo(xi - dx / 4, y1);
       ctx.lineTo(xi + dx / 4, y1);
       ctx.stroke();
-      // draw label
+      // draw legends
+      ctx.font = "10px Arial";
       ctx.fillStyle = "black";
-      let labelWidth = ctx.measureText(this.portI[i].getUid()).width;
-      ctx.fillText(this.portI[i].getUid(), xi - labelWidth / 2, y0 + yOffset + 15);
+      let labelWidth = ctx.measureText(this.legends[i]).width;
+      ctx.fillText(this.legends[i], xi - labelWidth / 2, y0 + yOffset + 15);
+      // draw tickmarks
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(xi, y0 + yOffset);
+      ctx.lineTo(xi, y0 + yOffset - 6);
+      ctx.stroke();
     }
     // draw y-axis tick marks
     ctx.font = "10px Arial";
@@ -451,15 +456,11 @@ export class BoxPlot extends Block {
     ctx.fillText(maxString, this.graphWindow.x - ctx.measureText(maxString).width - 5, y2);
   }
 
-  private drawLegends(ctx: CanvasRenderingContext2D): void {
-
-  }
-
   private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
     ctx.font = "italic 15px Times New Roman";
     ctx.fillStyle = "black";
     let horizontalAxisY = this.height - this.graphMargin.bottom;
-    ctx.fillText(this.xAxisLabel, this.graphWindow.x + (this.graphWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 25);
+    ctx.fillText(this.xAxisLabel, this.graphWindow.x + (this.graphWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 35);
     ctx.save();
     ctx.translate(this.x + 30, this.graphWindow.y + (this.graphWindow.height + ctx.measureText(this.yAxisLabel).width) / 2);
     ctx.rotate(-Math.PI / 2);
@@ -482,7 +483,7 @@ export class BoxPlot extends Block {
   refreshView(): void {
     super.refreshView();
     this.graphMargin.top = 10;
-    this.graphMargin.bottom = 36;
+    this.graphMargin.bottom = 50;
     this.graphMargin.left = 40;
     this.graphMargin.right = 10;
     let dh = (this.height - this.barHeight) / (this.portI.length + 1);
