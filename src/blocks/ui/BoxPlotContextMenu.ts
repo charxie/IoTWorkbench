@@ -87,9 +87,9 @@ export class BoxPlotContextMenu extends BlockContextMenu {
                   <td><input type="text" id="box-plot-line-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Line Thickness:</td>
-                  <td><select id="box-plot-line-thickness-port-selector" style="width: 65px"></select></td>
-                  <td colspan="2"><input type="text" id="box-plot-line-thickness-field" style="width: 100%"></td>
+                  <td>Line Width:</td>
+                  <td><select id="box-plot-line-width-port-selector" style="width: 65px"></select></td>
+                  <td colspan="2"><input type="text" id="box-plot-line-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Legend:</td>
@@ -141,7 +141,7 @@ export class BoxPlotContextMenu extends BlockContextMenu {
       // temporary storage of properties (don't store the changes to the block object or else we won't be able to cancel)
       let legends: string[] = g.getLegends();
       let lineColors: string[] = g.getLineColors();
-      let lineThicknesses: number[] = g.getLineThicknesses();
+      let lineWidths: number[] = g.getLineWidths();
       let fillColors: string[] = g.getBoxColors();
 
       let nameField = document.getElementById("box-plot-name-field") as HTMLInputElement;
@@ -175,11 +175,11 @@ export class BoxPlotContextMenu extends BlockContextMenu {
         Util.setColorPicker(lineColorChooser, c);
       };
 
-      let lineThicknessField = document.getElementById("box-plot-line-thickness-field") as HTMLInputElement;
-      lineThicknessField.value = lineThicknesses[0].toString();
-      lineThicknessField.onchange = () => lineThicknesses[parseInt(lineThicknessPortSelector.value)] = parseFloat(lineThicknessField.value);
-      let lineThicknessPortSelector = this.createPortSelector("box-plot-line-thickness-port-selector");
-      lineThicknessPortSelector.onchange = () => lineThicknessField.value = lineThicknesses[parseInt(lineThicknessPortSelector.value)].toString();
+      let lineWidthField = document.getElementById("box-plot-line-width-field") as HTMLInputElement;
+      lineWidthField.value = lineWidths[0].toString();
+      lineWidthField.onchange = () => lineWidths[parseInt(lineWidthPortSelector.value)] = parseFloat(lineWidthField.value);
+      let lineWidthPortSelector = this.createPortSelector("box-plot-line-width-port-selector");
+      lineWidthPortSelector.onchange = () => lineWidthField.value = lineWidths[parseInt(lineWidthPortSelector.value)].toString();
 
       let legendField = document.getElementById("box-plot-legend-field") as HTMLInputElement;
       legendField.value = legends[0].toString();
@@ -260,11 +260,11 @@ export class BoxPlotContextMenu extends BlockContextMenu {
           success = false;
           message = heightField.value + " is not a valid height";
         }
-        // check line thicknesses
-        for (let lineThickness of lineThicknesses) {
-          if (lineThickness < 0) {
+        // check line widths
+        for (let lineWidth of lineWidths) {
+          if (lineWidth < 0) {
             success = false;
-            message = "Port " + g.getDataPorts()[lineThicknesses.indexOf(lineThickness)].getUid() + " line thickness cannot be negative (" + lineThickness + ")";
+            message = "Port " + g.getDataPorts()[lineWidths.indexOf(lineWidth)].getUid() + " line width cannot be negative (" + lineWidth + ")";
             break;
           }
         }
@@ -278,7 +278,7 @@ export class BoxPlotContextMenu extends BlockContextMenu {
           for (let i = 0; i < legends.length; i++) {
             g.setLegend(i, legends[i]);
             g.setLineColor(i, lineColors[i]);
-            g.setLineThickness(i, lineThicknesses[i]);
+            g.setLineWidth(i, lineWidths[i]);
             g.setBoxColor(i, fillColors[i]);
           }
           g.refreshView();
@@ -303,7 +303,7 @@ export class BoxPlotContextMenu extends BlockContextMenu {
       windowColorField.addEventListener("keyup", enterKeyUp);
       legendField.addEventListener("keyup", enterKeyUp);
       lineColorField.addEventListener("keyup", enterKeyUp);
-      lineThicknessField.addEventListener("keyup", enterKeyUp);
+      lineWidthField.addEventListener("keyup", enterKeyUp);
       fillColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);

@@ -107,13 +107,13 @@ export class UnivariateDescriptiveStatisticsBlock extends Block {
   }
 
   private setPortValues(uds: UnivariateDescriptiveStatistics): void {
-    let percentiles = uds.percentiles();
+    let fns = uds.getFiveNumberSummary();
     this.portMean.setValue(uds.arithmeticMean());
-    this.portMedian.setValue(percentiles[2]);
+    this.portMedian.setValue(fns.median);
     this.portMode.setValue(uds.mode());
-    this.portRange.setValue(percentiles[4] - percentiles[0]);
-    this.portQ1.setValue(percentiles[1]);
-    this.portQ3.setValue(percentiles[3]);
+    this.portRange.setValue(fns.max - fns.min);
+    this.portQ1.setValue(fns.q1);
+    this.portQ3.setValue(fns.q3);
     this.portSD.setValue(uds.standardDeviation(this.portMean.getValue()));
     this.portSkewness.setValue(uds.skewness(this.portMean.getValue(), this.portSD.getValue()));
     this.portKurtosis.setValue(uds.kurtosis(this.portMean.getValue(), this.portSD.getValue()));

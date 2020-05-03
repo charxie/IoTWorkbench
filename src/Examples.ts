@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import box_plot from "./examples/box-plot.json";
+// @ts-ignore
 import univariate_descriptive_statistics from "./examples/univariate-descriptive-statistics.json";
 // @ts-ignore
 import means from "./examples/means.json";
@@ -406,10 +408,11 @@ export class Examples {
     this.files.push({name: "Calculus: ODE Solver", data: ode_solver});
     this.files.push({name: "Optimization: Gradient Descent in One Dimension", data: gradient_descent_1d});
     this.files.push({name: "Optimization: Gradient Descent in Two Dimensions", data: gradient_descent_2d});
-    this.files.push({name: "Data Science: Import Datasets", data: import_datasets});
-    this.files.push({name: "Data Science: Array Inputs", data: array_inputs});
+    this.files.push({name: "Statistics: Import Datasets", data: import_datasets});
+    this.files.push({name: "Statistics: Array Inputs", data: array_inputs});
     this.files.push({name: "Statistics: Means", data: means});
     this.files.push({name: "Statistics: Univariate Descriptive Statistics", data: univariate_descriptive_statistics});
+    this.files.push({name: "Statistics: Box Plot", data: box_plot});
     this.files.push({name: "Statistics: Box-Muller Transform", data: box_muller_transform});
     this.files.push({name: "Statistics: Normal Distributions", data: normal_distributions});
     this.files.push({name: "Statistics: Normal Distribution in 3D", data: normal_distribution_3d});

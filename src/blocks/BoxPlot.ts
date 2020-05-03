@@ -8,16 +8,19 @@ import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
 import {DataArray} from "./DataArray";
+import {UnivariateDescriptiveStatistics} from "../math/UnivariateDescriptiveStatistics";
+import {FiveNumberSummary} from "./FiveNumberSummary";
 
 export class BoxPlot extends Block {
 
   private portI: Port[];
   private dataArrays: DataArray[] = [];
+  private fiveNumberSummaries: FiveNumberSummary[] = [];
   private minimumValue: number = 0;
   private maximumValue: number = 1;
   private autoscale: boolean = true;
-  private xAxisLabel: string = "x";
-  private yAxisLabel: string = "y";
+  private xAxisLabel: string = "";
+  private yAxisLabel: string = "";
   private graphWindowColor: string = "white";
   private graphWindow: Rectangle;
   private barHeight: number;
@@ -29,7 +32,7 @@ export class BoxPlot extends Block {
   };
   private legends: string[] = [];
   private lineColors: string[] = [];
-  private lineThicknesses: number[] = [];
+  private lineWidths: number[] = [];
   private boxColors: string[] = [];
 
   static State = class {
@@ -48,7 +51,7 @@ export class BoxPlot extends Block {
     readonly maximumValue: number;
     readonly legends: string[];
     readonly lineColors: string[];
-    readonly lineThicknesses: number[];
+    readonly lineWidths: number[];
     readonly boxColors: string[];
 
     constructor(b: BoxPlot) {
@@ -67,7 +70,7 @@ export class BoxPlot extends Block {
       this.maximumValue = b.maximumValue;
       this.legends = [...b.legends];
       this.lineColors = [...b.lineColors];
-      this.lineThicknesses = [...b.lineThicknesses];
+      this.lineWidths = [...b.lineWidths];
       this.boxColors = [...b.boxColors];
     }
   };
@@ -83,10 +86,11 @@ export class BoxPlot extends Block {
     this.ports.push(this.portI[0]);
     this.graphWindow = new Rectangle(0, 0, 1, 1);
     this.dataArrays.push(new DataArray(0));
+    this.fiveNumberSummaries.push(new FiveNumberSummary(0, 0.25, 0.5, 0.75, 1));
     this.legends.push("A");
     this.lineColors.push("black");
     this.boxColors.push("white");
-    this.lineThicknesses.push(1);
+    this.lineWidths.push(1);
   }
 
   getCopy(): Block {
@@ -99,7 +103,7 @@ export class BoxPlot extends Block {
     copy.graphWindowColor = this.graphWindowColor;
     copy.legends = [...this.legends];
     copy.lineColors = [...this.lineColors];
-    copy.lineThicknesses = [...this.lineThicknesses];
+    copy.lineWidths = [...this.lineWidths];
     copy.boxColors = [...this.boxColors];
     copy.setDataPortNumber(this.getDataPorts().length);
     return copy;
@@ -116,9 +120,10 @@ export class BoxPlot extends Block {
           this.portI.push(p);
           this.ports.push(p);
           this.dataArrays.push(new DataArray(0));
+          this.fiveNumberSummaries.push(new FiveNumberSummary(0, 0.25, 0.5, 0.75, 1));
           this.legends.push(p.getUid());
           this.lineColors.push("black");
-          this.lineThicknesses.push(1);
+          this.lineWidths.push(1);
           this.boxColors.push("white");
         }
       }
@@ -127,18 +132,20 @@ export class BoxPlot extends Block {
         this.portI.pop();
         flowchart.removeConnectorsToPort(this.ports.pop());
         this.dataArrays.pop();
+        this.fiveNumberSummaries.pop();
         this.legends.pop();
         this.lineColors.pop();
-        this.lineThicknesses.pop();
+        this.lineWidths.pop();
         this.boxColors.pop();
       }
     }
     // ensure that extra properties are removed
     let n = this.portI.length;
     this.dataArrays.length = n;
+    this.fiveNumberSummaries.length = n;
     this.legends.length = n;
     this.lineColors.length = n;
-    this.lineThicknesses.length = n;
+    this.lineWidths.length = n;
     this.boxColors.length = n;
     this.refreshView();
   }
@@ -227,20 +234,20 @@ export class BoxPlot extends Block {
     return this.lineColors[i];
   }
 
-  setLineThicknesses(lineThicknesses: number[]): void {
-    this.lineThicknesses = lineThicknesses;
+  setLineWidths(lineWidths: number[]): void {
+    this.lineWidths = lineWidths;
   }
 
-  getLineThicknesses(): number[] {
-    return [...this.lineThicknesses];
+  getLineWidths(): number[] {
+    return [...this.lineWidths];
   }
 
-  setLineThickness(i: number, lineThickness: number): void {
-    this.lineThicknesses[i] = lineThickness;
+  setLineWidth(i: number, lineWidth: number): void {
+    this.lineWidths[i] = lineWidth;
   }
 
-  getLineThickness(i: number): number {
-    return this.lineThicknesses[i];
+  getLineWidth(i: number): number {
+    return this.lineWidths[i];
   }
 
   setBoxColors(boxColors: string[]): void {
@@ -343,7 +350,105 @@ export class BoxPlot extends Block {
   }
 
   private drawBox(ctx: CanvasRenderingContext2D): void {
+    let ymin;
+    let ymax;
+    if (this.autoscale) {
+      ymin = Number.MAX_VALUE;
+      ymax = -ymin;
+      for (let fns of this.fiveNumberSummaries) {
+        if (ymin > fns.min) {
+          ymin = fns.min;
+        }
+        if (ymax < fns.max) {
+          ymax = fns.max;
+        }
+      }
+    } else {
+      ymin = this.minimumValue;
+      ymax = this.maximumValue;
+    }
+    let yOffset = 0.1 * this.graphWindow.height;
+    let dy = (this.graphWindow.height - 2 * yOffset) / (ymax - ymin);
+    let n = this.fiveNumberSummaries.length;
+    let dx = this.graphWindow.width / (n + 1);
+    let y0 = this.graphWindow.y + this.graphWindow.height - yOffset;
+    let xi, y1, y2;
+    for (let i = 0; i < n; i++) {
+      ctx.strokeStyle = this.lineColors[i];
+      ctx.lineWidth = this.lineWidths[i];
+      xi = this.graphWindow.x + (i + 1) * dx;
+      // draw min
+      y1 = y0 - (this.fiveNumberSummaries[i].min - ymin) * dy;
+      ctx.beginPath();
+      ctx.moveTo(xi - dx / 5, y1);
+      ctx.lineTo(xi + dx / 5, y1);
+      ctx.stroke();
+      // draw max
+      y2 = y0 - (this.fiveNumberSummaries[i].max - ymin) * dy;
+      ctx.beginPath();
+      ctx.moveTo(xi - dx / 5, y2);
+      ctx.lineTo(xi + dx / 5, y2);
+      ctx.stroke();
+      // draw line between min and max
+      ctx.setLineDash([5, 3]);
+      ctx.beginPath();
+      ctx.moveTo(xi, y1);
+      ctx.lineTo(xi, y2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // draw box
+      y1 = y0 - (this.fiveNumberSummaries[i].q1 - ymin) * dy;
+      y2 = y0 - (this.fiveNumberSummaries[i].q3 - ymin) * dy;
+      ctx.fillStyle = this.boxColors[i];
+      ctx.beginPath();
+      ctx.rect(xi - dx / 4, y1, dx / 2, y2 - y1);
+      ctx.fill();
+      ctx.stroke();
+      // draw median
+      ctx.lineWidth = this.lineWidths[i] * 4;
+      y1 = y0 - (this.fiveNumberSummaries[i].median - ymin) * dy;
+      ctx.beginPath();
+      ctx.moveTo(xi - dx / 4, y1);
+      ctx.lineTo(xi + dx / 4, y1);
+      ctx.stroke();
+      // draw label
+      ctx.fillStyle = "black";
+      let labelWidth = ctx.measureText(this.portI[i].getUid()).width;
+      ctx.fillText(this.portI[i].getUid(), xi - labelWidth / 2, y0 + yOffset + 15);
+    }
+    // draw y-axis tick marks
+    ctx.font = "10px Arial";
+    ctx.lineWidth = 1;
+    let precision = Math.abs(ymin) < 1 ? 2 : Math.round(Math.abs(ymin)).toString().length + 1;
+    let minString = (Math.abs(ymin) < 0.0001 ? 0 : ymin).toPrecision(precision);
+    if (Math.abs(ymin) >= 1) {
+      if (minString.endsWith(".0")) {
+        minString = ymin.toPrecision(precision - 1);
+      } else if (minString.endsWith(".00")) {
+        minString = ymin.toPrecision(precision > 2 ? precision - 2 : 1);
+      }
+    }
+    ctx.beginPath();
+    ctx.moveTo(this.graphWindow.x, y0);
+    ctx.lineTo(this.graphWindow.x + 4, y0);
+    ctx.stroke();
+    ctx.fillText(minString, this.graphWindow.x - ctx.measureText(minString).width - 5, y0);
 
+    precision = Math.abs(ymax) < 1 ? 2 : Math.round(Math.abs(ymax)).toString().length + 1;
+    y2 = y0 - (ymax - ymin) * dy;
+    let maxString = (Math.abs(ymax) < 0.0001 ? 0 : ymax).toPrecision(precision);
+    if (Math.abs(ymax) >= 1) {
+      if (maxString.endsWith(".0")) {
+        maxString = ymax.toPrecision(precision - 1);
+      } else if (maxString.endsWith(".00")) {
+        maxString = ymax.toPrecision(precision > 2 ? precision - 2 : 1);
+      }
+    }
+    ctx.beginPath();
+    ctx.moveTo(this.graphWindow.x, y2);
+    ctx.lineTo(this.graphWindow.x + 4, y2);
+    ctx.stroke();
+    ctx.fillText(maxString, this.graphWindow.x - ctx.measureText(maxString).width - 5, y2);
   }
 
   private drawLegends(ctx: CanvasRenderingContext2D): void {
@@ -370,6 +475,7 @@ export class BoxPlot extends Block {
     for (let i = 0; i < this.portI.length; i++) {
       let v = this.portI[i].getValue();
       this.dataArrays[i].data = Array.isArray(v) ? v : [v];
+      this.fiveNumberSummaries[i].copy(new UnivariateDescriptiveStatistics(this.dataArrays[i].data).getFiveNumberSummary());
     }
   }
 

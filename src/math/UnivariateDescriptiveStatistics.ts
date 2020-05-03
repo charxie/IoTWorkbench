@@ -1,6 +1,8 @@
 /*
  * @author Charles Xie
  */
+import {FiveNumberSummary} from "../blocks/FiveNumberSummary";
+
 export class UnivariateDescriptiveStatistics {
 
   private values: number[];
@@ -28,8 +30,8 @@ export class UnivariateDescriptiveStatistics {
     return modes;
   }
 
-  // return percentiles at 0, 1/4, 1/2, 3/4, and 1
-  public percentiles(): number[] {
+  // return the five-number summary at 0, 1/4, 1/2, 3/4, and 1
+  public getFiveNumberSummary(): FiveNumberSummary {
     let length = this.values.length;
     if (length <= 0) return undefined;
     let copy = [...this.values];
@@ -42,7 +44,7 @@ export class UnivariateDescriptiveStatistics {
     }
     let q1 = copy[Math.floor(length * 0.25) - 1];
     let q3 = copy[Math.floor(length * 0.75) - 1];
-    return [copy[0], q1, q2, q3, copy[length - 1]];
+    return new FiveNumberSummary(copy[0], q1, q2, q3, copy[length - 1]);
   }
 
   // uncorrected

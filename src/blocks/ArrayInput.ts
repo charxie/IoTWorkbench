@@ -319,7 +319,7 @@ export class ArrayInput extends Block {
           numbers[row] = this.array[col][row];
         }
       }
-      this.ports[col].setValue(numbers);
+      if (col < this.ports.length) this.ports[col].setValue(numbers);
     }
     this.updateConnectors();
   }

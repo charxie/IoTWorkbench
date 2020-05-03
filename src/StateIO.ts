@@ -200,7 +200,7 @@ export class StateIO {
           block.setGraphWindowColor(state.graphWindowColor);
           if (state.legends != undefined) block.setLegends(state.legends);
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
-          if (state.lineThicknesses != undefined) block.setLineThicknesses(state.lineThicknesses);
+          if (state.lineWidths != undefined) block.setLineWidths(state.lineWidths);
           if (state.boxColors != undefined) block.setBoxColors(state.boxColors);
           block.setDataPortNumber(state.dataPortNumber);
         } else if (block instanceof IntegralBlock) {
