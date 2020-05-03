@@ -56,6 +56,7 @@ import {MolecularViewerBlock} from "./MolecularViewerBlock";
 import {ArrayInput} from "./ArrayInput";
 import {MeanBlock} from "./MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStatisticsBlock";
+import {BoxPlot} from "./BoxPlot";
 
 export class BlockUtilities {
 
@@ -122,6 +123,9 @@ export class BlockUtilities {
     }
     if (block instanceof Grapher) {
       return contextMenus.grapher;
+    }
+    if (block instanceof BoxPlot) {
+      return contextMenus.boxPlot;
     }
     if (block instanceof IntegralBlock) {
       return contextMenus.integralBlock;
@@ -300,6 +304,10 @@ export class BlockUtilities {
     if (block instanceof Grapher) {
       contextMenus.grapher.block = block;
       return document.getElementById("grapher-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof BoxPlot) {
+      contextMenus.boxPlot.block = block;
+      return document.getElementById("box-plot-context-menu") as HTMLMenuElement;
     }
     if (block instanceof IntegralBlock) {
       contextMenus.integralBlock.block = block;

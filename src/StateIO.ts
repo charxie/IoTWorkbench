@@ -53,6 +53,7 @@ import {Basic3DBlock} from "./blocks/Basic3DBlock";
 import {ArrayInput} from "./blocks/ArrayInput";
 import {MeanBlock} from "./blocks/MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "./blocks/UnivariateDescriptiveStatisticsBlock";
+import {BoxPlot} from "./blocks/BoxPlot";
 
 export class StateIO {
 
@@ -189,6 +190,19 @@ export class StateIO {
           if (state.fillOptions != undefined) block.setFillOptions(state.fillOptions);
           if (state.fillColors != undefined) block.setFillColors(state.fillColors);
           if (state.dataPortNumber != undefined) block.setDataPortNumber(state.dataPortNumber);
+        } else if (block instanceof BoxPlot) {
+          block.setName(state.name);
+          block.setMinimumValue(state.minimumValue);
+          block.setMaximumValue(state.maximumValue);
+          block.setAutoScale(state.autoscale);
+          block.setXAxisLabel(state.xAxisLabel);
+          block.setYAxisLabel(state.yAxisLabel);
+          block.setGraphWindowColor(state.graphWindowColor);
+          if (state.legends != undefined) block.setLegends(state.legends);
+          if (state.lineColors != undefined) block.setLineColors(state.lineColors);
+          if (state.lineThicknesses != undefined) block.setLineThicknesses(state.lineThicknesses);
+          if (state.boxColors != undefined) block.setBoxColors(state.boxColors);
+          block.setDataPortNumber(state.dataPortNumber);
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);

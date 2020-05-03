@@ -63,6 +63,7 @@ import {MolecularViewerBlock} from "./MolecularViewerBlock";
 import {ArrayInput} from "./ArrayInput";
 import {MeanBlock} from "./MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStatisticsBlock";
+import {BoxPlot} from "./BoxPlot";
 
 export class Flowchart {
 
@@ -881,6 +882,9 @@ export class Flowchart {
       case "Grapher":
         block = new Grapher(uid, name, x, y, 200, 160);
         break;
+      case "Box Plot":
+        block = new BoxPlot(uid, name, x, y, 200, 160);
+        break;
       case "Integral Block":
         block = new IntegralBlock(uid, x, y, 200, 160);
         break;
@@ -1012,6 +1016,8 @@ export class Flowchart {
         blockStates.push(new Beeper.State(b));
       } else if (b instanceof Grapher) {
         blockStates.push(new Grapher.State(b));
+      } else if (b instanceof BoxPlot) {
+        blockStates.push(new BoxPlot.State(b));
       } else if (b instanceof IntegralBlock) {
         blockStates.push(new IntegralBlock.State(b));
       } else if (b instanceof FFTBlock) {

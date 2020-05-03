@@ -55,6 +55,7 @@ import {MolecularViewerContextMenu} from "./blocks/ui/MolecularViewerContextMenu
 import {ArrayInputContextMenu} from "./blocks/ui/ArrayInputContextMenu";
 import {MeanBlockContextMenu} from "./blocks/ui/MeanBlockContextMenu";
 import {UnivariateDescriptiveStatisticsBlockContextMenu} from "./blocks/ui/UnivariateDescriptiveStatisticsBlockContextMenu";
+import {BoxPlotContextMenu} from "./blocks/ui/BoxPlotContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -100,6 +101,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("steady-state-fdm-solver-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("boundary-condition-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("grapher-context-menu-placeholder", blockPlayground);
+  addPlaceholder("box-plot-context-menu-placeholder", blockPlayground);
   addPlaceholder("space2d-context-menu-placeholder", blockPlayground);
   addPlaceholder("space3d-context-menu-placeholder", blockPlayground);
   addPlaceholder("field2d-context-menu-placeholder", blockPlayground);
@@ -282,6 +284,11 @@ function setupContextMenuForBlocks() {
   grapherContextMenu.render("grapher-context-menu-placeholder");
   grapherContextMenu.addListeners();
   contextMenus.grapher = grapherContextMenu;
+
+  let boxPlotContextMenu = new BoxPlotContextMenu();
+  boxPlotContextMenu.render("box-plot-context-menu-placeholder");
+  boxPlotContextMenu.addListeners();
+  contextMenus.boxPlot = boxPlotContextMenu;
 
   let integralBlockContextMenu = new IntegralBlockContextMenu();
   integralBlockContextMenu.render("integral-block-context-menu-placeholder");

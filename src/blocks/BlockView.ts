@@ -64,6 +64,7 @@ import {MolecularViewerBlock} from "./MolecularViewerBlock";
 import {ArrayInput} from "./ArrayInput";
 import {MeanBlock} from "./MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStatisticsBlock";
+import {BoxPlot} from "./BoxPlot";
 
 export class BlockView {
 
@@ -299,6 +300,9 @@ export class BlockView {
         break;
       case "grapher-block":
         b = this.addBlockUndoable(new Grapher("Grapher #" + timestamp, "Graph", x - 100, y - 80, 200, 160));
+        break;
+      case "box-plot-block":
+        b = this.addBlockUndoable(new BoxPlot("Box Plot #" + timestamp, "Box Plot", x - 100, y - 80, 200, 160));
         break;
       case "integral-block":
         b = this.addBlockUndoable(new IntegralBlock("Integral Block #" + timestamp, x - 50, y - 40, 100, 80));
