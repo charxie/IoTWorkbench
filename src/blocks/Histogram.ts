@@ -13,8 +13,12 @@ export class Histogram extends Block {
 
   private portI: Port[];
   private dataArrays: DataArray[] = [];
-  private minimumValue: number = 0;
-  private maximumValue: number = 1;
+  private numberOfBars: number = 50;
+  private distributions: number[][] = [];
+  private minimumXValue: number = 0;
+  private maximumXValue: number = 1;
+  private minimumYValue: number = 0;
+  private maximumYValue: number = 1;
   private autoscale: boolean = true;
   private xAxisLabel: string = "";
   private yAxisLabel: string = "";
@@ -41,13 +45,16 @@ export class Histogram extends Block {
     readonly width: number;
     readonly height: number;
     readonly dataPortNumber: number;
+    readonly numberOfBars: number;
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly graphWindowColor: string;
     readonly showGridLines: boolean;
     readonly autoscale: boolean;
-    readonly minimumValue: number;
-    readonly maximumValue: number;
+    readonly minimumXValue: number;
+    readonly maximumXValue: number;
+    readonly minimumYValue: number;
+    readonly maximumYValue: number;
     readonly legends: string[];
     readonly lineColors: string[];
     readonly lineWidths: number[];
@@ -61,13 +68,16 @@ export class Histogram extends Block {
       this.width = h.width;
       this.height = h.height;
       this.dataPortNumber = h.getDataPorts().length;
+      this.numberOfBars = h.numberOfBars;
       this.xAxisLabel = h.xAxisLabel;
       this.yAxisLabel = h.yAxisLabel;
       this.graphWindowColor = h.graphWindowColor;
       this.showGridLines = h.showGridLines;
       this.autoscale = h.autoscale;
-      this.minimumValue = h.minimumValue;
-      this.maximumValue = h.maximumValue;
+      this.minimumXValue = h.minimumXValue;
+      this.maximumXValue = h.maximumXValue;
+      this.minimumYValue = h.minimumYValue;
+      this.maximumYValue = h.maximumYValue;
       this.legends = [...h.legends];
       this.lineColors = [...h.lineColors];
       this.lineWidths = [...h.lineWidths];
@@ -90,12 +100,15 @@ export class Histogram extends Block {
     this.lineColors.push("black");
     this.fillColors.push("white");
     this.lineWidths.push(1);
+    this.distributions.push(new Array(this.numberOfBars));
   }
 
   getCopy(): Block {
     let copy = new Histogram("Histogram #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    copy.minimumValue = this.minimumValue;
-    copy.maximumValue = this.maximumValue;
+    copy.minimumXValue = this.minimumXValue;
+    copy.maximumXValue = this.maximumXValue;
+    copy.minimumYValue = this.minimumYValue;
+    copy.maximumYValue = this.maximumYValue;
     copy.autoscale = this.autoscale;
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
@@ -106,6 +119,7 @@ export class Histogram extends Block {
     copy.lineWidths = [...this.lineWidths];
     copy.fillColors = [...this.fillColors];
     copy.setDataPortNumber(this.getDataPorts().length);
+    copy.setNumberOfBars(this.numberOfBars);
     return copy;
   }
 
@@ -113,6 +127,17 @@ export class Histogram extends Block {
   }
 
   erase(): void {
+    for (let i = 0; i < this.dataArrays.length; i++) {
+      this.dataArrays[i].data.length = 0;
+    }
+  }
+
+  setNumberOfBars(numberOfBars: number): void {
+    this.numberOfBars = numberOfBars;
+  }
+
+  getNumberOfBars(): number {
+    return this.numberOfBars;
   }
 
   setDataPortNumber(portNumber: number): void {
@@ -127,6 +152,7 @@ export class Histogram extends Block {
           this.lineColors.push("black");
           this.lineWidths.push(1);
           this.fillColors.push("white");
+          this.distributions.push(new Array(this.numberOfBars));
         }
       }
     } else if (portNumber < this.portI.length) { // decrease data ports
@@ -138,6 +164,7 @@ export class Histogram extends Block {
         this.lineColors.pop();
         this.lineWidths.pop();
         this.fillColors.pop();
+        this.distributions.pop();
       }
     }
     // ensure that extra properties are removed
@@ -147,6 +174,7 @@ export class Histogram extends Block {
     this.lineColors.length = n;
     this.lineWidths.length = n;
     this.fillColors.length = n;
+    this.distributions.length = n;
     this.refreshView();
   }
 
@@ -154,20 +182,36 @@ export class Histogram extends Block {
     return this.portI;
   }
 
-  setMinimumValue(minimumValue: number): void {
-    this.minimumValue = minimumValue;
+  setMinimumXValue(minimumXValue: number): void {
+    this.minimumXValue = minimumXValue;
   }
 
-  getMinimumValue(): number {
-    return this.minimumValue;
+  getMinimumXValue(): number {
+    return this.minimumXValue;
   }
 
-  setMaximumValue(maximumValue: number): void {
-    this.maximumValue = maximumValue;
+  setMaximumXValue(maximumXValue: number): void {
+    this.maximumXValue = maximumXValue;
   }
 
-  getMaximumValue(): number {
-    return this.maximumValue;
+  getMaximumXValue(): number {
+    return this.maximumXValue;
+  }
+
+  setMinimumYValue(minimumYValue: number): void {
+    this.minimumYValue = minimumYValue;
+  }
+
+  getMinimumYValue(): number {
+    return this.minimumYValue;
+  }
+
+  setMaximumYValue(maximumYValue: number): void {
+    this.maximumYValue = maximumYValue;
+  }
+
+  getMaximumYValue(): number {
+    return this.maximumYValue;
   }
 
   setAutoScale(autoscale: boolean): void {
@@ -363,6 +407,67 @@ export class Histogram extends Block {
 
   }
 
+  private drawBars(ctx: CanvasRenderingContext2D): void {
+    // detect minimum and maximum of x and y values from all inputs and calculate the scale factor
+    let xmin = Number.MAX_VALUE;
+    let xmax = -xmin;
+    let ymin = Number.MAX_VALUE;
+    let ymax = -ymin;
+    if (this.autoscale) {
+      for (let i = 0; i < this.dataArrays.length; i++) {
+        let length = this.dataArrays[i].length();
+        if (length > 1) {
+          let xminxmax = this.dataArrays[i].getMinMax();
+          if (xmin > xminxmax.min) {
+            xmin = xminxmax.min;
+          }
+          if (xmax < xminxmax.max) {
+            xmax = xminxmax.max;
+          }
+          let dist = this.distributions[i];
+          let dmin = Math.min(...dist);
+          let dmax = Math.max(...dist);
+          if (ymin > dmin) {
+            ymin = dmin;
+          }
+          if (ymax < dmax) {
+            ymax = dmax;
+          }
+        }
+      }
+      if (xmin == Number.MAX_VALUE) xmin = 0;
+      if (xmax == -Number.MAX_VALUE) xmax = 1;
+      if (ymin == Number.MAX_VALUE) ymin = 0;
+      if (ymax == -Number.MAX_VALUE) ymax = 1;
+    } else {
+      xmin = this.minimumXValue;
+      xmax = this.maximumXValue;
+      ymin = this.minimumYValue;
+      ymax = this.maximumYValue;
+    }
+    let dx = this.graphWindow.width / (this.numberOfBars + 1);
+    let dy = ymax === ymin ? 1 : this.graphWindow.height / (ymax - ymin);
+    let bin = (xmax - xmin) / this.numberOfBars;
+    let x0 = this.graphWindow.x;
+    let y0 = this.graphWindow.y + this.graphWindow.height;
+    for (let i = 0; i < this.dataArrays.length; i++) {
+      this.distributions[i].fill(0);
+      for (let j = 0; j < this.dataArrays[i].data.length; j++) {
+        let p = this.dataArrays[i].data[j];
+        let k = Math.floor((p - xmin) / bin);
+        this.distributions[i][k]++;
+        let y2 = this.distributions[i][k] * dy;
+        ctx.lineWidth = this.lineWidths[i];
+        ctx.beginPath();
+        ctx.fillStyle = this.fillColors[i];
+        ctx.rect(x0 + dx * k, y0 - y2, dx, y2);
+        ctx.fill();
+        ctx.strokeStyle = this.lineColors[i];
+        ctx.stroke();
+      }
+    }
+  }
+
   private drawGridLines(ctx: CanvasRenderingContext2D): void {
     ctx.save();
     ctx.translate(this.graphWindow.x, this.graphWindow.y + this.graphWindow.height);
@@ -386,14 +491,11 @@ export class Histogram extends Block {
     ctx.restore();
   }
 
-  private drawBars(ctx: CanvasRenderingContext2D): void {
-  }
-
   private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
     ctx.font = "italic 15px Times New Roman";
     ctx.fillStyle = "black";
     let horizontalAxisY = this.height - this.graphMargin.bottom;
-    ctx.fillText(this.xAxisLabel, this.graphWindow.x + (this.graphWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 35);
+    ctx.fillText(this.xAxisLabel, this.graphWindow.x + (this.graphWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 25);
     ctx.save();
     ctx.translate(this.x + 30, this.graphWindow.y + (this.graphWindow.height + ctx.measureText(this.yAxisLabel).width) / 2);
     ctx.rotate(-Math.PI / 2);
@@ -408,7 +510,13 @@ export class Histogram extends Block {
   updateModel(): void {
     for (let i = 0; i < this.portI.length; i++) {
       let v = this.portI[i].getValue();
-      this.dataArrays[i].data = Array.isArray(v) ? v : [v];
+      if (v !== undefined) {
+        if (Array.isArray(v)) {
+          this.dataArrays[i].data = v;
+        } else {
+          this.dataArrays[i].data.push(v);
+        }
+      }
     }
   }
 

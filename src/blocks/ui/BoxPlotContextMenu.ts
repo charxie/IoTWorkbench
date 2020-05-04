@@ -81,6 +81,11 @@ export class BoxPlotContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="box-plot-data-ports-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Legend:</td>
+                  <td><select id="box-plot-legend-port-selector" style="width: 65px"></select></td>
+                  <td colspan="2"><input type="text" id="box-plot-legend-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Line Color:</td>
                   <td><select id="box-plot-line-color-port-selector" style="width: 65px"></select></td>
                   <td><input type="color" id="box-plot-line-color-chooser" style="width: 50px"></td>
@@ -90,11 +95,6 @@ export class BoxPlotContextMenu extends BlockContextMenu {
                   <td>Line Width:</td>
                   <td><select id="box-plot-line-width-port-selector" style="width: 65px"></select></td>
                   <td colspan="2"><input type="text" id="box-plot-line-width-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Legend:</td>
-                  <td><select id="box-plot-legend-port-selector" style="width: 65px"></select></td>
-                  <td colspan="2"><input type="text" id="box-plot-legend-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Box Color:</td>

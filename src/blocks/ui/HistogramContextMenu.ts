@@ -62,6 +62,10 @@ export class HistogramContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="histogram-y-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Number of Bars:</td>
+                  <td colspan="3"><input type="text" id="histogram-bar-number-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Scale:</td>
                   <td colspan="3">
                     <input type="radio" name="scale" id="histogram-auto-scale-radio-button" checked> Auto
@@ -69,16 +73,29 @@ export class HistogramContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
-                  <td>Minimum Value:</td>
-                  <td colspan="3"><input type="text" id="histogram-minimum-value-field" style="width: 100%"></td>
+                  <td>Minimum X Value:</td>
+                  <td colspan="3"><input type="text" id="histogram-minimum-x-value-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Maximum Value:</td>
-                  <td colspan="3"><input type="text" id="histogram-maximum-value-field" style="width: 100%"></td>
+                  <td>Maximum X Value:</td>
+                  <td colspan="3"><input type="text" id="histogram-maximum-x-value-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Minimum Y Value:</td>
+                  <td colspan="3"><input type="text" id="histogram-minimum-y-value-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Maximum Y Value:</td>
+                  <td colspan="3"><input type="text" id="histogram-maximum-y-value-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Data Ports:</td>
                   <td colspan="3"><input type="text" id="histogram-data-ports-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Legend:</td>
+                  <td><select id="histogram-legend-port-selector" style="width: 65px"></select></td>
+                  <td colspan="2"><input type="text" id="histogram-legend-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Line Color:</td>
@@ -92,12 +109,7 @@ export class HistogramContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="histogram-line-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Legend:</td>
-                  <td><select id="histogram-legend-port-selector" style="width: 65px"></select></td>
-                  <td colspan="2"><input type="text" id="histogram-legend-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Box Color:</td>
+                  <td>Fill Color:</td>
                   <td><select id="histogram-fill-color-port-selector" style="width: 65px"></select></td>
                   <td><input type="color" id="histogram-fill-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="histogram-fill-color-field" style="width: 100%"></td>
@@ -157,15 +169,21 @@ export class HistogramContextMenu extends BlockContextMenu {
       xAxisLableField.value = g.getXAxisLabel();
       let yAxisLableField = document.getElementById("histogram-y-axis-label-field") as HTMLInputElement;
       yAxisLableField.value = g.getYAxisLabel();
+      let numberOfBarsField = document.getElementById("histogram-bar-number-field") as HTMLInputElement;
+      numberOfBarsField.value = g.getNumberOfBars().toString();
 
       let autoScaleRadioButton = document.getElementById("histogram-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("histogram-fixed-scale-radio-button") as HTMLInputElement;
       fixedScaleRadioButton.checked = !g.getAutoScale();
-      let minimumValueField = document.getElementById("histogram-minimum-value-field") as HTMLInputElement;
-      minimumValueField.value = g.getMinimumValue().toString();
-      let maximumValueField = document.getElementById("histogram-maximum-value-field") as HTMLInputElement;
-      maximumValueField.value = g.getMaximumValue().toString();
+      let minimumXValueField = document.getElementById("histogram-minimum-x-value-field") as HTMLInputElement;
+      minimumXValueField.value = g.getMinimumXValue().toString();
+      let maximumXValueField = document.getElementById("histogram-maximum-x-value-field") as HTMLInputElement;
+      maximumXValueField.value = g.getMaximumXValue().toString();
+      let minimumYValueField = document.getElementById("histogram-minimum-y-value-field") as HTMLInputElement;
+      minimumYValueField.value = g.getMinimumYValue().toString();
+      let maximumYValueField = document.getElementById("histogram-maximum-y-value-field") as HTMLInputElement;
+      maximumYValueField.value = g.getMaximumYValue().toString();
 
       let dataPortsField = document.getElementById("histogram-data-ports-field") as HTMLInputElement;
       dataPortsField.value = g.getDataPorts().length.toString();
@@ -239,21 +257,37 @@ export class HistogramContextMenu extends BlockContextMenu {
           success = false;
           message = dataPortsField.value + " is not a valid value for data port number";
         }
-        // set minimum value
-        let minimumValue = parseFloat(minimumValueField.value);
-        if (isNumber(minimumValue)) {
-          g.setMinimumValue(minimumValue);
+        // set minimum x value
+        let minimumXValue = parseFloat(minimumXValueField.value);
+        if (isNumber(minimumXValue)) {
+          g.setMinimumXValue(minimumXValue);
         } else {
           success = false;
-          message = minimumValueField.value + " is not a valid value for minimum";
+          message = minimumXValueField.value + " is not a valid value for minimum x";
         }
-        // set maximum value
-        let maximumValue = parseFloat(maximumValueField.value);
-        if (isNumber(maximumValue)) {
-          g.setMaximumValue(maximumValue);
+        // set maximum x value
+        let maximumXValue = parseFloat(maximumXValueField.value);
+        if (isNumber(maximumXValue)) {
+          g.setMaximumXValue(maximumXValue);
         } else {
           success = false;
-          message = maximumValueField.value + " is not a valid value for maximum";
+          message = maximumXValueField.value + " is not a valid value for maximum x";
+        }
+        // set minimum y value
+        let minimumYValue = parseFloat(minimumYValueField.value);
+        if (isNumber(minimumYValue)) {
+          g.setMinimumYValue(minimumYValue);
+        } else {
+          success = false;
+          message = minimumYValueField.value + " is not a valid value for minimum y";
+        }
+        // set maximum y value
+        let maximumYValue = parseFloat(maximumYValueField.value);
+        if (isNumber(maximumYValue)) {
+          g.setMaximumYValue(maximumYValue);
+        } else {
+          success = false;
+          message = maximumYValueField.value + " is not a valid value for maximum y";
         }
         // set width
         let w = parseInt(widthField.value);
@@ -278,6 +312,14 @@ export class HistogramContextMenu extends BlockContextMenu {
             message = "Port " + g.getDataPorts()[lineWidths.indexOf(lineWidth)].getUid() + " line width cannot be negative (" + lineWidth + ")";
             break;
           }
+        }
+        // set number of bars
+        let bars = parseInt(numberOfBarsField.value);
+        if (isNumber(bars)) {
+          g.setNumberOfBars(Math.max(2, bars));
+        } else {
+          success = false;
+          message = numberOfBarsField.value + " is not a valid number of bars";
         }
         // finish
         if (success) {
@@ -308,8 +350,8 @@ export class HistogramContextMenu extends BlockContextMenu {
       };
       nameField.addEventListener("keyup", enterKeyUp);
       dataPortsField.addEventListener("keyup", enterKeyUp);
-      minimumValueField.addEventListener("keyup", enterKeyUp);
-      maximumValueField.addEventListener("keyup", enterKeyUp);
+      minimumXValueField.addEventListener("keyup", enterKeyUp);
+      maximumXValueField.addEventListener("keyup", enterKeyUp);
       xAxisLableField.addEventListener("keyup", enterKeyUp);
       yAxisLableField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);

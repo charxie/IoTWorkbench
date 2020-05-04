@@ -206,8 +206,10 @@ export class StateIO {
           block.setDataPortNumber(state.dataPortNumber);
         } else if (block instanceof Histogram) {
           block.setName(state.name);
-          block.setMinimumValue(state.minimumValue);
-          block.setMaximumValue(state.maximumValue);
+          block.setMinimumXValue(state.minimumXValue);
+          block.setMaximumXValue(state.maximumXValue);
+          block.setMinimumYValue(state.minimumYValue);
+          block.setMaximumYValue(state.maximumYValue);
           block.setAutoScale(state.autoscale);
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
