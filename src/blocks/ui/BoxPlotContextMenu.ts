@@ -98,9 +98,9 @@ export class BoxPlotContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Box Color:</td>
-                  <td><select id="box-plot-fill-color-port-selector" style="width: 65px"></select></td>
-                  <td><input type="color" id="box-plot-fill-color-chooser" style="width: 50px"></td>
-                  <td><input type="text" id="box-plot-fill-color-field" style="width: 100%"></td>
+                  <td><select id="box-plot-box-color-port-selector" style="width: 65px"></select></td>
+                  <td><input type="color" id="box-plot-box-color-chooser" style="width: 50px"></td>
+                  <td><input type="text" id="box-plot-box-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Window Color:</td>
@@ -142,7 +142,7 @@ export class BoxPlotContextMenu extends BlockContextMenu {
       let legends: string[] = g.getLegends();
       let lineColors: string[] = g.getLineColors();
       let lineWidths: number[] = g.getLineWidths();
-      let fillColors: string[] = g.getBoxColors();
+      let boxColors: string[] = g.getBoxColors();
 
       let nameField = document.getElementById("box-plot-name-field") as HTMLInputElement;
       nameField.value = g.getName();
@@ -187,16 +187,16 @@ export class BoxPlotContextMenu extends BlockContextMenu {
       let legendPortSelector = this.createPortSelector("box-plot-legend-port-selector");
       legendPortSelector.onchange = () => legendField.value = legends[parseInt(legendPortSelector.value)].toString();
 
-      let fillColorField = document.getElementById("box-plot-fill-color-field") as HTMLInputElement;
-      fillColorField.value = g.getBoxColor(0);
-      fillColorField.onchange = () => fillColors[parseInt(fillColorPortSelector.value)] = fillColorField.value;
-      let fillColorChooser = document.getElementById("box-plot-fill-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(fillColorChooser, fillColors[0]);
-      let fillColorPortSelector = this.createPortSelector("box-plot-fill-color-port-selector");
-      fillColorPortSelector.onchange = () => {
-        let c = fillColors[parseInt(fillColorPortSelector.value)];
-        fillColorField.value = c;
-        Util.setColorPicker(fillColorChooser, c);
+      let boxColorField = document.getElementById("box-plot-box-color-field") as HTMLInputElement;
+      boxColorField.value = g.getBoxColor(0);
+      boxColorField.onchange = () => boxColors[parseInt(boxColorPortSelector.value)] = boxColorField.value;
+      let boxColorChooser = document.getElementById("box-plot-box-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(boxColorChooser, boxColors[0]);
+      let boxColorPortSelector = this.createPortSelector("box-plot-box-color-port-selector");
+      boxColorPortSelector.onchange = () => {
+        let c = boxColors[parseInt(boxColorPortSelector.value)];
+        boxColorField.value = c;
+        Util.setColorPicker(boxColorChooser, c);
       };
 
       let windowColorField = document.getElementById("box-plot-window-color-field") as HTMLInputElement;
@@ -210,7 +210,7 @@ export class BoxPlotContextMenu extends BlockContextMenu {
 
       Util.hookupColorInputs(windowColorField, windowColorChooser);
       Util.hookupColorInputs(lineColorField, lineColorChooser);
-      Util.hookupColorInputs(fillColorField, fillColorChooser);
+      Util.hookupColorInputs(boxColorField, boxColorChooser);
 
       const okFunction = () => {
         let success = true;
@@ -279,7 +279,7 @@ export class BoxPlotContextMenu extends BlockContextMenu {
             g.setLegend(i, legends[i]);
             g.setLineColor(i, lineColors[i]);
             g.setLineWidth(i, lineWidths[i]);
-            g.setBoxColor(i, fillColors[i]);
+            g.setBoxColor(i, boxColors[i]);
           }
           g.refreshView();
           flowchart.storeBlockStates();
@@ -304,7 +304,7 @@ export class BoxPlotContextMenu extends BlockContextMenu {
       legendField.addEventListener("keyup", enterKeyUp);
       lineColorField.addEventListener("keyup", enterKeyUp);
       lineWidthField.addEventListener("keyup", enterKeyUp);
-      fillColorField.addEventListener("keyup", enterKeyUp);
+      boxColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({

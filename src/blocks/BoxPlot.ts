@@ -329,7 +329,7 @@ export class BoxPlot extends Block {
     } else {
       this.drawAxisLabels(ctx);
       if (maxLength > 1) {
-        this.drawBox(ctx);
+        this.drawBoxes(ctx);
       }
     }
 
@@ -346,7 +346,7 @@ export class BoxPlot extends Block {
 
   }
 
-  private drawBox(ctx: CanvasRenderingContext2D): void {
+  private drawBoxes(ctx: CanvasRenderingContext2D): void {
     let ymin;
     let ymax;
     if (this.autoscale) {
@@ -421,6 +421,7 @@ export class BoxPlot extends Block {
       ctx.lineTo(xi, y0 + yOffset - 6);
       ctx.stroke();
     }
+
     // draw y-axis tick marks
     ctx.font = "10px Arial";
     ctx.lineWidth = 1;
@@ -438,7 +439,6 @@ export class BoxPlot extends Block {
     ctx.lineTo(this.graphWindow.x + 4, y0);
     ctx.stroke();
     ctx.fillText(minString, this.graphWindow.x - ctx.measureText(minString).width - 5, y0);
-
     precision = Math.abs(ymax) < 1 ? 2 : Math.round(Math.abs(ymax)).toString().length + 1;
     y2 = y0 - (ymax - ymin) * dy;
     let maxString = (Math.abs(ymax) < 0.0001 ? 0 : ymax).toPrecision(precision);

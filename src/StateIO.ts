@@ -204,6 +204,20 @@ export class StateIO {
           if (state.lineWidths != undefined) block.setLineWidths(state.lineWidths);
           if (state.boxColors != undefined) block.setBoxColors(state.boxColors);
           block.setDataPortNumber(state.dataPortNumber);
+        } else if (block instanceof Histogram) {
+          block.setName(state.name);
+          block.setMinimumValue(state.minimumValue);
+          block.setMaximumValue(state.maximumValue);
+          block.setAutoScale(state.autoscale);
+          block.setXAxisLabel(state.xAxisLabel);
+          block.setYAxisLabel(state.yAxisLabel);
+          block.setGraphWindowColor(state.graphWindowColor);
+          block.setShowGridLines(state.showGridLines == undefined ? false : state.showGridLines);
+          if (state.legends != undefined) block.setLegends(state.legends);
+          if (state.lineColors != undefined) block.setLineColors(state.lineColors);
+          if (state.lineWidths != undefined) block.setLineWidths(state.lineWidths);
+          if (state.fillColors != undefined) block.setFillColors(state.fillColors);
+          block.setDataPortNumber(state.dataPortNumber);
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
@@ -236,23 +250,6 @@ export class StateIO {
           block.boundaryCondition.south.value = state.southValue;
           block.boundaryCondition.west.type = state.westType !== undefined ? state.westType : "Dirichlet";
           block.boundaryCondition.west.value = state.westValue;
-        } else if (block instanceof Histogram) {
-          block.setName(state.name);
-          block.setMinimumXValue(state.minimumXValue);
-          block.setMaximumXValue(state.maximumXValue);
-          block.setMinimumYValue(state.minimumYValue);
-          block.setMaximumYValue(state.maximumYValue);
-          block.setAutoScale(state.autoscale);
-          block.setXAxisLabel(state.xAxisLabel);
-          block.setYAxisLabel(state.yAxisLabel);
-          block.setSpaceWindowColor(state.spaceWindowColor);
-          block.setPointInput(state.pointInput);
-          block.setShowGridLines(state.showGridLines == undefined ? false : state.showGridLines);
-          if (state.legends != undefined) block.setLegends(state.legends);
-          if (state.lineColors != undefined) block.setLineColors(state.lineColors);
-          if (state.lineWidths != undefined) block.setLineWidths(state.lineWidths);
-          if (state.fillColors != undefined) block.setFillColors(state.fillColors);
-          if (state.numberOfPoints != undefined) block.setNumberOfPoints(state.numberOfPoints);
         } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);
