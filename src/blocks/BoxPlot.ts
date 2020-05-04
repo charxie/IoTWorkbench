@@ -80,7 +80,7 @@ export class BoxPlot extends Block {
     this.name = name;
     this.color = "#DEE";
     this.barHeight = Math.min(30, this.height / 3);
-    let dh = (this.height - this.barHeight) / 4;
+    let dh = (this.height - this.barHeight) / 2;
     this.portI = [];
     this.portI.push(new Port(this, true, "A", 0, this.barHeight + dh, false));
     this.ports.push(this.portI[0]);

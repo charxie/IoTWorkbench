@@ -335,6 +335,7 @@ export class HistogramContextMenu extends BlockContextMenu {
             g.setLineWidth(i, lineWidths[i]);
             g.setFillColor(i, fillColors[i]);
           }
+          g.updateModel();
           g.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();
@@ -352,6 +353,8 @@ export class HistogramContextMenu extends BlockContextMenu {
       dataPortsField.addEventListener("keyup", enterKeyUp);
       minimumXValueField.addEventListener("keyup", enterKeyUp);
       maximumXValueField.addEventListener("keyup", enterKeyUp);
+      minimumYValueField.addEventListener("keyup", enterKeyUp);
+      maximumYValueField.addEventListener("keyup", enterKeyUp);
       xAxisLableField.addEventListener("keyup", enterKeyUp);
       yAxisLableField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);

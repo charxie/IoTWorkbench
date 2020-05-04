@@ -36,6 +36,10 @@ export class Histogram extends Block {
   private lineWidths: number[] = [];
   private fillColors: string[] = [];
   private showGridLines: boolean = false;
+  private xmin: number = 0;
+  private xmax: number = 1;
+  private ymin: number = 0;
+  private ymax: number = 1;
 
   static State = class {
     readonly name: string;
@@ -90,7 +94,7 @@ export class Histogram extends Block {
     this.name = name;
     this.color = "#FEEEFE";
     this.barHeight = Math.min(30, this.height / 3);
-    let dh = (this.height - this.barHeight) / 4;
+    let dh = (this.height - this.barHeight) / 2;
     this.portI = [];
     this.portI.push(new Port(this, true, "A", 0, this.barHeight + dh, false));
     this.ports.push(this.portI[0]);
@@ -129,6 +133,7 @@ export class Histogram extends Block {
   erase(): void {
     for (let i = 0; i < this.dataArrays.length; i++) {
       this.dataArrays[i].data.length = 0;
+      this.distributions[i].fill(0);
     }
   }
 
@@ -393,11 +398,29 @@ export class Histogram extends Block {
       ctx.strokeStyle = "black";
       ctx.stroke();
     } else {
+      this.drawAxes(ctx);
       this.drawAxisLabels(ctx);
       if (this.showGridLines) {
         this.drawGridLines(ctx);
       }
-      this.drawBars(ctx);
+      let yOffset = 0.1 * this.graphWindow.height;
+      let dx = this.graphWindow.width / (this.numberOfBins + 1);
+      let dy = this.ymax === this.ymin ? 1 : (this.graphWindow.height - yOffset) / (this.ymax - this.ymin);
+      let x0 = this.graphWindow.x;
+      let y0 = this.graphWindow.y + this.graphWindow.height;
+      let h;
+      for (let i = 0; i < this.distributions.length; i++) {
+        ctx.lineWidth = this.lineWidths[i];
+        ctx.fillStyle = this.fillColors[i];
+        ctx.strokeStyle = this.lineColors[i];
+        for (let j = 0; j < this.distributions[i].length; j++) {
+          h = this.distributions[i][j] * dy;
+          ctx.beginPath();
+          ctx.rect(x0 + dx * j, y0 - h, dx, h);
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
     }
 
     // draw the port
@@ -413,80 +436,46 @@ export class Histogram extends Block {
 
   }
 
-  private drawBars(ctx: CanvasRenderingContext2D): void {
-    // detect minimum and maximum of x and y values from all inputs and calculate the scale factor
-    let xmin = Number.MAX_VALUE;
-    let xmax = -xmin;
-    let ymin = Number.MAX_VALUE;
-    let ymax = -ymin;
-    if (this.autoscale) {
-      for (let i = 0; i < this.dataArrays.length; i++) {
-        let length = this.dataArrays[i].length();
-        if (length > 1) {
-          let xminxmax = this.dataArrays[i].getMinMax();
-          if (xmin > xminxmax.min) {
-            xmin = xminxmax.min;
-          }
-          if (xmax < xminxmax.max) {
-            xmax = xminxmax.max;
-          }
-          let dist = this.distributions[i];
-          let dmin = Math.min(...dist);
-          let dmax = Math.max(...dist);
-          if (ymin > dmin) {
-            ymin = dmin;
-          }
-          if (ymax < dmax) {
-            ymax = dmax;
-          }
-        }
-      }
-      if (xmin == Number.MAX_VALUE) xmin = 0;
-      if (xmax == -Number.MAX_VALUE) xmax = 1;
-      if (ymin == Number.MAX_VALUE) ymin = 0;
-      if (ymax == -Number.MAX_VALUE) ymax = 1;
-    } else {
-      xmin = this.minimumXValue;
-      xmax = this.maximumXValue;
-      ymin = this.minimumYValue;
-      ymax = this.maximumYValue;
-    }
-    let yOffset = 0.1 * this.graphWindow.height;
-    let dx = this.graphWindow.width / (this.numberOfBins + 1);
-    let dy = ymax === ymin ? 1 : (this.graphWindow.height - yOffset) / (ymax - ymin);
-    let bin = (xmax - xmin) / this.numberOfBins;
-    let x0 = this.graphWindow.x;
-    let y0 = this.graphWindow.y + this.graphWindow.height;
-    for (let i = 0; i < this.dataArrays.length; i++) {
-      this.distributions[i].fill(0);
-      for (let j = 0; j < this.dataArrays[i].data.length; j++) {
-        let p = this.dataArrays[i].data[j];
-        let k = Math.floor((p - xmin) / bin);
-        this.distributions[i][k]++;
-        let y2 = this.distributions[i][k] * dy;
-        ctx.lineWidth = this.lineWidths[i];
-        ctx.beginPath();
-        ctx.fillStyle = this.fillColors[i];
-        ctx.rect(x0 + dx * k, y0 - y2, dx, y2);
-        ctx.fill();
-        ctx.strokeStyle = this.lineColors[i];
-        ctx.stroke();
-      }
-    }
-    // draw y-axis tick marks
+  private drawAxes(ctx: CanvasRenderingContext2D): void {
     ctx.font = "10px Arial";
     ctx.fillStyle = "black";
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
+    let y0 = this.graphWindow.y + this.graphWindow.height;
+    // draw x-axis tickmarks
+    let inx = (this.xmax - this.xmin) / 10;
+    let dx = this.graphWindow.width / 10;
+    for (let i = 0; i < 11; i++) {
+      let tmpX = this.graphWindow.x + dx * i;
+      ctx.beginPath();
+      ctx.moveTo(tmpX, 0);
+      ctx.lineTo(tmpX, -4);
+      ctx.stroke();
+      let xtick = this.xmin + i * inx;
+      let precision = 2;
+      if (Math.abs(xtick) >= 1) {
+        let diff = Math.abs(xtick - Math.round(xtick));
+        precision = Math.round(Math.abs(xtick)).toString().length + (diff < 0.1 ? 0 : 1);
+      } else {
+        if (xtick.toPrecision(precision).endsWith("0")) {
+          precision--;
+        }
+      }
+      let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
+      ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, y0 + 10);
+    }
+    // draw y-axis tick marks
+    let yOffset = 0.1 * this.graphWindow.height;
+    let dy = this.ymax === this.ymin ? 1 : (this.graphWindow.height - yOffset) / (this.ymax - this.ymin);
     ctx.fillText("0", this.graphWindow.x - ctx.measureText("0").width - 5, y0);
-    let precision = Math.abs(ymax) < 1 ? 2 : Math.round(Math.abs(ymax)).toString().length + 1;
-    let y2 = y0 - ymax * dy;
-    let maxString = (Math.abs(ymax) < 0.0001 ? 0 : ymax).toPrecision(precision);
-    if (Math.abs(ymax) >= 1) {
+    let precision = Math.abs(this.ymax) < 1 ? 2 : Math.round(Math.abs(this.ymax)).toString().length + 1;
+    let y2 = y0 - this.ymax * dy;
+    let maxString = (Math.abs(this.ymax) < 0.0001 ? 0 : this.ymax).toPrecision(precision);
+    if (Math.abs(this.ymax) >= 1) {
       if (maxString.endsWith(".0")) {
-        maxString = ymax.toPrecision(precision - 1);
+        maxString = this.ymax.toPrecision(precision - 1);
       } else if (maxString.endsWith(".00")) {
-        maxString = ymax.toPrecision(precision > 2 ? precision - 2 : 1);
+        maxString = this.ymax.toPrecision(precision > 2 ? precision - 2 : 1);
       }
     }
     ctx.beginPath();
@@ -535,6 +524,61 @@ export class Histogram extends Block {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
   }
 
+  private generateDistributions(): void {
+    // detect minimum and maximum of x values
+    this.xmin = Number.MAX_VALUE;
+    this.xmax = -this.xmin;
+    if (this.autoscale) {
+      for (let i = 0; i < this.dataArrays.length; i++) {
+        let length = this.dataArrays[i].length();
+        if (length > 1) {
+          let xminxmax = this.dataArrays[i].getMinMax();
+          if (this.xmin > xminxmax.min) {
+            this.xmin = xminxmax.min;
+          }
+          if (this.xmax < xminxmax.max) {
+            this.xmax = xminxmax.max;
+          }
+        }
+      }
+      if (this.xmin == Number.MAX_VALUE) this.xmin = 0;
+      if (this.xmax == -Number.MAX_VALUE) this.xmax = 1;
+    } else {
+      this.xmin = this.minimumXValue;
+      this.xmax = this.maximumXValue;
+    }
+    // calculate the distributions
+    let bin = (this.xmax - this.xmin) / this.numberOfBins;
+    for (let i = 0; i < this.dataArrays.length; i++) {
+      this.distributions[i].fill(0);
+      for (let j = 0; j < this.dataArrays[i].data.length; j++) {
+        let k = Math.floor((this.dataArrays[i].data[j] - this.xmin) / bin);
+        this.distributions[i][k]++;
+      }
+    }
+    // detect minimum and maximum of y values
+    this.ymin = Number.MAX_VALUE;
+    this.ymax = -this.ymin;
+    if (this.autoscale) {
+      for (let i = 0; i < this.dataArrays.length; i++) {
+        let dist = this.distributions[i];
+        let dmin = Math.min(...dist);
+        let dmax = Math.max(...dist);
+        if (this.ymin > dmin) {
+          this.ymin = dmin;
+        }
+        if (this.ymax < dmax) {
+          this.ymax = dmax;
+        }
+      }
+      if (this.ymin == Number.MAX_VALUE) this.ymin = 0;
+      if (this.ymax == -Number.MAX_VALUE) this.ymax = 1;
+    } else {
+      this.ymin = this.minimumYValue;
+      this.ymax = this.maximumYValue;
+    }
+  }
+
   updateModel(): void {
     for (let i = 0; i < this.portI.length; i++) {
       let v = this.portI[i].getValue();
@@ -546,6 +590,7 @@ export class Histogram extends Block {
         }
       }
     }
+    this.generateDistributions();
   }
 
   refreshView(): void {
