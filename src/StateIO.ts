@@ -219,6 +219,7 @@ export class StateIO {
           if (state.lineColors != undefined) block.setLineColors(state.lineColors);
           if (state.lineWidths != undefined) block.setLineWidths(state.lineWidths);
           if (state.fillColors != undefined) block.setFillColors(state.fillColors);
+          if (state.numberOfBins != undefined) block.setNumberOfBins(state.numbefOfBins);
           block.setDataPortNumber(state.dataPortNumber);
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);

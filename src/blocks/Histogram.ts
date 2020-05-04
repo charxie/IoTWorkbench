@@ -13,7 +13,7 @@ export class Histogram extends Block {
 
   private portI: Port[];
   private dataArrays: DataArray[] = [];
-  private numberOfBars: number = 50;
+  private numberOfBins: number = 50;
   private distributions: number[][] = [];
   private minimumXValue: number = 0;
   private maximumXValue: number = 1;
@@ -45,7 +45,7 @@ export class Histogram extends Block {
     readonly width: number;
     readonly height: number;
     readonly dataPortNumber: number;
-    readonly numberOfBars: number;
+    readonly numberOfBins: number;
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
     readonly graphWindowColor: string;
@@ -68,7 +68,7 @@ export class Histogram extends Block {
       this.width = h.width;
       this.height = h.height;
       this.dataPortNumber = h.getDataPorts().length;
-      this.numberOfBars = h.numberOfBars;
+      this.numberOfBins = h.numberOfBins;
       this.xAxisLabel = h.xAxisLabel;
       this.yAxisLabel = h.yAxisLabel;
       this.graphWindowColor = h.graphWindowColor;
@@ -100,7 +100,7 @@ export class Histogram extends Block {
     this.lineColors.push("black");
     this.fillColors.push("white");
     this.lineWidths.push(1);
-    this.distributions.push(new Array(this.numberOfBars));
+    this.distributions.push(new Array(this.numberOfBins));
   }
 
   getCopy(): Block {
@@ -119,7 +119,7 @@ export class Histogram extends Block {
     copy.lineWidths = [...this.lineWidths];
     copy.fillColors = [...this.fillColors];
     copy.setDataPortNumber(this.getDataPorts().length);
-    copy.setNumberOfBars(this.numberOfBars);
+    copy.setNumberOfBins(this.numberOfBins);
     return copy;
   }
 
@@ -132,12 +132,18 @@ export class Histogram extends Block {
     }
   }
 
-  setNumberOfBars(numberOfBars: number): void {
-    this.numberOfBars = numberOfBars;
+  setNumberOfBins(numberOfBins: number): void {
+    if (this.numberOfBins !== numberOfBins) {
+      this.numberOfBins = numberOfBins;
+      this.distributions.length = 0;
+      for (let i = 0; i < this.dataArrays.length; i++) {
+        this.distributions.push(new Array(this.numberOfBins));
+      }
+    }
   }
 
-  getNumberOfBars(): number {
-    return this.numberOfBars;
+  getNumberOfBins(): number {
+    return this.numberOfBins;
   }
 
   setDataPortNumber(portNumber: number): void {
@@ -152,7 +158,7 @@ export class Histogram extends Block {
           this.lineColors.push("black");
           this.lineWidths.push(1);
           this.fillColors.push("white");
-          this.distributions.push(new Array(this.numberOfBars));
+          this.distributions.push(new Array(this.numberOfBins));
         }
       }
     } else if (portNumber < this.portI.length) { // decrease data ports
@@ -445,9 +451,10 @@ export class Histogram extends Block {
       ymin = this.minimumYValue;
       ymax = this.maximumYValue;
     }
-    let dx = this.graphWindow.width / (this.numberOfBars + 1);
-    let dy = ymax === ymin ? 1 : this.graphWindow.height / (ymax - ymin);
-    let bin = (xmax - xmin) / this.numberOfBars;
+    let yOffset = 0.1 * this.graphWindow.height;
+    let dx = this.graphWindow.width / (this.numberOfBins + 1);
+    let dy = ymax === ymin ? 1 : (this.graphWindow.height - yOffset) / (ymax - ymin);
+    let bin = (xmax - xmin) / this.numberOfBins;
     let x0 = this.graphWindow.x;
     let y0 = this.graphWindow.y + this.graphWindow.height;
     for (let i = 0; i < this.dataArrays.length; i++) {
@@ -466,6 +473,39 @@ export class Histogram extends Block {
         ctx.stroke();
       }
     }
+    // draw y-axis tick marks
+    ctx.font = "10px Arial";
+    ctx.fillStyle = "black";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+    ctx.fillText("0", this.graphWindow.x - ctx.measureText("0").width - 5, y0);
+    let precision = Math.abs(ymax) < 1 ? 2 : Math.round(Math.abs(ymax)).toString().length + 1;
+    let y2 = y0 - ymax * dy;
+    let maxString = (Math.abs(ymax) < 0.0001 ? 0 : ymax).toPrecision(precision);
+    if (Math.abs(ymax) >= 1) {
+      if (maxString.endsWith(".0")) {
+        maxString = ymax.toPrecision(precision - 1);
+      } else if (maxString.endsWith(".00")) {
+        maxString = ymax.toPrecision(precision > 2 ? precision - 2 : 1);
+      }
+    }
+    ctx.beginPath();
+    ctx.moveTo(this.graphWindow.x, y2);
+    ctx.lineTo(this.graphWindow.x + 4, y2);
+    ctx.stroke();
+    ctx.fillText(maxString, this.graphWindow.x - ctx.measureText(maxString).width - 5, y2);
+  }
+
+  private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
+    ctx.font = "italic 15px Times New Roman";
+    ctx.fillStyle = "black";
+    let horizontalAxisY = this.height - this.graphMargin.bottom;
+    ctx.fillText(this.xAxisLabel, this.graphWindow.x + (this.graphWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 25);
+    ctx.save();
+    ctx.translate(this.x + 30, this.graphWindow.y + (this.graphWindow.height + ctx.measureText(this.yAxisLabel).width) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(this.yAxisLabel, 0, 0);
+    ctx.restore();
   }
 
   private drawGridLines(ctx: CanvasRenderingContext2D): void {
@@ -488,18 +528,6 @@ export class Histogram extends Block {
       ctx.lineTo(this.graphWindow.width, tmpY);
       ctx.stroke();
     }
-    ctx.restore();
-  }
-
-  private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
-    ctx.font = "italic 15px Times New Roman";
-    ctx.fillStyle = "black";
-    let horizontalAxisY = this.height - this.graphMargin.bottom;
-    ctx.fillText(this.xAxisLabel, this.graphWindow.x + (this.graphWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 25);
-    ctx.save();
-    ctx.translate(this.x + 30, this.graphWindow.y + (this.graphWindow.height + ctx.measureText(this.yAxisLabel).width) / 2);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillText(this.yAxisLabel, 0, 0);
     ctx.restore();
   }
 

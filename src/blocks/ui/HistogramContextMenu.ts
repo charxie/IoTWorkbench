@@ -54,6 +54,10 @@ export class HistogramContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="histogram-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Data Ports:</td>
+                  <td colspan="3"><input type="text" id="histogram-data-ports-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>X-Axis Label:</td>
                   <td colspan="3"><input type="text" id="histogram-x-axis-label-field" style="width: 100%"></td>
                 </tr>
@@ -62,8 +66,8 @@ export class HistogramContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="histogram-y-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Number of Bars:</td>
-                  <td colspan="3"><input type="text" id="histogram-bar-number-field" style="width: 100%"></td>
+                  <td>Number of Bins:</td>
+                  <td colspan="3"><input type="text" id="histogram-bin-number-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Scale:</td>
@@ -87,10 +91,6 @@ export class HistogramContextMenu extends BlockContextMenu {
                 <tr>
                   <td>Maximum Y Value:</td>
                   <td colspan="3"><input type="text" id="histogram-maximum-y-value-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Data Ports:</td>
-                  <td colspan="3"><input type="text" id="histogram-data-ports-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Legend:</td>
@@ -169,8 +169,8 @@ export class HistogramContextMenu extends BlockContextMenu {
       xAxisLableField.value = g.getXAxisLabel();
       let yAxisLableField = document.getElementById("histogram-y-axis-label-field") as HTMLInputElement;
       yAxisLableField.value = g.getYAxisLabel();
-      let numberOfBarsField = document.getElementById("histogram-bar-number-field") as HTMLInputElement;
-      numberOfBarsField.value = g.getNumberOfBars().toString();
+      let numberOfBinsField = document.getElementById("histogram-bin-number-field") as HTMLInputElement;
+      numberOfBinsField.value = g.getNumberOfBins().toString();
 
       let autoScaleRadioButton = document.getElementById("histogram-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
@@ -313,13 +313,13 @@ export class HistogramContextMenu extends BlockContextMenu {
             break;
           }
         }
-        // set number of bars
-        let bars = parseInt(numberOfBarsField.value);
-        if (isNumber(bars)) {
-          g.setNumberOfBars(Math.max(2, bars));
+        // set number of bins
+        let bins = parseInt(numberOfBinsField.value);
+        if (isNumber(bins)) {
+          g.setNumberOfBins(Math.max(2, bins));
         } else {
           success = false;
-          message = numberOfBarsField.value + " is not a valid number of bars";
+          message = numberOfBinsField.value + " is not a valid number of bins";
         }
         // finish
         if (success) {
