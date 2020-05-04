@@ -56,6 +56,7 @@ import {ArrayInputContextMenu} from "./blocks/ui/ArrayInputContextMenu";
 import {MeanBlockContextMenu} from "./blocks/ui/MeanBlockContextMenu";
 import {UnivariateDescriptiveStatisticsBlockContextMenu} from "./blocks/ui/UnivariateDescriptiveStatisticsBlockContextMenu";
 import {BoxPlotContextMenu} from "./blocks/ui/BoxPlotContextMenu";
+import {HistogramContextMenu} from "./blocks/ui/HistogramContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -102,6 +103,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("boundary-condition-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("grapher-context-menu-placeholder", blockPlayground);
   addPlaceholder("box-plot-context-menu-placeholder", blockPlayground);
+  addPlaceholder("histogram-context-menu-placeholder", blockPlayground);
   addPlaceholder("space2d-context-menu-placeholder", blockPlayground);
   addPlaceholder("space3d-context-menu-placeholder", blockPlayground);
   addPlaceholder("field2d-context-menu-placeholder", blockPlayground);
@@ -319,6 +321,11 @@ function setupContextMenuForBlocks() {
   boundaryConditionBlockContextMenu.render("boundary-condition-block-context-menu-placeholder");
   boundaryConditionBlockContextMenu.addListeners();
   contextMenus.boundaryConditionBlock = boundaryConditionBlockContextMenu;
+
+  let histogramContextMenu = new HistogramContextMenu();
+  histogramContextMenu.render("histogram-context-menu-placeholder");
+  histogramContextMenu.addListeners();
+  contextMenus.histogram = histogramContextMenu;
 
   let space2dContextMenu = new Space2DContextMenu();
   space2dContextMenu.render("space2d-context-menu-placeholder");

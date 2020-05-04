@@ -64,6 +64,7 @@ import {ArrayInput} from "./ArrayInput";
 import {MeanBlock} from "./MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStatisticsBlock";
 import {BoxPlot} from "./BoxPlot";
+import {Histogram} from "./Histogram";
 
 export class Flowchart {
 
@@ -301,7 +302,7 @@ export class Flowchart {
   erase(invoker: Block): void {
     for (let b of this.blocks) {
       if (flowchart.areBlocksConnected(invoker, b)) {
-        if (b instanceof Space2D || b instanceof Space3D) {
+        if (b instanceof Space2D || b instanceof Space3D || b instanceof Histogram) {
           b.erase();
         } else if (b instanceof Sticker) {
           if (b.getKeepResult()) {
@@ -903,6 +904,9 @@ export class Flowchart {
       case "Boundary Condition Block":
         block = new BoundaryConditionBlock(uid, x, y, 200, 160);
         break;
+      case "Histogram":
+        block = new Histogram(uid, name, x, y, 200, 220);
+        break;
       case "Space2D":
         block = new Space2D(uid, name, x, y, 200, 220);
         break;
@@ -1030,6 +1034,8 @@ export class Flowchart {
         blockStates.push(new SteadyStateFDMSolverBlock.State(b));
       } else if (b instanceof BoundaryConditionBlock) {
         blockStates.push(new BoundaryConditionBlock.State(b));
+      } else if (b instanceof Histogram) {
+        blockStates.push(new Histogram.State(b));
       } else if (b instanceof Space2D) {
         blockStates.push(new Space2D.State(b));
       } else if (b instanceof Space3D) {

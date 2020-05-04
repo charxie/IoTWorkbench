@@ -54,6 +54,7 @@ import {ArrayInput} from "./blocks/ArrayInput";
 import {MeanBlock} from "./blocks/MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "./blocks/UnivariateDescriptiveStatisticsBlock";
 import {BoxPlot} from "./blocks/BoxPlot";
+import {Histogram} from "./blocks/Histogram";
 
 export class StateIO {
 
@@ -235,6 +236,23 @@ export class StateIO {
           block.boundaryCondition.south.value = state.southValue;
           block.boundaryCondition.west.type = state.westType !== undefined ? state.westType : "Dirichlet";
           block.boundaryCondition.west.value = state.westValue;
+        } else if (block instanceof Histogram) {
+          block.setName(state.name);
+          block.setMinimumXValue(state.minimumXValue);
+          block.setMaximumXValue(state.maximumXValue);
+          block.setMinimumYValue(state.minimumYValue);
+          block.setMaximumYValue(state.maximumYValue);
+          block.setAutoScale(state.autoscale);
+          block.setXAxisLabel(state.xAxisLabel);
+          block.setYAxisLabel(state.yAxisLabel);
+          block.setSpaceWindowColor(state.spaceWindowColor);
+          block.setPointInput(state.pointInput);
+          block.setShowGridLines(state.showGridLines == undefined ? false : state.showGridLines);
+          if (state.legends != undefined) block.setLegends(state.legends);
+          if (state.lineColors != undefined) block.setLineColors(state.lineColors);
+          if (state.lineWidths != undefined) block.setLineWidths(state.lineWidths);
+          if (state.fillColors != undefined) block.setFillColors(state.fillColors);
+          if (state.numberOfPoints != undefined) block.setNumberOfPoints(state.numberOfPoints);
         } else if (block instanceof Space2D) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);

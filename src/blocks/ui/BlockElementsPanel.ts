@@ -53,6 +53,7 @@ import {ArrayInput} from "../ArrayInput";
 import {MeanBlock} from "../MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "../UnivariateDescriptiveStatisticsBlock";
 import {BoxPlot} from "../BoxPlot";
+import {Histogram} from "../Histogram";
 
 export class BlockElementsPanel {
 
@@ -96,6 +97,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="array-input-block" title="Array Input" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="grapher-block" title="Grapher" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="box-plot-block" title="Box Plot" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="histogram-block" title="Histogram" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="space2d-block" title="Space2D" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="space3d-block" title="Space3D" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="field2d-block" title="Contour Plot" width="45px" height="45px" style="cursor: pointer;"/></td>
@@ -171,6 +173,7 @@ export class BlockElementsPanel {
     this.drawTransientStateFDMSolverBlock("Transient State FDM Solver Block", "transient-state-fdm-solver-block");
     this.drawSteadyStateFDMSolverBlock("Steady State FDM Solver Block", "steady-state-fdm-solver-block");
     this.drawBoundaryConditionBlock("Boundary Condition Block", "boundary-condition-block");
+    this.drawHistogram("Histogram", "histogram-block");
     this.drawSpace2D("Space2D", "space2d-block");
     this.drawSpace3D("Space3D", "space3d-block");
     this.drawField2D("Field2D", "field2d-block");
@@ -398,6 +401,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new Grapher("Grapher Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawHistogram(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new Histogram("Histogram Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

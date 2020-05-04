@@ -129,7 +129,7 @@ export class Space3DContextMenu extends BlockContextMenu {
                   <td><input type="text" id="space3d-line-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Line Widths:</td>
+                  <td>Line Width:</td>
                   <td><select id="space3d-line-width-set-selector" style="width: 65px"></select></td>
                   <td colspan="2"><input type="text" id="space3d-line-width-field" style="width: 100%"></td>
                 </tr>

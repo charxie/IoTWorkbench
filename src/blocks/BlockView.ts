@@ -65,6 +65,7 @@ import {ArrayInput} from "./ArrayInput";
 import {MeanBlock} from "./MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStatisticsBlock";
 import {BoxPlot} from "./BoxPlot";
+import {Histogram} from "./Histogram";
 
 export class BlockView {
 
@@ -321,6 +322,9 @@ export class BlockView {
         break;
       case "boundary-condition-block":
         b = this.addBlockUndoable(new BoundaryConditionBlock("Boundary Condition Block #" + timestamp, x - 50, y - 50, 100, 100));
+        break;
+      case "histogram-block":
+        b = this.addBlockUndoable(new Histogram("Histogram #" + timestamp, "Histogram", x - 100, y - 110, 200, 220));
         break;
       case "space2d-block":
         b = this.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));

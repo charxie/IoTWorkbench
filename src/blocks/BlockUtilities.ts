@@ -57,6 +57,7 @@ import {ArrayInput} from "./ArrayInput";
 import {MeanBlock} from "./MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStatisticsBlock";
 import {BoxPlot} from "./BoxPlot";
+import {Histogram} from "./Histogram";
 
 export class BlockUtilities {
 
@@ -144,6 +145,9 @@ export class BlockUtilities {
     }
     if (block instanceof BoundaryConditionBlock) {
       return contextMenus.boundaryConditionBlock;
+    }
+    if (block instanceof Histogram) {
+      return contextMenus.histogram;
     }
     if (block instanceof Space2D) {
       return contextMenus.space2d;
@@ -332,6 +336,10 @@ export class BlockUtilities {
     if (block instanceof BoundaryConditionBlock) {
       contextMenus.boundaryConditionBlock.block = block;
       return document.getElementById("boundary-condition-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof Histogram) {
+      contextMenus.histogram.block = block;
+      return document.getElementById("histogram-context-menu") as HTMLMenuElement;
     }
     if (block instanceof Space2D) {
       contextMenus.space2d.block = block;

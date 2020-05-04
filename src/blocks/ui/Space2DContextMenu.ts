@@ -126,7 +126,7 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td><input type="text" id="space2d-line-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Line Thicknesses:</td>
+                  <td>Line Width:</td>
                   <td><select id="space2d-line-thickness-set-selector" style="width: 65px"></select></td>
                   <td colspan="2"><input type="text" id="space2d-line-thickness-field" style="width: 100%"></td>
                 </tr>
