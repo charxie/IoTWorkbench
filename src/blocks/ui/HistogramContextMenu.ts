@@ -70,6 +70,13 @@ export class HistogramContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="histogram-bin-number-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Normalize:</td>
+                  <td colspan="3">
+                    <input type="radio" name="normalize" id="histogram-not-normalize-radio-button" checked> No
+                    <input type="radio" name="normalize" id="histogram-normalize-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
                   <td>Scale:</td>
                   <td colspan="3">
                     <input type="radio" name="scale" id="histogram-auto-scale-radio-button" checked> Auto
@@ -172,6 +179,10 @@ export class HistogramContextMenu extends BlockContextMenu {
       let numberOfBinsField = document.getElementById("histogram-bin-number-field") as HTMLInputElement;
       numberOfBinsField.value = g.getNumberOfBins().toString();
 
+      let normalizeRadioButton = document.getElementById("histogram-normalize-radio-button") as HTMLInputElement;
+      normalizeRadioButton.checked = g.getNormalize();
+      let notNormalizeRadioButton = document.getElementById("histogram-not-normalize-radio-button") as HTMLInputElement;
+      notNormalizeRadioButton.checked = !g.getNormalize();
       let autoScaleRadioButton = document.getElementById("histogram-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("histogram-fixed-scale-radio-button") as HTMLInputElement;
@@ -329,6 +340,7 @@ export class HistogramContextMenu extends BlockContextMenu {
           g.setGraphWindowColor(windowColorField.value);
           g.setShowGridLines(gridLinesRadioButton.checked);
           g.setAutoScale(autoScaleRadioButton.checked);
+          g.setNormalize(normalizeRadioButton.checked);
           for (let i = 0; i < legends.length; i++) {
             g.setLegend(i, legends[i]);
             g.setLineColor(i, lineColors[i]);
@@ -350,6 +362,7 @@ export class HistogramContextMenu extends BlockContextMenu {
         }
       };
       nameField.addEventListener("keyup", enterKeyUp);
+      numberOfBinsField.addEventListener("keyup", enterKeyUp);
       dataPortsField.addEventListener("keyup", enterKeyUp);
       minimumXValueField.addEventListener("keyup", enterKeyUp);
       maximumXValueField.addEventListener("keyup", enterKeyUp);

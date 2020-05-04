@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import histogram from "./examples/histogram.json";
+// @ts-ignore
 import box_plot from "./examples/box-plot.json";
 // @ts-ignore
 import univariate_descriptive_statistics from "./examples/univariate-descriptive-statistics.json";
@@ -413,6 +415,7 @@ export class Examples {
     this.files.push({name: "Statistics: Means", data: means});
     this.files.push({name: "Statistics: Univariate Descriptive Statistics", data: univariate_descriptive_statistics});
     this.files.push({name: "Statistics: Box Plot", data: box_plot});
+    this.files.push({name: "Statistics: Histogram", data: histogram});
     this.files.push({name: "Statistics: Box-Muller Transform", data: box_muller_transform});
     this.files.push({name: "Statistics: Normal Distributions", data: normal_distributions});
     this.files.push({name: "Statistics: Normal Distribution in 3D", data: normal_distribution_3d});

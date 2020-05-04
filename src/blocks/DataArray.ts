@@ -40,6 +40,11 @@ export class DataArray {
     return new MinMax(min, max);
   }
 
+  getLatest(): number {
+    if (this.data.length === 0) return undefined;
+    return this.data[this.data.length - 1];
+  }
+
   length(): number {
     return this.data.length;
   }

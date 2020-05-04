@@ -20,6 +20,7 @@ export class Histogram extends Block {
   private minimumYValue: number = 0;
   private maximumYValue: number = 1;
   private autoscale: boolean = true;
+  private normalize: boolean = false;
   private xAxisLabel: string = "";
   private yAxisLabel: string = "";
   private graphWindowColor: string = "white";
@@ -55,6 +56,7 @@ export class Histogram extends Block {
     readonly graphWindowColor: string;
     readonly showGridLines: boolean;
     readonly autoscale: boolean;
+    readonly normalize: boolean;
     readonly minimumXValue: number;
     readonly maximumXValue: number;
     readonly minimumYValue: number;
@@ -78,6 +80,7 @@ export class Histogram extends Block {
       this.graphWindowColor = h.graphWindowColor;
       this.showGridLines = h.showGridLines;
       this.autoscale = h.autoscale;
+      this.normalize = h.normalize;
       this.minimumXValue = h.minimumXValue;
       this.maximumXValue = h.maximumXValue;
       this.minimumYValue = h.minimumYValue;
@@ -114,6 +117,7 @@ export class Histogram extends Block {
     copy.minimumYValue = this.minimumYValue;
     copy.maximumYValue = this.maximumYValue;
     copy.autoscale = this.autoscale;
+    copy.normalize = this.normalize;
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.graphWindowColor = this.graphWindowColor;
@@ -223,6 +227,14 @@ export class Histogram extends Block {
 
   getMaximumYValue(): number {
     return this.maximumYValue;
+  }
+
+  setNormalize(normalize: boolean): void {
+    this.normalize = normalize;
+  }
+
+  getNormalize(): boolean {
+    return this.normalize;
   }
 
   setAutoScale(autoscale: boolean): void {
@@ -377,23 +389,23 @@ export class Histogram extends Block {
     }
     if (this.iconic) {
       ctx.lineWidth = 0.5;
-      let x0 = this.graphWindow.x;
+      let x0 = this.graphWindow.x + this.graphWindow.width / 2;
       let y0 = this.graphWindow.y + this.graphWindow.height;
       ctx.beginPath();
       ctx.fillStyle = "white";
-      ctx.rect(x0 + 3.5, y0 - 4, 3, 4);
+      ctx.rect(x0 - 3, y0 - 4, 3, 4);
       ctx.fill();
       ctx.strokeStyle = "black";
       ctx.stroke();
       ctx.beginPath();
       ctx.fillStyle = "white";
-      ctx.rect(x0 + 7, y0 - 8, 3, 8);
+      ctx.rect(x0, y0 - 8, 3, 8);
       ctx.fill();
       ctx.strokeStyle = "black";
       ctx.stroke();
       ctx.beginPath();
       ctx.fillStyle = "white";
-      ctx.rect(x0 + 10.5, y0 - 4, 3, 4);
+      ctx.rect(x0 + 3, y0 - 4, 3, 4);
       ctx.fill();
       ctx.strokeStyle = "black";
       ctx.stroke();
@@ -409,18 +421,22 @@ export class Histogram extends Block {
       let x0 = this.graphWindow.x;
       let y0 = this.graphWindow.y + this.graphWindow.height;
       let h;
+      let ddx = this.distributions.length <= 1 ? dx : dx / (this.distributions.length + 1);
       for (let i = 0; i < this.distributions.length; i++) {
         ctx.lineWidth = this.lineWidths[i];
         ctx.fillStyle = this.fillColors[i];
         ctx.strokeStyle = this.lineColors[i];
         for (let j = 0; j < this.distributions[i].length; j++) {
           h = this.distributions[i][j] * dy;
-          ctx.beginPath();
-          ctx.rect(x0 + dx * j, y0 - h, dx, h);
-          ctx.fill();
-          ctx.stroke();
+          if (h > 0) {
+            ctx.beginPath();
+            ctx.rect(x0 + dx * j + ddx * i, y0 - h, ddx, h);
+            ctx.fill();
+            ctx.stroke();
+          }
         }
       }
+      if (this.portI.length > 1) this.drawLegends(ctx);
     }
 
     // draw the port
@@ -497,6 +513,29 @@ export class Histogram extends Block {
     ctx.restore();
   }
 
+  private drawLegends(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    ctx.font = "10px Arial";
+    let x0 = this.graphWindow.x + this.graphWindow.width - 50;
+    let y0 = this.graphWindow.y + this.graphMargin.top + 10;
+    let yi;
+    for (let i = 0; i < this.distributions.length; i++) {
+      if (this.legends[i].trim() === "") continue;
+      yi = y0 + i * 20;
+      ctx.fillStyle = "black";
+      ctx.fillText(this.legends[i], x0 - ctx.measureText(this.legends[i]).width, yi);
+      yi -= 8;
+      ctx.fillStyle = this.fillColors[i];
+      ctx.lineWidth = this.lineWidths[i];
+      ctx.strokeStyle = this.lineColors[i];
+      ctx.beginPath();
+      ctx.rect(x0 + 12, yi, 20, 10);
+      ctx.fill();
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   private drawGridLines(ctx: CanvasRenderingContext2D): void {
     ctx.save();
     ctx.translate(this.graphWindow.x, this.graphWindow.y + this.graphWindow.height);
@@ -551,9 +590,24 @@ export class Histogram extends Block {
     let bin = (this.xmax - this.xmin) / this.numberOfBins;
     for (let i = 0; i < this.dataArrays.length; i++) {
       this.distributions[i].fill(0);
-      for (let j = 0; j < this.dataArrays[i].data.length; j++) {
-        let k = Math.floor((this.dataArrays[i].data[j] - this.xmin) / bin);
-        this.distributions[i][k]++;
+      if (this.normalize) {
+        for (let j = 0; j < this.dataArrays[i].length(); j++) {
+          let k = Math.floor((this.dataArrays[i].data[j] - this.xmin) / bin);
+          this.distributions[i][k]++;
+        }
+        let sum = 0;
+        for (let p of this.distributions[i]) {
+          sum += p;
+        }
+        sum = 1 / sum;
+        for (let k = 0; k < this.distributions[i].length; k++) {
+          this.distributions[i][k] *= sum;
+        }
+      } else {
+        for (let j = 0; j < this.dataArrays[i].length(); j++) {
+          let k = Math.floor((this.dataArrays[i].data[j] - this.xmin) / bin);
+          this.distributions[i][k]++;
+        }
       }
     }
     // detect minimum and maximum of y values
@@ -586,7 +640,14 @@ export class Histogram extends Block {
         if (Array.isArray(v)) {
           this.dataArrays[i].data = v;
         } else {
-          this.dataArrays[i].data.push(v);
+          if (this.portI.length > 1) {
+            // TODO: NOT a safe way to avoid multi-counting when there are multiple imports
+            if (v !== this.dataArrays[i].getLatest()) {
+              this.dataArrays[i].data.push(v);
+            }
+          } else {
+            this.dataArrays[i].data.push(v);
+          }
         }
       }
     }

@@ -211,6 +211,7 @@ export class StateIO {
           block.setMinimumYValue(state.minimumYValue);
           block.setMaximumYValue(state.maximumYValue);
           block.setAutoScale(state.autoscale);
+          if (state.normalize) block.setNormalize(state.normalize)
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
           block.setGraphWindowColor(state.graphWindowColor);
