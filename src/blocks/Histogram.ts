@@ -107,7 +107,7 @@ export class Histogram extends Block {
     this.lineColors.push("black");
     this.fillColors.push("white");
     this.lineWidths.push(1);
-    this.distributions.push(new Array(this.numberOfBins));
+    this.distributions.push(new Array(this.numberOfBins + 1));
   }
 
   getCopy(): Block {
@@ -146,7 +146,7 @@ export class Histogram extends Block {
       this.numberOfBins = numberOfBins;
       this.distributions.length = 0;
       for (let i = 0; i < this.dataArrays.length; i++) {
-        this.distributions.push(new Array(this.numberOfBins));
+        this.distributions.push(new Array(this.numberOfBins + 1));
       }
     }
   }
@@ -167,7 +167,7 @@ export class Histogram extends Block {
           this.lineColors.push("black");
           this.lineWidths.push(1);
           this.fillColors.push("white");
-          this.distributions.push(new Array(this.numberOfBins));
+          this.distributions.push(new Array(this.numberOfBins + 1));
         }
       }
     } else if (portNumber < this.portI.length) { // decrease data ports
@@ -417,7 +417,7 @@ export class Histogram extends Block {
       }
       let yOffset = 0.1 * this.graphWindow.height;
       let dx = this.graphWindow.width / (this.numberOfBins + 1);
-      let dy = this.ymax === this.ymin ? 1 : (this.graphWindow.height - yOffset) / (this.ymax - this.ymin);
+      let dy = (this.graphWindow.height - yOffset) / this.ymax;
       let x0 = this.graphWindow.x;
       let y0 = this.graphWindow.y + this.graphWindow.height;
       let h;
@@ -482,10 +482,10 @@ export class Histogram extends Block {
     }
     // draw y-axis tick marks
     let yOffset = 0.1 * this.graphWindow.height;
-    let dy = this.ymax === this.ymin ? 1 : (this.graphWindow.height - yOffset) / (this.ymax - this.ymin);
+    let dy = (this.graphWindow.height - yOffset) / this.ymax;
     ctx.fillText("0", this.graphWindow.x - ctx.measureText("0").width - 5, y0);
     let precision = Math.abs(this.ymax) < 1 ? 2 : Math.round(Math.abs(this.ymax)).toString().length + 1;
-    let y2 = y0 - this.ymax * dy;
+    let h = y0 - this.ymax * dy;
     let maxString = (Math.abs(this.ymax) < 0.0001 ? 0 : this.ymax).toPrecision(precision);
     if (Math.abs(this.ymax) >= 1) {
       if (maxString.endsWith(".0")) {
@@ -495,10 +495,10 @@ export class Histogram extends Block {
       }
     }
     ctx.beginPath();
-    ctx.moveTo(this.graphWindow.x, y2);
-    ctx.lineTo(this.graphWindow.x + 4, y2);
+    ctx.moveTo(this.graphWindow.x, h);
+    ctx.lineTo(this.graphWindow.x + 4, h);
     ctx.stroke();
-    ctx.fillText(maxString, this.graphWindow.x - ctx.measureText(maxString).width - 5, y2);
+    ctx.fillText(maxString, this.graphWindow.x - ctx.measureText(maxString).width - 5, h);
   }
 
   private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
@@ -599,7 +599,7 @@ export class Histogram extends Block {
         for (let p of this.distributions[i]) {
           sum += p;
         }
-        sum = 1 / sum;
+        sum = sum <= 0 ? 0 : 1 / sum;
         for (let k = 0; k < this.distributions[i].length; k++) {
           this.distributions[i][k] *= sum;
         }
@@ -625,8 +625,8 @@ export class Histogram extends Block {
           this.ymax = dmax;
         }
       }
-      if (this.ymin == Number.MAX_VALUE) this.ymin = 0;
-      if (this.ymax == -Number.MAX_VALUE) this.ymax = 1;
+      if (this.ymin === Number.MAX_VALUE) this.ymin = 0;
+      if (this.ymax === -Number.MAX_VALUE) this.ymax = 1;
     } else {
       this.ymin = this.minimumYValue;
       this.ymax = this.maximumYValue;
