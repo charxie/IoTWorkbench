@@ -8,6 +8,7 @@ import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
 import {DataArray} from "./DataArray";
+import {Vector} from "../math/Vector";
 
 export class Histogram extends Block {
 
@@ -637,16 +638,20 @@ export class Histogram extends Block {
     for (let i = 0; i < this.portI.length; i++) {
       let v = this.portI[i].getValue();
       if (v !== undefined) {
-        if (Array.isArray(v)) {
-          this.dataArrays[i].data = v;
+        if (v instanceof Vector) {
+          this.dataArrays[i].data = v.getValues();
         } else {
-          if (this.portI.length > 1) {
-            // TODO: NOT a safe way to avoid multi-counting when there are multiple imports
-            if (v !== this.dataArrays[i].getLatest()) {
+          if (Array.isArray(v)) {
+            this.dataArrays[i].data = v;
+          } else {
+            if (this.portI.length > 1) {
+              // TODO: NOT a safe way to avoid multi-counting when there are multiple imports
+              if (v !== this.dataArrays[i].getLatest()) {
+                this.dataArrays[i].data.push(v);
+              }
+            } else {
               this.dataArrays[i].data.push(v);
             }
-          } else {
-            this.dataArrays[i].data.push(v);
           }
         }
       }

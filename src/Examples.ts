@@ -451,8 +451,8 @@ export class Examples {
     this.files.push({name: "Chemistry: DNA Molecule", data: dna_molecule});
     this.files.push({name: "Chemistry: Gas Molecules", data: gas_molecules});
     this.files.push({name: "Chemistry: Alloys", data: alloy});
-    this.files.push({name: "Chemistry: Nano Gear", data: nano_gear});
     this.files.push({name: "Chemistry: Nano Car", data: nanocar});
+    this.files.push({name: "Chemistry: Nano Gear", data: nano_gear});
     this.files.push({name: "Chemistry: Lennard-Jones Potential", data: lennard_jones_potential});
     this.files.push({name: "Chaos: Logistic Map", data: logistic_map});
     this.files.push({name: "Chaos: Hénon Map", data: henon_map});
@@ -530,7 +530,7 @@ export class Examples {
 
     let option = document.createElement('option') as HTMLOptionElement;
     option.value = "select";
-    option.innerHTML = "Select Tutorial";
+    option.innerHTML = "Select Example";
     selectElement.appendChild(option);
 
     let i = 1;

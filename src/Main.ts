@@ -143,8 +143,8 @@ window.onload = function () {
   codeTabButton.addEventListener("click", () => {
     selectTab(codeTabButton, "code-playground");
   });
-  document.getElementById("main-page-previous-tutorial-button").onclick = () => examples.loadPrevious();
-  document.getElementById("main-page-next-tutorial-button").onclick = () => examples.loadNext();
+  document.getElementById("main-page-previous-example-button").onclick = () => examples.loadPrevious();
+  document.getElementById("main-page-next-example-button").onclick = () => examples.loadNext();
 
   createContextMenusForModels();
   createContextMenusForBlocks();
