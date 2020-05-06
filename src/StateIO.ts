@@ -56,6 +56,7 @@ import {UnivariateDescriptiveStatisticsBlock} from "./blocks/UnivariateDescripti
 import {BoxPlot} from "./blocks/BoxPlot";
 import {Histogram} from "./blocks/Histogram";
 import {WordCloud} from "./blocks/WordCloud";
+import {PieChart} from "./blocks/PieChart";
 
 export class StateIO {
 
@@ -223,6 +224,9 @@ export class StateIO {
           if (state.fillColors != undefined) block.setFillColors(state.fillColors);
           if (state.numberOfBins != undefined) block.setNumberOfBins(state.numberOfBins);
           block.setDataPortNumber(state.dataPortNumber);
+        } else if (block instanceof PieChart) {
+          block.setName(state.name);
+          block.setViewWindowColor(state.viewWindowColor);
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);

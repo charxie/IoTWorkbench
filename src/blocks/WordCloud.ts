@@ -142,7 +142,7 @@ export class WordCloud extends Block {
       ctx.translate(this.viewWindow.x, this.viewWindow.y);
       let count = Object.keys(this.wordCount).length;
       if (count > 0) {
-        cloud().size([this.viewWindow.width, this.viewWindow.height])
+        cloud.size([this.viewWindow.width, this.viewWindow.height])
           .words(this.wordCount)
           .font("Impact")
           .padding(5)

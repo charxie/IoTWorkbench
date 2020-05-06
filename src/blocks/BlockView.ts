@@ -67,6 +67,7 @@ import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStati
 import {BoxPlot} from "./BoxPlot";
 import {Histogram} from "./Histogram";
 import {WordCloud} from "./WordCloud";
+import {PieChart} from "./PieChart";
 
 export class BlockView {
 
@@ -326,6 +327,9 @@ export class BlockView {
         break;
       case "histogram-block":
         b = this.addBlockUndoable(new Histogram("Histogram #" + timestamp, "Histogram", x - 100, y - 110, 200, 220));
+        break;
+      case "pie-chart-block":
+        b = this.addBlockUndoable(new PieChart("Pie Chart #" + timestamp, "Pie Chart", x - 100, y - 110, 200, 220));
         break;
       case "space2d-block":
         b = this.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));

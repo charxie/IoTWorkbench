@@ -7,13 +7,13 @@ import {BlockContextMenu} from "./BlockContextMenu";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {Util} from "../../Util";
 import {PngSaver} from "../../tools/PngSaver";
-import {WordCloud} from "../WordCloud";
+import {PieChart} from "../PieChart";
 
-export class WordCloudContextMenu extends BlockContextMenu {
+export class PieChartContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "wordcloud-block-context-menu";
+    this.id = "pie-chart-block-context-menu";
   }
 
   getUi(): string {
@@ -43,7 +43,7 @@ export class WordCloudContextMenu extends BlockContextMenu {
   private saveImageButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    PngSaver.saveAs((<WordCloud>this.block).toCanvas());
+    PngSaver.saveAs((<PieChart>this.block).toCanvas());
   }
 
   protected getPropertiesUI(): string {
@@ -51,20 +51,20 @@ export class WordCloudContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td colspan="2"><input type="text" id="wordcloud-name-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="pie-chart-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Window Color:</td>
-                  <td><input type="color" id="wordcloud-window-color-chooser" style="width: 50px"></td>
-                  <td><input type="text" id="wordcloud-window-color-field" style="width: 100%"></td>
+                  <td><input type="color" id="pie-chart-window-color-chooser" style="width: 50px"></td>
+                  <td><input type="text" id="pie-chart-window-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td colspan="2"><input type="text" id="wordcloud-width-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="pie-chart-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td colspan="2"><input type="text" id="wordcloud-height-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="pie-chart-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -73,18 +73,18 @@ export class WordCloudContextMenu extends BlockContextMenu {
   protected propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof WordCloud) {
+    if (this.block instanceof PieChart) {
       const g = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameField = document.getElementById("wordcloud-name-field") as HTMLInputElement;
+      let nameField = document.getElementById("pie-chart-name-field") as HTMLInputElement;
       nameField.value = g.getName();
-      let windowColorField = document.getElementById("wordcloud-window-color-field") as HTMLInputElement;
+      let windowColorField = document.getElementById("pie-chart-window-color-field") as HTMLInputElement;
       windowColorField.value = g.getViewWindowColor();
-      let windowColorChooser = document.getElementById("wordcloud-window-color-chooser") as HTMLInputElement;
+      let windowColorChooser = document.getElementById("pie-chart-window-color-chooser") as HTMLInputElement;
       Util.setColorPicker(windowColorChooser, g.getViewWindowColor());
-      let widthField = document.getElementById("wordcloud-width-field") as HTMLInputElement;
+      let widthField = document.getElementById("pie-chart-width-field") as HTMLInputElement;
       widthField.value = Math.round(g.getWidth()).toString();
-      let heightField = document.getElementById("wordcloud-height-field") as HTMLInputElement;
+      let heightField = document.getElementById("pie-chart-height-field") as HTMLInputElement;
       heightField.value = Math.round(g.getHeight()).toString();
       Util.hookupColorInputs(windowColorField, windowColorChooser);
       const okFunction = () => {

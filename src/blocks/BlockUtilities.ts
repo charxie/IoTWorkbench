@@ -59,6 +59,7 @@ import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStati
 import {BoxPlot} from "./BoxPlot";
 import {Histogram} from "./Histogram";
 import {WordCloud} from "./WordCloud";
+import {PieChart} from "./PieChart";
 
 export class BlockUtilities {
 
@@ -149,6 +150,9 @@ export class BlockUtilities {
     }
     if (block instanceof Histogram) {
       return contextMenus.histogram;
+    }
+    if (block instanceof PieChart) {
+      return contextMenus.pieChart;
     }
     if (block instanceof Space2D) {
       return contextMenus.space2d;
@@ -344,6 +348,10 @@ export class BlockUtilities {
     if (block instanceof Histogram) {
       contextMenus.histogram.block = block;
       return document.getElementById("histogram-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof PieChart) {
+      contextMenus.pieChart.block = block;
+      return document.getElementById("pie-chart-context-menu") as HTMLMenuElement;
     }
     if (block instanceof Space2D) {
       contextMenus.space2d.block = block;

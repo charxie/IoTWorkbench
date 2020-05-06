@@ -66,6 +66,7 @@ import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStati
 import {BoxPlot} from "./BoxPlot";
 import {Histogram} from "./Histogram";
 import {WordCloud} from "./WordCloud";
+import {PieChart} from "./PieChart";
 
 export class Flowchart {
 
@@ -303,7 +304,7 @@ export class Flowchart {
   erase(invoker: Block): void {
     for (let b of this.blocks) {
       if (flowchart.areBlocksConnected(invoker, b)) {
-        if (b instanceof Space2D || b instanceof Space3D || b instanceof Histogram) {
+        if (b instanceof Space2D || b instanceof Space3D || b instanceof Histogram || b instanceof PieChart) {
           b.erase();
         } else if (b instanceof Sticker) {
           if (b.getKeepResult()) {
@@ -908,6 +909,9 @@ export class Flowchart {
       case "Histogram":
         block = new Histogram(uid, name, x, y, 200, 220);
         break;
+      case "Pie Chart":
+        block = new PieChart(uid, name, x, y, 200, 220);
+        break;
       case "Space2D":
         block = new Space2D(uid, name, x, y, 200, 220);
         break;
@@ -1040,6 +1044,8 @@ export class Flowchart {
         blockStates.push(new BoundaryConditionBlock.State(b));
       } else if (b instanceof Histogram) {
         blockStates.push(new Histogram.State(b));
+      } else if (b instanceof PieChart) {
+        blockStates.push(new PieChart.State(b));
       } else if (b instanceof Space2D) {
         blockStates.push(new Space2D.State(b));
       } else if (b instanceof Space3D) {

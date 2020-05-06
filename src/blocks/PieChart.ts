@@ -2,7 +2,6 @@
  * @author Charles Xie
  */
 
-import * as d3 from 'd3';
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
@@ -51,7 +50,7 @@ export class PieChart extends Block {
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = name;
-    this.color = "#EE8866";
+    this.color = "#88EE88";
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 2;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false)
@@ -183,23 +182,6 @@ export class PieChart extends Block {
     this.viewMargin.right = 16;
     let dh = (this.height - this.barHeight) / 2;
     this.portI.setY(this.barHeight + dh);
-  }
-
-  mouseMove(e: MouseEvent): void {
-    this.setToolTip(e);
-  }
-
-  mouseDown(e: MouseEvent): boolean {
-    this.setToolTip(e);
-    return false;
-  }
-
-  private setToolTip(e: MouseEvent): void {
-    if (this.data !== undefined) {
-      // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
-      let rect = flowchart.blockView.canvas.getBoundingClientRect();
-    }
-    flowchart.blockView.requestDraw();
   }
 
 }

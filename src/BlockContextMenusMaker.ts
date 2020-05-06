@@ -58,6 +58,7 @@ import {UnivariateDescriptiveStatisticsBlockContextMenu} from "./blocks/ui/Univa
 import {BoxPlotContextMenu} from "./blocks/ui/BoxPlotContextMenu";
 import {HistogramContextMenu} from "./blocks/ui/HistogramContextMenu";
 import {WordCloudContextMenu} from "./blocks/ui/WordCloudContextMenu";
+import {PieChartContextMenu} from "./blocks/ui/PieChartContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -105,6 +106,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("grapher-context-menu-placeholder", blockPlayground);
   addPlaceholder("box-plot-context-menu-placeholder", blockPlayground);
   addPlaceholder("histogram-context-menu-placeholder", blockPlayground);
+  addPlaceholder("pie-chart-context-menu-placeholder", blockPlayground);
   addPlaceholder("space2d-context-menu-placeholder", blockPlayground);
   addPlaceholder("space3d-context-menu-placeholder", blockPlayground);
   addPlaceholder("field2d-context-menu-placeholder", blockPlayground);
@@ -328,6 +330,11 @@ function setupContextMenuForBlocks() {
   histogramContextMenu.render("histogram-context-menu-placeholder");
   histogramContextMenu.addListeners();
   contextMenus.histogram = histogramContextMenu;
+
+  let pieChartContextMenu = new PieChartContextMenu();
+  pieChartContextMenu.render("pie-chart-context-menu-placeholder");
+  pieChartContextMenu.addListeners();
+  contextMenus.pieChart = pieChartContextMenu;
 
   let space2dContextMenu = new Space2DContextMenu();
   space2dContextMenu.render("space2d-context-menu-placeholder");
