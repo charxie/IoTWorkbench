@@ -66,6 +66,7 @@ import {MeanBlock} from "./MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStatisticsBlock";
 import {BoxPlot} from "./BoxPlot";
 import {Histogram} from "./Histogram";
+import {WordCloud} from "./WordCloud";
 
 export class BlockView {
 
@@ -355,6 +356,9 @@ export class BlockView {
         break;
       case "univariate-descriptive-statistics-block":
         b = this.addBlockUndoable(new UnivariateDescriptiveStatisticsBlock("Univariate Descriptive Statistics Block #" + timestamp, x - 50, y - 100, 100, 200));
+        break;
+      case "wordcloud-block":
+        b = this.addBlockUndoable(new WordCloud("Wordcloud #" + timestamp, "Wordcloud", x - 100, y - 110, 300, 320));
         break;
     }
     return b;

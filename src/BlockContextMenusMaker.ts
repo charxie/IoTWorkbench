@@ -57,6 +57,7 @@ import {MeanBlockContextMenu} from "./blocks/ui/MeanBlockContextMenu";
 import {UnivariateDescriptiveStatisticsBlockContextMenu} from "./blocks/ui/UnivariateDescriptiveStatisticsBlockContextMenu";
 import {BoxPlotContextMenu} from "./blocks/ui/BoxPlotContextMenu";
 import {HistogramContextMenu} from "./blocks/ui/HistogramContextMenu";
+import {WordCloudContextMenu} from "./blocks/ui/WordCloudContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -115,6 +116,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("array-input-context-menu-placeholder", blockPlayground);
   addPlaceholder("mean-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("univariate-descriptive-statistics-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("wordcloud-block-context-menu-placeholder", blockPlayground);
 
   setupContextMenuForBlocks();
 
@@ -391,6 +393,11 @@ function setupContextMenuForBlocks() {
   univariateDescriptiveStatisticsBlockContextMenu.render("univariate-descriptive-statistics-block-context-menu-placeholder");
   univariateDescriptiveStatisticsBlockContextMenu.addListeners();
   contextMenus.univariateDescriptiveStatisticsBlock = univariateDescriptiveStatisticsBlockContextMenu;
+
+  let wordCloudContextMenu = new WordCloudContextMenu();
+  wordCloudContextMenu.render("wordcloud-block-context-menu-placeholder");
+  wordCloudContextMenu.addListeners();
+  contextMenus.wordCloud = wordCloudContextMenu;
 
 }
 

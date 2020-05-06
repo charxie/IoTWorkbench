@@ -54,6 +54,7 @@ import {MeanBlock} from "../MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "../UnivariateDescriptiveStatisticsBlock";
 import {BoxPlot} from "../BoxPlot";
 import {Histogram} from "../Histogram";
+import {WordCloud} from "../WordCloud";
 
 export class BlockElementsPanel {
 
@@ -102,6 +103,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="space3d-block" title="Space3D" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="field2d-block" title="Contour Plot" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="surface3d-block" title="Surface Plot" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="wordcloud-block" title="Wordcloud" width="45x" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="beeper-block" title="Beeper" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="image-block" title="Image" width="60x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="audio-block" title="Audio" width="60x" height="60px" style="cursor: pointer;"/></td>
@@ -202,6 +204,7 @@ export class BlockElementsPanel {
     this.drawMeanBlock("mean-block");
     this.drawUnivariateDescriptiveStatisticsBlock("univariate-descriptive-statistics-block");
     this.drawMolecularViewerBlock("Molecular Viewer Block", "Molecular Viewer", "molecular-viewer-block");
+    this.drawWordCloud("Wordcloud", "wordcloud-block");
   }
 
   private drawRandomNumberGeneratorBlock(name: string, symbol: string, canvasId: string): void {
@@ -628,6 +631,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new UnivariateDescriptiveStatisticsBlock("Univariate Descriptive Statistics Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawWordCloud(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new WordCloud("Wordcloud Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

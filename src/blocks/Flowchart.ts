@@ -65,6 +65,7 @@ import {MeanBlock} from "./MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStatisticsBlock";
 import {BoxPlot} from "./BoxPlot";
 import {Histogram} from "./Histogram";
+import {WordCloud} from "./WordCloud";
 
 export class Flowchart {
 
@@ -931,6 +932,9 @@ export class Flowchart {
       case "Univariate Descriptive Statistics Block":
         block = new UnivariateDescriptiveStatisticsBlock(uid, x, y, 60, 60);
         break;
+      case "Wordcloud":
+        block = new WordCloud(uid, name, x, y, 300, 320);
+        break;
       case "Rainbow HAT Block":
         block = new RainbowHatBlock(uid, x, y);
         break;
@@ -1066,6 +1070,8 @@ export class Flowchart {
         blockStates.push(new MeanBlock.State(b));
       } else if (b instanceof UnivariateDescriptiveStatisticsBlock) {
         blockStates.push(new UnivariateDescriptiveStatisticsBlock.State(b));
+      } else if (b instanceof WordCloud) {
+        blockStates.push(new WordCloud.State(b));
       } else {
         blockStates.push(new Block.State(b));
       }

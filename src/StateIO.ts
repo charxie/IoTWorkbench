@@ -55,6 +55,7 @@ import {MeanBlock} from "./blocks/MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "./blocks/UnivariateDescriptiveStatisticsBlock";
 import {BoxPlot} from "./blocks/BoxPlot";
 import {Histogram} from "./blocks/Histogram";
+import {WordCloud} from "./blocks/WordCloud";
 
 export class StateIO {
 
@@ -406,6 +407,9 @@ export class StateIO {
           block.setType(state.type);
         } else if (block instanceof UnivariateDescriptiveStatisticsBlock) {
           block.setSymbol(state.symbol);
+        } else if (block instanceof WordCloud) {
+          block.setName(state.name);
+          block.setViewWindowColor(state.viewWindowColor === undefined ? "white" : state.viewWindowColor);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

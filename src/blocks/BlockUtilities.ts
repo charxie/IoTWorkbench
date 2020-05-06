@@ -58,6 +58,7 @@ import {MeanBlock} from "./MeanBlock";
 import {UnivariateDescriptiveStatisticsBlock} from "./UnivariateDescriptiveStatisticsBlock";
 import {BoxPlot} from "./BoxPlot";
 import {Histogram} from "./Histogram";
+import {WordCloud} from "./WordCloud";
 
 export class BlockUtilities {
 
@@ -217,6 +218,9 @@ export class BlockUtilities {
     }
     if (block instanceof UnivariateDescriptiveStatisticsBlock) {
       return contextMenus.univariateDescriptiveStatisticsBlock;
+    }
+    if (block instanceof WordCloud) {
+      return contextMenus.wordCloud;
     }
     if (block instanceof RainbowHatBlock) {
       return contextMenus.rainbowHatBlock;
@@ -436,6 +440,10 @@ export class BlockUtilities {
     if (block instanceof UnivariateDescriptiveStatisticsBlock) {
       contextMenus.univariateDescriptiveStatisticsBlock.block = block;
       return document.getElementById("univariate-descriptive-statistics-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof WordCloud) {
+      contextMenus.wordCloud.block = block;
+      return document.getElementById("wordcloud-block-context-menu") as HTMLMenuElement;
     }
     return null;
   }

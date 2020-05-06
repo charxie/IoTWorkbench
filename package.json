@@ -17,6 +17,7 @@
   "dependencies": {
     "@seregpie/three.text-sprite": "^2.0.0",
     "d3": "^5.16.0",
+    "d3-cloud": "^1.2.5",
     "file-saver": "^2.0.2",
     "html2canvas": "^1.0.0-rc.5",
     "jquery": "^3.5.0",
