@@ -227,7 +227,13 @@ export class StateIO {
         } else if (block instanceof PieChart) {
           block.setName(state.name);
           block.setViewWindowColor(state.viewWindowColor);
+          if (state.startColor !== undefined) block.setStartColor(state.startColor);
+          if (state.midColor !== undefined) block.setMidColor(state.midColor);
+          if (state.endColor !== undefined) block.setEndColor(state.endColor);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
+          if (state.labels !== undefined) block.setLabels(state.labels);
+          if (state.donutLabel !== undefined) block.setDonutLabel(state.donutLabel);
+          if (state.innerRadius !== undefined) block.setInnerRadius(state.innerRadius);
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);

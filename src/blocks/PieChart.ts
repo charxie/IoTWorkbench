@@ -15,15 +15,16 @@ export class PieChart extends Block {
   private portI: Port;
   private data: number[];
   private angularData: number[];
+  private labels: string[];
+  private donutLabel: string;
   private viewWindowColor: string = "white";
   private viewWindow: Rectangle;
   private barHeight: number;
+  private innerRadius: number = 0;
   private startColor: string = "pink";
   private midColor: string = "lightgreen";
   private endColor: string = "lightblue";
   private fractionDigits: number = 3;
-  private mouseOverX: number;
-  private mouseOverY: number;
   private readonly viewMargin = {
     left: <number>4,
     right: <number>3,
@@ -43,7 +44,10 @@ export class PieChart extends Block {
     readonly startColor: string;
     readonly midColor: string;
     readonly endColor: string;
+    readonly innerRadius: number;
     readonly fractionDigits: number;
+    readonly labels: string[];
+    readonly donutLabel: string;
 
     constructor(b: PieChart) {
       this.name = b.name;
@@ -57,13 +61,16 @@ export class PieChart extends Block {
       this.midColor = b.midColor;
       this.endColor = b.endColor;
       this.fractionDigits = b.fractionDigits;
+      this.labels = b.labels;
+      this.donutLabel = b.donutLabel;
+      this.innerRadius = b.innerRadius;
     }
   };
 
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = name;
-    this.color = "#88EE88";
+    this.color = "#88DDEE";
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 2;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false)
@@ -79,6 +86,9 @@ export class PieChart extends Block {
     copy.startColor = this.startColor;
     copy.midColor = this.midColor;
     copy.endColor = this.endColor;
+    copy.innerRadius = this.innerRadius;
+    if (this.labels !== undefined) copy.labels = [...this.labels];
+    copy.donutLabel = this.donutLabel;
     return copy;
   }
 
@@ -91,6 +101,60 @@ export class PieChart extends Block {
   }
 
   erase(): void {
+  }
+
+  setInnerRadius(innerRadius: number): void {
+    this.innerRadius = innerRadius;
+  }
+
+  getInnerRadius(): number {
+    return this.innerRadius;
+  }
+
+  setLabels(labels: string[]): void {
+    this.labels = labels;
+  }
+
+  getLabels(): string[] {
+    return this.labels;
+  }
+
+  setDonutLabel(donutLabel: string): void {
+    this.donutLabel = donutLabel;
+  }
+
+  getDonutLabel(): string {
+    return this.donutLabel;
+  }
+
+  setStartColor(startColor: string): void {
+    this.startColor = startColor;
+  }
+
+  getStartColor(): string {
+    return this.startColor;
+  }
+
+  setMidColor(midColor: string): void {
+    this.midColor = midColor;
+  }
+
+  getMidColor(): string {
+    return this.midColor;
+  }
+
+  setEndColor(endColor: string): void {
+    this.endColor = endColor;
+  }
+
+  getEndColor(): string {
+    return this.endColor;
+  }
+
+  updateColorScale(): void {
+    if (this.data !== undefined) {
+      this.colorScale = d3.scaleLinear().domain([0, this.data.length / 2, this.data.length]).range([this.startColor, this.midColor, this.endColor]);
+    }
   }
 
   setFractionDigits(fractionDigits: number): void {
@@ -151,55 +215,99 @@ export class PieChart extends Block {
     ctx.fill();
     ctx.strokeStyle = "black";
     ctx.stroke();
-    if (this.iconic) {
-      ctx.fillStyle = "black";
-      ctx.font = "8px Arial";
-      let h = ctx.measureText("M").width - 2;
-      ctx.fillText("Pie", this.viewWindow.x + this.viewWindow.width / 2 - ctx.measureText("2D").width / 2, this.viewWindow.y + this.viewWindow.height / 2 + h / 2);
-    }
-
-    // draw pie chart
     ctx.save();
     ctx.translate(this.viewWindow.x + this.viewWindow.width / 2, this.viewWindow.y + this.viewWindow.height / 2);
-    if (this.angularData !== undefined) {
-      let angle = 0;
-      let r = Math.min(this.viewWindow.width, this.viewWindow.height) * 0.4;
-      for (let i = 0; i < this.angularData.length; i++) {
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        if (angle === 0) {
-          ctx.lineTo(r, 0);
-        } else {
-          ctx.lineTo(r * Math.cos(angle), r * Math.sin(angle));
-        }
-        ctx.arc(0, 0, r, angle, angle + this.angularData[i], false);
-        ctx.closePath();
-        ctx.fillStyle = this.colorScale(this.angularData[i]);
-        ctx.fill();
-        angle += this.angularData[i];
-      }
-      angle = 0;
-      ctx.fillStyle = "black";
+    let r = Math.min(this.viewWindow.width, this.viewWindow.height) * 0.4;
+    let angle = 0;
+    if (this.iconic) {
+      angle = Math.PI * 2 / 3;
+      ctx.fillStyle = "red";
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(r, 0);
+      ctx.arc(0, 0, r, 0, angle, false);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "green";
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(r * Math.cos(angle), r * Math.sin(angle));
+      ctx.arc(0, 0, r, angle, 2 * angle, false);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "blue";
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(r * Math.cos(2 * angle), r * Math.sin(2 * angle));
+      ctx.arc(0, 0, r, 2 * angle, 3 * angle, false);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
       ctx.strokeStyle = "black";
-      let midAngle;
-      let dataLabel;
-      let dataLabelLength;
-      for (let i = 0; i < this.angularData.length; i++) {
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        if (angle === 0) {
-          ctx.lineTo(r, 0);
-        } else {
-          ctx.lineTo(r * Math.cos(angle), r * Math.sin(angle));
+      ctx.arc(0, 0, r, 0, Math.PI * 2, false);
+      ctx.stroke();
+    } else {
+      // draw pie chart
+      if (this.angularData !== undefined) {
+        ctx.font = "10px Arial";
+        for (let i = 0; i < this.angularData.length; i++) {
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          if (angle === 0) {
+            ctx.lineTo(r, 0);
+          } else {
+            ctx.lineTo(r * Math.cos(angle), r * Math.sin(angle));
+          }
+          ctx.arc(0, 0, r, angle, angle + this.angularData[i], false);
+          ctx.closePath();
+          ctx.fillStyle = this.colorScale(i);
+          ctx.fill();
+          angle += this.angularData[i];
         }
-        ctx.arc(0, 0, r, angle, angle + this.angularData[i], false);
-        ctx.closePath();
+        angle = 0;
+        ctx.fillStyle = "black";
+        ctx.strokeStyle = "black";
+        let midAngle;
+        let dataLabel;
+        let dataLabelLength;
+        for (let i = 0; i < this.angularData.length; i++) {
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          if (angle === 0) {
+            ctx.lineTo(r, 0);
+          } else {
+            ctx.lineTo(r * Math.cos(angle), r * Math.sin(angle));
+          }
+          ctx.arc(0, 0, r, angle, angle + this.angularData[i], false);
+          ctx.closePath();
+          ctx.stroke();
+          midAngle = angle + this.angularData[i] / 2;
+          if (this.labels === undefined) {
+            dataLabel = this.data[i].toFixed(this.fractionDigits);
+          } else {
+            dataLabel = (i < this.labels.length ? this.labels[i] : "") + " (" + this.data[i].toFixed(this.fractionDigits) + ")";
+          }
+          dataLabelLength = ctx.measureText(dataLabel).width;
+          let h = ctx.measureText("M").width - 2;
+          ctx.fillText(dataLabel, r * Math.cos(midAngle) * 0.7 - dataLabelLength / 2, r * Math.sin(midAngle) * 0.7 + h / 2);
+          angle += this.angularData[i];
+        }
+      }
+      if (this.innerRadius > 0) {
+        ctx.fillStyle = this.viewWindowColor;
+        ctx.beginPath();
+        ctx.arc(0, 0, this.innerRadius, 0, Math.PI * 2, false);
+        ctx.fill();
+        ctx.strokeStyle = "black";
         ctx.stroke();
-        midAngle = angle + this.angularData[i] / 2;
-        dataLabel = this.data[i].toFixed(this.fractionDigits);
-        dataLabelLength = ctx.measureText(dataLabel).width;
-        ctx.fillText(dataLabel, (r * Math.cos(midAngle) - dataLabelLength) / 2, r * Math.sin(midAngle) / 2);
-        angle += this.angularData[i];
+        if (this.donutLabel !== undefined) {
+          ctx.font = "12px Arial";
+          ctx.fillStyle = "black";
+          let w = ctx.measureText(this.donutLabel).width;
+          let h = ctx.measureText("M").width - 2;
+          ctx.fillText(this.donutLabel, -w / 2, h / 2);
+
+        }
       }
     }
     ctx.restore();
@@ -223,6 +331,10 @@ export class PieChart extends Block {
 
   updateModel(): void {
     let v = this.portI.getValue();
+    let originalDataLength = 0;
+    if (this.data !== undefined) {
+      originalDataLength = this.data.length;
+    }
     if (v instanceof Vector) {
       this.data = v.getValues();
     } else {
@@ -231,6 +343,7 @@ export class PieChart extends Block {
       }
     }
     if (this.data !== undefined) {
+      if (this.data.length !== originalDataLength) this.updateColorScale();
       let sum = 0;
       for (let i = 0; i < this.data.length; i++) {
         sum += this.data[i];

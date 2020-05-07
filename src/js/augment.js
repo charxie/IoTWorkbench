@@ -21,9 +21,11 @@ if (typeof Math.cosh !== 'function') {
 }
 
 if (typeof Math.hypot !== 'function') {
-  Math.hypot = function (x, y) {
-    return Math.sqrt(x * x + y * y);
-  };
+  Math.hypot = (x, y) => Math.sqrt(x * x + y * y);
+}
+
+if (typeof Math.sign !== 'function') {
+  Math.sign = x => ((x > 0) - (x < 0)) || +x;
 }
 
 // A convenient method for counting the number of members of an object

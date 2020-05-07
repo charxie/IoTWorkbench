@@ -72,6 +72,8 @@ declare global {
     sinh(x);
 
     cosh(x);
+
+    sign(x);
   }
 }
 
