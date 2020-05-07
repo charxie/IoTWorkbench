@@ -2,20 +2,26 @@
  * @author Charles Xie
  */
 
+import * as d3 from 'd3';
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
+import {Vector} from "../math/Vector";
 
 export class PieChart extends Block {
 
-  private portI:Port;
+  private portI: Port;
   private data: number[];
+  private angularData: number[];
   private viewWindowColor: string = "white";
   private viewWindow: Rectangle;
   private barHeight: number;
-  private colors: string[];
+  private startColor: string = "pink";
+  private midColor: string = "lightgreen";
+  private endColor: string = "lightblue";
+  private fractionDigits: number = 3;
   private mouseOverX: number;
   private mouseOverY: number;
   private readonly viewMargin = {
@@ -24,6 +30,7 @@ export class PieChart extends Block {
     top: <number>4,
     bottom: <number>4
   };
+  private colorScale;
 
   static State = class {
     readonly name: string;
@@ -33,17 +40,23 @@ export class PieChart extends Block {
     readonly width: number;
     readonly height: number;
     readonly viewWindowColor: string;
-    readonly colors: string[];
+    readonly startColor: string;
+    readonly midColor: string;
+    readonly endColor: string;
+    readonly fractionDigits: number;
 
-    constructor(g: PieChart) {
-      this.name = g.name;
-      this.uid = g.uid;
-      this.x = g.x;
-      this.y = g.y;
-      this.width = g.width;
-      this.height = g.height;
-      this.viewWindowColor = g.viewWindowColor;
-      this.colors = g.colors;
+    constructor(b: PieChart) {
+      this.name = b.name;
+      this.uid = b.uid;
+      this.x = b.x;
+      this.y = b.y;
+      this.width = b.width;
+      this.height = b.height;
+      this.viewWindowColor = b.viewWindowColor;
+      this.startColor = b.startColor;
+      this.midColor = b.midColor;
+      this.endColor = b.endColor;
+      this.fractionDigits = b.fractionDigits;
     }
   };
 
@@ -57,12 +70,15 @@ export class PieChart extends Block {
     this.ports.push(this.portI);
     this.viewWindow = new Rectangle(0, 0, 1, 1);
     this.marginX = 25;
+    this.colorScale = d3.scaleLinear().domain([0, Math.PI, 2 * Math.PI]).range([this.startColor, this.midColor, this.endColor]);
   }
 
   getCopy(): Block {
     let copy = new PieChart("Pie Chart #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.viewWindowColor = this.viewWindowColor;
-    copy.colors = this.colors.slice();
+    copy.startColor = this.startColor;
+    copy.midColor = this.midColor;
+    copy.endColor = this.endColor;
     return copy;
   }
 
@@ -75,6 +91,14 @@ export class PieChart extends Block {
   }
 
   erase(): void {
+  }
+
+  setFractionDigits(fractionDigits: number): void {
+    this.fractionDigits = fractionDigits;
+  }
+
+  getFractionDigits(): number {
+    return this.fractionDigits;
   }
 
   setViewWindowColor(viewWindowColor: string): void {
@@ -134,21 +158,48 @@ export class PieChart extends Block {
       ctx.fillText("Pie", this.viewWindow.x + this.viewWindow.width / 2 - ctx.measureText("2D").width / 2, this.viewWindow.y + this.viewWindow.height / 2 + h / 2);
     }
 
-    // draw contour plot
+    // draw pie chart
     ctx.save();
-    ctx.translate(this.viewWindow.x, this.viewWindow.y);
-    if (this.data !== undefined && Array.isArray(this.data)) {
-    }
-    ctx.translate(0, this.viewWindow.height);
-    // draw labels
-    if (!this.iconic) {
-      ctx.lineWidth = 1;
-      ctx.font = "10px Arial";
+    ctx.translate(this.viewWindow.x + this.viewWindow.width / 2, this.viewWindow.y + this.viewWindow.height / 2);
+    if (this.angularData !== undefined) {
+      let angle = 0;
+      let r = Math.min(this.viewWindow.width, this.viewWindow.height) * 0.4;
+      for (let i = 0; i < this.angularData.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        if (angle === 0) {
+          ctx.lineTo(r, 0);
+        } else {
+          ctx.lineTo(r * Math.cos(angle), r * Math.sin(angle));
+        }
+        ctx.arc(0, 0, r, angle, angle + this.angularData[i], false);
+        ctx.closePath();
+        ctx.fillStyle = this.colorScale(this.angularData[i]);
+        ctx.fill();
+        angle += this.angularData[i];
+      }
+      angle = 0;
       ctx.fillStyle = "black";
-    }
-    if (this.selected) {
-      if (this.mouseOverX !== undefined && this.mouseOverY !== undefined) {
-        ctx.fillStyle = "white";
+      ctx.strokeStyle = "black";
+      let midAngle;
+      let dataLabel;
+      let dataLabelLength;
+      for (let i = 0; i < this.angularData.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        if (angle === 0) {
+          ctx.lineTo(r, 0);
+        } else {
+          ctx.lineTo(r * Math.cos(angle), r * Math.sin(angle));
+        }
+        ctx.arc(0, 0, r, angle, angle + this.angularData[i], false);
+        ctx.closePath();
+        ctx.stroke();
+        midAngle = angle + this.angularData[i] / 2;
+        dataLabel = this.data[i].toFixed(this.fractionDigits);
+        dataLabelLength = ctx.measureText(dataLabel).width;
+        ctx.fillText(dataLabel, (r * Math.cos(midAngle) - dataLabelLength) / 2, r * Math.sin(midAngle) / 2);
+        angle += this.angularData[i];
       }
     }
     ctx.restore();
@@ -171,15 +222,37 @@ export class PieChart extends Block {
   }
 
   updateModel(): void {
-    this.data = this.portI.getValue();
+    let v = this.portI.getValue();
+    if (v instanceof Vector) {
+      this.data = v.getValues();
+    } else {
+      if (Array.isArray(v)) {
+        this.data = v;
+      }
+    }
+    if (this.data !== undefined) {
+      let sum = 0;
+      for (let i = 0; i < this.data.length; i++) {
+        sum += this.data[i];
+      }
+      if (sum !== 0) {
+        sum = 2 * Math.PI / sum;
+        if (this.angularData === undefined || this.angularData.length !== this.data.length) {
+          this.angularData = new Array(this.data.length);
+        }
+        for (let i = 0; i < this.data.length; i++) {
+          this.angularData[i] = this.data[i] * sum;
+        }
+      }
+    }
   }
 
   refreshView(): void {
     super.refreshView();
     this.viewMargin.top = 10;
-    this.viewMargin.bottom = 40;
-    this.viewMargin.left = 70;
-    this.viewMargin.right = 16;
+    this.viewMargin.bottom = 10;
+    this.viewMargin.left = 10;
+    this.viewMargin.right = 10;
     let dh = (this.height - this.barHeight) / 2;
     this.portI.setY(this.barHeight + dh);
   }

@@ -227,6 +227,7 @@ export class StateIO {
         } else if (block instanceof PieChart) {
           block.setName(state.name);
           block.setViewWindowColor(state.viewWindowColor);
+          block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);

@@ -121,7 +121,7 @@ export class VectorBlock extends Block {
         this.vector.setValue(i, x);
       }
     }
-    this.portO.setValue(this.vector);
+    this.portO.setValue(this.vector.copy()); // return a copy in case the downstream block modifies it
     this.updateConnectors();
   }
 
@@ -130,12 +130,12 @@ export class VectorBlock extends Block {
       ctx.font = "9px Times New Roman";
       this.drawText(this.symbol ? this.symbol : this.name, ctx);
     } else {
-      ctx.font = "16px Times New Roman";
+      ctx.font = "14px Times New Roman";
       let s;
       let offset = -this.getHeight() / 2;
-      let textWidth = ctx.measureText(Math.PI.toPrecision(this.fractionDigits)).width;
+      let textWidth = ctx.measureText(Math.PI.toFixed(this.fractionDigits)).width;
       for (let i = 0; i < this.portI.length; i++) {
-        s = this.vector.getValue(i).toPrecision(this.fractionDigits);
+        s = this.vector.getValue(i).toFixed(this.fractionDigits);
         this.drawTextAt(s, 0, this.portI[i].getY() + offset, ctx);
       }
       // the coordinates are no longer relative to the block below

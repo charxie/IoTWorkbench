@@ -310,18 +310,20 @@ export class ArrayInput extends Block {
   }
 
   updateModel(): void {
-    for (let col = 0; col < this.array.length; col++) {
-      let numbers = new Array(this.array[col].length);
-      for (let row = 0; row < numbers.length; row++) {
-        try {
-          numbers[row] = parseFloat(this.array[col][row]);
-        } catch (e) {
-          numbers[row] = this.array[col][row];
+    if (this.array) {
+      for (let col = 0; col < this.array.length; col++) {
+        let numbers = new Array(this.array[col].length);
+        for (let row = 0; row < numbers.length; row++) {
+          try {
+            numbers[row] = parseFloat(this.array[col][row]);
+          } catch (e) {
+            numbers[row] = this.array[col][row];
+          }
         }
+        if (col < this.ports.length) this.ports[col].setValue(numbers);
       }
-      if (col < this.ports.length) this.ports[col].setValue(numbers);
+      this.updateConnectors();
     }
-    this.updateConnectors();
   }
 
   refreshView(): void {

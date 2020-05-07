@@ -54,6 +54,10 @@ export class PieChartContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="pie-chart-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Fraction Digits:</td>
+                  <td colspan="2"><input type="text" id="pie-chart-fraction-digits-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Window Color:</td>
                   <td><input type="color" id="pie-chart-window-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="pie-chart-window-color-field" style="width: 100%"></td>
@@ -78,6 +82,8 @@ export class PieChartContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("pie-chart-name-field") as HTMLInputElement;
       nameField.value = g.getName();
+      let fractionDigitsField = document.getElementById("pie-chart-fraction-digits-field") as HTMLInputElement;
+      fractionDigitsField.value = g.getFractionDigits().toString();
       let windowColorField = document.getElementById("pie-chart-window-color-field") as HTMLInputElement;
       windowColorField.value = g.getViewWindowColor();
       let windowColorChooser = document.getElementById("pie-chart-window-color-chooser") as HTMLInputElement;
@@ -90,6 +96,14 @@ export class PieChartContextMenu extends BlockContextMenu {
       const okFunction = () => {
         let success = true;
         let message;
+        // set fraction digits
+        let fractionDigits = parseInt(fractionDigitsField.value);
+        if (isNumber(fractionDigits)) {
+          g.setFractionDigits(Math.max(0, fractionDigits));
+        } else {
+          success = false;
+          message = fractionDigitsField.value + " is not valid for fraction digits";
+        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -124,6 +138,7 @@ export class PieChartContextMenu extends BlockContextMenu {
         }
       };
       nameField.addEventListener("keyup", enterKeyUp);
+      fractionDigitsField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
@@ -131,7 +146,7 @@ export class PieChartContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: g.getUid(),
-        height: 320,
+        height: 400,
         width: 450,
         buttons: {
           'OK': okFunction,

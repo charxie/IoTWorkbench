@@ -14,6 +14,7 @@ export class WordCloud extends Block {
 
   private static readonly common = "poop,i,me,my,myself,we,us,our,ours,ourselves,you,your,yours,yourself,yourselves,he,him,his,himself,she,her,hers,herself,it,its,itself,they,them,their,theirs,themselves,what,which,who,whom,whose,this,that,these,those,am,is,are,was,were,be,been,being,have,has,had,having,do,does,did,doing,will,would,should,can,could,ought,i'm,you're,he's,she's,it's,we're,they're,i've,you've,we've,they've,i'd,you'd,he'd,she'd,we'd,they'd,i'll,you'll,he'll,she'll,we'll,they'll,isn't,aren't,wasn't,weren't,hasn't,haven't,hadn't,doesn't,don't,didn't,won't,wouldn't,shan't,shouldn't,can't,cannot,couldn't,mustn't,let's,that's,who's,what's,here's,there's,when's,where's,why's,how's,a,an,the,and,but,if,or,because,as,until,while,of,at,by,for,with,about,against,between,into,through,during,before,after,above,below,to,from,up,upon,down,in,out,on,off,over,under,again,further,then,once,here,there,when,where,why,how,all,any,both,each,few,more,most,other,some,such,no,nor,not,only,own,same,so,than,too,very,say,says,said,shall";
   private portI: Port;
+  private words: string[];
   private wordCount: { [key: string]: number; } = {};
   private viewWindowColor: string = "white";
   private viewWindow: Rectangle;
@@ -25,6 +26,8 @@ export class WordCloud extends Block {
     top: <number>4,
     bottom: <number>4
   };
+  private cloudInstance;
+  private layout;
 
   static State = class {
     readonly name: string;
@@ -59,6 +62,7 @@ export class WordCloud extends Block {
     this.wordColors = d3.scaleLinear()
       .domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 100])
       .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+    this.cloudInstance = cloud.default();
   }
 
   getCopy(): Block {
@@ -139,15 +143,16 @@ export class WordCloud extends Block {
     // draw wordcloud
     if (!this.iconic) {
       ctx.save();
-      ctx.translate(this.viewWindow.x, this.viewWindow.y);
+      ctx.translate(this.viewWindow.x + this.viewWindow.width / 2, this.viewWindow.y + this.viewWindow.height / 2);
       let count = Object.keys(this.wordCount).length;
       if (count > 0) {
-        cloud.size([this.viewWindow.width, this.viewWindow.height])
-          .words(this.wordCount)
+        this.layout = this.cloudInstance.size([this.viewWindow.width, this.viewWindow.height])
+          .words(d3.entries(this.wordCount))
           .font("Impact")
           .padding(5)
           .rotate(0)
-          .on("end", this.drawWords);
+          .on("end", this.drawWords(ctx));
+        this.layout.start();
       }
       ctx.restore();
     }
@@ -165,21 +170,19 @@ export class WordCloud extends Block {
 
   }
 
-  private drawWords(words): void {
-    let fill = d3.scale.category20();
+  private drawWords(ctx: CanvasRenderingContext2D): void {
+    if (this.layout === undefined) return;
     d3.select("#block-view")
-      .append("g")
-      .attr("transform", "translate(" + this.viewWindow.width / 2 + "," + this.viewWindow.height / 2 + ")")
       .selectAll("text")
-      .data(words)
+      .data(this.words)
       .enter()
       .append("text")
-      .text(d => d.text)
-      .style("font-size", d => d.size + "px")
-      .style("font-family", d => d.font)
-      .style("fill", (d, i) => fill(i))
       .attr("text-anchor", "middle")
-      .attr("transform", d => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")");
+      .text((d) => d.text)
+      .style("font-size", (d) => d.size + "px")
+      .style("font-family", (d) => d.font)
+      .style("fill", (d, i) => this.wordColors(i))
+      .attr("transform", (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")");
   }
 
   onDraggableArea(x: number, y: number): boolean {
@@ -188,13 +191,13 @@ export class WordCloud extends Block {
 
   updateModel(): void {
     let text = this.portI.getValue();
-    text = "physics chemistry physics";
+    text = "physics chemistry physics physics physics physics physics physics";
     if (text === undefined) return;
-    let words = text.split(/[ '\-\(\)\*":;\[\]|{},.!?]+/);
-    if (words.length === 1) {
-      this.wordCount[words[0]] = 1;
+    this.words = text.split(/[ '\-\(\)\*":;\[\]|{},.!?]+/);
+    if (this.words.length === 1) {
+      this.wordCount[this.words[0]] = 1;
     } else {
-      words.forEach(word => {
+      this.words.forEach(word => {
         word = word.toLowerCase();
         if (word !== "" && WordCloud.common.indexOf(word) === -1 && word.length > 1) {
           if (this.wordCount[word]) {
@@ -205,7 +208,6 @@ export class WordCloud extends Block {
         }
       })
     }
-    console.log(this.wordCount)
   }
 
   refreshView(): void {

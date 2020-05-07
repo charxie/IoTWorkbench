@@ -10,6 +10,12 @@ export class Vector {
     this.values = new Array(n);
   }
 
+  public copy(): Vector {
+    let v = new Vector(this.values.length);
+    v.values = [...this.values];
+    return v;
+  }
+
   public length(): number {
     let s = 0;
     for (let x of this.values) {
