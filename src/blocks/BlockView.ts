@@ -68,6 +68,7 @@ import {BoxPlot} from "./BoxPlot";
 import {Histogram} from "./Histogram";
 import {WordCloud} from "./WordCloud";
 import {PieChart} from "./PieChart";
+import {RegressionBlock} from "./RegressionBlock";
 
 export class BlockView {
 
@@ -309,6 +310,9 @@ export class BlockView {
         break;
       case "integral-block":
         b = this.addBlockUndoable(new IntegralBlock("Integral Block #" + timestamp, x - 50, y - 40, 100, 80));
+        break;
+      case "regression-block":
+        b = this.addBlockUndoable(new RegressionBlock("Regression Block #" + timestamp, x - 50, y - 40, 100, 80));
         break;
       case "fft-block":
         b = this.addBlockUndoable(new FFTBlock("FFT Block #" + timestamp, x - 30, y - 40, 60, 80));

@@ -228,6 +228,8 @@ export class PieChart extends Block {
       ctx.arc(0, 0, r, 0, angle, false);
       ctx.closePath();
       ctx.fill();
+      ctx.strokeStyle = "white";
+      ctx.stroke();
       ctx.fillStyle = "green";
       ctx.beginPath();
       ctx.moveTo(0, 0);
@@ -235,6 +237,7 @@ export class PieChart extends Block {
       ctx.arc(0, 0, r, angle, 2 * angle, false);
       ctx.closePath();
       ctx.fill();
+      ctx.stroke();
       ctx.fillStyle = "blue";
       ctx.beginPath();
       ctx.moveTo(0, 0);
@@ -242,6 +245,7 @@ export class PieChart extends Block {
       ctx.arc(0, 0, r, 2 * angle, 3 * angle, false);
       ctx.closePath();
       ctx.fill();
+      ctx.stroke();
       ctx.beginPath();
       ctx.strokeStyle = "black";
       ctx.arc(0, 0, r, 0, Math.PI * 2, false);

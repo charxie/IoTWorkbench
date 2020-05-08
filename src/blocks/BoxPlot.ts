@@ -322,7 +322,7 @@ export class BoxPlot extends Block {
       ctx.stroke();
       ctx.beginPath();
       ctx.fillStyle = "white";
-      ctx.rect(xc - 1.5, yc - 1, 3, 2);
+      ctx.rect(xc - 2, yc - this.graphWindow.height / 6, 4, this.graphWindow.height / 3);
       ctx.fill();
       ctx.strokeStyle = "black";
       ctx.stroke();

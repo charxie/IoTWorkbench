@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import regression from "./examples/regression.json";
+// @ts-ignore
 import histogram_dynamic from "./examples/histogram-dynamic.json";
 // @ts-ignore
 import histogram_static from "./examples/histogram-static.json";
@@ -426,6 +428,7 @@ export class Examples {
     this.files.push({name: "Statistics: Normal Distributions", data: normal_distributions});
     this.files.push({name: "Statistics: Normal Distribution in 3D", data: normal_distribution_3d});
     this.files.push({name: "Statistics: Poisson Distribution", data: poisson_distribution});
+    this.files.push({name: "Statistics: Regression", data: regression});
     this.files.push({name: "Statistics: Random Walk in 2D", data: random_walk});
     this.files.push({name: "Statistics: Random Walk in 3D", data: random_walk_3d});
     this.files.push({name: "Sound: Make Sound with Beepers", data: make_sound_with_beepers});

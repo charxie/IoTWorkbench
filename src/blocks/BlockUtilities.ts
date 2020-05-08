@@ -60,6 +60,7 @@ import {BoxPlot} from "./BoxPlot";
 import {Histogram} from "./Histogram";
 import {WordCloud} from "./WordCloud";
 import {PieChart} from "./PieChart";
+import {RegressionBlock} from "./RegressionBlock";
 
 export class BlockUtilities {
 
@@ -132,6 +133,9 @@ export class BlockUtilities {
     }
     if (block instanceof IntegralBlock) {
       return contextMenus.integralBlock;
+    }
+    if (block instanceof RegressionBlock) {
+      return contextMenus.regressionBlock;
     }
     if (block instanceof FFTBlock) {
       return contextMenus.fftBlock;
@@ -324,6 +328,10 @@ export class BlockUtilities {
     if (block instanceof IntegralBlock) {
       contextMenus.integralBlock.block = block;
       return document.getElementById("integral-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof RegressionBlock) {
+      contextMenus.regressionBlock.block = block;
+      return document.getElementById("regression-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof FFTBlock) {
       contextMenus.fftBlock.block = block;

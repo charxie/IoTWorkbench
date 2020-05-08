@@ -26,6 +26,7 @@
     "mathjs": "^6.6.4",
     "parcel": "^1.12.4",
     "query-string": "^6.12.1",
+    "regression": "^2.0.1",
     "three": "^0.115.0",
     "threejs-meshline": "^2.0.10",
     "undo-manager": "^1.0.5"

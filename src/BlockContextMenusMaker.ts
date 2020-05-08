@@ -59,6 +59,7 @@ import {BoxPlotContextMenu} from "./blocks/ui/BoxPlotContextMenu";
 import {HistogramContextMenu} from "./blocks/ui/HistogramContextMenu";
 import {WordCloudContextMenu} from "./blocks/ui/WordCloudContextMenu";
 import {PieChartContextMenu} from "./blocks/ui/PieChartContextMenu";
+import {RegressionBlockContextMenu} from "./blocks/ui/RegressionBlockContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -98,6 +99,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("sticker-context-menu-placeholder", blockPlayground);
   addPlaceholder("beeper-context-menu-placeholder", blockPlayground);
   addPlaceholder("integral-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("regression-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("fft-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("ode-solver-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("transient-state-fdm-solver-block-context-menu-placeholder", blockPlayground);
@@ -300,6 +302,11 @@ function setupContextMenuForBlocks() {
   integralBlockContextMenu.render("integral-block-context-menu-placeholder");
   integralBlockContextMenu.addListeners();
   contextMenus.integralBlock = integralBlockContextMenu;
+
+  let regressionBlockContextMenu = new RegressionBlockContextMenu();
+  regressionBlockContextMenu.render("regression-block-context-menu-placeholder");
+  regressionBlockContextMenu.addListeners();
+  contextMenus.regressionBlock = regressionBlockContextMenu;
 
   let fftBlockContextMenu = new FFTBlockContextMenu();
   fftBlockContextMenu.render("fft-block-context-menu-placeholder");

@@ -56,6 +56,7 @@ import {BoxPlot} from "../BoxPlot";
 import {Histogram} from "../Histogram";
 import {WordCloud} from "../WordCloud";
 import {PieChart} from "../PieChart";
+import {RegressionBlock} from "../RegressionBlock";
 
 export class BlockElementsPanel {
 
@@ -92,21 +93,21 @@ export class BlockElementsPanel {
                 <table style="width: 100%">
                   <tr>
                   <td><canvas draggable="true" id="slider-block" title="Slider" width="60x" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="item-selector-block" title="Item Selector" width="50x" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="item-selector-block" title="Item Selector" width="45x" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="toggle-switch-block" title="Toggle Switch" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="momentary-switch-block" title="Momentary Switch" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="sticker-block" title="Text Display" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="array-input-block" title="Array Input" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="grapher-block" title="Grapher" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="box-plot-block" title="Box Plot" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="histogram-block" title="Histogram" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="pie-chart-block" title="Pie Chart" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="space2d-block" title="Space2D" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="space3d-block" title="Space3D" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="field2d-block" title="Contour Plot" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="surface3d-block" title="Surface Plot" width="45px" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="wordcloud-block" title="Wordcloud" width="45x" height="45px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="beeper-block" title="Beeper" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="sticker-block" title="Text Display" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="array-input-block" title="Array Input" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="grapher-block" title="Grapher" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="box-plot-block" title="Box Plot" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="histogram-block" title="Histogram" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="pie-chart-block" title="Pie Chart" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="space2d-block" title="Space2D" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="space3d-block" title="Space3D" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="field2d-block" title="Contour Plot" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="surface3d-block" title="Surface Plot" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="wordcloud-block" title="Wordcloud" width="60x" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="beeper-block" title="Beeper" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="image-block" title="Image" width="60x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="audio-block" title="Audio" width="60x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="data-block" title="Data" width="60x" height="60px" style="cursor: pointer;"/></td>
@@ -144,7 +145,8 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="steady-state-fdm-solver-block" title="Steady State FDM Solver" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="boundary-condition-block" title="Boundary Condition" width="45px" height="75px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="integral-block" title="Integration" width="45px" height="60px" style="cursor: pointer;"/></td>
-                  <td><canvas draggable="true" id="molecular-viewer-block" title="Molecular Viewer" width="45px" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="regression-block" title="Regression" width="45px" height="70px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="molecular-viewer-block" title="Molecular Viewer" width="60px" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
               </div>
@@ -172,6 +174,7 @@ export class BlockElementsPanel {
     this.drawGrapher("Grapher", "grapher-block");
     this.drawBoxPlot("Box Plot", "box-plot-block");
     this.drawIntegralBlock("Integral Block", "integral-block");
+    this.drawRegressionBlock("Regression Block", "regression-block");
     this.drawFFTBlock("FFT Block", "fft-block");
     this.drawODESolverBlock("ODE Solver Block", "ode-solver-block");
     this.drawTransientStateFDMSolverBlock("Transient State FDM Solver Block", "transient-state-fdm-solver-block");
@@ -439,6 +442,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new IntegralBlock("Integral Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawRegressionBlock(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new RegressionBlock("Regression Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

@@ -58,8 +58,8 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof ODESolverBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let methodSelectElement = document.getElementById("ode-solver-block-method-selector") as HTMLSelectElement;
-      methodSelectElement.value = block.getMethod();
+      let methodSelector = document.getElementById("ode-solver-block-method-selector") as HTMLSelectElement;
+      methodSelector.value = block.getMethod();
       let variableNameField = document.getElementById("ode-solver-block-variable-name-field") as HTMLInputElement;
       variableNameField.value = block.getVariableName() ? block.getVariableName() : "x";
       let equationsField = document.getElementById("ode-solver-block-equations-field") as HTMLTextAreaElement;
@@ -106,7 +106,7 @@ export class ODESolverBlockContextMenu extends BlockContextMenu {
         }
         // finish up
         if (success) {
-          block.setMethod(methodSelectElement.value);
+          block.setMethod(methodSelector.value);
           block.setVariableName(variableNameField.value);
           block.refreshView();
           flowchart.blockView.requestDraw();
