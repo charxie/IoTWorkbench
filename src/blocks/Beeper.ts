@@ -141,7 +141,7 @@ export class Beeper extends Block {
 
     let centerX = this.x + this.width / 2;
     let centerY = this.y + (this.height + this.barHeight) / 2;
-    let radius = this.iconic ? 2 : 8;
+    let radius = this.iconic ? 4 : 8;
     ctx.fillStyle = "gray";
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
@@ -166,9 +166,9 @@ export class Beeper extends Block {
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
-    this.portI.draw(ctx, this.iconic);
-    this.portV.draw(ctx, this.iconic);
-    this.portF.draw(ctx, this.iconic);
+    for (let p of this.ports) {
+      p.draw(ctx, this.iconic);
+    }
 
     if (this.selected) {
       this.highlightSelection(ctx);

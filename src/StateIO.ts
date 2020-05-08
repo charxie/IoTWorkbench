@@ -58,6 +58,7 @@ import {Histogram} from "./blocks/Histogram";
 import {WordCloud} from "./blocks/WordCloud";
 import {PieChart} from "./blocks/PieChart";
 import {RegressionBlock} from "./blocks/RegressionBlock";
+import {CorrelationBlock} from "./blocks/CorrelationBlock";
 
 export class StateIO {
 
@@ -240,6 +241,9 @@ export class StateIO {
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
           block.setMethod(state.method !== undefined ? state.method : "Trapezoidal Rule");
         } else if (block instanceof RegressionBlock) {
+          block.setName(state.name);
+          if (state.type !== undefined) block.setType(state.type);
+        } else if (block instanceof CorrelationBlock) {
           block.setName(state.name);
           if (state.type !== undefined) block.setType(state.type);
         } else if (block instanceof FFTBlock) {

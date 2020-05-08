@@ -68,6 +68,7 @@ import {Histogram} from "./Histogram";
 import {WordCloud} from "./WordCloud";
 import {PieChart} from "./PieChart";
 import {RegressionBlock} from "./RegressionBlock";
+import {CorrelationBlock} from "./CorrelationBlock";
 
 export class Flowchart {
 
@@ -895,6 +896,9 @@ export class Flowchart {
       case "Regression Block":
         block = new RegressionBlock(uid, x, y, 200, 160);
         break;
+      case "Correlation Block":
+        block = new CorrelationBlock(uid, x, y, 200, 160);
+        break;
       case "FFT Block":
         block = new FFTBlock(uid, x, y, 200, 160);
         break;
@@ -1038,6 +1042,8 @@ export class Flowchart {
         blockStates.push(new IntegralBlock.State(b));
       } else if (b instanceof RegressionBlock) {
         blockStates.push(new RegressionBlock.State(b));
+      } else if (b instanceof CorrelationBlock) {
+        blockStates.push(new CorrelationBlock.State(b));
       } else if (b instanceof FFTBlock) {
         blockStates.push(new FFTBlock.State(b));
       } else if (b instanceof ODESolverBlock) {

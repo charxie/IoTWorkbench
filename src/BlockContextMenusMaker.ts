@@ -60,6 +60,7 @@ import {HistogramContextMenu} from "./blocks/ui/HistogramContextMenu";
 import {WordCloudContextMenu} from "./blocks/ui/WordCloudContextMenu";
 import {PieChartContextMenu} from "./blocks/ui/PieChartContextMenu";
 import {RegressionBlockContextMenu} from "./blocks/ui/RegressionBlockContextMenu";
+import {CorrelationBlockContextMenu} from "./blocks/ui/CorrelationBlockContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -100,6 +101,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("beeper-context-menu-placeholder", blockPlayground);
   addPlaceholder("integral-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("regression-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("correlation-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("fft-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("ode-solver-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("transient-state-fdm-solver-block-context-menu-placeholder", blockPlayground);
@@ -307,6 +309,11 @@ function setupContextMenuForBlocks() {
   regressionBlockContextMenu.render("regression-block-context-menu-placeholder");
   regressionBlockContextMenu.addListeners();
   contextMenus.regressionBlock = regressionBlockContextMenu;
+
+  let correlationBlockContextMenu = new CorrelationBlockContextMenu();
+  correlationBlockContextMenu.render("correlation-block-context-menu-placeholder");
+  correlationBlockContextMenu.addListeners();
+  contextMenus.correlationBlock = correlationBlockContextMenu;
 
   let fftBlockContextMenu = new FFTBlockContextMenu();
   fftBlockContextMenu.render("fft-block-context-menu-placeholder");

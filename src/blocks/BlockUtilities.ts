@@ -61,6 +61,7 @@ import {Histogram} from "./Histogram";
 import {WordCloud} from "./WordCloud";
 import {PieChart} from "./PieChart";
 import {RegressionBlock} from "./RegressionBlock";
+import {CorrelationBlock} from "./CorrelationBlock";
 
 export class BlockUtilities {
 
@@ -136,6 +137,9 @@ export class BlockUtilities {
     }
     if (block instanceof RegressionBlock) {
       return contextMenus.regressionBlock;
+    }
+    if (block instanceof CorrelationBlock) {
+      return contextMenus.correlationBlock;
     }
     if (block instanceof FFTBlock) {
       return contextMenus.fftBlock;
@@ -332,6 +336,10 @@ export class BlockUtilities {
     if (block instanceof RegressionBlock) {
       contextMenus.regressionBlock.block = block;
       return document.getElementById("regression-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof CorrelationBlock) {
+      contextMenus.correlationBlock.block = block;
+      return document.getElementById("correlation-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof FFTBlock) {
       contextMenus.fftBlock.block = block;

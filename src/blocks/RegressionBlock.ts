@@ -45,6 +45,7 @@ export class RegressionBlock extends Block {
     this.ports.push(this.portY);
     this.ports.push(this.portA);
     this.ports.push(this.portB);
+    this.marginX = 20;
   }
 
   getCopy(): Block {
