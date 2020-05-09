@@ -59,6 +59,7 @@ import {PieChart} from "../PieChart";
 import {RegressionBlock} from "../RegressionBlock";
 import {CorrelationBlock} from "../CorrelationBlock";
 import {StringInput} from "../StringInput";
+import {ClusteringBlock} from "../ClusteringBlock";
 
 export class BlockElementsPanel {
 
@@ -150,6 +151,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="integral-block" title="Integration" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="regression-block" title="Regression" width="45px" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="correlation-block" title="Correlation" width="45px" height="70px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="clustering-block" title="Clustering" width="45px" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="molecular-viewer-block" title="Molecular Viewer" width="60px" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
@@ -180,6 +182,7 @@ export class BlockElementsPanel {
     this.drawIntegralBlock("Integral Block", "integral-block");
     this.drawRegressionBlock("Regression Block", "regression-block");
     this.drawCorrelationBlock("Correlation Block", "correlation-block");
+    this.drawClusteringBlock("Clustering Block", "clustering-block");
     this.drawFFTBlock("FFT Block", "fft-block");
     this.drawODESolverBlock("ODE Solver Block", "ode-solver-block");
     this.drawTransientStateFDMSolverBlock("Transient State FDM Solver Block", "transient-state-fdm-solver-block");
@@ -472,6 +475,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new CorrelationBlock("Correlation Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawClusteringBlock(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new ClusteringBlock("Clustering Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

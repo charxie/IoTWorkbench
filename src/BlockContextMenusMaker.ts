@@ -61,8 +61,8 @@ import {WordCloudContextMenu} from "./blocks/ui/WordCloudContextMenu";
 import {PieChartContextMenu} from "./blocks/ui/PieChartContextMenu";
 import {RegressionBlockContextMenu} from "./blocks/ui/RegressionBlockContextMenu";
 import {CorrelationBlockContextMenu} from "./blocks/ui/CorrelationBlockContextMenu";
-import {StringInput} from "./blocks/StringInput";
 import {StringInputContextMenu} from "./blocks/ui/StringInputContextMenu";
+import {ClusteringBlockContextMenu} from "./blocks/ui/ClusteringBlockContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -104,6 +104,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("integral-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("regression-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("correlation-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("clustering-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("fft-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("ode-solver-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("transient-state-fdm-solver-block-context-menu-placeholder", blockPlayground);
@@ -317,6 +318,11 @@ function setupContextMenuForBlocks() {
   correlationBlockContextMenu.render("correlation-block-context-menu-placeholder");
   correlationBlockContextMenu.addListeners();
   contextMenus.correlationBlock = correlationBlockContextMenu;
+
+  let clusteringBlockContextMenu = new ClusteringBlockContextMenu();
+  clusteringBlockContextMenu.render("clustering-block-context-menu-placeholder");
+  clusteringBlockContextMenu.addListeners();
+  contextMenus.clusteringBlock = clusteringBlockContextMenu;
 
   let fftBlockContextMenu = new FFTBlockContextMenu();
   fftBlockContextMenu.render("fft-block-context-menu-placeholder");

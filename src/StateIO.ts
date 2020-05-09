@@ -60,6 +60,7 @@ import {PieChart} from "./blocks/PieChart";
 import {RegressionBlock} from "./blocks/RegressionBlock";
 import {CorrelationBlock} from "./blocks/CorrelationBlock";
 import {StringInput} from "./blocks/StringInput";
+import {ClusteringBlock} from "./blocks/ClusteringBlock";
 
 export class StateIO {
 
@@ -247,6 +248,11 @@ export class StateIO {
         } else if (block instanceof CorrelationBlock) {
           block.setName(state.name);
           if (state.type !== undefined) block.setType(state.type);
+        } else if (block instanceof ClusteringBlock) {
+          block.setName(state.name);
+          if (state.method !== undefined) block.setMethod(state.method);
+          block.setNumberOfInputs(state.numberOfInputs);
+          block.setNumberOfOutputs(state.numberOfOutputs);
         } else if (block instanceof FFTBlock) {
           block.setSeparate(state.separate != undefined ? state.separate : true);
           block.setInverse(state.inverse != undefined ? state.inverse : false);

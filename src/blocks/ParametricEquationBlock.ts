@@ -63,7 +63,7 @@ export class ParametricEquationBlock extends Block {
     this.expressionY = "sin(t)";
     this.expressionZ = "";
     this.color = "#A0522D";
-    this.portT = new Port(this, true, "T", 0, this.height / 3, false);
+    this.portT = new Port(this, true, "T", 0, this.height / 2, false);
     this.portV = new Port(this, true, "V", 0, this.height * 2 / 3, false);
     this.portX = new Port(this, false, "X", this.width, this.height / 3, true);
     this.portY = new Port(this, false, "Y", this.width, this.height * 2 / 3, true);

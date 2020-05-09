@@ -63,6 +63,7 @@ import {PieChart} from "./PieChart";
 import {RegressionBlock} from "./RegressionBlock";
 import {CorrelationBlock} from "./CorrelationBlock";
 import {StringInput} from "./StringInput";
+import {ClusteringBlock} from "./ClusteringBlock";
 
 export class BlockUtilities {
 
@@ -141,6 +142,9 @@ export class BlockUtilities {
     }
     if (block instanceof CorrelationBlock) {
       return contextMenus.correlationBlock;
+    }
+    if (block instanceof ClusteringBlock) {
+      return contextMenus.clusteringBlock;
     }
     if (block instanceof FFTBlock) {
       return contextMenus.fftBlock;
@@ -344,6 +348,10 @@ export class BlockUtilities {
     if (block instanceof CorrelationBlock) {
       contextMenus.correlationBlock.block = block;
       return document.getElementById("correlation-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof ClusteringBlock) {
+      contextMenus.clusteringBlock.block = block;
+      return document.getElementById("clustering-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof FFTBlock) {
       contextMenus.fftBlock.block = block;

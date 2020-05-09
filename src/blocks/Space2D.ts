@@ -1164,20 +1164,24 @@ export class Space2D extends Block {
         for (let i = 0; i < this.portPoints.length; i++) {
           let vp = this.portPoints[i].getValue();
           if (vp != undefined) {
-            if (vp instanceof Vector) {
-              vp = vp.getValues();
-            }
-            if (Array.isArray(vp) && vp.length > 1) {
-              if (vp[0] != this.points[i].getLatestX() || vp[1] != this.points[i].getLatestY()) {
-                this.tempX = vp[0];
-                this.tempY = vp[1];
+            if (vp instanceof Point2DArray) {
+
+            } else {
+              if (vp instanceof Vector) {
+                vp = vp.getValues();
               }
-            }
-            if (this.tempX != undefined && this.tempY != undefined) {
-              //console.log(i+"="+this.portPoints[i].getUid()+","+this.tempX + "," + this.tempY);
-              this.points[i].addPoint(this.tempX, this.tempY);
-              this.tempX = undefined;
-              this.tempY = undefined;
+              if (Array.isArray(vp) && vp.length > 1) {
+                if (vp[0] != this.points[i].getLatestX() || vp[1] != this.points[i].getLatestY()) {
+                  this.tempX = vp[0];
+                  this.tempY = vp[1];
+                }
+              }
+              if (this.tempX != undefined && this.tempY != undefined) {
+                //console.log(i+"="+this.portPoints[i].getUid()+","+this.tempX + "," + this.tempY);
+                this.points[i].addPoint(this.tempX, this.tempY);
+                this.tempX = undefined;
+                this.tempY = undefined;
+              }
             }
           }
         }

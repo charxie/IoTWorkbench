@@ -71,6 +71,7 @@ import {PieChart} from "./PieChart";
 import {RegressionBlock} from "./RegressionBlock";
 import {CorrelationBlock} from "./CorrelationBlock";
 import {StringInput} from "./StringInput";
+import {ClusteringBlock} from "./ClusteringBlock";
 
 export class BlockView {
 
@@ -318,6 +319,9 @@ export class BlockView {
         break;
       case "correlation-block":
         b = this.addBlockUndoable(new CorrelationBlock("Correlation Block #" + timestamp, x - 50, y - 40, 100, 80));
+        break;
+      case "clustering-block":
+        b = this.addBlockUndoable(new ClusteringBlock("Clustering Block #" + timestamp, x - 50, y - 40, 100, 80));
         break;
       case "fft-block":
         b = this.addBlockUndoable(new FFTBlock("FFT Block #" + timestamp, x - 30, y - 40, 60, 80));

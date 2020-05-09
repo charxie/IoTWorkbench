@@ -54,7 +54,7 @@ export class WordCloudContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="wordcloud-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Excluded:<div style="font-size: 70%">(e.g., ["I", "me"])</div></td>
+                  <td>Excluded:<div style="font-size: 70%">(e.g., ["gonna", "wanna"])</div></td>
                   <td colspan="2"><textarea id="wordcloud-exclusion-text-area" rows="5" style="width: 100%"></textarea></td>
                 </tr>
                 <tr>

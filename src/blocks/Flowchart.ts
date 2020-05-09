@@ -70,6 +70,7 @@ import {PieChart} from "./PieChart";
 import {RegressionBlock} from "./RegressionBlock";
 import {CorrelationBlock} from "./CorrelationBlock";
 import {StringInput} from "./StringInput";
+import {ClusteringBlock} from "./ClusteringBlock";
 
 export class Flowchart {
 
@@ -900,6 +901,9 @@ export class Flowchart {
       case "Correlation Block":
         block = new CorrelationBlock(uid, x, y, 200, 160);
         break;
+      case "Clustering Block":
+        block = new ClusteringBlock(uid, x, y, 200, 160);
+        break;
       case "FFT Block":
         block = new FFTBlock(uid, x, y, 200, 160);
         break;
@@ -1048,6 +1052,8 @@ export class Flowchart {
         blockStates.push(new RegressionBlock.State(b));
       } else if (b instanceof CorrelationBlock) {
         blockStates.push(new CorrelationBlock.State(b));
+      } else if (b instanceof ClusteringBlock) {
+        blockStates.push(new ClusteringBlock.State(b));
       } else if (b instanceof FFTBlock) {
         blockStates.push(new FFTBlock.State(b));
       } else if (b instanceof ODESolverBlock) {
