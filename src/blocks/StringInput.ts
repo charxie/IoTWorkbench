@@ -44,7 +44,7 @@ export class StringInput extends Block {
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = name;
-    this.color = "#9C9";
+    this.color = "#9CC";
     this.source = true;
     this.initiator = true;
     this.barHeight = Math.min(30, this.height / 3);

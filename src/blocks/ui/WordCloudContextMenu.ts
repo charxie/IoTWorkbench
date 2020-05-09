@@ -54,6 +54,20 @@ export class WordCloudContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="wordcloud-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Excluded:<div style="font-size: 70%">(e.g., ["I", "me"])</div></td>
+                  <td colspan="2"><textarea id="wordcloud-exclusion-text-area" rows="5" style="width: 100%"></textarea></td>
+                </tr>
+                <tr>
+                  <td>Alignment:</td>
+                  <td colspan="2">
+                    <select id="wordcloud-alignment-selector" style="width: 100%">
+                      <option value="Random" selected>Random</option>
+                      <option value="Horizontal">Horizontal</option>
+                      <option value="Vertical">Vertical</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
                   <td>Color Scheme:</td>
                   <td colspan="2">
                     <select id="wordcloud-color-scheme-selector" style="width: 100%">
@@ -123,6 +137,10 @@ export class WordCloudContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("wordcloud-name-field") as HTMLInputElement;
       nameField.value = g.getName();
+      let exclusionArea = document.getElementById("wordcloud-exclusion-text-area") as HTMLTextAreaElement;
+      exclusionArea.value = JSON.stringify(g.getExclusion());
+      let alignmentSelector = document.getElementById("wordcloud-alignment-selector") as HTMLSelectElement;
+      alignmentSelector.value = g.getAlignment();
       let colorSchemeSelector = document.getElementById("wordcloud-color-scheme-selector") as HTMLSelectElement;
       colorSchemeSelector.value = g.getColorScheme();
       let windowColorField = document.getElementById("wordcloud-window-color-field") as HTMLInputElement;
@@ -137,6 +155,16 @@ export class WordCloudContextMenu extends BlockContextMenu {
       const okFunction = () => {
         let success = true;
         let message;
+        // set exclusion
+        if (JSON.stringify(g.getExclusion()) != exclusionArea.value) {
+          try {
+            g.setExclusion(JSON.parse(exclusionArea.value));
+          } catch (err) {
+            console.log(err.stack);
+            success = false;
+            message = exclusionArea.value + " is not a valid array";
+          }
+        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -156,8 +184,10 @@ export class WordCloudContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           g.setName(nameField.value);
+          g.setAlignment(alignmentSelector.value);
           g.setColorScheme(colorSchemeSelector.value)
           g.setViewWindowColor(windowColorField.value);
+          g.updateModel();
           g.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();
@@ -179,7 +209,7 @@ export class WordCloudContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: g.getUid(),
-        height: 350,
+        height: 550,
         width: 450,
         buttons: {
           'OK': okFunction,

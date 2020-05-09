@@ -12,7 +12,7 @@ import {flowchart} from "../Main";
 
 export class WordCloud extends Block {
 
-  private static readonly common = "poop,i,me,my,myself,we,us,our,ours,ourselves,you,your,yours,yourself,yourselves,he,him,his,himself,she,her,hers,herself,it,its,itself,they,them,their,theirs,themselves,what,which,who,whom,whose,this,that,these,those,am,is,are,was,were,be,been,being,have,has,had,having,do,does,did,doing,will,would,should,can,could,ought,i'm,you're,he's,she's,it's,we're,they're,i've,you've,we've,they've,i'd,you'd,he'd,she'd,we'd,they'd,i'll,you'll,he'll,she'll,we'll,they'll,isn't,aren't,wasn't,weren't,hasn't,haven't,hadn't,doesn't,don't,didn't,won't,wouldn't,shan't,shouldn't,can't,cannot,couldn't,mustn't,let's,that's,who's,what's,here's,there's,when's,where's,why's,how's,a,an,the,and,but,if,or,because,as,until,while,of,at,by,for,with,about,against,between,into,through,during,before,after,above,below,to,from,up,upon,down,in,out,on,off,over,under,again,further,then,once,here,there,when,where,why,how,all,any,both,each,few,more,most,other,some,such,no,nor,not,only,own,same,so,than,too,very,say,says,said,shall";
+  private static readonly common = "i,me,my,myself,we,us,our,ours,ourselves,you,your,yours,yourself,yourselves,he,him,his,himself,she,her,hers,herself,it,its,itself,they,them,their,theirs,themselves,what,which,who,whom,whose,this,that,these,those,am,is,are,was,were,be,been,being,have,has,had,having,do,does,did,doing,will,would,should,can,could,ought,i'm,you're,he's,she's,it's,we're,they're,i've,you've,we've,they've,i'd,you'd,he'd,she'd,we'd,they'd,i'll,you'll,he'll,she'll,we'll,they'll,isn't,aren't,wasn't,weren't,hasn't,haven't,hadn't,doesn't,don't,didn't,won't,wouldn't,shan't,shouldn't,can't,cannot,couldn't,mustn't,let's,that's,who's,what's,here's,there's,when's,where's,why's,how's,a,an,the,and,but,if,or,because,as,until,while,of,at,by,for,with,about,against,between,into,through,during,before,after,above,below,to,from,up,upon,down,in,out,on,off,over,under,again,further,then,once,here,there,when,where,why,how,all,any,both,each,few,more,most,other,some,such,no,nor,not,only,own,same,so,than,too,very,say,says,said,shall";
   private portI: Port;
   private words: string[];
   private wordCount: { [key: string]: number; } = {};
@@ -30,8 +30,10 @@ export class WordCloud extends Block {
   private wordColors;
   private wordScales;
   private wordProperties = [];
-  private interpolateColor = d3.interpolateTurbo;
+  private interpolateColor = d3.interpolatePuRd;
   private colorScheme: string = "PuRd";
+  private alignment: string = "Random";
+  private exclusion: string[] = [];
 
   static State = class {
     readonly name: string;
@@ -40,6 +42,8 @@ export class WordCloud extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly exclusion: string[];
+    readonly alignment: string;
     readonly colorScheme: string;
     readonly viewWindowColor: string;
 
@@ -50,6 +54,8 @@ export class WordCloud extends Block {
       this.y = b.y;
       this.width = b.width;
       this.height = b.height;
+      this.exclusion = b.exclusion;
+      this.alignment = b.alignment;
       this.colorScheme = b.colorScheme;
       this.viewWindowColor = b.viewWindowColor;
     }
@@ -58,7 +64,7 @@ export class WordCloud extends Block {
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = name;
-    this.color = "#EE8866";
+    this.color = "#EECCDD";
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 2;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false)
@@ -66,16 +72,12 @@ export class WordCloud extends Block {
     this.marginX = 25;
     this.cloudInstance = cloud.default();
     this.viewWindow = new Rectangle(0, 0, 1, 1);
-    if (!this.iconic) {
-      this.viewWindow.x = this.x + this.viewMargin.left;
-      this.viewWindow.y = this.y + this.barHeight + this.viewMargin.top;
-      this.viewWindow.width = this.width - this.viewMargin.left - this.viewMargin.right;
-      this.viewWindow.height = this.height - this.barHeight - this.viewMargin.top - this.viewMargin.bottom;
-    }
   }
 
   getCopy(): Block {
-    let copy = new WordCloud("Word Cloud #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    let copy = new WordCloud("Wordcloud #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    copy.exclusion = [...this.exclusion];
+    copy.alignment = this.alignment;
     copy.colorScheme = this.colorScheme;
     copy.viewWindowColor = this.viewWindowColor;
     return copy;
@@ -92,6 +94,14 @@ export class WordCloud extends Block {
   erase(): void {
   }
 
+  setExclusion(exclusion: string[]): void {
+    this.exclusion = [...exclusion];
+  }
+
+  getExclusion(): string[] {
+    return this.exclusion.slice();
+  }
+
   setWidth(width: number): void {
     super.setWidth(width)
     this.viewMargin.left = this.viewMargin.right = 10;
@@ -103,6 +113,14 @@ export class WordCloud extends Block {
     this.barHeight = Math.min(30, this.height / 3);
     this.viewMargin.top = this.viewMargin.bottom = 10;
     this.viewWindow.height = this.height - this.barHeight - this.viewMargin.top - this.viewMargin.bottom;
+  }
+
+  setAlignment(alignment: string): void {
+    this.alignment = alignment;
+  }
+
+  getAlignment(): string {
+    return this.alignment;
   }
 
   setViewWindowColor(viewWindowColor: string): void {
@@ -209,7 +227,7 @@ export class WordCloud extends Block {
     } else {
       this.words.forEach(word => {
         word = word.toLowerCase();
-        if (word !== "" && WordCloud.common.indexOf(word) === -1 && word.length > 1) {
+        if (word !== "" && WordCloud.common.indexOf(word) === -1 && this.exclusion.indexOf(word) === -1 && word.length > 1) {
           if (this.wordCount[word]) {
             this.wordCount[word]++;
           } else {
@@ -230,8 +248,19 @@ export class WordCloud extends Block {
         .padding(5)
         .fontSize(d => this.wordScales(d.value))
         .text(d => d.key)
-        .on("word", d => this.wordProperties.push(d))
-        .start();
+        .on("word", d => this.wordProperties.push(d));
+      switch (this.alignment) {
+        case "Horizontal":
+          this.layout.rotate(0);
+          break;
+        case "Vertical":
+          this.layout.rotate(90);
+          break;
+        case "Random":
+          this.layout.rotate(() => (~~(Math.random() * 6) - 3) * 30);
+          break;
+      }
+      this.layout.start();
     }
   }
 

@@ -11,6 +11,8 @@ import histogram_dynamic from "./examples/histogram-dynamic.json";
 // @ts-ignore
 import histogram_static from "./examples/histogram-static.json";
 // @ts-ignore
+import word_cloud from "./examples/word-cloud.json";
+// @ts-ignore
 import pie_chart from "./examples/pie-chart.json";
 // @ts-ignore
 import box_plot from "./examples/box-plot.json";
@@ -426,6 +428,7 @@ export class Examples {
     this.files.push({name: "Statistics: Static Histogram", data: histogram_static});
     this.files.push({name: "Statistics: Dynamic Histogram", data: histogram_dynamic});
     this.files.push({name: "Statistics: Pie Chart", data: pie_chart});
+    this.files.push({name: "Statistics: Word Cloud", data: word_cloud});
     this.files.push({name: "Statistics: Box-Muller Transform", data: box_muller_transform});
     this.files.push({name: "Statistics: Normal Distributions", data: normal_distributions});
     this.files.push({name: "Statistics: Normal Distribution in 3D", data: normal_distribution_3d});

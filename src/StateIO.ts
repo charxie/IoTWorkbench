@@ -435,6 +435,8 @@ export class StateIO {
           block.setSymbol(state.symbol);
         } else if (block instanceof WordCloud) {
           block.setName(state.name);
+          if (state.exclusion !== undefined) block.setExclusion(state.exclusion);
+          if (state.alignment !== undefined) block.setAlignment(state.alignment);
           if (state.colorScheme !== undefined) block.setColorScheme(state.colorScheme);
           if (state.viewWindowColor !== undefined) block.setViewWindowColor(state.viewWindowColor);
         } else if (block instanceof RainbowHatBlock) {
