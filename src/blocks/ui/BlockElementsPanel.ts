@@ -394,16 +394,14 @@ export class BlockElementsPanel {
   private drawArrayInput(name: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new ArrayInput("Array Input Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setIconic(true);
+    let block = new ArrayInput("Array Input Icon", true, name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.draw(ctx);
   }
 
   private drawStringInput(name: string, canvasId: string): void {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
-    let block = new StringInput("String Input Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
-    block.setIconic(true);
+    let block = new StringInput("String Input Icon", true, name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.draw(ctx);
   }
 

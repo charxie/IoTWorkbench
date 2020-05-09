@@ -364,12 +364,12 @@ export class BlockView {
         b = this.addBlockUndoable(new RandomNumberGeneratorBlock("Random Number Generator Block #" + timestamp, x - 30, y - 40, 60, 80));
         break;
       case "array-input-block":
-        let arrayInput = new ArrayInput("Array Input #" + timestamp, "Array Input", x - 100, y - 100, 200, 200);
+        let arrayInput = new ArrayInput("Array Input #" + timestamp, false,"Array Input", x - 100, y - 100, 200, 200);
         this.addBlockUndoable(arrayInput);
         arrayInput.locateOverlay();
         break;
       case "string-input-block":
-        let stringInput = new StringInput("String Input #" + timestamp, "String Input", x - 100, y - 100, 200, 200);
+        let stringInput = new StringInput("String Input #" + timestamp, false, "String Input", x - 100, y - 100, 200, 200);
         this.addBlockUndoable(stringInput);
         stringInput.locateOverlay();
         break;

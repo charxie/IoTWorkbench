@@ -941,10 +941,10 @@ export class Flowchart {
         block = new RandomNumberGeneratorBlock(uid, x, y, 200, 220);
         break;
       case "Array Input":
-        block = new ArrayInput(uid, name, x, y, 80, 80);
+        block = new ArrayInput(uid, false, name, x, y, 80, 80);
         break;
       case "String Input":
-        block = new StringInput(uid, name, x, y, 80, 80);
+        block = new StringInput(uid, false, name, x, y, 80, 80);
         break;
       case "Mean Block":
         block = new MeanBlock(uid, x, y, 60, 60);

@@ -41,29 +41,32 @@ export class StringInput extends Block {
     }
   };
 
-  constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
+  constructor(uid: string, iconic: boolean, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
+    this.iconic = iconic;
     this.name = name;
     this.color = "#9CC";
     this.source = true;
     this.initiator = true;
     this.barHeight = Math.min(30, this.height / 3);
     this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
-    this.textArea = document.createElement("textarea");
-    this.textArea.tabIndex = 0;
-    this.textArea.style.overflowY = "auto";
-    this.textArea.style.position = "absolute";
-    this.textArea.style.fontFamily = "Courier New";
-    this.textArea.style.fontSize = "12px";
-    this.textArea.style.color = "black";
-    this.textArea.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
-    this.textArea.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
-    document.getElementById("block-view-wrapper").append(this.textArea);
+    if (!this.iconic) {
+      this.textArea = document.createElement("textarea");
+      this.textArea.tabIndex = 0;
+      this.textArea.style.overflowY = "auto";
+      this.textArea.style.position = "absolute";
+      this.textArea.style.fontFamily = "Courier New";
+      this.textArea.style.fontSize = "12px";
+      this.textArea.style.color = "black";
+      this.textArea.addEventListener("mousedown", this.overlayMouseDown.bind(this), false);
+      this.textArea.addEventListener('contextmenu', this.overlayOpenContextMenu.bind(this), false);
+      document.getElementById("block-view-wrapper").append(this.textArea);
+    }
     this.button = new Rectangle(0, 0, 1, 1);
   }
 
   getCopy(): Block {
-    let copy = new StringInput("String Input #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    let copy = new StringInput("String Input #" + Date.now().toString(16), this.iconic, this.name, this.x, this.y, this.width, this.height);
     copy.setContent(this.getContent());
     copy.setTextColor(this.getTextColor());
     copy.marginX = this.marginX;
