@@ -59,6 +59,7 @@ import {WordCloud} from "./blocks/WordCloud";
 import {PieChart} from "./blocks/PieChart";
 import {RegressionBlock} from "./blocks/RegressionBlock";
 import {CorrelationBlock} from "./blocks/CorrelationBlock";
+import {StringInput} from "./blocks/StringInput";
 
 export class StateIO {
 
@@ -421,6 +422,12 @@ export class StateIO {
           block.setMarginX(state.marginX);
           block.setMarginY(state.marginY);
           block.setTextColor(state.textColor);
+        } else if (block instanceof StringInput) {
+          block.setName(state.name);
+          block.setContent(state.content !== undefined ? state.content : "");
+          block.setMarginX(state.marginX);
+          block.setMarginY(state.marginY);
+          block.setTextColor(state.textColor);
         } else if (block instanceof MeanBlock) {
           if (state.symbol !== undefined) block.setSymbol(state.symbol);
           block.setType(state.type);
@@ -604,7 +611,7 @@ export class StateIO {
         }
       } else if (b instanceof Basic3DBlock) {
         b.locateOverlay();
-      } else if (b instanceof ArrayInput) {
+      } else if (b instanceof ArrayInput || b instanceof StringInput) {
         b.locateOverlay();
       }
     }

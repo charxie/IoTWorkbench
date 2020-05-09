@@ -61,6 +61,8 @@ import {WordCloudContextMenu} from "./blocks/ui/WordCloudContextMenu";
 import {PieChartContextMenu} from "./blocks/ui/PieChartContextMenu";
 import {RegressionBlockContextMenu} from "./blocks/ui/RegressionBlockContextMenu";
 import {CorrelationBlockContextMenu} from "./blocks/ui/CorrelationBlockContextMenu";
+import {StringInput} from "./blocks/StringInput";
+import {StringInputContextMenu} from "./blocks/ui/StringInputContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -120,6 +122,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("data-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("molecular-viewer-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("array-input-context-menu-placeholder", blockPlayground);
+  addPlaceholder("string-input-context-menu-placeholder", blockPlayground);
   addPlaceholder("mean-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("univariate-descriptive-statistics-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("wordcloud-block-context-menu-placeholder", blockPlayground);
@@ -404,6 +407,11 @@ function setupContextMenuForBlocks() {
   arrayInputContextMenu.render("array-input-context-menu-placeholder");
   arrayInputContextMenu.addListeners();
   contextMenus.arrayInput = arrayInputContextMenu;
+
+  let stringInputContextMenu = new StringInputContextMenu();
+  stringInputContextMenu.render("string-input-context-menu-placeholder");
+  stringInputContextMenu.addListeners();
+  contextMenus.stringInput = stringInputContextMenu;
 
   let meanBlockContextMenu = new MeanBlockContextMenu();
   meanBlockContextMenu.render("mean-block-context-menu-placeholder");

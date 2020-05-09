@@ -63,9 +63,15 @@ export class WordCloud extends Block {
     let dh = (this.height - this.barHeight) / 2;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false)
     this.ports.push(this.portI);
-    this.viewWindow = new Rectangle(0, 0, 1, 1);
     this.marginX = 25;
     this.cloudInstance = cloud.default();
+    this.viewWindow = new Rectangle(0, 0, 1, 1);
+    if (!this.iconic) {
+      this.viewWindow.x = this.x + this.viewMargin.left;
+      this.viewWindow.y = this.y + this.barHeight + this.viewMargin.top;
+      this.viewWindow.width = this.width - this.viewMargin.left - this.viewMargin.right;
+      this.viewWindow.height = this.height - this.barHeight - this.viewMargin.top - this.viewMargin.bottom;
+    }
   }
 
   getCopy(): Block {
@@ -84,6 +90,19 @@ export class WordCloud extends Block {
   }
 
   erase(): void {
+  }
+
+  setWidth(width: number): void {
+    super.setWidth(width)
+    this.viewMargin.left = this.viewMargin.right = 10;
+    this.viewWindow.width = this.width - this.viewMargin.left - this.viewMargin.right;
+  }
+
+  setHeight(height: number): void {
+    super.setHeight(height);
+    this.barHeight = Math.min(30, this.height / 3);
+    this.viewMargin.top = this.viewMargin.bottom = 10;
+    this.viewWindow.height = this.height - this.barHeight - this.viewMargin.top - this.viewMargin.bottom;
   }
 
   setViewWindowColor(viewWindowColor: string): void {
@@ -182,7 +201,6 @@ export class WordCloud extends Block {
 
   updateModel(): void {
     let text = this.portI.getValue();
-    // text = "When I find myself in times of trouble Mother Mary comes to me Speaking words of wisdom, let it be. And in my hour of darkness She is standing right in front of me Speaking words of wisdom, let it be. Let it be, let it be. Whisper words of wisdom, let it be. And when the broken hearted people Living in the world agree, There will be an answer, let it be. For though they may be parted there is Still a chance that they will see There will be an answer, let it be. Let it be, let it be. Yeah There will be an answer, let it be. And when the night is cloudy, There is still a light that shines on me, Shine on until tomorrow, let it be. I wake up to the sound of music Mother Mary comes to me Speaking words of wisdom, let it be. Let it be, let it be. There will be an answer, let it be. Let it be, let it be, Whisper words of wisdom, let it be.";
     if (text === undefined || typeof text !== "string") return;
     this.words = text.split(/[ '\-\(\)\*":;\[\]|{},.!?\n]+/);
     this.wordCount = {};

@@ -8,13 +8,11 @@ import {Util} from "../Util";
 import {closeAllContextMenus, flowchart} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 
-export class ArrayInput extends Block {
+export class StringInput extends Block {
 
   private barHeight: number;
   private button: Rectangle;
-  private array: any[][];
-  private rowCount: number = 0;
-  private colCount: number = 0;
+  private content: string;
   private textArea: HTMLTextAreaElement;
 
   static State = class {
@@ -27,9 +25,9 @@ export class ArrayInput extends Block {
     readonly marginX: number;
     readonly marginY: number;
     readonly textColor: string;
-    readonly text: string;
+    readonly content: string;
 
-    constructor(b: ArrayInput) {
+    constructor(b: StringInput) {
       this.name = b.name;
       this.uid = b.uid;
       this.x = b.x;
@@ -39,18 +37,18 @@ export class ArrayInput extends Block {
       this.marginX = b.marginX;
       this.marginY = b.marginY;
       this.textColor = b.textArea.style.color;
-      this.text = b.textArea.value;
+      this.content = b.textArea.value;
     }
   };
 
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = name;
-    this.color = "#CC9";
+    this.color = "#9C9";
     this.source = true;
     this.initiator = true;
     this.barHeight = Math.min(30, this.height / 3);
-    this.ports.push(new Port(this, false, "A", this.width, this.height / 2, true));
+    this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
     this.textArea = document.createElement("textarea");
     this.textArea.tabIndex = 0;
     this.textArea.style.overflowY = "auto";
@@ -65,8 +63,8 @@ export class ArrayInput extends Block {
   }
 
   getCopy(): Block {
-    let copy = new ArrayInput("Array Input #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    copy.setText(this.getText());
+    let copy = new StringInput("String Input #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    copy.setContent(this.getContent());
     copy.setTextColor(this.getTextColor());
     copy.marginX = this.marginX;
     copy.marginY = this.marginY;
@@ -87,47 +85,10 @@ export class ArrayInput extends Block {
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
     if (this.button.contains(x, y)) {
-      this.parseText();
       this.updateAll();
       return true;
     }
     return false;
-  }
-
-  private parseText(): void {
-    this.textArea.value = this.textArea.value.trim();
-    let rows = this.textArea.value.split(/\n+/);
-    this.rowCount = rows.length;
-    for (let i = 0; i < this.rowCount; i++) {
-      let columnValues = rows[i].split(/[ ,\t]+/);
-      if (i === 0) {
-        this.colCount = columnValues.length;
-        this.array = new Array(this.colCount);
-        for (let col = 0; col < this.colCount; col++) {
-          this.array[col] = new Array(this.rowCount);
-        }
-      }
-      for (let j = 0; j < this.colCount; j++) {
-        this.array[j][i] = columnValues[j];
-      }
-    }
-    this.setOutputPorts();
-  }
-
-  private setOutputPorts(): void {
-    if (this.ports.length !== this.colCount) {
-      for (let p of this.ports) { // disconnect all the port connectors as the ports will be recreated
-        flowchart.removeAllConnectors(p);
-      }
-      this.ports.length = 0;
-      let dh = this.height / (this.colCount + 1);
-      let firstPortName = "A";
-      let k = firstPortName.charCodeAt(0);
-      for (let i = 0; i < this.colCount; i++) {
-        let id = String.fromCharCode(k++);
-        this.ports.push(new Port(this, false, id, this.width, (i + 1) * dh, true));
-      }
-    }
   }
 
   private updateAll(): void {
@@ -174,12 +135,11 @@ export class ArrayInput extends Block {
     return this.textArea.style.color;
   }
 
-  setText(text: string) {
-    this.textArea.value = text;
-    this.parseText();
+  setContent(content: string) {
+    this.textArea.value = content;
   }
 
-  getText(): string {
+  getContent(): string {
     return this.textArea.value;
   }
 
@@ -245,9 +205,8 @@ export class ArrayInput extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "white";
-      let name2 = this.name + " (" + this.rowCount + ")";
-      let titleWidth = ctx.measureText(name2).width;
-      ctx.fillText(name2, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
+      let titleWidth = ctx.measureText(this.name).width;
+      ctx.fillText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
 
     // draw the text area
@@ -270,7 +229,7 @@ export class ArrayInput extends Block {
       ctx.stroke();
       ctx.font = "10px Arial";
       ctx.fillStyle = "black";
-      ctx.fillText("123", x + w / 2 - 10, y + h / 2 + 4);
+      ctx.fillText("abc", x + w / 2 - 10, y + h / 2 + 4);
       this.button.width = 8;
       this.button.height = 4;
       this.button.x = this.x + (this.width - this.button.width) / 2;
@@ -313,20 +272,8 @@ export class ArrayInput extends Block {
   }
 
   updateModel(): void {
-    if (this.array) {
-      for (let col = 0; col < this.array.length; col++) {
-        let numbers = new Array(this.array[col].length);
-        for (let row = 0; row < numbers.length; row++) {
-          try {
-            numbers[row] = parseFloat(this.array[col][row]);
-          } catch (e) {
-            numbers[row] = this.array[col][row];
-          }
-        }
-        if (col < this.ports.length) this.ports[col].setValue(numbers);
-      }
-      this.updateConnectors();
-    }
+    this.ports[0].setValue(this.getContent());
+    this.updateConnectors();
   }
 
   refreshView(): void {

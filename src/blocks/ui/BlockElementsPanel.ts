@@ -58,6 +58,7 @@ import {WordCloud} from "../WordCloud";
 import {PieChart} from "../PieChart";
 import {RegressionBlock} from "../RegressionBlock";
 import {CorrelationBlock} from "../CorrelationBlock";
+import {StringInput} from "../StringInput";
 
 export class BlockElementsPanel {
 
@@ -99,6 +100,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="momentary-switch-block" title="Momentary Switch" width="45px" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="sticker-block" title="Text Display" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="array-input-block" title="Array Input" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="string-input-block" title="String Input" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="grapher-block" title="Grapher" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="box-plot-block" title="Box Plot" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="histogram-block" title="Histogram" width="60px" height="60px" style="cursor: pointer;"/></td>
@@ -210,6 +212,7 @@ export class BlockElementsPanel {
     this.drawDataBlock("Data Block", "Data", "data-block");
     this.drawRandomNumberGeneratorBlock("Random Number Generator Block", "Random", "random-number-generator-block");
     this.drawArrayInput("Array Input", "array-input-block");
+    this.drawStringInput("String Input", "string-input-block");
     this.drawMeanBlock("mean-block");
     this.drawUnivariateDescriptiveStatisticsBlock("univariate-descriptive-statistics-block");
     this.drawMolecularViewerBlock("Molecular Viewer Block", "Molecular Viewer", "molecular-viewer-block");
@@ -389,6 +392,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new ArrayInput("Array Input Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawStringInput(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new StringInput("String Input Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

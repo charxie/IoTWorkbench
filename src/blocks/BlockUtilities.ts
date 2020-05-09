@@ -62,6 +62,7 @@ import {WordCloud} from "./WordCloud";
 import {PieChart} from "./PieChart";
 import {RegressionBlock} from "./RegressionBlock";
 import {CorrelationBlock} from "./CorrelationBlock";
+import {StringInput} from "./StringInput";
 
 export class BlockUtilities {
 
@@ -224,6 +225,9 @@ export class BlockUtilities {
     }
     if (block instanceof ArrayInput) {
       return contextMenus.arrayInput;
+    }
+    if (block instanceof StringInput) {
+      return contextMenus.stringInput;
     }
     if (block instanceof MeanBlock) {
       return contextMenus.meanBlock;
@@ -456,6 +460,10 @@ export class BlockUtilities {
     if (block instanceof ArrayInput) {
       contextMenus.arrayInput.block = block;
       return document.getElementById("array-input-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof StringInput) {
+      contextMenus.stringInput.block = block;
+      return document.getElementById("string-input-context-menu") as HTMLMenuElement;
     }
     if (block instanceof MeanBlock) {
       contextMenus.meanBlock.block = block;

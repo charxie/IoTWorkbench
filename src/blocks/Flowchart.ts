@@ -69,6 +69,7 @@ import {WordCloud} from "./WordCloud";
 import {PieChart} from "./PieChart";
 import {RegressionBlock} from "./RegressionBlock";
 import {CorrelationBlock} from "./CorrelationBlock";
+import {StringInput} from "./StringInput";
 
 export class Flowchart {
 
@@ -938,6 +939,9 @@ export class Flowchart {
       case "Array Input":
         block = new ArrayInput(uid, name, x, y, 80, 80);
         break;
+      case "String Input":
+        block = new StringInput(uid, name, x, y, 80, 80);
+        break;
       case "Mean Block":
         block = new MeanBlock(uid, x, y, 60, 60);
         break;
@@ -1084,6 +1088,8 @@ export class Flowchart {
         blockStates.push(new RandomNumberGeneratorBlock.State(b));
       } else if (b instanceof ArrayInput) {
         blockStates.push(new ArrayInput.State(b));
+      } else if (b instanceof StringInput) {
+        blockStates.push(new StringInput.State(b));
       } else if (b instanceof MeanBlock) {
         blockStates.push(new MeanBlock.State(b));
       } else if (b instanceof UnivariateDescriptiveStatisticsBlock) {

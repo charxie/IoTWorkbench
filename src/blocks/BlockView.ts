@@ -70,6 +70,7 @@ import {WordCloud} from "./WordCloud";
 import {PieChart} from "./PieChart";
 import {RegressionBlock} from "./RegressionBlock";
 import {CorrelationBlock} from "./CorrelationBlock";
+import {StringInput} from "./StringInput";
 
 export class BlockView {
 
@@ -362,6 +363,11 @@ export class BlockView {
         let arrayInput = new ArrayInput("Array Input #" + timestamp, "Array Input", x - 100, y - 100, 200, 200);
         this.addBlockUndoable(arrayInput);
         arrayInput.locateOverlay();
+        break;
+      case "string-input-block":
+        let stringInput = new StringInput("String Input #" + timestamp, "String Input", x - 100, y - 100, 200, 200);
+        this.addBlockUndoable(stringInput);
+        stringInput.locateOverlay();
         break;
       case "mean-block":
         b = this.addBlockUndoable(new MeanBlock("Mean Block #" + timestamp, x - 30, y - 30, 60, 60));
@@ -757,7 +763,7 @@ export class BlockView {
     }
     let grab = false;
     for (let b of flowchart.blocks) {
-      if (b instanceof ArrayInput) {
+      if (b instanceof ArrayInput || b instanceof StringInput) {
         b.mouseDown(e);
       } else {
         if (b.isSelected()) {
@@ -931,7 +937,7 @@ export class BlockView {
     }
 
     for (let b of flowchart.blocks) {
-      if (b instanceof ArrayInput) {
+      if (b instanceof ArrayInput || b instanceof StringInput) {
         b.mouseMove(e);
       } else {
         if (b.isSelected()) {
