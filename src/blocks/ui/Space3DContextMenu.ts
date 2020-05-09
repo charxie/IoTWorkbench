@@ -87,6 +87,13 @@ export class Space3DContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="space3d-points-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Image Ports:</td>
+                  <td colspan="3">
+                    <input type="radio" name="image-ports" id="space3d-show-image-ports-radio-button" checked> Show
+                    <input type="radio" name="image-ports" id="space3d-hide-image-ports-radio-button"> Hide
+                  </td>
+                </tr>
+                <tr>
                   <td>Box Size:</td>
                   <td colspan="3"><input type="text" id="space3d-box-size-field" style="width: 100%"></td>
                 </tr>
@@ -251,6 +258,10 @@ export class Space3DContextMenu extends BlockContextMenu {
       let zAxisLableField = document.getElementById("space3d-z-axis-label-field") as HTMLInputElement;
       zAxisLableField.value = g.getZAxisLabel();
 
+      let showImagePortsRadioButton = document.getElementById("space3d-show-image-ports-radio-button") as HTMLInputElement;
+      showImagePortsRadioButton.checked = g.getShowImagePorts();
+      let hideImagePortsRadioButton = document.getElementById("space3d-hide-image-ports-radio-button") as HTMLInputElement;
+      hideImagePortsRadioButton.checked = !g.getShowImagePorts();
       let pointsField = document.getElementById("space3d-points-field") as HTMLInputElement;
       pointsField.value = g.getNumberOfPoints().toString();
       let trioInputRadioButton = document.getElementById("space3d-trio-input-radio-button") as HTMLInputElement;
@@ -449,6 +460,11 @@ export class Space3DContextMenu extends BlockContextMenu {
           success = false;
           message = boxSizeField.value + " is not an array";
         }
+        // check if any of the image ports are connected
+        if (g.isImagePortConnected() && hideImagePortsRadioButton.checked) {
+          success = false;
+          message = "Cannot hide image ports as at least one of them is connected";
+        }
         // finish
         if (success) {
           g.setName(nameField.value);
@@ -457,6 +473,7 @@ export class Space3DContextMenu extends BlockContextMenu {
           g.setZAxisLabel(zAxisLableField.value);
           g.setBoxSizes(Math.max(0, boxSizes[0]), Math.max(0, boxSizes[1]), Math.max(0, boxSizes[2]));
           g.setBackgroundColor(backgroundColorField.value);
+          g.setShowImagePorts(showImagePortsRadioButton.checked);
           g.setPointInput(pointInputRadioButton.checked);
           for (let i = 0; i < lineTypes.length; i++) {
             g.setLegend(i, legends[i]);

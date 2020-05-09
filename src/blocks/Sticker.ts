@@ -354,13 +354,24 @@ export class Sticker extends Block {
         this.arrayLength = v.length;
         this.text = "";
         for (let i of v) {
-          if (i instanceof Complex) {
-            this.text += i.toFixed(this.decimals) + ",";
+          if (Array.isArray(i)) {
+            for (let j of i) {
+              try {
+                this.text += j.toFixed(this.decimals) + " ";
+              } catch (e) {
+                this.text += i + " "; // value is a boolean or string
+              }
+            }
+            if (i.indexOf(v) < v.length - 1) this.text += ",";
           } else {
-            try {
+            if (i instanceof Complex) {
               this.text += i.toFixed(this.decimals) + ",";
-            } catch (e) {
-              this.text += i + ","; // value is a boolean or string
+            } else {
+              try {
+                this.text += i.toFixed(this.decimals) + ",";
+              } catch (e) {
+                this.text += i + ","; // value is a boolean or string
+              }
             }
           }
         }

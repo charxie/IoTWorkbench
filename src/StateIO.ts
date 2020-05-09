@@ -293,6 +293,7 @@ export class StateIO {
           block.setSpaceWindowColor(state.spaceWindowColor);
           block.setPointInput(state.pointInput);
           block.setShowGridLines(state.showGridLines == undefined ? false : state.showGridLines);
+          if (state.showImagePorts !== undefined) block.setShowImagePorts(state.showImagePorts);
           if (state.backgroundImageSrc != undefined) block.setBackgroundImageSrc(state.backgroundImageSrc);
           if (state.legends != undefined) block.setLegends(state.legends);
           if (state.lineTypes != undefined) block.setLineTypes(state.lineTypes);
@@ -316,6 +317,7 @@ export class StateIO {
           if (state.backgroundColor !== undefined) block.setBackgroundColor(state.backgroundColor);
           block.setPointInput(state.pointInput);
           block.setNumberOfPoints(state.numberOfPoints);
+          if (state.showImagePorts !== undefined) block.setShowImagePorts(state.showImagePorts);
           block.setLegends(state.legends);
           block.setLineTypes(state.lineTypes);
           block.setLineColors(state.lineColors);

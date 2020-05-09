@@ -21,6 +21,7 @@ export class Space3D extends Basic3DBlock {
   private tempY: number;
   private tempZ: number;
   private legends: string[] = [];
+  private showImagePorts: boolean = true;
 
   static State = class {
     readonly name: string;
@@ -54,6 +55,7 @@ export class Space3D extends Basic3DBlock {
     readonly cameraRotationX: number;
     readonly cameraRotationY: number;
     readonly cameraRotationZ: number;
+    readonly showImagePorts: boolean;
 
     constructor(g: Space3D) {
       this.name = g.name;
@@ -88,6 +90,7 @@ export class Space3D extends Basic3DBlock {
       this.cameraRotationX = p.getCameraRotationX();
       this.cameraRotationY = p.getCameraRotationY();
       this.cameraRotationZ = p.getCameraRotationZ();
+      this.showImagePorts = g.showImagePorts;
     }
   };
 
@@ -132,6 +135,7 @@ export class Space3D extends Basic3DBlock {
     copy.setBackgroundColor(this.getBackgroundColor());
     copy.setPointInput(this.pointInput);
     copy.setNumberOfPoints(this.getNumberOfPoints());
+    copy.showImagePorts = this.showImagePorts;
     copy.legends = [...this.legends];
     let p = <LinePlot>copy.view;
     let q = <LinePlot>this.view;
@@ -244,6 +248,21 @@ export class Space3D extends Basic3DBlock {
 
   getNumberOfPoints(): number {
     return this.pointInput ? this.portPoints.length : 1;
+  }
+
+  setShowImagePorts(showImagePorts: boolean): void {
+    this.showImagePorts = showImagePorts;
+  }
+
+  getShowImagePorts(): boolean {
+    return this.showImagePorts;
+  }
+
+  isImagePortConnected(): boolean {
+    for (let p of this.portImages) {
+      if (flowchart.getConnectorWithInput(p) !== null) return true;
+    }
+    return false;
   }
 
   setLegends(legends: string[]): void {
@@ -441,6 +460,20 @@ export class Space3D extends Basic3DBlock {
     }
   }
 
+  drawPorts(ctx: CanvasRenderingContext2D): void {
+    ctx.font = this.iconic ? "9px Arial" : "12px Arial";
+    ctx.strokeStyle = "black";
+    for (let p of this.ports) {
+      if (this.showImagePorts) {
+        p.draw(ctx, this.iconic);
+      } else {
+        if (this.portImages !== undefined && this.portImages.indexOf(p) === -1) {
+          p.draw(ctx, this.iconic);
+        }
+      }
+    }
+  }
+
   updateModel(): void {
     if (this.pointInput) { // point input mode (support multiple curves, but it doesn't accept array as inputs)
       if (this.portPoints != undefined) {
@@ -517,10 +550,17 @@ export class Space3D extends Basic3DBlock {
     this.spaceMargin.left = 24;
     this.spaceMargin.right = 10;
     if (this.pointInput) {
-      let dh = (this.height - this.barHeight) / (2 * this.portPoints.length + 1);
-      for (let i = 0; i < this.portPoints.length; i++) {
-        this.portPoints[i].setY(this.barHeight + dh * (2 * i + 1));
-        this.portImages[i].setY(this.barHeight + dh * (2 * i + 2));
+      if (this.showImagePorts) {
+        let dh = (this.height - this.barHeight) / (2 * this.portPoints.length + 1);
+        for (let i = 0; i < this.portPoints.length; i++) {
+          this.portPoints[i].setY(this.barHeight + dh * (2 * i + 1));
+          this.portImages[i].setY(this.barHeight + dh * (2 * i + 2));
+        }
+      } else {
+        let dh = (this.height - this.barHeight) / (this.portPoints.length + 1);
+        for (let i = 0; i < this.portPoints.length; i++) {
+          this.portPoints[i].setY(this.barHeight + dh * (i + 1));
+        }
       }
     } else {
       let dh = (this.height - this.barHeight) / 4;

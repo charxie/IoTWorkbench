@@ -221,17 +221,20 @@ export abstract class Basic3DBlock extends Block {
     ctx.strokeStyle = "black";
     ctx.stroke();
 
-    // draw the port
-    ctx.font = this.iconic ? "9px Arial" : "12px Arial";
-    ctx.strokeStyle = "black";
-    for (let p of this.ports) {
-      p.draw(ctx, this.iconic);
-    }
+    this.drawPorts(ctx);
 
     if (this.selected) {
       this.highlightSelection(ctx);
     }
 
+  }
+
+  drawPorts(ctx: CanvasRenderingContext2D): void {
+    ctx.font = this.iconic ? "9px Arial" : "12px Arial";
+    ctx.strokeStyle = "black";
+    for (let p of this.ports) {
+      p.draw(ctx, this.iconic);
+    }
   }
 
   onDraggableArea(x: number, y: number): boolean {

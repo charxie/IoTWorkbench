@@ -2,12 +2,14 @@
  * @author Charles Xie
  */
 
+import clustering from "clusters";
 import {Port} from "./Port";
 import {Block} from "./Block";
 import {flowchart} from "../Main";
 
 export class ClusteringBlock extends Block {
 
+  private numberOfIterations: number = 1000;
   private method: string = "K-Mean";
   private portI: Port[] = [];
   private portO: Port[] = [];
@@ -137,7 +139,27 @@ export class ClusteringBlock extends Block {
   }
 
   updateModel(): void {
-    this.updateConnectors();
+    let va = this.portI[0].getValue();
+    let vb = this.portI[1].getValue();
+    if (Array.isArray(va) && Array.isArray(vb)) {
+      switch (this.method) {
+        case "K-Mean":
+          clustering.k(this.portO.length);
+          clustering.iterations(this.numberOfIterations);
+          let n = Math.min(va.length, vb.length);
+          let data = new Array(n);
+          for (let i = 0; i < n; i++) {
+            data[i] = [va[i], vb[i]];
+          }
+          clustering.data(data);
+          let clusters = clustering.clusters();
+          for (let i = 0; i < clusters.length; i++) {
+            this.portO[i].setValue(clusters[i].points);
+          }
+          break;
+      }
+      this.updateConnectors();
+    }
   }
 
 }

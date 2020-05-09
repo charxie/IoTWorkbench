@@ -84,6 +84,13 @@ export class Space2DContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="space2d-points-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Image Ports:</td>
+                  <td colspan="3">
+                    <input type="radio" name="image-ports" id="space2d-show-image-ports-radio-button" checked> Show
+                    <input type="radio" name="image-ports" id="space2d-hide-image-ports-radio-button"> Hide
+                  </td>
+                </tr>
+                <tr>
                   <td>Scale:</td>
                   <td colspan="3">
                     <input type="radio" name="scale" id="space2d-auto-scale-radio-button" checked> Auto
@@ -303,6 +310,10 @@ export class Space2DContextMenu extends BlockContextMenu {
 
       let nameField = document.getElementById("space2d-name-field") as HTMLInputElement;
       nameField.value = g.getName();
+      let showImagePortsRadioButton = document.getElementById("space2d-show-image-ports-radio-button") as HTMLInputElement;
+      showImagePortsRadioButton.checked = g.getShowImagePorts();
+      let hideImagePortsRadioButton = document.getElementById("space2d-hide-image-ports-radio-button") as HTMLInputElement;
+      hideImagePortsRadioButton.checked = !g.getShowImagePorts();
       let autoScaleRadioButton = document.getElementById("space2d-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("space2d-fixed-scale-radio-button") as HTMLInputElement;
@@ -585,6 +596,11 @@ export class Space2DContextMenu extends BlockContextMenu {
             break;
           }
         }
+        // check if any of the image ports are connected
+        if (g.isImagePortConnected() && hideImagePortsRadioButton.checked) {
+          success = false;
+          message = "Cannot hide image ports as at least one of them is connected";
+        }
         // finish
         if (success) {
           g.setName(nameField.value);
@@ -592,6 +608,7 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setYAxisLabel(yAxisLableField.value);
           g.setSpaceWindowColor(windowColorField.value);
           g.setShowGridLines(gridLinesRadioButton.checked);
+          g.setShowImagePorts(showImagePortsRadioButton.checked);
           g.setAutoScale(autoScaleRadioButton.checked);
           g.setPointInput(pointInputRadioButton.checked);
           for (let i = 0; i < lineTypes.length; i++) {
