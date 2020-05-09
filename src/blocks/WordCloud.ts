@@ -19,7 +19,6 @@ export class WordCloud extends Block {
   private viewWindowColor: string = "white";
   private viewWindow: Rectangle;
   private barHeight: number;
-  private wordColors;
   private readonly viewMargin = {
     left: <number>4,
     right: <number>3,
@@ -28,6 +27,11 @@ export class WordCloud extends Block {
   };
   private cloudInstance;
   private layout;
+  private wordColors;
+  private wordScales;
+  private wordProperties = [];
+  private interpolateColor = d3.interpolateTurbo;
+  private colorScheme: string = "PuRd";
 
   static State = class {
     readonly name: string;
@@ -36,6 +40,7 @@ export class WordCloud extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly colorScheme: string;
     readonly viewWindowColor: string;
 
     constructor(b: WordCloud) {
@@ -45,6 +50,7 @@ export class WordCloud extends Block {
       this.y = b.y;
       this.width = b.width;
       this.height = b.height;
+      this.colorScheme = b.colorScheme;
       this.viewWindowColor = b.viewWindowColor;
     }
   };
@@ -59,14 +65,12 @@ export class WordCloud extends Block {
     this.ports.push(this.portI);
     this.viewWindow = new Rectangle(0, 0, 1, 1);
     this.marginX = 25;
-    this.wordColors = d3.scaleLinear()
-      .domain([0, 1, 2, 3, 4, 5, 6, 10, 15, 20, 100])
-      .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
     this.cloudInstance = cloud.default();
   }
 
   getCopy(): Block {
     let copy = new WordCloud("Word Cloud #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    copy.colorScheme = this.colorScheme;
     copy.viewWindowColor = this.viewWindowColor;
     return copy;
   }
@@ -142,19 +146,21 @@ export class WordCloud extends Block {
 
     // draw wordcloud
     if (!this.iconic) {
-      ctx.save();
-      ctx.translate(this.viewWindow.x + this.viewWindow.width / 2, this.viewWindow.y + this.viewWindow.height / 2);
-      let count = Object.keys(this.wordCount).length;
-      if (count > 0) {
-        this.layout = this.cloudInstance.size([this.viewWindow.width, this.viewWindow.height])
-          .words(d3.entries(this.wordCount))
-          .font("Impact")
-          .padding(5)
-          .rotate(0)
-          .on("end", this.drawWords(ctx));
-        this.layout.start();
+      if (this.layout !== undefined) {
+        ctx.save();
+        ctx.translate(this.viewWindow.x + this.viewWindow.width / 2, this.viewWindow.y + this.viewWindow.height / 2)
+        for (let d of this.wordProperties) {
+          ctx.save();
+          ctx.font = d.size + "px " + d.font;
+          ctx.fillStyle = this.wordColors(d.value);
+          ctx.translate(d.x, d.y);
+          ctx.rotate(d.rotate * Math.PI / 180);
+          let textWidth = ctx.measureText(d.key).width;
+          ctx.fillText(d.key, -textWidth / 2, 0);
+          ctx.restore();
+        }
+        ctx.restore();
       }
-      ctx.restore();
     }
 
     // draw the port
@@ -170,30 +176,16 @@ export class WordCloud extends Block {
 
   }
 
-  private drawWords(ctx: CanvasRenderingContext2D): void {
-    if (this.layout === undefined) return;
-    d3.select("#block-view")
-      .selectAll("text")
-      .data(this.words)
-      .enter()
-      .append("text")
-      .attr("text-anchor", "middle")
-      .text((d) => d.text)
-      .style("font-size", (d) => d.size + "px")
-      .style("font-family", (d) => d.font)
-      .style("fill", (d, i) => this.wordColors(i))
-      .attr("transform", (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")");
-  }
-
   onDraggableArea(x: number, y: number): boolean {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
   }
 
   updateModel(): void {
     let text = this.portI.getValue();
-    text = "physics chemistry physics physics physics physics physics physics";
-    if (text === undefined) return;
-    this.words = text.split(/[ '\-\(\)\*":;\[\]|{},.!?]+/);
+    // text = "When I find myself in times of trouble Mother Mary comes to me Speaking words of wisdom, let it be. And in my hour of darkness She is standing right in front of me Speaking words of wisdom, let it be. Let it be, let it be. Whisper words of wisdom, let it be. And when the broken hearted people Living in the world agree, There will be an answer, let it be. For though they may be parted there is Still a chance that they will see There will be an answer, let it be. Let it be, let it be. Yeah There will be an answer, let it be. And when the night is cloudy, There is still a light that shines on me, Shine on until tomorrow, let it be. I wake up to the sound of music Mother Mary comes to me Speaking words of wisdom, let it be. Let it be, let it be. There will be an answer, let it be. Let it be, let it be, Whisper words of wisdom, let it be.";
+    if (text === undefined || typeof text !== "string") return;
+    this.words = text.split(/[ '\-\(\)\*":;\[\]|{},.!?\n]+/);
+    this.wordCount = {};
     if (this.words.length === 1) {
       this.wordCount[this.words[0]] = 1;
     } else {
@@ -208,16 +200,155 @@ export class WordCloud extends Block {
         }
       })
     }
+    let count = Object.keys(this.wordCount).length;
+    if (count > 0) {
+      let shorterSide = Math.min(this.viewWindow.width, this.viewWindow.height);
+      this.wordScales = d3.scaleLinear().domain([0, d3.max(d3.entries(this.wordCount), d => d.value)]).range([10, shorterSide / 5]);
+      this.wordColors = d3.scaleLinear().domain([0, d3.max(d3.entries(this.wordCount), d => d.value)]).interpolate(() => this.interpolateColor);
+      this.wordProperties.length = 0;
+      this.layout = this.cloudInstance.size([this.viewWindow.width, this.viewWindow.height])
+        .words(d3.entries(this.wordCount))
+        .font("Impact")
+        .padding(5)
+        .fontSize(d => this.wordScales(d.value))
+        .text(d => d.key)
+        .on("word", d => this.wordProperties.push(d))
+        .start();
+    }
   }
 
   refreshView(): void {
     super.refreshView();
     this.viewMargin.top = 10;
-    this.viewMargin.bottom = 40;
-    this.viewMargin.left = 70;
-    this.viewMargin.right = 16;
+    this.viewMargin.bottom = 10;
+    this.viewMargin.left = 10;
+    this.viewMargin.right = 10;
     let dh = (this.height - this.barHeight) / 2;
     this.portI.setY(this.barHeight + dh);
+  }
+
+  getColorScheme(): string {
+    return this.colorScheme;
+  }
+
+  setColorScheme(colorScheme: string): void {
+    this.colorScheme = colorScheme;
+    switch (this.colorScheme) {
+      case "Reds":
+        this.interpolateColor = d3.interpolateReds;
+        break;
+      case "Greens":
+        this.interpolateColor = d3.interpolateGreens;
+        break;
+      case "Blues":
+        this.interpolateColor = d3.interpolateBlues;
+        break;
+      case "Greys":
+        this.interpolateColor = d3.interpolateGreys;
+        break;
+      case "Oranges":
+        this.interpolateColor = d3.interpolateOranges;
+        break;
+      case "Purples":
+        this.interpolateColor = d3.interpolatePurples;
+        break;
+      case "RdYlBu":
+        this.interpolateColor = d3.interpolateRdYlBu;
+        break;
+      case "RdYlGn":
+        this.interpolateColor = d3.interpolateRdYlGn;
+        break;
+      case "RdGy":
+        this.interpolateColor = d3.interpolateRdGy;
+        break;
+      case "RdBu":
+        this.interpolateColor = d3.interpolateRdBu;
+        break;
+      case "PuOr":
+        this.interpolateColor = d3.interpolatePuOr;
+        break;
+      case "PiYG":
+        this.interpolateColor = d3.interpolatePiYG;
+        break;
+      case "PRGn":
+        this.interpolateColor = d3.interpolatePRGn;
+        break;
+      case "BrBG":
+        this.interpolateColor = d3.interpolateBrBG;
+        break;
+      case "YlOrRd":
+        this.interpolateColor = d3.interpolateYlOrRd;
+        break;
+      case "YlOrBr":
+        this.interpolateColor = d3.interpolateYlOrBr;
+        break;
+      case "PuRd":
+        this.interpolateColor = d3.interpolatePuRd;
+        break;
+      case "RdPu":
+        this.interpolateColor = d3.interpolateRdPu;
+        break;
+      case "YlGnBu":
+        this.interpolateColor = d3.interpolateYlGnBu;
+        break;
+      case "YlGn":
+        this.interpolateColor = d3.interpolateYlGn;
+        break;
+      case "BuGn":
+        this.interpolateColor = d3.interpolateBuGn;
+        break;
+      case "OrRd":
+        this.interpolateColor = d3.interpolateOrRd;
+        break;
+      case "GnBu":
+        this.interpolateColor = d3.interpolateGnBu;
+        break;
+      case "BuPu":
+        this.interpolateColor = d3.interpolateBuPu;
+        break;
+      case "PuBu":
+        this.interpolateColor = d3.interpolatePuBu;
+        break;
+      case "PuBuGn":
+        this.interpolateColor = d3.interpolatePuBuGn;
+        break;
+      case "Rainbow":
+        this.interpolateColor = d3.interpolateRainbow;
+        break;
+      case "Sinebow":
+        this.interpolateColor = d3.interpolateSinebow;
+        break;
+      case "Cubehelix":
+        this.interpolateColor = d3.interpolateCubehelixDefault;
+        break;
+      case "Warm":
+        this.interpolateColor = d3.interpolateWarm;
+        break;
+      case "Cool":
+        this.interpolateColor = d3.interpolateCool;
+        break;
+      case "Cividis":
+        this.interpolateColor = d3.interpolateCividis;
+        break;
+      case "Viridis":
+        this.interpolateColor = d3.interpolateViridis;
+        break;
+      case "Spectral":
+        this.interpolateColor = d3.interpolateSpectral;
+        break;
+      case "Inferno":
+        this.interpolateColor = d3.interpolateInferno;
+        break;
+      case "Magma":
+        this.interpolateColor = d3.interpolateMagma;
+        break;
+      case "Plasma":
+        this.interpolateColor = d3.interpolatePlasma;
+        break;
+      default:
+        this.interpolateColor = d3.interpolateTurbo;
+        break;
+    }
   }
 
 }

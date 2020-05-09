@@ -428,7 +428,8 @@ export class StateIO {
           block.setSymbol(state.symbol);
         } else if (block instanceof WordCloud) {
           block.setName(state.name);
-          block.setViewWindowColor(state.viewWindowColor === undefined ? "white" : state.viewWindowColor);
+          if (state.colorScheme !== undefined) block.setColorScheme(state.colorScheme);
+          if (state.viewWindowColor !== undefined) block.setViewWindowColor(state.viewWindowColor);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

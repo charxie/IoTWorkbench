@@ -54,6 +54,51 @@ export class WordCloudContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="wordcloud-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Color Scheme:</td>
+                  <td colspan="2">
+                    <select id="wordcloud-color-scheme-selector" style="width: 100%">
+                      <option value="Turbo">Turbo</option>
+                      <option value="Reds">Reds</option>
+                      <option value="Greens">Greens</option>
+                      <option value="Blues">Blues</option>
+                      <option value="Greys">Greys</option>
+                      <option value="Oranges">Oranges</option>
+                      <option value="Purples">Purples</option>
+                      <option value="Warm">Warm</option>
+                      <option value="Cool">Cool</option>
+                      <option value="Magma">Magma</option>
+                      <option value="Plasma">Plasma</option>
+                      <option value="Inferno">Inferno</option>
+                      <option value="Spectral">Spectral</option>
+                      <option value="Cividis">Cividis</option>
+                      <option value="Viridis">Viridis</option>
+                      <option value="Rainbow">Rainbow</option>
+                      <option value="Sinebow">Sinebow</option>
+                      <option value="Cubehelix">Cubehelix</option>
+                      <option value="RdYlBu">RdYlBu</option>
+                      <option value="RdYlGn">RdYlGn</option>
+                      <option value="RdGy">RdGy</option>
+                      <option value="RdBu">RdBu</option>
+                      <option value="PuOr">PuOr</option>
+                      <option value="PiYG">PiYG</option>
+                      <option value="PRGn">PRGn</option>
+                      <option value="BrBG">BrBG</option>
+                      <option value="BuGn">BuGn</option>
+                      <option value="BuPu">BuPu</option>
+                      <option value="GnBu">GnBu</option>
+                      <option value="OrRd">OrRd</option>
+                      <option value="PuBu">PuBu</option>
+                      <option value="PuBuGn">PuBuGn</option>
+                      <option value="PuRd" selected>PuRd</option>
+                      <option value="RdPu">RdPu</option>
+                      <option value="YlGn">YlGn</option>
+                      <option value="YlGnBu">YlGnBu</option>
+                      <option value="YlOrBr">YlOrBr</option>
+                      <option value="YlOrRd">YlOrRd</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
                   <td>Window Color:</td>
                   <td><input type="color" id="wordcloud-window-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="wordcloud-window-color-field" style="width: 100%"></td>
@@ -78,6 +123,8 @@ export class WordCloudContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("wordcloud-name-field") as HTMLInputElement;
       nameField.value = g.getName();
+      let colorSchemeSelector = document.getElementById("wordcloud-color-scheme-selector") as HTMLSelectElement;
+      colorSchemeSelector.value = g.getColorScheme();
       let windowColorField = document.getElementById("wordcloud-window-color-field") as HTMLInputElement;
       windowColorField.value = g.getViewWindowColor();
       let windowColorChooser = document.getElementById("wordcloud-window-color-chooser") as HTMLInputElement;
@@ -109,6 +156,7 @@ export class WordCloudContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           g.setName(nameField.value);
+          g.setColorScheme(colorSchemeSelector.value)
           g.setViewWindowColor(windowColorField.value);
           g.refreshView();
           flowchart.storeBlockStates();
@@ -131,7 +179,7 @@ export class WordCloudContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: g.getUid(),
-        height: 320,
+        height: 350,
         width: 450,
         buttons: {
           'OK': okFunction,
