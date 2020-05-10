@@ -5,29 +5,30 @@
 import $ from "jquery";
 import {Util} from "../Util";
 
-export class PngSaver {
+export class CsvSaver {
 
-  private static readonly inputFieldId: string = "save-png-file-name-field";
+  private static readonly inputFieldId: string = "save-csv-file-name-field";
 
   private constructor() {
   }
 
-  private static save(fileName: string, imgUrl: string): void {
-    let a = document.createElement('a') as HTMLAnchorElement;
-    a.download = fileName;
-    a.href = imgUrl;
-    a.click();
-  };
-
-  static saveAs(canvas): void {
-    let fileName = 'screenshot.png';
+  static saveAs(array: any[][]): void {
+    let csvContent = array.map(e => e.join(",")).join("\n");
+    let blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+    let fileName = 'data.csv';
     let d = $('#modal-dialog').html(`<div style="font-family: Arial; line-height: 30px; font-size: 90%;">
-        Save screenshot as:<br><input type="text" id="${this.inputFieldId}" style="width: 260px;" value="${fileName}"></div>`);
+        Save data as:<br><input type="text" id="${this.inputFieldId}" style="width: 260px;" value="${fileName}"></div>`);
     let inputElement = document.getElementById(this.inputFieldId) as HTMLInputElement;
     Util.selectField(inputElement, 0, inputElement.value.indexOf("."));
     let okFunction = () => {
       d.dialog('close');
-      this.save(inputElement.value, canvas.toDataURL("image/png"));
+      let link = document.createElement("a");
+      link.setAttribute("href", URL.createObjectURL(blob));
+      link.setAttribute("download", inputElement.value);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link); // Required for FF
+      link.click();
+      document.body.removeChild(link);
     };
     inputElement.addEventListener("keyup", (e) => {
       if (e.key == "Enter") {

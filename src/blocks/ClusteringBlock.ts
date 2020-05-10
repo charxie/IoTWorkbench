@@ -9,7 +9,7 @@ import {flowchart} from "../Main";
 
 export class ClusteringBlock extends Block {
 
-  private numberOfIterations: number = 1000;
+  private numberOfIterations: number = 100;
   private method: string = "K-Means";
   private portI: Port;
   private portC: Port;
@@ -24,6 +24,7 @@ export class ClusteringBlock extends Block {
     readonly marginX: number;
     readonly method: string;
     readonly numberOfOutputs: number;
+    readonly numberOfIterations: number;
 
     constructor(block: ClusteringBlock) {
       this.uid = block.uid;
@@ -34,6 +35,7 @@ export class ClusteringBlock extends Block {
       this.marginX = block.marginX;
       this.method = block.method;
       this.numberOfOutputs = block.portO.length;
+      this.numberOfIterations = block.numberOfIterations;
     }
   };
 
@@ -77,6 +79,14 @@ export class ClusteringBlock extends Block {
 
   getNumberOfOutputs(): number {
     return this.portO.length;
+  }
+
+  setNumberOfIterations(numberOfIterations: number): void {
+    this.numberOfIterations = numberOfIterations;
+  }
+
+  getNumberOfIterations(): number {
+    return this.numberOfIterations;
   }
 
   setMethod(method: string): void {

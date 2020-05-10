@@ -8,6 +8,7 @@ import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {Util} from "../../Util";
 import {Space2D} from "../Space2D";
 import {PngSaver} from "../../tools/PngSaver";
+import {CsvSaver} from "../../tools/CsvSaver";
 
 export class Space2DContextMenu extends BlockContextMenu {
 
@@ -29,6 +30,9 @@ export class Space2DContextMenu extends BlockContextMenu {
               </li>
               <li class="menu-separator"></li>` + this.getLayerMenu() + `<li class="menu-separator"></li>
               <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-save-data-button"><i class="fas fa-table"></i><span class="menu-text">Save Data</span></button>
+              </li>
+              <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-save-image-button"><i class="fas fa-camera"></i><span class="menu-text">Save Image</span></button>
               </li>
               <li class="menu-item">
@@ -41,6 +45,8 @@ export class Space2DContextMenu extends BlockContextMenu {
     super.addListeners();
     let eraseButton = document.getElementById(this.id + "-erase-button");
     eraseButton.addEventListener("click", this.eraseButtonClick.bind(this), false);
+    let saveDataButton = document.getElementById(this.id + "-save-data-button");
+    saveDataButton.addEventListener("click", this.saveDataButtonClick.bind(this), false);
     let saveImageButton = document.getElementById(this.id + "-save-image-button");
     saveImageButton.addEventListener("click", this.saveImageButtonClick.bind(this), false);
   }
@@ -49,6 +55,12 @@ export class Space2DContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     (<Space2D>this.block).erase();
+  }
+
+  private saveDataButtonClick(): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    CsvSaver.saveAs((<Space2D>this.block).getFlatData());
   }
 
   private saveImageButtonClick(): void {

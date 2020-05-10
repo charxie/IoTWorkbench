@@ -201,6 +201,18 @@ export class Space2D extends Block {
     flowchart.blockView.requestDraw();
   }
 
+  // return all the data points in a coordinate array
+  getFlatData(): number[][] {
+    let array = [];
+    for (let i = 0; i < this.points.length; i++) {
+      let n = this.points[i].length();
+      for (let j = 0; j < n; j++) {
+        array.push([this.points[i].getX(j), this.points[i].getY(j)]);
+      }
+    }
+    return array;
+  }
+
   setPointInput(pointInput: boolean): void {
     if (this.pointInput === pointInput) return;
     this.pointInput = pointInput;
@@ -641,11 +653,11 @@ export class Space2D extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "white";
-      let maxPoints = this.points[0].length();
+      let totalPoints = this.points[0].length();
       for (let i = 1; i < this.points.length; i++) {
-        if (maxPoints < this.points[i].length()) maxPoints = this.points[i].length();
+        totalPoints += this.points[i].length();
       }
-      let title = this.name + " (" + maxPoints + " points)";
+      let title = this.name + " (" + totalPoints + " points)";
       let titleWidth = ctx.measureText(title).width;
       ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }

@@ -252,6 +252,7 @@ export class StateIO {
           block.setName(state.name);
           if (state.method !== undefined) block.setMethod(state.method);
           block.setNumberOfOutputs(state.numberOfOutputs);
+          if (state.numberOfIterations !== undefined) block.setNumberOfIterations(state.numberOfIterations);
         } else if (block instanceof FFTBlock) {
           block.setSeparate(state.separate != undefined ? state.separate : true);
           block.setInverse(state.inverse != undefined ? state.inverse : false);

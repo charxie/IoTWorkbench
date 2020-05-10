@@ -31,6 +31,10 @@ export class ClusteringBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="clustering-block-outputs-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Iterations:</td>
+                  <td><input type="text" id="clustering-block-iterations-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="clustering-block-width-field" style="width: 100%"></td>
                 </tr>
@@ -52,6 +56,8 @@ export class ClusteringBlockContextMenu extends BlockContextMenu {
       methodSelector.value = block.getMethod();
       let numberOfOutputsField = document.getElementById("clustering-block-outputs-field") as HTMLInputElement;
       numberOfOutputsField.value = block.getNumberOfOutputs().toString();
+      let numberOfIterationsField = document.getElementById("clustering-block-iterations-field") as HTMLInputElement;
+      numberOfIterationsField.value = block.getNumberOfIterations().toString();
       let widthField = document.getElementById("clustering-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("clustering-block-height-field") as HTMLInputElement;
@@ -66,6 +72,14 @@ export class ClusteringBlockContextMenu extends BlockContextMenu {
         } else {
           success = false;
           message = numberOfOutputsField.value + " is not a valid number of outputs";
+        }
+        // set number of iterations
+        let numberOfIterations = parseInt(numberOfIterationsField.value);
+        if (isNumber(numberOfIterations)) {
+          block.setNumberOfIterations(Math.max(1, numberOfIterations));
+        } else {
+          success = false;
+          message = numberOfIterationsField.value + " is not a valid number of iterations";
         }
         // set width
         let w = parseInt(widthField.value);
@@ -102,6 +116,7 @@ export class ClusteringBlockContextMenu extends BlockContextMenu {
         }
       };
       numberOfOutputsField.addEventListener("keyup", enterKeyUp);
+      numberOfIterationsField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
