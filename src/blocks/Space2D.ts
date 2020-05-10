@@ -775,15 +775,15 @@ export class Space2D extends Block {
         ctx.setLineDash([]);
         ctx.lineWidth = 1;
         let r = this.dataSymbolRadii[index];
+        ctx.fillStyle = this.dataSymbolColors[index];
+        ctx.strokeStyle = this.lineColors[index];
         switch (this.dataSymbols[index]) {
           case "Circle":
             for (let i = 0; i < length; i++) {
               if (i % this.dataSymbolSpacings[index] === 0) {
                 ctx.beginPath();
                 ctx.arc((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy, r, 0, 2 * Math.PI);
-                ctx.fillStyle = this.dataSymbolColors[index];
                 ctx.fill();
-                ctx.strokeStyle = this.lineColors[index];
                 ctx.stroke();
               }
             }
@@ -793,9 +793,7 @@ export class Space2D extends Block {
               if (i % this.dataSymbolSpacings[index] === 0) {
                 ctx.beginPath();
                 ctx.rect((p.getX(i) - xmin) * dx - r, -(p.getY(i) - ymin) * dy - r, 2 * r, 2 * r);
-                ctx.fillStyle = this.dataSymbolColors[index];
                 ctx.fill();
-                ctx.strokeStyle = this.lineColors[index];
                 ctx.stroke();
               }
             }
@@ -805,7 +803,6 @@ export class Space2D extends Block {
               if (i % this.dataSymbolSpacings[index] === 0) {
                 ctx.beginPath();
                 ctx.rect((p.getX(i) - xmin) * dx - 1, -(p.getY(i) - ymin) * dy - 1, 2, 2);
-                ctx.fillStyle = this.dataSymbolColors[index];
                 ctx.fill();
               }
             }
@@ -821,9 +818,7 @@ export class Space2D extends Block {
                 ctx.lineTo(tmpX - r, tmpY + r);
                 ctx.lineTo(tmpX + r, tmpY + r);
                 ctx.closePath();
-                ctx.fillStyle = this.dataSymbolColors[index];
                 ctx.fill();
-                ctx.strokeStyle = this.lineColors[index];
                 ctx.stroke();
               }
             }
@@ -838,9 +833,7 @@ export class Space2D extends Block {
                 ctx.lineTo(tmpX - r, tmpY - r);
                 ctx.lineTo(tmpX + r, tmpY - r);
                 ctx.closePath();
-                ctx.fillStyle = this.dataSymbolColors[index];
                 ctx.fill();
-                ctx.strokeStyle = this.lineColors[index];
                 ctx.stroke();
               }
             }
@@ -856,10 +849,26 @@ export class Space2D extends Block {
                 ctx.lineTo(tmpX, tmpY - r);
                 ctx.lineTo(tmpX + r, tmpY);
                 ctx.closePath();
-                ctx.fillStyle = this.dataSymbolColors[index];
                 ctx.fill();
-                ctx.strokeStyle = this.lineColors[index];
                 ctx.stroke();
+              }
+            }
+            break;
+          case "Five-Pointed Star":
+            for (let i = 0; i < length; i++) {
+              if (i % this.dataSymbolSpacings[index] === 0) {
+                tmpX = (p.getX(i) - xmin) * dx;
+                tmpY = -(p.getY(i) - ymin) * dy;
+                Util.drawStar(ctx, tmpX, tmpY, r, 5, 2);
+              }
+            }
+            break;
+          case "Six-Pointed Star":
+            for (let i = 0; i < length; i++) {
+              if (i % this.dataSymbolSpacings[index] === 0) {
+                tmpX = (p.getX(i) - xmin) * dx;
+                tmpY = -(p.getY(i) - ymin) * dy;
+                Util.drawStar(ctx, tmpX, tmpY, r, 6, 2);
               }
             }
             break;
@@ -1080,23 +1089,21 @@ export class Space2D extends Block {
       ctx.setLineDash([]);
       let xi = x0 + 25;
       let r = this.dataSymbolRadii[i];
+      ctx.fillStyle = this.dataSymbolColors[i];
+      ctx.strokeStyle = this.lineColors[i];
       switch (this.dataSymbols[i]) {
         case "Circle":
           ctx.beginPath();
           ctx.arc(xi, yi, r, 0, 2 * Math.PI);
           ctx.closePath();
-          ctx.fillStyle = this.dataSymbolColors[i];
           ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
           ctx.stroke();
           break;
         case "Square":
           let d = 2 * r;
           ctx.beginPath();
           ctx.rect(xi - r, yi - r, d, d);
-          ctx.fillStyle = this.dataSymbolColors[i];
           ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
           ctx.stroke();
           break;
         case "Triangle Up":
@@ -1105,9 +1112,7 @@ export class Space2D extends Block {
           ctx.lineTo(xi - r, yi + r);
           ctx.lineTo(xi + r, yi + r);
           ctx.closePath();
-          ctx.fillStyle = this.dataSymbolColors[i];
           ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
           ctx.stroke();
           break;
         case "Triangle Down":
@@ -1116,9 +1121,7 @@ export class Space2D extends Block {
           ctx.lineTo(xi - r, yi - r);
           ctx.lineTo(xi + r, yi - r);
           ctx.closePath();
-          ctx.fillStyle = this.dataSymbolColors[i];
           ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
           ctx.stroke();
           break;
         case "Diamond":
@@ -1128,15 +1131,18 @@ export class Space2D extends Block {
           ctx.lineTo(xi, yi - r);
           ctx.lineTo(xi + r, yi);
           ctx.closePath();
-          ctx.fillStyle = this.dataSymbolColors[i];
           ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
           ctx.stroke();
+          break;
+        case "Five-Pointed Star":
+          Util.drawStar(ctx, xi, yi, r, 5, 2);
+          break;
+        case "Six-Pointed Star":
+          Util.drawStar(ctx, xi, yi, r, 6, 2);
           break;
         case "Dot":
           ctx.beginPath();
           ctx.rect(xi - 2, yi - 2, 4, 4);
-          ctx.fillStyle = this.dataSymbolColors[i];
           ctx.fill();
           break;
       }

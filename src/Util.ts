@@ -6,6 +6,23 @@ import $ from "jquery";
 
 export class Util {
 
+  static drawStar(ctx: CanvasRenderingContext2D, x: number, y: number, radius: number, n: number, inset): void {
+    ctx.save();
+    ctx.beginPath();
+    ctx.translate(x, y);
+    ctx.moveTo(0, radius);
+    for (let i = 0; i < n; i++) {
+      ctx.rotate(Math.PI / n);
+      ctx.lineTo(0, radius * inset);
+      ctx.rotate(Math.PI / n);
+      ctx.lineTo(0, radius);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+
   static copyStringToClipboard(s: string): void {
     const textArea = document.createElement('textarea');
     textArea.value = s;

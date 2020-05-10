@@ -120,6 +120,8 @@ export class GrapherContextMenu extends BlockContextMenu {
                       <option value="Triangle Up">Triangle Up</option>
                       <option value="Triangle Down">Triangle Down</option>
                       <option value="Diamond">Diamond</option>
+                      <option value="Five-Pointed Star">Five-Pointed Star</option>
+                      <option value="Six-Pointed Star">Six-Pointed Star</option>
                     </select>
                   </td>
                 </tr>

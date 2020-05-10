@@ -579,6 +579,8 @@ export class Grapher extends Block {
       if (this.graphSymbolSizes[i] < 0.1) continue; // don't draw if the size is too small
       let arr = this.dataArrays[i];
       let r = this.graphSymbolSizes[i];
+      ctx.fillStyle = this.graphSymbolColors[i];
+      ctx.strokeStyle = this.lineColors[i];
       switch (this.graphSymbols[i]) { // put switch outside, though the code is longer, the performance is better
         case "Circle":
           for (let k = 0; k < arr.length(); k++) {
@@ -588,9 +590,7 @@ export class Grapher extends Block {
               ctx.beginPath();
               ctx.arc(tmpX, horizontalAxisY - tmpY, r, 0, 2 * Math.PI);
               ctx.closePath();
-              ctx.fillStyle = this.graphSymbolColors[i];
               ctx.fill();
-              ctx.strokeStyle = this.lineColors[i];
               ctx.stroke();
             }
           }
@@ -603,9 +603,7 @@ export class Grapher extends Block {
               tmpY = yOffset + (arr.data[k] - min) * dy;
               ctx.beginPath();
               ctx.rect(tmpX - r, horizontalAxisY - tmpY - r, d, d);
-              ctx.fillStyle = this.graphSymbolColors[i];
               ctx.fill();
-              ctx.strokeStyle = this.lineColors[i];
               ctx.stroke();
             }
           }
@@ -620,9 +618,7 @@ export class Grapher extends Block {
               ctx.lineTo(tmpX - r, horizontalAxisY - tmpY + r);
               ctx.lineTo(tmpX + r, horizontalAxisY - tmpY + r);
               ctx.closePath();
-              ctx.fillStyle = this.graphSymbolColors[i];
               ctx.fill();
-              ctx.strokeStyle = this.lineColors[i];
               ctx.stroke();
             }
           }
@@ -637,9 +633,7 @@ export class Grapher extends Block {
               ctx.lineTo(tmpX - r, horizontalAxisY - tmpY - r);
               ctx.lineTo(tmpX + r, horizontalAxisY - tmpY - r);
               ctx.closePath();
-              ctx.fillStyle = this.graphSymbolColors[i];
               ctx.fill();
-              ctx.strokeStyle = this.lineColors[i];
               ctx.stroke();
             }
           }
@@ -655,10 +649,26 @@ export class Grapher extends Block {
               ctx.lineTo(tmpX, horizontalAxisY - tmpY - r);
               ctx.lineTo(tmpX + r, horizontalAxisY - tmpY);
               ctx.closePath();
-              ctx.fillStyle = this.graphSymbolColors[i];
               ctx.fill();
-              ctx.strokeStyle = this.lineColors[i];
               ctx.stroke();
+            }
+          }
+          break;
+        case "Five-Pointed Star":
+          for (let k = 0; k < arr.length(); k++) {
+            if (k % this.graphSymbolSpacings[i] === 0) {
+              tmpX = this.graphWindow.x + dx * k;
+              tmpY = yOffset + (arr.data[k] - min) * dy;
+              Util.drawStar(ctx, tmpX, horizontalAxisY - tmpY, r, 5, 2);
+            }
+          }
+          break;
+        case "Six-Pointed Star":
+          for (let k = 0; k < arr.length(); k++) {
+            if (k % this.graphSymbolSpacings[i] === 0) {
+              tmpX = this.graphWindow.x + dx * k;
+              tmpY = yOffset + (arr.data[k] - min) * dy;
+              Util.drawStar(ctx, tmpX, horizontalAxisY - tmpY, r, 6, 2);
             }
           }
           break;
@@ -781,23 +791,21 @@ export class Grapher extends Block {
       ctx.setLineDash([]);
       let xi = x0 + 25;
       let r = this.graphSymbolSizes[i];
+      ctx.fillStyle = this.graphSymbolColors[i];
+      ctx.strokeStyle = this.lineColors[i];
       switch (this.graphSymbols[i]) {
         case "Circle":
           ctx.beginPath();
           ctx.arc(xi, yi, r, 0, 2 * Math.PI);
           ctx.closePath();
-          ctx.fillStyle = this.graphSymbolColors[i];
           ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
           ctx.stroke();
           break;
         case "Square":
           let d = 2 * r;
           ctx.beginPath();
           ctx.rect(xi - r, yi - r, d, d);
-          ctx.fillStyle = this.graphSymbolColors[i];
           ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
           ctx.stroke();
           break;
         case "Triangle Up":
@@ -806,9 +814,7 @@ export class Grapher extends Block {
           ctx.lineTo(xi - r, yi + r);
           ctx.lineTo(xi + r, yi + r);
           ctx.closePath();
-          ctx.fillStyle = this.graphSymbolColors[i];
           ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
           ctx.stroke();
           break;
         case "Triangle Down":
@@ -817,9 +823,7 @@ export class Grapher extends Block {
           ctx.lineTo(xi - r, yi - r);
           ctx.lineTo(xi + r, yi - r);
           ctx.closePath();
-          ctx.fillStyle = this.graphSymbolColors[i];
           ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
           ctx.stroke();
           break;
         case "Diamond":
@@ -829,10 +833,14 @@ export class Grapher extends Block {
           ctx.lineTo(xi, yi - r);
           ctx.lineTo(xi + r, yi);
           ctx.closePath();
-          ctx.fillStyle = this.graphSymbolColors[i];
           ctx.fill();
-          ctx.strokeStyle = this.lineColors[i];
           ctx.stroke();
+          break;
+        case "Five-Pointed Star":
+          Util.drawStar(ctx, xi, yi, r, 5, 2);
+          break;
+        case "Six-Pointed Star":
+          Util.drawStar(ctx, xi, yi, r, 6, 2);
           break;
       }
     }
