@@ -54,6 +54,13 @@ export class ArrayInputContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="array-input-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Multidimensional Output:</td>
+                  <td colspan="2">
+                    <input type="radio" name="multidimensional-output" id="array-input-one-dimensional-output-radio-button" checked> No
+                    <input type="radio" name="multidimensional-output" id="array-input-multidimensional-output-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
                   <td>Text Color:</td>
                   <td><input type="color" id="array-input-text-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="array-input-text-color-field" style="width: 100%"></td>
@@ -86,6 +93,10 @@ export class ArrayInputContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("array-input-name-field") as HTMLInputElement;
       nameField.value = arrayInput.getName();
+      let oneDimensionalOutputRadioButton = document.getElementById("array-input-one-dimensional-output-radio-button") as HTMLInputElement;
+      oneDimensionalOutputRadioButton.checked = !arrayInput.getMultidimensionalOutput();
+      let multidimensionalOutputRadioButton = document.getElementById("array-input-multidimensional-output-radio-button") as HTMLInputElement;
+      multidimensionalOutputRadioButton.checked = arrayInput.getMultidimensionalOutput();
       let textColorField = document.getElementById("array-input-text-color-field") as HTMLInputElement;
       textColorField.value = arrayInput.getTextColor();
       let textColorChooser = document.getElementById("array-input-text-color-chooser") as HTMLInputElement;
@@ -145,6 +156,8 @@ export class ArrayInputContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           arrayInput.setName(nameField.value);
+          arrayInput.setMultidimensionalOutput(multidimensionalOutputRadioButton.checked);
+          arrayInput.setOutputPorts();
           arrayInput.locateOverlay();
           arrayInput.refreshView();
           flowchart.storeBlockStates();
@@ -170,7 +183,7 @@ export class ArrayInputContextMenu extends BlockContextMenu {
         modal: true,
         title: arrayInput.getUid(),
         height: 400,
-        width: 400,
+        width: 500,
         buttons: {
           'OK': okFunction,
           'Cancel': () => d.dialog('close')

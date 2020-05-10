@@ -27,10 +27,6 @@ export class ClusteringBlockContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
-                  <td>Inputs:</td>
-                  <td><input type="text" id="clustering-block-inputs-field" style="width: 100%"></td>
-                </tr>
-                <tr>
                   <td>Outputs:</td>
                   <td><input type="text" id="clustering-block-outputs-field" style="width: 100%"></td>
                 </tr>
@@ -54,10 +50,8 @@ export class ClusteringBlockContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let methodSelector = document.getElementById("clustering-block-method-selector") as HTMLSelectElement;
       methodSelector.value = block.getMethod();
-      let inputsField = document.getElementById("clustering-block-inputs-field") as HTMLInputElement;
-      inputsField.value = block.getNumberOfInputs().toString();
-      let outputsField = document.getElementById("clustering-block-outputs-field") as HTMLInputElement;
-      outputsField.value = block.getNumberOfOutputs().toString();
+      let numberOfOutputsField = document.getElementById("clustering-block-outputs-field") as HTMLInputElement;
+      numberOfOutputsField.value = block.getNumberOfOutputs().toString();
       let widthField = document.getElementById("clustering-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("clustering-block-height-field") as HTMLInputElement;
@@ -65,21 +59,13 @@ export class ClusteringBlockContextMenu extends BlockContextMenu {
       const okFunction = () => {
         let success = true;
         let message;
-        // set number of inputs
-        let numberOfInputs = parseInt(inputsField.value);
-        if (isNumber(numberOfInputs)) {
-          block.setNumberOfInputs(Math.max(2, numberOfInputs));
-        } else {
-          success = false;
-          message = inputsField.value + " is not a valid number of inputs";
-        }
         // set number of outputs
-        let numberOfOutputs = parseInt(outputsField.value);
+        let numberOfOutputs = parseInt(numberOfOutputsField.value);
         if (isNumber(numberOfOutputs)) {
           block.setNumberOfOutputs(Math.max(2, numberOfOutputs));
         } else {
           success = false;
-          message = outputsField.value + " is not a valid number of outputs";
+          message = numberOfOutputsField.value + " is not a valid number of outputs";
         }
         // set width
         let w = parseInt(widthField.value);
@@ -115,8 +101,7 @@ export class ClusteringBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
-      inputsField.addEventListener("keyup", enterKeyUp);
-      outputsField.addEventListener("keyup", enterKeyUp);
+      numberOfOutputsField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({

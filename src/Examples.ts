@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import k_means_clustering from "./examples/k-means-clustering.json";
+// @ts-ignore
 import pearson_correlation from "./examples/pearson-correlation.json";
 // @ts-ignore
 import regression from "./examples/regression.json";
@@ -435,6 +437,7 @@ export class Examples {
     this.files.push({name: "Statistics: Poisson Distribution", data: poisson_distribution});
     this.files.push({name: "Statistics: Regression", data: regression});
     this.files.push({name: "Statistics: Pearson Correlation", data: pearson_correlation});
+    this.files.push({name: "Statistics: K-Means Clustering", data: k_means_clustering});
     this.files.push({name: "Statistics: Random Walk in 2D", data: random_walk});
     this.files.push({name: "Statistics: Random Walk in 3D", data: random_walk_3d});
     this.files.push({name: "Sound: Make Sound with Beepers", data: make_sound_with_beepers});

@@ -10,6 +10,7 @@ import {Rectangle} from "../math/Rectangle";
 
 export class ArrayInput extends Block {
 
+  private multidimensionalOutput: boolean = false;
   private barHeight: number;
   private button: Rectangle;
   private array: any[][];
@@ -26,6 +27,7 @@ export class ArrayInput extends Block {
     readonly height: number;
     readonly marginX: number;
     readonly marginY: number;
+    readonly multidimensionalOutput: boolean;
     readonly textColor: string;
     readonly text: string;
 
@@ -38,6 +40,7 @@ export class ArrayInput extends Block {
       this.height = b.height;
       this.marginX = b.marginX;
       this.marginY = b.marginY;
+      this.multidimensionalOutput = b.multidimensionalOutput;
       this.textColor = b.textArea.style.color;
       this.text = b.textArea.value;
     }
@@ -69,6 +72,7 @@ export class ArrayInput extends Block {
 
   getCopy(): Block {
     let copy = new ArrayInput("Array Input #" + Date.now().toString(16), this.iconic, this.name, this.x, this.y, this.width, this.height);
+    copy.setMultidimensionalOutput(this.getMultidimensionalOutput());
     copy.setText(this.getText());
     copy.setTextColor(this.getTextColor());
     copy.marginX = this.marginX;
@@ -117,18 +121,28 @@ export class ArrayInput extends Block {
     this.setOutputPorts();
   }
 
-  private setOutputPorts(): void {
-    if (this.ports.length !== this.colCount) {
-      for (let p of this.ports) { // disconnect all the port connectors as the ports will be recreated
-        flowchart.removeAllConnectors(p);
+  setOutputPorts(): void {
+    if (this.multidimensionalOutput) {
+      if (this.ports.length > 1) {
+        for (let p of this.ports) { // disconnect all the port connectors as the ports will be recreated
+          flowchart.removeAllConnectors(p);
+        }
+        this.ports.length = 0;
+        this.ports.push(new Port(this, false, "A", this.width, this.height / 2, true));
       }
-      this.ports.length = 0;
-      let dh = this.height / (this.colCount + 1);
-      let firstPortName = "A";
-      let k = firstPortName.charCodeAt(0);
-      for (let i = 0; i < this.colCount; i++) {
-        let id = String.fromCharCode(k++);
-        this.ports.push(new Port(this, false, id, this.width, (i + 1) * dh, true));
+    } else {
+      if (this.ports.length !== this.colCount) {
+        for (let p of this.ports) { // disconnect all the port connectors as the ports will be recreated
+          flowchart.removeAllConnectors(p);
+        }
+        this.ports.length = 0;
+        let dh = this.height / (this.colCount + 1);
+        let firstPortName = "A";
+        let k = firstPortName.charCodeAt(0);
+        for (let i = 0; i < this.colCount; i++) {
+          let id = String.fromCharCode(k++);
+          this.ports.push(new Port(this, false, id, this.width, (i + 1) * dh, true));
+        }
       }
     }
   }
@@ -167,6 +181,14 @@ export class ArrayInput extends Block {
       flowchart.blockView.openContextMenu(e);
     }
     // if text is selected, use default
+  }
+
+  setMultidimensionalOutput(multidimensionalOutput: boolean): void {
+    this.multidimensionalOutput = multidimensionalOutput;
+  }
+
+  getMultidimensionalOutput(): boolean {
+    return this.multidimensionalOutput;
   }
 
   setTextColor(textColor: string): void {
@@ -316,19 +338,37 @@ export class ArrayInput extends Block {
   }
 
   updateModel(): void {
-    if (this.array) {
-      for (let col = 0; col < this.array.length; col++) {
-        let numbers = new Array(this.array[col].length);
-        for (let row = 0; row < numbers.length; row++) {
-          try {
-            numbers[row] = parseFloat(this.array[col][row]);
-          } catch (e) {
-            numbers[row] = this.array[col][row];
+    if (this.multidimensionalOutput) {
+      if (this.array) {
+        let numbers = new Array(this.array.length);
+        for (let col = 0; col < this.array.length; col++) {
+          numbers[col] = new Array(this.array[col].length);
+          for (let row = 0; row < numbers[col].length; row++) {
+            try {
+              numbers[col][row] = parseFloat(this.array[col][row]);
+            } catch (e) {
+              numbers[col][row] = this.array[col][row];
+            }
           }
         }
-        if (col < this.ports.length) this.ports[col].setValue(numbers);
+        this.ports[0].setValue(numbers);
+        this.updateConnectors();
       }
-      this.updateConnectors();
+    } else {
+      if (this.array) {
+        for (let col = 0; col < this.array.length; col++) {
+          let numbers = new Array(this.array[col].length);
+          for (let row = 0; row < numbers.length; row++) {
+            try {
+              numbers[row] = parseFloat(this.array[col][row]);
+            } catch (e) {
+              numbers[row] = this.array[col][row];
+            }
+          }
+          if (col < this.ports.length) this.ports[col].setValue(numbers);
+        }
+        this.updateConnectors();
+      }
     }
   }
 

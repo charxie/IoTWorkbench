@@ -251,7 +251,6 @@ export class StateIO {
         } else if (block instanceof ClusteringBlock) {
           block.setName(state.name);
           if (state.method !== undefined) block.setMethod(state.method);
-          block.setNumberOfInputs(state.numberOfInputs);
           block.setNumberOfOutputs(state.numberOfOutputs);
         } else if (block instanceof FFTBlock) {
           block.setSeparate(state.separate != undefined ? state.separate : true);
@@ -426,6 +425,7 @@ export class StateIO {
           }
         } else if (block instanceof ArrayInput) {
           block.setName(state.name);
+          if (state.multidimensionalOutput !== undefined) block.setMultidimensionalOutput(state.multidimensionalOutput);
           block.setText(state.text !== undefined ? state.text : "");
           block.setMarginX(state.marginX);
           block.setMarginY(state.marginY);
