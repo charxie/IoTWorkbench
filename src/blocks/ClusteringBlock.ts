@@ -10,9 +10,10 @@ import {flowchart} from "../Main";
 export class ClusteringBlock extends Block {
 
   private numberOfIterations: number = 1000;
-  private method: string = "K-Mean";
+  private method: string = "K-Means";
   private portI: Port[] = [];
   private portO: Port[] = [];
+  private portC: Port;
 
   static State = class {
     readonly uid: string;
@@ -45,10 +46,12 @@ export class ClusteringBlock extends Block {
     this.color = "#CEAB37";
     this.portI.push(new Port(this, true, "IA", 0, this.height / 3, false));
     this.portI.push(new Port(this, true, "IB", 0, this.height / 3 * 2, false));
-    this.portO.push(new Port(this, false, "OA", this.width, this.height / 3, true));
-    this.portO.push(new Port(this, false, "OB", this.width, this.height / 3 * 2, true));
+    this.portC = new Port(this, false, "CT", this.width, this.height / 4, true);
+    this.portO.push(new Port(this, false, "OA", this.width, this.height / 2, true));
+    this.portO.push(new Port(this, false, "OB", this.width, this.height / 4 * 3, true));
     this.ports.push(this.portI[0]);
     this.ports.push(this.portI[1]);
+    this.ports.push(this.portC);
     this.ports.push(this.portO[0]);
     this.ports.push(this.portO[1]);
     this.marginX = 25;
@@ -91,12 +94,12 @@ export class ClusteringBlock extends Block {
         }
       }
       this.portO = new Array(numberOfOutputs);
-      let dh = this.height / (numberOfOutputs + 1);
+      let dh = this.height / (numberOfOutputs + 2);
       let firstPortName = "A";
       let k = firstPortName.charCodeAt(0);
       for (let i = 0; i < numberOfOutputs; i++) {
         let id = "O" + String.fromCharCode(k++);
-        this.portO[i] = new Port(this, false, id, this.width, (i + 1) * dh, true);
+        this.portO[i] = new Port(this, false, id, this.width, (i + 2) * dh, true);
         this.ports.push(this.portO[i]);
       }
     }
@@ -131,10 +134,12 @@ export class ClusteringBlock extends Block {
       this.portI[i].setX(0);
       this.portI[i].setY((i + 1) * dh);
     }
-    dh = this.height / (this.portO.length + 1);
+    dh = this.height / (this.portO.length + 2);
+    this.portC.setX(this.width);
+    this.portC.setY(dh);
     for (let i = 0; i < this.portO.length; i++) {
       this.portO[i].setX(this.width);
-      this.portO[i].setY((i + 1) * dh);
+      this.portO[i].setY((i + 2) * dh);
     }
   }
 
@@ -143,7 +148,7 @@ export class ClusteringBlock extends Block {
     let vb = this.portI[1].getValue();
     if (Array.isArray(va) && Array.isArray(vb)) {
       switch (this.method) {
-        case "K-Mean":
+        case "K-Means":
           clustering.k(this.portO.length);
           clustering.iterations(this.numberOfIterations);
           let n = Math.min(va.length, vb.length);
@@ -153,9 +158,12 @@ export class ClusteringBlock extends Block {
           }
           clustering.data(data);
           let clusters = clustering.clusters();
+          let centroids = [];
           for (let i = 0; i < clusters.length; i++) {
             this.portO[i].setValue(clusters[i].points);
+            centroids.push(clusters[i].centroid);
           }
+          this.portC.setValue(centroids);
           break;
       }
       this.updateConnectors();

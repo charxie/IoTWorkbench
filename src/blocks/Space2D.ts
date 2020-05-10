@@ -1191,7 +1191,10 @@ export class Space2D extends Block {
           if (vp != undefined) {
             let is2DArray = Array.isArray(vp) && vp[0].constructor === Array;
             if (is2DArray) {
-
+              this.points[i].clear();
+              for (let k = 0; k < vp.length; k++) {
+                this.points[i].addPoint(vp[k][0], vp[k][1]);
+              }
             } else {
               if (vp instanceof Vector) {
                 vp = vp.getValues();

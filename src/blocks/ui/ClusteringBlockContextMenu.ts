@@ -22,7 +22,7 @@ export class ClusteringBlockContextMenu extends BlockContextMenu {
                   <td>Method:</td>
                   <td>
                     <select id="clustering-block-method-selector" style="width: 100%">
-                      <option value="K-Mean">K-Mean</option>
+                      <option value="K-Means">K-Means</option>
                     </select>
                   </td>
                 </tr>
@@ -68,7 +68,7 @@ export class ClusteringBlockContextMenu extends BlockContextMenu {
         // set number of inputs
         let numberOfInputs = parseInt(inputsField.value);
         if (isNumber(numberOfInputs)) {
-          block.setNumberOfInputs(Math.max(1, numberOfInputs));
+          block.setNumberOfInputs(Math.max(2, numberOfInputs));
         } else {
           success = false;
           message = inputsField.value + " is not a valid number of inputs";
@@ -76,7 +76,7 @@ export class ClusteringBlockContextMenu extends BlockContextMenu {
         // set number of outputs
         let numberOfOutputs = parseInt(outputsField.value);
         if (isNumber(numberOfOutputs)) {
-          block.setNumberOfOutputs(Math.max(1, numberOfOutputs));
+          block.setNumberOfOutputs(Math.max(2, numberOfOutputs));
         } else {
           success = false;
           message = outputsField.value + " is not a valid number of outputs";
