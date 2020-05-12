@@ -332,8 +332,10 @@ export class Space2D extends Block {
   }
 
   isImagePortConnected(): boolean {
-    for (let p of this.portImages) {
-      if (flowchart.getConnectorWithInput(p) !== null) return true;
+    if (this.portImages) {
+      for (let p of this.portImages) {
+        if (flowchart.getConnectorWithInput(p) !== null) return true;
+      }
     }
     return false;
   }

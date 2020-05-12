@@ -8,6 +8,7 @@ import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {Util} from "../../Util";
 import {Space3D} from "../Space3D";
 import {PngSaver} from "../../tools/PngSaver";
+import {CsvSaver} from "../../tools/CsvSaver";
 
 export class Space3DContextMenu extends BlockContextMenu {
 
@@ -32,6 +33,9 @@ export class Space3DContextMenu extends BlockContextMenu {
               </li>
               <li class="menu-separator"></li>` + this.getLayerMenu() + `<li class="menu-separator"></li>
               <li class="menu-item">
+                <button type="button" class="menu-btn" id="${this.id}-save-data-button"><i class="fas fa-table"></i><span class="menu-text">Save Data</span></button>
+              </li>
+              <li class="menu-item">
                 <button type="button" class="menu-btn" id="${this.id}-save-image-button"><i class="fas fa-camera"></i><span class="menu-text">Save Image</span></button>
               </li>
               <li class="menu-item">
@@ -48,6 +52,8 @@ export class Space3DContextMenu extends BlockContextMenu {
     resetViewAngleButton.addEventListener("click", this.resetViewAngleButtonClick.bind(this), false);
     let saveImageButton = document.getElementById(this.id + "-save-image-button");
     saveImageButton.addEventListener("click", this.saveImageButtonClick.bind(this), false);
+    let saveDataButton = document.getElementById(this.id + "-save-data-button");
+    saveDataButton.addEventListener("click", this.saveDataButtonClick.bind(this), false);
   }
 
   private resetViewAngleButtonClick(): void {
@@ -66,6 +72,12 @@ export class Space3DContextMenu extends BlockContextMenu {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
     PngSaver.saveAs((<Space3D>this.block).toCanvas());
+  }
+
+  private saveDataButtonClick(): void {
+    // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
+    closeAllContextMenus();
+    CsvSaver.saveAs((<Space3D>this.block).getFlatData());
   }
 
   protected getPropertiesUI(): string {

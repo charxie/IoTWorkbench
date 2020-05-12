@@ -259,8 +259,10 @@ export class Space3D extends Basic3DBlock {
   }
 
   isImagePortConnected(): boolean {
-    for (let p of this.portImages) {
-      if (flowchart.getConnectorWithInput(p) !== null) return true;
+    if (this.portImages) {
+      for (let p of this.portImages) {
+        if (flowchart.getConnectorWithInput(p) !== null) return true;
+      }
     }
     return false;
   }
@@ -474,29 +476,48 @@ export class Space3D extends Basic3DBlock {
     }
   }
 
+  // return all the data points in a coordinate array
+  getFlatData(): number[][] {
+    return (<LinePlot>this.view).getFlatData();
+  }
+
   updateModel(): void {
     if (this.pointInput) { // point input mode (support multiple curves, but it doesn't accept array as inputs)
       if (this.portPoints != undefined) {
         for (let i = 0; i < this.portPoints.length; i++) {
           let vp = this.portPoints[i].getValue();
           if (vp != undefined) {
-            if (vp instanceof Vector) {
-              vp = vp.getValues();
-            }
-            if (Array.isArray(vp) && vp.length > 1) {
-              let v = (<LinePlot>this.view).getLatestPoint(i);
-              if ((v !== null && (vp[0] !== v.x || vp[1] !== v.y || vp[2] !== v.z)) || v === null) {
-                this.tempX = vp[0];
-                this.tempY = vp[1];
-                this.tempZ = vp[2];
+            let is2DArray = Array.isArray(vp) && vp[0].constructor === Array;
+            if (is2DArray) {
+              (<LinePlot>this.view).clearDataPoints(i);
+              for (let k = 0; k < vp.length; k++) {
+                if (vp[k].length === 3) {
+                  (<LinePlot>this.view).addPoint(i, vp[k][0], vp[k][1], vp[k][2]);
+                } else if (vp[k].length === 2) {
+                  (<LinePlot>this.view).addPoint(i, vp[k][0], vp[k][1], 0);
+                } else if (vp[k].length === 1) {
+                  (<LinePlot>this.view).addPoint(i, vp[k][0], 0, 0);
+                }
               }
-            }
-            if (this.tempX != undefined && this.tempY != undefined && this.tempZ != undefined) {
-              //console.log(i+"="+this.portPoints[i].getUid()+","+this.tempX + "," + this.tempY);
-              (<LinePlot>this.view).addPoint(i, this.tempX, this.tempY, this.tempZ);
-              this.tempX = undefined;
-              this.tempY = undefined;
-              this.tempZ = undefined;
+            } else {
+              if (vp instanceof Vector) {
+                vp = vp.getValues();
+              }
+              if (Array.isArray(vp) && vp.length > 1) {
+                let v = (<LinePlot>this.view).getLatestPoint(i);
+                if ((v !== null && (vp[0] !== v.x || vp[1] !== v.y || vp[2] !== v.z)) || v === null) {
+                  this.tempX = vp[0];
+                  this.tempY = vp[1];
+                  this.tempZ = vp[2];
+                }
+              }
+              if (this.tempX != undefined && this.tempY != undefined && this.tempZ != undefined) {
+                //console.log(i+"="+this.portPoints[i].getUid()+","+this.tempX + "," + this.tempY);
+                (<LinePlot>this.view).addPoint(i, this.tempX, this.tempY, this.tempZ);
+                this.tempX = undefined;
+                this.tempY = undefined;
+                this.tempZ = undefined;
+              }
             }
           }
         }

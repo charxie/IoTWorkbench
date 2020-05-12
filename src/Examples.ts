@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import k_means_clustering_3d from "./examples/k-means-clustering-3d.json";
+// @ts-ignore
 import k_means_clustering from "./examples/k-means-clustering.json";
 // @ts-ignore
 import pearson_correlation from "./examples/pearson-correlation.json";
@@ -432,12 +434,13 @@ export class Examples {
     this.files.push({name: "Statistics: Pie Chart", data: pie_chart});
     this.files.push({name: "Statistics: Word Cloud", data: word_cloud});
     this.files.push({name: "Statistics: Box-Muller Transform", data: box_muller_transform});
-    this.files.push({name: "Statistics: Normal Distributions", data: normal_distributions});
+    this.files.push({name: "Statistics: Normal Distribution in 2D", data: normal_distributions});
     this.files.push({name: "Statistics: Normal Distribution in 3D", data: normal_distribution_3d});
     this.files.push({name: "Statistics: Poisson Distribution", data: poisson_distribution});
     this.files.push({name: "Statistics: Regression", data: regression});
     this.files.push({name: "Statistics: Pearson Correlation", data: pearson_correlation});
-    this.files.push({name: "Statistics: K-Means Clustering", data: k_means_clustering});
+    this.files.push({name: "Statistics: K-Means Clustering in 2D", data: k_means_clustering});
+    this.files.push({name: "Statistics: K-Means Clustering in 3D", data: k_means_clustering_3d});
     this.files.push({name: "Statistics: Random Walk in 2D", data: random_walk});
     this.files.push({name: "Statistics: Random Walk in 3D", data: random_walk_3d});
     this.files.push({name: "Sound: Make Sound with Beepers", data: make_sound_with_beepers});

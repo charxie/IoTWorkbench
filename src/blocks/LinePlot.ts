@@ -81,6 +81,24 @@ export class LinePlot extends Basic3D {
     }
   }
 
+  clearDataPoints(i: number): void {
+    if (this.points !== undefined && i < this.points.length && i >= 0) {
+      this.points[i].clear();
+    }
+  }
+
+  // return all the data points in a coordinate array
+  getFlatData(): number[][] {
+    let array = [];
+    for (let i = 0; i < this.points.length; i++) {
+      let n = this.points[i].length();
+      for (let j = 0; j < n; j++) {
+        array.push([this.points[i].getX(j), this.points[i].getY(j), this.points[i].getZ(j)]);
+      }
+    }
+    return array;
+  }
+
   destroy(): void {
     super.destroy();
     this.erase();
