@@ -62,6 +62,13 @@ export class HeatMapContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="heat-map-y-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Rotate:</td>
+                  <td colspan="2">
+                    <input type="radio" name="rotate" id="heat-map-no-rotate-radio-button" checked> No
+                    <input type="radio" name="rotate" id="heat-map-rotate-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
                   <td>Color Scheme:</td>
                   <td colspan="2">
                     <select id="heat-map-color-scheme-selector" style="width: 100%">
@@ -131,6 +138,10 @@ export class HeatMapContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("heat-map-name-field") as HTMLInputElement;
       nameField.value = g.getName();
+      let noRotateRadioButton = document.getElementById("heat-map-no-rotate-radio-button") as HTMLInputElement;
+      noRotateRadioButton.checked = !g.isRotated();
+      let rotateRadioButton = document.getElementById("heat-map-rotate-radio-button") as HTMLInputElement;
+      rotateRadioButton.checked = g.isRotated();
       let xAxisLableField = document.getElementById("heat-map-x-axis-label-field") as HTMLInputElement;
       xAxisLableField.value = g.getXAxisLabel();
       let yAxisLableField = document.getElementById("heat-map-y-axis-label-field") as HTMLInputElement;
@@ -168,6 +179,7 @@ export class HeatMapContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           g.setName(nameField.value);
+          g.setRotated(rotateRadioButton.checked);
           g.setXAxisLabel(xAxisLableField.value);
           g.setYAxisLabel(yAxisLableField.value);
           g.setColorScheme(colorSchemeSelector.value)
@@ -196,7 +208,7 @@ export class HeatMapContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: g.getUid(),
-        height: 350,
+        height: 480,
         width: 450,
         buttons: {
           'OK': okFunction,

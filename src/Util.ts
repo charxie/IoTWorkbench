@@ -199,6 +199,10 @@ export class Util {
     return /^#[0-9A-F]{6}$/i.test(s);
   }
 
+  static invertHexColor(hex: string): string {
+    return (Number(`0x1${hex}`) ^ 0xFFFFFF).toString(16).substr(1).toUpperCase();
+  }
+
   static getHexColor(colorName: string): string | false {
     let a = document.createElement('div');
     a.style.color = colorName;

@@ -245,6 +245,7 @@ export class StateIO {
           block.setViewWindowColor(state.viewWindowColor);
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
+          block.setRotated(state.rotated);
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);

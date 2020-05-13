@@ -35,8 +35,13 @@ export class HeatMap extends Block {
   private ymax: number;
   private xinc: number;
   private yinc: number;
+  private nx: number;
+  private ny: number;
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
+  private rotated: boolean = false;
+  private mouseOverX: number;
+  private mouseOverY: number;
 
   static State = class {
     readonly name: string;
@@ -49,6 +54,7 @@ export class HeatMap extends Block {
     readonly viewWindowColor: string;
     readonly xAxisLabel: string;
     readonly yAxisLabel: string;
+    readonly rotated: boolean;
 
     constructor(b: HeatMap) {
       this.name = b.name;
@@ -61,6 +67,7 @@ export class HeatMap extends Block {
       this.viewWindowColor = b.viewWindowColor;
       this.xAxisLabel = b.xAxisLabel;
       this.yAxisLabel = b.yAxisLabel;
+      this.rotated = b.rotated;
     }
   };
 
@@ -82,6 +89,7 @@ export class HeatMap extends Block {
     copy.viewWindowColor = this.viewWindowColor;
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
+    copy.rotated = this.rotated;
     return copy;
   }
 
@@ -94,6 +102,14 @@ export class HeatMap extends Block {
   }
 
   erase(): void {
+  }
+
+  setRotated(rotated: boolean): void {
+    this.rotated = rotated;
+  }
+
+  isRotated(): boolean {
+    return this.rotated;
   }
 
   setXAxisLabel(xAxisLabel: string): void {
@@ -114,14 +130,16 @@ export class HeatMap extends Block {
 
   setWidth(width: number): void {
     super.setWidth(width)
-    this.viewMargin.left = this.viewMargin.right = 10;
+    this.viewMargin.left = 40;
+    this.viewMargin.right = 10;
     this.viewWindow.width = this.width - this.viewMargin.left - this.viewMargin.right;
   }
 
   setHeight(height: number): void {
     super.setHeight(height);
     this.barHeight = Math.min(30, this.height / 3);
-    this.viewMargin.top = this.viewMargin.bottom = 10;
+    this.viewMargin.top = 10;
+    this.viewMargin.bottom = 40;
     this.viewWindow.height = this.height - this.barHeight - this.viewMargin.top - this.viewMargin.bottom;
   }
 
@@ -211,6 +229,37 @@ export class HeatMap extends Block {
     }
 
     if (this.selected) {
+      if (this.mouseOverX !== undefined && this.mouseOverY !== undefined) {
+        if(this.rotated) {
+          let kx = Math.round((this.mouseOverX - this.xmin) / this.xinc);
+          let ky = Math.round((this.mouseOverY - this.ymin) / this.yinc);
+          let kxy = this.nx * ky + kx;
+          if (kxy < this.cellValues.length && kxy >= 0) {
+            ctx.font = "12px Arial";
+            let reading = this.cellValues[kxy].toPrecision(3);
+            let rx = kx / this.nx * this.viewWindow.width + this.cellSize / 2;
+            let ry = this.viewWindow.height - ky / this.ny * this.viewWindow.height - this.cellSize / 2;
+            ctx.fillStyle = "black";
+            ctx.fillRoundedRect(this.viewWindow.x + rx - 18, this.viewWindow.y + ry - 14, 36, 20, 4);
+            ctx.fillStyle = "white";
+            ctx.fillText(reading, this.viewWindow.x + rx - ctx.measureText(reading).width / 2, this.viewWindow.y + ry);
+          }
+        } else {
+          let kx = Math.round((this.mouseOverY - this.ymin) / this.yinc);
+          let ky = Math.round((this.mouseOverX - this.xmin) / this.xinc);
+          let kxy = this.ny * kx + ky;
+          if (kxy < this.cellValues.length && kxy >= 0) {
+            ctx.font = "12px Arial";
+            let reading = this.cellValues[kxy].toPrecision(3);
+            let rx = kx / this.nx * this.viewWindow.width + this.cellSize / 2;
+            let ry = this.viewWindow.height - ky / this.ny * this.viewWindow.height - this.cellSize / 2;
+            ctx.fillStyle = "black";
+            ctx.fillRoundedRect(this.viewWindow.x + rx - 18, this.viewWindow.y + ry - 14, 36, 20, 4);
+            ctx.fillStyle = "white";
+            ctx.fillText(reading, this.viewWindow.x + rx - ctx.measureText(reading).width / 2, this.viewWindow.y + ry);
+          }
+        }
+      }
       this.highlightSelection(ctx);
     }
 
@@ -234,7 +283,8 @@ export class HeatMap extends Block {
     for (let i = 0; i < this.cellPositions.length; i++) {
       ctx.beginPath();
       ctx.fillStyle = color(this.cellValues[i]);
-      ctx.rect(this.viewWindow.x + this.cellPositions[i].x * this.cellSize + gap, this.viewWindow.y + this.cellPositions[i].y * this.cellSize + gap,
+      ctx.rect(this.viewWindow.x + this.cellPositions[i].x * this.cellSize + gap,
+        this.viewWindow.y + this.viewWindow.height - (this.cellPositions[i].y + 1) * this.cellSize + gap,
         this.cellSize - 2 * gap, this.cellSize - 2 * gap);
       ctx.fill();
     }
@@ -274,30 +324,61 @@ export class HeatMap extends Block {
     let dx, dy;
     this.cellPositions = [];
     this.cellValues = [];
-    for (let i = 0; i < rows; i++) {
-      if (this.xmin > this.data[0][i]) {
-        this.xmin = this.data[0][i];
+    if (this.rotated) {
+      for (let i = 0; i < rows; i++) {
+        if (this.xmin > this.data[1][i]) {
+          this.xmin = this.data[1][i];
+        }
+        if (this.xmax < this.data[1][i]) {
+          this.xmax = this.data[1][i];
+        }
+        if (this.ymin > this.data[0][i]) {
+          this.ymin = this.data[0][i];
+        }
+        if (this.ymax < this.data[0][i]) {
+          this.ymax = this.data[0][i];
+        }
+        for (let j = i + 1; j < rows; j++) {
+          dx = Math.abs(this.data[1][j] - this.data[1][i]);
+          dy = Math.abs(this.data[0][j] - this.data[0][i]);
+          if (dx !== 0 && dx < this.xinc) this.xinc = dx;
+          if (dy !== 0 && dy < this.yinc) this.yinc = dy;
+        }
       }
-      if (this.xmax < this.data[0][i]) {
-        this.xmax = this.data[0][i];
-      }
-      if (this.ymin > this.data[1][i]) {
-        this.ymin = this.data[1][i];
-      }
-      if (this.ymax < this.data[1][i]) {
-        this.ymax = this.data[1][i];
-      }
-      for (let j = i + 1; j < rows; j++) {
-        dx = Math.abs(this.data[0][j] - this.data[0][i]);
-        dy = Math.abs(this.data[1][j] - this.data[1][i]);
-        if (dx !== 0 && dx < this.xinc) this.xinc = dx;
-        if (dy !== 0 && dy < this.yinc) this.yinc = dy;
+    } else {
+      for (let i = 0; i < rows; i++) {
+        if (this.xmin > this.data[0][i]) {
+          this.xmin = this.data[0][i];
+        }
+        if (this.xmax < this.data[0][i]) {
+          this.xmax = this.data[0][i];
+        }
+        if (this.ymin > this.data[1][i]) {
+          this.ymin = this.data[1][i];
+        }
+        if (this.ymax < this.data[1][i]) {
+          this.ymax = this.data[1][i];
+        }
+        for (let j = i + 1; j < rows; j++) {
+          dx = Math.abs(this.data[0][j] - this.data[0][i]);
+          dy = Math.abs(this.data[1][j] - this.data[1][i]);
+          if (dx !== 0 && dx < this.xinc) this.xinc = dx;
+          if (dy !== 0 && dy < this.yinc) this.yinc = dy;
+        }
       }
     }
-    let nx = (this.xmax - this.xmin) / this.xinc + 1;
-    let ny = (this.ymax - this.ymin) / this.yinc + 1;
+    this.nx = (this.xmax - this.xmin) / this.xinc + 1;
+    this.ny = (this.ymax - this.ymin) / this.yinc + 1;
+    if (this.rotated) {
+      for (let i = 0; i < rows; i++) {
+        this.cellPositions.push(new Point((this.data[1][i] - this.xmin) / this.xinc, (this.data[0][i] - this.ymin) / this.yinc));
+      }
+    } else {
+      for (let i = 0; i < rows; i++) {
+        this.cellPositions.push(new Point((this.data[0][i] - this.xmin) / this.xinc, (this.data[1][i] - this.ymin) / this.yinc));
+      }
+    }
     for (let i = 0; i < rows; i++) {
-      this.cellPositions.push(new Point((this.data[0][i] - this.xmin) / this.xinc, (this.data[1][i] - this.ymin) / this.yinc));
       this.cellValues.push(this.data[2][i]);
     }
     if (this.viewWindow.x === 0 && this.viewWindow.y === 0) {
@@ -306,7 +387,7 @@ export class HeatMap extends Block {
       this.viewWindow.width = this.width - this.viewMargin.left - this.viewMargin.right;
       this.viewWindow.height = this.height - this.barHeight - this.viewMargin.top - this.viewMargin.bottom;
     }
-    this.cellSize = Math.min(this.viewWindow.width / nx, this.viewWindow.height / ny);
+    this.cellSize = Math.min(this.viewWindow.width / this.nx, this.viewWindow.height / this.ny);
   }
 
   updateModel(): void {
@@ -333,6 +414,38 @@ export class HeatMap extends Block {
   setColorScheme(colorScheme: string): void {
     this.colorScheme = colorScheme;
     this.interpolateColor = ColorSchemes.getInterpolateColorScheme(colorScheme);
+  }
+
+  mouseMove(e: MouseEvent): void {
+    this.setToolTip(e);
+  }
+
+  mouseDown(e: MouseEvent): boolean {
+    this.setToolTip(e);
+    return false;
+  }
+
+  private setToolTip(e: MouseEvent): void {
+    if (this.data !== undefined) {
+      // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+      let rect = flowchart.blockView.canvas.getBoundingClientRect();
+      if (this.rotated) {
+        let kx = Math.round((e.clientX - rect.left - this.viewWindow.x - this.cellSize / 2) / this.viewWindow.width * this.nx);
+        let ky = this.ny - Math.round((e.clientY - rect.top - this.viewWindow.y + this.cellSize / 2) / this.viewWindow.height * this.ny);
+        if (kx >= 0 && kx < this.nx && ky >= 0 && ky < this.ny) {
+          this.mouseOverX = this.xmin + kx * this.xinc;
+          this.mouseOverY = this.ymin + ky * this.yinc;
+        }
+      } else {
+        let ky = Math.round((e.clientX - rect.left - this.viewWindow.x - this.cellSize / 2) / this.viewWindow.width * this.nx);
+        let kx = this.ny - Math.round((e.clientY - rect.top - this.viewWindow.y + this.cellSize / 2) / this.viewWindow.height * this.ny);
+        if (kx >= 0 && kx < this.ny && ky >= 0 && ky < this.nx) {
+          this.mouseOverX = this.xmin + kx * this.xinc;
+          this.mouseOverY = this.ymin + ky * this.yinc;
+        }
+      }
+    }
+    flowchart.blockView.requestDraw();
   }
 
 }
