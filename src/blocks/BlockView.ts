@@ -72,6 +72,7 @@ import {RegressionBlock} from "./RegressionBlock";
 import {CorrelationBlock} from "./CorrelationBlock";
 import {StringInput} from "./StringInput";
 import {ClusteringBlock} from "./ClusteringBlock";
+import {HeatMap} from "./HeatMap";
 
 export class BlockView {
 
@@ -343,6 +344,9 @@ export class BlockView {
         break;
       case "pie-chart-block":
         b = this.addBlockUndoable(new PieChart("Pie Chart #" + timestamp, "Pie Chart", x - 100, y - 110, 200, 220));
+        break;
+      case "heat-map-block":
+        b = this.addBlockUndoable(new HeatMap("Heat Map #" + timestamp, "Heat Map", x - 100, y - 110, 200, 220));
         break;
       case "space2d-block":
         b = this.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));

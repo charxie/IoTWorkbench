@@ -71,6 +71,7 @@ import {RegressionBlock} from "./RegressionBlock";
 import {CorrelationBlock} from "./CorrelationBlock";
 import {StringInput} from "./StringInput";
 import {ClusteringBlock} from "./ClusteringBlock";
+import {HeatMap} from "./HeatMap";
 
 export class Flowchart {
 
@@ -308,7 +309,7 @@ export class Flowchart {
   erase(invoker: Block): void {
     for (let b of this.blocks) {
       if (flowchart.areBlocksConnected(invoker, b)) {
-        if (b instanceof Space2D || b instanceof Space3D || b instanceof Histogram || b instanceof PieChart) {
+        if (b instanceof Space2D || b instanceof Space3D || b instanceof Histogram || b instanceof PieChart || b instanceof HeatMap) {
           b.erase();
         } else if (b instanceof Sticker) {
           if (b.getKeepResult()) {
@@ -925,6 +926,9 @@ export class Flowchart {
       case "Pie Chart":
         block = new PieChart(uid, name, x, y, 200, 220);
         break;
+      case "Heat Map":
+        block = new HeatMap(uid, name, x, y, 200, 220);
+        break;
       case "Space2D":
         block = new Space2D(uid, name, x, y, 200, 220);
         break;
@@ -1068,6 +1072,8 @@ export class Flowchart {
         blockStates.push(new Histogram.State(b));
       } else if (b instanceof PieChart) {
         blockStates.push(new PieChart.State(b));
+      } else if (b instanceof HeatMap) {
+        blockStates.push(new HeatMap.State(b));
       } else if (b instanceof Space2D) {
         blockStates.push(new Space2D.State(b));
       } else if (b instanceof Space3D) {

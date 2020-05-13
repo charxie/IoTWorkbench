@@ -60,6 +60,7 @@ import {RegressionBlock} from "../RegressionBlock";
 import {CorrelationBlock} from "../CorrelationBlock";
 import {StringInput} from "../StringInput";
 import {ClusteringBlock} from "../ClusteringBlock";
+import {HeatMap} from "../HeatMap";
 
 export class BlockElementsPanel {
 
@@ -106,6 +107,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="box-plot-block" title="Box Plot" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="histogram-block" title="Histogram" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="pie-chart-block" title="Pie Chart" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="heat-map-block" title="Heat Map" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="space2d-block" title="Space2D" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="space3d-block" title="Space3D" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="field2d-block" title="Contour Plot" width="60px" height="60px" style="cursor: pointer;"/></td>
@@ -190,6 +192,7 @@ export class BlockElementsPanel {
     this.drawBoundaryConditionBlock("Boundary Condition Block", "boundary-condition-block");
     this.drawHistogram("Histogram", "histogram-block");
     this.drawPieChart("Pie Chart", "pie-chart-block");
+    this.drawHeatMap("Heat Map", "heat-map-block");
     this.drawSpace2D("Space2D", "space2d-block");
     this.drawSpace3D("Space3D", "space3d-block");
     this.drawField2D("Field2D", "field2d-block");
@@ -441,6 +444,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new PieChart("Pie Chart Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawHeatMap(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new HeatMap("Heat Map Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

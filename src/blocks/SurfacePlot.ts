@@ -6,6 +6,7 @@
 import * as d3 from 'd3';
 import {Basic3D} from "./Basic3D";
 import {Color, DoubleSide, Face3, Geometry, Material, Mesh, MeshPhongMaterial, Vector3} from "three";
+import {ColorSchemes} from "./ColorSchemes";
 
 export class SurfacePlot extends Basic3D {
 
@@ -192,122 +193,7 @@ export class SurfacePlot extends Basic3D {
   }
 
   setInterpolateColorScheme(scheme: string): void {
-    switch (scheme) {
-      case "Reds":
-        this.interpolateColor = d3.interpolateReds;
-        break;
-      case "Greens":
-        this.interpolateColor = d3.interpolateGreens;
-        break;
-      case "Blues":
-        this.interpolateColor = d3.interpolateBlues;
-        break;
-      case "Greys":
-        this.interpolateColor = d3.interpolateGreys;
-        break;
-      case "Oranges":
-        this.interpolateColor = d3.interpolateOranges;
-        break;
-      case "Purples":
-        this.interpolateColor = d3.interpolatePurples;
-        break;
-      case "RdYlBu":
-        this.interpolateColor = d3.interpolateRdYlBu;
-        break;
-      case "RdYlGn":
-        this.interpolateColor = d3.interpolateRdYlGn;
-        break;
-      case "RdGy":
-        this.interpolateColor = d3.interpolateRdGy;
-        break;
-      case "RdBu":
-        this.interpolateColor = d3.interpolateRdBu;
-        break;
-      case "PuOr":
-        this.interpolateColor = d3.interpolatePuOr;
-        break;
-      case "PiYG":
-        this.interpolateColor = d3.interpolatePiYG;
-        break;
-      case "PRGn":
-        this.interpolateColor = d3.interpolatePRGn;
-        break;
-      case "BrBG":
-        this.interpolateColor = d3.interpolateBrBG;
-        break;
-      case "YlOrRd":
-        this.interpolateColor = d3.interpolateYlOrRd;
-        break;
-      case "YlOrBr":
-        this.interpolateColor = d3.interpolateYlOrBr;
-        break;
-      case "PuRd":
-        this.interpolateColor = d3.interpolatePuRd;
-        break;
-      case "RdPu":
-        this.interpolateColor = d3.interpolateRdPu;
-        break;
-      case "YlGnBu":
-        this.interpolateColor = d3.interpolateYlGnBu;
-        break;
-      case "YlGn":
-        this.interpolateColor = d3.interpolateYlGn;
-        break;
-      case "BuGn":
-        this.interpolateColor = d3.interpolateBuGn;
-        break;
-      case "OrRd":
-        this.interpolateColor = d3.interpolateOrRd;
-        break;
-      case "GnBu":
-        this.interpolateColor = d3.interpolateGnBu;
-        break;
-      case "BuPu":
-        this.interpolateColor = d3.interpolateBuPu;
-        break;
-      case "PuBu":
-        this.interpolateColor = d3.interpolatePuBu;
-        break;
-      case "PuBuGn":
-        this.interpolateColor = d3.interpolatePuBuGn;
-        break;
-      case "Rainbow":
-        this.interpolateColor = d3.interpolateRainbow;
-        break;
-      case "Sinebow":
-        this.interpolateColor = d3.interpolateSinebow;
-        break;
-      case "Cubehelix":
-        this.interpolateColor = d3.interpolateCubehelixDefault;
-        break;
-      case "Warm":
-        this.interpolateColor = d3.interpolateWarm;
-        break;
-      case "Cool":
-        this.interpolateColor = d3.interpolateCool;
-        break;
-      case "Cividis":
-        this.interpolateColor = d3.interpolateCividis;
-        break;
-      case "Viridis":
-        this.interpolateColor = d3.interpolateViridis;
-        break;
-      case "Spectral":
-        this.interpolateColor = d3.interpolateSpectral;
-        break;
-      case "Inferno":
-        this.interpolateColor = d3.interpolateInferno;
-        break;
-      case "Magma":
-        this.interpolateColor = d3.interpolateMagma;
-        break;
-      case "Plasma":
-        this.interpolateColor = d3.interpolatePlasma;
-        break;
-      default:
-        this.interpolateColor = d3.interpolateTurbo;
-        break;
-    }
+    this.interpolateColor = ColorSchemes.getInterpolateColorScheme(scheme);
   }
 
 }

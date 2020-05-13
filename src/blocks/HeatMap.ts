@@ -3,7 +3,6 @@
  */
 
 import * as d3 from 'd3';
-import * as cloud from 'd3-cloud';
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
@@ -11,12 +10,9 @@ import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
 import {ColorSchemes} from "./ColorSchemes";
 
-export class WordCloud extends Block {
+export class HeatMap extends Block {
 
-  private static readonly stopwords = "i,me,my,myself,we,us,our,ours,ourselves,you,your,yours,yourself,yourselves,he,him,his,himself,she,her,hers,herself,it,its,itself,they,them,their,theirs,themselves,what,which,who,whom,whose,this,that,these,those,am,is,are,was,were,be,been,being,have,has,had,having,do,does,did,doing,will,would,should,can,could,ought,i'm,you're,he's,she's,it's,we're,they're,i've,you've,we've,they've,i'd,you'd,he'd,she'd,we'd,they'd,i'll,you'll,he'll,she'll,we'll,they'll,isn't,aren't,wasn't,weren't,hasn't,haven't,hadn't,doesn't,don't,didn't,won't,wouldn't,shan't,shouldn't,can't,cannot,couldn't,mustn't,let's,that's,who's,what's,here's,there's,when's,where's,why's,how's,a,an,the,and,but,if,or,because,as,until,while,of,at,by,for,with,about,against,between,into,through,during,before,after,above,below,to,from,up,upon,down,in,out,on,off,over,under,again,further,then,once,here,there,when,where,why,how,all,any,both,each,few,more,most,other,some,such,no,nor,not,only,own,same,so,than,too,very,say,says,said,shall";
   private portI: Port;
-  private words: string[];
-  private wordCount: { [key: string]: number; } = {};
   private viewWindowColor: string = "white";
   private viewWindow: Rectangle;
   private barHeight: number;
@@ -26,15 +22,8 @@ export class WordCloud extends Block {
     top: <number>4,
     bottom: <number>4
   };
-  private cloudInstance;
-  private layout;
-  private wordColors;
-  private wordScales;
-  private wordProperties = [];
   private interpolateColor = d3.interpolatePuRd;
   private colorScheme: string = "PuRd";
-  private alignment: string = "Random";
-  private exclusion: string[] = [];
 
   static State = class {
     readonly name: string;
@@ -43,20 +32,16 @@ export class WordCloud extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
-    readonly exclusion: string[];
-    readonly alignment: string;
     readonly colorScheme: string;
     readonly viewWindowColor: string;
 
-    constructor(b: WordCloud) {
+    constructor(b: HeatMap) {
       this.name = b.name;
       this.uid = b.uid;
       this.x = b.x;
       this.y = b.y;
       this.width = b.width;
       this.height = b.height;
-      this.exclusion = b.exclusion;
-      this.alignment = b.alignment;
       this.colorScheme = b.colorScheme;
       this.viewWindowColor = b.viewWindowColor;
     }
@@ -65,20 +50,17 @@ export class WordCloud extends Block {
   constructor(uid: string, name: string, x: number, y: number, width: number, height: number) {
     super(uid, x, y, width, height);
     this.name = name;
-    this.color = "#EECCDD";
+    this.color = "#F96";
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 2;
     this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false)
     this.ports.push(this.portI);
     this.marginX = 25;
-    this.cloudInstance = cloud.default();
     this.viewWindow = new Rectangle(0, 0, 1, 1);
   }
 
   getCopy(): Block {
-    let copy = new WordCloud("Wordcloud #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
-    copy.exclusion = [...this.exclusion];
-    copy.alignment = this.alignment;
+    let copy = new HeatMap("Heat Map #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.colorScheme = this.colorScheme;
     copy.viewWindowColor = this.viewWindowColor;
     return copy;
@@ -95,14 +77,6 @@ export class WordCloud extends Block {
   erase(): void {
   }
 
-  setExclusion(exclusion: string[]): void {
-    this.exclusion = [...exclusion];
-  }
-
-  getExclusion(): string[] {
-    return this.exclusion.slice();
-  }
-
   setWidth(width: number): void {
     super.setWidth(width)
     this.viewMargin.left = this.viewMargin.right = 10;
@@ -114,14 +88,6 @@ export class WordCloud extends Block {
     this.barHeight = Math.min(30, this.height / 3);
     this.viewMargin.top = this.viewMargin.bottom = 10;
     this.viewWindow.height = this.height - this.barHeight - this.viewMargin.top - this.viewMargin.bottom;
-  }
-
-  setAlignment(alignment: string): void {
-    this.alignment = alignment;
-  }
-
-  getAlignment(): string {
-    return this.alignment;
   }
 
   setViewWindowColor(viewWindowColor: string): void {
@@ -153,10 +119,8 @@ export class WordCloud extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "white";
-      let count = Object.keys(this.wordCount).length;
-      let title = this.name + (count <= 0 ? "" : " (" + count + " words)");
-      let titleWidth = ctx.measureText(title).width;
-      ctx.fillText(title, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
+      let titleWidth = ctx.measureText(this.name).width;
+      ctx.fillText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
 
     // draw the space
@@ -176,29 +140,28 @@ export class WordCloud extends Block {
     ctx.strokeStyle = "black";
     ctx.stroke();
     if (this.iconic) {
-      ctx.fillStyle = "black";
-      ctx.font = "8px Arial";
-      let h = ctx.measureText("M").width - 2;
-      ctx.fillText("W", this.viewWindow.x + this.viewWindow.width / 2 - ctx.measureText("W").width / 2, this.viewWindow.y + this.viewWindow.height / 2 + h / 2);
+      let xc = this.viewWindow.x + this.viewWindow.width / 2;
+      let yc = this.viewWindow.y + this.viewWindow.height / 2;
+      ctx.beginPath();
+      ctx.fillStyle = "red";
+      ctx.rect(xc - 6.5, yc - 6.5, 6, 6);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.fillStyle = "green";
+      ctx.rect(xc + 0.5, yc - 6.5, 6, 6);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.fillStyle = "blue";
+      ctx.rect(xc - 6.5, yc + 0.5, 6, 6);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.fillStyle = "orange";
+      ctx.rect(xc + 0.5, yc + 0.5, 6, 6);
+      ctx.fill();
     }
 
-    // draw wordcloud
+    // draw heat map
     if (!this.iconic) {
-      if (this.layout !== undefined) {
-        ctx.save();
-        ctx.translate(this.viewWindow.x + this.viewWindow.width / 2, this.viewWindow.y + this.viewWindow.height / 2)
-        for (let d of this.wordProperties) {
-          ctx.save();
-          ctx.font = d.size + "px " + d.font;
-          ctx.fillStyle = this.wordColors(d.value);
-          ctx.translate(d.x, d.y);
-          ctx.rotate(d.rotate * Math.PI / 180);
-          let textWidth = ctx.measureText(d.key).width;
-          ctx.fillText(d.key, -textWidth / 2, 0);
-          ctx.restore();
-        }
-        ctx.restore();
-      }
     }
 
     // draw the port
@@ -219,49 +182,9 @@ export class WordCloud extends Block {
   }
 
   updateModel(): void {
-    let text = this.portI.getValue();
-    if (text === undefined || typeof text !== "string") return;
-    this.words = text.split(/[ '\-\(\)\*":;\[\]|{},.!?\n]+/);
-    this.wordCount = {};
-    if (this.words.length === 1) {
-      this.wordCount[this.words[0]] = 1;
-    } else {
-      this.words.forEach(word => {
-        word = word.toLowerCase();
-        if (word !== "" && WordCloud.stopwords.indexOf(word) === -1 && this.exclusion.indexOf(word) === -1 && word.length > 1) {
-          if (this.wordCount[word]) {
-            this.wordCount[word]++;
-          } else {
-            this.wordCount[word] = 1;
-          }
-        }
-      })
-    }
-    let count = Object.keys(this.wordCount).length;
-    if (count > 0) {
-      let shorterSide = Math.min(this.viewWindow.width, this.viewWindow.height);
-      this.wordScales = d3.scaleLinear().domain([0, d3.max(d3.entries(this.wordCount), d => d.value)]).range([10, shorterSide / 5]);
-      this.wordColors = d3.scaleLinear().domain([0, d3.max(d3.entries(this.wordCount), d => d.value)]).interpolate(() => this.interpolateColor);
-      this.wordProperties.length = 0;
-      this.layout = this.cloudInstance.size([this.viewWindow.width, this.viewWindow.height])
-        .words(d3.entries(this.wordCount))
-        .font("Impact")
-        .padding(5)
-        .fontSize(d => this.wordScales(d.value))
-        .text(d => d.key)
-        .on("word", d => this.wordProperties.push(d));
-      switch (this.alignment) {
-        case "Horizontal":
-          this.layout.rotate(0);
-          break;
-        case "Vertical":
-          this.layout.rotate(90);
-          break;
-        case "Random":
-          this.layout.rotate(() => (~~(Math.random() * 6) - 3) * 30);
-          break;
-      }
-      this.layout.start();
+    let data = this.portI.getValue();
+    if (data !== undefined && Array.isArray(data) && Array.isArray(data[0])) {
+
     }
   }
 

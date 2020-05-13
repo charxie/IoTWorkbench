@@ -63,6 +63,7 @@ import {RegressionBlockContextMenu} from "./blocks/ui/RegressionBlockContextMenu
 import {CorrelationBlockContextMenu} from "./blocks/ui/CorrelationBlockContextMenu";
 import {StringInputContextMenu} from "./blocks/ui/StringInputContextMenu";
 import {ClusteringBlockContextMenu} from "./blocks/ui/ClusteringBlockContextMenu";
+import {HeatMapContextMenu} from "./blocks/ui/HeatMapContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -114,6 +115,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("box-plot-context-menu-placeholder", blockPlayground);
   addPlaceholder("histogram-context-menu-placeholder", blockPlayground);
   addPlaceholder("pie-chart-context-menu-placeholder", blockPlayground);
+  addPlaceholder("heat-map-context-menu-placeholder", blockPlayground);
   addPlaceholder("space2d-context-menu-placeholder", blockPlayground);
   addPlaceholder("space3d-context-menu-placeholder", blockPlayground);
   addPlaceholder("field2d-context-menu-placeholder", blockPlayground);
@@ -358,6 +360,11 @@ function setupContextMenuForBlocks() {
   pieChartContextMenu.render("pie-chart-context-menu-placeholder");
   pieChartContextMenu.addListeners();
   contextMenus.pieChart = pieChartContextMenu;
+
+  let heatMapContextMenu = new HeatMapContextMenu();
+  heatMapContextMenu.render("heat-map-context-menu-placeholder");
+  heatMapContextMenu.addListeners();
+  contextMenus.heatMap = heatMapContextMenu;
 
   let space2dContextMenu = new Space2DContextMenu();
   space2dContextMenu.render("space2d-context-menu-placeholder");

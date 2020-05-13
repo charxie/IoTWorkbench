@@ -64,6 +64,7 @@ import {RegressionBlock} from "./RegressionBlock";
 import {CorrelationBlock} from "./CorrelationBlock";
 import {StringInput} from "./StringInput";
 import {ClusteringBlock} from "./ClusteringBlock";
+import {HeatMap} from "./HeatMap";
 
 export class BlockUtilities {
 
@@ -166,6 +167,9 @@ export class BlockUtilities {
     }
     if (block instanceof PieChart) {
       return contextMenus.pieChart;
+    }
+    if (block instanceof HeatMap) {
+      return contextMenus.heatMap;
     }
     if (block instanceof Space2D) {
       return contextMenus.space2d;
@@ -380,6 +384,10 @@ export class BlockUtilities {
     if (block instanceof PieChart) {
       contextMenus.pieChart.block = block;
       return document.getElementById("pie-chart-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof HeatMap) {
+      contextMenus.heatMap.block = block;
+      return document.getElementById("heat-map-context-menu") as HTMLMenuElement;
     }
     if (block instanceof Space2D) {
       contextMenus.space2d.block = block;
