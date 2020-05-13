@@ -54,6 +54,14 @@ export class HeatMapContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="heat-map-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>X-Axis Label:</td>
+                  <td colspan="2"><input type="text" id="heat-map-x-axis-label-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Y-Axis Label:</td>
+                  <td colspan="2"><input type="text" id="heat-map-y-axis-label-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Color Scheme:</td>
                   <td colspan="2">
                     <select id="heat-map-color-scheme-selector" style="width: 100%">
@@ -123,6 +131,10 @@ export class HeatMapContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("heat-map-name-field") as HTMLInputElement;
       nameField.value = g.getName();
+      let xAxisLableField = document.getElementById("heat-map-x-axis-label-field") as HTMLInputElement;
+      xAxisLableField.value = g.getXAxisLabel();
+      let yAxisLableField = document.getElementById("heat-map-y-axis-label-field") as HTMLInputElement;
+      yAxisLableField.value = g.getYAxisLabel();
       let colorSchemeSelector = document.getElementById("heat-map-color-scheme-selector") as HTMLSelectElement;
       colorSchemeSelector.value = g.getColorScheme();
       let windowColorField = document.getElementById("heat-map-window-color-field") as HTMLInputElement;
@@ -156,6 +168,8 @@ export class HeatMapContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           g.setName(nameField.value);
+          g.setXAxisLabel(xAxisLableField.value);
+          g.setYAxisLabel(yAxisLableField.value);
           g.setColorScheme(colorSchemeSelector.value)
           g.setViewWindowColor(windowColorField.value);
           g.updateModel();
@@ -173,6 +187,8 @@ export class HeatMapContextMenu extends BlockContextMenu {
         }
       };
       nameField.addEventListener("keyup", enterKeyUp);
+      xAxisLableField.addEventListener("keyup", enterKeyUp);
+      yAxisLableField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);

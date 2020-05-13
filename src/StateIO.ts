@@ -61,6 +61,7 @@ import {RegressionBlock} from "./blocks/RegressionBlock";
 import {CorrelationBlock} from "./blocks/CorrelationBlock";
 import {StringInput} from "./blocks/StringInput";
 import {ClusteringBlock} from "./blocks/ClusteringBlock";
+import {HeatMap} from "./blocks/HeatMap";
 
 export class StateIO {
 
@@ -238,6 +239,12 @@ export class StateIO {
           if (state.labels !== undefined) block.setLabels(state.labels);
           if (state.donutLabel !== undefined) block.setDonutLabel(state.donutLabel);
           if (state.innerRadius !== undefined) block.setInnerRadius(state.innerRadius);
+        } else if (block instanceof HeatMap) {
+          block.setName(state.name);
+          block.setColorScheme(state.colorScheme);
+          block.setViewWindowColor(state.viewWindowColor);
+          block.setXAxisLabel(state.xAxisLabel);
+          block.setYAxisLabel(state.yAxisLabel);
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);

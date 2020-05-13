@@ -33,8 +33,10 @@ export class HeatMap extends Block {
   private xmax: number;
   private ymin: number;
   private ymax: number;
-  private zmin: number;
-  private zmax: number;
+  private xinc: number;
+  private yinc: number;
+  private xAxisLabel: string = "x";
+  private yAxisLabel: string = "y";
 
   static State = class {
     readonly name: string;
@@ -45,6 +47,8 @@ export class HeatMap extends Block {
     readonly height: number;
     readonly colorScheme: string;
     readonly viewWindowColor: string;
+    readonly xAxisLabel: string;
+    readonly yAxisLabel: string;
 
     constructor(b: HeatMap) {
       this.name = b.name;
@@ -55,6 +59,8 @@ export class HeatMap extends Block {
       this.height = b.height;
       this.colorScheme = b.colorScheme;
       this.viewWindowColor = b.viewWindowColor;
+      this.xAxisLabel = b.xAxisLabel;
+      this.yAxisLabel = b.yAxisLabel;
     }
   };
 
@@ -74,6 +80,8 @@ export class HeatMap extends Block {
     let copy = new HeatMap("Heat Map #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.colorScheme = this.colorScheme;
     copy.viewWindowColor = this.viewWindowColor;
+    copy.xAxisLabel = this.xAxisLabel;
+    copy.yAxisLabel = this.yAxisLabel;
     return copy;
   }
 
@@ -86,6 +94,22 @@ export class HeatMap extends Block {
   }
 
   erase(): void {
+  }
+
+  setXAxisLabel(xAxisLabel: string): void {
+    this.xAxisLabel = xAxisLabel;
+  }
+
+  getXAxisLabel(): string {
+    return this.xAxisLabel;
+  }
+
+  setYAxisLabel(yAxisLabel: string): void {
+    this.yAxisLabel = yAxisLabel;
+  }
+
+  getYAxisLabel(): string {
+    return this.yAxisLabel;
   }
 
   setWidth(width: number): void {
@@ -173,6 +197,7 @@ export class HeatMap extends Block {
 
     // draw heat map
     if (!this.iconic) {
+      this.drawAxisLabels(ctx);
       if (this.cellPositions !== undefined) {
         this.drawHeatMap(ctx);
       }
@@ -191,6 +216,18 @@ export class HeatMap extends Block {
 
   }
 
+  private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
+    ctx.font = "italic 15px Times New Roman";
+    ctx.fillStyle = "black";
+    let horizontalAxisY = this.height - this.viewMargin.bottom;
+    ctx.fillText(this.xAxisLabel, this.viewWindow.x + (this.viewWindow.width - ctx.measureText(this.xAxisLabel).width) / 2, this.y + horizontalAxisY + 25);
+    ctx.save();
+    ctx.translate(this.x + 20, this.viewWindow.y + (this.viewWindow.height + ctx.measureText(this.yAxisLabel).width) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(this.yAxisLabel, 0, 0);
+    ctx.restore();
+  }
+
   private drawHeatMap(ctx: CanvasRenderingContext2D): void {
     let gap = 2;
     let color = d3.scaleLinear().domain(d3.extent(this.cellValues)).interpolate(() => this.interpolateColor);
@@ -201,6 +238,26 @@ export class HeatMap extends Block {
         this.cellSize - 2 * gap, this.cellSize - 2 * gap);
       ctx.fill();
     }
+    ctx.fillStyle = "black";
+    ctx.font = "9px Arial";
+    let h = ctx.measureText("M").width / 2;
+    let x = this.xmin;
+    let label;
+    let count = 0;
+    do {
+      label = x.toString();
+      ctx.fillText(label, this.viewWindow.x + (count + 0.5) * this.cellSize - ctx.measureText(label).width / 2, this.viewWindow.y + this.viewWindow.height + h + 6);
+      x += this.xinc;
+      count++;
+    } while (x <= this.xmax);
+    let y = this.ymin;
+    count = 0;
+    do {
+      label = y.toString();
+      ctx.fillText(label, this.viewWindow.x - ctx.measureText(label).width - 4, this.viewWindow.y + this.viewWindow.height - (count + 0.5) * this.cellSize + h);
+      y += this.yinc;
+      count++;
+    } while (y <= this.ymax);
   }
 
   onDraggableArea(x: number, y: number): boolean {
@@ -211,8 +268,10 @@ export class HeatMap extends Block {
     let cols = this.data.length;
     if (cols < 3) return;
     let rows = this.data[0].length;
-    this.xmin = this.ymin = this.zmin = Number.MAX_VALUE;
-    this.xmax = this.ymax = this.zmax = -Number.MAX_VALUE;
+    this.xmin = this.ymin = Number.MAX_VALUE;
+    this.xmax = this.ymax = -Number.MAX_VALUE;
+    this.xinc = this.yinc = Number.MAX_VALUE;
+    let dx, dy;
     this.cellPositions = [];
     this.cellValues = [];
     for (let i = 0; i < rows; i++) {
@@ -228,22 +287,24 @@ export class HeatMap extends Block {
       if (this.ymax < this.data[1][i]) {
         this.ymax = this.data[1][i];
       }
-      if (this.zmin > this.data[2][i]) {
-        this.zmin = this.data[2][i];
-      }
-      if (this.zmax < this.data[2][i]) {
-        this.zmax = this.data[2][i];
+      for (let j = i + 1; j < rows; j++) {
+        dx = Math.abs(this.data[0][j] - this.data[0][i]);
+        dy = Math.abs(this.data[1][j] - this.data[1][i]);
+        if (dx !== 0 && dx < this.xinc) this.xinc = dx;
+        if (dy !== 0 && dy < this.yinc) this.yinc = dy;
       }
     }
+    let nx = (this.xmax - this.xmin) / this.xinc + 1;
+    let ny = (this.ymax - this.ymin) / this.yinc + 1;
     for (let i = 0; i < rows; i++) {
-      this.cellPositions.push(new Point(this.data[0][i] - this.xmin, this.data[1][i] - this.ymin));
+      this.cellPositions.push(new Point((this.data[0][i] - this.xmin) / this.xinc, (this.data[1][i] - this.ymin) / this.yinc));
       this.cellValues.push(this.data[2][i]);
     }
-    let nx = this.xmax - this.xmin + 1;
-    let ny = this.ymax - this.ymin + 1;
     if (this.viewWindow.x === 0 && this.viewWindow.y === 0) {
       this.viewWindow.x = this.x + this.viewMargin.left;
       this.viewWindow.y = this.y + this.barHeight + this.viewMargin.top;
+      this.viewWindow.width = this.width - this.viewMargin.left - this.viewMargin.right;
+      this.viewWindow.height = this.height - this.barHeight - this.viewMargin.top - this.viewMargin.bottom;
     }
     this.cellSize = Math.min(this.viewWindow.width / nx, this.viewWindow.height / ny);
   }
@@ -258,8 +319,8 @@ export class HeatMap extends Block {
   refreshView(): void {
     super.refreshView();
     this.viewMargin.top = 10;
-    this.viewMargin.bottom = 10;
-    this.viewMargin.left = 10;
+    this.viewMargin.bottom = 40;
+    this.viewMargin.left = 40;
     this.viewMargin.right = 10;
     let dh = (this.height - this.barHeight) / 2;
     this.portI.setY(this.barHeight + dh);
