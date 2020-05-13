@@ -9,6 +9,7 @@ import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
 import {ColorSchemes} from "./ColorSchemes";
+import {Point} from "../math/Point";
 
 export class HeatMap extends Block {
 
@@ -24,6 +25,16 @@ export class HeatMap extends Block {
   };
   private interpolateColor = d3.interpolatePuRd;
   private colorScheme: string = "PuRd";
+  private cellSize: number;
+  private cellPositions: Point[];
+  private cellValues: number[]
+  private data: number[][];
+  private xmin: number;
+  private xmax: number;
+  private ymin: number;
+  private ymax: number;
+  private zmin: number;
+  private zmax: number;
 
   static State = class {
     readonly name: string;
@@ -162,6 +173,9 @@ export class HeatMap extends Block {
 
     // draw heat map
     if (!this.iconic) {
+      if (this.cellPositions !== undefined) {
+        this.drawHeatMap(ctx);
+      }
     }
 
     // draw the port
@@ -177,14 +191,67 @@ export class HeatMap extends Block {
 
   }
 
+  private drawHeatMap(ctx: CanvasRenderingContext2D): void {
+    let gap = 2;
+    let color = d3.scaleLinear().domain(d3.extent(this.cellValues)).interpolate(() => this.interpolateColor);
+    for (let i = 0; i < this.cellPositions.length; i++) {
+      ctx.beginPath();
+      ctx.fillStyle = color(this.cellValues[i]);
+      ctx.rect(this.viewWindow.x + this.cellPositions[i].x * this.cellSize + gap, this.viewWindow.y + this.cellPositions[i].y * this.cellSize + gap,
+        this.cellSize - 2 * gap, this.cellSize - 2 * gap);
+      ctx.fill();
+    }
+  }
+
   onDraggableArea(x: number, y: number): boolean {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
   }
 
-  updateModel(): void {
-    let data = this.portI.getValue();
-    if (data !== undefined && Array.isArray(data) && Array.isArray(data[0])) {
+  private createCells(): void {
+    let cols = this.data.length;
+    if (cols < 3) return;
+    let rows = this.data[0].length;
+    this.xmin = this.ymin = this.zmin = Number.MAX_VALUE;
+    this.xmax = this.ymax = this.zmax = -Number.MAX_VALUE;
+    this.cellPositions = [];
+    this.cellValues = [];
+    for (let i = 0; i < rows; i++) {
+      if (this.xmin > this.data[0][i]) {
+        this.xmin = this.data[0][i];
+      }
+      if (this.xmax < this.data[0][i]) {
+        this.xmax = this.data[0][i];
+      }
+      if (this.ymin > this.data[1][i]) {
+        this.ymin = this.data[1][i];
+      }
+      if (this.ymax < this.data[1][i]) {
+        this.ymax = this.data[1][i];
+      }
+      if (this.zmin > this.data[2][i]) {
+        this.zmin = this.data[2][i];
+      }
+      if (this.zmax < this.data[2][i]) {
+        this.zmax = this.data[2][i];
+      }
+    }
+    for (let i = 0; i < rows; i++) {
+      this.cellPositions.push(new Point(this.data[0][i] - this.xmin, this.data[1][i] - this.ymin));
+      this.cellValues.push(this.data[2][i]);
+    }
+    let nx = this.xmax - this.xmin + 1;
+    let ny = this.ymax - this.ymin + 1;
+    if (this.viewWindow.x === 0 && this.viewWindow.y === 0) {
+      this.viewWindow.x = this.x + this.viewMargin.left;
+      this.viewWindow.y = this.y + this.barHeight + this.viewMargin.top;
+    }
+    this.cellSize = Math.min(this.viewWindow.width / nx, this.viewWindow.height / ny);
+  }
 
+  updateModel(): void {
+    this.data = this.portI.getValue();
+    if (this.data !== undefined && Array.isArray(this.data) && Array.isArray(this.data[0])) {
+      this.createCells();
     }
   }
 

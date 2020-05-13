@@ -180,7 +180,7 @@ export class HeatMapContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: g.getUid(),
-        height: 550,
+        height: 350,
         width: 450,
         buttons: {
           'OK': okFunction,

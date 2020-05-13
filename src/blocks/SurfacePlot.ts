@@ -163,9 +163,7 @@ export class SurfacePlot extends Basic3D {
     }
 
     // scale values to (0, 1) for coloring
-    let color = d3.scaleLinear().domain(d3.extent(this.scaledValues)).interpolate(() => {
-      return this.interpolateColor;
-    });
+    let color = d3.scaleLinear().domain(d3.extent(this.scaledValues)).interpolate(() => this.interpolateColor);
 
     // add cell faces (2 traingles per cell) to geometry
     for (let j = 0; j < ny - 1; j++) {
