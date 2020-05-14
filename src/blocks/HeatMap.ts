@@ -136,6 +136,7 @@ export class HeatMap extends Block {
     this.viewMargin.left = 40;
     this.viewMargin.right = 10;
     this.viewWindow.width = this.width - this.viewMargin.left - this.viewMargin.right;
+    this.resize();
   }
 
   setHeight(height: number): void {
@@ -144,6 +145,25 @@ export class HeatMap extends Block {
     this.viewMargin.top = 10;
     this.viewMargin.bottom = 40;
     this.viewWindow.height = this.height - this.barHeight - this.viewMargin.top - this.viewMargin.bottom;
+    this.resize();
+  }
+
+  private resize(): void {
+    if (this.data === undefined || this.data.length < 3) return;
+    let rows = this.data[0].length;
+    let colX, colY;
+    if (this.rotated) {
+      colX = 1; // second column should be x
+      colY = 0; // first column should be y
+    } else {
+      colX = 0; // first column should be x
+      colY = 1; // second column should be y
+    }
+    for (let i = 0; i < rows; i++) {
+      this.cellPositions[i].x = (this.data[colX][i] - this.xmin) / this.xinc;
+      this.cellPositions[i].y = (this.data[colY][i] - this.ymin) / this.yinc;
+    }
+    this.cellSize = Math.min(this.viewWindow.width / this.nx, this.viewWindow.height / this.ny);
   }
 
   setViewWindowColor(viewWindowColor: string): void {
