@@ -35,6 +35,7 @@ export class BivariateFunctionBlockContextMenu extends BlockContextMenu {
                   <td>
                     <input type="radio" name="output-array" id="bivariate-function-block-output-1d-radio-button" checked> 1D
                     <input type="radio" name="output-array" id="bivariate-function-block-output-2d-radio-button"> 2D
+                    <input type="radio" name="output-array" id="bivariate-function-block-output-xyz-radio-button"> XYZ
                   </td>
                 </tr>
                 <tr>
@@ -65,6 +66,8 @@ export class BivariateFunctionBlockContextMenu extends BlockContextMenu {
       output1DRadioButton.checked = block.getOutputArrayType() === "1D";
       let output2DRadioButton = document.getElementById("bivariate-function-block-output-2d-radio-button") as HTMLInputElement;
       output2DRadioButton.checked = block.getOutputArrayType() === "2D";
+      let outputXyzRadioButton = document.getElementById("bivariate-function-block-output-xyz-radio-button") as HTMLInputElement;
+      outputXyzRadioButton.checked = block.getOutputArrayType() === "XYZ";
       let widthField = document.getElementById("bivariate-function-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("bivariate-function-block-height-field") as HTMLInputElement;
@@ -101,7 +104,8 @@ export class BivariateFunctionBlockContextMenu extends BlockContextMenu {
         // finish up
         if (success) {
           if (output1DRadioButton.checked) block.setOutputArrayType("1D");
-          if (output2DRadioButton.checked) block.setOutputArrayType("2D");
+          else if (output2DRadioButton.checked) block.setOutputArrayType("2D");
+          else if (outputXyzRadioButton.checked) block.setOutputArrayType("XYZ");
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.storeBlockStates();
