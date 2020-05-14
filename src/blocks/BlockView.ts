@@ -73,6 +73,7 @@ import {CorrelationBlock} from "./CorrelationBlock";
 import {StringInput} from "./StringInput";
 import {ClusteringBlock} from "./ClusteringBlock";
 import {HeatMap} from "./HeatMap";
+import {BubblePlot} from "./BubblePlot";
 
 export class BlockView {
 
@@ -311,6 +312,9 @@ export class BlockView {
         break;
       case "box-plot-block":
         b = this.addBlockUndoable(new BoxPlot("Box Plot #" + timestamp, "Box Plot", x - 100, y - 80, 200, 160));
+        break;
+      case "bubble-plot-block":
+        b = this.addBlockUndoable(new BubblePlot("Bubble Plot #" + timestamp, "Bubble Plot", x - 100, y - 80, 200, 160));
         break;
       case "integral-block":
         b = this.addBlockUndoable(new IntegralBlock("Integral Block #" + timestamp, x - 50, y - 40, 100, 80));

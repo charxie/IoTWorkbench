@@ -62,6 +62,7 @@ import {CorrelationBlock} from "./blocks/CorrelationBlock";
 import {StringInput} from "./blocks/StringInput";
 import {ClusteringBlock} from "./blocks/ClusteringBlock";
 import {HeatMap} from "./blocks/HeatMap";
+import {BubblePlot} from "./blocks/BubblePlot";
 
 export class StateIO {
 
@@ -211,6 +212,18 @@ export class StateIO {
           if (state.lineWidths != undefined) block.setLineWidths(state.lineWidths);
           if (state.boxColors != undefined) block.setBoxColors(state.boxColors);
           block.setDataPortNumber(state.dataPortNumber);
+        } else if (block instanceof BubblePlot) {
+          block.setName(state.name);
+          block.setBubbleType(state.bubbleType);
+          block.setBubbleColor(state.bubbleColor);
+          block.setAutoScale(state.autoscale);
+          block.setXAxisLabel(state.xAxisLabel);
+          block.setYAxisLabel(state.yAxisLabel);
+          block.setMinimumXValue(state.minimumXValue);
+          block.setMaximumXValue(state.maximumXValue);
+          block.setMinimumYValue(state.minimumYValue);
+          block.setMaximumYValue(state.maximumYValue);
+          block.setViewWindowColor(state.viewWindowColor);
         } else if (block instanceof Histogram) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);

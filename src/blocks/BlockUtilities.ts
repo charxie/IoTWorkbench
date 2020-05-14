@@ -65,6 +65,7 @@ import {CorrelationBlock} from "./CorrelationBlock";
 import {StringInput} from "./StringInput";
 import {ClusteringBlock} from "./ClusteringBlock";
 import {HeatMap} from "./HeatMap";
+import {BubblePlot} from "./BubblePlot";
 
 export class BlockUtilities {
 
@@ -134,6 +135,9 @@ export class BlockUtilities {
     }
     if (block instanceof BoxPlot) {
       return contextMenus.boxPlot;
+    }
+    if (block instanceof BubblePlot) {
+      return contextMenus.bubblePlot;
     }
     if (block instanceof IntegralBlock) {
       return contextMenus.integralBlock;
@@ -340,6 +344,10 @@ export class BlockUtilities {
     if (block instanceof BoxPlot) {
       contextMenus.boxPlot.block = block;
       return document.getElementById("box-plot-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof BubblePlot) {
+      contextMenus.bubblePlot.block = block;
+      return document.getElementById("bubble-plot-context-menu") as HTMLMenuElement;
     }
     if (block instanceof IntegralBlock) {
       contextMenus.integralBlock.block = block;

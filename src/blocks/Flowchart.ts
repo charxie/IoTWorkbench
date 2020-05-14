@@ -72,6 +72,7 @@ import {CorrelationBlock} from "./CorrelationBlock";
 import {StringInput} from "./StringInput";
 import {ClusteringBlock} from "./ClusteringBlock";
 import {HeatMap} from "./HeatMap";
+import {BubblePlot} from "./BubblePlot";
 
 export class Flowchart {
 
@@ -893,6 +894,9 @@ export class Flowchart {
       case "Box Plot":
         block = new BoxPlot(uid, name, x, y, 200, 160);
         break;
+      case "Bubble Plot":
+        block = new BubblePlot(uid, name, x, y, 200, 160);
+        break;
       case "Integral Block":
         block = new IntegralBlock(uid, x, y, 200, 160);
         break;
@@ -1050,6 +1054,8 @@ export class Flowchart {
         blockStates.push(new Grapher.State(b));
       } else if (b instanceof BoxPlot) {
         blockStates.push(new BoxPlot.State(b));
+      } else if (b instanceof BubblePlot) {
+        blockStates.push(new BubblePlot.State(b));
       } else if (b instanceof IntegralBlock) {
         blockStates.push(new IntegralBlock.State(b));
       } else if (b instanceof RegressionBlock) {

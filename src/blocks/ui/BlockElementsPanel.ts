@@ -61,6 +61,7 @@ import {CorrelationBlock} from "../CorrelationBlock";
 import {StringInput} from "../StringInput";
 import {ClusteringBlock} from "../ClusteringBlock";
 import {HeatMap} from "../HeatMap";
+import {BubblePlot} from "../BubblePlot";
 
 export class BlockElementsPanel {
 
@@ -104,6 +105,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="array-input-block" title="Array Input" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="string-input-block" title="String Input" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="grapher-block" title="Grapher" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="bubble-plot-block" title="Bubble Plot" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="box-plot-block" title="Box Plot" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="histogram-block" title="Histogram" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="pie-chart-block" title="Pie Chart" width="60px" height="60px" style="cursor: pointer;"/></td>
@@ -181,6 +183,7 @@ export class BlockElementsPanel {
     this.drawBeeper("Beeper", "beeper-block");
     this.drawGrapher("Grapher", "grapher-block");
     this.drawBoxPlot("Box Plot", "box-plot-block");
+    this.drawBubblePlot("Bubble Plot", "bubble-plot-block");
     this.drawIntegralBlock("Integral Block", "integral-block");
     this.drawRegressionBlock("Regression Block", "regression-block");
     this.drawCorrelationBlock("Correlation Block", "correlation-block");
@@ -460,6 +463,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new BoxPlot("Box Plot Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawBubblePlot(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new BubblePlot("Bubble Plot Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

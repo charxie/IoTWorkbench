@@ -64,6 +64,7 @@ import {CorrelationBlockContextMenu} from "./blocks/ui/CorrelationBlockContextMe
 import {StringInputContextMenu} from "./blocks/ui/StringInputContextMenu";
 import {ClusteringBlockContextMenu} from "./blocks/ui/ClusteringBlockContextMenu";
 import {HeatMapContextMenu} from "./blocks/ui/HeatMapContextMenu";
+import {BubblePlotContextMenu} from "./blocks/ui/BubblePlotContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -113,6 +114,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("boundary-condition-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("grapher-context-menu-placeholder", blockPlayground);
   addPlaceholder("box-plot-context-menu-placeholder", blockPlayground);
+  addPlaceholder("bubble-plot-context-menu-placeholder", blockPlayground);
   addPlaceholder("histogram-context-menu-placeholder", blockPlayground);
   addPlaceholder("pie-chart-context-menu-placeholder", blockPlayground);
   addPlaceholder("heat-map-context-menu-placeholder", blockPlayground);
@@ -305,6 +307,11 @@ function setupContextMenuForBlocks() {
   boxPlotContextMenu.render("box-plot-context-menu-placeholder");
   boxPlotContextMenu.addListeners();
   contextMenus.boxPlot = boxPlotContextMenu;
+
+  let bubblePlotContextMenu = new BubblePlotContextMenu();
+  bubblePlotContextMenu.render("bubble-plot-context-menu-placeholder");
+  bubblePlotContextMenu.addListeners();
+  contextMenus.bubblePlot = bubblePlotContextMenu;
 
   let integralBlockContextMenu = new IntegralBlockContextMenu();
   integralBlockContextMenu.render("integral-block-context-menu-placeholder");
