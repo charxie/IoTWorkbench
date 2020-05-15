@@ -298,186 +298,190 @@ export class BubblePlot extends Block {
     if (this.iconic) {
       ctx.fillStyle = "white";
     } else {
+
       this.drawAxisLabels(ctx);
       if (this.showGridLines) {
         this.drawGridLines(ctx);
       }
-    }
 
-    // detect minimum and maximum of x and y values from all inputs and calculate the scale factor
-    let xmin;
-    let xmax;
-    let ymin;
-    let ymax;
-    let zmin = Number.MAX_VALUE;
-    let zmax = -zmin;
-    if (this.autoscale && this.points.length() > 0) {
-      let xminxmax = this.points.getXminXmax();
-      xmin = xminxmax.min;
-      xmax = xminxmax.max;
-      let yminymax = this.points.getYminYmax();
-      ymin = yminymax.min;
-      ymax = yminymax.max;
-      for (let z of this.values) {
-        if (z > zmax) {
-          zmax = z;
+      // detect minimum and maximum of x and y values from all inputs and calculate the scale factor
+      let xmin;
+      let xmax;
+      let ymin;
+      let ymax;
+      let zmin = Number.MAX_VALUE;
+      let zmax = -zmin;
+      if (this.autoscale && this.points.length() > 0) {
+        let xminxmax = this.points.getXminXmax();
+        xmin = xminxmax.min;
+        xmax = xminxmax.max;
+        let yminymax = this.points.getYminYmax();
+        ymin = yminymax.min;
+        ymax = yminymax.max;
+        for (let z of this.values) {
+          if (z > zmax) {
+            zmax = z;
+          }
+          if (z < zmin) {
+            zmin = z;
+          }
         }
-        if (z < zmin) {
-          zmin = z;
-        }
+      } else {
+        xmin = this.minimumXValue;
+        xmax = this.maximumXValue;
+        ymin = this.minimumYValue;
+        ymax = this.maximumYValue;
+        zmin = this.minimumZValue;
+        zmax = this.maximumZValue;
       }
-    } else {
-      xmin = this.minimumXValue;
-      xmax = this.maximumXValue;
-      ymin = this.minimumYValue;
-      ymax = this.maximumYValue;
-      zmin = this.minimumZValue;
-      zmax = this.maximumZValue;
-    }
-    let dx = xmax === xmin ? 1 : this.viewWindow.width / (xmax - xmin);
-    let dy = ymax === ymin ? 1 : this.viewWindow.height / (ymax - ymin);
+      let dx = xmax === xmin ? 1 : this.viewWindow.width / (xmax - xmin);
+      let dy = ymax === ymin ? 1 : this.viewWindow.height / (ymax - ymin);
 
-    // draw bubbles
-    ctx.save();
-    ctx.translate(this.viewWindow.x, this.viewWindow.y + this.viewWindow.height);
-    let length = this.points.length();
-    if (length > 1) {
-      let scale = d3.scaleLinear().domain([zmin, zmax]).range([this.minimumBubbleRadius, this.maximumBubbleRadius]);
-      ctx.lineWidth = 1;
-      ctx.fillStyle = this.bubbleColor;
-      ctx.strokeStyle = "black";
-      let r;
-      switch (this.bubbleType) {
-        case "Circle":
-          for (let i = 0; i < length; i++) {
-            r = scale(this.values[i]);
-            ctx.beginPath();
-            ctx.arc((this.points.getX(i) - xmin) * dx, -(this.points.getY(i) - ymin) * dy, r, 0, 2 * Math.PI);
-            ctx.fill();
-            ctx.stroke();
-          }
-          break;
-        case "Square":
-          for (let i = 0; i < length; i++) {
-            r = scale(this.values[i]);
-            ctx.beginPath();
-            ctx.rect((this.points.getX(i) - xmin) * dx - r, -(this.points.getY(i) - ymin) * dy - r, 2 * r, 2 * r);
-            ctx.fill();
-            ctx.stroke();
-          }
-          break;
-        case "Triangle Up":
-          let tmpX, tmpY;
-          for (let i = 0; i < length; i++) {
-            r = scale(this.values[i]);
-            tmpX = (this.points.getX(i) - xmin) * dx;
-            tmpY = -(this.points.getY(i) - ymin) * dy;
-            ctx.beginPath();
-            ctx.moveTo(tmpX, tmpY - r);
-            ctx.lineTo(tmpX - r, tmpY + r);
-            ctx.lineTo(tmpX + r, tmpY + r);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-          }
-          break;
-        case "Triangle Down":
-          for (let i = 0; i < length; i++) {
-            r = scale(this.values[i]);
-            tmpX = (this.points.getX(i) - xmin) * dx;
-            tmpY = -(this.points.getY(i) - ymin) * dy;
-            ctx.beginPath();
-            ctx.moveTo(tmpX, tmpY + r);
-            ctx.lineTo(tmpX - r, tmpY - r);
-            ctx.lineTo(tmpX + r, tmpY - r);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-          }
-          break;
-        case "Diamond":
-          for (let i = 0; i < length; i++) {
-            r = scale(this.values[i]);
-            tmpX = (this.points.getX(i) - xmin) * dx;
-            tmpY = -(this.points.getY(i) - ymin) * dy;
-            ctx.beginPath();
-            ctx.moveTo(tmpX, tmpY + r);
-            ctx.lineTo(tmpX - r, tmpY);
-            ctx.lineTo(tmpX, tmpY - r);
-            ctx.lineTo(tmpX + r, tmpY);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-          }
-          break;
-        case "Five-Pointed Star":
-          for (let i = 0; i < length; i++) {
-            r = scale(this.values[i]);
-            tmpX = (this.points.getX(i) - xmin) * dx;
-            tmpY = -(this.points.getY(i) - ymin) * dy;
-            Util.drawStar(ctx, tmpX, tmpY, r, 5, 2);
-          }
-          break;
-        case "Six-Pointed Star":
-          for (let i = 0; i < length; i++) {
-            r = scale(this.values[i]);
-            tmpX = (this.points.getX(i) - xmin) * dx;
-            tmpY = -(this.points.getY(i) - ymin) * dy;
-            Util.drawStar(ctx, tmpX, tmpY, r, 6, 2);
-          }
-          break;
-      }
-    }
+      // draw bubbles
+      ctx.save();
+      ctx.translate(this.viewWindow.x, this.viewWindow.y + this.viewWindow.height);
+      let length = this.points.length();
+      if (length > 1) {
+        let scale = d3.scaleLinear().domain([zmin, zmax]).range([this.minimumBubbleRadius, this.maximumBubbleRadius]);
+        ctx.lineWidth = 1;
+        ctx.fillStyle = this.bubbleColor;
+        ctx.strokeStyle = "black";
+        let r;
+        switch (this.bubbleType) {
+          case "Circle":
+            for (let i = 0; i < length; i++) {
+              r = scale(this.values[i]);
+              ctx.beginPath();
+              ctx.arc((this.points.getX(i) - xmin) * dx, -(this.points.getY(i) - ymin) * dy, r, 0, 2 * Math.PI);
+              ctx.fill();
+              ctx.stroke();
+            }
+            break;
+          case "Square":
+            for (let i = 0; i < length; i++) {
+              r = scale(this.values[i]);
+              ctx.beginPath();
+              ctx.rect((this.points.getX(i) - xmin) * dx - r, -(this.points.getY(i) - ymin) * dy - r, 2 * r, 2 * r);
+              ctx.fill();
+              ctx.stroke();
+            }
+            break;
+          case "Triangle Up":
+            let tmpX, tmpY;
+            for (let i = 0; i < length; i++) {
+              r = scale(this.values[i]);
+              tmpX = (this.points.getX(i) - xmin) * dx;
+              tmpY = -(this.points.getY(i) - ymin) * dy;
+              ctx.beginPath();
+              ctx.moveTo(tmpX, tmpY - r);
+              ctx.lineTo(tmpX - r, tmpY + r);
+              ctx.lineTo(tmpX + r, tmpY + r);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+            }
+            break;
+          case "Triangle Down":
+            for (let i = 0; i < length; i++) {
+              r = scale(this.values[i]);
+              tmpX = (this.points.getX(i) - xmin) * dx;
+              tmpY = -(this.points.getY(i) - ymin) * dy;
+              ctx.beginPath();
+              ctx.moveTo(tmpX, tmpY + r);
+              ctx.lineTo(tmpX - r, tmpY - r);
+              ctx.lineTo(tmpX + r, tmpY - r);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+            }
+            break;
+          case "Diamond":
+            for (let i = 0; i < length; i++) {
+              r = scale(this.values[i]);
+              tmpX = (this.points.getX(i) - xmin) * dx;
+              tmpY = -(this.points.getY(i) - ymin) * dy;
+              ctx.beginPath();
+              ctx.moveTo(tmpX, tmpY + r);
+              ctx.lineTo(tmpX - r, tmpY);
+              ctx.lineTo(tmpX, tmpY - r);
+              ctx.lineTo(tmpX + r, tmpY);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+            }
+            break;
+          case "Five-Pointed Star":
+            for (let i = 0; i < length; i++) {
+              r = scale(this.values[i]);
+              tmpX = (this.points.getX(i) - xmin) * dx;
+              tmpY = -(this.points.getY(i) - ymin) * dy;
+              Util.drawStar(ctx, tmpX, tmpY, r, 5, 2);
+            }
+            break;
+          case "Six-Pointed Star":
+            for (let i = 0; i < length; i++) {
+              r = scale(this.values[i]);
+              tmpX = (this.points.getX(i) - xmin) * dx;
+              tmpY = -(this.points.getY(i) - ymin) * dy;
+              Util.drawStar(ctx, tmpX, tmpY, r, 6, 2);
+            }
+            break;
+        }
 
-    // draw axis tick marks and labels
-    if (!this.iconic) {
-      ctx.lineWidth = 1;
-      ctx.font = "10px Arial";
-      ctx.fillStyle = "black";
-      let inx = (xmax - xmin) / 10;
-      dx = this.viewWindow.width / 10;
-      for (let i = 0; i < 11; i++) {
-        let tmpX = dx * i;
-        ctx.beginPath();
-        ctx.moveTo(tmpX, 0);
-        ctx.lineTo(tmpX, -4);
-        ctx.stroke();
-        let xtick = xmin + i * inx;
-        let precision = 2;
-        if (Math.abs(xtick) >= 1) {
-          let diff = Math.abs(xtick - Math.round(xtick));
-          precision = Math.round(Math.abs(xtick)).toString().length + (diff < 0.1 ? 0 : 1);
-        } else {
-          if (xtick.toPrecision(precision).endsWith("0")) {
-            precision--;
+        // draw axis tick marks and labels
+        ctx.lineWidth = 1;
+        ctx.font = "10px Arial";
+        ctx.fillStyle = "black";
+        let inx = (xmax - xmin) / 10;
+        dx = this.viewWindow.width / 10;
+        for (let i = 0; i < 11; i++) {
+          let tmpX = dx * i;
+          ctx.beginPath();
+          ctx.moveTo(tmpX, 0);
+          ctx.lineTo(tmpX, -4);
+          ctx.stroke();
+          let xtick = xmin + i * inx;
+          let precision = 2;
+          if (Math.abs(xtick) >= 1) {
+            let diff = Math.abs(xtick - Math.round(xtick));
+            precision = Math.round(Math.abs(xtick)).toString().length + (diff < 0.1 ? 0 : 1);
+          } else {
+            if (xtick.toPrecision(precision).endsWith("0")) {
+              precision--;
+            }
           }
+          let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
+          ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
         }
-        let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
-        ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, 10);
-      }
-      let iny = (ymax - ymin) / 10;
-      dy = this.viewWindow.height / 10;
-      for (let i = 0; i < 11; i++) {
-        let tmpY = -dy * i;
-        ctx.beginPath();
-        ctx.moveTo(0, tmpY);
-        ctx.lineTo(4, tmpY);
-        ctx.stroke();
-        let ytick = ymin + i * iny;
-        let precision = 2;
-        if (Math.abs(ytick) >= 1) {
-          let diff = Math.abs(ytick - Math.round(ytick));
-          precision = Math.round(Math.abs(ytick)).toString().length + (diff < 0.1 ? 0 : 1);
-        } else {
-          if (ytick.toPrecision(precision).endsWith("0")) {
-            precision--;
+        let iny = (ymax - ymin) / 10;
+        dy = this.viewWindow.height / 10;
+        for (let i = 0; i < 11; i++) {
+          let tmpY = -dy * i;
+          ctx.beginPath();
+          ctx.moveTo(0, tmpY);
+          ctx.lineTo(4, tmpY);
+          ctx.stroke();
+          let ytick = ymin + i * iny;
+          let precision = 2;
+          if (Math.abs(ytick) >= 1) {
+            let diff = Math.abs(ytick - Math.round(ytick));
+            precision = Math.round(Math.abs(ytick)).toString().length + (diff < 0.1 ? 0 : 1);
+          } else {
+            if (ytick.toPrecision(precision).endsWith("0")) {
+              precision--;
+            }
           }
+          let iString = Math.abs(ytick) < 0.01 ? "0" : ytick.toPrecision(precision);
+          ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
         }
-        let iString = Math.abs(ytick) < 0.01 ? "0" : ytick.toPrecision(precision);
-        ctx.fillText(iString, -ctx.measureText(iString).width - 6, tmpY + 4);
+
       }
+
+      ctx.restore();
+
+      this.drawLegends(ctx);
+
     }
-    ctx.restore();
 
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
@@ -490,6 +494,90 @@ export class BubblePlot extends Block {
       this.highlightSelection(ctx);
     }
 
+  }
+
+  private drawLegends(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    ctx.translate(this.viewWindow.x + this.viewWindow.width, this.viewWindow.y + this.viewWindow.height);
+    ctx.lineWidth = 2;
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.font = "10px Arial";
+    let r = this.maximumBubbleRadius;
+    let maxValue = this.maximumZValue.toString();
+    switch (this.bubbleType) {
+      case "Circle":
+        ctx.beginPath();
+        ctx.arc(-2 * r, -2 * r, r, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fillText(maxValue, -2 * r - ctx.measureText(maxValue).width / 2, -3.5 * r);
+        break;
+      case "Square":
+        ctx.beginPath();
+        ctx.rect(-3 * r, -3 * r, 2 * r, 2 * r);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fillText(maxValue, -2 * r - ctx.measureText(maxValue).width / 2, -3.5 * r);
+        break;
+      case "Triangle Up":
+        let tmpX = -2 * r;
+        let tmpY = -2 * r;
+        ctx.beginPath();
+        ctx.moveTo(tmpX, tmpY - r);
+        ctx.lineTo(tmpX - r, tmpY + r);
+        ctx.lineTo(tmpX + r, tmpY + r);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fillText(maxValue, -2 * r - ctx.measureText(maxValue).width / 2, -3.5 * r);
+        break;
+      case "Triangle Down":
+        tmpX = -2 * r;
+        tmpY = -2 * r;
+        ctx.beginPath();
+        ctx.moveTo(tmpX, tmpY + r);
+        ctx.lineTo(tmpX - r, tmpY - r);
+        ctx.lineTo(tmpX + r, tmpY - r);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fillText(maxValue, -2 * r - ctx.measureText(maxValue).width / 2, -3.5 * r);
+        break;
+      case "Diamond":
+        tmpX = -2 * r;
+        tmpY = -2 * r;
+        ctx.beginPath();
+        ctx.moveTo(tmpX, tmpY + r);
+        ctx.lineTo(tmpX - r, tmpY);
+        ctx.lineTo(tmpX, tmpY - r);
+        ctx.lineTo(tmpX + r, tmpY);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fillText(maxValue, -2 * r - ctx.measureText(maxValue).width / 2, -3.5 * r);
+        break;
+      case "Five-Pointed Star":
+        tmpX = -r * 3;
+        tmpY = -r * 3;
+        Util.drawStar(ctx, tmpX, tmpY, r, 5, 2);
+        ctx.fillStyle = "black";
+        ctx.fillText(maxValue, -3 * r - ctx.measureText(maxValue).width / 2, -5.5 * r);
+        break;
+      case "Six-Pointed Star":
+        tmpX = -r * 3;
+        tmpY = -r * 3;
+        Util.drawStar(ctx, tmpX, tmpY, r, 6, 2);
+        ctx.fillStyle = "black";
+        ctx.fillText(maxValue, -3 * r - ctx.measureText(maxValue).width / 2, -5.5 * r);
+        break;
+    }
+    ctx.restore();
   }
 
   private drawGridLines(ctx: CanvasRenderingContext2D): void {

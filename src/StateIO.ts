@@ -228,6 +228,7 @@ export class StateIO {
           block.setMinimumBubbleRadius(state.minimumBubbleRadius);
           block.setMaximumBubbleRadius(state.maximumBubbleRadius);
           block.setViewWindowColor(state.viewWindowColor);
+          block.setShowGridLines(state.showGridLines);
         } else if (block instanceof Histogram) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);

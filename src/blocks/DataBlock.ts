@@ -64,12 +64,14 @@ export class DataBlock extends Block {
 
   setOutputPorts(): void {
     if (this.singleOutput) {
-      if (this.ports.length > 1) {
+      if (this.ports.length !== 1) {
         for (let p of this.ports) { // disconnect all the port connectors as the ports will be recreated
           flowchart.removeAllConnectors(p);
         }
         this.ports.length = 0;
-        this.ports.push(new Port(this, false, "A", this.width, this.height / 2, true));
+        this.portO = new Array(1);
+        this.portO[0] = new Port(this, false, "A", this.width, this.height / 2, true);
+        this.ports.push(this.portO[0]);
       }
     } else {
       if (this.dataArray !== undefined) {
@@ -186,7 +188,7 @@ export class DataBlock extends Block {
 
   setContent(content: string): void {
     this.content = content;
-    this.setOutputPorts();
+    if (this.content !== undefined) this.setOutputPorts();
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -269,16 +271,28 @@ export class DataBlock extends Block {
 
   updateModel(): void {
     if (this.portO !== undefined) {
-      if (this.dataArray !== undefined) {
-        for (let i = 0; i < this.portO.length; i++) {
-          if (this.dataArray[i] !== undefined) {
-            this.portO[i].setValue(this.dataArray[i].data);
+      if (this.singleOutput) {
+        let numbers = new Array(this.dataArray.length);
+        for (let col = 0; col < this.dataArray.length; col++) {
+          numbers[col] = new Array(this.dataArray[col].length());
+          for (let row = 0; row < numbers[col].length; row++) {
+            numbers[col][row] = this.dataArray[col].data[row];
           }
         }
+        this.ports[0].setValue(numbers);
         this.updateConnectors();
-      } else if (this.content !== undefined) {
-        this.portO[0].setValue("Format:" + this.format + "\n" + this.content);
-        this.updateConnectors();
+      } else {
+        if (this.dataArray !== undefined) {
+          for (let i = 0; i < this.portO.length; i++) {
+            if (this.dataArray[i] !== undefined) {
+              this.portO[i].setValue(this.dataArray[i].data);
+            }
+          }
+          this.updateConnectors();
+        } else if (this.content !== undefined) {
+          this.portO[0].setValue("Format:" + this.format + "\n" + this.content);
+          this.updateConnectors();
+        }
       }
     }
   }

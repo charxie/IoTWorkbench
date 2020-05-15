@@ -23,6 +23,8 @@ import heat_map_dynamic from "./examples/heat-map-dynamic.json";
 // @ts-ignore
 import pie_chart from "./examples/pie-chart.json";
 // @ts-ignore
+import bubble_plot from "./examples/bubble-plot.json";
+// @ts-ignore
 import box_plot from "./examples/box-plot.json";
 // @ts-ignore
 import univariate_descriptive_statistics from "./examples/univariate-descriptive-statistics.json";
@@ -433,6 +435,7 @@ export class Examples {
     this.files.push({name: "Statistics: Means", data: means});
     this.files.push({name: "Statistics: Univariate Descriptive Statistics", data: univariate_descriptive_statistics});
     this.files.push({name: "Statistics: Box Plot", data: box_plot});
+    this.files.push({name: "Statistics: Bubble Plot", data: bubble_plot});
     this.files.push({name: "Statistics: Static Histogram", data: histogram_static});
     this.files.push({name: "Statistics: Dynamic Histogram", data: histogram_dynamic});
     this.files.push({name: "Statistics: Pie Chart", data: pie_chart});
