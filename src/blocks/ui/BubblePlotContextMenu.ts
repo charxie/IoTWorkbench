@@ -62,7 +62,7 @@ export class BubblePlotContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="bubble-plot-y-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Scale:</td>
+                  <td>X-Y Scale:</td>
                   <td colspan="2">
                     <input type="radio" name="scale" id="bubble-plot-auto-scale-radio-button" checked> Auto
                     <input type="radio" name="scale" id="bubble-plot-fixed-scale-radio-button"> Fixed
@@ -104,6 +104,63 @@ export class BubblePlotContextMenu extends BlockContextMenu {
                   <td>Bubble Color:</td>
                   <td><input type="color" id="bubble-plot-bubble-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="bubble-plot-bubble-color-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Color Scheme:</td>
+                  <td colspan="2">
+                    <select id="bubble-plot-color-scheme-selector" style="width: 100%">
+                      <option value="None" selected>None</option>
+                      <option value="Turbo">Turbo</option>
+                      <option value="Reds">Reds</option>
+                      <option value="Greens">Greens</option>
+                      <option value="Blues">Blues</option>
+                      <option value="Greys">Greys</option>
+                      <option value="Oranges">Oranges</option>
+                      <option value="Purples">Purples</option>
+                      <option value="Warm">Warm</option>
+                      <option value="Cool">Cool</option>
+                      <option value="Magma">Magma</option>
+                      <option value="Plasma">Plasma</option>
+                      <option value="Inferno">Inferno</option>
+                      <option value="Spectral">Spectral</option>
+                      <option value="Cividis">Cividis</option>
+                      <option value="Viridis">Viridis</option>
+                      <option value="Rainbow">Rainbow</option>
+                      <option value="Sinebow">Sinebow</option>
+                      <option value="Cubehelix">Cubehelix</option>
+                      <option value="RdYlBu">RdYlBu</option>
+                      <option value="RdYlGn">RdYlGn</option>
+                      <option value="RdGy">RdGy</option>
+                      <option value="RdBu">RdBu</option>
+                      <option value="PuOr">PuOr</option>
+                      <option value="PiYG">PiYG</option>
+                      <option value="PRGn">PRGn</option>
+                      <option value="BrBG">BrBG</option>
+                      <option value="BuGn">BuGn</option>
+                      <option value="BuPu">BuPu</option>
+                      <option value="GnBu">GnBu</option>
+                      <option value="OrRd">OrRd</option>
+                      <option value="PuBu">PuBu</option>
+                      <option value="PuBuGn">PuBuGn</option>
+                      <option value="PuRd">PuRd</option>
+                      <option value="RdPu">RdPu</option>
+                      <option value="YlGn">YlGn</option>
+                      <option value="YlGnBu">YlGnBu</option>
+                      <option value="YlOrBr">YlOrBr</option>
+                      <option value="YlOrRd">YlOrRd</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Color Scale:</td>
+                  <td colspan="2">
+                    <input type="radio" name="color-scale" id="bubble-plot-linear-color-scale-radio-button" checked> Linear
+                    <input type="radio" name="color-scale" id="bubble-plot-logarithmic-color-scale-radio-button"> Logarithmic
+                  </td>
+                </tr>
+                <tr>
+                  <td>Opacity:</td>
+                  <td colspan="2"><input type="text" id="bubble-plot-opacity-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Bubble Type:</td>
@@ -182,6 +239,14 @@ export class BubblePlotContextMenu extends BlockContextMenu {
       let bubbleColorChooser = document.getElementById("bubble-plot-bubble-color-chooser") as HTMLInputElement;
       Util.setColorPicker(bubbleColorChooser, g.getBubbleColor());
       Util.hookupColorInputs(bubbleColorField, bubbleColorChooser);
+      let opacityField = document.getElementById("bubble-plot-opacity-field") as HTMLInputElement;
+      opacityField.value = g.getOpacity().toString();
+      let colorSchemeSelector = document.getElementById("bubble-plot-color-scheme-selector") as HTMLSelectElement;
+      colorSchemeSelector.value = g.getColorScheme();
+      let linearColorScaleRadioButton = document.getElementById("bubble-plot-linear-color-scale-radio-button") as HTMLInputElement;
+      linearColorScaleRadioButton.checked = g.getColorScale() === "Linear";
+      let logarithmicColorScaleRadioButton = document.getElementById("bubble-plot-logarithmic-color-scale-radio-button") as HTMLInputElement;
+      logarithmicColorScaleRadioButton.checked = g.getColorScale() === "Logarithmic";
       let windowColorField = document.getElementById("bubble-plot-window-color-field") as HTMLInputElement;
       windowColorField.value = g.getViewWindowColor();
       let windowColorChooser = document.getElementById("bubble-plot-window-color-chooser") as HTMLInputElement;
@@ -198,6 +263,14 @@ export class BubblePlotContextMenu extends BlockContextMenu {
       const okFunction = () => {
         let success = true;
         let message;
+        // set opacity (alpha value)
+        let opacity = parseFloat(opacityField.value);
+        if (isNumber(opacity) && opacity <= 1 && opacity >= 0) {
+          g.setOpacity(opacity);
+        } else {
+          success = false;
+          message = opacityField.value + " is not a valid value for opacity";
+        }
         // set minimum X value
         let minimumXValue = parseFloat(minimumXValueField.value);
         if (isNumber(minimumXValue)) {
@@ -282,10 +355,13 @@ export class BubblePlotContextMenu extends BlockContextMenu {
         if (success) {
           g.setName(nameField.value);
           g.setAutoScale(autoScaleRadioButton.checked);
+          if (linearColorScaleRadioButton.checked) g.setColorScale("Linear");
+          else if (logarithmicColorScaleRadioButton.checked) g.setColorScale("Logarithmic");
           g.setXAxisLabel(xAxisLableField.value);
           g.setYAxisLabel(yAxisLableField.value);
           g.setBubbleType(bubbleTypeSelector.value);
           g.setBubbleColor(bubbleColorField.value);
+          g.setColorScheme(colorSchemeSelector.value)
           g.setShowGridLines(gridLinesRadioButton.checked);
           g.setViewWindowColor(windowColorField.value);
           g.updateModel();
@@ -303,6 +379,7 @@ export class BubblePlotContextMenu extends BlockContextMenu {
         }
       };
       nameField.addEventListener("keyup", enterKeyUp);
+      opacityField.addEventListener("keyup", enterKeyUp);
       xAxisLableField.addEventListener("keyup", enterKeyUp);
       yAxisLableField.addEventListener("keyup", enterKeyUp);
       minimumXValueField.addEventListener("keyup", enterKeyUp);

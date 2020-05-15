@@ -7,8 +7,9 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
-import {flowchart, isNumber} from "../Main";
+import {flowchart} from "../Main";
 import {Point2DArray} from "./Point2DArray";
+import {ColorSchemes} from "./ColorSchemes";
 
 export class BubblePlot extends Block {
 
@@ -36,6 +37,10 @@ export class BubblePlot extends Block {
   };
   private bubbleType: string = "Circle";
   private bubbleColor: string = "white";
+  private colorScale: string = "Linear";
+  private colorScheme: string = "None";
+  private opacity: number = 1;
+  private interpolateColor;
   private minimumBubbleRadius = 1;
   private maximumBubbleRadius = 20;
 
@@ -61,6 +66,9 @@ export class BubblePlot extends Block {
     readonly maximumBubbleRadius: number;
     readonly bubbleType: string;
     readonly bubbleColor: string;
+    readonly colorScheme: string;
+    readonly colorScale: string;
+    readonly opacity: number;
 
     constructor(b: BubblePlot) {
       this.name = b.name;
@@ -84,6 +92,9 @@ export class BubblePlot extends Block {
       this.maximumBubbleRadius = b.maximumBubbleRadius;
       this.bubbleType = b.bubbleType;
       this.bubbleColor = b.bubbleColor;
+      this.colorScheme = b.colorScheme;
+      this.colorScale = b.colorScale;
+      this.opacity = b.opacity;
     }
   };
 
@@ -117,6 +128,9 @@ export class BubblePlot extends Block {
     copy.showGridLines = this.showGridLines;
     copy.bubbleType = this.bubbleType;
     copy.bubbleColor = this.bubbleColor;
+    copy.colorScheme = this.colorScheme;
+    copy.colorScale = this.colorScale;
+    copy.opacity = this.opacity;
     return copy;
   }
 
@@ -253,6 +267,31 @@ export class BubblePlot extends Block {
     return this.bubbleColor;
   }
 
+  setOpacity(opacity: number): void {
+    this.opacity = opacity;
+  }
+
+  getOpacity(): number {
+    return this.opacity;
+  }
+
+  getColorScheme(): string {
+    return this.colorScheme;
+  }
+
+  setColorScheme(colorScheme: string): void {
+    this.colorScheme = colorScheme;
+    this.interpolateColor = colorScheme === "None" ? undefined : ColorSchemes.getInterpolateColorScheme(colorScheme);
+  }
+
+  getColorScale(): string {
+    return this.colorScale;
+  }
+
+  setColorScale(colorScale: string): void {
+    this.colorScale = colorScale;
+  }
+
   draw(ctx: CanvasRenderingContext2D): void {
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
@@ -296,7 +335,22 @@ export class BubblePlot extends Block {
     ctx.strokeStyle = "black";
     ctx.stroke();
     if (this.iconic) {
+      let xc = this.viewWindow.x + this.viewWindow.width / 2;
+      let yc = this.viewWindow.y + this.viewWindow.height / 2;
+      ctx.beginPath();
       ctx.fillStyle = "white";
+      ctx.strokeStyle = "black";
+      ctx.arc(xc - 5.5, yc - 5.5, 2.5, 0, 2 * Math.PI, true);
+      ctx.fill();
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(xc + 3, yc + 3, 3, 0, 2 * Math.PI, true);
+      ctx.fill();
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(xc + 6, yc - 2, 4, 0, 2 * Math.PI, true);
+      ctx.fill();
+      ctx.stroke();
     } else {
 
       this.drawAxisLabels(ctx);
@@ -342,15 +396,24 @@ export class BubblePlot extends Block {
       ctx.translate(this.viewWindow.x, this.viewWindow.y + this.viewWindow.height);
       let length = this.points.length();
       if (length > 1) {
-        let scale = d3.scaleLinear().domain([zmin, zmax]).range([this.minimumBubbleRadius, this.maximumBubbleRadius]);
+        let radiusScale = d3.scaleLinear().domain([zmin, zmax]).range([this.minimumBubbleRadius, this.maximumBubbleRadius]);
         ctx.lineWidth = 1;
-        ctx.fillStyle = this.bubbleColor;
+        ctx.fillStyle = Util.isHexColor(this.bubbleColor) ? this.bubbleColor + Util.alphaToHex(this.opacity) : this.bubbleColor;
         ctx.strokeStyle = "black";
+        let colorScale;
+        if (this.colorScheme !== "None") {
+          if (this.colorScale === "Linear") {
+            colorScale = d3.scaleLinear().domain([zmin, zmax]).interpolate(() => this.interpolateColor);
+          } else if (this.colorScale === "Logarithmic") {
+            colorScale = d3.scaleLinear().domain([Math.log(zmin), Math.log(zmax)]).interpolate(() => this.interpolateColor);
+          }
+        }
         let r;
         switch (this.bubbleType) {
           case "Circle":
             for (let i = 0; i < length; i++) {
-              r = scale(this.values[i]);
+              r = radiusScale(this.values[i]);
+              if (colorScale) ctx.fillStyle = Util.rgbStringToHex(colorScale(this.values[i])) + Util.alphaToHex(this.opacity);
               ctx.beginPath();
               ctx.arc((this.points.getX(i) - xmin) * dx, -(this.points.getY(i) - ymin) * dy, r, 0, 2 * Math.PI);
               ctx.fill();
@@ -359,7 +422,8 @@ export class BubblePlot extends Block {
             break;
           case "Square":
             for (let i = 0; i < length; i++) {
-              r = scale(this.values[i]);
+              r = radiusScale(this.values[i]);
+              if (colorScale) ctx.fillStyle = Util.rgbStringToHex(colorScale(this.values[i])) + Util.alphaToHex(this.opacity);
               ctx.beginPath();
               ctx.rect((this.points.getX(i) - xmin) * dx - r, -(this.points.getY(i) - ymin) * dy - r, 2 * r, 2 * r);
               ctx.fill();
@@ -369,7 +433,8 @@ export class BubblePlot extends Block {
           case "Triangle Up":
             let tmpX, tmpY;
             for (let i = 0; i < length; i++) {
-              r = scale(this.values[i]);
+              r = radiusScale(this.values[i]);
+              if (colorScale) ctx.fillStyle = Util.rgbStringToHex(colorScale(this.values[i])) + Util.alphaToHex(this.opacity);
               tmpX = (this.points.getX(i) - xmin) * dx;
               tmpY = -(this.points.getY(i) - ymin) * dy;
               ctx.beginPath();
@@ -383,7 +448,8 @@ export class BubblePlot extends Block {
             break;
           case "Triangle Down":
             for (let i = 0; i < length; i++) {
-              r = scale(this.values[i]);
+              r = radiusScale(this.values[i]);
+              if (colorScale) ctx.fillStyle = Util.rgbStringToHex(colorScale(this.values[i])) + Util.alphaToHex(this.opacity);
               tmpX = (this.points.getX(i) - xmin) * dx;
               tmpY = -(this.points.getY(i) - ymin) * dy;
               ctx.beginPath();
@@ -397,7 +463,8 @@ export class BubblePlot extends Block {
             break;
           case "Diamond":
             for (let i = 0; i < length; i++) {
-              r = scale(this.values[i]);
+              r = radiusScale(this.values[i]);
+              if (colorScale) ctx.fillStyle = Util.rgbStringToHex(colorScale(this.values[i])) + Util.alphaToHex(this.opacity);
               tmpX = (this.points.getX(i) - xmin) * dx;
               tmpY = -(this.points.getY(i) - ymin) * dy;
               ctx.beginPath();
@@ -412,7 +479,8 @@ export class BubblePlot extends Block {
             break;
           case "Five-Pointed Star":
             for (let i = 0; i < length; i++) {
-              r = scale(this.values[i]);
+              r = radiusScale(this.values[i]);
+              if (colorScale) ctx.fillStyle = Util.rgbStringToHex(colorScale(this.values[i])) + Util.alphaToHex(this.opacity);
               tmpX = (this.points.getX(i) - xmin) * dx;
               tmpY = -(this.points.getY(i) - ymin) * dy;
               Util.drawStar(ctx, tmpX, tmpY, r, 5, 2);
@@ -420,7 +488,8 @@ export class BubblePlot extends Block {
             break;
           case "Six-Pointed Star":
             for (let i = 0; i < length; i++) {
-              r = scale(this.values[i]);
+              r = radiusScale(this.values[i]);
+              if (colorScale) ctx.fillStyle = Util.rgbStringToHex(colorScale(this.values[i])) + Util.alphaToHex(this.opacity);
               tmpX = (this.points.getX(i) - xmin) * dx;
               tmpY = -(this.points.getY(i) - ymin) * dy;
               Util.drawStar(ctx, tmpX, tmpY, r, 6, 2);
@@ -499,82 +568,142 @@ export class BubblePlot extends Block {
   private drawLegends(ctx: CanvasRenderingContext2D): void {
     ctx.save();
     ctx.translate(this.viewWindow.x + this.viewWindow.width, this.viewWindow.y + this.viewWindow.height);
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
     ctx.fillStyle = "white";
     ctx.strokeStyle = "black";
     ctx.font = "10px Arial";
-    let r = this.maximumBubbleRadius;
+    let rmin = this.minimumBubbleRadius;
+    let rmax = this.maximumBubbleRadius;
+    let minValue = this.minimumZValue.toString();
     let maxValue = this.maximumZValue.toString();
     switch (this.bubbleType) {
       case "Circle":
         ctx.beginPath();
-        ctx.arc(-2 * r, -2 * r, r, 0, 2 * Math.PI);
+        ctx.arc(-2 * rmax, -2 * rmax, rmax, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke();
         ctx.fillStyle = "black";
-        ctx.fillText(maxValue, -2 * r - ctx.measureText(maxValue).width / 2, -3.5 * r);
+        ctx.fillText(maxValue, -2 * rmax - ctx.measureText(maxValue).width / 2, -3.5 * rmax);
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(-2 * rmax, -5 * rmax, rmin, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fillText(minValue, -2 * rmax - ctx.measureText(minValue).width / 2, -5.5 * rmax);
         break;
       case "Square":
         ctx.beginPath();
-        ctx.rect(-3 * r, -3 * r, 2 * r, 2 * r);
+        ctx.rect(-3 * rmax, -3 * rmax, 2 * rmax, 2 * rmax);
         ctx.fill();
         ctx.stroke();
         ctx.fillStyle = "black";
-        ctx.fillText(maxValue, -2 * r - ctx.measureText(maxValue).width / 2, -3.5 * r);
+        ctx.fillText(maxValue, -2 * rmax - ctx.measureText(maxValue).width / 2, -3.5 * rmax);
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.rect(-2 * rmax, -5 * rmax, 2 * rmin, 2 * rmin);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fillText(minValue, -2 * rmax - ctx.measureText(minValue).width / 2, -5.5 * rmax);
         break;
       case "Triangle Up":
-        let tmpX = -2 * r;
-        let tmpY = -2 * r;
+        let tmpX = -2 * rmax;
+        let tmpY = -2 * rmax;
         ctx.beginPath();
-        ctx.moveTo(tmpX, tmpY - r);
-        ctx.lineTo(tmpX - r, tmpY + r);
-        ctx.lineTo(tmpX + r, tmpY + r);
+        ctx.moveTo(tmpX, tmpY - rmax);
+        ctx.lineTo(tmpX - rmax, tmpY + rmax);
+        ctx.lineTo(tmpX + rmax, tmpY + rmax);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
         ctx.fillStyle = "black";
-        ctx.fillText(maxValue, -2 * r - ctx.measureText(maxValue).width / 2, -3.5 * r);
+        ctx.fillText(maxValue, tmpX - ctx.measureText(maxValue).width / 2, -3.5 * rmax);
+        ctx.fillStyle = "white";
+        tmpY = -4.5 * rmax;
+        ctx.beginPath();
+        ctx.moveTo(tmpX, tmpY - rmin);
+        ctx.lineTo(tmpX - rmin, tmpY + rmin);
+        ctx.lineTo(tmpX + rmin, tmpY + rmin);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fillText(minValue, tmpX - ctx.measureText(minValue).width / 2, -5 * rmax);
         break;
       case "Triangle Down":
-        tmpX = -2 * r;
-        tmpY = -2 * r;
+        tmpX = -2 * rmax;
+        tmpY = -2 * rmax;
         ctx.beginPath();
-        ctx.moveTo(tmpX, tmpY + r);
-        ctx.lineTo(tmpX - r, tmpY - r);
-        ctx.lineTo(tmpX + r, tmpY - r);
+        ctx.moveTo(tmpX, tmpY + rmax);
+        ctx.lineTo(tmpX - rmax, tmpY - rmax);
+        ctx.lineTo(tmpX + rmax, tmpY - rmax);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
         ctx.fillStyle = "black";
-        ctx.fillText(maxValue, -2 * r - ctx.measureText(maxValue).width / 2, -3.5 * r);
+        ctx.fillText(maxValue, tmpX - ctx.measureText(maxValue).width / 2, -3.5 * rmax);
+        ctx.fillStyle = "white";
+        tmpY = -4.5 * rmax;
+        ctx.beginPath();
+        ctx.moveTo(tmpX, tmpY + rmin);
+        ctx.lineTo(tmpX - rmin, tmpY - rmin);
+        ctx.lineTo(tmpX + rmin, tmpY - rmin);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fillText(minValue, tmpX - ctx.measureText(minValue).width / 2, -5 * rmax);
         break;
       case "Diamond":
-        tmpX = -2 * r;
-        tmpY = -2 * r;
+        tmpX = -2 * rmax;
+        tmpY = -2 * rmax;
         ctx.beginPath();
-        ctx.moveTo(tmpX, tmpY + r);
-        ctx.lineTo(tmpX - r, tmpY);
-        ctx.lineTo(tmpX, tmpY - r);
-        ctx.lineTo(tmpX + r, tmpY);
+        ctx.moveTo(tmpX, tmpY + rmax);
+        ctx.lineTo(tmpX - rmax, tmpY);
+        ctx.lineTo(tmpX, tmpY - rmax);
+        ctx.lineTo(tmpX + rmax, tmpY);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
         ctx.fillStyle = "black";
-        ctx.fillText(maxValue, -2 * r - ctx.measureText(maxValue).width / 2, -3.5 * r);
+        ctx.fillText(maxValue, tmpX - ctx.measureText(maxValue).width / 2, -3.5 * rmax);
+        ctx.fillStyle = "white";
+        tmpY = -4.5 * rmax;
+        ctx.beginPath();
+        ctx.moveTo(tmpX, tmpY + rmin);
+        ctx.lineTo(tmpX - rmin, tmpY);
+        ctx.lineTo(tmpX, tmpY - rmin);
+        ctx.lineTo(tmpX + rmin, tmpY);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "black";
+        ctx.fillText(minValue, tmpX - ctx.measureText(minValue).width / 2, -5 * rmax);
         break;
       case "Five-Pointed Star":
-        tmpX = -r * 3;
-        tmpY = -r * 3;
-        Util.drawStar(ctx, tmpX, tmpY, r, 5, 2);
+        tmpX = -3 * rmax;
+        tmpY = -3 * rmax;
+        Util.drawStar(ctx, tmpX, tmpY, rmax, 5, 2);
         ctx.fillStyle = "black";
-        ctx.fillText(maxValue, -3 * r - ctx.measureText(maxValue).width / 2, -5.5 * r);
+        ctx.fillText(maxValue, tmpX - ctx.measureText(maxValue).width / 2, -5.5 * rmax);
+        ctx.fillStyle = "white";
+        tmpY = -rmax * 7;
+        Util.drawStar(ctx, tmpX, tmpY, rmin, 5, 2);
+        ctx.fillStyle = "black";
+        ctx.fillText(minValue, tmpX - ctx.measureText(minValue).width / 2, -8 * rmax);
         break;
       case "Six-Pointed Star":
-        tmpX = -r * 3;
-        tmpY = -r * 3;
-        Util.drawStar(ctx, tmpX, tmpY, r, 6, 2);
+        tmpX = -2 * rmax;
+        tmpY = -2 * rmax;
+        Util.drawStar(ctx, tmpX, tmpY, rmax, 6, 2);
         ctx.fillStyle = "black";
-        ctx.fillText(maxValue, -3 * r - ctx.measureText(maxValue).width / 2, -5.5 * r);
+        ctx.fillText(maxValue, tmpX - ctx.measureText(maxValue).width / 2, -4 * rmax);
+        ctx.fillStyle = "white";
+        tmpY = -rmax * 5;
+        Util.drawStar(ctx, tmpX, tmpY, rmin, 6, 2);
+        ctx.fillStyle = "black";
+        ctx.fillText(minValue, tmpX - ctx.measureText(minValue).width / 2, -5.5 * rmax);
         break;
     }
     ctx.restore();

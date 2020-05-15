@@ -195,6 +195,11 @@ export class Util {
     return colors.length >= 3 ? '#' + (((1 << 24) + (colors[0] << 16) + (colors[1] << 8) + colors[2]).toString(16).substr(1)) : false;
   }
 
+  static rgbStringToHex(rgb: string): string {
+    let c = rgb.replace(/[^\d,]/g, '').split(',');
+    return Util.rgbToHex(parseInt(c[0]), parseInt(c[1]), parseInt(c[2]));
+  }
+
   static isHexColor(s: string): boolean {
     return /^#[0-9A-F]{6}$/i.test(s);
   }
@@ -228,6 +233,13 @@ export class Util {
 
   static rgbToHex(r: number, g: number, b: number): string {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+
+  static alphaToHex(a): string {
+    a = Math.round(a * 255).toString(16);
+    if (a.length === 1)
+      a = "0" + a;
+    return a;
   }
 
   static rgbaToHex(r, g, b, a): string {

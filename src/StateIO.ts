@@ -229,6 +229,9 @@ export class StateIO {
           block.setMaximumBubbleRadius(state.maximumBubbleRadius);
           block.setViewWindowColor(state.viewWindowColor);
           block.setShowGridLines(state.showGridLines);
+          if (state.colorScheme !== undefined) block.setColorScheme(state.colorScheme);
+          if (state.colorScale !== undefined) block.setColorScale(state.colorScale);
+          if (state.opacity !== undefined) block.setOpacity(state.opacity);
         } else if (block instanceof Histogram) {
           block.setName(state.name);
           block.setMinimumXValue(state.minimumXValue);
