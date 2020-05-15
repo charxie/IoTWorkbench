@@ -85,6 +85,21 @@ export class BubblePlotContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="bubble-plot-maximum-y-value-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Minimum Z Value:</td>
+                  <td colspan="2"><input type="text" id="bubble-plot-minimum-z-value-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Maximum Z Value:</td>
+                  <td colspan="2"><input type="text" id="bubble-plot-maximum-z-value-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Minimum Radius:</td>
+                  <td colspan="2"><input type="text" id="bubble-plot-minimum-radius-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Maximum Radius:</td>
+                  <td colspan="2"><input type="text" id="bubble-plot-maximum-radius-field" style="width: 100%"></td>
+                </tr>
                 <tr>
                   <td>Bubble Color:</td>
                   <td><input type="color" id="bubble-plot-bubble-color-chooser" style="width: 50px"></td>
@@ -108,6 +123,13 @@ export class BubblePlotContextMenu extends BlockContextMenu {
                   <td>Window Color:</td>
                   <td><input type="color" id="bubble-plot-window-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="bubble-plot-window-color-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Grid Lines:</td>
+                  <td colspan="2">
+                    <input type="radio" name="grid-lines" id="bubble-plot-no-grid-lines-radio-button" checked> No
+                    <input type="radio" name="grid-lines" id="bubble-plot-grid-lines-radio-button"> Yes
+                  </td>
                 </tr>
                 <tr>
                   <td>Width:</td>
@@ -141,6 +163,14 @@ export class BubblePlotContextMenu extends BlockContextMenu {
       minimumYValueField.value = g.getMinimumYValue().toString();
       let maximumYValueField = document.getElementById("bubble-plot-maximum-y-value-field") as HTMLInputElement;
       maximumYValueField.value = g.getMaximumYValue().toString();
+      let minimumZValueField = document.getElementById("bubble-plot-minimum-z-value-field") as HTMLInputElement;
+      minimumZValueField.value = g.getMinimumZValue().toString();
+      let maximumZValueField = document.getElementById("bubble-plot-maximum-z-value-field") as HTMLInputElement;
+      maximumZValueField.value = g.getMaximumZValue().toString();
+      let minimumRadiusField = document.getElementById("bubble-plot-minimum-radius-field") as HTMLInputElement;
+      minimumRadiusField.value = g.getMinimumBubbleRadius().toString();
+      let maximumRadiusField = document.getElementById("bubble-plot-maximum-radius-field") as HTMLInputElement;
+      maximumRadiusField.value = g.getMaximumBubbleRadius().toString();
       let xAxisLableField = document.getElementById("bubble-plot-x-axis-label-field") as HTMLInputElement;
       xAxisLableField.value = g.getXAxisLabel();
       let yAxisLableField = document.getElementById("bubble-plot-y-axis-label-field") as HTMLInputElement;
@@ -151,15 +181,20 @@ export class BubblePlotContextMenu extends BlockContextMenu {
       bubbleColorField.value = g.getBubbleColor();
       let bubbleColorChooser = document.getElementById("bubble-plot-bubble-color-chooser") as HTMLInputElement;
       Util.setColorPicker(bubbleColorChooser, g.getBubbleColor());
+      Util.hookupColorInputs(bubbleColorField, bubbleColorChooser);
       let windowColorField = document.getElementById("bubble-plot-window-color-field") as HTMLInputElement;
       windowColorField.value = g.getViewWindowColor();
       let windowColorChooser = document.getElementById("bubble-plot-window-color-chooser") as HTMLInputElement;
       Util.setColorPicker(windowColorChooser, g.getViewWindowColor());
+      Util.hookupColorInputs(windowColorField, windowColorChooser);
+      let noGridLinesRadioButton = document.getElementById("bubble-plot-no-grid-lines-radio-button") as HTMLInputElement;
+      noGridLinesRadioButton.checked = !g.getShowGridLines();
+      let gridLinesRadioButton = document.getElementById("bubble-plot-grid-lines-radio-button") as HTMLInputElement;
+      gridLinesRadioButton.checked = g.getShowGridLines();
       let widthField = document.getElementById("bubble-plot-width-field") as HTMLInputElement;
       widthField.value = Math.round(g.getWidth()).toString();
       let heightField = document.getElementById("bubble-plot-height-field") as HTMLInputElement;
       heightField.value = Math.round(g.getHeight()).toString();
-      Util.hookupColorInputs(windowColorField, windowColorChooser);
       const okFunction = () => {
         let success = true;
         let message;
@@ -195,6 +230,38 @@ export class BubblePlotContextMenu extends BlockContextMenu {
           success = false;
           message = maximumYValueField.value + " is not a valid value for maximum Y";
         }
+        // set minimum Z value
+        let minimumZValue = parseFloat(minimumZValueField.value);
+        if (isNumber(minimumZValue)) {
+          g.setMinimumZValue(minimumZValue);
+        } else {
+          success = false;
+          message = minimumZValueField.value + " is not a valid value for minimum Z";
+        }
+        // set maximum Z value
+        let maximumZValue = parseFloat(maximumZValueField.value);
+        if (isNumber(maximumZValue)) {
+          g.setMaximumZValue(maximumZValue);
+        } else {
+          success = false;
+          message = maximumZValueField.value + " is not a valid value for maximum Z";
+        }
+        // set minimum radius
+        let minimumRadius = parseFloat(minimumRadiusField.value);
+        if (isNumber(minimumRadius)) {
+          g.setMinimumBubbleRadius(minimumRadius);
+        } else {
+          success = false;
+          message = minimumRadiusField.value + " is not a valid value for minimum radius";
+        }
+        // set maximum radius
+        let maximumRadius = parseFloat(maximumRadiusField.value);
+        if (isNumber(maximumRadius)) {
+          g.setMaximumBubbleRadius(maximumRadius);
+        } else {
+          success = false;
+          message = maximumRadiusField.value + " is not a valid value for maximum radius";
+        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -219,6 +286,7 @@ export class BubblePlotContextMenu extends BlockContextMenu {
           g.setYAxisLabel(yAxisLableField.value);
           g.setBubbleType(bubbleTypeSelector.value);
           g.setBubbleColor(bubbleColorField.value);
+          g.setShowGridLines(gridLinesRadioButton.checked);
           g.setViewWindowColor(windowColorField.value);
           g.updateModel();
           g.refreshView();
@@ -241,6 +309,10 @@ export class BubblePlotContextMenu extends BlockContextMenu {
       maximumXValueField.addEventListener("keyup", enterKeyUp);
       minimumYValueField.addEventListener("keyup", enterKeyUp);
       maximumYValueField.addEventListener("keyup", enterKeyUp);
+      minimumZValueField.addEventListener("keyup", enterKeyUp);
+      maximumZValueField.addEventListener("keyup", enterKeyUp);
+      minimumRadiusField.addEventListener("keyup", enterKeyUp);
+      maximumRadiusField.addEventListener("keyup", enterKeyUp);
       bubbleColorField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
@@ -249,7 +321,7 @@ export class BubblePlotContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: g.getUid(),
-        height: 480,
+        height: 550,
         width: 450,
         buttons: {
           'OK': okFunction,

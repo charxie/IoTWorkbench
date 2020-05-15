@@ -54,10 +54,10 @@ export class ArrayInputContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="array-input-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Multidimensional Output:</td>
+                  <td>Single Output:</td>
                   <td colspan="2">
-                    <input type="radio" name="multidimensional-output" id="array-input-one-dimensional-output-radio-button" checked> No
-                    <input type="radio" name="multidimensional-output" id="array-input-multidimensional-output-radio-button"> Yes
+                    <input type="radio" name="single-output" id="array-input-multiple-output-radio-button" checked> No
+                    <input type="radio" name="single-output" id="array-input-single-output-radio-button"> Yes
                   </td>
                 </tr>
                 <tr>
@@ -93,10 +93,10 @@ export class ArrayInputContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("array-input-name-field") as HTMLInputElement;
       nameField.value = arrayInput.getName();
-      let oneDimensionalOutputRadioButton = document.getElementById("array-input-one-dimensional-output-radio-button") as HTMLInputElement;
-      oneDimensionalOutputRadioButton.checked = !arrayInput.getMultidimensionalOutput();
-      let multidimensionalOutputRadioButton = document.getElementById("array-input-multidimensional-output-radio-button") as HTMLInputElement;
-      multidimensionalOutputRadioButton.checked = arrayInput.getMultidimensionalOutput();
+      let multipleOutputRadioButton = document.getElementById("array-input-multiple-output-radio-button") as HTMLInputElement;
+      multipleOutputRadioButton.checked = !arrayInput.getSingleOutput();
+      let singleOutputRadioButton = document.getElementById("array-input-single-output-radio-button") as HTMLInputElement;
+      singleOutputRadioButton.checked = arrayInput.getSingleOutput();
       let textColorField = document.getElementById("array-input-text-color-field") as HTMLInputElement;
       textColorField.value = arrayInput.getTextColor();
       let textColorChooser = document.getElementById("array-input-text-color-chooser") as HTMLInputElement;
@@ -156,7 +156,7 @@ export class ArrayInputContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           arrayInput.setName(nameField.value);
-          arrayInput.setMultidimensionalOutput(multidimensionalOutputRadioButton.checked);
+          arrayInput.setSingleOutput(singleOutputRadioButton.checked);
           arrayInput.setOutputPorts();
           arrayInput.locateOverlay();
           arrayInput.refreshView();

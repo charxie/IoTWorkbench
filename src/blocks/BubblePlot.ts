@@ -2,13 +2,13 @@
  * @author Charles Xie
  */
 
+import * as d3 from 'd3';
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart, isNumber} from "../Main";
 import {Point2DArray} from "./Point2DArray";
-import {Vector} from "../math/Vector";
 
 export class BubblePlot extends Block {
 
@@ -19,6 +19,8 @@ export class BubblePlot extends Block {
   private maximumXValue: number = 1;
   private minimumYValue: number = 0;
   private maximumYValue: number = 1;
+  private minimumZValue: number = 0;
+  private maximumZValue: number = 1;
   private autoscale: boolean = true;
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
@@ -34,6 +36,8 @@ export class BubblePlot extends Block {
   };
   private bubbleType: string = "Circle";
   private bubbleColor: string = "white";
+  private minimumBubbleRadius = 1;
+  private maximumBubbleRadius = 20;
 
   static State = class {
     readonly name: string;
@@ -51,6 +55,10 @@ export class BubblePlot extends Block {
     readonly maximumXValue: number;
     readonly minimumYValue: number;
     readonly maximumYValue: number;
+    readonly minimumZValue: number;
+    readonly maximumZValue: number;
+    readonly minimumBubbleRadius: number;
+    readonly maximumBubbleRadius: number;
     readonly bubbleType: string;
     readonly bubbleColor: string;
 
@@ -70,6 +78,10 @@ export class BubblePlot extends Block {
       this.maximumXValue = b.maximumXValue;
       this.minimumYValue = b.minimumYValue;
       this.maximumYValue = b.maximumYValue;
+      this.minimumZValue = b.minimumZValue;
+      this.maximumZValue = b.maximumZValue;
+      this.minimumBubbleRadius = b.minimumBubbleRadius;
+      this.maximumBubbleRadius = b.maximumBubbleRadius;
       this.bubbleType = b.bubbleType;
       this.bubbleColor = b.bubbleColor;
     }
@@ -85,6 +97,7 @@ export class BubblePlot extends Block {
     this.ports.push(this.portI);
     this.viewWindow = new Rectangle(0, 0, 1, 1);
     this.points = new Point2DArray();
+    this.values = [];
   }
 
   getCopy(): Block {
@@ -93,6 +106,10 @@ export class BubblePlot extends Block {
     copy.maximumXValue = this.maximumXValue;
     copy.minimumYValue = this.minimumYValue;
     copy.maximumYValue = this.maximumYValue;
+    copy.minimumZValue = this.minimumZValue;
+    copy.maximumZValue = this.maximumZValue;
+    copy.minimumBubbleRadius = this.minimumBubbleRadius;
+    copy.maximumBubbleRadius = this.maximumBubbleRadius;
     copy.autoscale = this.autoscale;
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
@@ -114,6 +131,22 @@ export class BubblePlot extends Block {
   erase(): void {
     this.points.clear();
     flowchart.blockView.requestDraw();
+  }
+
+  setMinimumBubbleRadius(minimumBubbleRadius: number): void {
+    this.minimumBubbleRadius = minimumBubbleRadius;
+  }
+
+  getMinimumBubbleRadius(): number {
+    return this.minimumBubbleRadius;
+  }
+
+  setMaximumBubbleRadius(maximumBubbleRadius: number): void {
+    this.maximumBubbleRadius = maximumBubbleRadius;
+  }
+
+  getMaximumBubbleRadius(): number {
+    return this.maximumBubbleRadius;
   }
 
   setMinimumXValue(minimumXValue: number): void {
@@ -146,6 +179,22 @@ export class BubblePlot extends Block {
 
   getMaximumYValue(): number {
     return this.maximumYValue;
+  }
+
+  setMinimumZValue(minimumZValue: number): void {
+    this.minimumZValue = minimumZValue;
+  }
+
+  getMinimumZValue(): number {
+    return this.minimumZValue;
+  }
+
+  setMaximumZValue(maximumZValue: number): void {
+    this.maximumZValue = maximumZValue;
+  }
+
+  getMaximumZValue(): number {
+    return this.maximumZValue;
   }
 
   setAutoScale(autoscale: boolean): void {
@@ -231,7 +280,7 @@ export class BubblePlot extends Block {
     }
 
     // draw the space
-    ctx.fillStyle = "#FFEEFF";
+    ctx.fillStyle = "#FFFFEE";
     ctx.beginPath();
     ctx.fillHalfRoundedRect(this.x, this.y + this.barHeight, this.width, this.height - this.barHeight, this.radius, "Bottom");
     ctx.lineWidth = 1;
@@ -260,18 +309,30 @@ export class BubblePlot extends Block {
     let xmax;
     let ymin;
     let ymax;
-    if (this.autoscale) {
+    let zmin = Number.MAX_VALUE;
+    let zmax = -zmin;
+    if (this.autoscale && this.points.length() > 0) {
       let xminxmax = this.points.getXminXmax();
       xmin = xminxmax.min;
       xmax = xminxmax.max;
       let yminymax = this.points.getYminYmax();
       ymin = yminymax.min;
       ymax = yminymax.max;
+      for (let z of this.values) {
+        if (z > zmax) {
+          zmax = z;
+        }
+        if (z < zmin) {
+          zmin = z;
+        }
+      }
     } else {
       xmin = this.minimumXValue;
       xmax = this.maximumXValue;
       ymin = this.minimumYValue;
       ymax = this.maximumYValue;
+      zmin = this.minimumZValue;
+      zmax = this.maximumZValue;
     }
     let dx = xmax === xmin ? 1 : this.viewWindow.width / (xmax - xmin);
     let dy = ymax === ymin ? 1 : this.viewWindow.height / (ymax - ymin);
@@ -281,13 +342,15 @@ export class BubblePlot extends Block {
     ctx.translate(this.viewWindow.x, this.viewWindow.y + this.viewWindow.height);
     let length = this.points.length();
     if (length > 1) {
+      let scale = d3.scaleLinear().domain([zmin, zmax]).range([this.minimumBubbleRadius, this.maximumBubbleRadius]);
       ctx.lineWidth = 1;
-      let r = 10;
       ctx.fillStyle = this.bubbleColor;
       ctx.strokeStyle = "black";
+      let r;
       switch (this.bubbleType) {
         case "Circle":
           for (let i = 0; i < length; i++) {
+            r = scale(this.values[i]);
             ctx.beginPath();
             ctx.arc((this.points.getX(i) - xmin) * dx, -(this.points.getY(i) - ymin) * dy, r, 0, 2 * Math.PI);
             ctx.fill();
@@ -296,6 +359,7 @@ export class BubblePlot extends Block {
           break;
         case "Square":
           for (let i = 0; i < length; i++) {
+            r = scale(this.values[i]);
             ctx.beginPath();
             ctx.rect((this.points.getX(i) - xmin) * dx - r, -(this.points.getY(i) - ymin) * dy - r, 2 * r, 2 * r);
             ctx.fill();
@@ -305,6 +369,7 @@ export class BubblePlot extends Block {
         case "Triangle Up":
           let tmpX, tmpY;
           for (let i = 0; i < length; i++) {
+            r = scale(this.values[i]);
             tmpX = (this.points.getX(i) - xmin) * dx;
             tmpY = -(this.points.getY(i) - ymin) * dy;
             ctx.beginPath();
@@ -318,6 +383,7 @@ export class BubblePlot extends Block {
           break;
         case "Triangle Down":
           for (let i = 0; i < length; i++) {
+            r = scale(this.values[i]);
             tmpX = (this.points.getX(i) - xmin) * dx;
             tmpY = -(this.points.getY(i) - ymin) * dy;
             ctx.beginPath();
@@ -331,6 +397,7 @@ export class BubblePlot extends Block {
           break;
         case "Diamond":
           for (let i = 0; i < length; i++) {
+            r = scale(this.values[i]);
             tmpX = (this.points.getX(i) - xmin) * dx;
             tmpY = -(this.points.getY(i) - ymin) * dy;
             ctx.beginPath();
@@ -345,6 +412,7 @@ export class BubblePlot extends Block {
           break;
         case "Five-Pointed Star":
           for (let i = 0; i < length; i++) {
+            r = scale(this.values[i]);
             tmpX = (this.points.getX(i) - xmin) * dx;
             tmpY = -(this.points.getY(i) - ymin) * dy;
             Util.drawStar(ctx, tmpX, tmpY, r, 5, 2);
@@ -352,6 +420,7 @@ export class BubblePlot extends Block {
           break;
         case "Six-Pointed Star":
           for (let i = 0; i < length; i++) {
+            r = scale(this.values[i]);
             tmpX = (this.points.getX(i) - xmin) * dx;
             tmpY = -(this.points.getY(i) - ymin) * dy;
             Util.drawStar(ctx, tmpX, tmpY, r, 6, 2);
@@ -465,6 +534,16 @@ export class BubblePlot extends Block {
   updateModel(): void {
     let v = this.portI.getValue();
     if (v !== undefined && Array.isArray(v) && Array.isArray(v[0])) {
+      let cols = v.length;
+      if (cols >= 3) {
+        let rows = v[0].length;
+        this.points.clear();
+        this.values.length = 0;
+        for (let i = 0; i < rows; i++) {
+          this.points.addPoint(v[0][i], v[1][i]);
+          this.values.push(v[2][i]);
+        }
+      }
     }
   }
 

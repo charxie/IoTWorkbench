@@ -14,6 +14,7 @@ export class DataBlock extends Block {
   private dataArray: DataArray[]; // an array of data such as CSV
   private content: string; // a string of data such as PDB
   private format: string = "CSV";
+  private singleOutput: boolean = false;
   private barHeight: number;
   private portO: Port[];
   private image;
@@ -30,6 +31,7 @@ export class DataBlock extends Block {
     readonly content: string;
     readonly format: string;
     readonly imageSrc: string;
+    readonly singleOutput: boolean;
 
     constructor(block: DataBlock) {
       this.name = block.name;
@@ -47,6 +49,7 @@ export class DataBlock extends Block {
       }
       this.content = block.content;
       this.imageSrc = block.image !== undefined ? block.image.src : undefined; // base64 image data
+      this.singleOutput = block.singleOutput;
     }
   };
 
@@ -59,39 +62,49 @@ export class DataBlock extends Block {
     this.barHeight = Math.min(30, this.height / 3);
   }
 
-  private setOutputPorts(): void {
-    if (this.dataArray !== undefined) {
-      if (this.portO === undefined || this.portO.length !== this.dataArray.length) {
-        if (this.portO) {
-          for (let p of this.portO) { // disconnect all the port connectors as the ports will be recreated
-            flowchart.removeAllConnectors(p);
-          }
-          for (let p of this.portO) {
-            this.ports.pop();
-          }
+  setOutputPorts(): void {
+    if (this.singleOutput) {
+      if (this.ports.length > 1) {
+        for (let p of this.ports) { // disconnect all the port connectors as the ports will be recreated
+          flowchart.removeAllConnectors(p);
         }
-        this.portO = new Array(this.dataArray.length);
-        let dh = (this.height - this.barHeight) / (this.dataArray.length + 1);
-        const firstPortName = "A";
-        for (let i = 0; i < this.dataArray.length; i++) {
-          this.portO[i] = new Port(this, false, String.fromCharCode(firstPortName.charCodeAt(0) + i), this.width, this.barHeight + (i + 1) * dh, true);
-          this.ports.push(this.portO[i]);
-        }
+        this.ports.length = 0;
+        this.ports.push(new Port(this, false, "A", this.width, this.height / 2, true));
       }
-    } else if (this.content !== undefined) {
-      if (this.portO === undefined || this.portO.length !== 1) {
-        if (this.portO) {
-          for (let p of this.portO) { // disconnect all the port connectors as the ports will be recreated
-            flowchart.removeAllConnectors(p);
+    } else {
+      if (this.dataArray !== undefined) {
+        if (this.portO === undefined || this.portO.length !== this.dataArray.length) {
+          if (this.portO) {
+            for (let p of this.portO) { // disconnect all the port connectors as the ports will be recreated
+              flowchart.removeAllConnectors(p);
+            }
+            for (let p of this.portO) {
+              this.ports.pop();
+            }
           }
-          for (let p of this.portO) {
-            this.ports.pop();
+          this.portO = new Array(this.dataArray.length);
+          let dh = (this.height - this.barHeight) / (this.dataArray.length + 1);
+          const firstPortName = "A";
+          for (let i = 0; i < this.dataArray.length; i++) {
+            this.portO[i] = new Port(this, false, String.fromCharCode(firstPortName.charCodeAt(0) + i), this.width, this.barHeight + (i + 1) * dh, true);
+            this.ports.push(this.portO[i]);
           }
         }
-        this.portO = new Array(1);
-        let dh = (this.height - this.barHeight) / 2;
-        this.portO[0] = new Port(this, false, "O", this.width, this.barHeight + dh, true);
-        this.ports.push(this.portO[0]);
+      } else if (this.content !== undefined) {
+        if (this.portO === undefined || this.portO.length !== 1) {
+          if (this.portO) {
+            for (let p of this.portO) { // disconnect all the port connectors as the ports will be recreated
+              flowchart.removeAllConnectors(p);
+            }
+            for (let p of this.portO) {
+              this.ports.pop();
+            }
+          }
+          this.portO = new Array(1);
+          let dh = (this.height - this.barHeight) / 2;
+          this.portO[0] = new Port(this, false, "O", this.width, this.barHeight + dh, true);
+          this.ports.push(this.portO[0]);
+        }
       }
     }
   }
@@ -108,7 +121,16 @@ export class DataBlock extends Block {
     b.content = this.content;
     b.format = this.format;
     b.image = this.image;
+    b.singleOutput = this.singleOutput;
     return b;
+  }
+
+  setSingleOutput(singleOutput: boolean): void {
+    this.singleOutput = singleOutput;
+  }
+
+  getSingleOutput(): boolean {
+    return this.singleOutput;
   }
 
   setImageSrc(imageSrc: string) {

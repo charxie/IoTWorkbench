@@ -38,6 +38,13 @@ export class DataBlockContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
+                  <td>Single Output:</td>
+                  <td colspan="2">
+                    <input type="radio" name="single-output" id="data-block-multiple-output-radio-button" checked> No
+                    <input type="radio" name="single-output" id="data-block-single-output-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
                   <td>Image:</td>
                   <td><button type="button" id="data-block-image-file-button">Select</button></td>
                   <td><label id="data-block-image-file-name-label" style="width: 100%"></label></label></td>
@@ -117,6 +124,10 @@ export class DataBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof DataBlock) {
       const dataBlock = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let multipleOutputRadioButton = document.getElementById("data-block-multiple-output-radio-button") as HTMLInputElement;
+      multipleOutputRadioButton.checked = !dataBlock.getSingleOutput();
+      let singleOutputRadioButton = document.getElementById("data-block-single-output-radio-button") as HTMLInputElement;
+      singleOutputRadioButton.checked = dataBlock.getSingleOutput();
       let sourceFileOpenButton = document.getElementById("data-block-source-file-button") as HTMLButtonElement;
       sourceFileOpenButton.onclick = () => this.openSourceFile();
       let imageFileOpenButton = document.getElementById("data-block-image-file-button") as HTMLButtonElement;
@@ -152,6 +163,8 @@ export class DataBlockContextMenu extends BlockContextMenu {
         if (success) {
           dataBlock.setName(nameField.value);
           dataBlock.setFormat(formatSelectElement.value);
+          dataBlock.setSingleOutput(singleOutputRadioButton.checked);
+          dataBlock.setOutputPorts();
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(dataBlock);
           flowchart.traverse(dataBlock);
@@ -174,8 +187,8 @@ export class DataBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: dataBlock.getUid(),
-        height: 400,
-        width: 350,
+        height: 420,
+        width: 400,
         buttons: {
           'OK': okFunction,
           'Cancel': () => d.dialog('close')

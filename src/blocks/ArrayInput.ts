@@ -72,7 +72,7 @@ export class ArrayInput extends Block {
 
   getCopy(): Block {
     let copy = new ArrayInput("Array Input #" + Date.now().toString(16), this.iconic, this.name, this.x, this.y, this.width, this.height);
-    copy.setMultidimensionalOutput(this.getMultidimensionalOutput());
+    copy.setSingleOutput(this.getSingleOutput());
     copy.setText(this.getText());
     copy.setTextColor(this.getTextColor());
     copy.marginX = this.marginX;
@@ -183,11 +183,11 @@ export class ArrayInput extends Block {
     // if text is selected, use default
   }
 
-  setMultidimensionalOutput(multidimensionalOutput: boolean): void {
-    this.multidimensionalOutput = multidimensionalOutput;
+  setSingleOutput(singleOutput: boolean): void {
+    this.multidimensionalOutput = singleOutput;
   }
 
-  getMultidimensionalOutput(): boolean {
+  getSingleOutput(): boolean {
     return this.multidimensionalOutput;
   }
 

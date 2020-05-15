@@ -223,6 +223,10 @@ export class StateIO {
           block.setMaximumXValue(state.maximumXValue);
           block.setMinimumYValue(state.minimumYValue);
           block.setMaximumYValue(state.maximumYValue);
+          block.setMinimumZValue(state.minimumZValue);
+          block.setMaximumZValue(state.maximumZValue);
+          block.setMinimumBubbleRadius(state.minimumBubbleRadius);
+          block.setMaximumBubbleRadius(state.maximumBubbleRadius);
           block.setViewWindowColor(state.viewWindowColor);
         } else if (block instanceof Histogram) {
           block.setName(state.name);
@@ -429,6 +433,7 @@ export class StateIO {
           block.setInterruptible(state.interruptible);
         } else if (block instanceof DataBlock) {
           block.setName(state.name);
+          if (state.singleOutput !== undefined) block.setSingleOutput(state.singleOutput);
           block.setData(state.data);
           block.setContent(state.content);
           block.setFormat(state.format);
@@ -447,7 +452,7 @@ export class StateIO {
           }
         } else if (block instanceof ArrayInput) {
           block.setName(state.name);
-          if (state.multidimensionalOutput !== undefined) block.setMultidimensionalOutput(state.multidimensionalOutput);
+          if (state.multidimensionalOutput !== undefined) block.setSingleOutput(state.multidimensionalOutput);
           block.setText(state.text !== undefined ? state.text : "");
           block.setMarginX(state.marginX);
           block.setMarginY(state.marginY);
