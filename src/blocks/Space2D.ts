@@ -769,6 +769,9 @@ export class Space2D extends Block {
           ctx.stroke();
           if (this.fillOptions[index]) {
             ctx.fillStyle = this.fillColors[index];
+            ctx.lineTo((p.getX(length - 1) - xmin) * dx, 0);
+            ctx.lineTo((p.getX(0) - xmin) * dx, 0);
+            ctx.lineTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
             ctx.closePath();
             ctx.fill();
           }
@@ -780,6 +783,9 @@ export class Space2D extends Block {
             for (let i = 1; i < length; i++) {
               ctx.lineTo((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy);
             }
+            ctx.lineTo((p.getX(length - 1) - xmin) * dx, 0);
+            ctx.lineTo((p.getX(0) - xmin) * dx, 0);
+            ctx.lineTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
             ctx.closePath();
             ctx.fill();
           }

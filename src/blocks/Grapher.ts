@@ -548,6 +548,9 @@ export class Grapher extends Block {
         }
         if (this.fillOptions[i]) {
           ctx.fillStyle = this.fillColors[i];
+          ctx.lineTo(tmpX, horizontalAxisY - yOffset);
+          ctx.lineTo(this.graphWindow.x, horizontalAxisY - yOffset);
+          ctx.lineTo(this.graphWindow.x, horizontalAxisY - (yOffset + (arr.data[0] - min) * dy));
           ctx.closePath();
           ctx.fill();
         }
