@@ -215,7 +215,6 @@ export class StateIO {
         } else if (block instanceof BubblePlot) {
           block.setName(state.name);
           block.setBubbleType(state.bubbleType);
-          block.setBubbleColor(state.bubbleColor);
           block.setAutoScale(state.autoscale);
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
@@ -229,6 +228,7 @@ export class StateIO {
           block.setMaximumBubbleRadius(state.maximumBubbleRadius);
           block.setViewWindowColor(state.viewWindowColor);
           block.setShowGridLines(state.showGridLines);
+          if (state.defaultColor !== undefined) block.setDefaultColor(state.defaultColor);
           if (state.colorScheme !== undefined) block.setColorScheme(state.colorScheme);
           if (state.colorScale !== undefined) block.setColorScale(state.colorScale);
           if (state.opacity !== undefined) block.setOpacity(state.opacity);

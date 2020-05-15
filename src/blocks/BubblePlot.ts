@@ -36,13 +36,14 @@ export class BubblePlot extends Block {
     bottom: <number>4
   };
   private bubbleType: string = "Circle";
-  private bubbleColor: string = "white";
+  private defaultColor: string = "white";
   private colorScale: string = "Linear";
   private colorScheme: string = "None";
   private opacity: number = 1;
   private interpolateColor;
   private minimumBubbleRadius = 1;
   private maximumBubbleRadius = 20;
+  private pattern;
 
   static State = class {
     readonly name: string;
@@ -65,7 +66,7 @@ export class BubblePlot extends Block {
     readonly minimumBubbleRadius: number;
     readonly maximumBubbleRadius: number;
     readonly bubbleType: string;
-    readonly bubbleColor: string;
+    readonly defaultColor: string;
     readonly colorScheme: string;
     readonly colorScale: string;
     readonly opacity: number;
@@ -91,7 +92,7 @@ export class BubblePlot extends Block {
       this.minimumBubbleRadius = b.minimumBubbleRadius;
       this.maximumBubbleRadius = b.maximumBubbleRadius;
       this.bubbleType = b.bubbleType;
-      this.bubbleColor = b.bubbleColor;
+      this.defaultColor = b.defaultColor;
       this.colorScheme = b.colorScheme;
       this.colorScale = b.colorScale;
       this.opacity = b.opacity;
@@ -127,7 +128,7 @@ export class BubblePlot extends Block {
     copy.viewWindowColor = this.viewWindowColor;
     copy.showGridLines = this.showGridLines;
     copy.bubbleType = this.bubbleType;
-    copy.bubbleColor = this.bubbleColor;
+    copy.defaultColor = this.defaultColor;
     copy.colorScheme = this.colorScheme;
     copy.colorScale = this.colorScale;
     copy.opacity = this.opacity;
@@ -259,12 +260,12 @@ export class BubblePlot extends Block {
     return this.bubbleType;
   }
 
-  setBubbleColor(bubbleColor: string): void {
-    this.bubbleColor = bubbleColor;
+  setDefaultColor(defaultColor: string): void {
+    this.defaultColor = defaultColor;
   }
 
-  getBubbleColor(): string {
-    return this.bubbleColor;
+  getDefaultColor(): string {
+    return this.defaultColor;
   }
 
   setOpacity(opacity: number): void {
@@ -398,7 +399,7 @@ export class BubblePlot extends Block {
       if (length > 1) {
         let radiusScale = d3.scaleLinear().domain([zmin, zmax]).range([this.minimumBubbleRadius, this.maximumBubbleRadius]);
         ctx.lineWidth = 1;
-        ctx.fillStyle = Util.isHexColor(this.bubbleColor) ? this.bubbleColor + Util.alphaToHex(this.opacity) : this.bubbleColor;
+        ctx.fillStyle = Util.isHexColor(this.defaultColor) ? this.defaultColor + Util.alphaToHex(this.opacity) : this.defaultColor;
         ctx.strokeStyle = "black";
         let colorScale;
         if (this.colorScheme !== "None") {
@@ -565,17 +566,55 @@ export class BubblePlot extends Block {
 
   }
 
+  private createPattern(ctx: CanvasRenderingContext2D): void {
+    if (this.pattern === undefined) {
+      let p = document.createElement("canvas")
+      p.width = 8;
+      p.height = 8;
+      let pctx = p.getContext('2d');
+      pctx.fillStyle = "gray";
+      pctx.lineWidth = 1;
+      const n = 8;
+      // Top line
+      pctx.beginPath();
+      pctx.moveTo(0, p.height / n);
+      pctx.lineTo(p.width / n, 0);
+      pctx.lineTo(0, 0);
+      pctx.lineTo(0, p.height / n);
+      pctx.fill();
+      // Middle line
+      pctx.beginPath();
+      pctx.moveTo(p.width, p.height / n);
+      pctx.lineTo(p.width / n, p.height);
+      pctx.lineTo(0, p.height);
+      pctx.lineTo(0, p.height * (n - 1) / n);
+      pctx.lineTo(p.width * (n - 1) / n, 0);
+      pctx.lineTo(p.width, 0);
+      pctx.lineTo(p.width, p.height / n);
+      pctx.fill();
+      // Bottom line
+      pctx.beginPath();
+      pctx.moveTo(p.width, p.height * (n - 1) / n);
+      pctx.lineTo(p.width * (n - 1) / n, p.height);
+      pctx.lineTo(p.width, p.height);
+      pctx.lineTo(p.width, p.height * (n - 1) / n);
+      pctx.fill();
+      this.pattern = ctx.createPattern(p, 'repeat');
+    }
+  }
+
   private drawLegends(ctx: CanvasRenderingContext2D): void {
     ctx.save();
     ctx.translate(this.viewWindow.x + this.viewWindow.width, this.viewWindow.y + this.viewWindow.height);
     ctx.lineWidth = 1;
-    ctx.fillStyle = "white";
     ctx.strokeStyle = "black";
     ctx.font = "10px Arial";
     let rmin = this.minimumBubbleRadius;
     let rmax = this.maximumBubbleRadius;
     let minValue = this.minimumZValue.toString();
     let maxValue = this.maximumZValue.toString();
+    this.createPattern(ctx);
+    ctx.fillStyle = this.pattern;
     switch (this.bubbleType) {
       case "Circle":
         ctx.beginPath();
@@ -584,7 +623,7 @@ export class BubblePlot extends Block {
         ctx.stroke();
         ctx.fillStyle = "black";
         ctx.fillText(maxValue, -2 * rmax - ctx.measureText(maxValue).width / 2, -3.5 * rmax);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = this.pattern;
         ctx.beginPath();
         ctx.arc(-2 * rmax, -5 * rmax, rmin, 0, 2 * Math.PI);
         ctx.fill();
@@ -599,7 +638,7 @@ export class BubblePlot extends Block {
         ctx.stroke();
         ctx.fillStyle = "black";
         ctx.fillText(maxValue, -2 * rmax - ctx.measureText(maxValue).width / 2, -3.5 * rmax);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = this.pattern;
         ctx.beginPath();
         ctx.rect(-2 * rmax, -5 * rmax, 2 * rmin, 2 * rmin);
         ctx.fill();
@@ -619,7 +658,7 @@ export class BubblePlot extends Block {
         ctx.stroke();
         ctx.fillStyle = "black";
         ctx.fillText(maxValue, tmpX - ctx.measureText(maxValue).width / 2, -3.5 * rmax);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = this.pattern;
         tmpY = -4.5 * rmax;
         ctx.beginPath();
         ctx.moveTo(tmpX, tmpY - rmin);
@@ -643,7 +682,7 @@ export class BubblePlot extends Block {
         ctx.stroke();
         ctx.fillStyle = "black";
         ctx.fillText(maxValue, tmpX - ctx.measureText(maxValue).width / 2, -3.5 * rmax);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = this.pattern;
         tmpY = -4.5 * rmax;
         ctx.beginPath();
         ctx.moveTo(tmpX, tmpY + rmin);
@@ -668,7 +707,7 @@ export class BubblePlot extends Block {
         ctx.stroke();
         ctx.fillStyle = "black";
         ctx.fillText(maxValue, tmpX - ctx.measureText(maxValue).width / 2, -3.5 * rmax);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = this.pattern;
         tmpY = -4.5 * rmax;
         ctx.beginPath();
         ctx.moveTo(tmpX, tmpY + rmin);
@@ -687,7 +726,7 @@ export class BubblePlot extends Block {
         Util.drawStar(ctx, tmpX, tmpY, rmax, 5, 2);
         ctx.fillStyle = "black";
         ctx.fillText(maxValue, tmpX - ctx.measureText(maxValue).width / 2, -5.5 * rmax);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = this.pattern;
         tmpY = -rmax * 7;
         Util.drawStar(ctx, tmpX, tmpY, rmin, 5, 2);
         ctx.fillStyle = "black";
@@ -699,7 +738,7 @@ export class BubblePlot extends Block {
         Util.drawStar(ctx, tmpX, tmpY, rmax, 6, 2);
         ctx.fillStyle = "black";
         ctx.fillText(maxValue, tmpX - ctx.measureText(maxValue).width / 2, -4 * rmax);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = this.pattern;
         tmpY = -rmax * 5;
         Util.drawStar(ctx, tmpX, tmpY, rmin, 6, 2);
         ctx.fillStyle = "black";

@@ -101,9 +101,9 @@ export class BubblePlotContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="bubble-plot-maximum-radius-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Bubble Color:</td>
-                  <td><input type="color" id="bubble-plot-bubble-color-chooser" style="width: 50px"></td>
-                  <td><input type="text" id="bubble-plot-bubble-color-field" style="width: 100%"></td>
+                  <td>Default Color:</td>
+                  <td><input type="color" id="bubble-plot-default-color-chooser" style="width: 50px"></td>
+                  <td><input type="text" id="bubble-plot-default-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Color Scheme:</td>
@@ -234,10 +234,10 @@ export class BubblePlotContextMenu extends BlockContextMenu {
       yAxisLableField.value = g.getYAxisLabel();
       let bubbleTypeSelector = document.getElementById("bubble-plot-bubble-type-selector") as HTMLSelectElement;
       bubbleTypeSelector.value = g.getBubbleType();
-      let bubbleColorField = document.getElementById("bubble-plot-bubble-color-field") as HTMLInputElement;
-      bubbleColorField.value = g.getBubbleColor();
-      let bubbleColorChooser = document.getElementById("bubble-plot-bubble-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(bubbleColorChooser, g.getBubbleColor());
+      let bubbleColorField = document.getElementById("bubble-plot-default-color-field") as HTMLInputElement;
+      bubbleColorField.value = g.getDefaultColor();
+      let bubbleColorChooser = document.getElementById("bubble-plot-default-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(bubbleColorChooser, g.getDefaultColor());
       Util.hookupColorInputs(bubbleColorField, bubbleColorChooser);
       let opacityField = document.getElementById("bubble-plot-opacity-field") as HTMLInputElement;
       opacityField.value = g.getOpacity().toString();
@@ -360,7 +360,7 @@ export class BubblePlotContextMenu extends BlockContextMenu {
           g.setXAxisLabel(xAxisLableField.value);
           g.setYAxisLabel(yAxisLableField.value);
           g.setBubbleType(bubbleTypeSelector.value);
-          g.setBubbleColor(bubbleColorField.value);
+          g.setDefaultColor(bubbleColorField.value);
           g.setColorScheme(colorSchemeSelector.value)
           g.setShowGridLines(gridLinesRadioButton.checked);
           g.setViewWindowColor(windowColorField.value);
