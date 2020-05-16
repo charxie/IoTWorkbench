@@ -185,6 +185,7 @@ export class StateIO {
           if (state.minimumValue != undefined) block.setMinimumValue(state.minimumValue);
           if (state.maximumValue != undefined) block.setMaximumValue(state.maximumValue);
           if (state.autoscale != undefined) block.setAutoScale(state.autoscale);
+          if (state.stacked != undefined) block.setStacked(state.stacked);
           if (state.xAxisLabel != undefined) block.setXAxisLabel(state.xAxisLabel);
           if (state.yAxisLabel != undefined) block.setYAxisLabel(state.yAxisLabel);
           if (state.graphWindowColor != undefined) block.setGraphWindowColor(state.graphWindowColor);

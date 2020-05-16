@@ -41,6 +41,7 @@ export class Grapher extends Block {
   private graphSymbolSizes: number[] = [];
   private graphSymbolColors: string[] = [];
   private graphSymbolSpacings: number[] = [];
+  private stacked: boolean = false;
 
   static State = class {
     readonly name: string;
@@ -54,6 +55,7 @@ export class Grapher extends Block {
     readonly yAxisLabel: string;
     readonly graphWindowColor: string;
     readonly autoscale: boolean;
+    readonly stacked: boolean;
     readonly minimumValue: number;
     readonly maximumValue: number;
     readonly legends: string[];
@@ -79,6 +81,7 @@ export class Grapher extends Block {
       this.yAxisLabel = g.yAxisLabel;
       this.graphWindowColor = g.graphWindowColor;
       this.autoscale = g.autoscale;
+      this.stacked = g.stacked;
       this.minimumValue = g.minimumValue;
       this.maximumValue = g.maximumValue;
       this.legends = [...g.legends];
@@ -126,6 +129,7 @@ export class Grapher extends Block {
     copy.minimumValue = this.minimumValue;
     copy.maximumValue = this.maximumValue;
     copy.autoscale = this.autoscale;
+    copy.stacked = this.stacked;
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.graphWindowColor = this.graphWindowColor;
@@ -201,6 +205,14 @@ export class Grapher extends Block {
 
   getDataPorts(): Port[] {
     return this.portI;
+  }
+
+  setStacked(stacked: boolean): void {
+    this.stacked = stacked;
+  }
+
+  isStacked(): boolean {
+    return this.stacked;
   }
 
   setMinimumValue(minimumValue: number): void {
@@ -518,7 +530,7 @@ export class Grapher extends Block {
     let horizontalAxisY = this.y + this.height - this.graphMargin.bottom;
 
     // draw the data line
-    for (let i = 0; i < this.dataArrays.length; i++) {
+    for (let i = this.dataArrays.length - 1; i >= 0; i--) {
       if (this.lineTypes[i] !== "None") {
         ctx.lineWidth = this.lineThicknesses[i];
         let arr = this.dataArrays[i];
@@ -867,9 +879,30 @@ export class Grapher extends Block {
   }
 
   updateModel(): void {
-    for (let i = 0; i < this.portI.length; i++) {
-      let v = this.portI[i].getValue();
-      this.dataArrays[i].data = Array.isArray(v) ? v : [v];
+    if (this.stacked) {
+      for (let i = 0; i < this.portI.length; i++) {
+        let vi = this.portI[i].getValue();
+        if (vi !== undefined) {
+          this.dataArrays[i].data = Array.isArray(vi) ? vi.slice() : [vi];
+          for (let k = 0; k < this.dataArrays[i].data.length; k++) {
+            for (let j = 0; j < i; j++) {
+              let vj = this.portI[j].getValue();
+              if (vj !== undefined) {
+                if (Array.isArray(vj)) {
+                  if (k < vj.length) this.dataArrays[i].data[k] += vj[k];
+                } else {
+                  this.dataArrays[i].data[k] += vj;
+                }
+              }
+            }
+          }
+        }
+      }
+    } else {
+      for (let i = 0; i < this.portI.length; i++) {
+        let v = this.portI[i].getValue();
+        this.dataArrays[i].data = Array.isArray(v) ? v : [v];
+      }
     }
     let x0 = this.portX.getValue();
     if (x0 != undefined) {

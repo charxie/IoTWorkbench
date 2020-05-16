@@ -62,6 +62,13 @@ export class GrapherContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="grapher-y-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Stacked:</td>
+                  <td colspan="3">
+                    <input type="radio" name="stacked" id="grapher-not-stacked-radio-button" checked> No
+                    <input type="radio" name="stacked" id="grapher-stacked-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
                   <td>Scale:</td>
                   <td colspan="3">
                     <input type="radio" name="scale" id="grapher-auto-scale-radio-button" checked> Auto
@@ -210,6 +217,10 @@ export class GrapherContextMenu extends BlockContextMenu {
       let yAxisLableField = document.getElementById("grapher-y-axis-label-field") as HTMLInputElement;
       yAxisLableField.value = g.getYAxisLabel();
 
+      let notStackedRadioButton = document.getElementById("grapher-not-stacked-radio-button") as HTMLInputElement;
+      notStackedRadioButton.checked = !g.isStacked();
+      let stackedRadioButton = document.getElementById("grapher-stacked-radio-button") as HTMLInputElement;
+      stackedRadioButton.checked = g.isStacked();
       let autoScaleRadioButton = document.getElementById("grapher-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("grapher-fixed-scale-radio-button") as HTMLInputElement;
@@ -405,6 +416,7 @@ export class GrapherContextMenu extends BlockContextMenu {
           g.setYAxisLabel(yAxisLableField.value);
           g.setGraphWindowColor(windowColorField.value);
           g.setAutoScale(autoScaleRadioButton.checked);
+          g.setStacked(stackedRadioButton.checked);
           for (let i = 0; i < fillOptions.length; i++) {
             g.setLegend(i, legends[i]);
             g.setLineType(i, lineTypes[i]);
@@ -417,6 +429,7 @@ export class GrapherContextMenu extends BlockContextMenu {
             g.setGraphSymbolColor(i, graphSymbolColors[i]);
             g.setGraphSymbolSpacing(i, graphSymbolSpacings[i]);
           }
+          g.updateModel();
           g.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();
