@@ -74,6 +74,7 @@ import {StringInput} from "./StringInput";
 import {ClusteringBlock} from "./ClusteringBlock";
 import {HeatMap} from "./HeatMap";
 import {BubblePlot} from "./BubblePlot";
+import {ArrayAdapter} from "./ArrayAdapter";
 
 export class BlockView {
 
@@ -371,8 +372,11 @@ export class BlockView {
       case "random-number-generator-block":
         b = this.addBlockUndoable(new RandomNumberGeneratorBlock("Random Number Generator Block #" + timestamp, x - 30, y - 40, 60, 80));
         break;
+      case "array-adapter-block":
+        this.addBlockUndoable(new ArrayAdapter("Array Adapter #" + timestamp, x - 50, y - 40, 100, 80));
+        break;
       case "array-input-block":
-        let arrayInput = new ArrayInput("Array Input #" + timestamp, false,"Array Input", x - 100, y - 100, 200, 200);
+        let arrayInput = new ArrayInput("Array Input #" + timestamp, false, "Array Input", x - 100, y - 100, 200, 200);
         this.addBlockUndoable(arrayInput);
         arrayInput.locateOverlay();
         break;

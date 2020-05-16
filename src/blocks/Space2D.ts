@@ -23,6 +23,7 @@ export class Space2D extends Block {
   private minimumYValue: number = 0;
   private maximumYValue: number = 1;
   private autoscale: boolean = true;
+  private stacked: boolean = false;
   private xAxisLabel: string = "x";
   private yAxisLabel: string = "y";
   private spaceWindowColor: string = "white";
@@ -68,6 +69,7 @@ export class Space2D extends Block {
     readonly backgroundImageSrc: string;
     readonly showGridLines: boolean;
     readonly autoscale: boolean;
+    readonly stacked: boolean;
     readonly minimumXValue: number;
     readonly maximumXValue: number;
     readonly minimumYValue: number;
@@ -102,6 +104,7 @@ export class Space2D extends Block {
       this.backgroundImageSrc = g.backgroundImage !== undefined ? g.backgroundImage.src : undefined; // base64 image data
       this.showGridLines = g.showGridLines;
       this.autoscale = g.autoscale;
+      this.stacked = g.stacked;
       this.minimumXValue = g.minimumXValue;
       this.maximumXValue = g.maximumXValue;
       this.minimumYValue = g.minimumYValue;
@@ -159,6 +162,7 @@ export class Space2D extends Block {
     copy.minimumYValue = this.minimumYValue;
     copy.maximumYValue = this.maximumYValue;
     copy.autoscale = this.autoscale;
+    copy.stacked = this.stacked;
     copy.xAxisLabel = this.xAxisLabel;
     copy.yAxisLabel = this.yAxisLabel;
     copy.spaceWindowColor = this.spaceWindowColor;
@@ -331,6 +335,12 @@ export class Space2D extends Block {
     return this.showImagePorts;
   }
 
+  getPorts(): Port[] {
+    if (this.pointInput)
+      return this.showImagePorts ? this.ports : this.portPoints;
+    return this.ports;
+  }
+
   isImagePortConnected(): boolean {
     if (this.portImages) {
       for (let p of this.portImages) {
@@ -338,6 +348,14 @@ export class Space2D extends Block {
       }
     }
     return false;
+  }
+
+  setStacked(stacked: boolean): void {
+    this.stacked = stacked;
+  }
+
+  isStacked(): boolean {
+    return this.stacked;
   }
 
   setMinimumXValue(minimumXValue: number): void {
@@ -1211,15 +1229,18 @@ export class Space2D extends Block {
 
   updateModel(): void {
     if (this.pointInput) { // point input mode (support multiple curves, but it doesn't accept array as inputs)
-      if (this.portPoints != undefined) {
+      if (this.portPoints !== undefined) {
         for (let i = 0; i < this.portPoints.length; i++) {
           let vp = this.portPoints[i].getValue();
-          if (vp != undefined) {
+          if (vp !== undefined) {
             let is2DArray = Array.isArray(vp) && vp[0].constructor === Array;
             if (is2DArray) {
-              this.points[i].clear();
-              for (let k = 0; k < vp.length; k++) {
-                this.points[i].addPoint(vp[k][0], vp[k][1]);
+              if (this.stacked) {
+              } else {
+                this.points[i].clear();
+                for (let k = 0; k < vp.length; k++) {
+                  this.points[i].addPoint(vp[k][0], vp[k][1]);
+                }
               }
             } else {
               if (vp instanceof Vector) {
@@ -1238,6 +1259,8 @@ export class Space2D extends Block {
                 this.tempY = undefined;
               }
             }
+          } else {
+            this.points[i].clear();
           }
         }
       }

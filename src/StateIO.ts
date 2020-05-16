@@ -63,6 +63,7 @@ import {StringInput} from "./blocks/StringInput";
 import {ClusteringBlock} from "./blocks/ClusteringBlock";
 import {HeatMap} from "./blocks/HeatMap";
 import {BubblePlot} from "./blocks/BubblePlot";
+import {ArrayAdapter} from "./blocks/ArrayAdapter";
 
 export class StateIO {
 
@@ -323,6 +324,7 @@ export class StateIO {
           block.setSpaceWindowColor(state.spaceWindowColor);
           block.setPointInput(state.pointInput);
           block.setShowGridLines(state.showGridLines == undefined ? false : state.showGridLines);
+          if (state.stacked != undefined) block.setStacked(state.stacked);
           if (state.showImagePorts !== undefined) block.setShowImagePorts(state.showImagePorts);
           if (state.backgroundImageSrc != undefined) block.setBackgroundImageSrc(state.backgroundImageSrc);
           if (state.legends != undefined) block.setLegends(state.legends);
@@ -455,6 +457,8 @@ export class StateIO {
           if (state.cameraPositionX !== undefined && state.cameraRotationX !== undefined) {
             block.setCameraPosition(state.cameraPositionX, state.cameraPositionY, state.cameraPositionZ, state.cameraRotationX, state.cameraRotationY, state.cameraRotationZ);
           }
+        } else if (block instanceof ArrayAdapter) {
+          block.setColumns(state.columns);
         } else if (block instanceof ArrayInput) {
           block.setName(state.name);
           if (state.multidimensionalOutput !== undefined) block.setSingleOutput(state.multidimensionalOutput);

@@ -62,6 +62,7 @@ import {StringInput} from "../StringInput";
 import {ClusteringBlock} from "../ClusteringBlock";
 import {HeatMap} from "../HeatMap";
 import {BubblePlot} from "../BubblePlot";
+import {ArrayAdapter} from "../ArrayAdapter";
 
 export class BlockElementsPanel {
 
@@ -147,6 +148,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="switch-statement-block" title="Switch Statement" width="45x" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="worker-block" title="Worker" width="45x" height="45px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="action-block" title="Action" width="45x" height="45px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="array-adapter-block" title="Array Adapter" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="random-number-generator-block" title="Random Number Generator" width="45x" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="ode-solver-block" title="ODE Solver" width="45px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="transient-state-fdm-solver-block" title="Transient State FDM Solver" width="45px" height="60px" style="cursor: pointer;"/></td>
@@ -226,6 +228,7 @@ export class BlockElementsPanel {
     this.drawUnivariateDescriptiveStatisticsBlock("univariate-descriptive-statistics-block");
     this.drawMolecularViewerBlock("Molecular Viewer Block", "Molecular Viewer", "molecular-viewer-block");
     this.drawWordCloud("Wordcloud", "wordcloud-block");
+    this.drawArrayAdapter("Array Adapter", "array-adapter-block");
   }
 
   private drawRandomNumberGeneratorBlock(name: string, symbol: string, canvasId: string): void {
@@ -393,6 +396,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new TurnoutSwitch("Turnout Switch Icon", name, symbol, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawArrayAdapter(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new ArrayAdapter("Array Adapter Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

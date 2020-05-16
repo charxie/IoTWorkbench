@@ -12,6 +12,10 @@ export class DataArray {
     if (size > 0) this.data = new Array(size);
   }
 
+  clear(): void {
+    this.data = [];
+  }
+
   copy(): DataArray {
     let a = new DataArray(0);
     if (this.data !== undefined) { // data could be undefined as this may be set to the value of an input port

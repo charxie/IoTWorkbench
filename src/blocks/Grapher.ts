@@ -896,12 +896,18 @@ export class Grapher extends Block {
               }
             }
           }
+        } else {
+          this.dataArrays[i].clear();
         }
       }
     } else {
       for (let i = 0; i < this.portI.length; i++) {
         let v = this.portI[i].getValue();
-        this.dataArrays[i].data = Array.isArray(v) ? v : [v];
+        if (v !== undefined) {
+          this.dataArrays[i].data = Array.isArray(v) ? v : [v];
+        } else {
+          this.dataArrays[i].clear();
+        }
       }
     }
     let x0 = this.portX.getValue();

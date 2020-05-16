@@ -157,6 +157,12 @@ export class Space3D extends Basic3DBlock {
     return this.portPoints;
   }
 
+  getPorts(): Port[] {
+    if (this.pointInput)
+      return this.showImagePorts ? this.ports : this.portPoints;
+    return this.ports;
+  }
+
   reset(): void {
     super.reset();
     this.erase();
@@ -519,6 +525,8 @@ export class Space3D extends Basic3DBlock {
                 this.tempZ = undefined;
               }
             }
+          } else {
+            (<LinePlot>this.view).clearDataPoints(i);
           }
         }
       }

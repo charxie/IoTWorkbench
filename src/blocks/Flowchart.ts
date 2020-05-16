@@ -73,6 +73,7 @@ import {StringInput} from "./StringInput";
 import {ClusteringBlock} from "./ClusteringBlock";
 import {HeatMap} from "./HeatMap";
 import {BubblePlot} from "./BubblePlot";
+import {ArrayAdapter} from "./ArrayAdapter";
 
 export class Flowchart {
 
@@ -948,6 +949,9 @@ export class Flowchart {
       case "Random Number Generator Block":
         block = new RandomNumberGeneratorBlock(uid, x, y, 200, 220);
         break;
+      case "Array Adapter":
+        block = new ArrayAdapter(uid, x, y, 80, 80);
+        break;
       case "Array Input":
         block = new ArrayInput(uid, false, name, x, y, 80, 80);
         break;
@@ -1104,6 +1108,8 @@ export class Flowchart {
         blockStates.push(new BundledFunctionsBlock.State(b));
       } else if (b instanceof RandomNumberGeneratorBlock) {
         blockStates.push(new RandomNumberGeneratorBlock.State(b));
+      } else if (b instanceof ArrayAdapter) {
+        blockStates.push(new ArrayAdapter.State(b));
       } else if (b instanceof ArrayInput) {
         blockStates.push(new ArrayInput.State(b));
       } else if (b instanceof StringInput) {

@@ -6,8 +6,6 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
-import {TurnoutSwitch} from "../TurnoutSwitch";
-import {SwitchStatementBlock} from "../SwitchStatementBlock";
 import {MultivariateFunctionBlock} from "../MultivariateFunctionBlock";
 
 export class MultivariateFunctionBlockContextMenu extends BlockContextMenu {

@@ -66,6 +66,7 @@ import {StringInput} from "./StringInput";
 import {ClusteringBlock} from "./ClusteringBlock";
 import {HeatMap} from "./HeatMap";
 import {BubblePlot} from "./BubblePlot";
+import {ArrayAdapter} from "./ArrayAdapter";
 
 export class BlockUtilities {
 
@@ -234,6 +235,9 @@ export class BlockUtilities {
     }
     if (block instanceof MolecularViewerBlock) {
       return contextMenus.molecularViewerBlock;
+    }
+    if (block instanceof ArrayAdapter) {
+      return contextMenus.arrayAdapter;
     }
     if (block instanceof ArrayInput) {
       return contextMenus.arrayInput;
@@ -480,6 +484,10 @@ export class BlockUtilities {
     if (block instanceof MolecularViewerBlock) {
       contextMenus.molecularViewerBlock.block = block;
       return document.getElementById("molecular-viewer-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof ArrayAdapter) {
+      contextMenus.arrayAdapter.block = block;
+      return document.getElementById("array-adapter-context-menu") as HTMLMenuElement;
     }
     if (block instanceof ArrayInput) {
       contextMenus.arrayInput.block = block;

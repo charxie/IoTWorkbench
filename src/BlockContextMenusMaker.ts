@@ -65,6 +65,7 @@ import {StringInputContextMenu} from "./blocks/ui/StringInputContextMenu";
 import {ClusteringBlockContextMenu} from "./blocks/ui/ClusteringBlockContextMenu";
 import {HeatMapContextMenu} from "./blocks/ui/HeatMapContextMenu";
 import {BubblePlotContextMenu} from "./blocks/ui/BubblePlotContextMenu";
+import {ArrayAdapterContextMenu} from "./blocks/ui/ArrayAdapterContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -126,6 +127,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("audio-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("data-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("molecular-viewer-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("array-adapter-context-menu-placeholder", blockPlayground);
   addPlaceholder("array-input-context-menu-placeholder", blockPlayground);
   addPlaceholder("string-input-context-menu-placeholder", blockPlayground);
   addPlaceholder("mean-block-context-menu-placeholder", blockPlayground);
@@ -422,6 +424,11 @@ function setupContextMenuForBlocks() {
   molecularViewerBlockContextMenu.render("molecular-viewer-block-context-menu-placeholder");
   molecularViewerBlockContextMenu.addListeners();
   contextMenus.molecularViewerBlock = molecularViewerBlockContextMenu;
+
+  let arrayAdapterContextMenu = new ArrayAdapterContextMenu();
+  arrayAdapterContextMenu.render("array-adapter-context-menu-placeholder");
+  arrayAdapterContextMenu.addListeners();
+  contextMenus.arrayAdapter = arrayAdapterContextMenu;
 
   let arrayInputContextMenu = new ArrayInputContextMenu();
   arrayInputContextMenu.render("array-input-context-menu-placeholder");
