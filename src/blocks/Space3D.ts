@@ -469,7 +469,7 @@ export class Space3D extends Basic3DBlock {
       if (this.showImagePorts) {
         p.draw(ctx, this.iconic);
       } else {
-        if (this.portImages !== undefined && this.portImages.indexOf(p) === -1) {
+        if (this.portImages === undefined || (this.portImages !== undefined && this.portImages.indexOf(p) === -1)) {
           p.draw(ctx, this.iconic);
         }
       }
