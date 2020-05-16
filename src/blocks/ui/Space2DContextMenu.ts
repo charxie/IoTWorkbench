@@ -103,6 +103,13 @@ export class Space2DContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
+                  <td>Stacked:</td>
+                  <td colspan="3">
+                    <input type="radio" name="stacked" id="space2d-not-stacked-radio-button" checked> No
+                    <input type="radio" name="stacked" id="space2d-stacked-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
                   <td>Scale:</td>
                   <td colspan="3">
                     <input type="radio" name="scale" id="space2d-auto-scale-radio-button" checked> Auto
@@ -328,6 +335,10 @@ export class Space2DContextMenu extends BlockContextMenu {
       showImagePortsRadioButton.checked = g.getShowImagePorts();
       let hideImagePortsRadioButton = document.getElementById("space2d-hide-image-ports-radio-button") as HTMLInputElement;
       hideImagePortsRadioButton.checked = !g.getShowImagePorts();
+      let notStackedRadioButton = document.getElementById("space2d-not-stacked-radio-button") as HTMLInputElement;
+      notStackedRadioButton.checked = !g.isStacked();
+      let stackedRadioButton = document.getElementById("space2d-stacked-radio-button") as HTMLInputElement;
+      stackedRadioButton.checked = g.isStacked();
       let autoScaleRadioButton = document.getElementById("space2d-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("space2d-fixed-scale-radio-button") as HTMLInputElement;
@@ -623,6 +634,7 @@ export class Space2DContextMenu extends BlockContextMenu {
           g.setSpaceWindowColor(windowColorField.value);
           g.setShowGridLines(gridLinesRadioButton.checked);
           g.setShowImagePorts(showImagePortsRadioButton.checked);
+          g.setStacked(stackedRadioButton.checked);
           g.setAutoScale(autoScaleRadioButton.checked);
           g.setPointInput(pointInputRadioButton.checked);
           for (let i = 0; i < lineTypes.length; i++) {
@@ -639,6 +651,7 @@ export class Space2DContextMenu extends BlockContextMenu {
             g.setEndSymbolRadius(i, endSymbolRadii[i]);
             g.setEndSymbolConnection(i, endSymbolConnections[i]);
           }
+          g.updateModel();
           g.refreshView();
           flowchart.storeBlockStates();
           flowchart.blockView.requestDraw();

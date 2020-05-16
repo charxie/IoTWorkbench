@@ -27,6 +27,8 @@ import bubble_plot from "./examples/bubble-plot.json";
 // @ts-ignore
 import area_plot from "./examples/area-plot.json";
 // @ts-ignore
+import stacked_area_plot from "./examples/stacked-area-plot.json";
+// @ts-ignore
 import box_plot from "./examples/box-plot.json";
 // @ts-ignore
 import univariate_descriptive_statistics from "./examples/univariate-descriptive-statistics.json";
@@ -439,6 +441,7 @@ export class Examples {
     this.files.push({name: "Statistics: Box Plot", data: box_plot});
     this.files.push({name: "Statistics: Bubble Plot", data: bubble_plot});
     this.files.push({name: "Statistics: Area Plot", data: area_plot});
+    this.files.push({name: "Statistics: Stacked Area Plot", data: stacked_area_plot});
     this.files.push({name: "Statistics: Static Histogram", data: histogram_static});
     this.files.push({name: "Statistics: Dynamic Histogram", data: histogram_dynamic});
     this.files.push({name: "Statistics: Pie Chart", data: pie_chart});

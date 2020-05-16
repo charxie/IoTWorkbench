@@ -709,9 +709,6 @@ export class Space2D extends Block {
       ctx.fillText("2D", this.spaceWindow.x + this.spaceWindow.width / 2 - ctx.measureText("2D").width / 2, this.spaceWindow.y + this.spaceWindow.height / 2 + h / 2);
     } else {
       this.drawAxisLabels(ctx);
-      if (this.pointInput && this.portPoints.length > 1) {
-        this.drawLegends(ctx);
-      }
       if (this.showGridLines) {
         this.drawGridLines(ctx);
       }
@@ -758,7 +755,8 @@ export class Space2D extends Block {
     // draw X-Y plot
     ctx.save();
     ctx.translate(this.spaceWindow.x, this.spaceWindow.y + this.spaceWindow.height);
-    for (let p of this.points) {
+    for (let pi = this.points.length - 1; pi >= 0; pi--) {
+      let p = this.points[pi];
       let length = p.length();
       if (length > 1) {
         let index = this.points.indexOf(p);
@@ -1070,6 +1068,12 @@ export class Space2D extends Block {
     }
     ctx.restore();
 
+    if (!this.iconic) {
+      if (this.pointInput && this.portPoints.length > 1) {
+        this.drawLegends(ctx);
+      }
+    }
+
     // draw the port
     ctx.font = this.iconic ? "9px Arial" : "12px Arial";
     ctx.strokeStyle = "black";
@@ -1231,25 +1235,39 @@ export class Space2D extends Block {
     if (this.pointInput) { // point input mode (support multiple curves, but it doesn't accept array as inputs)
       if (this.portPoints !== undefined) {
         for (let i = 0; i < this.portPoints.length; i++) {
-          let vp = this.portPoints[i].getValue();
-          if (vp !== undefined) {
-            let is2DArray = Array.isArray(vp) && vp[0].constructor === Array;
+          let vi = this.portPoints[i].getValue();
+          if (vi !== undefined) {
+            let is2DArray = Array.isArray(vi) && vi[0].constructor === Array;
             if (is2DArray) {
+              this.points[i].clear();
               if (this.stacked) {
+                let x, y;
+                for (let k = 0; k < vi.length; k++) {
+                  x = vi[k][0];
+                  y = vi[k][1];
+                  if (i > 0) {
+                    for (let j = 0; j < i; j++) {
+                      let vj = this.portPoints[j].getValue();
+                      if (vj !== undefined && k < vj.length) { // assuming that x coordinates are the same for the array
+                        y += vj[k][1];
+                      }
+                    }
+                  }
+                  this.points[i].addPoint(x, y);
+                }
               } else {
-                this.points[i].clear();
-                for (let k = 0; k < vp.length; k++) {
-                  this.points[i].addPoint(vp[k][0], vp[k][1]);
+                for (let k = 0; k < vi.length; k++) {
+                  this.points[i].addPoint(vi[k][0], vi[k][1]);
                 }
               }
             } else {
-              if (vp instanceof Vector) {
-                vp = vp.getValues();
+              if (vi instanceof Vector) {
+                vi = vi.getValues();
               }
-              if (Array.isArray(vp) && vp.length > 1) {
-                if (vp[0] != this.points[i].getLatestX() || vp[1] != this.points[i].getLatestY()) {
-                  this.tempX = vp[0];
-                  this.tempY = vp[1];
+              if (Array.isArray(vi) && vi.length > 1) {
+                if (vi[0] != this.points[i].getLatestX() || vi[1] != this.points[i].getLatestY()) {
+                  this.tempX = vi[0];
+                  this.tempY = vi[1];
                 }
               }
               if (this.tempX != undefined && this.tempY != undefined) {

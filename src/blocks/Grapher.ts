@@ -476,11 +476,11 @@ export class Grapher extends Block {
       ctx.stroke();
     } else {
       this.drawAxisLabels(ctx);
-      if (this.portI.length > 1) {
-        this.drawLegends(ctx);
-      }
       if (maxLength > 1) {
         this.drawLineCharts(ctx);
+      }
+      if (this.portI.length > 1) {
+        this.drawLegends(ctx);
       }
     }
 
@@ -925,7 +925,7 @@ export class Grapher extends Block {
     this.graphMargin.top = 10;
     this.graphMargin.bottom = 36;
     this.graphMargin.left = 40;
-    this.graphMargin.right = 10;
+    this.graphMargin.right = 16;
     let dh = (this.height - this.barHeight) / (this.portI.length + 3);
     for (let i = 0; i < this.portI.length; i++) {
       this.portI[i].setY(this.barHeight + (i + 1) * dh);
