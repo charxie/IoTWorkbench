@@ -166,6 +166,15 @@ export class HeatMap extends Block {
     this.cellSize = Math.min(this.viewWindow.width / this.nx, this.viewWindow.height / this.ny);
   }
 
+  getColorScheme(): string {
+    return this.colorScheme;
+  }
+
+  setColorScheme(colorScheme: string): void {
+    this.colorScheme = colorScheme;
+    this.interpolateColor = ColorSchemes.getInterpolateColorScheme(colorScheme);
+  }
+
   setViewWindowColor(viewWindowColor: string): void {
     this.viewWindowColor = viewWindowColor;
   }
@@ -401,15 +410,6 @@ export class HeatMap extends Block {
     this.viewMargin.right = 10;
     let dh = (this.height - this.barHeight) / 2;
     this.portI.setY(this.barHeight + dh);
-  }
-
-  getColorScheme(): string {
-    return this.colorScheme;
-  }
-
-  setColorScheme(colorScheme: string): void {
-    this.colorScheme = colorScheme;
-    this.interpolateColor = ColorSchemes.getInterpolateColorScheme(colorScheme);
   }
 
   mouseMove(e: MouseEvent): void {

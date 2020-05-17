@@ -2,6 +2,7 @@
  * @author Charles Xie
  */
 
+import * as d3 from 'd3';
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
@@ -9,6 +10,7 @@ import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
 import {DataArray} from "./DataArray";
 import {Point2DArray} from "./Point2DArray";
+import {ColorSchemes} from "./ColorSchemes";
 
 export class ParallelCoordinatesPlot extends Block {
 
@@ -17,10 +19,11 @@ export class ParallelCoordinatesPlot extends Block {
   private minimumValues: number[] = [];
   private maximumValues: number[] = [];
   private axisLabels: string[] = [];
-  private legends: string[] = [];
-  private lineColors: string[] = [];
-  private lineWidths: number[] = [];
   private autoscale: boolean = true;
+  private fractionDigits: number = 1;
+  private lineWidth: number = 1;
+  private colorScheme: string = "Turbo";
+  private interpolateColor = d3.interpolateTurbo;
   private viewWindowColor: string = "white";
   private viewWindow: Rectangle;
   private barHeight: number;
@@ -42,12 +45,12 @@ export class ParallelCoordinatesPlot extends Block {
     readonly dataPortNumber: number;
     readonly viewWindowColor: string;
     readonly autoscale: boolean;
+    readonly fractionDigits: number;
+    readonly lineWidth: number;
+    readonly colorScheme: string;
     readonly axisLabels: string[];
     readonly minimumValues: number[];
     readonly maximumValues: number[];
-    readonly legends: string[];
-    readonly lineColors: string[];
-    readonly lineWidths: number[];
 
     constructor(b: ParallelCoordinatesPlot) {
       this.name = b.name;
@@ -59,12 +62,12 @@ export class ParallelCoordinatesPlot extends Block {
       this.viewWindowColor = b.viewWindowColor;
       this.autoscale = b.autoscale;
       this.dataPortNumber = b.getDataPorts().length;
-      this.legends = [...b.legends];
+      this.lineWidth = b.lineWidth;
+      this.colorScheme = b.colorScheme;
+      this.fractionDigits = b.fractionDigits;
       this.axisLabels = [...b.axisLabels];
       this.minimumValues = [...b.minimumValues];
       this.maximumValues = [...b.maximumValues];
-      this.lineColors = [...b.lineColors];
-      this.lineWidths = [...b.lineWidths];
     }
   };
 
@@ -81,22 +84,19 @@ export class ParallelCoordinatesPlot extends Block {
     this.dataArrays.push(new DataArray(0));
     this.minimumValues.push(0);
     this.maximumValues.push(1);
-    this.axisLabels.push("x");
-    this.legends.push("A");
-    this.lineColors.push("black");
-    this.lineWidths.push(1);
+    this.axisLabels.push("X");
   }
 
   getCopy(): Block {
     let copy = new ParallelCoordinatesPlot("Parallel Coordinates Plot #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.autoscale = this.autoscale;
+    copy.colorScheme = this.colorScheme;
+    copy.lineWidth = this.lineWidth;
+    copy.fractionDigits = this.fractionDigits;
     copy.viewWindowColor = this.viewWindowColor;
     copy.minimumValues = [...this.minimumValues];
     copy.maximumValues = [...this.maximumValues];
     copy.axisLabels = [...this.axisLabels];
-    copy.legends = [...this.legends];
-    copy.lineColors = [...this.lineColors];
-    copy.lineWidths = [...this.lineWidths];
     copy.setDataPortNumber(this.getDataPorts().length);
     return copy;
   }
@@ -112,10 +112,7 @@ export class ParallelCoordinatesPlot extends Block {
           this.portI.push(p);
           this.ports.push(p);
           this.dataArrays.push(new DataArray(0));
-          this.legends.push(p.getUid());
-          this.axisLabels.push("x");
-          this.lineColors.push("black");
-          this.lineWidths.push(1);
+          this.axisLabels.push("X");
           this.minimumValues.push(0);
           this.maximumValues.push(1);
         }
@@ -125,10 +122,7 @@ export class ParallelCoordinatesPlot extends Block {
         this.portI.pop();
         flowchart.removeConnectorsToPort(this.ports.pop());
         this.dataArrays.pop();
-        this.legends.pop();
         this.axisLabels.pop();
-        this.lineColors.pop();
-        this.lineWidths.pop();
         this.minimumValues.pop();
         this.maximumValues.pop();
       }
@@ -136,10 +130,7 @@ export class ParallelCoordinatesPlot extends Block {
     // ensure that extra properties are removed
     let n = this.portI.length;
     this.dataArrays.length = n;
-    this.legends.length = n;
     this.axisLabels.length = n;
-    this.lineColors.length = n;
-    this.lineWidths.length = n;
     this.minimumValues.length = n;
     this.maximumValues.length = n;
     this.refreshView();
@@ -155,6 +146,31 @@ export class ParallelCoordinatesPlot extends Block {
 
   getAutoScale(): boolean {
     return this.autoscale;
+  }
+
+  setFractionDigits(fractionDigits: number): void {
+    this.fractionDigits = fractionDigits;
+  }
+
+  getFractionDigits(): number {
+    return this.fractionDigits;
+  }
+
+  setLineWidth(lineWidth: number): void {
+    this.lineWidth = lineWidth;
+  }
+
+  getLineWidth(): number {
+    return this.lineWidth;
+  }
+
+  getColorScheme(): string {
+    return this.colorScheme;
+  }
+
+  setColorScheme(colorScheme: string): void {
+    this.colorScheme = colorScheme;
+    this.interpolateColor = ColorSchemes.getInterpolateColorScheme(colorScheme);
   }
 
   setViewWindowColor(viewWindowColor: string): void {
@@ -211,54 +227,6 @@ export class ParallelCoordinatesPlot extends Block {
 
   getAxisLabel(i: number): string {
     return this.axisLabels[i];
-  }
-
-  setLegends(legends: string[]): void {
-    this.legends = legends;
-  }
-
-  getLegends(): string[] {
-    return [...this.legends];
-  }
-
-  setLegend(i: number, legend: string): void {
-    this.legends[i] = legend;
-  }
-
-  getLegend(i: number): string {
-    return this.legends[i];
-  }
-
-  setLineColors(lineColors: string[]): void {
-    this.lineColors = lineColors;
-  }
-
-  getLineColors(): string[] {
-    return [...this.lineColors];
-  }
-
-  setLineColor(i: number, lineColor: string): void {
-    this.lineColors[i] = lineColor;
-  }
-
-  getLineColor(i: number): string {
-    return this.lineColors[i];
-  }
-
-  setLineWidths(lineWidths: number[]): void {
-    this.lineWidths = lineWidths;
-  }
-
-  getLineWidths(): number[] {
-    return [...this.lineWidths];
-  }
-
-  setLineWidth(i: number, lineWidth: number): void {
-    this.lineWidths[i] = lineWidth;
-  }
-
-  getLineWidth(i: number): number {
-    return this.lineWidths[i];
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -351,11 +319,12 @@ export class ParallelCoordinatesPlot extends Block {
             if (n > this.dataArrays[i].length()) n = this.dataArrays[i].length();
           }
         }
+        ctx.lineWidth = this.lineWidth;
+        let color = d3.scaleLinear().domain(d3.extent([-2, n + 2])).interpolate(() => this.interpolateColor);
         for (let j = 0; j < n; j++) {
           ctx.beginPath();
           for (let i = 0; i < this.dataArrays.length; i++) {
-            ctx.strokeStyle = this.lineColors[i];
-            ctx.lineWidth = this.lineWidths[i];
+            ctx.strokeStyle = color(j);
             if (i === 0) {
               ctx.moveTo(this.pointArrays[i].getX(j), this.pointArrays[i].getY(j));
             } else {
@@ -410,18 +379,38 @@ export class ParallelCoordinatesPlot extends Block {
     let dy = (this.viewWindow.height - 2 * yOffset) / (ymax - ymin);
     let y0 = this.viewWindow.y + this.viewWindow.height - yOffset;
     let xi = this.viewWindow.x + xOffset + i * dx;
+    // set point array for drawing later
     for (let j = 0; j < this.dataArrays[i].length(); j++) {
       this.pointArrays[i].addPoint(xi, y0 - (this.dataArrays[i].data[j] - ymin) * dy);
     }
-    ctx.strokeStyle = "black";
+    // draw axis
+    let axisColor = Util.isHexColor(this.viewWindowColor) ? Util.invertHexColor(this.viewWindowColor.toString(), false) : "black";
+    ctx.strokeStyle = axisColor;
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(xi, y0);
     ctx.lineTo(xi, this.viewWindow.y + yOffset);
     ctx.stroke();
+    // draw tickmarks
+    ctx.lineWidth = 1;
     ctx.font = "10px Arial";
-    ctx.fillStyle = "black";
-    let label = this.portI[i].getUid();
+    ctx.fillStyle = axisColor;
+    let yi;
+    let label;
+    let delta = (ymax - ymin) / 10;
+    let h = ctx.measureText("M").width;
+    for (let k = 0; k <= 10; k++) {
+      yi = y0 - k * (this.viewWindow.height - 2 * yOffset) / 10;
+      ctx.beginPath();
+      ctx.moveTo(xi, yi);
+      ctx.lineTo(xi - 8, yi);
+      ctx.stroke();
+      label = (ymin + k * delta).toFixed(this.fractionDigits);
+      ctx.fillText(label, xi - 20 - ctx.measureText(label).width / 2, yi + h / 2);
+    }
+    // draw labels
+    ctx.font = "12px Arial";
+    label = this.axisLabels[i] !== undefined ? this.axisLabels[i] : this.portI[i].getUid();
     ctx.fillText(label, xi - ctx.measureText(label).width / 2, y0 + yOffset / 2);
   }
 

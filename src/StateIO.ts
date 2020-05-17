@@ -275,9 +275,9 @@ export class StateIO {
           block.setAutoScale(state.autoscale);
           block.setViewWindowColor(state.viewWindowColor);
           block.setAxisLabels(state.axisLabels);
-          block.setLegends(state.legends);
-          block.setLineWidths(state.lineWidths);
-          block.setLineColors(state.lineColors);
+          if (state.fractionDigits !== undefined) block.setFractionDigits(state.fractionDigits);
+          if (state.colorScheme !== undefined) block.setColorScheme(state.colorScheme);
+          if (state.lineWidth !== undefined) block.setLineWidth(state.lineWidth);
           block.setMinimumValues(state.minimumValues);
           block.setMaximumValues(state.maximumValues);
           if (state.dataPortNumber != undefined) block.setDataPortNumber(state.dataPortNumber);

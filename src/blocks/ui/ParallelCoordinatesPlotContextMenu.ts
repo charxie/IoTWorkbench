@@ -54,26 +54,23 @@ export class ParallelCoordinatesPlotContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="parallel-coordinates-plot-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Data Ports:</td>
+                  <td colspan="3"><input type="text" id="parallel-coordinates-plot-data-ports-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Line Width:</td>
+                  <td colspan="3"><input type="text" id="parallel-coordinates-plot-line-width-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Fraction Digits:</td>
+                  <td colspan="3"><input type="text" id="parallel-coordinates-plot-fraction-digits-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Scale:</td>
                   <td colspan="3">
                     <input type="radio" name="scale" id="parallel-coordinates-plot-auto-scale-radio-button" checked> Auto
                     <input type="radio" name="scale" id="parallel-coordinates-plot-fixed-scale-radio-button"> Fixed
                   </td>
-                </tr>
-                <tr>
-                  <td>Data Ports:</td>
-                  <td colspan="3"><input type="text" id="parallel-coordinates-plot-data-ports-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Axis Label:</td>
-                  <td><select id="parallel-coordinates-plot-axis-label-port-selector" style="width: 65px"></select></td>
-                  <td><input type="color" id="parallel-coordinates-plot-axis-label-chooser" style="width: 50px"></td>
-                  <td><input type="text" id="parallel-coordinates-plot-axis-label-field" style="width: 100%"></td>
-                </tr>
-                <tr>
-                  <td>Legend:</td>
-                  <td><select id="parallel-coordinates-plot-legend-port-selector" style="width: 65px"></select></td>
-                  <td colspan="2"><input type="text" id="parallel-coordinates-plot-legend-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Minimum:</td>
@@ -86,15 +83,54 @@ export class ParallelCoordinatesPlotContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="parallel-coordinates-plot-maximum-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Line Color:</td>
-                  <td><select id="parallel-coordinates-plot-line-color-port-selector" style="width: 65px"></select></td>
-                  <td><input type="color" id="parallel-coordinates-plot-line-color-chooser" style="width: 50px"></td>
-                  <td><input type="text" id="parallel-coordinates-plot-line-color-field" style="width: 100%"></td>
+                  <td>Axis Label:</td>
+                  <td><select id="parallel-coordinates-plot-axis-label-port-selector" style="width: 65px"></select></td>
+                  <td colspan="2"><input type="text" id="parallel-coordinates-plot-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Line Width:</td>
-                  <td><select id="parallel-coordinates-plot-line-width-port-selector" style="width: 65px"></select></td>
-                  <td colspan="2"><input type="text" id="parallel-coordinates-plot-line-width-field" style="width: 100%"></td>
+                  <td>Color Scheme:</td>
+                  <td colspan="2">
+                    <select id="parallel-coordinates-plot-color-scheme-selector" style="width: 100%">
+                      <option value="Turbo" selected>Turbo</option>
+                      <option value="Reds">Reds</option>
+                      <option value="Greens">Greens</option>
+                      <option value="Blues">Blues</option>
+                      <option value="Greys">Greys</option>
+                      <option value="Oranges">Oranges</option>
+                      <option value="Purples">Purples</option>
+                      <option value="Warm">Warm</option>
+                      <option value="Cool">Cool</option>
+                      <option value="Magma">Magma</option>
+                      <option value="Plasma">Plasma</option>
+                      <option value="Inferno">Inferno</option>
+                      <option value="Spectral">Spectral</option>
+                      <option value="Cividis">Cividis</option>
+                      <option value="Viridis">Viridis</option>
+                      <option value="Rainbow">Rainbow</option>
+                      <option value="Sinebow">Sinebow</option>
+                      <option value="Cubehelix">Cubehelix</option>
+                      <option value="RdYlBu">RdYlBu</option>
+                      <option value="RdYlGn">RdYlGn</option>
+                      <option value="RdGy">RdGy</option>
+                      <option value="RdBu">RdBu</option>
+                      <option value="PuOr">PuOr</option>
+                      <option value="PiYG">PiYG</option>
+                      <option value="PRGn">PRGn</option>
+                      <option value="BrBG">BrBG</option>
+                      <option value="BuGn">BuGn</option>
+                      <option value="BuPu">BuPu</option>
+                      <option value="GnBu">GnBu</option>
+                      <option value="OrRd">OrRd</option>
+                      <option value="PuBu">PuBu</option>
+                      <option value="PuBuGn">PuBuGn</option>
+                      <option value="PuRd">PuRd</option>
+                      <option value="RdPu">RdPu</option>
+                      <option value="YlGn">YlGn</option>
+                      <option value="YlGnBu">YlGnBu</option>
+                      <option value="YlOrBr">YlOrBr</option>
+                      <option value="YlOrRd">YlOrRd</option>
+                    </select>
+                  </td>
                 </tr>
                 <tr>
                   <td>Window Color:</td>
@@ -133,15 +169,18 @@ export class ParallelCoordinatesPlotContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
 
       // temporary storage of properties (don't store the changes to the block object or else we won't be able to cancel)
-      let legends: string[] = g.getLegends();
       let axisLabels: string[] = g.getAxisLabels();
-      let lineColors: string[] = g.getLineColors();
-      let lineWidths: number[] = g.getLineWidths();
       let minimumValues: number[] = g.getMinimumValues();
       let maximumValues: number[] = g.getMaximumValues();
 
       let nameField = document.getElementById("parallel-coordinates-plot-name-field") as HTMLInputElement;
       nameField.value = g.getName();
+      let fractionDigitsField = document.getElementById("parallel-coordinates-plot-fraction-digits-field") as HTMLInputElement;
+      fractionDigitsField.value = g.getFractionDigits().toString();
+      let colorSchemeSelector = document.getElementById("parallel-coordinates-plot-color-scheme-selector") as HTMLSelectElement;
+      colorSchemeSelector.value = g.getColorScheme();
+      let lineWidthField = document.getElementById("parallel-coordinates-plot-line-width-field") as HTMLInputElement;
+      lineWidthField.value = g.getLineWidth().toString();
       let autoScaleRadioButton = document.getElementById("parallel-coordinates-plot-auto-scale-radio-button") as HTMLInputElement;
       autoScaleRadioButton.checked = g.getAutoScale();
       let fixedScaleRadioButton = document.getElementById("parallel-coordinates-plot-fixed-scale-radio-button") as HTMLInputElement;
@@ -152,39 +191,16 @@ export class ParallelCoordinatesPlotContextMenu extends BlockContextMenu {
       windowColorField.value = g.getViewWindowColor();
       let windowColorChooser = document.getElementById("parallel-coordinates-plot-window-color-chooser") as HTMLInputElement;
       Util.setColorPicker(windowColorChooser, g.getViewWindowColor());
+      Util.hookupColorInputs(windowColorField, windowColorChooser);
       let widthField = document.getElementById("parallel-coordinates-plot-width-field") as HTMLInputElement;
       widthField.value = Math.round(g.getWidth()).toString();
       let heightField = document.getElementById("parallel-coordinates-plot-height-field") as HTMLInputElement;
       heightField.value = Math.round(g.getHeight()).toString();
 
-      let lineColorField = document.getElementById("parallel-coordinates-plot-line-color-field") as HTMLInputElement;
-      lineColorField.value = lineColors[0];
-      lineColorField.onchange = () => lineColors[parseInt(lineColorPortSelector.value)] = lineColorField.value;
-      let lineColorChooser = document.getElementById("parallel-coordinates-plot-line-color-chooser") as HTMLInputElement;
-      Util.setColorPicker(lineColorChooser, lineColors[0]);
-      let lineColorPortSelector = this.createPortSelector("parallel-coordinates-plot-line-color-port-selector");
-      lineColorPortSelector.onchange = () => {
-        let c = lineColors[parseInt(lineColorPortSelector.value)];
-        lineColorField.value = c;
-        Util.setColorPicker(lineColorChooser, c);
-      };
-
-      let lineWidthField = document.getElementById("parallel-coordinates-plot-line-width-field") as HTMLInputElement;
-      lineWidthField.value = lineWidths[0].toString();
-      lineWidthField.onchange = () => lineWidths[parseInt(lineWidthPortSelector.value)] = parseFloat(lineWidthField.value);
-      let lineWidthPortSelector = this.createPortSelector("parallel-coordinates-plot-line-width-port-selector");
-      lineWidthPortSelector.onchange = () => lineWidthField.value = lineWidths[parseInt(lineWidthPortSelector.value)].toString();
-
-      let legendField = document.getElementById("parallel-coordinates-plot-legend-field") as HTMLInputElement;
-      legendField.value = legends[0].toString();
-      legendField.onchange = () => legends[parseInt(legendPortSelector.value)] = legendField.value;
-      let legendPortSelector = this.createPortSelector("parallel-coordinates-plot-legend-port-selector");
-      legendPortSelector.onchange = () => legendField.value = legends[parseInt(legendPortSelector.value)].toString();
-
       let axisLabelField = document.getElementById("parallel-coordinates-plot-axis-label-field") as HTMLInputElement;
       axisLabelField.value = axisLabels[0].toString();
       axisLabelField.onchange = () => axisLabels[parseInt(axisLabelPortSelector.value)] = axisLabelField.value;
-      let axisLabelPortSelector = this.createPortSelector("parallel-coordinates-plot-legend-port-selector");
+      let axisLabelPortSelector = this.createPortSelector("parallel-coordinates-plot-axis-label-port-selector");
       axisLabelPortSelector.onchange = () => axisLabelField.value = axisLabels[parseInt(axisLabelPortSelector.value)].toString();
 
       let minimumField = document.getElementById("parallel-coordinates-plot-minimum-field") as HTMLInputElement;
@@ -198,9 +214,6 @@ export class ParallelCoordinatesPlotContextMenu extends BlockContextMenu {
       maximumField.onchange = () => maximumValues[parseInt(maximumPortSelector.value)] = parseFloat(maximumField.value);
       let maximumPortSelector = this.createPortSelector("parallel-coordinates-plot-maximum-port-selector");
       maximumPortSelector.onchange = () => maximumField.value = maximumValues[parseInt(maximumPortSelector.value)].toString();
-
-      Util.hookupColorInputs(windowColorField, windowColorChooser);
-      Util.hookupColorInputs(lineColorField, lineColorChooser);
 
       const okFunction = () => {
         let success = true;
@@ -218,6 +231,22 @@ export class ParallelCoordinatesPlotContextMenu extends BlockContextMenu {
           success = false;
           message = dataPortsField.value + " is not a valid value for data port number";
         }
+        // set fraction digits
+        let fractionDigits = parseInt(fractionDigitsField.value);
+        if (isNumber(fractionDigits)) {
+          g.setFractionDigits(Math.max(0, fractionDigits));
+        } else {
+          success = false;
+          message = fractionDigitsField.value + " is not valid for fraction digits";
+        }
+        // set line width
+        let lineWidth = parseInt(lineWidthField.value);
+        if (isNumber(lineWidth)) {
+          g.setLineWidth(Math.max(1, lineWidth));
+        } else {
+          success = false;
+          message = lineWidthField.value + " is not a valid line width";
+        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -234,24 +263,14 @@ export class ParallelCoordinatesPlotContextMenu extends BlockContextMenu {
           success = false;
           message = heightField.value + " is not a valid height";
         }
-        // check line widths
-        for (let lineWidth of lineWidths) {
-          if (lineWidth < 0) {
-            success = false;
-            message = "Port " + g.getDataPorts()[lineWidths.indexOf(lineWidth)].getUid() + " line width cannot be negative (" + lineWidth + ")";
-            break;
-          }
-        }
         // finish
         if (success) {
           g.setName(nameField.value);
+          g.setColorScheme(colorSchemeSelector.value)
           g.setViewWindowColor(windowColorField.value);
           g.setAutoScale(autoScaleRadioButton.checked);
-          for (let i = 0; i < legends.length; i++) {
-            g.setLegend(i, legends[i]);
+          for (let i = 0; i < axisLabels.length; i++) {
             g.setAxisLabel(i, axisLabels[i]);
-            g.setLineColor(i, lineColors[i]);
-            g.setLineWidth(i, lineWidths[i]);
             g.setMinimumValue(i, minimumValues[i]);
             g.setMaximumValue(i, maximumValues[i]);
           }
@@ -270,10 +289,10 @@ export class ParallelCoordinatesPlotContextMenu extends BlockContextMenu {
       };
       nameField.addEventListener("keyup", enterKeyUp);
       dataPortsField.addEventListener("keyup", enterKeyUp);
+      fractionDigitsField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
-      legendField.addEventListener("keyup", enterKeyUp);
-      lineColorField.addEventListener("keyup", enterKeyUp);
       lineWidthField.addEventListener("keyup", enterKeyUp);
+      axisLabelField.addEventListener("keyup", enterKeyUp);
       minimumField.addEventListener("keyup", enterKeyUp);
       maximumField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
