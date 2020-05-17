@@ -272,7 +272,7 @@ export class StateIO {
           block.setRotated(state.rotated);
         } else if (block instanceof ParallelCoordinatesPlot) {
           block.setName(state.name);
-          block.setAutoScale(state.autoScale);
+          block.setAutoScale(state.autoscale);
           block.setViewWindowColor(state.viewWindowColor);
           block.setAxisLabels(state.axisLabels);
           block.setLegends(state.legends);
@@ -280,6 +280,7 @@ export class StateIO {
           block.setLineColors(state.lineColors);
           block.setMinimumValues(state.minimumValues);
           block.setMaximumValues(state.maximumValues);
+          if (state.dataPortNumber != undefined) block.setDataPortNumber(state.dataPortNumber);
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);

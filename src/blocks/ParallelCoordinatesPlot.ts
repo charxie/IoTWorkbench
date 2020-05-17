@@ -8,6 +8,7 @@ import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
 import {DataArray} from "./DataArray";
+import {Point2DArray} from "./Point2DArray";
 
 export class ParallelCoordinatesPlot extends Block {
 
@@ -29,6 +30,7 @@ export class ParallelCoordinatesPlot extends Block {
     top: <number>4,
     bottom: <number>4
   };
+  private pointArrays: Point2DArray[];
 
   static State = class {
     readonly name: string;
@@ -306,21 +308,62 @@ export class ParallelCoordinatesPlot extends Block {
       if (da.length() > maxLength) maxLength = da.length();
     }
     if (this.iconic) {
-      ctx.beginPath();
-      ctx.lineWidth = 0.5;
+      ctx.lineWidth = 1;
       let xc = this.viewWindow.x + this.viewWindow.width / 2;
       let yc = this.viewWindow.y + this.viewWindow.height / 2;
-      ctx.moveTo(xc, this.viewWindow.y + this.viewWindow.height - 2);
-      ctx.lineTo(xc, this.viewWindow.y + 2);
+      ctx.beginPath();
+      ctx.moveTo(xc - 10, this.viewWindow.y + this.viewWindow.height - 3);
+      ctx.lineTo(xc - 10, this.viewWindow.y + 3);
       ctx.stroke();
       ctx.beginPath();
-      ctx.fillStyle = "white";
-      ctx.rect(xc - 2, yc - this.viewWindow.height / 6, 4, this.viewWindow.height / 3);
-      ctx.fill();
-      ctx.strokeStyle = "black";
+      ctx.moveTo(xc, this.viewWindow.y + this.viewWindow.height - 3);
+      ctx.lineTo(xc, this.viewWindow.y + 3);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(xc + 10, this.viewWindow.y + this.viewWindow.height - 3);
+      ctx.lineTo(xc + 10, this.viewWindow.y + 3);
+      ctx.stroke();
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = "red";
+      ctx.beginPath();
+      ctx.moveTo(xc - 10, this.viewWindow.y + this.viewWindow.height - 8);
+      ctx.lineTo(xc, this.viewWindow.y + 8);
+      ctx.lineTo(xc + 10, this.viewWindow.y + this.viewWindow.height - 6);
+      ctx.stroke();
+      ctx.strokeStyle = "blue";
+      ctx.beginPath();
+      ctx.moveTo(xc - 10, this.viewWindow.y + 8);
+      ctx.lineTo(xc, this.viewWindow.y + this.viewWindow.height / 2);
+      ctx.lineTo(xc + 10, this.viewWindow.y + 7);
+      ctx.stroke();
+      ctx.strokeStyle = "purple";
+      ctx.beginPath();
+      ctx.moveTo(xc - 10, this.viewWindow.y + 12);
+      ctx.lineTo(xc, this.viewWindow.y + this.viewWindow.height / 2 + 5);
+      ctx.lineTo(xc + 10, this.viewWindow.y + 10);
       ctx.stroke();
     } else {
-      if (maxLength > 1) {
+      if (maxLength > 0) {
+        let n = this.dataArrays[0].length();
+        for (let i = 0; i < this.dataArrays.length; i++) {
+          this.drawAxis(i, ctx);
+          if (n > 0) {
+            if (n > this.dataArrays[i].length()) n = this.dataArrays[i].length();
+          }
+        }
+        for (let j = 0; j < n; j++) {
+          ctx.beginPath();
+          for (let i = 0; i < this.dataArrays.length; i++) {
+            ctx.strokeStyle = this.lineColors[i];
+            ctx.lineWidth = this.lineWidths[i];
+            if (i === 0) {
+              ctx.moveTo(this.pointArrays[i].getX(j), this.pointArrays[i].getY(j));
+            } else {
+              ctx.lineTo(this.pointArrays[i].getX(j), this.pointArrays[i].getY(j));
+            }
+          }
+          ctx.stroke();
+        }
       }
     }
 
@@ -337,26 +380,49 @@ export class ParallelCoordinatesPlot extends Block {
 
   }
 
-  private drawAxis(i:number, ctx: CanvasRenderingContext2D): void {
+  private drawAxis(i: number, ctx: CanvasRenderingContext2D): void {
     let ymin;
     let ymax;
     if (this.autoscale) {
       ymin = Number.MAX_VALUE;
       ymax = -ymin;
+      for (let j = 0; j < this.dataArrays[i].length(); j++) {
+        let vij = this.dataArrays[i].data[j];
+        if (ymax < vij) {
+          ymax = vij;
+        }
+        if (ymin > vij) {
+          ymin = vij;
+        }
+      }
     } else {
       ymin = this.minimumValues[i];
       ymax = this.maximumValues[i];
     }
+    if (this.pointArrays[i] === undefined) {
+      this.pointArrays[i] = new Point2DArray();
+    } else {
+      this.pointArrays[i].clear();
+    }
+    let xOffset = 0.1 * this.viewWindow.width;
+    let dx = (this.viewWindow.width - 2 * xOffset) / (this.dataArrays.length - 1);
     let yOffset = 0.1 * this.viewWindow.height;
     let dy = (this.viewWindow.height - 2 * yOffset) / (ymax - ymin);
     let y0 = this.viewWindow.y + this.viewWindow.height - yOffset;
-    let xi, y1, y2;
-    // for (let i = 0; i < n; i++) {
-    //   ctx.strokeStyle = this.lineColors[i];
-    //   ctx.lineWidth = this.lineWidths[i];
-    //   xi = this.viewWindow.x + (i + 1) * dx;
-    // }
-
+    let xi = this.viewWindow.x + xOffset + i * dx;
+    for (let j = 0; j < this.dataArrays[i].length(); j++) {
+      this.pointArrays[i].addPoint(xi, y0 - (this.dataArrays[i].data[j] - ymin) * dy);
+    }
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(xi, y0);
+    ctx.lineTo(xi, this.viewWindow.y + yOffset);
+    ctx.stroke();
+    ctx.font = "10px Arial";
+    ctx.fillStyle = "black";
+    let label = this.portI[i].getUid();
+    ctx.fillText(label, xi - ctx.measureText(label).width / 2, y0 + yOffset / 2);
   }
 
   onDraggableArea(x: number, y: number): boolean {
@@ -366,15 +432,20 @@ export class ParallelCoordinatesPlot extends Block {
   updateModel(): void {
     for (let i = 0; i < this.portI.length; i++) {
       let v = this.portI[i].getValue();
-      this.dataArrays[i].data = Array.isArray(v) ? v : [v];
+      if (v !== undefined) {
+        this.dataArrays[i].data = Array.isArray(v) ? v : [v];
+      }
+    }
+    if (this.pointArrays === undefined || this.pointArrays.length !== this.portI.length) {
+      this.pointArrays = new Array(this.portI.length);
     }
   }
 
   refreshView(): void {
     super.refreshView();
     this.viewMargin.top = 10;
-    this.viewMargin.bottom = 50;
-    this.viewMargin.left = 40;
+    this.viewMargin.bottom = 10;
+    this.viewMargin.left = 20;
     this.viewMargin.right = 10;
     let dh = (this.height - this.barHeight) / (this.portI.length + 1);
     for (let i = 0; i < this.portI.length; i++) {
