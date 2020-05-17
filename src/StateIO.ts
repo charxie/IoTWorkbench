@@ -65,6 +65,7 @@ import {HeatMap} from "./blocks/HeatMap";
 import {BubblePlot} from "./blocks/BubblePlot";
 import {ArrayAdapter} from "./blocks/ArrayAdapter";
 import {ParallelCoordinatesPlot} from "./blocks/ParallelCoordinatesPlot";
+import {RadarChart} from "./blocks/RadarChart";
 
 export class StateIO {
 
@@ -270,6 +271,18 @@ export class StateIO {
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
           block.setRotated(state.rotated);
+        } else if (block instanceof RadarChart) {
+          block.setName(state.name);
+          block.setAutoScale(state.autoscale);
+          block.setViewWindowColor(state.viewWindowColor);
+          block.setAxisLabels(state.axisLabels);
+          block.setMinimumValue(state.minimumValue);
+          block.setMaximumValue(state.maximumValue);
+          block.setOpacity(state.opacity);
+          if (state.fractionDigits !== undefined) block.setFractionDigits(state.fractionDigits);
+          if (state.colorScheme !== undefined) block.setColorScheme(state.colorScheme);
+          if (state.lineWidth !== undefined) block.setLineWidth(state.lineWidth);
+          if (state.dataPortNumber != undefined) block.setDataPortNumber(state.dataPortNumber);
         } else if (block instanceof ParallelCoordinatesPlot) {
           block.setName(state.name);
           block.setAutoScale(state.autoscale);

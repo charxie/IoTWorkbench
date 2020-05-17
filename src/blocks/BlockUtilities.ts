@@ -68,6 +68,7 @@ import {HeatMap} from "./HeatMap";
 import {BubblePlot} from "./BubblePlot";
 import {ArrayAdapter} from "./ArrayAdapter";
 import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
+import {RadarChart} from "./RadarChart";
 
 export class BlockUtilities {
 
@@ -176,6 +177,9 @@ export class BlockUtilities {
     }
     if (block instanceof HeatMap) {
       return contextMenus.heatMap;
+    }
+    if (block instanceof RadarChart) {
+      return contextMenus.radarChart;
     }
     if (block instanceof ParallelCoordinatesPlot) {
       return contextMenus.parallelCoordinatesPlot;
@@ -404,6 +408,10 @@ export class BlockUtilities {
     if (block instanceof HeatMap) {
       contextMenus.heatMap.block = block;
       return document.getElementById("heat-map-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof RadarChart) {
+      contextMenus.radarChart.block = block;
+      return document.getElementById("radar-chart-context-menu") as HTMLMenuElement;
     }
     if (block instanceof ParallelCoordinatesPlot) {
       contextMenus.parallelCoordinatesPlot.block = block;

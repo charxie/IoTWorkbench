@@ -76,6 +76,7 @@ import {HeatMap} from "./HeatMap";
 import {BubblePlot} from "./BubblePlot";
 import {ArrayAdapter} from "./ArrayAdapter";
 import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
+import {RadarChart} from "./RadarChart";
 
 export class BlockView {
 
@@ -353,6 +354,9 @@ export class BlockView {
         break;
       case "heat-map-block":
         b = this.addBlockUndoable(new HeatMap("Heat Map #" + timestamp, "Heat Map", x - 100, y - 110, 200, 220));
+        break;
+      case "radar-chart-block":
+        b = this.addBlockUndoable(new RadarChart("Radar Chart #" + timestamp, "Radar Chart", x - 100, y - 110, 200, 220));
         break;
       case "parallel-coordinates-plot-block":
         b = this.addBlockUndoable(new ParallelCoordinatesPlot("Parallel Coordinates Plot #" + timestamp, "Parallel Coordinates Plot", x - 100, y - 110, 200, 220));

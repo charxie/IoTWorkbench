@@ -64,6 +64,7 @@ import {HeatMap} from "../HeatMap";
 import {BubblePlot} from "../BubblePlot";
 import {ArrayAdapter} from "../ArrayAdapter";
 import {ParallelCoordinatesPlot} from "../ParallelCoordinatesPlot";
+import {RadarChart} from "../RadarChart";
 
 export class BlockElementsPanel {
 
@@ -112,6 +113,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="histogram-block" title="Histogram" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="pie-chart-block" title="Pie Chart" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="heat-map-block" title="Heat Map" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="radar-chart-block" title="Radar Chart" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="parallel-coordinates-plot-block" title="Parallel Coordinates Plot" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="space2d-block" title="Space2D" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="space3d-block" title="Space3D" width="60px" height="60px" style="cursor: pointer;"/></td>
@@ -200,6 +202,7 @@ export class BlockElementsPanel {
     this.drawHistogram("Histogram", "histogram-block");
     this.drawPieChart("Pie Chart", "pie-chart-block");
     this.drawHeatMap("Heat Map", "heat-map-block");
+    this.drawRadarChart("Radar Chart", "radar-chart-block");
     this.drawParallelCoordinatesPlot("Parallel Coordinates Plot", "parallel-coordinates-plot-block");
     this.drawSpace2D("Space2D", "space2d-block");
     this.drawSpace3D("Space3D", "space3d-block");
@@ -477,6 +480,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new ParallelCoordinatesPlot("Parallel Coordinates Plot Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawRadarChart(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new RadarChart("Radar Chart Icon", name, 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

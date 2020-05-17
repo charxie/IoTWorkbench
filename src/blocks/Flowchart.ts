@@ -75,6 +75,7 @@ import {HeatMap} from "./HeatMap";
 import {BubblePlot} from "./BubblePlot";
 import {ArrayAdapter} from "./ArrayAdapter";
 import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
+import {RadarChart} from "./RadarChart";
 
 export class Flowchart {
 
@@ -935,6 +936,9 @@ export class Flowchart {
       case "Heat Map":
         block = new HeatMap(uid, name, x, y, 200, 220);
         break;
+      case "Radar Chart":
+        block = new RadarChart(uid, name, x, y, 200, 220);
+        break;
       case "Parallel Coordinates Plot":
         block = new ParallelCoordinatesPlot(uid, name, x, y, 200, 220);
         break;
@@ -1088,6 +1092,8 @@ export class Flowchart {
         blockStates.push(new PieChart.State(b));
       } else if (b instanceof HeatMap) {
         blockStates.push(new HeatMap.State(b));
+      } else if (b instanceof RadarChart) {
+        blockStates.push(new RadarChart.State(b));
       } else if (b instanceof ParallelCoordinatesPlot) {
         blockStates.push(new ParallelCoordinatesPlot.State(b));
       } else if (b instanceof Space2D) {

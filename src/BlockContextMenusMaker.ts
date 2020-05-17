@@ -67,6 +67,7 @@ import {HeatMapContextMenu} from "./blocks/ui/HeatMapContextMenu";
 import {BubblePlotContextMenu} from "./blocks/ui/BubblePlotContextMenu";
 import {ArrayAdapterContextMenu} from "./blocks/ui/ArrayAdapterContextMenu";
 import {ParallelCoordinatesPlotContextMenu} from "./blocks/ui/ParallelCoordinatesPlotContextMenu";
+import {RadarChartContextMenu} from "./blocks/ui/RadarChartContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -120,6 +121,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("histogram-context-menu-placeholder", blockPlayground);
   addPlaceholder("pie-chart-context-menu-placeholder", blockPlayground);
   addPlaceholder("heat-map-context-menu-placeholder", blockPlayground);
+  addPlaceholder("radar-chart-context-menu-placeholder", blockPlayground);
   addPlaceholder("parallel-coordinates-plot-context-menu-placeholder", blockPlayground);
   addPlaceholder("space2d-context-menu-placeholder", blockPlayground);
   addPlaceholder("space3d-context-menu-placeholder", blockPlayground);
@@ -376,6 +378,11 @@ function setupContextMenuForBlocks() {
   heatMapContextMenu.render("heat-map-context-menu-placeholder");
   heatMapContextMenu.addListeners();
   contextMenus.heatMap = heatMapContextMenu;
+
+  let radarChartContextMenu = new RadarChartContextMenu();
+  radarChartContextMenu.render("radar-chart-context-menu-placeholder");
+  radarChartContextMenu.addListeners();
+  contextMenus.radarChart = radarChartContextMenu;
 
   let parallelCoordinatesPlotContextMenu = new ParallelCoordinatesPlotContextMenu();
   parallelCoordinatesPlotContextMenu.render("parallel-coordinates-plot-context-menu-placeholder");
