@@ -75,6 +75,7 @@ import {ClusteringBlock} from "./ClusteringBlock";
 import {HeatMap} from "./HeatMap";
 import {BubblePlot} from "./BubblePlot";
 import {ArrayAdapter} from "./ArrayAdapter";
+import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
 
 export class BlockView {
 
@@ -352,6 +353,9 @@ export class BlockView {
         break;
       case "heat-map-block":
         b = this.addBlockUndoable(new HeatMap("Heat Map #" + timestamp, "Heat Map", x - 100, y - 110, 200, 220));
+        break;
+      case "parallel-coordinates-plot-block":
+        b = this.addBlockUndoable(new ParallelCoordinatesPlot("Parallel Coordinates Plot #" + timestamp, "Parallel Coordinates Plot", x - 100, y - 110, 200, 220));
         break;
       case "space2d-block":
         b = this.addBlockUndoable(new Space2D("Space2D #" + timestamp, "Space2D", x - 100, y - 110, 200, 220));

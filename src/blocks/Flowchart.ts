@@ -74,6 +74,7 @@ import {ClusteringBlock} from "./ClusteringBlock";
 import {HeatMap} from "./HeatMap";
 import {BubblePlot} from "./BubblePlot";
 import {ArrayAdapter} from "./ArrayAdapter";
+import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
 
 export class Flowchart {
 
@@ -934,6 +935,9 @@ export class Flowchart {
       case "Heat Map":
         block = new HeatMap(uid, name, x, y, 200, 220);
         break;
+      case "Parallel Coordinates Plot":
+        block = new ParallelCoordinatesPlot(uid, name, x, y, 200, 220);
+        break;
       case "Space2D":
         block = new Space2D(uid, name, x, y, 200, 220);
         break;
@@ -1084,6 +1088,8 @@ export class Flowchart {
         blockStates.push(new PieChart.State(b));
       } else if (b instanceof HeatMap) {
         blockStates.push(new HeatMap.State(b));
+      } else if (b instanceof ParallelCoordinatesPlot) {
+        blockStates.push(new ParallelCoordinatesPlot.State(b));
       } else if (b instanceof Space2D) {
         blockStates.push(new Space2D.State(b));
       } else if (b instanceof Space3D) {

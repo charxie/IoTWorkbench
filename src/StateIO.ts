@@ -64,6 +64,7 @@ import {ClusteringBlock} from "./blocks/ClusteringBlock";
 import {HeatMap} from "./blocks/HeatMap";
 import {BubblePlot} from "./blocks/BubblePlot";
 import {ArrayAdapter} from "./blocks/ArrayAdapter";
+import {ParallelCoordinatesPlot} from "./blocks/ParallelCoordinatesPlot";
 
 export class StateIO {
 
@@ -269,6 +270,16 @@ export class StateIO {
           block.setXAxisLabel(state.xAxisLabel);
           block.setYAxisLabel(state.yAxisLabel);
           block.setRotated(state.rotated);
+        } else if (block instanceof ParallelCoordinatesPlot) {
+          block.setName(state.name);
+          block.setAutoScale(state.autoScale);
+          block.setViewWindowColor(state.viewWindowColor);
+          block.setAxisLabels(state.axisLabels);
+          block.setLegends(state.legends);
+          block.setLineWidths(state.lineWidths);
+          block.setLineColors(state.lineColors);
+          block.setMinimumValues(state.minimumValues);
+          block.setMaximumValues(state.maximumValues);
         } else if (block instanceof IntegralBlock) {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
