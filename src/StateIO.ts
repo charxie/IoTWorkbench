@@ -279,6 +279,7 @@ export class StateIO {
           block.setMinimumValue(state.minimumValue);
           block.setMaximumValue(state.maximumValue);
           block.setOpacity(state.opacity);
+          if (state.spider !== undefined) block.setSpider(state.spider);
           if (state.fractionDigits !== undefined) block.setFractionDigits(state.fractionDigits);
           if (state.colorScheme !== undefined) block.setColorScheme(state.colorScheme);
           if (state.lineWidth !== undefined) block.setLineWidth(state.lineWidth);

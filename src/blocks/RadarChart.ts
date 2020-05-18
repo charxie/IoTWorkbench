@@ -23,6 +23,7 @@ export class RadarChart extends Block {
   private fractionDigits: number = 1;
   private lineWidth: number = 1;
   private opacity: number = 0.5;
+  private spider: boolean = false;
   private colorScheme: string = "Turbo";
   private interpolateColor = d3.interpolateTurbo;
   private viewWindowColor: string = "white";
@@ -45,6 +46,7 @@ export class RadarChart extends Block {
     readonly height: number;
     readonly dataPortNumber: number;
     readonly viewWindowColor: string;
+    readonly spider: boolean;
     readonly autoscale: boolean;
     readonly fractionDigits: number;
     readonly lineWidth: number;
@@ -65,6 +67,7 @@ export class RadarChart extends Block {
       this.autoscale = b.autoscale;
       this.dataPortNumber = b.getDataPorts().length;
       this.lineWidth = b.lineWidth;
+      this.spider = b.spider;
       this.opacity = b.opacity;
       this.colorScheme = b.colorScheme;
       this.fractionDigits = b.fractionDigits;
@@ -93,6 +96,7 @@ export class RadarChart extends Block {
     copy.autoscale = this.autoscale;
     copy.colorScheme = this.colorScheme;
     copy.lineWidth = this.lineWidth;
+    copy.spider = this.spider;
     copy.fractionDigits = this.fractionDigits;
     copy.opacity = this.opacity;
     copy.viewWindowColor = this.viewWindowColor;
@@ -142,6 +146,14 @@ export class RadarChart extends Block {
 
   getAutoScale(): boolean {
     return this.autoscale;
+  }
+
+  setSpider(spider: boolean): void {
+    this.spider = spider;
+  }
+
+  getSpider(): boolean {
+    return this.spider;
   }
 
   setFractionDigits(fractionDigits: number): void {
@@ -368,7 +380,8 @@ export class RadarChart extends Block {
     let xc = this.viewWindow.x + 0.5 * this.viewWindow.width;
     let yc = this.viewWindow.y + 0.5 * this.viewWindow.height;
     let dr = radius / (ymax - ymin);
-    let angle = i * 2 * Math.PI / this.dataArrays.length;
+    let a = 2 * Math.PI / this.dataArrays.length;
+    let angle = i * a;
     // set point array for drawing later
     let dx = dr * Math.cos(angle);
     let dy = dr * Math.sin(angle);
@@ -399,7 +412,18 @@ export class RadarChart extends Block {
         if (k % 2 == 0) {
           ctx.strokeStyle = "#cccccccc";
           ctx.beginPath();
-          ctx.arc(xc, yc, xi - xc, 0, 2 * Math.PI, true);
+          if (this.spider) {
+            for (let m = 0; m < this.dataArrays.length; m++) {
+              if (m === 0) {
+                ctx.moveTo(xi, yc);
+              } else {
+                ctx.lineTo(xc + (xi - xc) * Math.cos(m * a), yc + (xi - xc) * Math.sin(m * a));
+              }
+            }
+            ctx.closePath();
+          } else {
+            ctx.arc(xc, yc, xi - xc, 0, 2 * Math.PI, true);
+          }
           ctx.stroke();
           ctx.strokeStyle = axisColor;
           ctx.beginPath();

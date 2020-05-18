@@ -54,6 +54,13 @@ export class RadarChartContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="radar-chart-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Type:</td>
+                  <td colspan="3">
+                    <input type="radio" name="type" id="radar-chart-radar-radio-button" checked> Radar
+                    <input type="radio" name="type" id="radar-chart-spider-radio-button"> Spider
+                  </td>
+                </tr>
+                <tr>
                   <td>Data Ports:</td>
                   <td colspan="3"><input type="text" id="radar-chart-data-ports-field" style="width: 100%"></td>
                 </tr>
@@ -175,6 +182,10 @@ export class RadarChartContextMenu extends BlockContextMenu {
 
       let nameField = document.getElementById("radar-chart-name-field") as HTMLInputElement;
       nameField.value = g.getName();
+      let radarRadioButton = document.getElementById("radar-chart-radar-radio-button") as HTMLInputElement;
+      radarRadioButton.checked = !g.getSpider();
+      let spiderRadioButton = document.getElementById("radar-chart-spider-radio-button") as HTMLInputElement;
+      spiderRadioButton.checked = g.getSpider();
       let fractionDigitsField = document.getElementById("radar-chart-fraction-digits-field") as HTMLInputElement;
       fractionDigitsField.value = g.getFractionDigits().toString();
       let opacityField = document.getElementById("radar-chart-opacity-field") as HTMLInputElement;
@@ -285,6 +296,7 @@ export class RadarChartContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           g.setName(nameField.value);
+          g.setSpider(spiderRadioButton.checked);
           g.setColorScheme(colorSchemeSelector.value)
           g.setViewWindowColor(windowColorField.value);
           g.setAutoScale(autoScaleRadioButton.checked);
