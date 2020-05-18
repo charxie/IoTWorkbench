@@ -86,6 +86,10 @@ export class RadarChartContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="radar-chart-axis-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Opacity:</td>
+                  <td colspan="2"><input type="text" id="radar-chart-opacity-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Color Scheme:</td>
                   <td colspan="2">
                     <select id="radar-chart-color-scheme-selector" style="width: 100%">
@@ -173,6 +177,8 @@ export class RadarChartContextMenu extends BlockContextMenu {
       nameField.value = g.getName();
       let fractionDigitsField = document.getElementById("radar-chart-fraction-digits-field") as HTMLInputElement;
       fractionDigitsField.value = g.getFractionDigits().toString();
+      let opacityField = document.getElementById("radar-chart-opacity-field") as HTMLInputElement;
+      opacityField.value = g.getOpacity().toString();
       let colorSchemeSelector = document.getElementById("radar-chart-color-scheme-selector") as HTMLSelectElement;
       colorSchemeSelector.value = g.getColorScheme();
       let lineWidthField = document.getElementById("radar-chart-line-width-field") as HTMLInputElement;
@@ -227,6 +233,14 @@ export class RadarChartContextMenu extends BlockContextMenu {
         } else {
           success = false;
           message = fractionDigitsField.value + " is not valid for fraction digits";
+        }
+        // set opacity (alpha value)
+        let opacity = parseFloat(opacityField.value);
+        if (isNumber(opacity) && opacity <= 1 && opacity >= 0) {
+          g.setOpacity(opacity);
+        } else {
+          success = false;
+          message = opacityField.value + " is not a valid value for opacity";
         }
         // set minimum value
         let minimumValue = parseFloat(minimumField.value);
@@ -293,6 +307,7 @@ export class RadarChartContextMenu extends BlockContextMenu {
       nameField.addEventListener("keyup", enterKeyUp);
       dataPortsField.addEventListener("keyup", enterKeyUp);
       fractionDigitsField.addEventListener("keyup", enterKeyUp);
+      opacityField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       lineWidthField.addEventListener("keyup", enterKeyUp);
       axisLabelField.addEventListener("keyup", enterKeyUp);

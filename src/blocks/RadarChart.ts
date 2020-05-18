@@ -299,25 +299,47 @@ export class RadarChart extends Block {
       ctx.stroke();
     } else {
       if (maxLength > 0) {
+        let ymin;
+        let ymax;
+        if (this.autoscale) {
+          ymin = Number.MAX_VALUE;
+          ymax = -ymin;
+          for (let i = 0; i < this.dataArrays.length; i++) {
+            let minmax = this.dataArrays[i].getMinMax();
+            if (ymax < minmax.max) {
+              ymax = minmax.max;
+            }
+            if (ymin > minmax.min) {
+              ymin = minmax.min;
+            }
+          }
+        } else {
+          ymin = this.minimumValue;
+          ymax = this.maximumValue;
+        }
         let n = this.dataArrays[0].length();
         for (let i = 0; i < this.dataArrays.length; i++) {
-          this.drawAxis(i, ctx);
+          this.drawAxis(ymin, ymax, i, ctx);
           if (n > 0) {
             if (n > this.dataArrays[i].length()) n = this.dataArrays[i].length();
           }
         }
         ctx.lineWidth = this.lineWidth;
+        ctx.strokeStyle = "black";
         let color = d3.scaleLinear().domain(d3.extent([-2, n + 2])).interpolate(() => this.interpolateColor);
+        let opacityHex = Util.alphaToHex(this.opacity);
         for (let j = 0; j < n; j++) {
           ctx.beginPath();
           for (let i = 0; i < this.dataArrays.length; i++) {
-            ctx.strokeStyle = color(j);
+            ctx.fillStyle = Util.rgbStringToHex(color(j)) + opacityHex;
             if (i === 0) {
               ctx.moveTo(this.pointArrays[i].getX(j), this.pointArrays[i].getY(j));
             } else {
               ctx.lineTo(this.pointArrays[i].getX(j), this.pointArrays[i].getY(j));
             }
           }
+          ctx.closePath();
+          ctx.fill();
           ctx.stroke();
         }
       }
@@ -336,69 +358,64 @@ export class RadarChart extends Block {
 
   }
 
-  private drawAxis(i: number, ctx: CanvasRenderingContext2D): void {
-    let ymin;
-    let ymax;
-    if (this.autoscale) {
-      ymin = Number.MAX_VALUE;
-      ymax = -ymin;
-      for (let j = 0; j < this.dataArrays[i].length(); j++) {
-        let vij = this.dataArrays[i].data[j];
-        if (ymax < vij) {
-          ymax = vij;
-        }
-        if (ymin > vij) {
-          ymin = vij;
-        }
-      }
-    } else {
-      ymin = this.minimumValue;
-      ymax = this.maximumValue;
-    }
+  private drawAxis(ymin: number, ymax: number, i: number, ctx: CanvasRenderingContext2D): void {
     if (this.pointArrays[i] === undefined) {
       this.pointArrays[i] = new Point2DArray();
     } else {
       this.pointArrays[i].clear();
     }
-    let xOffset = 0.1 * this.viewWindow.width;
-    let dx = (this.viewWindow.width - 2 * xOffset) / (this.dataArrays.length - 1);
-    let yOffset = 0.1 * this.viewWindow.height;
-    let dy = (this.viewWindow.height - 2 * yOffset) / (ymax - ymin);
-    let y0 = this.viewWindow.y + this.viewWindow.height - yOffset;
-    let xi = this.viewWindow.x + xOffset + i * dx;
+    let radius = Math.min(this.viewWindow.width, this.viewWindow.height) * 0.45;
+    let xc = this.viewWindow.x + 0.5 * this.viewWindow.width;
+    let yc = this.viewWindow.y + 0.5 * this.viewWindow.height;
+    let dr = radius / (ymax - ymin);
+    let angle = i * 2 * Math.PI / this.dataArrays.length;
     // set point array for drawing later
+    let dx = dr * Math.cos(angle);
+    let dy = dr * Math.sin(angle);
+    let v;
     for (let j = 0; j < this.dataArrays[i].length(); j++) {
-      this.pointArrays[i].addPoint(xi, y0 - (this.dataArrays[i].data[j] - ymin) * dy);
+      v = this.dataArrays[i].data[j] - ymin;
+      this.pointArrays[i].addPoint(xc + v * dx, yc + v * dy);
     }
     // draw axis
     let axisColor = Util.isHexColor(this.viewWindowColor) ? Util.invertHexColor(this.viewWindowColor.toString(), false) : "black";
     ctx.strokeStyle = axisColor;
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(xi, y0);
-    ctx.lineTo(xi, this.viewWindow.y + yOffset);
+    ctx.moveTo(xc, yc);
+    ctx.lineTo(xc + 1.05 * dx / dr * radius, yc + 1.05 * dy / dr * radius);
     ctx.stroke();
     // draw tickmarks
-    ctx.lineWidth = 1;
-    ctx.font = "10px Arial";
-    ctx.fillStyle = axisColor;
-    let yi;
-    let label;
-    let delta = (ymax - ymin) / 10;
-    let h = ctx.measureText("M").width;
-    for (let k = 0; k <= 10; k++) {
-      yi = y0 - k * (this.viewWindow.height - 2 * yOffset) / 10;
-      ctx.beginPath();
-      ctx.moveTo(xi, yi);
-      ctx.lineTo(xi - 8, yi);
-      ctx.stroke();
-      label = (ymin + k * delta).toFixed(this.fractionDigits);
-      ctx.fillText(label, xi - 20 - ctx.measureText(label).width / 2, yi + h / 2);
+    if (i === 0) {
+      ctx.lineWidth = 1;
+      ctx.font = "10px Arial";
+      ctx.fillStyle = axisColor;
+      let xi;
+      let label;
+      let delta = (ymax - ymin) / 10;
+      let h = ctx.measureText("M").width;
+      for (let k = 1; k <= 10; k++) {
+        xi = xc + k * radius / 10;
+        if (k % 2 == 0) {
+          ctx.strokeStyle = "#cccccccc";
+          ctx.beginPath();
+          ctx.arc(xc, yc, xi - xc, 0, 2 * Math.PI, true);
+          ctx.stroke();
+          ctx.strokeStyle = axisColor;
+          ctx.beginPath();
+          ctx.moveTo(xi, yc);
+          ctx.lineTo(xi, yc - 4);
+          ctx.stroke();
+          label = (ymin + k * delta).toFixed(this.fractionDigits);
+          ctx.fillText(label, xi - ctx.measureText(label).width / 2, yc - 1.25 * h);
+        }
+      }
     }
     // draw labels
     ctx.font = "12px Arial";
-    label = this.axisLabels[i] !== undefined ? this.axisLabels[i] : this.portI[i].getUid();
-    ctx.fillText(label, xi - ctx.measureText(label).width / 2, y0 + yOffset / 2);
+    let label = this.axisLabels[i] !== undefined ? this.axisLabels[i] : this.portI[i].getUid();
+    let h = ctx.measureText("M").width;
+    ctx.fillText(label, xc + 1.15 * dx / dr * radius - ctx.measureText(label).width / 2, yc + 1.15 * dy / dr * (radius - h));
   }
 
   onDraggableArea(x: number, y: number): boolean {

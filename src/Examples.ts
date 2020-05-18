@@ -23,6 +23,8 @@ import heat_map_dynamic from "./examples/heat-map-dynamic.json";
 // @ts-ignore
 import pie_chart from "./examples/pie-chart.json";
 // @ts-ignore
+import radar_chart from "./examples/radar-chart.json";
+// @ts-ignore
 import parallel_coordinates_plot from "./examples/parallel-coordinates-plot.json";
 // @ts-ignore
 import bubble_plot from "./examples/bubble-plot.json";
@@ -447,6 +449,7 @@ export class Examples {
     this.files.push({name: "Statistics: Static Histogram", data: histogram_static});
     this.files.push({name: "Statistics: Dynamic Histogram", data: histogram_dynamic});
     this.files.push({name: "Statistics: Pie Chart", data: pie_chart});
+    this.files.push({name: "Statistics: Radar Chart", data: radar_chart});
     this.files.push({name: "Statistics: Parallel Coordinates Plot", data: parallel_coordinates_plot});
     this.files.push({name: "Statistics: Static Heat Map", data: heat_map_static});
     this.files.push({name: "Statistics: Dynamic Heat Map", data: heat_map_dynamic});
