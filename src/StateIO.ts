@@ -281,6 +281,7 @@ export class StateIO {
           block.setOpacity(state.opacity);
           if (state.spider !== undefined) block.setSpider(state.spider);
           if (state.fractionDigits !== undefined) block.setFractionDigits(state.fractionDigits);
+          if (state.tickmarkSpacing !== undefined) block.setTickmarkSpacing(state.tickmarkSpacing);
           if (state.colorScheme !== undefined) block.setColorScheme(state.colorScheme);
           if (state.lineWidth !== undefined) block.setLineWidth(state.lineWidth);
           if (state.dataPortNumber != undefined) block.setDataPortNumber(state.dataPortNumber);

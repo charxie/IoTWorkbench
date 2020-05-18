@@ -21,6 +21,7 @@ export class RadarChart extends Block {
   private axisLabels: string[] = [];
   private autoscale: boolean = true;
   private fractionDigits: number = 1;
+  private tickmarkSpacing: number = 2;
   private lineWidth: number = 1;
   private opacity: number = 0.5;
   private spider: boolean = false;
@@ -55,6 +56,7 @@ export class RadarChart extends Block {
     readonly axisLabels: string[];
     readonly minimumValue: number;
     readonly maximumValue: number;
+    readonly tickmarkSpacing: number;
 
     constructor(b: RadarChart) {
       this.name = b.name;
@@ -71,6 +73,7 @@ export class RadarChart extends Block {
       this.opacity = b.opacity;
       this.colorScheme = b.colorScheme;
       this.fractionDigits = b.fractionDigits;
+      this.tickmarkSpacing = b.tickmarkSpacing;
       this.minimumValue = b.minimumValue;
       this.maximumValue = b.maximumValue;
       this.axisLabels = [...b.axisLabels];
@@ -98,6 +101,7 @@ export class RadarChart extends Block {
     copy.lineWidth = this.lineWidth;
     copy.spider = this.spider;
     copy.fractionDigits = this.fractionDigits;
+    copy.tickmarkSpacing = this.tickmarkSpacing;
     copy.opacity = this.opacity;
     copy.viewWindowColor = this.viewWindowColor;
     copy.minimumValue = this.minimumValue;
@@ -162,6 +166,14 @@ export class RadarChart extends Block {
 
   getFractionDigits(): number {
     return this.fractionDigits;
+  }
+
+  setTickmarkSpacing(tickmarkSpacing: number): void {
+    this.tickmarkSpacing = tickmarkSpacing;
+  }
+
+  getTickmarkSpacing(): number {
+    return this.tickmarkSpacing;
   }
 
   setLineWidth(lineWidth: number): void {
@@ -409,7 +421,7 @@ export class RadarChart extends Block {
       let h = ctx.measureText("M").width;
       for (let k = 1; k <= 10; k++) {
         xi = xc + k * radius / 10;
-        if (k % 2 == 0) {
+        if (k % this.tickmarkSpacing == 0) {
           ctx.strokeStyle = "#cccccccc";
           ctx.beginPath();
           if (this.spider) {

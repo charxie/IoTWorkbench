@@ -73,6 +73,10 @@ export class RadarChartContextMenu extends BlockContextMenu {
                   <td colspan="3"><input type="text" id="radar-chart-fraction-digits-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Tickmark Spacing:</td>
+                  <td colspan="3"><input type="text" id="radar-chart-tickmark-spacing-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Scale:</td>
                   <td colspan="3">
                     <input type="radio" name="scale" id="radar-chart-auto-scale-radio-button" checked> Auto
@@ -80,11 +84,11 @@ export class RadarChartContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
-                  <td>Minimum:</td>
+                  <td>Minimum Value:</td>
                   <td colspan="3"><input type="text" id="radar-chart-minimum-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Maximum:</td>
+                  <td>Maximum Value:</td>
                   <td colspan="3"><input type="text" id="radar-chart-maximum-field" style="width: 100%"></td>
                 </tr>
                 <tr>
@@ -188,6 +192,8 @@ export class RadarChartContextMenu extends BlockContextMenu {
       spiderRadioButton.checked = g.getSpider();
       let fractionDigitsField = document.getElementById("radar-chart-fraction-digits-field") as HTMLInputElement;
       fractionDigitsField.value = g.getFractionDigits().toString();
+      let tickmarkSpacingField = document.getElementById("radar-chart-tickmark-spacing-field") as HTMLInputElement;
+      tickmarkSpacingField.value = g.getTickmarkSpacing().toString();
       let opacityField = document.getElementById("radar-chart-opacity-field") as HTMLInputElement;
       opacityField.value = g.getOpacity().toString();
       let colorSchemeSelector = document.getElementById("radar-chart-color-scheme-selector") as HTMLSelectElement;
@@ -244,6 +250,14 @@ export class RadarChartContextMenu extends BlockContextMenu {
         } else {
           success = false;
           message = fractionDigitsField.value + " is not valid for fraction digits";
+        }
+        // set tickmark spacing
+        let tickmarkSpacing = parseInt(tickmarkSpacingField.value);
+        if (isNumber(tickmarkSpacing)) {
+          g.setTickmarkSpacing(Math.max(1, tickmarkSpacing));
+        } else {
+          success = false;
+          message = tickmarkSpacingField.value + " is not valid for tickmark spacing";
         }
         // set opacity (alpha value)
         let opacity = parseFloat(opacityField.value);
@@ -319,6 +333,7 @@ export class RadarChartContextMenu extends BlockContextMenu {
       nameField.addEventListener("keyup", enterKeyUp);
       dataPortsField.addEventListener("keyup", enterKeyUp);
       fractionDigitsField.addEventListener("keyup", enterKeyUp);
+      tickmarkSpacingField.addEventListener("keyup", enterKeyUp);
       opacityField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       lineWidthField.addEventListener("keyup", enterKeyUp);
