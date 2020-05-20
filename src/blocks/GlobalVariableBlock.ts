@@ -15,6 +15,7 @@ export class GlobalVariableBlock extends GlobalBlock {
   private key: string = "x";
   private value: any;
   private initialValue: any;
+  private fractionDigits: number = 1;
 
   static State = class {
     readonly name: string;
@@ -27,6 +28,7 @@ export class GlobalVariableBlock extends GlobalBlock {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly fractionDigits: number;
 
     constructor(block: GlobalVariableBlock) {
       this.name = block.name;
@@ -39,6 +41,7 @@ export class GlobalVariableBlock extends GlobalBlock {
       this.y = block.y;
       this.width = block.width;
       this.height = block.height;
+      this.fractionDigits = block.fractionDigits;
     }
   };
 
@@ -60,6 +63,7 @@ export class GlobalVariableBlock extends GlobalBlock {
     copy.value = this.value;
     copy.initialValue = this.initialValue;
     copy.showValue = this.showValue;
+    copy.fractionDigits = this.fractionDigits;
     return copy;
   }
 
@@ -115,6 +119,14 @@ export class GlobalVariableBlock extends GlobalBlock {
     this.initialValue = initialValue;
   }
 
+  setFractionDigits(fractionDigits: number): void {
+    this.fractionDigits = fractionDigits;
+  }
+
+  getFractionDigits(): number {
+    return this.fractionDigits;
+  }
+
   reset(): void {
     super.reset();
     if (this.initialValue != undefined) {
@@ -156,7 +168,7 @@ export class GlobalVariableBlock extends GlobalBlock {
       let s = this.symbol ? this.symbol : this.name;
       if (this.showValue) {
         if (typeof this.value == "number") {
-          this.drawText(s + " = " + this.value.toPrecision(3), ctx);
+          this.drawText(s + " = " + this.value.toFixed(this.fractionDigits), ctx);
         } else {
           this.drawText(s + " = " + this.value, ctx);
         }

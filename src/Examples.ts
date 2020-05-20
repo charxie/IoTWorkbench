@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import monte_carlo_integration from "./examples/monte-carlo-integration.json";
+// @ts-ignore
 import k_means_clustering_3d from "./examples/k-means-clustering-3d.json";
 // @ts-ignore
 import k_means_clustering from "./examples/k-means-clustering.json";
@@ -464,6 +466,7 @@ export class Examples {
     this.files.push({name: "Statistics: K-Means Clustering in 3D", data: k_means_clustering_3d});
     this.files.push({name: "Statistics: Random Walk in 2D", data: random_walk});
     this.files.push({name: "Statistics: Random Walk in 3D", data: random_walk_3d});
+    this.files.push({name: "Statistics: Monte Carlo Integration", data: monte_carlo_integration});
     this.files.push({name: "Sound: Make Sound with Beepers", data: make_sound_with_beepers});
     this.files.push({name: "Sound: Synthesizing Sound", data: synthesizing_sound});
     this.files.push({name: "IoT: RGB LED Array", data: rainbow_hat_rgb_led_array});

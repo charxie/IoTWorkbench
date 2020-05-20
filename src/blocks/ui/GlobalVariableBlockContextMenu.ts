@@ -38,6 +38,10 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
+                  <td>Fraction Digits:</td>
+                  <td><input type="text" id="global-variable-fraction-digits-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="global-variable-block-width-field" style="width: 100%"></td>
                 </tr>
@@ -55,6 +59,8 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof GlobalVariableBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let fractionDigitsField = document.getElementById("global-variable-fraction-digits-field") as HTMLInputElement;
+      fractionDigitsField.value = block.getFractionDigits().toString();
       let keyField = document.getElementById("global-variable-key-field") as HTMLInputElement;
       keyField.value = block.getKey();
       let valueField = document.getElementById("global-variable-value-field") as HTMLInputElement;
@@ -73,6 +79,14 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
         block.setShowValue(showValueYesRadioButton.checked);
         let success = true;
         let message;
+        // set fraction digits
+        let fractionDigits = parseInt(fractionDigitsField.value);
+        if (isNumber(fractionDigits)) {
+          block.setFractionDigits(Math.max(0, fractionDigits));
+        } else {
+          success = false;
+          message = fractionDigitsField.value + " is not valid for fraction digits";
+        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -115,11 +129,12 @@ export class GlobalVariableBlockContextMenu extends BlockContextMenu {
       initialValueField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
+      fractionDigitsField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 400,
+        height: 430,
         width: 360,
         buttons: {
           'OK': okFunction,

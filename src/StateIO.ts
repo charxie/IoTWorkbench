@@ -117,6 +117,7 @@ export class StateIO {
           block.setValue(state.value);
           block.setInitialValue(state.initialValue);
           block.setShowValue(state.showValue);
+          if (state.fractionDigits !== undefined) block.setFractionDigits(state.fractionDigits);
         } else if (block instanceof GlobalObjectBlock) {
           block.setName(state.name);
           block.setSymbol(state.symbol);
