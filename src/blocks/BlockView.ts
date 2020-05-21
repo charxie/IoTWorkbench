@@ -77,6 +77,7 @@ import {BubblePlot} from "./BubblePlot";
 import {ArrayAdapter} from "./ArrayAdapter";
 import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
 import {RadarChart} from "./RadarChart";
+import {KNNClassifierBlock} from "./KNNClassifierBlock";
 
 export class BlockView {
 
@@ -330,6 +331,9 @@ export class BlockView {
         break;
       case "clustering-block":
         b = this.addBlockUndoable(new ClusteringBlock("Clustering Block #" + timestamp, x - 50, y - 40, 100, 80));
+        break;
+      case "knn-classifier-block":
+        b = this.addBlockUndoable(new KNNClassifierBlock("KNN Classifier Block #" + timestamp, x - 50, y - 40, 100, 80));
         break;
       case "fft-block":
         b = this.addBlockUndoable(new FFTBlock("FFT Block #" + timestamp, x - 30, y - 40, 60, 80));

@@ -69,6 +69,7 @@ import {BubblePlot} from "./BubblePlot";
 import {ArrayAdapter} from "./ArrayAdapter";
 import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
 import {RadarChart} from "./RadarChart";
+import {KNNClassifierBlock} from "./KNNClassifierBlock";
 
 export class BlockUtilities {
 
@@ -153,6 +154,9 @@ export class BlockUtilities {
     }
     if (block instanceof ClusteringBlock) {
       return contextMenus.clusteringBlock;
+    }
+    if (block instanceof KNNClassifierBlock) {
+      return contextMenus.knnClassifierBlock;
     }
     if (block instanceof FFTBlock) {
       return contextMenus.fftBlock;
@@ -376,6 +380,10 @@ export class BlockUtilities {
     if (block instanceof ClusteringBlock) {
       contextMenus.clusteringBlock.block = block;
       return document.getElementById("clustering-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof KNNClassifierBlock) {
+      contextMenus.knnClassifierBlock.block = block;
+      return document.getElementById("knn-classifier-block-context-menu") as HTMLMenuElement;
     }
     if (block instanceof FFTBlock) {
       contextMenus.fftBlock.block = block;

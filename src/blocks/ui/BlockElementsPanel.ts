@@ -65,6 +65,7 @@ import {BubblePlot} from "../BubblePlot";
 import {ArrayAdapter} from "../ArrayAdapter";
 import {ParallelCoordinatesPlot} from "../ParallelCoordinatesPlot";
 import {RadarChart} from "../RadarChart";
+import {KNNClassifierBlock} from "../KNNClassifierBlock";
 
 export class BlockElementsPanel {
 
@@ -162,6 +163,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="regression-block" title="Regression" width="45px" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="correlation-block" title="Correlation" width="45px" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="clustering-block" title="Clustering" width="45px" height="70px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="knn-classifier-block" title="KNN Classifier" width="45px" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="molecular-viewer-block" title="Molecular Viewer" width="60px" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
@@ -194,6 +196,7 @@ export class BlockElementsPanel {
     this.drawRegressionBlock("Regression Block", "regression-block");
     this.drawCorrelationBlock("Correlation Block", "correlation-block");
     this.drawClusteringBlock("Clustering Block", "clustering-block");
+    this.drawKNNClassifierBlock("KNN Classifier Block", "knn-classifier-block");
     this.drawFFTBlock("FFT Block", "fft-block");
     this.drawODESolverBlock("ODE Solver Block", "ode-solver-block");
     this.drawTransientStateFDMSolverBlock("Transient State FDM Solver Block", "transient-state-fdm-solver-block");
@@ -536,6 +539,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new ClusteringBlock("Clustering Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawKNNClassifierBlock(name: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new KNNClassifierBlock("KNN Classifier Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

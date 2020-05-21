@@ -66,6 +66,7 @@ import {BubblePlot} from "./blocks/BubblePlot";
 import {ArrayAdapter} from "./blocks/ArrayAdapter";
 import {ParallelCoordinatesPlot} from "./blocks/ParallelCoordinatesPlot";
 import {RadarChart} from "./blocks/RadarChart";
+import {KNNClassifierBlock} from "./blocks/KNNClassifierBlock";
 
 export class StateIO {
 
@@ -309,9 +310,15 @@ export class StateIO {
           if (state.type !== undefined) block.setType(state.type);
         } else if (block instanceof ClusteringBlock) {
           block.setName(state.name);
-          if (state.method !== undefined) block.setMethod(state.method);
           block.setNumberOfOutputs(state.numberOfOutputs);
+          if (state.method !== undefined) block.setMethod(state.method);
           if (state.numberOfIterations !== undefined) block.setNumberOfIterations(state.numberOfIterations);
+        } else if (block instanceof KNNClassifierBlock) {
+          block.setName(state.name);
+          block.setNumberOfInputs(state.numberOfInputs);
+          block.setDistanceType(state.distanceType);
+          block.setK(state.k);
+          block.setWeighted(state.weighted);
         } else if (block instanceof FFTBlock) {
           block.setSeparate(state.separate != undefined ? state.separate : true);
           block.setInverse(state.inverse != undefined ? state.inverse : false);

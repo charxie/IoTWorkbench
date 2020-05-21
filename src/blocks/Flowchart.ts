@@ -76,6 +76,7 @@ import {BubblePlot} from "./BubblePlot";
 import {ArrayAdapter} from "./ArrayAdapter";
 import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
 import {RadarChart} from "./RadarChart";
+import {KNNClassifierBlock} from "./KNNClassifierBlock";
 
 export class Flowchart {
 
@@ -912,6 +913,9 @@ export class Flowchart {
       case "Clustering Block":
         block = new ClusteringBlock(uid, x, y, 200, 160);
         break;
+      case "KNN Classifier Block":
+        block = new KNNClassifierBlock(uid, x, y, 200, 160);
+        break;
       case "FFT Block":
         block = new FFTBlock(uid, x, y, 200, 160);
         break;
@@ -1076,6 +1080,8 @@ export class Flowchart {
         blockStates.push(new CorrelationBlock.State(b));
       } else if (b instanceof ClusteringBlock) {
         blockStates.push(new ClusteringBlock.State(b));
+      } else if (b instanceof KNNClassifierBlock) {
+        blockStates.push(new KNNClassifierBlock.State(b));
       } else if (b instanceof FFTBlock) {
         blockStates.push(new FFTBlock.State(b));
       } else if (b instanceof ODESolverBlock) {

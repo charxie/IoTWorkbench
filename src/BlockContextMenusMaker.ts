@@ -68,6 +68,7 @@ import {BubblePlotContextMenu} from "./blocks/ui/BubblePlotContextMenu";
 import {ArrayAdapterContextMenu} from "./blocks/ui/ArrayAdapterContextMenu";
 import {ParallelCoordinatesPlotContextMenu} from "./blocks/ui/ParallelCoordinatesPlotContextMenu";
 import {RadarChartContextMenu} from "./blocks/ui/RadarChartContextMenu";
+import {KNNClassifierBlockContextMenu} from "./blocks/ui/KNNClassifierBlockContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -110,6 +111,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("regression-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("correlation-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("clustering-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("knn-classifier-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("fft-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("ode-solver-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("transient-state-fdm-solver-block-context-menu-placeholder", blockPlayground);
@@ -338,6 +340,11 @@ function setupContextMenuForBlocks() {
   clusteringBlockContextMenu.render("clustering-block-context-menu-placeholder");
   clusteringBlockContextMenu.addListeners();
   contextMenus.clusteringBlock = clusteringBlockContextMenu;
+
+  let knnClassifierBlockContextMenu = new KNNClassifierBlockContextMenu();
+  knnClassifierBlockContextMenu.render("knn-classifier-block-context-menu-placeholder");
+  knnClassifierBlockContextMenu.addListeners();
+  contextMenus.knnClassifierBlock = knnClassifierBlockContextMenu;
 
   let fftBlockContextMenu = new FFTBlockContextMenu();
   fftBlockContextMenu.render("fft-block-context-menu-placeholder");

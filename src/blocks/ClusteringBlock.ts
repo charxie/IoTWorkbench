@@ -21,7 +21,6 @@ export class ClusteringBlock extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
-    readonly marginX: number;
     readonly method: string;
     readonly numberOfOutputs: number;
     readonly numberOfIterations: number;
@@ -32,7 +31,6 @@ export class ClusteringBlock extends Block {
       this.y = block.y;
       this.width = block.width;
       this.height = block.height;
-      this.marginX = block.marginX;
       this.method = block.method;
       this.numberOfOutputs = block.portO.length;
       this.numberOfIterations = block.numberOfIterations;
@@ -100,6 +98,8 @@ export class ClusteringBlock extends Block {
   getCopy(): Block {
     let block = new ClusteringBlock("Clustering Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     block.setNumberOfOutputs(this.getNumberOfOutputs());
+    block.method = this.method;
+    block.numberOfIterations = this.numberOfIterations;
     return block;
   }
 
