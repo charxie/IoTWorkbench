@@ -52,7 +52,7 @@ export class ArrayAdapterContextMenu extends BlockContextMenu {
         // set columns
         let columns = parseInt(columnsField.value);
         if (isNumber(columns)) {
-          block.setColumns(Math.max(2, columns));
+          block.setColumns(Math.max(1, columns));
         } else {
           success = false;
           message = columnsField.value + " is not a valid number of columns";

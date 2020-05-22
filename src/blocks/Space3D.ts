@@ -5,7 +5,7 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {flowchart} from "../Main";
-import {Vector} from "../math/Vector";
+import {MyVector} from "../math/MyVector";
 import {LinePlot} from "./LinePlot";
 import {Basic3DBlock} from "./Basic3DBlock";
 
@@ -506,7 +506,7 @@ export class Space3D extends Basic3DBlock {
                 }
               }
             } else {
-              if (vp instanceof Vector) {
+              if (vp instanceof MyVector) {
                 vp = vp.getValues();
               }
               if (Array.isArray(vp) && vp.length > 1) {

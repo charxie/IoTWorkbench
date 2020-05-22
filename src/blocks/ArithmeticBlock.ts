@@ -5,7 +5,7 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Complex} from "../math/Complex";
-import {Vector} from "../math/Vector";
+import {MyVector} from "../math/MyVector";
 import {Matrix} from "../math/Matrix";
 import {Util} from "../Util";
 
@@ -92,13 +92,13 @@ export class ArithmeticBlock extends Block {
         if (b instanceof Complex && typeof a === "number") {
           return b.plus(new Complex(a, 0));
         }
-        if (a instanceof Vector && b instanceof Vector) {
+        if (a instanceof MyVector && b instanceof MyVector) {
           return a.add(b);
         }
-        if (a instanceof Vector && typeof b === "number") {
+        if (a instanceof MyVector && typeof b === "number") {
           return a.shift(b);
         }
-        if (b instanceof Vector && typeof a === "number") {
+        if (b instanceof MyVector && typeof a === "number") {
           return b.shift(a);
         }
         if (a instanceof Matrix && b instanceof Matrix) {
@@ -134,13 +134,13 @@ export class ArithmeticBlock extends Block {
         if (b instanceof Complex && typeof a === "number") {
           return new Complex(a, 0).minus(b);
         }
-        if (a instanceof Vector && b instanceof Vector) {
+        if (a instanceof MyVector && b instanceof MyVector) {
           return a.subtract(b);
         }
-        if (a instanceof Vector && typeof b === "number") {
+        if (a instanceof MyVector && typeof b === "number") {
           return a.shift(-b);
         }
-        if (b instanceof Vector && typeof a === "number") {
+        if (b instanceof MyVector && typeof a === "number") {
           return b.negate().shift(a);
         }
         if (a instanceof Matrix && b instanceof Matrix) {
@@ -176,16 +176,16 @@ export class ArithmeticBlock extends Block {
         if (b instanceof Complex && typeof a === "number") {
           return b.times(new Complex(a, 0));
         }
-        if (a instanceof Vector && b instanceof Vector) {
+        if (a instanceof MyVector && b instanceof MyVector) {
           return a.cross(b);
         }
-        if (a instanceof Vector && typeof b === "number") {
+        if (a instanceof MyVector && typeof b === "number") {
           return a.scale(b);
         }
-        if (b instanceof Vector && typeof a === "number") {
+        if (b instanceof MyVector && typeof a === "number") {
           return b.scale(a);
         }
-        if (a instanceof Matrix && b instanceof Vector) {
+        if (a instanceof Matrix && b instanceof MyVector) {
           return a.multiplyVector(b);
         }
         if (a instanceof Matrix && b instanceof Matrix) {
@@ -221,10 +221,10 @@ export class ArithmeticBlock extends Block {
         if (b instanceof Complex && typeof a === "number") {
           return new Complex(a, 0).divides(b);
         }
-        if (a instanceof Vector && typeof b === "number") {
+        if (a instanceof MyVector && typeof b === "number") {
           return a.scale(1 / b);
         }
-        if (b instanceof Vector) {
+        if (b instanceof MyVector) {
           throw new Error("A vector cannot be divided.");
         }
         if (a instanceof Matrix && typeof b === "number") {
@@ -248,7 +248,7 @@ export class ArithmeticBlock extends Block {
         if (typeof a === "number" && typeof b === "number") {
           return a % b;
         }
-        if (a instanceof Vector && typeof b === "number") {
+        if (a instanceof MyVector && typeof b === "number") {
           return a.modulus(b);
         }
         if (a instanceof Matrix && typeof b === "number") {
@@ -261,7 +261,7 @@ export class ArithmeticBlock extends Block {
         }
         throw new Error("Expoentiaation of " + a + " by " + b + " is not supported");
       case "Dot Product Block":
-        if (a instanceof Vector && b instanceof Vector) {
+        if (a instanceof MyVector && b instanceof MyVector) {
           return a.dot(b);
         }
         throw new Error("Dot product of " + a + " and " + b + " is not supported");

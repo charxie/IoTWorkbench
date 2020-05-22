@@ -4,7 +4,7 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
-import {Vector} from "../math/Vector";
+import {MyVector} from "../math/MyVector";
 
 export class NormalizationBlock extends Block {
 
@@ -38,7 +38,7 @@ export class NormalizationBlock extends Block {
 
   updateModel(): void {
     let x = this.portI.getValue();
-    if (x instanceof Vector) {
+    if (x instanceof MyVector) {
       this.portO.setValue(x.normalize());
     } else {
       this.portO.setValue(undefined);

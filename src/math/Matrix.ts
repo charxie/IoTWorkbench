@@ -3,7 +3,7 @@
  */
 
 import {math} from "../Main";
-import {Vector} from "./Vector";
+import {MyVector} from "./MyVector";
 
 export class Matrix {
 
@@ -101,8 +101,8 @@ export class Matrix {
     return result;
   }
 
-  public multiplyVector(v: Vector): Vector {
-    let result = new Vector(v.size());
+  public multiplyVector(v: MyVector): MyVector {
+    let result = new MyVector(v.size());
     let tmp = math.multiply(this.values, v.getValues());
     for (let i = 0; i < tmp.length; i++) {
       result.setValue(i, JSON.parse(JSON.stringify(tmp[i])));
@@ -137,7 +137,7 @@ export class Matrix {
     return this.values[row][col];
   }
 
-  public setRowValues(row: number, v: Vector): void {
+  public setRowValues(row: number, v: MyVector): void {
     for (let col = 0; col < this.getColumns(); col++) {
       if (v.getValue(col) !== undefined) {
         this.values[row][col] = v.getValue(col);

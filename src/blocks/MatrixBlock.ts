@@ -6,7 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {flowchart} from "../Main";
 import {Matrix} from "../math/Matrix";
-import {Vector} from "../math/Vector";
+import {MyVector} from "../math/MyVector";
 
 export class MatrixBlock extends Block {
 
@@ -122,7 +122,7 @@ export class MatrixBlock extends Block {
   updateModel(): void {
     for (let i = 0; i < this.portI.length; i++) {
       let x = this.portI[i].getValue();
-      if (x instanceof Vector) {
+      if (x instanceof MyVector) {
         this.matrix.setRowValues(i, x);
       }
     }

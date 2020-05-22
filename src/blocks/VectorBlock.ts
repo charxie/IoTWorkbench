@@ -4,14 +4,14 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
-import {Vector} from "../math/Vector";
+import {MyVector} from "../math/MyVector";
 import {flowchart} from "../Main";
 
 export class VectorBlock extends Block {
 
   private portI: Port[];
   private readonly portO: Port;
-  private vector: Vector;
+  private vector: MyVector;
   private fractionDigits: number = 3;
 
   static State = class {
@@ -43,7 +43,7 @@ export class VectorBlock extends Block {
     this.color = "#669";
     this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
     this.ports.push(this.portO);
-    this.vector = new Vector(2);
+    this.vector = new MyVector(2);
     this.vector.setValue(0, 1);
     this.vector.setValue(1, 0);
     this.setInputPorts();

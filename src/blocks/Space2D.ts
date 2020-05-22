@@ -8,7 +8,7 @@ import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart, isNumber} from "../Main";
 import {Point2DArray} from "./Point2DArray";
-import {Vector} from "../math/Vector";
+import {MyVector} from "../math/MyVector";
 
 export class Space2D extends Block {
 
@@ -1263,7 +1263,7 @@ export class Space2D extends Block {
                 }
               }
             } else {
-              if (vi instanceof Vector) {
+              if (vi instanceof MyVector) {
                 vi = vi.getValues();
               }
               if (Array.isArray(vi) && vi.length > 1) {

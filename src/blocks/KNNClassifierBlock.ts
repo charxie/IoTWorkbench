@@ -6,6 +6,7 @@ import {Port} from "./Port";
 import {Block} from "./Block";
 import {flowchart, isNumber} from "../Main";
 import {LabeledData} from "./LabeledData";
+import {MyVector} from "../math/MyVector";
 
 export class KNNClassifierBlock extends Block {
 
@@ -155,18 +156,44 @@ export class KNNClassifierBlock extends Block {
       }
     }
     arr.sort((a, b) => {
-      if (Array.isArray(input) && Array.isArray(a.data) && Array.isArray(b.data)) {
-        let n = Math.min(input[0].length, a.data.length, b.data.length);
-        let di;
-        let da = 0;
-        let db = 0;
-        for (let i = 0; i < n; i++) {
-          di = input[0][i] - a.data[i];
-          da += di * di;
-          di = input[0][i] - b.data[i];
-          db += di * di;
+      if (Array.isArray(a.data) && Array.isArray(b.data)) {
+        if (Array.isArray(input) && input[0].constructor === Array) { // 2D array from an array input
+          let n = Math.min(input[0].length, a.data.length, b.data.length);
+          let di;
+          let da = 0;
+          let db = 0;
+          for (let i = 0; i < n; i++) {
+            di = input[0][i] - a.data[i];
+            da += di * di;
+            di = input[0][i] - b.data[i];
+            db += di * di;
+          }
+          return da - db;
+        } else if (input instanceof MyVector) { // vector
+          let n = Math.min(input.size(), a.data.length, b.data.length);
+          let di;
+          let da = 0;
+          let db = 0;
+          for (let i = 0; i < n; i++) {
+            di = input.getValue(i) - a.data[i];
+            da += di * di;
+            di = input.getValue(i) - b.data[i];
+            db += di * di;
+          }
+          return da - db;
+        } else if (Array.isArray(input)) { // 1D array
+          let n = Math.min(input.length, a.data.length, b.data.length);
+          let di;
+          let da = 0;
+          let db = 0;
+          for (let i = 0; i < n; i++) {
+            di = input[i] - a.data[i];
+            da += di * di;
+            di = input[i] - b.data[i];
+            db += di * di;
+          }
+          return da - db;
         }
-        return da - db;
       } else {
         if (isNumber(input) && isNumber(a.data) && isNumber(b.data)) {
           return Math.abs(input - a.data) - Math.abs(input - b.data);

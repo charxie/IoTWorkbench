@@ -8,7 +8,7 @@ import {Port} from "./Port";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
-import {Vector} from "../math/Vector";
+import {MyVector} from "../math/MyVector";
 
 export class PieChart extends Block {
 
@@ -339,7 +339,7 @@ export class PieChart extends Block {
     if (this.data !== undefined) {
       originalDataLength = this.data.length;
     }
-    if (v instanceof Vector) {
+    if (v instanceof MyVector) {
       this.data = v.getValues();
     } else {
       if (Array.isArray(v)) {

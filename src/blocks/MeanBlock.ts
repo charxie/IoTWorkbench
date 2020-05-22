@@ -4,7 +4,7 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
-import {Vector} from "../math/Vector";
+import {MyVector} from "../math/MyVector";
 import {UnivariateDescriptiveStatistics} from "../math/UnivariateDescriptiveStatistics";
 
 export class MeanBlock extends Block {
@@ -70,7 +70,7 @@ export class MeanBlock extends Block {
 
   updateModel(): void {
     let x = this.portI.getValue();
-    if (x instanceof Vector) {
+    if (x instanceof MyVector) {
       this.setPortValue(new UnivariateDescriptiveStatistics(x.getValues()));
     } else {
       if (Array.isArray(x)) {

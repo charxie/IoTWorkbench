@@ -7,7 +7,7 @@ import {Port} from "./Port";
 import {Util} from "../Util";
 import {closeAllContextMenus, flowchart} from "../Main";
 import {Complex} from "../math/Complex";
-import {Vector} from "../math/Vector";
+import {MyVector} from "../math/MyVector";
 import {Matrix} from "../math/Matrix";
 import {BoundaryCondition} from "./BoundaryCondition";
 import {Rectangle} from "../math/Rectangle";
@@ -382,7 +382,7 @@ export class Sticker extends Block {
           if (this.text === undefined) this.text = "";
           if (v instanceof Complex) {
             this.text += v.toFixed(this.decimals) + ",";
-          } else if (v instanceof Vector) {
+          } else if (v instanceof MyVector) {
             this.text += v.toFixed(this.decimals) + ",";
           } else {
             try {
@@ -394,7 +394,7 @@ export class Sticker extends Block {
         } else {
           if (v instanceof Complex) {
             this.text = v.toFixed(this.decimals);
-          } else if (v instanceof Vector) {
+          } else if (v instanceof MyVector) {
             this.text = v.toFixed(this.decimals);
           } else if (v instanceof Matrix) {
             this.text = v.toFixed(this.decimals);

@@ -4,8 +4,8 @@
 
 import {Port} from "./Port";
 import {Block} from "./Block";
-import {Util} from "../Util";
 import {flowchart} from "../Main";
+import {MyVector} from "../math/MyVector";
 
 export class ArrayAdapter extends Block {
 
@@ -87,24 +87,34 @@ export class ArrayAdapter extends Block {
     let allSet = true;
     for (let i = 0; i < x.length; i++) {
       x[i] = this.portI[i].getValue();
-      if (x[i] === undefined || !Array.isArray(x[i])) {
+      if (x[i] === undefined || (!Array.isArray(x[i]) && !(x[i] instanceof MyVector))) {
         allSet = false;
         break;
       }
     }
     if (allSet) {
-      let minLength = x[0].length;
-      for (let i = 1; i < x.length; i++) {
-        if (minLength > x[i].length) minLength = x[i].length;
-      }
-      let y = new Array(minLength);
-      for (let i = 0; i < y.length; i++) {
-        y[i] = new Array(x.length);
-        for (let j = 0; j < x.length; j++) {
-          y[i][j] = x[j][i];
+      if (x[0] instanceof MyVector) {
+        let y = new Array(x.length);
+        for (let i = 0; i < x.length; i++) {
+          if (x[i] instanceof MyVector) {
+            y[i] = [...x[i].getValues()];
+          }
         }
+        this.portO.setValue(y);
+      } else {
+        let minLength = x[0].length;
+        for (let i = 1; i < x.length; i++) {
+          if (minLength > x[i].length) minLength = x[i].length;
+        }
+        let y = new Array(minLength);
+        for (let i = 0; i < y.length; i++) {
+          y[i] = new Array(x.length);
+          for (let j = 0; j < x.length; j++) {
+            y[i][j] = x[j][i];
+          }
+        }
+        this.portO.setValue(y);
       }
-      this.portO.setValue(y);
       this.updateConnectors();
     }
   }

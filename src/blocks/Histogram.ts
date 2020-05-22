@@ -8,7 +8,7 @@ import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
 import {DataArray} from "./DataArray";
-import {Vector} from "../math/Vector";
+import {MyVector} from "../math/MyVector";
 
 export class Histogram extends Block {
 
@@ -638,7 +638,7 @@ export class Histogram extends Block {
     for (let i = 0; i < this.portI.length; i++) {
       let v = this.portI[i].getValue();
       if (v !== undefined) {
-        if (v instanceof Vector) {
+        if (v instanceof MyVector) {
           this.dataArrays[i].data = v.getValues();
         } else {
           if (Array.isArray(v)) {
