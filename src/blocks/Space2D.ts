@@ -758,52 +758,54 @@ export class Space2D extends Block {
     for (let pi = this.points.length - 1; pi >= 0; pi--) {
       let p = this.points[pi];
       let length = p.length();
-      if (length > 1) {
+      if (length > 0) {
         let index = this.points.indexOf(p);
-        if (this.lineTypes[index] !== "None") {
-          ctx.lineWidth = this.lineThicknesses[index];
-          ctx.strokeStyle = this.lineColors[index];
-          switch (this.lineTypes[index]) {
-            case "Solid":
-              ctx.setLineDash([]);
-              break;
-            case "Dashed":
-              ctx.setLineDash([5, 3]); // dashes are 5px and spaces are 3px
-              break;
-            case "Dotted":
-              ctx.setLineDash([2, 2]);
-              break;
-            case "Dashdot":
-              ctx.setLineDash([8, 2, 2, 2]);
-              break;
-          }
-          ctx.beginPath();
-          ctx.moveTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
-          for (let i = 1; i < length; i++) {
-            ctx.lineTo((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy);
-          }
-          ctx.stroke();
-          if (this.fillOptions[index]) {
-            ctx.fillStyle = this.fillColors[index];
-            ctx.lineTo((p.getX(length - 1) - xmin) * dx, 0);
-            ctx.lineTo((p.getX(0) - xmin) * dx, 0);
-            ctx.lineTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
-            ctx.closePath();
-            ctx.fill();
-          }
-        } else {
-          if (this.fillOptions[index]) {
-            ctx.fillStyle = this.fillColors[index];
+        if (length > 1) {
+          if (this.lineTypes[index] !== "None") {
+            ctx.lineWidth = this.lineThicknesses[index];
+            ctx.strokeStyle = this.lineColors[index];
+            switch (this.lineTypes[index]) {
+              case "Solid":
+                ctx.setLineDash([]);
+                break;
+              case "Dashed":
+                ctx.setLineDash([5, 3]); // dashes are 5px and spaces are 3px
+                break;
+              case "Dotted":
+                ctx.setLineDash([2, 2]);
+                break;
+              case "Dashdot":
+                ctx.setLineDash([8, 2, 2, 2]);
+                break;
+            }
             ctx.beginPath();
             ctx.moveTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
             for (let i = 1; i < length; i++) {
               ctx.lineTo((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy);
             }
-            ctx.lineTo((p.getX(length - 1) - xmin) * dx, 0);
-            ctx.lineTo((p.getX(0) - xmin) * dx, 0);
-            ctx.lineTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
-            ctx.closePath();
-            ctx.fill();
+            ctx.stroke();
+            if (this.fillOptions[index]) {
+              ctx.fillStyle = this.fillColors[index];
+              ctx.lineTo((p.getX(length - 1) - xmin) * dx, 0);
+              ctx.lineTo((p.getX(0) - xmin) * dx, 0);
+              ctx.lineTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
+              ctx.closePath();
+              ctx.fill();
+            }
+          } else {
+            if (this.fillOptions[index]) {
+              ctx.fillStyle = this.fillColors[index];
+              ctx.beginPath();
+              ctx.moveTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
+              for (let i = 1; i < length; i++) {
+                ctx.lineTo((p.getX(i) - xmin) * dx, -(p.getY(i) - ymin) * dy);
+              }
+              ctx.lineTo((p.getX(length - 1) - xmin) * dx, 0);
+              ctx.lineTo((p.getX(0) - xmin) * dx, 0);
+              ctx.lineTo((p.getX(0) - xmin) * dx, -(p.getY(0) - ymin) * dy);
+              ctx.closePath();
+              ctx.fill();
+            }
           }
         }
 

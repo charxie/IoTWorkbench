@@ -272,11 +272,11 @@ export class DataBlock extends Block {
   updateModel(): void {
     if (this.portO !== undefined) {
       if (this.singleOutput) {
-        let numbers = new Array(this.dataArray.length);
-        for (let col = 0; col < this.dataArray.length; col++) {
-          numbers[col] = new Array(this.dataArray[col].length());
-          for (let row = 0; row < numbers[col].length; row++) {
-            numbers[col][row] = this.dataArray[col].data[row];
+        let numbers = new Array(this.dataArray[0].length()); // rows
+        for (let row = 0; row < numbers.length; row++) {
+          numbers[row] = new Array(this.dataArray.length);
+          for (let col = 0; col < this.dataArray.length; col++) {
+            numbers[row][col] = this.dataArray[col].data[row];
           }
         }
         this.ports[0].setValue(numbers);

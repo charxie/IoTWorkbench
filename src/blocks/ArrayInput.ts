@@ -105,18 +105,11 @@ export class ArrayInput extends Block {
     this.textArea.value = this.textArea.value.trim();
     let rows = this.textArea.value.split(/\n+/);
     this.rowCount = rows.length;
+    this.array = new Array(this.rowCount);
     for (let i = 0; i < this.rowCount; i++) {
       let columnValues = rows[i].split(/[ ,\t]+/);
-      if (i === 0) {
-        this.colCount = columnValues.length;
-        this.array = new Array(this.colCount);
-        for (let col = 0; col < this.colCount; col++) {
-          this.array[col] = new Array(this.rowCount);
-        }
-      }
-      for (let j = 0; j < this.colCount; j++) {
-        this.array[j][i] = columnValues[j];
-      }
+      this.colCount = columnValues.length;
+      this.array[i] = columnValues;
     }
     this.setOutputPorts();
   }
@@ -356,13 +349,13 @@ export class ArrayInput extends Block {
       }
     } else {
       if (this.array) {
-        for (let col = 0; col < this.array.length; col++) {
-          let numbers = new Array(this.array[col].length);
+        for (let col = 0; col < this.array[0].length; col++) {
+          let numbers = new Array(this.array.length);
           for (let row = 0; row < numbers.length; row++) {
             try {
-              numbers[row] = parseFloat(this.array[col][row]);
+              numbers[row] = parseFloat(this.array[row][col]);
             } catch (e) {
-              numbers[row] = this.array[col][row];
+              numbers[row] = this.array[row][col];
             }
           }
           if (col < this.ports.length) this.ports[col].setValue(numbers);

@@ -125,15 +125,7 @@ export class ClusteringBlock extends Block {
         case "K-Means":
           clustering.k(this.portO.length);
           clustering.iterations(this.numberOfIterations);
-          let n = v[0].length;
-          let data = new Array(n);
-          for (let i = 0; i < n; i++) {
-            data[i] = [];
-            for (let k = 0; k < v.length; k++) {
-              data[i].push(v[k][i]);
-            }
-          }
-          clustering.data(data);
+          clustering.data(v);
           let clusters = clustering.clusters();
           let centroids = [];
           for (let i = 0; i < clusters.length; i++) {

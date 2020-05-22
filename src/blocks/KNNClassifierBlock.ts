@@ -4,15 +4,17 @@
 
 import {Port} from "./Port";
 import {Block} from "./Block";
-import {flowchart} from "../Main";
+import {flowchart, isNumber} from "../Main";
+import {LabeledData} from "./LabeledData";
 
 export class KNNClassifierBlock extends Block {
 
   private k: number = 1;
   private weighted: boolean = false;
   private distanceType: string = "Euclidean";
-  private portI: Port[] = [];
+  private portI: Port;
   private portK: Port;
+  private portA: Port[] = [];
   private portO: Port;
 
   static State = class {
@@ -35,7 +37,7 @@ export class KNNClassifierBlock extends Block {
       this.k = block.k;
       this.weighted = block.weighted;
       this.distanceType = block.distanceType;
-      this.numberOfInputs = block.portI.length;
+      this.numberOfInputs = block.portA.length;
     }
   };
 
@@ -44,41 +46,44 @@ export class KNNClassifierBlock extends Block {
     this.symbol = "KNN";
     this.name = "KNN Classifier Block";
     this.color = "#BCEA73";
-    this.portK = new Port(this, true, "K", 0, this.height / 4, false);
-    this.portI.push(new Port(this, true, "A", 0, this.height / 2, false));
-    this.portI.push(new Port(this, true, "B", 0, this.height / 4 * 3, false));
-    this.portO = new Port(this, false, "O", this.width, this.height / 4, true);
+    this.portI = new Port(this, true, "I", 0, this.height / 5, false);
+    this.portK = new Port(this, true, "K", 0, this.height / 5 * 2, false);
+    this.portA.push(new Port(this, true, "A", 0, this.height / 5 * 3, false));
+    this.portA.push(new Port(this, true, "B", 0, this.height / 5 * 4, false));
+    this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
+    this.ports.push(this.portI);
     this.ports.push(this.portK);
-    this.ports.push(this.portI[0]);
-    this.ports.push(this.portI[1]);
+    this.ports.push(this.portA[0]);
+    this.ports.push(this.portA[1]);
     this.ports.push(this.portO);
+    this.marginX = 20;
   }
 
   setNumberOfInputs(numberOfInputs: number): void {
-    if (this.portI.length !== numberOfInputs) {
-      if (this.portI) {
-        for (let p of this.portI) { // disconnect all the port connectors as the ports will be recreated
+    if (this.portA.length !== numberOfInputs) {
+      if (this.portA) {
+        for (let p of this.portA) { // disconnect all the port connectors as the ports will be recreated
           flowchart.removeAllConnectors(p);
         }
-        for (let p of this.portI) {
+        for (let p of this.portA) {
           this.ports.removeItem(p);
         }
       }
-      this.portI = new Array(numberOfInputs);
-      let dh = this.height / (numberOfInputs + 2);
+      this.portA = new Array(numberOfInputs);
+      let dh = this.height / (numberOfInputs + 3);
       let firstPortName = "A";
       let k = firstPortName.charCodeAt(0);
       for (let i = 0; i < numberOfInputs; i++) {
         let id = String.fromCharCode(k++);
-        if (id === "K" || id === "O") id = String.fromCharCode(k++);
-        this.portI[i] = new Port(this, true, id, 0, (i + 2) * dh, false);
-        this.ports.push(this.portI[i]);
+        if (id === "I" || id === "K" || id === "O") id = String.fromCharCode(k++);
+        this.portA[i] = new Port(this, true, id, 0, (i + 2) * dh, false);
+        this.ports.push(this.portA[i]);
       }
     }
   }
 
   getNumberOfInputs(): number {
-    return this.portI.length;
+    return this.portA.length;
   }
 
   setK(k: number): void {
@@ -121,14 +126,73 @@ export class KNNClassifierBlock extends Block {
     super.refreshView();
     this.portO.setX(this.width);
     this.portO.setY(this.height / 2);
-    let dh = this.height / (this.portI.length + 2);
-    this.portK.setY(dh);
-    for (let i = 0; i < this.portI.length; i++) {
-      this.portI[i].setY((i + 2) * dh);
+    let dh = this.height / (this.portA.length + 3);
+    this.portI.setY(dh);
+    this.portK.setY(2 * dh);
+    for (let i = 0; i < this.portA.length; i++) {
+      this.portA[i].setY((i + 3) * dh);
     }
   }
 
   updateModel(): void {
+    let kin = this.portK.getValue();
+    if (kin !== undefined) this.k = kin;
+    let input = this.portI.getValue();
+    if (input === undefined) return;
+    let arr: LabeledData[] = [];
+    for (let p of this.portA) {
+      let v = p.getValue();
+      if (v !== undefined) {
+        if (Array.isArray(v)) {
+          for (let x of v) {
+            arr.push(new LabeledData(x, p.getUid()));
+          }
+        } else {
+          if (isNumber(v)) {
+            arr.push(new LabeledData(v, p.getUid()));
+          }
+        }
+      }
+    }
+    arr.sort((a, b) => {
+      if (Array.isArray(input) && Array.isArray(a.data) && Array.isArray(b.data)) {
+        let n = Math.min(input[0].length, a.data.length, b.data.length);
+        let di;
+        let da = 0;
+        let db = 0;
+        for (let i = 0; i < n; i++) {
+          di = input[0][i] - a.data[i];
+          da += di * di;
+          di = input[0][i] - b.data[i];
+          db += di * di;
+        }
+        return da - db;
+      } else {
+        if (isNumber(input) && isNumber(a.data) && isNumber(b.data)) {
+          return Math.abs(input - a.data) - Math.abs(input - b.data);
+        }
+      }
+      throw new Error("Cannot sort");
+    });
+    let count = new Array(this.portA.length);
+    let k = Math.min(this.k, arr.length);
+    for (let i = 0; i < count.length; i++) {
+      count[i] = 0;
+      for (let j = 0; j < k; j++) {
+        if (arr[j].label === this.portA[i].getUid()) {
+          count[i]++;
+        }
+      }
+    }
+    let max = Math.max(...count);
+    let result;
+    for (let i = 0; i < count.length; i++) {
+      if (count[i] === max) {
+        result = this.portA[i].getUid();
+        break;
+      }
+    }
+    this.portO.setValue(result);
     this.updateConnectors();
   }
 

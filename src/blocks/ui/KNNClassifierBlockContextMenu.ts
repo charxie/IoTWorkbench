@@ -35,6 +35,13 @@ export class KNNClassifierBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="knn-classifier-block-k-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Weighted:</td>
+                  <td>
+                    <input type="radio" name="weighted" id="knn-classifier-not-weighted-radio-button" checked> No
+                    <input type="radio" name="weighted" id="knn-classifier-weighted-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="knn-classifier-block-width-field" style="width: 100%"></td>
                 </tr>
@@ -58,6 +65,10 @@ export class KNNClassifierBlockContextMenu extends BlockContextMenu {
       numberOfInputsField.value = block.getNumberOfInputs().toString();
       let kField = document.getElementById("knn-classifier-block-k-field") as HTMLInputElement;
       kField.value = block.getK().toString();
+      let notWeightedRadioButton = document.getElementById("knn-classifier-not-weighted-radio-button") as HTMLInputElement;
+      notWeightedRadioButton.checked = !block.isWeighted();
+      let weightedRadioButton = document.getElementById("knn-classifier-weighted-radio-button") as HTMLInputElement;
+      weightedRadioButton.checked = block.isWeighted();
       let widthField = document.getElementById("knn-classifier-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("knn-classifier-block-height-field") as HTMLInputElement;
@@ -99,6 +110,7 @@ export class KNNClassifierBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          block.setWeighted(weightedRadioButton.checked);
           block.setDistanceType(distanceTypeSelector.value);
           block.refreshView();
           flowchart.updateResultsForBlock(block);

@@ -148,18 +148,16 @@ export class BivariateFunctionBlock extends FunctionBlock {
               this.portR.setValue(r);
               break;
             case "XYZ":
-              r = new Array(3);
-              r[0] = new Array(x.length * y.length);
-              r[1] = new Array(x.length * y.length);
-              r[2] = new Array(x.length * y.length);
+              r = new Array(x.length * y.length);
               k = 0;
               for (let i = 0; i < y.length; i++) {
                 param[this.variable2Name] = y[i];
                 for (let j = 0; j < x.length; j++) {
                   param[this.variable1Name] = x[j];
-                  r[0][k] = x[j];
-                  r[1][k] = y[i];
-                  r[2][k] = this.code.evaluate(param);
+                  r[k] = new Array(3);
+                  r[k][0] = x[j];
+                  r[k][1] = y[i];
+                  r[k][2] = this.code.evaluate(param);
                   k++;
                 }
               }

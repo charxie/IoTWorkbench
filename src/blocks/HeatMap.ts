@@ -343,9 +343,9 @@ export class HeatMap extends Block {
   }
 
   private createCells(): void {
-    let cols = this.data.length;
+    let cols = this.data[0].length;
     if (cols < 3) return;
-    let rows = this.data[0].length;
+    let rows = this.data.length;
     this.xmin = this.ymin = Number.MAX_VALUE;
     this.xmax = this.ymax = -Number.MAX_VALUE;
     this.xinc = this.yinc = Number.MAX_VALUE;
@@ -361,21 +361,21 @@ export class HeatMap extends Block {
       colY = 1; // second column should be y
     }
     for (let i = 0; i < rows; i++) {
-      if (this.xmin > this.data[colX][i]) {
-        this.xmin = this.data[colX][i];
+      if (this.xmin > this.data[i][colX]) {
+        this.xmin = this.data[i][colX];
       }
-      if (this.xmax < this.data[colX][i]) {
-        this.xmax = this.data[colX][i];
+      if (this.xmax < this.data[i][colX]) {
+        this.xmax = this.data[i][colX];
       }
-      if (this.ymin > this.data[colY][i]) {
-        this.ymin = this.data[colY][i];
+      if (this.ymin > this.data[i][colY]) {
+        this.ymin = this.data[i][colY];
       }
-      if (this.ymax < this.data[colY][i]) {
-        this.ymax = this.data[colY][i];
+      if (this.ymax < this.data[i][colY]) {
+        this.ymax = this.data[i][colY];
       }
       for (let j = i + 1; j < rows; j++) {
-        dx = Math.abs(this.data[colX][j] - this.data[colX][i]);
-        dy = Math.abs(this.data[colY][j] - this.data[colY][i]);
+        dx = Math.abs(this.data[j][colX] - this.data[i][colX]);
+        dy = Math.abs(this.data[j][colY] - this.data[i][colY]);
         if (dx !== 0 && dx < this.xinc) this.xinc = dx;
         if (dy !== 0 && dy < this.yinc) this.yinc = dy;
       }
@@ -383,8 +383,8 @@ export class HeatMap extends Block {
     this.nx = (this.xmax - this.xmin) / this.xinc + 1;
     this.ny = (this.ymax - this.ymin) / this.yinc + 1;
     for (let i = 0; i < rows; i++) {
-      this.cellPositions.push(new Point((this.data[colX][i] - this.xmin) / this.xinc, (this.data[colY][i] - this.ymin) / this.yinc));
-      this.cellValues.push(this.data[2][i]);
+      this.cellPositions.push(new Point((this.data[i][colX] - this.xmin) / this.xinc, (this.data[i][colY] - this.ymin) / this.yinc));
+      this.cellValues.push(this.data[i][2]);
     }
     if (this.viewWindow.x === 0 && this.viewWindow.y === 0) {
       this.viewWindow.x = this.x + this.viewMargin.left;

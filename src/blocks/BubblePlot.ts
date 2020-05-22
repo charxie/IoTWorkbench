@@ -790,14 +790,14 @@ export class BubblePlot extends Block {
   updateModel(): void {
     let v = this.portI.getValue();
     if (v !== undefined && Array.isArray(v) && Array.isArray(v[0])) {
-      let cols = v.length;
+      let cols = v[0].length;
       if (cols >= 3) {
-        let rows = v[0].length;
+        let rows = v.length;
         this.points.clear();
         this.values.length = 0;
         for (let i = 0; i < rows; i++) {
-          this.points.addPoint(v[0][i], v[1][i]);
-          this.values.push(v[2][i]);
+          this.points.addPoint(v[i][0], v[i][1]);
+          this.values.push(v[i][2]);
         }
       }
     }
