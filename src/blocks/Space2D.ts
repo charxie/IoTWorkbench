@@ -255,7 +255,7 @@ export class Space2D extends Block {
     if (this.pointInput) {
       if (numberOfPoints > this.portPoints.length) { // increase data ports
         // test if the line and symbol properties have already been set (this happens when loading an existing state)
-        let notSet = this.legends.length == this.portPoints.length;
+        let notSet = this.legends.length === this.portPoints.length;
         for (let i = 0; i < numberOfPoints; i++) {
           if (i >= this.portPoints.length) {
             let p = new Port(this, true, String.fromCharCode("A".charCodeAt(0) + i), 0, 0, false);

@@ -13,6 +13,7 @@ export class KNNClassifierBlock extends Block {
   private k: number = 1;
   private weighted: boolean = false;
   private distanceType: string = "Euclidean";
+  private labels: string[] = [];
   private portI: Port;
   private portK: Port;
   private portA: Port[] = [];
@@ -28,6 +29,7 @@ export class KNNClassifierBlock extends Block {
     readonly weighted: boolean;
     readonly distanceType: string;
     readonly numberOfInputs: number;
+    readonly labels: string[] = [];
 
     constructor(block: KNNClassifierBlock) {
       this.uid = block.uid;
@@ -39,6 +41,7 @@ export class KNNClassifierBlock extends Block {
       this.weighted = block.weighted;
       this.distanceType = block.distanceType;
       this.numberOfInputs = block.portA.length;
+      this.labels = [...block.labels];
     }
   };
 
@@ -57,6 +60,8 @@ export class KNNClassifierBlock extends Block {
     this.ports.push(this.portA[0]);
     this.ports.push(this.portA[1]);
     this.ports.push(this.portO);
+    this.labels.push("A");
+    this.labels.push("B");
     this.marginX = 20;
   }
 
@@ -71,6 +76,7 @@ export class KNNClassifierBlock extends Block {
         }
       }
       this.portA = new Array(numberOfInputs);
+      this.labels.length = 0;
       let dh = this.height / (numberOfInputs + 3);
       let firstPortName = "A";
       let k = firstPortName.charCodeAt(0);
@@ -79,12 +85,33 @@ export class KNNClassifierBlock extends Block {
         if (id === "I" || id === "K" || id === "O") id = String.fromCharCode(k++);
         this.portA[i] = new Port(this, true, id, 0, (i + 2) * dh, false);
         this.ports.push(this.portA[i]);
+        this.labels.push(this.portA[i].getUid());
       }
     }
   }
 
   getNumberOfInputs(): number {
     return this.portA.length;
+  }
+
+  getInputPorts(): Port[] {
+    return this.portA;
+  }
+
+  setLabel(i: number, label: string): void {
+    this.labels[i] = label;
+  }
+
+  getLabel(i: number): string {
+    return this.labels[i];
+  }
+
+  setLabels(labels: string[]): void {
+    this.labels = [...labels];
+  }
+
+  getLabels(): string[] {
+    return [...this.labels];
   }
 
   setK(k: number): void {
@@ -112,12 +139,13 @@ export class KNNClassifierBlock extends Block {
   }
 
   getCopy(): Block {
-    let block = new KNNClassifierBlock("KNN Classifier Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
-    block.setNumberOfInputs(this.getNumberOfInputs());
-    block.setK(this.k);
-    block.setWeighted(this.weighted);
-    block.setDistanceType(this.distanceType);
-    return block;
+    let copy = new KNNClassifierBlock("KNN Classifier Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    copy.setNumberOfInputs(this.getNumberOfInputs());
+    copy.setK(this.k);
+    copy.setWeighted(this.weighted);
+    copy.setDistanceType(this.distanceType);
+    copy.labels = [...this.labels];
+    return copy;
   }
 
   destroy() {
@@ -207,7 +235,40 @@ export class KNNClassifierBlock extends Block {
       count[i] = 0;
       for (let j = 0; j < k; j++) {
         if (arr[j].label === this.portA[i].getUid()) {
-          count[i]++;
+          if (this.weighted) {
+            let weight = 0;
+            if (Array.isArray(arr[j].data)) {
+              if (Array.isArray(input)) {
+                let n = Math.min(arr[j].data.length, input.length);
+                let di;
+                for (let q = 0; q < n; q++) {
+                  di = arr[j].data[q] - input[q];
+                  weight += di * di;
+                }
+                weight = Math.sqrt(weight);
+              } else if (input instanceof MyVector) {
+                let n = Math.min(arr[j].data.length, input.size());
+                let di;
+                for (let q = 0; q < n; q++) {
+                  di = arr[j].data[q] - input.getValue(q);
+                  weight += di * di;
+                }
+                weight = Math.sqrt(weight);
+              }
+            } else {
+              if (isNumber(arr[j].data) && isNumber(input)) {
+                weight = Math.abs(arr[j].data - input);
+              }
+            }
+            if (Math.abs(weight) < 0.000001) {
+              weight = 1000000;
+            } else {
+              weight = 1 / weight;
+            }
+            count[i] += weight;
+          } else {
+            count[i]++;
+          }
         }
       }
     }
@@ -215,7 +276,7 @@ export class KNNClassifierBlock extends Block {
     let result;
     for (let i = 0; i < count.length; i++) {
       if (count[i] === max) {
-        result = this.portA[i].getUid();
+        result = this.labels[i];
         break;
       }
     }

@@ -19,8 +19,13 @@ export class KNNClassifierBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
+                  <td>Label:</td>
+                  <td><select id="knn-classifier-block-label-port-selector" style="width: 65px"></select></td>
+                  <td><input type="text" id="knn-classifier-block-label-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Disance Type:</td>
-                  <td>
+                  <td colspan="2">
                     <select id="knn-classifier-block-distance-type-selector" style="width: 100%">
                       <option value="Euclidean">Euclidean</option>
                     </select>
@@ -28,29 +33,42 @@ export class KNNClassifierBlockContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Inputs:</td>
-                  <td><input type="text" id="knn-classifier-block-inputs-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="knn-classifier-block-inputs-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>K:</td>
-                  <td><input type="text" id="knn-classifier-block-k-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="knn-classifier-block-k-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Weighted:</td>
-                  <td>
+                  <td colspan="2">
                     <input type="radio" name="weighted" id="knn-classifier-not-weighted-radio-button" checked> No
                     <input type="radio" name="weighted" id="knn-classifier-weighted-radio-button"> Yes
                   </td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td><input type="text" id="knn-classifier-block-width-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="knn-classifier-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td><input type="text" id="knn-classifier-block-height-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="knn-classifier-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
+  }
+
+  private createSetSelector(id: string): HTMLSelectElement {
+    let selector = document.getElementById(id) as HTMLSelectElement;
+    let knnClassifier = <KNNClassifierBlock>this.block;
+    let ports = knnClassifier.getInputPorts();
+    for (let p of ports) {
+      let option = document.createElement("option");
+      option.value = ports.indexOf(p).toString();
+      option.text = "Port " + p.getUid();
+      selector.appendChild(option);
+    }
+    return selector;
   }
 
   protected propertiesButtonClick(): void {
@@ -59,6 +77,10 @@ export class KNNClassifierBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof KNNClassifierBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+
+      // temporary storage of properties (don't store the changes to the block object or else we won't be able to cancel)
+      let labels: string[] = block.getLabels();
+
       let distanceTypeSelector = document.getElementById("knn-classifier-block-distance-type-selector") as HTMLSelectElement;
       distanceTypeSelector.value = block.getDistanceType();
       let numberOfInputsField = document.getElementById("knn-classifier-block-inputs-field") as HTMLInputElement;
@@ -73,6 +95,13 @@ export class KNNClassifierBlockContextMenu extends BlockContextMenu {
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("knn-classifier-block-height-field") as HTMLInputElement;
       heightField.value = Math.round(block.getHeight()).toString();
+
+      let labelField = document.getElementById("knn-classifier-block-label-field") as HTMLInputElement;
+      labelField.value = labels[0].toString();
+      labelField.onchange = () => labels[parseInt(labelPortSelector.value)] = labelField.value;
+      let labelPortSelector = this.createSetSelector("knn-classifier-block-label-port-selector");
+      labelPortSelector.onchange = () => labelField.value = labels[parseInt(labelPortSelector.value)].toString();
+
       const okFunction = () => {
         let success = true;
         let message;
@@ -112,6 +141,9 @@ export class KNNClassifierBlockContextMenu extends BlockContextMenu {
         if (success) {
           block.setWeighted(weightedRadioButton.checked);
           block.setDistanceType(distanceTypeSelector.value);
+          for (let i = 0; i < labels.length; i++) {
+            block.setLabel(i, labels[i]);
+          }
           block.refreshView();
           flowchart.updateResultsForBlock(block);
           flowchart.blockView.requestDraw();
@@ -129,14 +161,15 @@ export class KNNClassifierBlockContextMenu extends BlockContextMenu {
       };
       numberOfInputsField.addEventListener("keyup", enterKeyUp);
       kField.addEventListener("keyup", enterKeyUp);
+      labelField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 400,
-        width: 360,
+        height: 420,
+        width: 450,
         buttons: {
           'OK': okFunction,
           'Cancel': () => d.dialog('close')

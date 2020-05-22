@@ -319,6 +319,7 @@ export class StateIO {
           block.setDistanceType(state.distanceType);
           block.setK(state.k);
           block.setWeighted(state.weighted);
+          if (state.labels != undefined) block.setLabels(state.labels);
         } else if (block instanceof FFTBlock) {
           block.setSeparate(state.separate != undefined ? state.separate : true);
           block.setInverse(state.inverse != undefined ? state.inverse : false);
