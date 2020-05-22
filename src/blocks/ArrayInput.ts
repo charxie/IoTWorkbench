@@ -263,7 +263,7 @@ export class ArrayInput extends Block {
       ctx.lineWidth = 0.75;
       ctx.font = "14px Arial";
       ctx.fillStyle = "white";
-      let name2 = this.name + " (" + this.rowCount + ")";
+      let name2 = this.name + " (" + this.rowCount + "×" + this.colCount + ")";
       let titleWidth = ctx.measureText(name2).width;
       ctx.fillText(name2, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
     }
