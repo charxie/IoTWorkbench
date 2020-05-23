@@ -182,7 +182,7 @@ export class ArrayInputContextMenu extends BlockContextMenu {
         resizable: true,
         modal: true,
         title: arrayInput.getUid(),
-        height: 400,
+        height: 440,
         width: 500,
         buttons: {
           'OK': okFunction,

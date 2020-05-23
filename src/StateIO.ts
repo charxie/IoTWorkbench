@@ -316,9 +316,9 @@ export class StateIO {
         } else if (block instanceof KNNClassifierBlock) {
           block.setName(state.name);
           block.setNumberOfInputs(state.numberOfInputs);
-          block.setDistanceType(state.distanceType);
           block.setK(state.k);
           block.setWeighted(state.weighted);
+          if (state.distanceFunction !== undefined) block.setDistanceFunction(state.distanceFunction);
           if (state.labels != undefined) block.setLabels(state.labels);
         } else if (block instanceof FFTBlock) {
           block.setSeparate(state.separate != undefined ? state.separate : true);

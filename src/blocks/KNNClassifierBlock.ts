@@ -7,12 +7,13 @@ import {Block} from "./Block";
 import {flowchart, isNumber} from "../Main";
 import {LabeledData} from "./LabeledData";
 import {MyVector} from "../math/MyVector";
+import {Util} from "../Util";
 
 export class KNNClassifierBlock extends Block {
 
   private k: number = 1;
   private weighted: boolean = false;
-  private distanceType: string = "Euclidean";
+  private distanceFunction: string = "Euclidean";
   private labels: string[] = [];
   private portI: Port;
   private portK: Port;
@@ -27,7 +28,7 @@ export class KNNClassifierBlock extends Block {
     readonly height: number;
     readonly k: number;
     readonly weighted: boolean;
-    readonly distanceType: string;
+    readonly distanceFunction: string;
     readonly numberOfInputs: number;
     readonly labels: string[] = [];
 
@@ -39,7 +40,7 @@ export class KNNClassifierBlock extends Block {
       this.height = block.height;
       this.k = block.k;
       this.weighted = block.weighted;
-      this.distanceType = block.distanceType;
+      this.distanceFunction = block.distanceFunction;
       this.numberOfInputs = block.portA.length;
       this.labels = [...block.labels];
     }
@@ -130,12 +131,12 @@ export class KNNClassifierBlock extends Block {
     return this.weighted;
   }
 
-  setDistanceType(distanceType: string): void {
-    this.distanceType = distanceType;
+  setDistanceFunction(distanceFunction: string): void {
+    this.distanceFunction = distanceFunction;
   }
 
-  getDistanceType(): string {
-    return this.distanceType;
+  getDistanceFunction(): string {
+    return this.distanceFunction;
   }
 
   getCopy(): Block {
@@ -143,7 +144,7 @@ export class KNNClassifierBlock extends Block {
     copy.setNumberOfInputs(this.getNumberOfInputs());
     copy.setK(this.k);
     copy.setWeighted(this.weighted);
-    copy.setDistanceType(this.distanceType);
+    copy.setDistanceFunction(this.distanceFunction);
     copy.labels = [...this.labels];
     return copy;
   }
@@ -164,10 +165,10 @@ export class KNNClassifierBlock extends Block {
   }
 
   updateModel(): void {
-    let kin = this.portK.getValue();
-    if (kin !== undefined) this.k = kin;
     let input = this.portI.getValue();
     if (input === undefined) return;
+    let kin = this.portK.getValue();
+    if (kin !== undefined) this.k = kin;
     let arr: LabeledData[] = [];
     for (let p of this.portA) {
       let v = p.getValue();
@@ -185,40 +186,73 @@ export class KNNClassifierBlock extends Block {
     }
     arr.sort((a, b) => {
       if (Array.isArray(a.data) && Array.isArray(b.data)) {
-        if (Array.isArray(input) && input[0].constructor === Array) { // 2D array from an array input
+        if (Array.isArray(input) && input[0].constructor === Array) { // a 2D array [1xn] when connected with an ArrayInput
           let n = Math.min(input[0].length, a.data.length, b.data.length);
           let di;
           let da = 0;
           let db = 0;
-          for (let i = 0; i < n; i++) {
-            di = input[0][i] - a.data[i];
-            da += di * di;
-            di = input[0][i] - b.data[i];
-            db += di * di;
+          switch (this.distanceFunction) {
+            case "Manhattan":
+              for (let i = 0; i < n; i++) {
+                di = input[0][i] - a.data[i];
+                da += Math.abs(di);
+                di = input[0][i] - b.data[i];
+                db += Math.abs(di);
+              }
+              break;
+            default: // Euclidean
+              for (let i = 0; i < n; i++) {
+                di = input[0][i] - a.data[i];
+                da += di * di;
+                di = input[0][i] - b.data[i];
+                db += di * di;
+              }
           }
           return da - db;
-        } else if (input instanceof MyVector) { // vector
+        } else if (input instanceof MyVector) { // a vector when connected with a VectorBlock
           let n = Math.min(input.size(), a.data.length, b.data.length);
           let di;
           let da = 0;
           let db = 0;
-          for (let i = 0; i < n; i++) {
-            di = input.getValue(i) - a.data[i];
-            da += di * di;
-            di = input.getValue(i) - b.data[i];
-            db += di * di;
+          switch (this.distanceFunction) {
+            case "Manhattan":
+              for (let i = 0; i < n; i++) {
+                di = input.getValue(i) - a.data[i];
+                da += Math.abs(di);
+                di = input.getValue(i) - b.data[i];
+                db += Math.abs(di);
+              }
+              break;
+            default: // Euclidean
+              for (let i = 0; i < n; i++) {
+                di = input.getValue(i) - a.data[i];
+                da += di * di;
+                di = input.getValue(i) - b.data[i];
+                db += di * di;
+              }
           }
           return da - db;
-        } else if (Array.isArray(input)) { // 1D array
+        } else if (Array.isArray(input)) { // when connected with a block that outputs a 1D array
           let n = Math.min(input.length, a.data.length, b.data.length);
           let di;
           let da = 0;
           let db = 0;
-          for (let i = 0; i < n; i++) {
-            di = input[i] - a.data[i];
-            da += di * di;
-            di = input[i] - b.data[i];
-            db += di * di;
+          switch (this.distanceFunction) {
+            case "Manhattan":
+              for (let i = 0; i < n; i++) {
+                di = input[i] - a.data[i];
+                da += Math.abs(di);
+                di = input[i] - b.data[i];
+                db += Math.abs(di);
+              }
+              break;
+            default: // Euclidean
+              for (let i = 0; i < n; i++) {
+                di = input[i] - a.data[i];
+                da += di * di;
+                di = input[i] - b.data[i];
+                db += di * di;
+              }
           }
           return da - db;
         }
@@ -227,33 +261,53 @@ export class KNNClassifierBlock extends Block {
           return Math.abs(input - a.data) - Math.abs(input - b.data);
         }
       }
-      throw new Error("Cannot sort");
+      Util.showBlockError("Input error");
     });
     let count = new Array(this.portA.length);
     let k = Math.min(this.k, arr.length);
+    let uid;
+    let weight;
+    let n, di;
     for (let i = 0; i < count.length; i++) {
       count[i] = 0;
+      uid = this.portA[i].getUid();
       for (let j = 0; j < k; j++) {
-        if (arr[j].label === this.portA[i].getUid()) {
+        if (arr[j].label === uid) {
           if (this.weighted) {
-            let weight = 0;
+            weight = 0;
             if (Array.isArray(arr[j].data)) {
               if (Array.isArray(input)) {
-                let n = Math.min(arr[j].data.length, input.length);
-                let di;
-                for (let q = 0; q < n; q++) {
-                  di = arr[j].data[q] - input[q];
-                  weight += di * di;
+                n = Math.min(arr[j].data.length, input.length);
+                switch (this.distanceFunction) {
+                  case "Manhattan":
+                    for (let q = 0; q < n; q++) {
+                      di = arr[j].data[q] - input[q];
+                      weight += Math.abs(di);
+                    }
+                    break;
+                  default:
+                    for (let q = 0; q < n; q++) {
+                      di = arr[j].data[q] - input[q];
+                      weight += di * di;
+                    }
+                    weight = Math.sqrt(weight);
                 }
-                weight = Math.sqrt(weight);
               } else if (input instanceof MyVector) {
-                let n = Math.min(arr[j].data.length, input.size());
-                let di;
-                for (let q = 0; q < n; q++) {
-                  di = arr[j].data[q] - input.getValue(q);
-                  weight += di * di;
+                n = Math.min(arr[j].data.length, input.size());
+                switch (this.distanceFunction) {
+                  case "Manhattan":
+                    for (let q = 0; q < n; q++) {
+                      di = arr[j].data[q] - input.getValue(q);
+                      weight += Math.abs(di)
+                    }
+                    break;
+                  default:
+                    for (let q = 0; q < n; q++) {
+                      di = arr[j].data[q] - input.getValue(q);
+                      weight += di * di;
+                    }
+                    weight = Math.sqrt(weight);
                 }
-                weight = Math.sqrt(weight);
               }
             } else {
               if (isNumber(arr[j].data) && isNumber(input)) {

@@ -24,10 +24,11 @@ export class KNNClassifierBlockContextMenu extends BlockContextMenu {
                   <td><input type="text" id="knn-classifier-block-label-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Disance Type:</td>
+                  <td>Disance Function:</td>
                   <td colspan="2">
-                    <select id="knn-classifier-block-distance-type-selector" style="width: 100%">
-                      <option value="Euclidean">Euclidean</option>
+                    <select id="knn-classifier-block-distance-function-selector" style="width: 100%">
+                      <option value="Euclidean" selected>Euclidean</option>
+                      <option value="Manhattan">Manhattan</option>
                     </select>
                   </td>
                 </tr>
@@ -81,8 +82,8 @@ export class KNNClassifierBlockContextMenu extends BlockContextMenu {
       // temporary storage of properties (don't store the changes to the block object or else we won't be able to cancel)
       let labels: string[] = block.getLabels();
 
-      let distanceTypeSelector = document.getElementById("knn-classifier-block-distance-type-selector") as HTMLSelectElement;
-      distanceTypeSelector.value = block.getDistanceType();
+      let distanceFunctionSelector = document.getElementById("knn-classifier-block-distance-function-selector") as HTMLSelectElement;
+      distanceFunctionSelector.value = block.getDistanceFunction();
       let numberOfInputsField = document.getElementById("knn-classifier-block-inputs-field") as HTMLInputElement;
       numberOfInputsField.value = block.getNumberOfInputs().toString();
       let kField = document.getElementById("knn-classifier-block-k-field") as HTMLInputElement;
@@ -140,7 +141,7 @@ export class KNNClassifierBlockContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           block.setWeighted(weightedRadioButton.checked);
-          block.setDistanceType(distanceTypeSelector.value);
+          block.setDistanceFunction(distanceFunctionSelector.value);
           for (let i = 0; i < labels.length; i++) {
             block.setLabel(i, labels[i]);
           }

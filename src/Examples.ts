@@ -469,7 +469,7 @@ export class Examples {
     this.files.push({name: "Statistics: Monte Carlo Integration", data: monte_carlo_integration});
     this.files.push({name: "Machine Learning: K-Means Clustering in 2D", data: k_means_clustering});
     this.files.push({name: "Machine Learning: K-Means Clustering in 3D", data: k_means_clustering_3d});
-    this.files.push({name: "Machine Learning: KNN Classifier", data: knn_classifier});
+    this.files.push({name: "Machine Learning: K-Nearest Neighbors Classifier", data: knn_classifier});
     this.files.push({name: "Sound: Make Sound with Beepers", data: make_sound_with_beepers});
     this.files.push({name: "Sound: Synthesizing Sound", data: synthesizing_sound});
     this.files.push({name: "IoT: RGB LED Array", data: rainbow_hat_rgb_led_array});
