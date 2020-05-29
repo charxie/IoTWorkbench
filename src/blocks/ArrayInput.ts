@@ -54,7 +54,7 @@ export class ArrayInput extends Block {
     this.source = true;
     this.initiator = true;
     this.barHeight = Math.min(30, this.height / 3);
-    this.ports.push(new Port(this, false, "A", this.width, this.height / 2, true));
+    this.ports.push(new Port(this, false, "A", this.width, (this.height + this.barHeight) / 2, true));
     if (!this.iconic) {
       this.textArea = document.createElement("textarea");
       this.textArea.tabIndex = 0;

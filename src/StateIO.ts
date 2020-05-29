@@ -508,6 +508,7 @@ export class StateIO {
           block.setMarginX(state.marginX);
           block.setMarginY(state.marginY);
           block.setTextColor(state.textColor);
+          if (state.source !== undefined) block.setSource(state.source);
         } else if (block instanceof MeanBlock) {
           if (state.symbol !== undefined) block.setSymbol(state.symbol);
           block.setType(state.type);

@@ -54,6 +54,13 @@ export class StringInputContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="string-input-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Source:</td>
+                  <td colspan="2">
+                    <input type="radio" name="source" id="string-input-source-radio-button" checked> Yes
+                    <input type="radio" name="source" id="string-input-not-source-radio-button"> No
+                  </td>
+                </tr>
+                <tr>
                   <td>Text Color:</td>
                   <td><input type="color" id="string-input-text-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="string-input-text-color-field" style="width: 100%"></td>
@@ -86,6 +93,10 @@ export class StringInputContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("string-input-name-field") as HTMLInputElement;
       nameField.value = stringInput.getName();
+      let sourceRadioButton = document.getElementById("string-input-source-radio-button") as HTMLInputElement;
+      sourceRadioButton.checked = stringInput.isSource();
+      let notSourceRadioButton = document.getElementById("string-input-not-source-radio-button") as HTMLInputElement;
+      notSourceRadioButton.checked = !stringInput.isSource();
       let textColorField = document.getElementById("string-input-text-color-field") as HTMLInputElement;
       textColorField.value = stringInput.getTextColor();
       let textColorChooser = document.getElementById("string-input-text-color-chooser") as HTMLInputElement;
@@ -145,6 +156,7 @@ export class StringInputContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           stringInput.setName(nameField.value);
+          stringInput.setSource(sourceRadioButton.checked);
           stringInput.locateOverlay();
           stringInput.refreshView();
           flowchart.storeBlockStates();
@@ -169,7 +181,7 @@ export class StringInputContextMenu extends BlockContextMenu {
         resizable: true,
         modal: true,
         title: stringInput.getUid(),
-        height: 400,
+        height: 450,
         width: 400,
         buttons: {
           'OK': okFunction,

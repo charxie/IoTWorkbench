@@ -10,6 +10,8 @@ import {Rectangle} from "../math/Rectangle";
 
 export class StringInput extends Block {
 
+  private portI: Port;
+  private portO: Port;
   private barHeight: number;
   private button: Rectangle;
   private content: string;
@@ -26,6 +28,7 @@ export class StringInput extends Block {
     readonly marginY: number;
     readonly textColor: string;
     readonly content: string;
+    readonly source: boolean;
 
     constructor(b: StringInput) {
       this.name = b.name;
@@ -38,6 +41,7 @@ export class StringInput extends Block {
       this.marginY = b.marginY;
       this.textColor = b.textArea.style.color;
       this.content = b.textArea.value;
+      this.source = b.source;
     }
   };
 
@@ -49,7 +53,9 @@ export class StringInput extends Block {
     this.source = true;
     this.initiator = true;
     this.barHeight = Math.min(30, this.height / 3);
-    this.ports.push(new Port(this, false, "O", this.width, this.height / 2, true));
+    this.portI = new Port(this, true, "I", 0, (this.height + this.barHeight) / 2, false);
+    this.portO = new Port(this, false, "O", this.width, (this.height + this.barHeight) / 2, true);
+    this.ports.push(this.portO);
     if (!this.iconic) {
       this.textArea = document.createElement("textarea");
       this.textArea.tabIndex = 0;
@@ -71,6 +77,7 @@ export class StringInput extends Block {
     copy.setTextColor(this.getTextColor());
     copy.marginX = this.marginX;
     copy.marginY = this.marginY;
+    copy.setSource(this.source);
     copy.locateOverlay();
     return copy;
   }
@@ -128,6 +135,20 @@ export class StringInput extends Block {
       flowchart.blockView.openContextMenu(e);
     }
     // if text is selected, use default
+  }
+
+  setSource(source: boolean) {
+    this.source = source;
+    this.initiator = source;
+    if (source) {
+      if (this.ports.indexOf(this.portI) !== -1) {
+        this.ports.removeItem(this.portI);
+      }
+    } else {
+      if (this.ports.indexOf(this.portI) === -1) {
+        this.ports.push(this.portI);
+      }
+    }
   }
 
   setTextColor(textColor: string): void {
@@ -275,18 +296,21 @@ export class StringInput extends Block {
   }
 
   updateModel(): void {
-    this.ports[0].setValue(this.getContent());
+    if (this.source) {
+      this.portO.setValue(this.getContent());
+    } else {
+      this.portO.setValue(this.portI.getValue() ? this.getContent() : undefined);
+    }
     this.updateConnectors();
   }
 
   refreshView(): void {
     super.refreshView();
     this.barHeight = Math.min(30, this.height / 3);
-    let dh = (this.height - this.barHeight) / (this.ports.length + 1);
-    for (let i = 0; i < this.ports.length; i++) {
-      this.ports[i].setX(this.width);
-      this.ports[i].setY(this.barHeight + (i + 1) * dh);
-    }
+    let dh = (this.height - this.barHeight) / 2;
+    this.portO.setX(this.width);
+    this.portO.setY(this.barHeight + dh);
+    this.portI.setY(this.barHeight + dh);
   }
 
   erase(): void {
