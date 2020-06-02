@@ -8,7 +8,7 @@ import {Util} from "../Util";
 import {closeAllContextMenus, flowchart} from "../Main";
 import {Complex} from "../math/Complex";
 import {MyVector} from "../math/MyVector";
-import {Matrix} from "../math/Matrix";
+import {MyMatrix} from "../math/MyMatrix";
 import {BoundaryCondition} from "./BoundaryCondition";
 import {Rectangle} from "../math/Rectangle";
 
@@ -396,7 +396,7 @@ export class Sticker extends Block {
             this.text = v.toFixed(this.decimals);
           } else if (v instanceof MyVector) {
             this.text = v.toFixed(this.decimals);
-          } else if (v instanceof Matrix) {
+          } else if (v instanceof MyMatrix) {
             this.text = v.toFixed(this.decimals);
             this.isArray = true;
           } else if (v instanceof BoundaryCondition) {

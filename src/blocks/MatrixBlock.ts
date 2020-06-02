@@ -5,14 +5,14 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {flowchart} from "../Main";
-import {Matrix} from "../math/Matrix";
+import {MyMatrix} from "../math/MyMatrix";
 import {MyVector} from "../math/MyVector";
 
 export class MatrixBlock extends Block {
 
   private portI: Port[];
   private readonly portO: Port;
-  private matrix: Matrix;
+  private matrix: MyMatrix;
   private fractionDigits: number = 3;
 
   static State = class {
@@ -46,7 +46,7 @@ export class MatrixBlock extends Block {
     this.color = "#C66";
     this.portO = new Port(this, false, "O", this.width, this.height / 2, true);
     this.ports.push(this.portO);
-    this.matrix = new Matrix(2, 2);
+    this.matrix = new MyMatrix(2, 2);
     this.matrix.setValue(0, 0, 1);
     this.matrix.setValue(0, 1, 0);
     this.matrix.setValue(1, 0, 0);

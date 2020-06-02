@@ -4,7 +4,7 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
-import {Matrix} from "../math/Matrix";
+import {MyMatrix} from "../math/MyMatrix";
 
 export class DeterminantBlock extends Block {
 
@@ -38,7 +38,7 @@ export class DeterminantBlock extends Block {
 
   updateModel(): void {
     let x = this.portI.getValue();
-    if (x instanceof Matrix) {
+    if (x instanceof MyMatrix) {
       this.portO.setValue(x.det());
     } else {
       this.portO.setValue(undefined);

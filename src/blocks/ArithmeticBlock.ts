@@ -6,7 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {Complex} from "../math/Complex";
 import {MyVector} from "../math/MyVector";
-import {Matrix} from "../math/Matrix";
+import {MyMatrix} from "../math/MyMatrix";
 import {Util} from "../Util";
 
 export class ArithmeticBlock extends Block {
@@ -101,13 +101,13 @@ export class ArithmeticBlock extends Block {
         if (b instanceof MyVector && typeof a === "number") {
           return b.shift(a);
         }
-        if (a instanceof Matrix && b instanceof Matrix) {
+        if (a instanceof MyMatrix && b instanceof MyMatrix) {
           return a.addMatrix(b);
         }
-        if (a instanceof Matrix && typeof b === "number") {
+        if (a instanceof MyMatrix && typeof b === "number") {
           return a.shiftMatrix(b);
         }
-        if (b instanceof Matrix && typeof a === "number") {
+        if (b instanceof MyMatrix && typeof a === "number") {
           return b.shiftMatrix(a);
         }
         throw new Error("Cannot add " + b + " to " + a);
@@ -143,13 +143,13 @@ export class ArithmeticBlock extends Block {
         if (b instanceof MyVector && typeof a === "number") {
           return b.negate().shift(a);
         }
-        if (a instanceof Matrix && b instanceof Matrix) {
+        if (a instanceof MyMatrix && b instanceof MyMatrix) {
           return a.subtractMatrix(b);
         }
-        if (a instanceof Matrix && typeof b === "number") {
+        if (a instanceof MyMatrix && typeof b === "number") {
           return a.shiftMatrix(-b);
         }
-        if (b instanceof Matrix && typeof a === "number") {
+        if (b instanceof MyMatrix && typeof a === "number") {
           return b.negateMatrix().shiftMatrix(a);
         }
         throw new Error("Cannot subtract " + b + " from " + a);
@@ -185,16 +185,16 @@ export class ArithmeticBlock extends Block {
         if (b instanceof MyVector && typeof a === "number") {
           return b.scale(a);
         }
-        if (a instanceof Matrix && b instanceof MyVector) {
+        if (a instanceof MyMatrix && b instanceof MyVector) {
           return a.multiplyVector(b);
         }
-        if (a instanceof Matrix && b instanceof Matrix) {
+        if (a instanceof MyMatrix && b instanceof MyMatrix) {
           return a.multiplyMatrix(b);
         }
-        if (a instanceof Matrix && typeof b === "number") {
+        if (a instanceof MyMatrix && typeof b === "number") {
           return a.scaleMatrix(b);
         }
-        if (b instanceof Matrix && typeof a === "number") {
+        if (b instanceof MyMatrix && typeof a === "number") {
           return b.scaleMatrix(a);
         }
         throw new Error("Cannot multiply " + a + " by " + b);
@@ -227,10 +227,10 @@ export class ArithmeticBlock extends Block {
         if (b instanceof MyVector) {
           throw new Error("A vector cannot be divided.");
         }
-        if (a instanceof Matrix && typeof b === "number") {
+        if (a instanceof MyMatrix && typeof b === "number") {
           return a.scaleMatrix(1 / b);
         }
-        if (b instanceof Matrix) {
+        if (b instanceof MyMatrix) {
           throw new Error("A matrix cannot be divided.");
         }
         throw new Error("Cannot divide " + a + " by " + b);
@@ -251,7 +251,7 @@ export class ArithmeticBlock extends Block {
         if (a instanceof MyVector && typeof b === "number") {
           return a.modulus(b);
         }
-        if (a instanceof Matrix && typeof b === "number") {
+        if (a instanceof MyMatrix && typeof b === "number") {
           return a.modulusMatrix(b);
         }
         throw new Error("Modulus of " + a + " and " + b + " is not supported");
