@@ -118,7 +118,11 @@ export class VectorBlock extends Block {
     for (let i = 0; i < this.portI.length; i++) {
       let x = this.portI[i].getValue();
       if (x != undefined) {
-        this.vector.setValue(i, x);
+        if (Array.isArray(x)) {
+          this.vector.setValue(i, x[0]);
+        } else {
+          this.vector.setValue(i, x);
+        }
       }
     }
     this.portO.setValue(this.vector.copy()); // return a copy in case the downstream block modifies it
@@ -135,7 +139,11 @@ export class VectorBlock extends Block {
       let offset = -this.getHeight() / 2;
       let textWidth = ctx.measureText(Math.PI.toFixed(this.fractionDigits)).width;
       for (let i = 0; i < this.portI.length; i++) {
-        s = this.vector.getValue(i).toFixed(this.fractionDigits);
+        if (Array.isArray(this.vector.getValue(i))) {
+          s = this.vector.getValue(i)[0].toFixed(this.fractionDigits);
+        } else {
+          s = this.vector.getValue(i).toFixed(this.fractionDigits);
+        }
         this.drawTextAt(s, 0, this.portI[i].getY() + offset, ctx);
       }
       // the coordinates are no longer relative to the block below

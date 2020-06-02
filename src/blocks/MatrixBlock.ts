@@ -123,7 +123,9 @@ export class MatrixBlock extends Block {
     for (let i = 0; i < this.portI.length; i++) {
       let x = this.portI[i].getValue();
       if (x instanceof MyVector) {
-        this.matrix.setRowValues(i, x);
+        this.matrix.setRowValuesByVector(i, x);
+      } else if (Array.isArray(x)) {
+        this.matrix.setRowValuesByArray(i, x);
       }
     }
     this.portO.setValue(this.matrix);
@@ -139,12 +141,12 @@ export class MatrixBlock extends Block {
       let s;
       let offset = -this.getHeight() / 2;
       let gap = 20;
-      let textWidth = ctx.measureText(Math.PI.toPrecision(this.fractionDigits)).width;
+      let textWidth = ctx.measureText(Math.PI.toFixed(this.fractionDigits)).width;
       let cols = this.matrix.getColumns();
       let rows = this.portI.length;
       for (let col = 0; col < cols; col++) {
         for (let row = 0; row < rows; row++) {
-          s = this.matrix.getValue(row, col).toPrecision(this.fractionDigits);
+          s = this.matrix.getValue(row, col).toFixed(this.fractionDigits);
           this.drawTextAt(s, (col + 0.5 - cols / 2) * (textWidth + gap), this.portI[row].getY() + offset, ctx);
         }
       }

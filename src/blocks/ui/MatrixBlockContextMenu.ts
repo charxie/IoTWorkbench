@@ -45,7 +45,7 @@ export class MatrixBlockContextMenu extends BlockContextMenu {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let valuesArea = document.getElementById("matrix-block-values-area") as HTMLTextAreaElement;
-      valuesArea.value = JSON.stringify(block.getValues());
+      valuesArea.value = JSON.stringify(block.getValues(), null, 2);
       let fractionDigitsField = document.getElementById("matrix-block-fraction-digits-field") as HTMLInputElement;
       fractionDigitsField.value = block.getFractionDigits().toString();
       let widthField = document.getElementById("matrix-block-width-field") as HTMLInputElement;

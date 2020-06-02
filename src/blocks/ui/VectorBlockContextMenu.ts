@@ -45,7 +45,7 @@ export class VectorBlockContextMenu extends BlockContextMenu {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let valuesArea = document.getElementById("vector-block-values-field") as HTMLTextAreaElement;
-      valuesArea.value = JSON.stringify(block.getValues());
+      valuesArea.value = JSON.stringify(block.getValues(), null, 2);
       let fractionDigitsField = document.getElementById("vector-block-fraction-digits-field") as HTMLInputElement;
       fractionDigitsField.value = block.getFractionDigits().toString();
       let widthField = document.getElementById("vector-block-width-field") as HTMLInputElement;

@@ -137,10 +137,18 @@ export class Matrix {
     return this.values[row][col];
   }
 
-  public setRowValues(row: number, v: MyVector): void {
+  public setRowValuesByVector(row: number, v: MyVector): void {
     for (let col = 0; col < this.getColumns(); col++) {
       if (v.getValue(col) !== undefined) {
         this.values[row][col] = v.getValue(col);
+      }
+    }
+  }
+
+  public setRowValuesByArray(row: number, v: number[]): void {
+    for (let col = 0; col < this.getColumns(); col++) {
+      if (v[col] !== undefined) {
+        this.values[row][col] = v[col];
       }
     }
   }
