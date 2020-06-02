@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import hadamard_matrix from "./examples/hadamard-matrix.json";
+// @ts-ignore
 import knn_classifier from "./examples/knn-classifier.json";
 // @ts-ignore
 import monte_carlo_integration from "./examples/monte-carlo-integration.json";
@@ -435,6 +437,7 @@ export class Examples {
     this.files.push({name: "Linear Algebra: Vectors", data: vectors});
     this.files.push({name: "Linear Algebra: Matrix", data: matrix});
     this.files.push({name: "Linear Algebra: Matrix Operations", data: matrix_operations});
+    this.files.push({name: "Linear Algebra: Hadamard Matrix", data: hadamard_matrix});
     this.files.push({name: "Linear Algebra: System of Linear Equations", data: linear_systems});
     this.files.push({name: "Calculus: Derivatives", data: derivatives});
     this.files.push({name: "Calculus: Integration", data: integration});

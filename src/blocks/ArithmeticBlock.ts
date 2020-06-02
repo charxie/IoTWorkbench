@@ -48,11 +48,57 @@ export class ArithmeticBlock extends Block {
     let a = this.portA.getValue();
     let b = this.portB.getValue();
     if (Array.isArray(a) && Array.isArray(b)) {
-      let c = new Array(Math.max(a.length, b.length));
-      for (let i = 0; i < c.length; i++) {
-        c[i] = this.getResult(i < a.length ? a[i] : 0, i < b.length ? b[i] : 0);
+      if (Array.isArray(a[0]) && Array.isArray(b[0])) {
+        if (b.length === 1) { // MV
+          let m = new MyMatrix(a[0].length, a.length);
+          let v = new MyVector(b[0].length);
+          m.setValues(a);
+          v.setValues(b[0]);
+          try {
+            this.portR.setValue(this.getResult(m, v));
+          } catch (e) {
+            console.log(e.stack);
+            Util.showBlockError(e.toString());
+            this.hasError = true;
+          }
+        } else if (a.length === 1) { // VM
+          Util.showBlockError("VxM not supported");
+          this.hasError = true;
+        } else { // MM
+          let m1 = new MyMatrix(a.length, a[0].length);
+          let m2 = new MyMatrix(b.length, b[0].length);
+          m1.setValues(a);
+          m2.setValues(b);
+          try {
+            this.portR.setValue(this.getResult(m1, m2));
+          } catch (e) {
+            console.log(e.stack);
+            Util.showBlockError(e.toString());
+            this.hasError = true;
+          }
+        }
+      } else if (Array.isArray(a[0]) && !Array.isArray(b[0])) { // MV
+        let m = new MyMatrix(a[0].length, a.length);
+        let v = new MyVector(b.length);
+        m.setValues(a);
+        v.setValues(b);
+        try {
+          this.portR.setValue(this.getResult(m, v));
+        } catch (e) {
+          console.log(e.stack);
+          Util.showBlockError(e.toString());
+          this.hasError = true;
+        }
+      } else if (!Array.isArray(a[0]) && Array.isArray(b[0])) { // VM
+        Util.showBlockError("VxM not supported");
+        this.hasError = true;
+      } else {
+        let c = new Array(Math.max(a.length, b.length)); // VV
+        for (let i = 0; i < c.length; i++) {
+          c[i] = this.getResult(i < a.length ? a[i] : 0, i < b.length ? b[i] : 0);
+        }
+        this.portR.setValue(c);
       }
-      this.portR.setValue(c);
     } else {
       if (a !== undefined && b !== undefined) {
         try {
