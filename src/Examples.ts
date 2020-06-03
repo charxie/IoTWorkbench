@@ -3,6 +3,10 @@
  */
 
 // @ts-ignore
+import quantum_hadamard_gate from "./examples/quantum-hadamard-gate.json";
+// @ts-ignore
+import quantum_cnot_gate from "./examples/quantum-cnot-gate.json";
+// @ts-ignore
 import hadamard_matrix from "./examples/hadamard-matrix.json";
 // @ts-ignore
 import knn_classifier from "./examples/knn-classifier.json";
@@ -473,6 +477,8 @@ export class Examples {
     this.files.push({name: "Machine Learning: K-Means Clustering in 2D", data: k_means_clustering});
     this.files.push({name: "Machine Learning: K-Means Clustering in 3D", data: k_means_clustering_3d});
     this.files.push({name: "Machine Learning: K-Nearest Neighbors Classifier", data: knn_classifier});
+    this.files.push({name: "Quantum Computing: Hadamard Gate", data: quantum_hadamard_gate});
+    this.files.push({name: "Quantum Computing: CNOT Gate", data: quantum_cnot_gate});
     this.files.push({name: "Sound: Make Sound with Beepers", data: make_sound_with_beepers});
     this.files.push({name: "Sound: Synthesizing Sound", data: synthesizing_sound});
     this.files.push({name: "IoT: RGB LED Array", data: rainbow_hat_rgb_led_array});
