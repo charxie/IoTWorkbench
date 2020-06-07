@@ -44,8 +44,8 @@ export class StationaryStateSolver {
     return this.eigenVectors;
   }
 
-  public getEigenValues(): number[][] {
-    return this.eigenVectors;
+  public getEigenValues(): number[] {
+    return this.eigenValues;
   }
 
   /* The Schroedinger equation is approximated as a tridiagonal matrix equation using the finite difference method.
@@ -58,7 +58,8 @@ export class StationaryStateSolver {
       this.h[i][i] = 2 * a + this.v[i] * Constants.ENERGY_UNIT_CONVERTER;
       if (i > 0) {
         this.h[i][i - 1] = -a;
-      } else if (i < n - 1) {
+      }
+      if (i < n - 1) {
         this.h[i][i + 1] = -a;
       }
     }

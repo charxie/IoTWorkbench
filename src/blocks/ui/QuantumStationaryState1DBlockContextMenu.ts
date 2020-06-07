@@ -19,6 +19,10 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
+                  <td>Steps:</td>
+                  <td><input type="text" id="quantum-stationary-state-1d-block-steps-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="quantum-stationary-state-1d-block-width-field" style="width: 100%"></td>
                 </tr>
@@ -36,6 +40,8 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof QuantumStationaryState1DBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let stepsField = document.getElementById("quantum-stationary-state-1d-block-steps-field") as HTMLInputElement;
+      stepsField.value = Math.round(block.getSteps()).toString();
       let widthField = document.getElementById("quantum-stationary-state-1d-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("quantum-stationary-state-1d-block-height-field") as HTMLInputElement;
@@ -43,6 +49,14 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
       const okFunction = () => {
         let success = true;
         let message;
+        // set steps
+        let steps = parseInt(stepsField.value);
+        if (isNumber(steps)) {
+          block.setSteps(Math.max(50, steps));
+        } else {
+          success = false;
+          message = stepsField.value + " is not a valid number for steps";
+        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -75,6 +89,7 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
+      stepsField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
       d.dialog({
@@ -82,7 +97,7 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 300,
-        width: 400,
+        width: 450,
         buttons: {
           'OK': okFunction,
           'Cancel': () => d.dialog('close')

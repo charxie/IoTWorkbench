@@ -4,14 +4,16 @@
 
 import {Port} from "./Port";
 import {Block} from "./Block";
-import {DataArray} from "./DataArray";
 import {Potential1D} from "../physics/quantum/qm1d/Potential1D";
+import {SquareWell} from "../physics/quantum/qm1d/SquareWell";
+import {StationaryStateSolver} from "../physics/quantum/qm1d/StationaryStateSolver";
 
 export class QuantumStationaryState1DBlock extends Block {
 
+  private steps: number = 100;
   private potential: Potential1D;
   private energyLevels: number[];
-  private waveFunctions: DataArray[];
+  private waveFunctions: number[][];
   private readonly portVX: Port; // port for importing potential
   private readonly portEL: Port; // port for exporting energy levels
   private readonly portWF: Port; // port for exporting wave functions
@@ -22,6 +24,7 @@ export class QuantumStationaryState1DBlock extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly steps: number;
 
     constructor(block: QuantumStationaryState1DBlock) {
       this.uid = block.uid;
@@ -29,6 +32,7 @@ export class QuantumStationaryState1DBlock extends Block {
       this.y = block.y;
       this.width = block.width;
       this.height = block.height;
+      this.steps = block.steps;
     }
   };
 
@@ -49,10 +53,19 @@ export class QuantumStationaryState1DBlock extends Block {
 
   getCopy(): Block {
     let block = new QuantumStationaryState1DBlock("Quantum Stationary State 1D Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    block.setSteps(this.steps);
     return block;
   }
 
   destroy() {
+  }
+
+  setSteps(steps: number): void {
+    this.steps = steps;
+  }
+
+  getSteps(): number {
+    return this.steps;
   }
 
   refreshView(): void {
@@ -69,7 +82,13 @@ export class QuantumStationaryState1DBlock extends Block {
     let vx = this.portVX.getValue();
     if (vx === undefined) return;
     if (vx) {
-
+      this.potential = new SquareWell(this.steps, 0, 0, -10, 10);
+      let solver = new StationaryStateSolver(this.steps);
+      solver.setPotential(this.potential.getPotential());
+      solver.discretizeHamiltonian(this.potential.getXmax() - this.potential.getXmin());
+      solver.solve();
+      this.energyLevels = solver.getEigenValues();
+      this.waveFunctions = solver.getEigenVectors();
     }
   }
 
