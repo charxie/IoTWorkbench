@@ -69,6 +69,7 @@ import {ArrayAdapterContextMenu} from "./blocks/ui/ArrayAdapterContextMenu";
 import {ParallelCoordinatesPlotContextMenu} from "./blocks/ui/ParallelCoordinatesPlotContextMenu";
 import {RadarChartContextMenu} from "./blocks/ui/RadarChartContextMenu";
 import {KNNClassifierBlockContextMenu} from "./blocks/ui/KNNClassifierBlockContextMenu";
+import {QuantumStationaryState1DBlockContextMenu} from "./blocks/ui/QuantumStationaryState1DBlockContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -139,6 +140,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("mean-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("univariate-descriptive-statistics-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("wordcloud-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("quantum-stationary-state-1d-block-context-menu-placeholder", blockPlayground);
 
   setupContextMenuForBlocks();
 
@@ -475,6 +477,11 @@ function setupContextMenuForBlocks() {
   wordCloudContextMenu.render("wordcloud-block-context-menu-placeholder");
   wordCloudContextMenu.addListeners();
   contextMenus.wordCloud = wordCloudContextMenu;
+
+  let quantumStationaryState1DBlockContextMenu = new QuantumStationaryState1DBlockContextMenu();
+  quantumStationaryState1DBlockContextMenu.render("quantum-stationary-state-1d-block-context-menu-placeholder");
+  quantumStationaryState1DBlockContextMenu.addListeners();
+  contextMenus.quantumStationaryState1DBlock = quantumStationaryState1DBlockContextMenu;
 
 }
 

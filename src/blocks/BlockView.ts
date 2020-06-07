@@ -78,6 +78,7 @@ import {ArrayAdapter} from "./ArrayAdapter";
 import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
 import {RadarChart} from "./RadarChart";
 import {KNNClassifierBlock} from "./KNNClassifierBlock";
+import {QuantumStationaryState1DBlock} from "./QuantumStationaryState1DBlock";
 
 export class BlockView {
 
@@ -405,6 +406,9 @@ export class BlockView {
         break;
       case "wordcloud-block":
         b = this.addBlockUndoable(new WordCloud("Wordcloud #" + timestamp, "Wordcloud", x - 100, y - 110, 300, 320));
+        break;
+      case "quantum-stationary-state-1d-block":
+        b = this.addBlockUndoable(new QuantumStationaryState1DBlock("Quantum Stationary State 1D Block #" + timestamp, x - 50, y - 50, 100, 100));
         break;
     }
     return b;

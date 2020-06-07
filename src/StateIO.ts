@@ -67,6 +67,7 @@ import {ArrayAdapter} from "./blocks/ArrayAdapter";
 import {ParallelCoordinatesPlot} from "./blocks/ParallelCoordinatesPlot";
 import {RadarChart} from "./blocks/RadarChart";
 import {KNNClassifierBlock} from "./blocks/KNNClassifierBlock";
+import {QuantumStationaryState1DBlock} from "./blocks/QuantumStationaryState1DBlock";
 
 export class StateIO {
 
@@ -520,6 +521,8 @@ export class StateIO {
           if (state.alignment !== undefined) block.setAlignment(state.alignment);
           if (state.colorScheme !== undefined) block.setColorScheme(state.colorScheme);
           if (state.viewWindowColor !== undefined) block.setViewWindowColor(state.viewWindowColor);
+        } else if (block instanceof QuantumStationaryState1DBlock) {
+          // TODO
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

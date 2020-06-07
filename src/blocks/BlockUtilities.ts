@@ -70,6 +70,7 @@ import {ArrayAdapter} from "./ArrayAdapter";
 import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
 import {RadarChart} from "./RadarChart";
 import {KNNClassifierBlock} from "./KNNClassifierBlock";
+import {QuantumStationaryState1DBlock} from "./QuantumStationaryState1DBlock";
 
 export class BlockUtilities {
 
@@ -265,6 +266,9 @@ export class BlockUtilities {
     }
     if (block instanceof WordCloud) {
       return contextMenus.wordCloud;
+    }
+    if (block instanceof QuantumStationaryState1DBlock) {
+      return contextMenus.quantumStationaryState1DBlock;
     }
     if (block instanceof RainbowHatBlock) {
       return contextMenus.rainbowHatBlock;
@@ -532,6 +536,10 @@ export class BlockUtilities {
     if (block instanceof WordCloud) {
       contextMenus.wordCloud.block = block;
       return document.getElementById("wordcloud-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof QuantumStationaryState1DBlock) {
+      contextMenus.quantumStationaryState1DBlock.block = block;
+      return document.getElementById("quantum-stationary-state-1d-block-context-menu") as HTMLMenuElement;
     }
     return null;
   }
