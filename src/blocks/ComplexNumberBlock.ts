@@ -4,7 +4,7 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
-import {Complex} from "../math/Complex";
+import {MyComplex} from "../math/MyComplex";
 import {flowchart} from "../Main";
 
 export class ComplexNumberBlock extends Block {
@@ -66,7 +66,7 @@ export class ComplexNumberBlock extends Block {
     this.ports.push(this.portR);
     this.ports.push(this.portI);
     this.ports.push(this.portC);
-    this.portC.setValue(new Complex(0, 0));
+    this.portC.setValue(new MyComplex(0, 0));
   }
 
   getCopy(): Block {
@@ -132,7 +132,7 @@ export class ComplexNumberBlock extends Block {
           let re = new Array(c.length);
           let im = new Array(c.length);
           for (let i = 0; i < c.length; i++) {
-            if (c[i] instanceof Complex) {
+            if (c[i] instanceof MyComplex) {
               re[i] = c[i].re;
               im[i] = c[i].im;
             } else {
@@ -143,7 +143,7 @@ export class ComplexNumberBlock extends Block {
           this.portR.setValue(re);
           this.portI.setValue(im);
         } else {
-          if (c instanceof Complex) {
+          if (c instanceof MyComplex) {
             this.portR.setValue(c.re);
             this.portI.setValue(c.im);
           } else {
@@ -181,23 +181,23 @@ export class ComplexNumberBlock extends Block {
         let length = Math.min(re.length, im.length);
         let c = [];
         for (let i = 0; i < length; i++) {
-          c.push(new Complex(re[i], im[i]));
+          c.push(new MyComplex(re[i], im[i]));
         }
         this.portC.setValue(c);
       } else if (isReArray && !isImArray) {
         let c = [];
         for (let i = 0; i < re.length; i++) {
-          c.push(new Complex(re[i], this.imaginary));
+          c.push(new MyComplex(re[i], this.imaginary));
         }
         this.portC.setValue(c);
       } else if (isImArray && !isReArray) {
         let c = [];
         for (let i = 0; i < im.length; i++) {
-          c.push(new Complex(this.real, im[i]));
+          c.push(new MyComplex(this.real, im[i]));
         }
         this.portC.setValue(c);
       } else {
-        this.portC.setValue(new Complex(this.real, this.imaginary));
+        this.portC.setValue(new MyComplex(this.real, this.imaginary));
       }
     }
     this.updateConnectors();

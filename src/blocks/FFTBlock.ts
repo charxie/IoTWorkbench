@@ -6,7 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {ComplexArray} from "jsfft";
 import {flowchart} from "../Main";
-import {Complex} from "../math/Complex";
+import {MyComplex} from "../math/MyComplex";
 
 export class FFTBlock extends Block {
 
@@ -211,7 +211,7 @@ export class FFTBlock extends Block {
               this.data = new ComplexArray(k.length);
             }
             for (let i = 0; i < k.length; i++) {
-              if (k[i] instanceof Complex) {
+              if (k[i] instanceof MyComplex) {
                 this.data.real[i] = k[i].re;
                 this.data.imag[i] = k[i].im;
               } else {
@@ -245,7 +245,7 @@ export class FFTBlock extends Block {
               this.array1 = new Array(result.length);
             }
             for (let i = 0; i < result.length; i++) {
-              this.array1[i] = new Complex(result.real[i], result.imag[i]);
+              this.array1[i] = new MyComplex(result.real[i], result.imag[i]);
             }
             this.portK.setValue(this.array1);
           } else {

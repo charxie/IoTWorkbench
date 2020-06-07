@@ -4,7 +4,7 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
-import {Complex} from "../math/Complex";
+import {MyComplex} from "../math/MyComplex";
 import {MyVector} from "../math/MyVector";
 import {MyMatrix} from "../math/MyMatrix";
 import {Util} from "../Util";
@@ -129,14 +129,14 @@ export class ArithmeticBlock extends Block {
         if (typeof a === "number" && typeof b === "number") {
           return a + b;
         }
-        if (a instanceof Complex && b instanceof Complex) {
+        if (a instanceof MyComplex && b instanceof MyComplex) {
           return a.plus(b);
         }
-        if (a instanceof Complex && typeof b === "number") {
-          return a.plus(new Complex(b, 0));
+        if (a instanceof MyComplex && typeof b === "number") {
+          return a.plus(new MyComplex(b, 0));
         }
-        if (b instanceof Complex && typeof a === "number") {
-          return b.plus(new Complex(a, 0));
+        if (b instanceof MyComplex && typeof a === "number") {
+          return b.plus(new MyComplex(a, 0));
         }
         if (a instanceof MyVector && b instanceof MyVector) {
           return a.add(b);
@@ -171,14 +171,14 @@ export class ArithmeticBlock extends Block {
         if (typeof a === "number" && typeof b === "number") {
           return a - b;
         }
-        if (a instanceof Complex && b instanceof Complex) {
+        if (a instanceof MyComplex && b instanceof MyComplex) {
           return a.minus(b);
         }
-        if (a instanceof Complex && typeof b === "number") {
-          return a.minus(new Complex(b, 0));
+        if (a instanceof MyComplex && typeof b === "number") {
+          return a.minus(new MyComplex(b, 0));
         }
-        if (b instanceof Complex && typeof a === "number") {
-          return new Complex(a, 0).minus(b);
+        if (b instanceof MyComplex && typeof a === "number") {
+          return new MyComplex(a, 0).minus(b);
         }
         if (a instanceof MyVector && b instanceof MyVector) {
           return a.subtract(b);
@@ -213,14 +213,14 @@ export class ArithmeticBlock extends Block {
         if (typeof a === "number" && typeof b === "number") {
           return a * b;
         }
-        if (a instanceof Complex && b instanceof Complex) {
+        if (a instanceof MyComplex && b instanceof MyComplex) {
           return a.times(b);
         }
-        if (a instanceof Complex && typeof b === "number") {
-          return a.times(new Complex(b, 0));
+        if (a instanceof MyComplex && typeof b === "number") {
+          return a.times(new MyComplex(b, 0));
         }
-        if (b instanceof Complex && typeof a === "number") {
-          return b.times(new Complex(a, 0));
+        if (b instanceof MyComplex && typeof a === "number") {
+          return b.times(new MyComplex(a, 0));
         }
         if (a instanceof MyVector && b instanceof MyVector) {
           return a.cross(b);
@@ -258,14 +258,14 @@ export class ArithmeticBlock extends Block {
         if (typeof a === "number" && typeof b === "number") {
           return a / b;
         }
-        if (a instanceof Complex && b instanceof Complex) {
+        if (a instanceof MyComplex && b instanceof MyComplex) {
           return a.divides(b);
         }
-        if (a instanceof Complex && typeof b === "number") {
-          return a.divides(new Complex(b, 0));
+        if (a instanceof MyComplex && typeof b === "number") {
+          return a.divides(new MyComplex(b, 0));
         }
-        if (b instanceof Complex && typeof a === "number") {
-          return new Complex(a, 0).divides(b);
+        if (b instanceof MyComplex && typeof a === "number") {
+          return new MyComplex(a, 0).divides(b);
         }
         if (a instanceof MyVector && typeof b === "number") {
           return a.scale(1 / b);

@@ -6,7 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
 import {closeAllContextMenus, flowchart} from "../Main";
-import {Complex} from "../math/Complex";
+import {MyComplex} from "../math/MyComplex";
 import {MyVector} from "../math/MyVector";
 import {MyMatrix} from "../math/MyMatrix";
 import {BoundaryCondition} from "./BoundaryCondition";
@@ -364,7 +364,7 @@ export class Sticker extends Block {
             }
             if (i.indexOf(v) < v.length - 1) this.text += ",";
           } else {
-            if (i instanceof Complex) {
+            if (i instanceof MyComplex) {
               this.text += i.toFixed(this.decimals) + ",";
             } else {
               try {
@@ -380,7 +380,7 @@ export class Sticker extends Block {
         if (this.keepResult) {
           this.isArray = true;
           if (this.text === undefined) this.text = "";
-          if (v instanceof Complex) {
+          if (v instanceof MyComplex) {
             this.text += v.toFixed(this.decimals) + ",";
           } else if (v instanceof MyVector) {
             this.text += v.toFixed(this.decimals) + ",";
@@ -392,7 +392,7 @@ export class Sticker extends Block {
             }
           }
         } else {
-          if (v instanceof Complex) {
+          if (v instanceof MyComplex) {
             this.text = v.toFixed(this.decimals);
           } else if (v instanceof MyVector) {
             this.text = v.toFixed(this.decimals);
