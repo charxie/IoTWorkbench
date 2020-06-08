@@ -408,7 +408,7 @@ export class BlockView {
         b = this.addBlockUndoable(new WordCloud("Wordcloud #" + timestamp, "Wordcloud", x - 100, y - 110, 300, 320));
         break;
       case "quantum-stationary-state-1d-block":
-        b = this.addBlockUndoable(new QuantumStationaryState1DBlock("Quantum Stationary State 1D Block #" + timestamp, x - 50, y - 50, 100, 100));
+        b = this.addBlockUndoable(new QuantumStationaryState1DBlock("Quantum Stationary State 1D Block #" + timestamp, x - 150, y - 150, 300, 300));
         break;
     }
     return b;

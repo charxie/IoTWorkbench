@@ -13,7 +13,6 @@ export class StationaryStateSolver {
   private eigenVectors: number[][];
   private v: number[];  // the potential energy as a function of coordinate V(x)
   private h: number[][]; // the Hamilitonian
-  private maxState: number = 10;  // highest number of energy levels from the ground state we will show
 
   constructor(n: number) {
     this.particle = new Particle();
@@ -26,14 +25,6 @@ export class StationaryStateSolver {
       this.h[i].fill(0);
       this.eigenVectors[i] = new Array(n);
     }
-  }
-
-  public setMaxState(maxState: number): void {
-    this.maxState = maxState;
-  }
-
-  public getMaxState(): number {
-    return this.maxState;
   }
 
   public setPotential(v: number[]): void {
