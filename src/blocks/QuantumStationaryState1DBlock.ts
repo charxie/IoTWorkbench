@@ -31,6 +31,7 @@ export class QuantumStationaryState1DBlock extends Block {
     bottom: <number>4
   };
   private selectedEnergyLevel: number = 0;
+  private energyLevelOffset: number = 8;
 
   static State = class {
     readonly uid: string;
@@ -244,7 +245,7 @@ export class QuantumStationaryState1DBlock extends Block {
     let h = this.viewWindow.height / 2;
     ctx.fillStyle = "#eeeeee";
     ctx.beginPath();
-    ctx.rect(this.viewWindow.x, bottom - h, this.viewWindow.width, h);
+    ctx.rect(this.viewWindow.x + 1, bottom - h + 1, this.viewWindow.width - 2, h - 2);
     ctx.fill();
   }
 
@@ -252,18 +253,50 @@ export class QuantumStationaryState1DBlock extends Block {
     this.drawPotential(ctx);
     let emin = this.energyLevels[0];
     let emax = this.energyLevels[this.maxState];
-    let h = this.viewWindow.height / 2;
+    let h = this.viewWindow.height / 2 - this.energyLevelOffset;
     let dh = h / (emax - emin);
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 2;
-    let bottom = this.viewWindow.y + this.viewWindow.height;
+    let bottom = this.viewWindow.y + this.viewWindow.height - this.energyLevelOffset;
     let y;
     for (let i = 0; i < this.maxState; i++) {
       y = bottom - dh * (this.energyLevels[i] - this.energyLevels[0]);
       ctx.beginPath();
       ctx.moveTo(this.viewWindow.x, y);
       ctx.lineTo(this.viewWindow.x + this.viewWindow.width, y);
+      if (i === this.selectedEnergyLevel) {
+        ctx.strokeStyle = "yellow";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+      }
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 2;
       ctx.stroke();
+    }
+  }
+
+  private selectEnergyLevel(e: MouseEvent): void {
+    this.selectedEnergyLevel = -1;
+    if (this.energyLevels !== undefined) {
+      // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+      let rect = flowchart.blockView.canvas.getBoundingClientRect();
+      let x = e.clientX - rect.left - this.viewWindow.x;
+      if (x > 0 && x < this.viewWindow.width) {
+        let de = this.energyLevels[this.maxState] - this.energyLevels[0];
+        let h = this.viewWindow.height / 2 - this.energyLevelOffset;
+        let dh = h / de;
+        let y = e.clientY - rect.top;
+        let bottom = this.viewWindow.y + this.viewWindow.height - this.energyLevelOffset;
+        let energy = (bottom - y) / dh + this.energyLevels[0];
+        let minDistance = Number.MAX_VALUE;
+        let distance;
+        for (let i = 0; i < this.maxState; i++) {
+          distance = Math.abs(energy - this.energyLevels[i]);
+          if (distance < minDistance) {
+            this.selectedEnergyLevel = i;
+            minDistance = distance;
+          }
+        }
+      }
+      flowchart.blockView.requestDraw();
     }
   }
 
@@ -278,9 +311,18 @@ export class QuantumStationaryState1DBlock extends Block {
     ctx.beginPath();
     ctx.moveTo(this.viewWindow.x, bottom - h * this.waveFunctions[0][this.selectedEnergyLevel]);
     for (let i = 1; i < n; i++) {
-      ctx.lineTo(this.viewWindow.x + i * dx, bottom - h *this.waveFunctions[i][this.selectedEnergyLevel]);
+      ctx.lineTo(this.viewWindow.x + i * dx, bottom - h * this.waveFunctions[i][this.selectedEnergyLevel]);
     }
     ctx.stroke();
+  }
+
+  mouseMove(e: MouseEvent): void {
+    this.selectEnergyLevel(e);
+  }
+
+  mouseDown(e: MouseEvent): boolean {
+    this.selectEnergyLevel(e);
+    return false;
   }
 
   onDraggableArea(x: number, y: number): boolean {
