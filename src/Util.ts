@@ -6,6 +6,22 @@ import $ from "jquery";
 
 export class Util {
 
+  static subscriptNumbers(str: string) {
+    let newStr = "";
+    for (let i = 0; i < str.length; i++) {
+      //  Get the code of the current character
+      let code = str.charCodeAt(i);
+      if (code >= 48 && code <= 57) {
+        //  If it's between "0" and "9", offset the code ...
+        newStr += String.fromCharCode(code + 8272);
+      } else {
+        //  otherwise keep the character
+        newStr += str[i];
+      }
+    }
+    return newStr;
+  }
+
   static drawStar(ctx: CanvasRenderingContext2D, x: number, y: number, radius: number, n: number, inset): void {
     ctx.save();
     ctx.beginPath();

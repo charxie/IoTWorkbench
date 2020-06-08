@@ -16,7 +16,7 @@ export class HarmonicOscillator extends Potential1D {
     let x;
     for (let i = 0; i < n; i++) {
       x = xmin + i * delta;
-      this.value[i] = this.k * (x - center) * (x - center) + this.offset;
+      this.values[i] = this.k * (x - center) * (x - center) + this.offset;
     }
   }
 

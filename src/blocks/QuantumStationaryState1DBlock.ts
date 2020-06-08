@@ -179,6 +179,7 @@ export class QuantumStationaryState1DBlock extends Block {
         }
         if (this.waveFunctions !== undefined) {
           this.drawWaveFunctions(ctx);
+          this.drawProbabilityDensityFunctions(ctx);
         }
         this.drawAxes(ctx);
       }
@@ -210,8 +211,8 @@ export class QuantumStationaryState1DBlock extends Block {
     for (let i = 0; i < 11; i++) {
       let tmpX = this.viewWindow.x + dx * i;
       ctx.beginPath();
-      ctx.moveTo(tmpX, 0);
-      ctx.lineTo(tmpX, -4);
+      ctx.moveTo(tmpX, y0);
+      ctx.lineTo(tmpX, y0 - 4);
       ctx.stroke();
       let xtick = this.potential.getXmin() + i * inx;
       let precision = 2;
@@ -234,10 +235,10 @@ export class QuantumStationaryState1DBlock extends Block {
   }
 
   private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
-    ctx.font = "italic 15px Times New Roman";
+    ctx.font = "Italic 15px Times New Roman";
     ctx.fillStyle = "black";
     let horizontalAxisY = this.height - this.viewMargin.bottom;
-    ctx.fillText("x", this.viewWindow.x + (this.viewWindow.width - ctx.measureText("x").width) / 2, this.y + horizontalAxisY + 25);
+    ctx.fillText("x (Å)", this.viewWindow.x + (this.viewWindow.width - ctx.measureText("x").width) / 2, this.y + horizontalAxisY + 25);
   }
 
   private drawPotential(ctx: CanvasRenderingContext2D): void {
@@ -247,6 +248,20 @@ export class QuantumStationaryState1DBlock extends Block {
     ctx.beginPath();
     ctx.rect(this.viewWindow.x + 1, bottom - h + 1, this.viewWindow.width - 2, h - 2);
     ctx.fill();
+    let vmin = this.potential.getVmin();
+    let vmax = this.potential.getVmax();
+    if (vmin === vmax) return;
+    let vlen = this.potential.getPoints();
+    let dx = this.viewWindow.width / vlen;
+    let dv = h / (vmax - vmin);
+    ctx.strokeStyle = "gray";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(this.viewWindow.x + 0.5 * dx, bottom - (this.potential.getValue(0) - vmin) * dv);
+    for (let i = 1; i < vlen; i++) {
+      ctx.lineTo(this.viewWindow.x + (i + 1) * dx, bottom - (this.potential.getValue(i) - vmin) * dv);
+    }
+    ctx.stroke();
   }
 
   private drawEnergyLevels(ctx: CanvasRenderingContext2D): void {
@@ -257,6 +272,7 @@ export class QuantumStationaryState1DBlock extends Block {
     let dh = h / (emax - emin);
     let bottom = this.viewWindow.y + this.viewWindow.height - this.energyLevelOffset;
     let y;
+    let ySelected;
     for (let i = 0; i < this.maxState; i++) {
       y = bottom - dh * (this.energyLevels[i] - this.energyLevels[0]);
       ctx.beginPath();
@@ -266,20 +282,36 @@ export class QuantumStationaryState1DBlock extends Block {
         ctx.strokeStyle = "yellow";
         ctx.lineWidth = 4;
         ctx.stroke();
+        ySelected = y;
       }
       ctx.strokeStyle = "black";
       ctx.lineWidth = 2;
       ctx.stroke();
     }
+    if (this.selectedEnergyLevel >= 0) {
+      ctx.font = "10px Arial";
+      let label = "E" + Util.subscriptNumbers((this.selectedEnergyLevel + 1).toString()) + "=" + this.energyLevels[this.selectedEnergyLevel].toFixed(3) + " eV";
+      let w1 = ctx.measureText(label).width + 12;
+      let h1 = 20;
+      let x1 = this.viewWindow.x + 4;
+      let y1 = ySelected + 10;
+      ctx.fillStyle = "white";
+      ctx.beginPath();
+      ctx.rect(x1, y1 - h1, w1, h1);
+      ctx.fill();
+      ctx.fillStyle = "black";
+      ctx.stroke();
+      ctx.fillText(label, x1 + 6, y1 - 6);
+    }
   }
 
   private selectEnergyLevel(e: MouseEvent): void {
-    this.selectedEnergyLevel = -1;
     if (this.energyLevels !== undefined) {
       // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
       let rect = flowchart.blockView.canvas.getBoundingClientRect();
       let x = e.clientX - rect.left - this.viewWindow.x;
-      if (x > 0 && x < this.viewWindow.width) {
+      let y = e.clientY - rect.top - this.viewWindow.y;
+      if (x > 0 && x < this.viewWindow.width && y > this.viewWindow.height / 2 && y < this.viewWindow.height) {
         let de = this.energyLevels[this.maxState] - this.energyLevels[0];
         let h = this.viewWindow.height / 2 - this.energyLevelOffset;
         let dh = h / de;
@@ -305,15 +337,45 @@ export class QuantumStationaryState1DBlock extends Block {
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 1;
     let n = this.waveFunctions.length;
-    let bottom = this.viewWindow.y + this.viewWindow.height / 4;
-    let h = this.viewWindow.height / 2;
+    let bottom = this.viewWindow.y + this.viewWindow.height / 8;
+    let h = this.viewWindow.height / 4;
     let dx = this.viewWindow.width / n;
     ctx.beginPath();
-    ctx.moveTo(this.viewWindow.x, bottom - h * this.waveFunctions[0][this.selectedEnergyLevel]);
+    ctx.moveTo(this.viewWindow.x + dx / 2, bottom - h * this.waveFunctions[0][this.selectedEnergyLevel]);
     for (let i = 1; i < n; i++) {
-      ctx.lineTo(this.viewWindow.x + i * dx, bottom - h * this.waveFunctions[i][this.selectedEnergyLevel]);
+      ctx.lineTo(this.viewWindow.x + (i + 0.5) * dx, bottom - h * this.waveFunctions[i][this.selectedEnergyLevel]);
     }
     ctx.stroke();
+    if (this.selectedEnergyLevel >= 0) {
+      ctx.fillStyle = "black";
+      ctx.font = "20px Times New Roman";
+      ctx.fillText("ψ" + Util.subscriptNumbers((this.selectedEnergyLevel + 1).toString()), this.viewWindow.x + 10, this.viewWindow.y + 20);
+    }
+  }
+
+  private drawProbabilityDensityFunctions(ctx: CanvasRenderingContext2D): void {
+    if (this.selectedEnergyLevel < 0) return;
+    let n = this.waveFunctions.length;
+    let bottom = this.viewWindow.y + this.viewWindow.height * 3 / 8;
+    let h = this.viewWindow.height * 3;
+    let dx = this.viewWindow.width / n;
+    ctx.beginPath();
+    ctx.moveTo(this.viewWindow.x + dx / 2, bottom);
+    for (let i = 0; i < n; i++) {
+      ctx.lineTo(this.viewWindow.x + (i + 0.5) * dx, bottom - h * this.waveFunctions[i][this.selectedEnergyLevel] * this.waveFunctions[i][this.selectedEnergyLevel]);
+    }
+    ctx.lineTo(this.viewWindow.x + this.viewWindow.width, bottom);
+    ctx.closePath();
+    ctx.fillStyle = "#eeeeee";
+    ctx.fill();
+    ctx.strokeStyle = "gray";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    if (this.selectedEnergyLevel >= 0) {
+      ctx.fillStyle = "black";
+      ctx.font = "20px Times New Roman";
+      ctx.fillText("|ψ" + Util.subscriptNumbers((this.selectedEnergyLevel + 1).toString()) + "|²", this.viewWindow.x + 10, this.viewWindow.y + this.viewWindow.height / 4 + 10);
+    }
   }
 
   mouseMove(e: MouseEvent): void {
@@ -354,6 +416,9 @@ export class QuantumStationaryState1DBlock extends Block {
       solver.solve();
       this.energyLevels = solver.getEigenValues();
       this.waveFunctions = solver.getEigenVectors();
+      this.portEL.setValue(this.energyLevels);
+      this.portWF.setValue(this.waveFunctions);
+      this.updateConnectors();
     }
   }
 

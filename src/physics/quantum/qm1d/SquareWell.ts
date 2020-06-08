@@ -17,13 +17,21 @@ export class SquareWell extends Potential1D {
     for (let i = 0; i < n; i++) {
       x = xmin + i * delta;
       if (x < this.center - w) {
-        this.value[i] = height;
+        this.values[i] = height;
       } else if (x > this.center + w) {
-        this.value[i] = height;
+        this.values[i] = height;
       } else {
-        this.value[i] = depth;
+        this.values[i] = depth;
       }
     }
+  }
+
+  public setWidth(width: number): void {
+    this.width = width;
+  }
+
+  public getWidth(): number {
+    return this.width;
   }
 
   public getName(): string {
