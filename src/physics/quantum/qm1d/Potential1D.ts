@@ -29,11 +29,11 @@ export abstract class Potential1D {
   public abstract getName(): string;
 
   public getVmin(): number {
-    return Math.min(...this.values);
+    return Math.max(-10, Math.min(...this.values));
   }
 
   public getVmax(): number {
-    return Math.max(...this.values);
+    return Math.min(10, Math.max(...this.values));
   }
 
   public getXmin(): number {
@@ -42,6 +42,10 @@ export abstract class Potential1D {
 
   public getXmax(): number {
     return this.xmax;
+  }
+
+  public getXLength(): number {
+    return this.xmax - this.xmin;
   }
 
 }

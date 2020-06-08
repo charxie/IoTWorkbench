@@ -18,6 +18,18 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
   getPropertiesUI(): string {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
+               <tr>
+                  <td>Potential:</td>
+                  <td colspan="2">
+                    <select id="quantum-stationary-state-1d-block-potential-selector" style="width: 100%">
+                      <option value="Custom" selected>Custom</option>
+                      <option value="Square Well">Square Well</option>
+                      <option value="Morse Well">Morse Well</option>
+                      <option value="Harmonic Oscillator">Harmonic Oscillator</option>
+                      <option value="Anharmonic Oscillator">Anharmonic Oscillator</option>
+                    </select>
+                  </td>
+                </tr>
                 <tr>
                   <td>Steps:</td>
                   <td colspan="2"><input type="text" id="quantum-stationary-state-1d-block-steps-field" style="width: 100%"></td>
@@ -49,6 +61,8 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof QuantumStationaryState1DBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let potentialSelector = document.getElementById("quantum-stationary-state-1d-block-potential-selector") as HTMLSelectElement;
+      potentialSelector.value = this.block.getPotentialName();
       let stepsField = document.getElementById("quantum-stationary-state-1d-block-steps-field") as HTMLInputElement;
       stepsField.value = Math.round(block.getSteps()).toString();
       let highestStateField = document.getElementById("quantum-stationary-state-1d-block-highest-state-field") as HTMLInputElement;
@@ -99,6 +113,7 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
         }
         // finish up
         if (success) {
+          block.setPotentialName(potentialSelector.value);
           block.setViewWindowColor(windowColorField.value);
           block.refreshView();
           flowchart.blockView.requestDraw();

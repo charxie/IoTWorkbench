@@ -525,6 +525,7 @@ export class StateIO {
           block.setSteps(state.steps);
           block.setViewWindowColor(state.viewWindowColor);
           block.setMaxState(state.maxState);
+          if (state.potentialName) block.setPotentialName(state.potentialName);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

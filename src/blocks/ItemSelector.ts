@@ -116,12 +116,13 @@ export class ItemSelector extends Block {
     this.portI.setY(this.height / 2);
     this.portO.setX(this.width);
     this.portO.setY(this.height / 2);
-    let x1 = this.x + this.width * 0.7;
+    let w2 = Math.min(10, this.width * 0.1);
+    let x1 = this.x + this.width - 3 * w2;
     let y1 = this.y + this.halfHeight * 1.3;
-    let x2 = this.x + this.width * 0.9;
+    let x2 = this.x + this.width - w2;
     let y2 = y1;
     let x3 = (x1 + x2) / 2;
-    let y3 = this.y + this.halfHeight * 1.7;
+    let y3 = y1 + this.halfHeight * 0.4;
     this.triangle.setPoints(x1, y1, x2, y2, x3, y3);
   }
 
