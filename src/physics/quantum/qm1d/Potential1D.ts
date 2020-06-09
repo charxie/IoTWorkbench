@@ -15,7 +15,7 @@ export abstract class Potential1D {
     this.xmax = xmax;
   }
 
-  public getPotential(): number[] {
+  public getValues(): number[] {
     return this.values;
   }
 

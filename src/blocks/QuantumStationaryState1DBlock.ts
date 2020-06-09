@@ -15,6 +15,7 @@ import {AnharmonicOscillator} from "../physics/quantum/qm1d/AnharmonicOscillator
 import {MorseWell} from "../physics/quantum/qm1d/MorseWell";
 import {CoulombWells} from "../physics/quantum/qm1d/CoulombWells";
 import {CoulombWell} from "../physics/quantum/qm1d/CoulombWell";
+import {CustomPotential} from "../physics/quantum/qm1d/CustomPotential";
 
 export class QuantumStationaryState1DBlock extends Block {
 
@@ -24,7 +25,9 @@ export class QuantumStationaryState1DBlock extends Block {
   private potential: Potential1D;
   private energyLevels: number[];
   private waveFunctions: number[][];
-  private readonly portVX: Port; // port for importing potential
+  private readonly portVX: Port; // port for importing potential's values (array)
+  private readonly portX0: Port; // port for importing potential's beginning coordinate
+  private readonly portDX: Port; // port for importing potential's coordinate increment
   private viewWindowColor: string = "white";
   private viewWindow: Rectangle;
   private barHeight: number;
@@ -36,6 +39,7 @@ export class QuantumStationaryState1DBlock extends Block {
   };
   private selectedEnergyLevel: number = 0;
   private energyLevelOffset: number = 8;
+  private solver: StationaryStateSolver;
 
   static State = class {
     readonly uid: string;
@@ -69,8 +73,13 @@ export class QuantumStationaryState1DBlock extends Block {
     this.name = "Quantum Stationary State 1D Block";
     this.color = "#C0DCFA";
     this.barHeight = Math.min(30, this.height / 3);
-    this.portVX = new Port(this, true, "VX", 0, this.height / 2, false);
+    let dh = (this.height - this.barHeight) / 4;
+    this.portVX = new Port(this, true, "VX", 0, this.barHeight + dh, false);
+    this.portX0 = new Port(this, true, "X0", 0, this.barHeight + 2 * dh, false);
+    this.portDX = new Port(this, true, "DX", 0, this.barHeight + 3 * dh, false);
     this.ports.push(this.portVX);
+    this.ports.push(this.portX0);
+    this.ports.push(this.portDX);
     this.marginX = 30;
     this.viewWindow = new Rectangle(0, 0, 1, 1);
   }
@@ -97,7 +106,10 @@ export class QuantumStationaryState1DBlock extends Block {
   }
 
   setSteps(steps: number): void {
-    this.steps = steps;
+    if (this.steps !== steps) {
+      if (this.portX0.getValue() === undefined) this.solver = new StationaryStateSolver(steps);
+      this.steps = steps;
+    }
   }
 
   getSteps(): number {
@@ -274,12 +286,17 @@ export class QuantumStationaryState1DBlock extends Block {
     for (let i = 0; i < vlen; i++) {
       if (this.potential.getValue(i) <= vmax && this.potential.getValue(i) >= vmin) {
         if (firstTime) {
-          ctx.moveTo(this.viewWindow.x + (i + 0.5) * dx, bottom - (this.potential.getValue(i) - vmin) * dv);
+          ctx.moveTo(this.viewWindow.x + i * dx, bottom - (this.potential.getValue(i) - vmin) * dv);
           firstTime = false;
         } else {
-          ctx.lineTo(this.viewWindow.x + (i + 0.5) * dx, bottom - (this.potential.getValue(i) - vmin) * dv);
+          ctx.lineTo(this.viewWindow.x + i * dx, bottom - (this.potential.getValue(i) - vmin) * dv);
         }
       }
+    }
+    // fill the gap between the last point and the right border line
+    let projected = 2 * this.potential.getValue(vlen - 1) - this.potential.getValue(vlen - 2);
+    if (projected <= vmax && projected >= vmin) {
+      ctx.lineTo(this.viewWindow.x + vlen * dx, bottom - (projected - vmin) * dv);
     }
     ctx.stroke();
   }
@@ -361,10 +378,13 @@ export class QuantumStationaryState1DBlock extends Block {
     let h = this.viewWindow.height / 4;
     let dx = this.viewWindow.width / n;
     ctx.beginPath();
-    ctx.moveTo(this.viewWindow.x + dx / 2, bottom - h * this.waveFunctions[0][this.selectedEnergyLevel]);
+    ctx.moveTo(this.viewWindow.x, bottom - h * this.waveFunctions[0][this.selectedEnergyLevel]);
     for (let i = 1; i < n; i++) {
-      ctx.lineTo(this.viewWindow.x + (i + 0.5) * dx, bottom - h * this.waveFunctions[i][this.selectedEnergyLevel]);
+      ctx.lineTo(this.viewWindow.x + i * dx, bottom - h * this.waveFunctions[i][this.selectedEnergyLevel]);
     }
+    // fill the gap between the last point and the right border line
+    let projected = 2 * this.waveFunctions[n - 1][this.selectedEnergyLevel] - this.waveFunctions[n - 2][this.selectedEnergyLevel];
+    ctx.lineTo(this.viewWindow.x + n * dx, bottom - h * projected);
     ctx.stroke();
     if (this.selectedEnergyLevel >= 0) {
       ctx.fillStyle = "black";
@@ -382,7 +402,7 @@ export class QuantumStationaryState1DBlock extends Block {
     ctx.beginPath();
     ctx.moveTo(this.viewWindow.x, bottom);
     for (let i = 0; i < n; i++) {
-      ctx.lineTo(this.viewWindow.x + (i + 0.5) * dx, bottom - h * this.waveFunctions[i][this.selectedEnergyLevel] * this.waveFunctions[i][this.selectedEnergyLevel]);
+      ctx.lineTo(this.viewWindow.x + i * dx, bottom - h * this.waveFunctions[i][this.selectedEnergyLevel] * this.waveFunctions[i][this.selectedEnergyLevel]);
     }
     ctx.lineTo(this.viewWindow.x + this.viewWindow.width, bottom);
     ctx.closePath();
@@ -417,20 +437,33 @@ export class QuantumStationaryState1DBlock extends Block {
     this.viewMargin.bottom = 30;
     this.viewMargin.left = 30;
     this.viewMargin.right = 10;
-    this.portVX.setY(this.height / 2);
+    let dh = (this.height - this.barHeight) / 4;
+    this.portVX.setY(this.barHeight + dh);
+    this.portX0.setY(this.barHeight + dh * 2);
+    this.portDX.setY(this.barHeight + dh * 3);
   }
 
   updateModel(): void {
     let vx = this.portVX.getValue();
     if (vx === undefined) return;
-    if (typeof vx === "string") {
+    if (Array.isArray(vx)) { // custom potential
+      let x0 = this.portX0.getValue();
+      let dx = this.portDX.getValue();
+      if (typeof x0 !== "number" || typeof dx !== "number" || typeof vx[0] !== "number") return;
+      this.potential = new CustomPotential(x0, x0 + dx * vx.length, vx);
+      if (this.solver === undefined || this.solver.getPoints() !== vx.length) this.solver = new StationaryStateSolver(vx.length);
+      this.solver.setPotential(vx);
+      this.solver.discretizeHamiltonian(dx * vx.length);
+      this.solver.solve();
+      this.energyLevels = this.solver.getEigenValues();
+      this.waveFunctions = this.solver.getEigenVectors();
+    } else if (typeof vx === "string") {
       this.solve(vx);
-    } else if (Array.isArray(vx)) { // custom potential
-
     }
   }
 
   private solve(name: string): void {
+    if (name === "Custom") return;
     switch (name) {
       case "Square Well":
         this.potential = new SquareWell(this.steps, -1, 1, -10, 10);
@@ -465,12 +498,12 @@ export class QuantumStationaryState1DBlock extends Block {
       default:
         this.potential = new SquareWell(this.steps, 0, 0, -10, 10);
     }
-    let solver = new StationaryStateSolver(this.steps);
-    solver.setPotential(this.potential.getPotential());
-    solver.discretizeHamiltonian(this.potential.getXLength());
-    solver.solve();
-    this.energyLevels = solver.getEigenValues();
-    this.waveFunctions = solver.getEigenVectors();
+    if (this.solver === undefined || this.solver.getPoints() !== this.steps) this.solver = new StationaryStateSolver(this.steps);
+    this.solver.setPotential(this.potential.getValues());
+    this.solver.discretizeHamiltonian(this.potential.getXLength());
+    this.solver.solve();
+    this.energyLevels = this.solver.getEigenValues();
+    this.waveFunctions = this.solver.getEigenVectors();
   }
 
 }

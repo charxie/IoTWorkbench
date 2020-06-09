@@ -27,6 +27,10 @@ export class StationaryStateSolver {
     }
   }
 
+  getPoints(): number {
+    return this.v.length;
+  }
+
   public setPotential(v: number[]): void {
     this.v = [...v];
   }
