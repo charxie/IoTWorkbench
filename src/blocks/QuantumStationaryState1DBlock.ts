@@ -5,17 +5,17 @@
 import {Port} from "./Port";
 import {Block} from "./Block";
 import {Potential1D} from "../physics/quantum/qm1d/Potential1D";
-import {SquareWell} from "../physics/quantum/qm1d/SquareWell";
+import {SquareWell} from "../physics/quantum/qm1d/potentials/SquareWell";
 import {StationaryStateSolver} from "../physics/quantum/qm1d/StationaryStateSolver";
 import {flowchart} from "../Main";
 import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
-import {HarmonicOscillator} from "../physics/quantum/qm1d/HarmonicOscillator";
-import {AnharmonicOscillator} from "../physics/quantum/qm1d/AnharmonicOscillator";
-import {MorseWell} from "../physics/quantum/qm1d/MorseWell";
-import {CoulombWells} from "../physics/quantum/qm1d/CoulombWells";
-import {CoulombWell} from "../physics/quantum/qm1d/CoulombWell";
-import {CustomPotential} from "../physics/quantum/qm1d/CustomPotential";
+import {HarmonicOscillator} from "../physics/quantum/qm1d/potentials/HarmonicOscillator";
+import {AnharmonicOscillator} from "../physics/quantum/qm1d/potentials/AnharmonicOscillator";
+import {MorseWell} from "../physics/quantum/qm1d/potentials/MorseWell";
+import {CoulombWells} from "../physics/quantum/qm1d/potentials/CoulombWells";
+import {CoulombWell} from "../physics/quantum/qm1d/potentials/CoulombWell";
+import {CustomPotential} from "../physics/quantum/qm1d/potentials/CustomPotential";
 
 export class QuantumStationaryState1DBlock extends Block {
 

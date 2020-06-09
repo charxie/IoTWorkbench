@@ -2,7 +2,7 @@
  * @author Charles Xie
  */
 
-import {Potential1D} from "./Potential1D";
+import {Potential1D} from "../Potential1D";
 
 export class CoulombWells extends Potential1D {
 
