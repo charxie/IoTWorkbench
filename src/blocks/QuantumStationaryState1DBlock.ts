@@ -19,7 +19,7 @@ import {CustomPotential} from "../physics/quantum/qm1d/potentials/CustomPotentia
 
 export class QuantumStationaryState1DBlock extends Block {
 
-  private potentialName: string = "Square Well";
+  private potentialName: string = "Custom";
   private steps: number = 100;
   private maxState: number = 10;  // highest number of energy levels from the ground state we will show
   private potential: Potential1D;
