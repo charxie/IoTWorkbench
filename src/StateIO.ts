@@ -522,6 +522,7 @@ export class StateIO {
           if (state.colorScheme !== undefined) block.setColorScheme(state.colorScheme);
           if (state.viewWindowColor !== undefined) block.setViewWindowColor(state.viewWindowColor);
         } else if (block instanceof QuantumStationaryState1DBlock) {
+          block.setName(state.name);
           block.setSteps(state.steps);
           block.setViewWindowColor(state.viewWindowColor);
           block.setMaxState(state.maxState);

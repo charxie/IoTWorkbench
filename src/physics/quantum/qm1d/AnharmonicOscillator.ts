@@ -20,8 +20,4 @@ export class AnharmonicOscillator extends Potential1D {
     }
   }
 
-  public getName(): string {
-    return "Anharmonic Oscillator";
-  }
-
 }

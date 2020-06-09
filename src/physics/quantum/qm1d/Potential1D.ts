@@ -10,6 +10,7 @@ export abstract class Potential1D {
 
   constructor(n: number, xmin: number, xmax: number) {
     this.values = new Array(n);
+    this.values.fill(0);
     this.xmin = xmin;
     this.xmax = xmax;
   }
@@ -25,8 +26,6 @@ export abstract class Potential1D {
   public getPoints(): number {
     return this.values.length;
   }
-
-  public abstract getName(): string;
 
   public getVmin(): number {
     return Math.max(-10, Math.min(...this.values));

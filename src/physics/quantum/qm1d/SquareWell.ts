@@ -34,8 +34,4 @@ export class SquareWell extends Potential1D {
     return this.width;
   }
 
-  public getName(): string {
-    return "Square Well";
-  }
-
 }

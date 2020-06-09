@@ -22,8 +22,4 @@ export class MorseWell extends Potential1D {
     }
   }
 
-  public getName(): string {
-    return "Morse Well";
-  }
-
 }

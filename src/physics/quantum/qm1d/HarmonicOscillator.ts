@@ -20,8 +20,4 @@ export class HarmonicOscillator extends Potential1D {
     }
   }
 
-  public getName(): string {
-    return "Harmonic Oscillator";
-  }
-
 }

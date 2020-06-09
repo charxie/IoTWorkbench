@@ -13,6 +13,8 @@ import {Rectangle} from "../math/Rectangle";
 import {HarmonicOscillator} from "../physics/quantum/qm1d/HarmonicOscillator";
 import {AnharmonicOscillator} from "../physics/quantum/qm1d/AnharmonicOscillator";
 import {MorseWell} from "../physics/quantum/qm1d/MorseWell";
+import {CoulombWells} from "../physics/quantum/qm1d/CoulombWells";
+import {CoulombWell} from "../physics/quantum/qm1d/CoulombWell";
 
 export class QuantumStationaryState1DBlock extends Block {
 
@@ -41,6 +43,7 @@ export class QuantumStationaryState1DBlock extends Block {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly name: string;
     readonly viewWindowColor: string;
     readonly steps: number;
     readonly maxState: number;
@@ -52,6 +55,7 @@ export class QuantumStationaryState1DBlock extends Block {
       this.y = block.y;
       this.width = block.width;
       this.height = block.height;
+      this.name = block.name;
       this.viewWindowColor = block.viewWindowColor;
       this.steps = block.steps;
       this.maxState = block.maxState;
@@ -264,7 +268,7 @@ export class QuantumStationaryState1DBlock extends Block {
     let dx = this.viewWindow.width / vlen;
     let dv = h / (vmax - vmin);
     ctx.strokeStyle = "gray";
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 3;
     ctx.beginPath();
     let firstTime = true;
     for (let i = 0; i < vlen; i++) {
@@ -431,6 +435,9 @@ export class QuantumStationaryState1DBlock extends Block {
       case "Square Well":
         this.potential = new SquareWell(this.steps, -1, 1, -10, 10);
         break;
+      case "Coulomb Well":
+        this.potential = new CoulombWell(this.steps, -10, 10);
+        break;
       case "Morse Well":
         this.potential = new MorseWell(this.steps, -10, 10);
         break;
@@ -439,6 +446,21 @@ export class QuantumStationaryState1DBlock extends Block {
         break;
       case "Anharmonic Oscillator":
         this.potential = new AnharmonicOscillator(this.steps, -10, 10);
+        break;
+      case "Diatomic Molecule":
+        this.potential = new CoulombWells(this.steps, 2, 1, 0, CoulombWells.DEFAULT, -10, 10);
+        break;
+      case "Crystal Lattice":
+        this.potential = new CoulombWells(this.steps, 13, 1.4, 0, CoulombWells.DEFAULT, -10, 10);
+        break;
+      case "Crystal Lattice in a Field":
+        this.potential = new CoulombWells(this.steps, 11, 1.5, 0.002, CoulombWells.DEFAULT, -10, 10);
+        break;
+      case "Crystal Lattice with a Vacancy":
+        this.potential = new CoulombWells(this.steps, 11, 1.5, 0, CoulombWells.VACANCY, -10, 10);
+        break;
+      case "Crystal Lattice with an Interstitial":
+        this.potential = new CoulombWells(this.steps, 11, 1.5, 0, CoulombWells.INTERSTITIAL, -10, 10);
         break;
       default:
         this.potential = new SquareWell(this.steps, 0, 0, -10, 10);

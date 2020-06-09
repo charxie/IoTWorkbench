@@ -18,15 +18,25 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
   getPropertiesUI(): string {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
+                <tr>
+                  <td>Name:</td>
+                  <td colspan="2"><input type="text" id="quantum-stationary-state-1d-block-name-field" style="width: 100%"></td>
+                </tr>
                <tr>
                   <td>Potential:</td>
                   <td colspan="2">
                     <select id="quantum-stationary-state-1d-block-potential-selector" style="width: 100%">
                       <option value="Custom" selected>Custom</option>
                       <option value="Square Well">Square Well</option>
+                      <option value="Coulomb Well">Coulomb Well</option>
                       <option value="Morse Well">Morse Well</option>
                       <option value="Harmonic Oscillator">Harmonic Oscillator</option>
                       <option value="Anharmonic Oscillator">Anharmonic Oscillator</option>
+                      <option value="Diatomic Molecule">Diatomic Molecule</option>
+                      <option value="Crystal Lattice">Crystal Lattice</option>
+                      <option value="Crystal Lattice in a Field">Crystal Lattice in a Field</option>
+                      <option value="Crystal Lattice with a Vacancy">Crystal Lattice with a Vacancy</option>
+                      <option value="Crystal Lattice with an Interstitial">Crystal Lattice with an Interstitial</option>
                     </select>
                   </td>
                 </tr>
@@ -61,6 +71,8 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof QuantumStationaryState1DBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let nameField = document.getElementById("quantum-stationary-state-1d-block-name-field") as HTMLInputElement;
+      nameField.value = block.getName();
       let potentialSelector = document.getElementById("quantum-stationary-state-1d-block-potential-selector") as HTMLSelectElement;
       potentialSelector.value = this.block.getPotentialName();
       let stepsField = document.getElementById("quantum-stationary-state-1d-block-steps-field") as HTMLInputElement;
@@ -113,6 +125,7 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
         }
         // finish up
         if (success) {
+          block.setName(nameField.value);
           block.setPotentialName(potentialSelector.value);
           block.setViewWindowColor(windowColorField.value);
           block.refreshView();
@@ -129,6 +142,7 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
           okFunction();
         }
       };
+      nameField.addEventListener("keyup", enterKeyUp);
       stepsField.addEventListener("keyup", enterKeyUp);
       highestStateField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
