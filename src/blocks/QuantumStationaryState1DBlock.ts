@@ -86,7 +86,8 @@ export class QuantumStationaryState1DBlock extends Block {
 
   getCopy(): Block {
     let copy = new QuantumStationaryState1DBlock("Quantum Stationary State 1D Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
-    copy.viewWindowColor = this.viewWindowColor;
+    copy.setViewWindowColor(this.viewWindowColor);
+    copy.setName(this.name);
     copy.setSteps(this.steps);
     copy.setMaxState(this.maxState);
     copy.setPotentialName(this.potentialName);

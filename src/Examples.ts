@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import band_gaps_crystal_lattice_1d from "./examples/band-gaps-crystal-lattice-1d.json";
+// @ts-ignore
 import morse_potential_1d_stationary from "./examples/morse-potential-1d-stationary.json";
 // @ts-ignore
 import quantum_harmonic_oscillator_1d_stationary from "./examples/quantum-harmonic-oscillator-1d-stationary.json";
@@ -481,10 +483,6 @@ export class Examples {
     this.files.push({name: "Machine Learning: K-Means Clustering in 2D", data: k_means_clustering});
     this.files.push({name: "Machine Learning: K-Means Clustering in 3D", data: k_means_clustering_3d});
     this.files.push({name: "Machine Learning: K-Nearest Neighbors Classifier", data: knn_classifier});
-    this.files.push({name: "Quantum Mechanics: Harmonic Oscillator", data: quantum_harmonic_oscillator_1d_stationary});
-    this.files.push({name: "Quantum Mechanics: Morse Potential", data: morse_potential_1d_stationary});
-    this.files.push({name: "Quantum Computing: Hadamard Gate", data: quantum_hadamard_gate});
-    this.files.push({name: "Quantum Computing: CNOT Gate", data: quantum_cnot_gate});
     this.files.push({name: "Sound: Make Sound with Beepers", data: make_sound_with_beepers});
     this.files.push({name: "Sound: Synthesizing Sound", data: synthesizing_sound});
     this.files.push({name: "IoT: RGB LED Array", data: rainbow_hat_rgb_led_array});
@@ -585,6 +583,11 @@ export class Examples {
     this.files.push({name: "Engineering: Mixed Boundary Condition", data: mixed_boundary_condition});
     this.files.push({name: "Engineering: Convection-Diffusion Equation", data: convection_diffusion_equation});
     this.files.push({name: "Engineering: Rayleigh–Bénard Convection", data: rayleigh_benard_convection});
+    this.files.push({name: "Quantum Mechanics: Harmonic Oscillator", data: quantum_harmonic_oscillator_1d_stationary});
+    this.files.push({name: "Quantum Mechanics: Morse Potential", data: morse_potential_1d_stationary});
+    this.files.push({name: "Quantum Mechanics: Band Gaps in Crystal Lattice", data: band_gaps_crystal_lattice_1d});
+    this.files.push({name: "Quantum Computing: Hadamard Gate", data: quantum_hadamard_gate});
+    this.files.push({name: "Quantum Computing: CNOT Gate", data: quantum_cnot_gate});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 
