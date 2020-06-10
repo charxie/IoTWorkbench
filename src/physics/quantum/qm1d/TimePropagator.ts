@@ -15,8 +15,8 @@ export abstract class TimePropagator {
 
   static readonly OUTPUT_INTERVAL: number = 50;
 
-  n: number;
-  coordinate: number[];
+  nPoints: number;
+  coordinates: number[];
   savedEigenvector: number[];
   amplitude: number[];
   iStep: number;
@@ -36,7 +36,7 @@ export abstract class TimePropagator {
   mu: number = 10;
   sigma: number = 10;
   delta: number;
-  initState: number = -1;
+  initialState: number = -1;
 
   setBoundaryCondition(name: string): void {
     if ("ABC" === name) {
@@ -57,9 +57,9 @@ export abstract class TimePropagator {
   getPotential(): number[] {
     if (this.eField != null) {
       let ef = this.particle.getCharge() * this.eField.getValue(this.getTime());
-      let p: number[] = new Array(this.n);
-      for (let i = 0; i < this.n; i++) {
-        p[i] = this.potential.getValue(i) + ef * (i - this.n / 2);
+      let p: number[] = new Array(this.nPoints);
+      for (let i = 0; i < this.nPoints; i++) {
+        p[i] = this.potential.getValue(i) + ef * (i - this.nPoints / 2);
       }
       return p;
     }
@@ -95,29 +95,29 @@ export abstract class TimePropagator {
     return this.iStep * this.timeStep;
   }
 
-  abstract setInitialState(initState: number, eigenVectors: number[][]): void;
+  abstract setInitialState(initialState: number, eigenVectors: number[][]): void;
 
   getInitialState(): number {
-    return this.initState;
+    return this.initialState;
   }
 
   setInitialMomentum(p0: number): void {
   }
 
   setGaussianMu(mu: number): void {
-    this.initState = -1;
+    this.initialState = -1;
     this.mu = mu;
     this.initPsi();
   }
 
   setGaussianSigma(sigma: number): void {
-    this.initState = -1;
+    this.initialState = -1;
     this.sigma = sigma;
     this.initPsi();
   }
 
   setGaussianParameters(mu: number, sigma: number): void {
-    this.initState = -1;
+    this.initialState = -1;
     this.mu = mu;
     this.sigma = sigma;
     this.initPsi();
@@ -147,7 +147,7 @@ export abstract class TimePropagator {
 
   init(): void {
     this.initPsi();
-    this.position = this.calculateExpectation(this.coordinate);
+    this.position = this.calculateExpectation(this.coordinates);
     this.calculateMomentum();
     this.calculateKineticEnergy();
     if (this.potential) this.potE = this.calculateExpectation(this.potential.getValues());
