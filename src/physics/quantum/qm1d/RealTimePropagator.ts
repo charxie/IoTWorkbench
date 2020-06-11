@@ -219,7 +219,7 @@ export abstract class RealTimePropagator extends TimePropagator {
     this.calculateKineticEnergy();
     this.potE = this.calculateExpectation(this.getPotential());
     this.totE = this.kinE + this.potE;
-    if (this.iStep % 10 == 0) console.log(this.getTime().toFixed(2) + ": " + this.sum.toFixed(5), this.totE.toFixed(5), this.potE.toFixed(5), this.kinE.toFixed(5));
+    //if (this.iStep % 10 == 0) console.log(this.getTime().toFixed(2) + ": " + this.sum.toFixed(5), this.totE.toFixed(5), this.potE.toFixed(5), this.kinE.toFixed(5));
   }
 
 }

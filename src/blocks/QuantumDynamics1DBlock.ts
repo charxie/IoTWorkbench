@@ -13,7 +13,7 @@ import {TimePropagator} from "../physics/quantum/qm1d/TimePropagator";
 import {Quantum1DBlock} from "./Quantum1DBlock";
 import {RungeKuttaSolver} from "../physics/quantum/qm1d/RungeKuttaSolver";
 import {CayleySolver} from "../physics/quantum/qm1d/CayleySolver";
-import {HarmonicOscillator} from "../physics/quantum/qm1d/potentials/HarmonicOscillator";
+import {SquareWell} from "../physics/quantum/qm1d/potentials/SquareWell";
 
 export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
@@ -71,7 +71,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.ports.push(this.portDX);
     this.marginX = 30;
     this.viewWindow = new Rectangle(0, 0, 1, 1);
-    this.potential = new HarmonicOscillator(this.nPoints, -10, 10);
+    this.potential = new SquareWell(this.nPoints, 0, 0, -10, 10);
     this.setMethod("Cayley");
   }
 
@@ -197,6 +197,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
         this.drawProbabilityDensityFunctions(ctx);
         this.drawPotential(ctx);
         this.drawAxes(ctx);
+        this.drawResults(ctx);
       }
       this.drawAxisLabels(ctx);
     }
@@ -212,6 +213,71 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       this.highlightSelection(ctx);
     }
 
+  }
+
+  private drawResults(ctx: CanvasRenderingContext2D): void {
+    ctx.save();
+    ctx.translate(this.viewWindow.x, this.viewWindow.y);
+    ctx.font = "12px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText("E", 10, 15);
+    ctx.fillText("K", 10, 30);
+    ctx.fillText("V", 10, 45);
+    let k = Math.abs(this.dynamicSolver.getKineticEnergy()) * 500;
+    let v = Math.abs(this.dynamicSolver.getPotentialEnergy()) * 500;
+    let e = k + v;
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+    if (e > 0) {
+      ctx.fillStyle = "magenta";
+      ctx.beginPath();
+      ctx.rect(30, 6, e, 10);
+      ctx.fill();
+      ctx.stroke();
+    }
+    if (v > 0) {
+      ctx.fillStyle = "blue";
+      ctx.beginPath();
+      ctx.rect(30, 21, v, 10);
+      ctx.fill();
+      ctx.stroke();
+    }
+    if (k > 0) {
+      ctx.fillStyle = "red";
+      ctx.beginPath();
+      ctx.rect(30, 36, k, 10);
+      ctx.fill();
+      ctx.stroke();
+    }
+    let position = this.dynamicSolver.getPosition();
+    let momentum = this.dynamicSolver.getMomentum();
+    let x = position * this.viewWindow.width / this.probabilityDensityFunction.length;
+    ctx.strokeStyle = "gray";
+    ctx.setLineDash([2, 2]);
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, this.viewWindow.height);
+    ctx.stroke();
+    ctx.strokeStyle = "green";
+    ctx.setLineDash([]);
+    let y = this.viewWindow.height / 2;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    x += momentum * 20;
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    if (Math.abs(momentum) > 0.1) {
+      let dv = 5 * Math.sign(momentum);
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x - dv, y - dv);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x - dv, y + dv);
+      ctx.stroke();
+    }
+    ctx.restore();
   }
 
   private drawAxes(ctx: CanvasRenderingContext2D): void {
@@ -247,6 +313,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     ctx.moveTo(x0, y0);
     ctx.lineTo(x0, this.viewWindow.y);
     ctx.stroke();
+
   }
 
   private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
@@ -334,6 +401,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       let dx = this.portDX.getValue();
       if (typeof x0 !== "number" || typeof dx !== "number" || typeof vx[0] !== "number") return;
       this.potential = new CustomPotential(x0, x0 + dx * vx.length, vx);
+      this.dynamicSolver.setPotential(this.potential);
       if (this.initialState >= 0) { // we need to calculate the wave function of the initial state
         if (this.staticSolver === undefined || this.staticSolver.getPoints() !== vx.length) this.staticSolver = new StationaryStateSolver(vx.length);
         this.staticSolver.setPotential(vx);
