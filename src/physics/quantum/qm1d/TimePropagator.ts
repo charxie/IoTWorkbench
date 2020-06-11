@@ -30,9 +30,7 @@ export abstract class TimePropagator {
   kinE: number = 0;
   position: number = 0;
   momentum: number = 0;
-  running: boolean = false;
-  notifyReset: boolean = false;
-  mu: number = 0;
+  mu: number = 5;
   sigma: number = 2;
   delta: number = 0;
   initialState: number = -1;
@@ -157,30 +155,9 @@ export abstract class TimePropagator {
     this.totE = this.kinE + this.potE;
   }
 
-  stop(): void {
-    this.running = false;
-  }
-
-  run(): void {
-    if (!this.running) {
-      this.running = true;
-      while (this.running)
-        this.nextStep();
-      if (this.notifyReset) {
-        this.init();
-        this.notifyReset = false;
-      }
-    }
-  }
-
   reset(): void {
     this.iStep = 0;
-    if (this.running) {
-      this.stop();
-      this.notifyReset = true;
-    } else {
-      this.init();
-    }
+    this.init();
   }
 
   abstract nextStep(): void;

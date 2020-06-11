@@ -20,7 +20,6 @@ export class CayleySolver extends RealTimePropagator {
     this.b = new Array(nPoints);
     this.c = new Array(nPoints);
     this.d = new Array(nPoints);
-    this.setTimeStep(.01);
     this.a[0] = new MyComplex(0, 0);
     this.c[nPoints - 1] = new MyComplex(0, 0);
   }

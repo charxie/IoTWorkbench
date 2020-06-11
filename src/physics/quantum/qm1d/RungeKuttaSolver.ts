@@ -24,7 +24,6 @@ export class RungeKuttaSolver extends RealTimePropagator {
     this.f3 = new Array(this.nPoints);
     this.f4 = new Array(this.nPoints);
     this.temp = new Array(this.nPoints);
-    this.setTimeStep(0.01);
   }
 
   nextStep(): void {
@@ -100,7 +99,6 @@ export class RungeKuttaSolver extends RealTimePropagator {
     }
 
     this.iStep++;
-    console.log(this.psi[49], this.psi[50], this.psi[51])
     this.computeProperties();
 
   }

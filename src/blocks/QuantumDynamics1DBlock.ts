@@ -11,9 +11,9 @@ import {StationaryStateSolver} from "../physics/quantum/qm1d/StationaryStateSolv
 import {CustomPotential} from "../physics/quantum/qm1d/potentials/CustomPotential";
 import {TimePropagator} from "../physics/quantum/qm1d/TimePropagator";
 import {Quantum1DBlock} from "./Quantum1DBlock";
-import {SquareWell} from "../physics/quantum/qm1d/potentials/SquareWell";
 import {RungeKuttaSolver} from "../physics/quantum/qm1d/RungeKuttaSolver";
 import {CayleySolver} from "../physics/quantum/qm1d/CayleySolver";
+import {HarmonicOscillator} from "../physics/quantum/qm1d/potentials/HarmonicOscillator";
 
 export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
@@ -22,6 +22,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   private initialState: number = -1;
   private dynamicSolver: TimePropagator;
   private baseLineOffet: number = 50;
+  private method: string = "Cayley";
 
   static State = class {
     readonly uid: string;
@@ -32,8 +33,10 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     readonly name: string;
     readonly viewWindowColor: string;
     readonly nPoints: number;
+    readonly timeStep: number;
     readonly initialState: number;
     readonly potentialName: string;
+    readonly method: string;
 
     constructor(block: QuantumDynamics1DBlock) {
       this.uid = block.uid;
@@ -44,8 +47,10 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       this.name = block.name;
       this.viewWindowColor = block.viewWindowColor;
       this.nPoints = block.nPoints;
+      this.timeStep = block.getTimeStep();
       this.initialState = block.initialState;
       this.potentialName = block.potentialName;
+      this.method = block.method;
     }
   };
 
@@ -66,11 +71,8 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.ports.push(this.portDX);
     this.marginX = 30;
     this.viewWindow = new Rectangle(0, 0, 1, 1);
-    this.potential = new SquareWell(this.nPoints, -1, 1, -10, 10);
-    this.dynamicSolver = new CayleySolver(this.nPoints);
-    this.dynamicSolver.setPotential(this.potential);
-    this.dynamicSolver.initPsi();
-    this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
+    this.potential = new HarmonicOscillator(this.nPoints, -10, 10);
+    this.setMethod("Cayley");
   }
 
   getCopy(): Block {
@@ -78,9 +80,44 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     copy.setViewWindowColor(this.viewWindowColor);
     copy.setName(this.name);
     copy.setNpoints(this.nPoints);
+    copy.setTimeStep(this.getTimeStep());
     copy.setInitialState(this.initialState);
     copy.setPotentialName(this.potentialName);
+    copy.setMethod(this.method);
     return copy;
+  }
+
+  reset(): void {
+    super.reset();
+    this.dynamicSolver.reset();
+  }
+
+  public setMethod(method: string): void {
+    this.method = method;
+    let timeStep = this.dynamicSolver !== undefined ? this.dynamicSolver.getTimeStep() : 0.2;
+    switch (method) {
+      case "Runge-Kutta":
+        this.dynamicSolver = new RungeKuttaSolver(this.nPoints);
+        break;
+      default:
+        this.dynamicSolver = new CayleySolver(this.nPoints);
+    }
+    this.dynamicSolver.setTimeStep(timeStep);
+    this.dynamicSolver.setPotential(this.potential);
+    this.dynamicSolver.initPsi();
+    this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
+  }
+
+  public getMethod(): string {
+    return this.method;
+  }
+
+  public setTimeStep(timeStep: number): void {
+    this.dynamicSolver.setTimeStep(timeStep);
+  }
+
+  public getTimeStep(): number {
+    return this.dynamicSolver.getTimeStep();
   }
 
   public setInitialState(initialState: number): void {
@@ -157,8 +194,8 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       ctx.stroke();
     } else {
       if (this.potential !== undefined) {
-        this.drawPotential(ctx);
         this.drawProbabilityDensityFunctions(ctx);
+        this.drawPotential(ctx);
         this.drawAxes(ctx);
       }
       this.drawAxisLabels(ctx);
@@ -222,10 +259,6 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   private drawPotential(ctx: CanvasRenderingContext2D): void {
     let bottom = this.viewWindow.y + this.viewWindow.height - this.baseLineOffet;
     let h = this.viewWindow.height / 2;
-    ctx.fillStyle = "white";
-    ctx.beginPath();
-    ctx.rect(this.viewWindow.x + 1, bottom - h + 1, this.viewWindow.width - 2, h - 2);
-    ctx.fill();
     let vmin = this.potential.getVmin();
     let vmax = this.potential.getVmax();
     if (vmin === vmax) return;
@@ -296,27 +329,24 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   updateModel(): void {
     let vx = this.portVX.getValue();
-    if (this.initialState >= 0) { // we need to calculate the wave function of the initial state
-      if (Array.isArray(vx)) { // custom potential
-        let x0 = this.portX0.getValue();
-        let dx = this.portDX.getValue();
-        if (typeof x0 !== "number" || typeof dx !== "number" || typeof vx[0] !== "number") return;
-        this.potential = new CustomPotential(x0, x0 + dx * vx.length, vx);
+    if (Array.isArray(vx)) { // custom potential
+      let x0 = this.portX0.getValue();
+      let dx = this.portDX.getValue();
+      if (typeof x0 !== "number" || typeof dx !== "number" || typeof vx[0] !== "number") return;
+      this.potential = new CustomPotential(x0, x0 + dx * vx.length, vx);
+      if (this.initialState >= 0) { // we need to calculate the wave function of the initial state
         if (this.staticSolver === undefined || this.staticSolver.getPoints() !== vx.length) this.staticSolver = new StationaryStateSolver(vx.length);
         this.staticSolver.setPotential(vx);
         this.staticSolver.discretizeHamiltonian(dx * vx.length);
         this.staticSolver.solve();
         this.energyLevels = this.staticSolver.getEigenValues();
         this.waveFunctions = this.staticSolver.getEigenVectors();
-      } else if (typeof vx === "string") {
-        this.staticSolve(vx);
       }
     }
     let steps = this.portIN.getValue();
     if (steps === undefined || steps === 0) return;
     this.dynamicSolver.nextStep();
     this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
-    flowchart.blockView.requestDraw();
   }
 
 }

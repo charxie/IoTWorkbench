@@ -23,6 +23,19 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-name-field" style="width: 100%"></td>
                 </tr>
                <tr>
+                  <td>Method:</td>
+                  <td colspan="2">
+                    <select id="quantum-dynamics-1d-block-method-selector" style="width: 100%">
+                      <option value="Cayley" selected>Cayley</option>
+                      <option value="Runge-Kutta">Runge-Kutta</option>
+                    </select>
+                  </td>
+               </tr>
+                <tr>
+                  <td>Time Step:</td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-time-step-field" style="width: 100%"></td>
+                </tr>
+               <tr>
                   <td>Potential:</td>
                   <td colspan="2">
                     <select id="quantum-dynamics-1d-block-potential-selector" style="width: 100%">
@@ -41,8 +54,8 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
-                  <td>Steps:</td>
-                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-steps-field" style="width: 100%"></td>
+                  <td>Number of Points:</td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-points-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Initial State:</td>
@@ -73,10 +86,14 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("quantum-dynamics-1d-block-name-field") as HTMLInputElement;
       nameField.value = block.getName();
+      let methodSelector = document.getElementById("quantum-dynamics-1d-block-method-selector") as HTMLSelectElement;
+      methodSelector.value = this.block.getMethod();
+      let timeStepField = document.getElementById("quantum-dynamics-1d-block-time-step-field") as HTMLInputElement;
+      timeStepField.value = block.getTimeStep().toString();
       let potentialSelector = document.getElementById("quantum-dynamics-1d-block-potential-selector") as HTMLSelectElement;
       potentialSelector.value = this.block.getPotentialName();
-      let stepsField = document.getElementById("quantum-dynamics-1d-block-steps-field") as HTMLInputElement;
-      stepsField.value = Math.round(block.getNPoints()).toString();
+      let pointsField = document.getElementById("quantum-dynamics-1d-block-points-field") as HTMLInputElement;
+      pointsField.value = Math.round(block.getNPoints()).toString();
       let initialStateField = document.getElementById("quantum-dynamics-1d-block-initial-state-field") as HTMLInputElement;
       initialStateField.value = Math.round(block.getInitialState()).toString();
       let windowColorField = document.getElementById("quantum-dynamics-1d-block-window-color-field") as HTMLInputElement;
@@ -91,18 +108,26 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       const okFunction = () => {
         let success = true;
         let message;
-        // set steps
-        let steps = parseInt(stepsField.value);
-        if (isNumber(steps)) {
-          block.setNpoints(Math.max(50, steps));
+        // set time step
+        let timeStep = parseFloat(timeStepField.value);
+        if (isNumber(timeStep)) {
+          block.setTimeStep(Math.max(0.01, timeStep));
         } else {
           success = false;
-          message = stepsField.value + " is not a valid number for steps";
+          message = timeStepField.value + " is not a valid number for time step";
+        }
+        // set points
+        let points = parseInt(pointsField.value);
+        if (isNumber(points)) {
+          block.setNpoints(Math.max(50, points));
+        } else {
+          success = false;
+          message = pointsField.value + " is not a valid number for number of points";
         }
         // set the initial state
         let initialState = parseInt(initialStateField.value);
         if (isNumber(initialState)) {
-          block.setInitialState(Math.max(0, initialState));
+          block.setInitialState(Math.max(-1, initialState));
         } else {
           success = false;
           message = initialStateField.value + " is not a valid number for the initial state";
@@ -126,6 +151,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
         // finish up
         if (success) {
           block.setName(nameField.value);
+          block.setMethod(methodSelector.value);
           block.setPotentialName(potentialSelector.value);
           block.setViewWindowColor(windowColorField.value);
           block.refreshView();
@@ -143,7 +169,8 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
         }
       };
       nameField.addEventListener("keyup", enterKeyUp);
-      stepsField.addEventListener("keyup", enterKeyUp);
+      timeStepField.addEventListener("keyup", enterKeyUp);
+      pointsField.addEventListener("keyup", enterKeyUp);
       initialStateField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);

@@ -168,7 +168,6 @@ export abstract class RealTimePropagator extends TimePropagator {
 
   getAmplitude(): number[] {
     return this.amplitude;
-
   }
 
   nextStep(): void {
@@ -215,7 +214,6 @@ export abstract class RealTimePropagator extends TimePropagator {
       this.amplitude[i] = this.psi[i].absSquare();
       this.sum += this.amplitude[i];
     }
-    console.log(this.amplitude[49], this.amplitude[50], this.amplitude[51])
     this.position = this.calculateExpectation(this.coordinates);
     this.calculateMomentum();
     this.calculateKineticEnergy();

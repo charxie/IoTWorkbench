@@ -533,7 +533,9 @@ export class StateIO {
           block.setViewWindowColor(state.viewWindowColor);
           block.setInitialState(state.initialState);
           block.setPotentialName(state.potentialName);
+          if (state.method !== undefined) block.setMethod(state.method);
           if (state.nPoints !== undefined) block.setNpoints(state.nPoints);
+          if (state.timeStep !== undefined) block.setTimeStep(state.timeStep);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }
