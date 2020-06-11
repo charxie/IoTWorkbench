@@ -13,29 +13,28 @@ import {SquareWell} from "./potentials/SquareWell";
 export abstract class TimePropagator {
 
   static readonly VMAX: number = 5;
-  static readonly OUTPUT_INTERVAL: number = 50;
 
   nPoints: number;
   coordinates: number[];
   savedEigenvector: number[];
   amplitude: number[];
-  iStep: number;
+  iStep: number = 0;
   timeStep: number = 0.01;
   potential: Potential1D;
   particle: Particle;
   eField: ElectricField1D;
   boundary: Boundary;
-  sum: number;
-  totE: number;
-  potE: number;
-  kinE: number;
-  position: number;
-  momentum: number;
-  running: boolean;
-  notifyReset: boolean;
+  sum: number = 0;
+  totE: number = 0;
+  potE: number = 0;
+  kinE: number = 0;
+  position: number = 0;
+  momentum: number = 0;
+  running: boolean = false;
+  notifyReset: boolean = false;
   mu: number = 0;
   sigma: number = 2;
-  delta: number;
+  delta: number = 0;
   initialState: number = -1;
 
   constructor() {
@@ -192,6 +191,6 @@ export abstract class TimePropagator {
 
   abstract calculateExpectation(prop: number[]): number;
 
-  abstract outputProperties(): void;
+  abstract computeProperties(): void;
 
 }

@@ -259,13 +259,13 @@ export class ArithmeticBlock extends Block {
           return a / b;
         }
         if (a instanceof MyComplex && b instanceof MyComplex) {
-          return a.divides(b);
+          return a.divide(b);
         }
         if (a instanceof MyComplex && typeof b === "number") {
-          return a.divides(new MyComplex(b, 0));
+          return a.divide(new MyComplex(b, 0));
         }
         if (b instanceof MyComplex && typeof a === "number") {
-          return new MyComplex(a, 0).divides(b);
+          return new MyComplex(a, 0).divide(b);
         }
         if (a instanceof MyVector && typeof b === "number") {
           return a.scale(1 / b);

@@ -11,11 +11,13 @@ import {StationaryStateSolver} from "../physics/quantum/qm1d/StationaryStateSolv
 import {CustomPotential} from "../physics/quantum/qm1d/potentials/CustomPotential";
 import {TimePropagator} from "../physics/quantum/qm1d/TimePropagator";
 import {Quantum1DBlock} from "./Quantum1DBlock";
-import {RungeKuttaSolver} from "../physics/quantum/qm1d/RungeKuttaSolver";
 import {SquareWell} from "../physics/quantum/qm1d/potentials/SquareWell";
+import {RungeKuttaSolver} from "../physics/quantum/qm1d/RungeKuttaSolver";
+import {CayleySolver} from "../physics/quantum/qm1d/CayleySolver";
 
 export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
+  private portIN: Port;
   private probabilityDensityFunction: number[];
   private initialState: number = -1;
   private dynamicSolver: TimePropagator;
@@ -53,17 +55,19 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.name = "Quantum Dynamics 1D Block";
     this.color = "#CCFCFA";
     this.barHeight = Math.min(30, this.height / 3);
-    let dh = (this.height - this.barHeight) / 4;
-    this.portVX = new Port(this, true, "VX", 0, this.barHeight + dh, false);
-    this.portX0 = new Port(this, true, "X0", 0, this.barHeight + 2 * dh, false);
-    this.portDX = new Port(this, true, "DX", 0, this.barHeight + 3 * dh, false);
+    let dh = (this.height - this.barHeight) / 5;
+    this.portIN = new Port(this, true, "IN", 0, this.barHeight + dh, false);
+    this.portVX = new Port(this, true, "VX", 0, this.barHeight + 2 * dh, false);
+    this.portX0 = new Port(this, true, "X0", 0, this.barHeight + 3 * dh, false);
+    this.portDX = new Port(this, true, "DX", 0, this.barHeight + 4 * dh, false);
+    this.ports.push(this.portIN);
     this.ports.push(this.portVX);
     this.ports.push(this.portX0);
     this.ports.push(this.portDX);
     this.marginX = 30;
     this.viewWindow = new Rectangle(0, 0, 1, 1);
     this.potential = new SquareWell(this.nPoints, -1, 1, -10, 10);
-    this.dynamicSolver = new RungeKuttaSolver(this.nPoints);
+    this.dynamicSolver = new CayleySolver(this.nPoints);
     this.dynamicSolver.setPotential(this.potential);
     this.dynamicSolver.initPsi();
     this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
@@ -283,29 +287,36 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.viewMargin.bottom = 30;
     this.viewMargin.left = 30;
     this.viewMargin.right = 10;
-    let dh = (this.height - this.barHeight) / 4;
-    this.portVX.setY(this.barHeight + dh);
-    this.portX0.setY(this.barHeight + dh * 2);
-    this.portDX.setY(this.barHeight + dh * 3);
+    let dh = (this.height - this.barHeight) / 5;
+    this.portIN.setY(this.barHeight + dh);
+    this.portVX.setY(this.barHeight + dh * 2);
+    this.portX0.setY(this.barHeight + dh * 3);
+    this.portDX.setY(this.barHeight + dh * 4);
   }
 
   updateModel(): void {
     let vx = this.portVX.getValue();
-    if (vx === undefined) return;
-    if (Array.isArray(vx)) { // custom potential
-      let x0 = this.portX0.getValue();
-      let dx = this.portDX.getValue();
-      if (typeof x0 !== "number" || typeof dx !== "number" || typeof vx[0] !== "number") return;
-      this.potential = new CustomPotential(x0, x0 + dx * vx.length, vx);
-      if (this.staticSolver === undefined || this.staticSolver.getPoints() !== vx.length) this.staticSolver = new StationaryStateSolver(vx.length);
-      this.staticSolver.setPotential(vx);
-      this.staticSolver.discretizeHamiltonian(dx * vx.length);
-      this.staticSolver.solve();
-      this.energyLevels = this.staticSolver.getEigenValues();
-      this.waveFunctions = this.staticSolver.getEigenVectors();
-    } else if (typeof vx === "string") {
-      this.staticSolve(vx);
+    if (this.initialState >= 0) { // we need to calculate the wave function of the initial state
+      if (Array.isArray(vx)) { // custom potential
+        let x0 = this.portX0.getValue();
+        let dx = this.portDX.getValue();
+        if (typeof x0 !== "number" || typeof dx !== "number" || typeof vx[0] !== "number") return;
+        this.potential = new CustomPotential(x0, x0 + dx * vx.length, vx);
+        if (this.staticSolver === undefined || this.staticSolver.getPoints() !== vx.length) this.staticSolver = new StationaryStateSolver(vx.length);
+        this.staticSolver.setPotential(vx);
+        this.staticSolver.discretizeHamiltonian(dx * vx.length);
+        this.staticSolver.solve();
+        this.energyLevels = this.staticSolver.getEigenValues();
+        this.waveFunctions = this.staticSolver.getEigenVectors();
+      } else if (typeof vx === "string") {
+        this.staticSolve(vx);
+      }
     }
+    let steps = this.portIN.getValue();
+    if (steps === undefined || steps === 0) return;
+    this.dynamicSolver.nextStep();
+    this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
+    flowchart.blockView.requestDraw();
   }
 
 }

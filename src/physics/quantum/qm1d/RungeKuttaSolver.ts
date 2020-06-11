@@ -4,8 +4,6 @@
 
 import {RealTimePropagator} from "./RealTimePropagator";
 import {MyComplex} from "../../../math/MyComplex";
-import {Particle} from "../Particle";
-import {TimePropagator} from "./TimePropagator";
 
 export class RungeKuttaSolver extends RealTimePropagator {
 
@@ -102,10 +100,8 @@ export class RungeKuttaSolver extends RealTimePropagator {
     }
 
     this.iStep++;
-
-    if (this.iStep % TimePropagator.OUTPUT_INTERVAL == 0) {
-      this.outputProperties();
-    }
+    console.log(this.psi[49], this.psi[50], this.psi[51])
+    this.computeProperties();
 
   }
 

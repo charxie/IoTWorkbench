@@ -58,7 +58,7 @@ export class MyComplex {
     return new MyComplex(this.re / scale, -this.im / scale);
   }
 
-  public divides(b: MyComplex): MyComplex {
+  public divide(b: MyComplex): MyComplex {
     return this.times(b.reciprocal());
   }
 
@@ -75,7 +75,7 @@ export class MyComplex {
   }
 
   public tan(): MyComplex {
-    return this.sin().divides(this.cos());
+    return this.sin().divide(this.cos());
   }
 
   // The two square roots of a+bi are (x+yi) and -(x+yi) with y = sqrt((r - a)/2) and x = b/(2y). This method returns the first one.

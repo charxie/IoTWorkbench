@@ -162,6 +162,10 @@ export abstract class RealTimePropagator extends TimePropagator {
       this.psi[i] = new MyComplex(this.psi[i].re * this.sum, this.psi[i].im * this.sum);
   }
 
+  getWaveFunction(): MyComplex[] {
+    return this.psi;
+  }
+
   getAmplitude(): number[] {
     return this.amplitude;
 
@@ -205,20 +209,19 @@ export abstract class RealTimePropagator extends TimePropagator {
     return result;
   }
 
-  outputProperties(): void {
+  computeProperties(): void {
     this.sum = 0.0;
     for (let i = 0; i < this.nPoints; i++) {
       this.amplitude[i] = this.psi[i].absSquare();
       this.sum += this.amplitude[i];
     }
+    console.log(this.amplitude[49], this.amplitude[50], this.amplitude[51])
     this.position = this.calculateExpectation(this.coordinates);
     this.calculateMomentum();
     this.calculateKineticEnergy();
     this.potE = this.calculateExpectation(this.getPotential());
     this.totE = this.kinE + this.potE;
-    if (this.iStep % 1000 == 0) {
-      console.log(">>> %5.0f = %10.5f, %10.5f, %10.5f, %10.5f", this.getTime(), this.sum, this.totE, this.potE, this.kinE);
-    }
+    if (this.iStep % 10 == 0) console.log(this.getTime().toFixed(2) + ": " + this.sum.toFixed(5), this.totE.toFixed(5), this.potE.toFixed(5), this.kinE.toFixed(5));
   }
 
 }
