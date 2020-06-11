@@ -11,12 +11,15 @@ import {StationaryStateSolver} from "../physics/quantum/qm1d/StationaryStateSolv
 import {CustomPotential} from "../physics/quantum/qm1d/potentials/CustomPotential";
 import {TimePropagator} from "../physics/quantum/qm1d/TimePropagator";
 import {Quantum1DBlock} from "./Quantum1DBlock";
+import {RungeKuttaSolver} from "../physics/quantum/qm1d/RungeKuttaSolver";
+import {SquareWell} from "../physics/quantum/qm1d/potentials/SquareWell";
 
 export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   private probabilityDensityFunction: number[];
   private initialState: number = -1;
   private dynamicSolver: TimePropagator;
+  private baseLineOffet: number = 50;
 
   static State = class {
     readonly uid: string;
@@ -26,7 +29,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     readonly height: number;
     readonly name: string;
     readonly viewWindowColor: string;
-    readonly steps: number;
+    readonly nPoints: number;
     readonly initialState: number;
     readonly potentialName: string;
 
@@ -38,7 +41,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       this.height = block.height;
       this.name = block.name;
       this.viewWindowColor = block.viewWindowColor;
-      this.steps = block.steps;
+      this.nPoints = block.nPoints;
       this.initialState = block.initialState;
       this.potentialName = block.potentialName;
     }
@@ -59,13 +62,18 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.ports.push(this.portDX);
     this.marginX = 30;
     this.viewWindow = new Rectangle(0, 0, 1, 1);
+    this.potential = new SquareWell(this.nPoints, -1, 1, -10, 10);
+    this.dynamicSolver = new RungeKuttaSolver(this.nPoints);
+    this.dynamicSolver.setPotential(this.potential);
+    this.dynamicSolver.initPsi();
+    this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
   }
 
   getCopy(): Block {
     let copy = new QuantumDynamics1DBlock("Quantum Dynamics 1D Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
     copy.setViewWindowColor(this.viewWindowColor);
     copy.setName(this.name);
-    copy.setSteps(this.steps);
+    copy.setNpoints(this.nPoints);
     copy.setInitialState(this.initialState);
     copy.setPotentialName(this.potentialName);
     return copy;
@@ -208,9 +216,9 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   }
 
   private drawPotential(ctx: CanvasRenderingContext2D): void {
-    let bottom = this.viewWindow.y + this.viewWindow.height;
+    let bottom = this.viewWindow.y + this.viewWindow.height - this.baseLineOffet;
     let h = this.viewWindow.height / 2;
-    ctx.fillStyle = "#eeeeee";
+    ctx.fillStyle = "white";
     ctx.beginPath();
     ctx.rect(this.viewWindow.x + 1, bottom - h + 1, this.viewWindow.width - 2, h - 2);
     ctx.fill();
@@ -244,14 +252,14 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   private drawProbabilityDensityFunctions(ctx: CanvasRenderingContext2D): void {
     if (this.probabilityDensityFunction === undefined) return;
-    let n = this.waveFunctions.length;
-    let bottom = this.viewWindow.y + this.viewWindow.height * 3.6 / 8;
+    let n = this.probabilityDensityFunction.length;
+    let bottom = this.viewWindow.y + this.viewWindow.height - this.baseLineOffet;
     let h = this.viewWindow.height * 2;
     let dx = this.viewWindow.width / n;
     ctx.beginPath();
     ctx.moveTo(this.viewWindow.x, bottom);
     for (let i = 0; i < n; i++) {
-      ctx.lineTo(this.viewWindow.x + i * dx, bottom - h * this.probabilityDensityFunction[i] * this.probabilityDensityFunction[i]);
+      ctx.lineTo(this.viewWindow.x + i * dx, bottom - h * this.probabilityDensityFunction[i]);
     }
     ctx.lineTo(this.viewWindow.x + this.viewWindow.width, bottom);
     ctx.closePath();

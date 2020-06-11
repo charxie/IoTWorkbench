@@ -68,6 +68,7 @@ import {ParallelCoordinatesPlot} from "./blocks/ParallelCoordinatesPlot";
 import {RadarChart} from "./blocks/RadarChart";
 import {KNNClassifierBlock} from "./blocks/KNNClassifierBlock";
 import {QuantumStationaryState1DBlock} from "./blocks/QuantumStationaryState1DBlock";
+import {QuantumDynamics1DBlock} from "./blocks/QuantumDynamics1DBlock";
 
 export class StateIO {
 
@@ -523,10 +524,16 @@ export class StateIO {
           if (state.viewWindowColor !== undefined) block.setViewWindowColor(state.viewWindowColor);
         } else if (block instanceof QuantumStationaryState1DBlock) {
           block.setName(state.name);
-          block.setSteps(state.steps);
           block.setViewWindowColor(state.viewWindowColor);
           block.setMaxState(state.maxState);
           if (state.potentialName) block.setPotentialName(state.potentialName);
+          if (state.nPoints !== undefined) block.setNpoints(state.nPoints);
+        } else if (block instanceof QuantumDynamics1DBlock) {
+          block.setName(state.name);
+          block.setViewWindowColor(state.viewWindowColor);
+          block.setInitialState(state.initialState);
+          block.setPotentialName(state.potentialName);
+          if (state.nPoints !== undefined) block.setNpoints(state.nPoints);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

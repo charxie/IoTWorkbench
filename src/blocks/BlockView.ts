@@ -79,6 +79,7 @@ import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
 import {RadarChart} from "./RadarChart";
 import {KNNClassifierBlock} from "./KNNClassifierBlock";
 import {QuantumStationaryState1DBlock} from "./QuantumStationaryState1DBlock";
+import {QuantumDynamics1DBlock} from "./QuantumDynamics1DBlock";
 
 export class BlockView {
 
@@ -409,6 +410,9 @@ export class BlockView {
         break;
       case "quantum-stationary-state-1d-block":
         b = this.addBlockUndoable(new QuantumStationaryState1DBlock("Quantum Stationary State 1D Block #" + timestamp, x - 150, y - 150, 300, 300));
+        break;
+      case "quantum-dynamics-1d-block":
+        b = this.addBlockUndoable(new QuantumDynamics1DBlock("Quantum Dynamics 1D Block #" + timestamp, x - 150, y - 150, 300, 300));
         break;
     }
     return b;

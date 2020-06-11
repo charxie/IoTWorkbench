@@ -6,13 +6,13 @@ import $ from "jquery";
 import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
-import {QuantumStationaryState1DBlock} from "../QuantumStationaryState1DBlock";
+import {QuantumDynamics1DBlock} from "../QuantumDynamics1DBlock";
 
-export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
+export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
 
   constructor() {
     super();
-    this.id = "quantum-stationary-state-1d-block-context-menu";
+    this.id = "quantum-dynamics-1d-block-context-menu";
   }
 
   getPropertiesUI(): string {
@@ -20,12 +20,12 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
                   <td>Name:</td>
-                  <td colspan="2"><input type="text" id="quantum-stationary-state-1d-block-name-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-name-field" style="width: 100%"></td>
                 </tr>
                <tr>
                   <td>Potential:</td>
                   <td colspan="2">
-                    <select id="quantum-stationary-state-1d-block-potential-selector" style="width: 100%">
+                    <select id="quantum-dynamics-1d-block-potential-selector" style="width: 100%">
                       <option value="Custom" selected>Custom</option>
                       <option value="Square Well">Square Well</option>
                       <option value="Coulomb Well">Coulomb Well</option>
@@ -42,24 +42,24 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
                 </tr>
                 <tr>
                   <td>Steps:</td>
-                  <td colspan="2"><input type="text" id="quantum-stationary-state-1d-block-steps-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-steps-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Highest State:</td>
-                  <td colspan="2"><input type="text" id="quantum-stationary-state-1d-block-highest-state-field" style="width: 100%"></td>
+                  <td>Initial State:</td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-initial-state-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Window Color:</td>
-                  <td><input type="color" id="quantum-stationary-state-1d-block-window-color-chooser" style="width: 50px"></td>
-                  <td><input type="text" id="quantum-stationary-state-1d-block-window-color-field" style="width: 100%"></td>
+                  <td><input type="color" id="quantum-dynamics-1d-block-window-color-chooser" style="width: 50px"></td>
+                  <td><input type="text" id="quantum-dynamics-1d-block-window-color-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Width:</td>
-                  <td colspan="2"><input type="text" id="quantum-stationary-state-1d-block-width-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-width-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Height:</td>
-                  <td colspan="2"><input type="text" id="quantum-stationary-state-1d-block-height-field" style="width: 100%"></td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-height-field" style="width: 100%"></td>
                 </tr>
               </table>
             </div>`;
@@ -68,25 +68,25 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
   propertiesButtonClick(): void {
     // FIXME: This event will not propagate to its parent. So we have to call this method here to close context menus.
     closeAllContextMenus();
-    if (this.block instanceof QuantumStationaryState1DBlock) {
+    if (this.block instanceof QuantumDynamics1DBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
-      let nameField = document.getElementById("quantum-stationary-state-1d-block-name-field") as HTMLInputElement;
+      let nameField = document.getElementById("quantum-dynamics-1d-block-name-field") as HTMLInputElement;
       nameField.value = block.getName();
-      let potentialSelector = document.getElementById("quantum-stationary-state-1d-block-potential-selector") as HTMLSelectElement;
+      let potentialSelector = document.getElementById("quantum-dynamics-1d-block-potential-selector") as HTMLSelectElement;
       potentialSelector.value = this.block.getPotentialName();
-      let stepsField = document.getElementById("quantum-stationary-state-1d-block-steps-field") as HTMLInputElement;
+      let stepsField = document.getElementById("quantum-dynamics-1d-block-steps-field") as HTMLInputElement;
       stepsField.value = Math.round(block.getNPoints()).toString();
-      let highestStateField = document.getElementById("quantum-stationary-state-1d-block-highest-state-field") as HTMLInputElement;
-      highestStateField.value = Math.round(block.getMaxState()).toString();
-      let windowColorField = document.getElementById("quantum-stationary-state-1d-block-window-color-field") as HTMLInputElement;
+      let initialStateField = document.getElementById("quantum-dynamics-1d-block-initial-state-field") as HTMLInputElement;
+      initialStateField.value = Math.round(block.getInitialState()).toString();
+      let windowColorField = document.getElementById("quantum-dynamics-1d-block-window-color-field") as HTMLInputElement;
       windowColorField.value = block.getViewWindowColor();
-      let windowColorChooser = document.getElementById("quantum-stationary-state-1d-block-window-color-chooser") as HTMLInputElement;
+      let windowColorChooser = document.getElementById("quantum-dynamics-1d-block-window-color-chooser") as HTMLInputElement;
       Util.setColorPicker(windowColorChooser, block.getViewWindowColor());
       Util.hookupColorInputs(windowColorField, windowColorChooser);
-      let widthField = document.getElementById("quantum-stationary-state-1d-block-width-field") as HTMLInputElement;
+      let widthField = document.getElementById("quantum-dynamics-1d-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
-      let heightField = document.getElementById("quantum-stationary-state-1d-block-height-field") as HTMLInputElement;
+      let heightField = document.getElementById("quantum-dynamics-1d-block-height-field") as HTMLInputElement;
       heightField.value = Math.round(block.getHeight()).toString();
       const okFunction = () => {
         let success = true;
@@ -99,13 +99,13 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
           success = false;
           message = stepsField.value + " is not a valid number for steps";
         }
-        // set highest state
-        let maxState = parseInt(highestStateField.value);
-        if (isNumber(maxState)) {
-          block.setMaxState(Math.max(10, maxState));
+        // set the initial state
+        let initialState = parseInt(initialStateField.value);
+        if (isNumber(initialState)) {
+          block.setInitialState(Math.max(0, initialState));
         } else {
           success = false;
-          message = highestStateField.value + " is not a valid number for highest state";
+          message = initialStateField.value + " is not a valid number for the initial state";
         }
         // set width
         let w = parseInt(widthField.value);
@@ -144,7 +144,7 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
       };
       nameField.addEventListener("keyup", enterKeyUp);
       stepsField.addEventListener("keyup", enterKeyUp);
-      highestStateField.addEventListener("keyup", enterKeyUp);
+      initialStateField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);

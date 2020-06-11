@@ -8,11 +8,11 @@ import {Particle} from "../Particle";
 import {ElectricField1D} from "./ElectricField1D";
 import {Boundary} from "./Boundary";
 import {AbsorbingBoundary} from "./AbsorbingBoundary";
+import {SquareWell} from "./potentials/SquareWell";
 
 export abstract class TimePropagator {
 
   static readonly VMAX: number = 5;
-
   static readonly OUTPUT_INTERVAL: number = 50;
 
   nPoints: number;
@@ -33,10 +33,14 @@ export abstract class TimePropagator {
   momentum: number;
   running: boolean;
   notifyReset: boolean;
-  mu: number = 10;
-  sigma: number = 10;
+  mu: number = 0;
+  sigma: number = 2;
   delta: number;
   initialState: number = -1;
+
+  constructor() {
+    this.potential = new SquareWell(this.nPoints, 0, 0, -10, 10);
+  }
 
   setBoundaryCondition(name: string): void {
     if ("ABC" === name) {

@@ -71,6 +71,7 @@ import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
 import {RadarChart} from "./RadarChart";
 import {KNNClassifierBlock} from "./KNNClassifierBlock";
 import {QuantumStationaryState1DBlock} from "./QuantumStationaryState1DBlock";
+import {QuantumDynamics1DBlock} from "./QuantumDynamics1DBlock";
 
 export class BlockUtilities {
 
@@ -269,6 +270,9 @@ export class BlockUtilities {
     }
     if (block instanceof QuantumStationaryState1DBlock) {
       return contextMenus.quantumStationaryState1DBlock;
+    }
+    if (block instanceof QuantumDynamics1DBlock) {
+      return contextMenus.quantumDynamics1DBlock;
     }
     if (block instanceof RainbowHatBlock) {
       return contextMenus.rainbowHatBlock;
@@ -540,6 +544,10 @@ export class BlockUtilities {
     if (block instanceof QuantumStationaryState1DBlock) {
       contextMenus.quantumStationaryState1DBlock.block = block;
       return document.getElementById("quantum-stationary-state-1d-block-context-menu") as HTMLMenuElement;
+    }
+    if (block instanceof QuantumDynamics1DBlock) {
+      contextMenus.quantumDynamics1DBlock.block = block;
+      return document.getElementById("quantum-dynamics-1d-block-context-menu") as HTMLMenuElement;
     }
     return null;
   }

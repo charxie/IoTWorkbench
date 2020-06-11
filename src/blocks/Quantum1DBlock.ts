@@ -17,7 +17,7 @@ import {CoulombWells} from "../physics/quantum/qm1d/potentials/CoulombWells";
 export abstract class Quantum1DBlock extends Block {
 
   protected potentialName: string = "Custom";
-  protected steps: number = 100;
+  protected nPoints: number = 100;
   protected potential: Potential1D;
   protected energyLevels: number[];
   protected waveFunctions: number[][];
@@ -48,15 +48,15 @@ export abstract class Quantum1DBlock extends Block {
     return this.potentialName;
   }
 
-  setSteps(steps: number): void {
-    if (this.steps !== steps) {
-      if (this.portVX.getValue() === undefined) this.staticSolver = new StationaryStateSolver(steps);
-      this.steps = steps;
+  setNpoints(nPoints: number): void {
+    if (this.nPoints !== nPoints) {
+      if (this.portVX.getValue() === undefined) this.staticSolver = new StationaryStateSolver(nPoints);
+      this.nPoints = nPoints;
     }
   }
 
-  getSteps(): number {
-    return this.steps;
+  getNPoints(): number {
+    return this.nPoints;
   }
 
   setViewWindowColor(viewWindowColor: string): void {
@@ -71,39 +71,39 @@ export abstract class Quantum1DBlock extends Block {
     if (name === "Custom") return;
     switch (name) {
       case "Square Well":
-        this.potential = new SquareWell(this.steps, -1, 1, -10, 10);
+        this.potential = new SquareWell(this.nPoints, -1, 1, -10, 10);
         break;
       case "Coulomb Well":
-        this.potential = new CoulombWell(this.steps, -10, 10);
+        this.potential = new CoulombWell(this.nPoints, -10, 10);
         break;
       case "Morse Well":
-        this.potential = new MorseWell(this.steps, -10, 10);
+        this.potential = new MorseWell(this.nPoints, -10, 10);
         break;
       case "Harmonic Oscillator":
-        this.potential = new HarmonicOscillator(this.steps, -10, 10);
+        this.potential = new HarmonicOscillator(this.nPoints, -10, 10);
         break;
       case "Anharmonic Oscillator":
-        this.potential = new AnharmonicOscillator(this.steps, -10, 10);
+        this.potential = new AnharmonicOscillator(this.nPoints, -10, 10);
         break;
       case "Diatomic Molecule":
-        this.potential = new CoulombWells(this.steps, 2, 1, 0, CoulombWells.DEFAULT, -10, 10);
+        this.potential = new CoulombWells(this.nPoints, 2, 1, 0, CoulombWells.DEFAULT, -10, 10);
         break;
       case "Crystal Lattice":
-        this.potential = new CoulombWells(this.steps, 13, 1.4, 0, CoulombWells.DEFAULT, -10, 10);
+        this.potential = new CoulombWells(this.nPoints, 13, 1.4, 0, CoulombWells.DEFAULT, -10, 10);
         break;
       case "Crystal Lattice in a Field":
-        this.potential = new CoulombWells(this.steps, 11, 1.5, 0.002, CoulombWells.DEFAULT, -10, 10);
+        this.potential = new CoulombWells(this.nPoints, 11, 1.5, 0.002, CoulombWells.DEFAULT, -10, 10);
         break;
       case "Crystal Lattice with a Vacancy":
-        this.potential = new CoulombWells(this.steps, 11, 1.5, 0, CoulombWells.VACANCY, -10, 10);
+        this.potential = new CoulombWells(this.nPoints, 11, 1.5, 0, CoulombWells.VACANCY, -10, 10);
         break;
       case "Crystal Lattice with an Interstitial":
-        this.potential = new CoulombWells(this.steps, 11, 1.5, 0, CoulombWells.INTERSTITIAL, -10, 10);
+        this.potential = new CoulombWells(this.nPoints, 11, 1.5, 0, CoulombWells.INTERSTITIAL, -10, 10);
         break;
       default:
-        this.potential = new SquareWell(this.steps, 0, 0, -10, 10);
+        this.potential = new SquareWell(this.nPoints, 0, 0, -10, 10);
     }
-    if (this.staticSolver === undefined || this.staticSolver.getPoints() !== this.steps) this.staticSolver = new StationaryStateSolver(this.steps);
+    if (this.staticSolver === undefined || this.staticSolver.getPoints() !== this.nPoints) this.staticSolver = new StationaryStateSolver(this.nPoints);
     this.staticSolver.setPotential(this.potential.getValues());
     this.staticSolver.discretizeHamiltonian(this.potential.getXLength());
     this.staticSolver.solve();

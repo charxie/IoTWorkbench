@@ -13,16 +13,16 @@ export abstract class RealTimePropagator extends TimePropagator {
   hamiltonian: MyComplex[][];
   psi: MyComplex[];
 
-  private p0: number;
+  private p0: number = 0;
 
   // Schrodinger-Langevin-Kostin dissipation
-  private slkFriction: number;
+  private slkFriction: number = 0;
   private phase: number[];
   private foldedPhase: number[];
 
-  constructor(particle: Particle, dimension: number) {
+  constructor(nPoints: number) {
     super();
-    this.nPoints = dimension;
+    this.nPoints = nPoints;
     this.hamiltonian = new Array(this.nPoints);
     for (let i = 0; i < this.nPoints; i++) {
       this.hamiltonian[i] = new Array(this.nPoints);
@@ -31,7 +31,7 @@ export abstract class RealTimePropagator extends TimePropagator {
     this.psi = new Array(this.nPoints);
     this.coordinates = new Array(this.nPoints);
     for (let i = 0; i < this.nPoints; i++) this.coordinates[i] = i;
-    this.particle = particle;
+    this.particle = new Particle();
   }
 
   setSlkFriction(slkFriction: number): void {
@@ -65,13 +65,13 @@ export abstract class RealTimePropagator extends TimePropagator {
 
   /* Discretize the Hamiltonian into a matrix using the finite-difference method. */
   generateHamiltonianMatrix(): void {
-    let p = this.potential.getXLength();
-    this.delta = p / this.nPoints;
+    this.delta = this.potential.getXLength() / this.nPoints;
     let a = 0.5 / (this.delta * this.delta * this.particle.getMass() * Constants.MASS_UNIT_CONVERTER);
     let ef = this.eField != null ? this.particle.getCharge() * this.eField.getValue(this.getTime()) : 0;
     let slk: boolean = Math.abs(this.slkFriction) > 0 && this.psi[0] != null;
     let ft = 0;
     if (slk) ft = this.calculateExpectation(this.phase);
+    let p;
     for (let i = 0; i < this.nPoints; i++) {
       p = 2 * a + this.clampPotential(this.potential.getValue(i));
       if (ef != 0) {
@@ -124,6 +124,7 @@ export abstract class RealTimePropagator extends TimePropagator {
   initPsi(): void {
     if (this.initialState < 0) { // if no initial state is set, use a Gaussian
       let k, g;
+      this.delta = this.potential.getXLength() / this.nPoints;
       for (let i = 0; i < this.nPoints; i++) {
         k = this.potential.getXmin() + i * this.delta;
         g = Math.exp(-(k - this.mu) * (k - this.mu) / (this.sigma * this.sigma));

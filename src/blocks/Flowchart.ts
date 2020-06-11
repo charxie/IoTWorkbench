@@ -78,6 +78,7 @@ import {ParallelCoordinatesPlot} from "./ParallelCoordinatesPlot";
 import {RadarChart} from "./RadarChart";
 import {KNNClassifierBlock} from "./KNNClassifierBlock";
 import {QuantumStationaryState1DBlock} from "./QuantumStationaryState1DBlock";
+import {QuantumDynamics1DBlock} from "./QuantumDynamics1DBlock";
 
 export class Flowchart {
 
@@ -983,6 +984,9 @@ export class Flowchart {
       case "Quantum Stationary State 1D Block":
         block = new QuantumStationaryState1DBlock(uid, x, y, 200, 160);
         break;
+      case "Quantum Dynamics 1D Block":
+        block = new QuantumDynamics1DBlock(uid, x, y, 200, 160);
+        break;
       case "Rainbow HAT Block":
         block = new RainbowHatBlock(uid, x, y);
         break;
@@ -1144,6 +1148,8 @@ export class Flowchart {
         blockStates.push(new WordCloud.State(b));
       } else if (b instanceof QuantumStationaryState1DBlock) {
         blockStates.push(new QuantumStationaryState1DBlock.State(b));
+      } else if (b instanceof QuantumDynamics1DBlock) {
+        blockStates.push(new QuantumDynamics1DBlock.State(b));
       } else {
         blockStates.push(new Block.State(b));
       }

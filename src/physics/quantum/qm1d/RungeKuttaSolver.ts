@@ -19,8 +19,8 @@ export class RungeKuttaSolver extends RealTimePropagator {
   private f4: MyComplex[];
   private temp: MyComplex[];
 
-  constructor(particle: Particle, dimension: number) {
-    super(particle, dimension);
+  constructor(nPoints: number) {
+    super(nPoints);
     this.f1 = new Array(this.nPoints);
     this.f2 = new Array(this.nPoints);
     this.f3 = new Array(this.nPoints);

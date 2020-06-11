@@ -70,6 +70,7 @@ import {ParallelCoordinatesPlotContextMenu} from "./blocks/ui/ParallelCoordinate
 import {RadarChartContextMenu} from "./blocks/ui/RadarChartContextMenu";
 import {KNNClassifierBlockContextMenu} from "./blocks/ui/KNNClassifierBlockContextMenu";
 import {QuantumStationaryState1DBlockContextMenu} from "./blocks/ui/QuantumStationaryState1DBlockContextMenu";
+import {QuantumDynamics1DBlockContextMenu} from "./blocks/ui/QuantumDynamics1DBlockContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -141,6 +142,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("univariate-descriptive-statistics-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("wordcloud-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("quantum-stationary-state-1d-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("quantum-dynamics-1d-block-context-menu-placeholder", blockPlayground);
 
   setupContextMenuForBlocks();
 
@@ -483,6 +485,11 @@ function setupContextMenuForBlocks() {
   quantumStationaryState1DBlockContextMenu.addListeners();
   contextMenus.quantumStationaryState1DBlock = quantumStationaryState1DBlockContextMenu;
 
+  let quantumDynamics1DBlockContextMenu = new QuantumDynamics1DBlockContextMenu();
+  quantumDynamics1DBlockContextMenu.render("quantum-dynamics-1d-block-context-menu-placeholder");
+  quantumDynamics1DBlockContextMenu.addListeners();
+  contextMenus.quantumDynamics1DBlock = quantumDynamics1DBlockContextMenu;
+
 }
 
 export function addPlaceholder(id: string, parent: HTMLElement) {
@@ -490,4 +497,3 @@ export function addPlaceholder(id: string, parent: HTMLElement) {
   placeholder.id = id;
   parent.appendChild(placeholder);
 }
-
