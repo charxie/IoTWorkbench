@@ -15,8 +15,8 @@ export abstract class TimePropagator {
   static readonly VMAX: number = 5;
 
   nPoints: number;
+  delta: number = 0;
   coordinates: number[];
-  savedEigenvector: number[];
   amplitude: number[];
   iStep: number = 0;
   timeStep: number = 0.01;
@@ -24,16 +24,19 @@ export abstract class TimePropagator {
   particle: Particle;
   eField: ElectricField1D;
   boundary: Boundary;
-  sum: number = 0;
+
+  // expectations of properties
   totE: number = 0;
   potE: number = 0;
   kinE: number = 0;
   position: number = 0;
   momentum: number = 0;
+
+  // parameters for the initial state
   mu: number = 5;
   sigma: number = 2;
-  delta: number = 0;
   initialState: number = -1;
+  initialStateVector: number[];
 
   constructor() {
     this.potential = new SquareWell(this.nPoints, 0, 0, -10, 10);
@@ -96,7 +99,7 @@ export abstract class TimePropagator {
     return this.iStep * this.timeStep;
   }
 
-  abstract setInitialStateFromEigenVectors(initialState: number, eigenVectors: number[][]): void;
+  abstract setInitialWaveFunction(waveFunction: number[]): void;
 
   setInitialState(initialState: number): void {
     this.initialState = initialState;
@@ -110,9 +113,8 @@ export abstract class TimePropagator {
   }
 
   setInitialWavepacketPosition(mu: number): void {
-    this.initialState = -1;
     this.mu = mu;
-    this.initWavepacket();
+    if (this.initialState >= 0) this.initWavepacket();
   }
 
   getInitialWavepacketPosition(): number {
@@ -120,9 +122,8 @@ export abstract class TimePropagator {
   }
 
   setInitialWavepacketWidth(sigma: number): void {
-    this.initialState = -1;
     this.sigma = sigma;
-    this.initWavepacket();
+    if (this.initialState >= 0) this.initWavepacket();
   }
 
   getInitialWavepacketWidth(): number {

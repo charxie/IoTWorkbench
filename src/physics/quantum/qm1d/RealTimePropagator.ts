@@ -101,13 +101,12 @@ export abstract class RealTimePropagator extends TimePropagator {
     }
   }
 
-  setInitialStateFromEigenVectors(initState: number, eigenVector: number[][]): void {
-    this.initialState = initState;
-    if (this.savedEigenvector == null)
-      this.savedEigenvector = new Array(this.nPoints);
+  setInitialWaveFunction(waveFunction: number[]): void {
+    if (this.initialStateVector == null)
+      this.initialStateVector = new Array(this.nPoints);
     for (let i = 0; i < this.nPoints; i++) {
-      this.savedEigenvector[i] = eigenVector[initState][i];
-      this.psi[i] = new MyComplex(this.savedEigenvector[i], 0);
+      this.initialStateVector[i] = waveFunction[i];
+      this.psi[i] = new MyComplex(waveFunction[i], 0);
     }
     this.initWavepacket();
   }
@@ -129,11 +128,11 @@ export abstract class RealTimePropagator extends TimePropagator {
       }
       this.normalizeWavefunction();
     } else {
-      if (this.savedEigenvector != null) {
+      if (this.initialStateVector) {
         let k, g;
         for (let i = 0; i < this.nPoints; i++) {
           k = this.p0 * (this.potential.getXmin() + i * this.delta);
-          g = this.savedEigenvector[i];
+          g = this.initialStateVector[i];
           this.psi[i] = new MyComplex(g * Math.cos(k), g * Math.sin(k));
         }
       }
@@ -150,12 +149,11 @@ export abstract class RealTimePropagator extends TimePropagator {
   }
 
   normalizeWavefunction(): void {
-    this.sum = 0;
+    let s: number = 0;
+    for (let i = 0; i < this.nPoints; i++) s += this.psi[i].absSquare();
+    s = 1.0 / Math.sqrt(s);
     for (let i = 0; i < this.nPoints; i++)
-      this.sum += this.psi[i].absSquare();
-    this.sum = 1.0 / Math.sqrt(this.sum);
-    for (let i = 0; i < this.nPoints; i++)
-      this.psi[i] = new MyComplex(this.psi[i].re * this.sum, this.psi[i].im * this.sum);
+      this.psi[i] = new MyComplex(this.psi[i].re * s, this.psi[i].im * s);
   }
 
   getWaveFunction(): MyComplex[] {
@@ -206,17 +204,17 @@ export abstract class RealTimePropagator extends TimePropagator {
   }
 
   computeProperties(): void {
-    this.sum = 0.0;
+    let s: number = 0.0;
     for (let i = 0; i < this.nPoints; i++) {
       this.amplitude[i] = this.psi[i].absSquare();
-      this.sum += this.amplitude[i];
+      s += this.amplitude[i];
     }
     this.position = this.calculateExpectation(this.coordinates);
     this.calculateMomentum();
     this.calculateKineticEnergy();
     this.potE = this.calculateExpectation(this.getPotential());
     this.totE = this.kinE + this.potE;
-    //if (this.iStep % 10 == 0) console.log(this.getTime().toFixed(2) + ": " + this.sum.toFixed(5), this.totE.toFixed(5), this.potE.toFixed(5), this.kinE.toFixed(5));
+    //if (this.iStep % 10 == 0) console.log(this.getTime().toFixed(2) + ": " + s.toFixed(5), this.totE.toFixed(5), this.potE.toFixed(5), this.kinE.toFixed(5));
   }
 
 }

@@ -415,13 +415,6 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     ctx.stroke();
   }
 
-  mouseMove(e: MouseEvent): void {
-  }
-
-  mouseDown(e: MouseEvent): boolean {
-    return false;
-  }
-
   refreshView(): void {
     super.refreshView();
     this.viewMargin.top = 10;
@@ -441,15 +434,18 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       let x0 = this.portX0.getValue();
       let dx = this.portDX.getValue();
       if (typeof x0 !== "number" || typeof dx !== "number" || typeof vx[0] !== "number") return;
-      this.potential = new CustomPotential(x0, x0 + dx * vx.length, vx);
-      this.dynamicSolver.setPotential(this.potential);
-      if (this.getInitialState() >= 0) { // we need to calculate the wave function of the initial state
-        if (this.staticSolver === undefined || this.staticSolver.getPoints() !== vx.length) this.staticSolver = new StationaryStateSolver(vx.length);
-        this.staticSolver.setPotential(vx);
-        this.staticSolver.discretizeHamiltonian(dx * vx.length);
-        this.staticSolver.solve();
-        this.energyLevels = this.staticSolver.getEigenValues();
-        this.waveFunctions = this.staticSolver.getEigenVectors();
+      if (this.potential === undefined || !Util.arrayEqual(this.potential.getValues(), vx)) {
+        this.potential = new CustomPotential(x0, x0 + dx * vx.length, vx);
+        this.dynamicSolver.setPotential(this.potential);
+        if (this.getInitialState() >= 0) { // we need to calculate the wave function of the initial state
+          if (this.staticSolver === undefined || this.staticSolver.getPoints() !== vx.length) this.staticSolver = new StationaryStateSolver(vx.length);
+          this.staticSolver.setPotential(vx);
+          this.staticSolver.discretizeHamiltonian(dx * vx.length);
+          this.staticSolver.solve();
+          this.energyLevels = this.staticSolver.getEigenValues();
+          this.waveFunctions = this.staticSolver.getEigenVectors();
+          this.dynamicSolver.setInitialWaveFunction(this.waveFunctions[this.getInitialState()]);
+        }
       }
     }
     let steps = this.portIN.getValue();
