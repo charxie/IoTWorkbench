@@ -280,6 +280,13 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     ctx.restore();
   }
 
+  private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
+    ctx.font = "Italic 15px Times New Roman";
+    ctx.fillStyle = "black";
+    let horizontalAxisY = this.height - this.viewMargin.bottom;
+    ctx.fillText("x (Å)", this.viewWindow.x + (this.viewWindow.width - ctx.measureText("x").width) / 2, this.y + horizontalAxisY + 25);
+  }
+
   private drawAxes(ctx: CanvasRenderingContext2D): void {
     ctx.font = "10px Arial";
     ctx.fillStyle = "black";
@@ -313,14 +320,27 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     ctx.moveTo(x0, y0);
     ctx.lineTo(x0, this.viewWindow.y);
     ctx.stroke();
-
-  }
-
-  private drawAxisLabels(ctx: CanvasRenderingContext2D): void {
-    ctx.font = "Italic 15px Times New Roman";
-    ctx.fillStyle = "black";
-    let horizontalAxisY = this.height - this.viewMargin.bottom;
-    ctx.fillText("x (Å)", this.viewWindow.x + (this.viewWindow.width - ctx.measureText("x").width) / 2, this.y + horizontalAxisY + 25);
+    let vmin = this.potential.getVmin();
+    let vmax = this.potential.getVmax();
+    ctx.lineWidth = 0.5;
+    let h = this.viewWindow.height / 2;
+    let bottom = y0 - this.baseLineOffet;
+    let dv = h / (vmax - vmin);
+    let y;
+    for (let i = 1; i <= 5; i++) {
+      y = bottom - i * (vmax - vmin) / 5 * dv;
+      ctx.beginPath();
+      ctx.moveTo(x0 - 5, y);
+      ctx.lineTo(x0 + 5, y);
+      ctx.stroke();
+      ctx.fillText((vmin + i * (vmax - vmin) / 5).toFixed(1), x0 + 10, y + 3);
+    }
+    ctx.save();
+    ctx.font = "12px Arial";
+    ctx.translate(x0 - 10, bottom - (vmax - vmin) / 2 * dv);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText("V(x)", -ctx.measureText("V(x)").width / 2, 0);
+    ctx.restore();
   }
 
   private drawPotential(ctx: CanvasRenderingContext2D): void {
