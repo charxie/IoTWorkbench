@@ -59,7 +59,7 @@ export class TurnoutSwitch extends FunctionBlock {
   getPortName(uid: string): string {
     switch (uid) {
       case "X":
-        return this.variableName.substring(0, 1);
+        return this.variableName;
       default:
         return uid;
     }

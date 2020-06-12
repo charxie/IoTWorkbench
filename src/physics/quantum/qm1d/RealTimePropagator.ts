@@ -174,6 +174,7 @@ export abstract class RealTimePropagator extends TimePropagator {
     this.generateHamiltonianMatrix();
   }
 
+  // the momentum operator is P=-iℏ∂/∂x: integrate ψ∗Pψ
   calculateMomentum(): void {
     let m = new MyComplex(0, 0);
     let delta2 = this.delta * 2;
@@ -183,7 +184,7 @@ export abstract class RealTimePropagator extends TimePropagator {
       z = new MyComplex((this.psi[i + 1].re - this.psi[i - 1].re) / delta2, (this.psi[i + 1].im - this.psi[i - 1].im) / delta2);
       m = m.plus(this.psi[i].conjugate().times(z));
     }
-    this.momentum = m.im;
+    this.momentum = m.im; // -i*i = 1, ħ is set to 1 in our unit system. See Constants
   }
 
   calculateKineticEnergy(): void {

@@ -171,26 +171,21 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     ctx.stroke();
     if (this.iconic) {
       let xc = this.viewWindow.x + this.viewWindow.width / 2;
-      let yc = this.viewWindow.y + this.viewWindow.height / 2;
+      let yc = this.viewWindow.y + this.viewWindow.height - 5;
       ctx.beginPath();
       ctx.moveTo(xc - 10, yc);
       ctx.lineTo(xc + 10, yc);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(xc - 10, yc - 5);
-      ctx.lineTo(xc + 10, yc - 5);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(xc - 10, yc + 2);
-      ctx.lineTo(xc + 10, yc + 2);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(xc - 10, yc + 4);
-      ctx.lineTo(xc + 10, yc + 4);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(xc - 10, yc + 5);
-      ctx.lineTo(xc + 10, yc + 5);
+      let g;
+      for (let i = -10; i < 10; i += 2) {
+        g = 0.5 * this.viewWindow.height * Math.exp(-i * i / 10);
+        if (i === -10) {
+          ctx.moveTo(xc + i, yc - g);
+        } else {
+          ctx.lineTo(xc + i, yc - g);
+        }
+      }
       ctx.stroke();
     } else {
       if (this.potential !== undefined) {
