@@ -96,7 +96,11 @@ export abstract class TimePropagator {
     return this.iStep * this.timeStep;
   }
 
-  abstract setInitialState(initialState: number, eigenVectors: number[][]): void;
+  abstract setInitialStateFromEigenVectors(initialState: number, eigenVectors: number[][]): void;
+
+  setInitialState(initialState: number): void {
+    this.initialState = initialState;
+  }
 
   getInitialState(): number {
     return this.initialState;
@@ -105,28 +109,29 @@ export abstract class TimePropagator {
   setInitialMomentum(p0: number): void {
   }
 
-  setGaussianMu(mu: number): void {
+  setInitialWavepacketPosition(mu: number): void {
     this.initialState = -1;
     this.mu = mu;
-    this.initPsi();
+    this.initWavepacket();
   }
 
-  setGaussianSigma(sigma: number): void {
+  getInitialWavepacketPosition(): number {
+    return this.mu;
+  }
+
+  setInitialWavepacketWidth(sigma: number): void {
     this.initialState = -1;
     this.sigma = sigma;
-    this.initPsi();
+    this.initWavepacket();
   }
 
-  setGaussianParameters(mu: number, sigma: number): void {
-    this.initialState = -1;
-    this.mu = mu;
-    this.sigma = sigma;
-    this.initPsi();
+  getInitialWavepacketWidth(): number {
+    return this.sigma;
   }
 
-  abstract initPsi(): void;
+  abstract initWavepacket(): void;
 
-  abstract normalizePsi(): void;
+  abstract normalizeWavefunction(): void;
 
   abstract getAmplitude(): number[];
 
@@ -147,7 +152,7 @@ export abstract class TimePropagator {
   }
 
   init(): void {
-    this.initPsi();
+    this.initWavepacket();
     this.position = this.calculateExpectation(this.coordinates);
     this.calculateMomentum();
     this.calculateKineticEnergy();

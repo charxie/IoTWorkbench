@@ -19,7 +19,6 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   private portIN: Port;
   private probabilityDensityFunction: number[];
-  private initialState: number = -1;
   private dynamicSolver: TimePropagator;
   private baseLineOffet: number = 50;
   private method: string = "Cayley";
@@ -35,6 +34,8 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     readonly nPoints: number;
     readonly timeStep: number;
     readonly initialState: number;
+    readonly initialWavepacketWidth: number;
+    readonly initialWavepacketPosition: number;
     readonly potentialName: string;
     readonly method: string;
 
@@ -48,7 +49,9 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       this.viewWindowColor = block.viewWindowColor;
       this.nPoints = block.nPoints;
       this.timeStep = block.getTimeStep();
-      this.initialState = block.initialState;
+      this.initialState = block.getInitialState();
+      this.initialWavepacketWidth = block.getInitialWavepacketWidth();
+      this.initialWavepacketPosition = block.getInitialWavepacketPosition();
       this.potentialName = block.potentialName;
       this.method = block.method;
     }
@@ -81,7 +84,9 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     copy.setName(this.name);
     copy.setNpoints(this.nPoints);
     copy.setTimeStep(this.getTimeStep());
-    copy.setInitialState(this.initialState);
+    copy.setInitialState(this.getInitialState());
+    copy.setInitialWavepacketWidth(this.getInitialWavepacketWidth());
+    copy.setInitialWavepacketPosition(this.getInitialWavepacketPosition());
     copy.setPotentialName(this.potentialName);
     copy.setMethod(this.method);
     return copy;
@@ -92,7 +97,12 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.dynamicSolver.reset();
   }
 
+  initWavepacket(): void {
+    this.dynamicSolver.initWavepacket();
+  }
+
   public setMethod(method: string): void {
+    if (this.method === method && this.dynamicSolver !== undefined) return;
     this.method = method;
     let timeStep = this.dynamicSolver !== undefined ? this.dynamicSolver.getTimeStep() : 0.2;
     switch (method) {
@@ -104,7 +114,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     }
     this.dynamicSolver.setTimeStep(timeStep);
     this.dynamicSolver.setPotential(this.potential);
-    this.dynamicSolver.initPsi();
+    this.dynamicSolver.initWavepacket();
     this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
   }
 
@@ -121,11 +131,27 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   }
 
   public setInitialState(initialState: number): void {
-    this.initialState = initialState;
+    this.dynamicSolver.setInitialState(initialState);
   }
 
   public getInitialState(): number {
-    return this.initialState;
+    return this.dynamicSolver.getInitialState();
+  }
+
+  setInitialWavepacketWidth(sigma: number): void {
+    this.dynamicSolver.setInitialWavepacketWidth(sigma);
+  }
+
+  getInitialWavepacketWidth(): number {
+    return this.dynamicSolver.getInitialWavepacketWidth();
+  }
+
+  setInitialWavepacketPosition(mu: number): void {
+    this.dynamicSolver.setInitialWavepacketPosition(mu);
+  }
+
+  getInitialWavepacketPosition(): number {
+    return this.dynamicSolver.getInitialWavepacketPosition();
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
@@ -417,7 +443,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       if (typeof x0 !== "number" || typeof dx !== "number" || typeof vx[0] !== "number") return;
       this.potential = new CustomPotential(x0, x0 + dx * vx.length, vx);
       this.dynamicSolver.setPotential(this.potential);
-      if (this.initialState >= 0) { // we need to calculate the wave function of the initial state
+      if (this.getInitialState() >= 0) { // we need to calculate the wave function of the initial state
         if (this.staticSolver === undefined || this.staticSolver.getPoints() !== vx.length) this.staticSolver = new StationaryStateSolver(vx.length);
         this.staticSolver.setPotential(vx);
         this.staticSolver.discretizeHamiltonian(dx * vx.length);

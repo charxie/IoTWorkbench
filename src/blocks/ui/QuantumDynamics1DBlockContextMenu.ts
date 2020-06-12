@@ -62,6 +62,14 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-initial-state-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Initial Wavepacket Width:</td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-initial-wavepacket-width-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Initial Wavepacket Position:</td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-initial-wavepacket-position-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Window Color:</td>
                   <td><input type="color" id="quantum-dynamics-1d-block-window-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="quantum-dynamics-1d-block-window-color-field" style="width: 100%"></td>
@@ -96,6 +104,10 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       pointsField.value = Math.round(block.getNPoints()).toString();
       let initialStateField = document.getElementById("quantum-dynamics-1d-block-initial-state-field") as HTMLInputElement;
       initialStateField.value = Math.round(block.getInitialState()).toString();
+      let initialWavepacketWidthField = document.getElementById("quantum-dynamics-1d-block-initial-wavepacket-width-field") as HTMLInputElement;
+      initialWavepacketWidthField.value = block.getInitialWavepacketWidth().toString();
+      let initialWavepacketPositionField = document.getElementById("quantum-dynamics-1d-block-initial-wavepacket-position-field") as HTMLInputElement;
+      initialWavepacketPositionField.value = block.getInitialWavepacketPosition().toString();
       let windowColorField = document.getElementById("quantum-dynamics-1d-block-window-color-field") as HTMLInputElement;
       windowColorField.value = block.getViewWindowColor();
       let windowColorChooser = document.getElementById("quantum-dynamics-1d-block-window-color-chooser") as HTMLInputElement;
@@ -132,6 +144,22 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
           success = false;
           message = initialStateField.value + " is not a valid number for the initial state";
         }
+        // set the initial wavepacket width
+        let initialWavepacketWidth = parseFloat(initialWavepacketWidthField.value);
+        if (isNumber(initialWavepacketWidth)) {
+          block.setInitialWavepacketWidth(Math.max(0.01, initialWavepacketWidth));
+        } else {
+          success = false;
+          message = initialWavepacketWidthField.value + " is not a valid number for the initial wavepacket width";
+        }
+        // set the initial wavepacket position
+        let initialWavepacketPosition = parseFloat(initialWavepacketPositionField.value);
+        if (isNumber(initialWavepacketPosition)) {
+          block.setInitialWavepacketPosition(initialWavepacketPosition);
+        } else {
+          success = false;
+          message = initialWavepacketPositionField.value + " is not a valid number for the initial wavepacket position";
+        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -153,6 +181,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
           block.setName(nameField.value);
           block.setMethod(methodSelector.value);
           block.setPotentialName(potentialSelector.value);
+          block.initWavepacket();
           block.setViewWindowColor(windowColorField.value);
           block.refreshView();
           flowchart.blockView.requestDraw();
@@ -172,6 +201,8 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       timeStepField.addEventListener("keyup", enterKeyUp);
       pointsField.addEventListener("keyup", enterKeyUp);
       initialStateField.addEventListener("keyup", enterKeyUp);
+      initialWavepacketWidthField.addEventListener("keyup", enterKeyUp);
+      initialWavepacketPositionField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
@@ -180,7 +211,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 450,
-        width: 450,
+        width: 550,
         buttons: {
           'OK': okFunction,
           'Cancel': () => d.dialog('close')

@@ -536,6 +536,8 @@ export class StateIO {
           if (state.method !== undefined) block.setMethod(state.method);
           if (state.nPoints !== undefined) block.setNpoints(state.nPoints);
           if (state.timeStep !== undefined) block.setTimeStep(state.timeStep);
+          if (state.initialWavepacketWidth !== undefined) block.setInitialWavepacketWidth(state.initialWavepacketWidth);
+          if (state.initialWavepacketPosition !== undefined) block.setInitialWavepacketPosition(state.initialWavepacketPosition);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }
@@ -712,6 +714,8 @@ export class StateIO {
         b.locateOverlay();
       } else if (b instanceof ArrayInput || b instanceof StringInput) {
         b.locateOverlay();
+      } else if(b instanceof QuantumDynamics1DBlock){
+        b.initWavepacket();
       }
     }
   }

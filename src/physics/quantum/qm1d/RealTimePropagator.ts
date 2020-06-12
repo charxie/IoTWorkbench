@@ -101,7 +101,7 @@ export abstract class RealTimePropagator extends TimePropagator {
     }
   }
 
-  setInitialState(initState: number, eigenVector: number[][]): void {
+  setInitialStateFromEigenVectors(initState: number, eigenVector: number[][]): void {
     this.initialState = initState;
     if (this.savedEigenvector == null)
       this.savedEigenvector = new Array(this.nPoints);
@@ -109,19 +109,15 @@ export abstract class RealTimePropagator extends TimePropagator {
       this.savedEigenvector[i] = eigenVector[initState][i];
       this.psi[i] = new MyComplex(this.savedEigenvector[i], 0);
     }
-    this.initPsi();
-  }
-
-  getInitialState(): number {
-    return this.initialState;
+    this.initWavepacket();
   }
 
   setInitialMomentum(p0: number): void {
     this.p0 = p0;
-    this.initPsi();
+    this.initWavepacket();
   }
 
-  initPsi(): void {
+  initWavepacket(): void {
     if (this.initialState < 0) { // if no initial state is set, use a Gaussian
       let k, g;
       this.delta = this.potential.getXLength() / this.nPoints;
@@ -131,7 +127,7 @@ export abstract class RealTimePropagator extends TimePropagator {
         k = this.p0 * k;
         this.psi[i] = new MyComplex(g * Math.cos(k), g * Math.sin(k));
       }
-      this.normalizePsi();
+      this.normalizeWavefunction();
     } else {
       if (this.savedEigenvector != null) {
         let k, g;
@@ -153,7 +149,7 @@ export abstract class RealTimePropagator extends TimePropagator {
     }
   }
 
-  normalizePsi(): void {
+  normalizeWavefunction(): void {
     this.sum = 0;
     for (let i = 0; i < this.nPoints; i++)
       this.sum += this.psi[i].absSquare();
