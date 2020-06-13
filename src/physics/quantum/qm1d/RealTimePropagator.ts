@@ -111,9 +111,13 @@ export abstract class RealTimePropagator extends TimePropagator {
     this.initWavepacket();
   }
 
-  setInitialMomentum(p0: number): void {
-    this.p0 = p0;
+  setInitialMomentum(momentum: number): void {
+    this.p0 = momentum;
     this.initWavepacket();
+  }
+
+  getInitialMomentum(): number {
+    return this.p0;
   }
 
   initWavepacket(): void {

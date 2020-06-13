@@ -30,12 +30,14 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     readonly width: number;
     readonly height: number;
     readonly name: string;
+    readonly wavepacketColor: string;
     readonly viewWindowColor: string;
     readonly nPoints: number;
     readonly timeStep: number;
     readonly initialState: number;
     readonly initialWavepacketWidth: number;
     readonly initialWavepacketPosition: number;
+    readonly initialMomentum: number;
     readonly potentialName: string;
     readonly method: string;
 
@@ -46,12 +48,14 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       this.width = block.width;
       this.height = block.height;
       this.name = block.name;
+      this.wavepacketColor = block.wavepacketColor;
       this.viewWindowColor = block.viewWindowColor;
       this.nPoints = block.nPoints;
       this.timeStep = block.getTimeStep();
       this.initialState = block.getInitialState();
       this.initialWavepacketWidth = block.getInitialWavepacketWidth();
       this.initialWavepacketPosition = block.getInitialWavepacketPosition();
+      this.initialMomentum = block.getInitialMomentum();
       this.potentialName = block.potentialName;
       this.method = block.method;
     }
@@ -80,6 +84,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   getCopy(): Block {
     let copy = new QuantumDynamics1DBlock("Quantum Dynamics 1D Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    copy.setWavepacketColor(this.wavepacketColor);
     copy.setViewWindowColor(this.viewWindowColor);
     copy.setName(this.name);
     copy.setNpoints(this.nPoints);
@@ -87,6 +92,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     copy.setInitialState(this.getInitialState());
     copy.setInitialWavepacketWidth(this.getInitialWavepacketWidth());
     copy.setInitialWavepacketPosition(this.getInitialWavepacketPosition());
+    copy.setInitialMomentum(this.getInitialMomentum());
     copy.setPotentialName(this.potentialName);
     copy.setMethod(this.method);
     return copy;
@@ -134,8 +140,25 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.dynamicSolver.setInitialState(initialState);
   }
 
+  setInitialWaveFunction(): void {
+    if (this.waveFunctions === undefined || this.getInitialState() < 0) return;
+    let wfun = new Array(this.energyLevels.length);
+    for (let i = 0; i < wfun.length; i++) {
+      wfun[i] = this.waveFunctions[i][this.getInitialState()];
+    }
+    this.dynamicSolver.setInitialWaveFunction(wfun);
+  }
+
   public getInitialState(): number {
     return this.dynamicSolver.getInitialState();
+  }
+
+  setInitialMomentum(momentum: number): void {
+    this.dynamicSolver.setInitialMomentum(momentum);
+  }
+
+  getInitialMomentum(): number {
+    return this.dynamicSolver.getInitialMomentum();
   }
 
   setInitialWavepacketWidth(sigma: number): void {
@@ -360,7 +383,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     ctx.font = "12px Arial";
     ctx.translate(x0 - 10, bottom - (vmax - vmin) / 2 * dv);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText("V(x)", -ctx.measureText("V(x)").width / 2, 0);
+    ctx.fillText("V(x) (eV)", -ctx.measureText("V(x) (eV)").width / 2, 0);
     ctx.restore();
   }
 
@@ -408,7 +431,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     }
     ctx.lineTo(this.viewWindow.x + this.viewWindow.width, bottom);
     ctx.closePath();
-    ctx.fillStyle = "#eeeeee";
+    ctx.fillStyle = this.wavepacketColor;
     ctx.fill();
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 1;
@@ -438,13 +461,8 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
         this.potential = new CustomPotential(x0, x0 + dx * vx.length, vx);
         this.dynamicSolver.setPotential(this.potential);
         if (this.getInitialState() >= 0) { // we need to calculate the wave function of the initial state
-          if (this.staticSolver === undefined || this.staticSolver.getPoints() !== vx.length) this.staticSolver = new StationaryStateSolver(vx.length);
-          this.staticSolver.setPotential(vx);
-          this.staticSolver.discretizeHamiltonian(dx * vx.length);
-          this.staticSolver.solve();
-          this.energyLevels = this.staticSolver.getEigenValues();
-          this.waveFunctions = this.staticSolver.getEigenVectors();
-          this.dynamicSolver.setInitialWaveFunction(this.waveFunctions[this.getInitialState()]);
+          this.findStates();
+          this.setInitialWaveFunction();
         }
       }
     }
@@ -452,6 +470,18 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     if (steps === undefined || steps === 0) return;
     this.dynamicSolver.nextStep();
     this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
+  }
+
+  findStates(): void {
+    if (this.potential === undefined) return;
+    if (this.staticSolver === undefined || this.staticSolver.getPoints() !== this.potential.getPoints()) {
+      this.staticSolver = new StationaryStateSolver(this.potential.getPoints());
+    }
+    this.staticSolver.setPotential(this.potential.getValues());
+    this.staticSolver.discretizeHamiltonian(this.potential.getXLength());
+    this.staticSolver.solve();
+    this.energyLevels = this.staticSolver.getEigenValues();
+    this.waveFunctions = this.staticSolver.getEigenVectors();
   }
 
 }

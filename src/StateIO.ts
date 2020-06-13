@@ -528,6 +528,7 @@ export class StateIO {
           block.setMaxState(state.maxState);
           if (state.potentialName) block.setPotentialName(state.potentialName);
           if (state.nPoints !== undefined) block.setNpoints(state.nPoints);
+          if (state.wavepacketColor !== undefined) block.setWavepacketColor(state.wavepacketColor);
         } else if (block instanceof QuantumDynamics1DBlock) {
           block.setName(state.name);
           block.setViewWindowColor(state.viewWindowColor);
@@ -538,6 +539,8 @@ export class StateIO {
           if (state.timeStep !== undefined) block.setTimeStep(state.timeStep);
           if (state.initialWavepacketWidth !== undefined) block.setInitialWavepacketWidth(state.initialWavepacketWidth);
           if (state.initialWavepacketPosition !== undefined) block.setInitialWavepacketPosition(state.initialWavepacketPosition);
+          if (state.initialMomentum !== undefined) block.setInitialMomentum(state.initialMomentum);
+          if (state.wavepacketColor !== undefined) block.setWavepacketColor(state.wavepacketColor);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }
@@ -714,7 +717,7 @@ export class StateIO {
         b.locateOverlay();
       } else if (b instanceof ArrayInput || b instanceof StringInput) {
         b.locateOverlay();
-      } else if(b instanceof QuantumDynamics1DBlock){
+      } else if (b instanceof QuantumDynamics1DBlock) {
         b.initWavepacket();
       }
     }

@@ -49,6 +49,11 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="quantum-stationary-state-1d-block-highest-state-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Wavepacket Color:</td>
+                  <td><input type="color" id="quantum-stationary-state-1d-block-wavepacket-color-chooser" style="width: 50px"></td>
+                  <td><input type="text" id="quantum-stationary-state-1d-block-wavepacket-color-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Window Color:</td>
                   <td><input type="color" id="quantum-stationary-state-1d-block-window-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="quantum-stationary-state-1d-block-window-color-field" style="width: 100%"></td>
@@ -79,11 +84,19 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
       stepsField.value = Math.round(block.getNPoints()).toString();
       let highestStateField = document.getElementById("quantum-stationary-state-1d-block-highest-state-field") as HTMLInputElement;
       highestStateField.value = Math.round(block.getMaxState()).toString();
+
+      let wavepacketColorField = document.getElementById("quantum-stationary-state-1d-block-wavepacket-color-field") as HTMLInputElement;
+      wavepacketColorField.value = block.getWavepacketColor();
+      let wavepacketColorChooser = document.getElementById("quantum-stationary-state-1d-block-wavepacket-color-chooser") as HTMLInputElement;
+      Util.setColorPicker(wavepacketColorChooser, block.getWavepacketColor());
+      Util.hookupColorInputs(wavepacketColorField, wavepacketColorChooser);
+
       let windowColorField = document.getElementById("quantum-stationary-state-1d-block-window-color-field") as HTMLInputElement;
       windowColorField.value = block.getViewWindowColor();
       let windowColorChooser = document.getElementById("quantum-stationary-state-1d-block-window-color-chooser") as HTMLInputElement;
       Util.setColorPicker(windowColorChooser, block.getViewWindowColor());
       Util.hookupColorInputs(windowColorField, windowColorChooser);
+
       let widthField = document.getElementById("quantum-stationary-state-1d-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("quantum-stationary-state-1d-block-height-field") as HTMLInputElement;
@@ -127,6 +140,7 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
         if (success) {
           block.setName(nameField.value);
           block.setPotentialName(potentialSelector.value);
+          block.setWavepacketColor(wavepacketColorField.value);
           block.setViewWindowColor(windowColorField.value);
           block.refreshView();
           flowchart.blockView.requestDraw();
@@ -145,6 +159,7 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
       nameField.addEventListener("keyup", enterKeyUp);
       stepsField.addEventListener("keyup", enterKeyUp);
       highestStateField.addEventListener("keyup", enterKeyUp);
+      wavepacketColorField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);
       heightField.addEventListener("keyup", enterKeyUp);
@@ -153,7 +168,7 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
         modal: true,
         title: block.getUid(),
         height: 450,
-        width: 450,
+        width: 500,
         buttons: {
           'OK': okFunction,
           'Cancel': () => d.dialog('close')

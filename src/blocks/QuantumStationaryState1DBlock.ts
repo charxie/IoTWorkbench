@@ -24,8 +24,9 @@ export class QuantumStationaryState1DBlock extends Quantum1DBlock {
     readonly width: number;
     readonly height: number;
     readonly name: string;
+    readonly wavepacketColor: string;
     readonly viewWindowColor: string;
-    readonly steps: number;
+    readonly nPoints: number;
     readonly maxState: number;
     readonly potentialName: string;
 
@@ -36,8 +37,9 @@ export class QuantumStationaryState1DBlock extends Quantum1DBlock {
       this.width = block.width;
       this.height = block.height;
       this.name = block.name;
+      this.wavepacketColor = block.wavepacketColor;
       this.viewWindowColor = block.viewWindowColor;
-      this.steps = block.nPoints;
+      this.nPoints = block.nPoints;
       this.maxState = block.maxState;
       this.potentialName = block.potentialName;
     }
@@ -62,6 +64,7 @@ export class QuantumStationaryState1DBlock extends Quantum1DBlock {
 
   getCopy(): Block {
     let copy = new QuantumStationaryState1DBlock("Quantum Stationary State 1D Block #" + Date.now().toString(16), this.x, this.y, this.width, this.height);
+    copy.setWavepacketColor(this.wavepacketColor);
     copy.setViewWindowColor(this.viewWindowColor);
     copy.setName(this.name);
     copy.setNpoints(this.nPoints);
@@ -352,7 +355,7 @@ export class QuantumStationaryState1DBlock extends Quantum1DBlock {
     }
     ctx.lineTo(this.viewWindow.x + this.viewWindow.width, bottom);
     ctx.closePath();
-    ctx.fillStyle = "#eeeeee";
+    ctx.fillStyle = this.wavepacketColor;
     ctx.fill();
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 1;

@@ -109,8 +109,9 @@ export abstract class TimePropagator {
     return this.initialState;
   }
 
-  setInitialMomentum(p0: number): void {
-  }
+  abstract setInitialMomentum(momentum: number): void;
+
+  abstract getInitialMomentum(): number;
 
   setInitialWavepacketPosition(mu: number): void {
     this.mu = mu;

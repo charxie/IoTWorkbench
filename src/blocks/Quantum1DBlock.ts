@@ -22,6 +22,7 @@ export abstract class Quantum1DBlock extends Block {
   protected energyLevels: number[];
   protected waveFunctions: number[][];
   protected staticSolver: StationaryStateSolver;
+  wavepacketColor: string = "#eeeeee";
 
   portVX: Port; // port for importing potential's values (array)
   portX0: Port; // port for importing potential's beginning coordinate
@@ -57,6 +58,14 @@ export abstract class Quantum1DBlock extends Block {
 
   getNPoints(): number {
     return this.nPoints;
+  }
+
+  setWavepacketColor(wavepacketColor: string): void {
+    this.wavepacketColor = wavepacketColor;
+  }
+
+  getWavepacketColor(): string {
+    return this.wavepacketColor;
   }
 
   setViewWindowColor(viewWindowColor: string): void {
