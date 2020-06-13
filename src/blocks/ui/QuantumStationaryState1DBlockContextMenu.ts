@@ -167,7 +167,7 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
         resizable: false,
         modal: true,
         title: block.getUid(),
-        height: 450,
+        height: 480,
         width: 500,
         buttons: {
           'OK': okFunction,

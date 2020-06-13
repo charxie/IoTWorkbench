@@ -44,6 +44,16 @@ declare global {
     drawHalfRoundedRect(x, y, w, h, r, side);
 
     fillHalfRoundedRect(x, y, w, h, r, side);
+
+    drawLine(x1, y1, x2, y2);
+
+    drawRect(x, y, w, h);
+
+    fillRect(x, y, w, h);
+
+    drawCircle(x, y, r);
+
+    fillCircle(x, y, r);
   }
 
   interface Array<T> {

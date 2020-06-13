@@ -14,6 +14,7 @@ import {Quantum1DBlock} from "./Quantum1DBlock";
 import {RungeKuttaSolver} from "../physics/quantum/qm1d/RungeKuttaSolver";
 import {CayleySolver} from "../physics/quantum/qm1d/CayleySolver";
 import {SquareWell} from "../physics/quantum/qm1d/potentials/SquareWell";
+import {ElectricField1D} from "../physics/quantum/qm1d/ElectricField1D";
 
 export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
@@ -40,6 +41,8 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     readonly initialMomentum: number;
     readonly potentialName: string;
     readonly method: string;
+    readonly electricFieldIntensity: number;
+    readonly electricFieldFrequency: number;
 
     constructor(block: QuantumDynamics1DBlock) {
       this.uid = block.uid;
@@ -58,6 +61,10 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       this.initialMomentum = block.getInitialMomentum();
       this.potentialName = block.potentialName;
       this.method = block.method;
+      if (block.getElectricField()) {
+        this.electricFieldIntensity = block.getElectricField().getIntensity();
+        this.electricFieldFrequency = block.getElectricField().getFrequency();
+      }
     }
   };
 
@@ -95,6 +102,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     copy.setInitialMomentum(this.getInitialMomentum());
     copy.setPotentialName(this.potentialName);
     copy.setMethod(this.method);
+    if (this.getElectricField()) copy.setElectricField(this.getElectricField().copy());
     return copy;
   }
 
@@ -177,6 +185,14 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     return this.dynamicSolver.getInitialWavepacketPosition();
   }
 
+  setElectricField(eField: ElectricField1D): void {
+    this.dynamicSolver.setElectricField(eField);
+  }
+
+  getElectricField(): ElectricField1D {
+    return this.dynamicSolver.getElectricField();
+  }
+
   draw(ctx: CanvasRenderingContext2D): void {
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
@@ -240,6 +256,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       if (this.potential !== undefined) {
         this.drawProbabilityDensityFunctions(ctx);
         this.drawPotential(ctx);
+        this.drawElectricField(ctx);
         this.drawAxes(ctx);
         this.drawResults(ctx);
       }
@@ -414,6 +431,49 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     let projected = 2 * this.potential.getValue(vlen - 1) - this.potential.getValue(vlen - 2);
     if (projected <= vmax && projected >= vmin) {
       ctx.lineTo(this.viewWindow.x + vlen * dx, bottom - (projected - vmin) * dv);
+    }
+    ctx.stroke();
+  }
+
+  private drawElectricField(ctx: CanvasRenderingContext2D): void {
+    let eField = this.dynamicSolver.getElectricField();
+    if (eField === undefined) return;
+    let time = this.dynamicSolver.getTime();
+    let eFieldValue = eField.getValue(time);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+    let x1 = this.viewWindow.x + this.viewWindow.width;
+    let y1 = this.viewWindow.y;
+    ctx.drawLine(x1 - 60, y1 + 40, x1 - 20, y1 + 40);
+    if (eFieldValue < 0) {
+      ctx.drawLine(x1 - 20, y1 + 40, x1 - 25, y1 + 35);
+      ctx.drawLine(x1 - 20, y1 + 40, x1 - 25, y1 + 45);
+    } else {
+      ctx.drawLine(x1 - 60, y1 + 40, x1 - 55, y1 + 35);
+      ctx.drawLine(x1 - 60, y1 + 40, x1 - 55, y1 + 45);
+    }
+    ctx.font = "10px Arial";
+    ctx.fillStyle = "black";
+    let s = "Electric Field";
+    ctx.fillText(s, x1 - ctx.measureText(s).width - 10, y1 + 20);
+    let x0 = x1 - 40;
+    let y0 = y1 + 50;
+    let dx = 40;
+    let dy = 60;
+    ctx.fillStyle = "cyan";
+    ctx.fillRect(x0 - dx / 2, y0, dx, dy);
+    ctx.fillStyle = "black";
+    ctx.drawRect(x0 - dx / 2, y0, dx, dy);
+    ctx.drawLine(x0, y0, x0, y0 + dy);
+    let x = eFieldValue / eField.getIntensity() * 0.5 * dx;
+    ctx.fillStyle = "red";
+    ctx.fillCircle(x0 - x, y0, 2);
+    ctx.strokeStyle = "gray";
+    ctx.beginPath();
+    ctx.moveTo(x0 - x, y0);
+    for (let i = 1; i < dy; i++) {
+      x = eField.getValue(time - this.getTimeStep() * i) / eField.getIntensity() * 0.5 * dx;
+      ctx.lineTo(x0 - x, y0 + i);
     }
     ctx.stroke();
   }

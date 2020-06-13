@@ -7,6 +7,7 @@ import {closeAllContextMenus, flowchart, isNumber} from "../../Main";
 import {BlockContextMenu} from "./BlockContextMenu";
 import {Util} from "../../Util";
 import {QuantumDynamics1DBlock} from "../QuantumDynamics1DBlock";
+import {ElectricField1D} from "../../physics/quantum/qm1d/ElectricField1D";
 
 export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
 
@@ -74,6 +75,14 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-initial-momentum-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Electric Field Intensity:</td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-electric-field-intensity-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Electric Field Frequency:</td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-electric-field-frequency-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Wavepacket Color:</td>
                   <td><input type="color" id="quantum-dynamics-1d-block-wavepacket-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="quantum-dynamics-1d-block-wavepacket-color-field" style="width: 100%"></td>
@@ -111,6 +120,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       potentialSelector.value = this.block.getPotentialName();
       let pointsField = document.getElementById("quantum-dynamics-1d-block-points-field") as HTMLInputElement;
       pointsField.value = Math.round(block.getNPoints()).toString();
+
       let initialStateField = document.getElementById("quantum-dynamics-1d-block-initial-state-field") as HTMLInputElement;
       initialStateField.value = Math.round(block.getInitialState()).toString();
       let initialWavepacketWidthField = document.getElementById("quantum-dynamics-1d-block-initial-wavepacket-width-field") as HTMLInputElement;
@@ -119,6 +129,11 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       initialWavepacketPositionField.value = block.getInitialWavepacketPosition().toString();
       let initialMomentumField = document.getElementById("quantum-dynamics-1d-block-initial-momentum-field") as HTMLInputElement;
       initialMomentumField.value = block.getInitialMomentum().toString();
+
+      let electricFieldIntensityField = document.getElementById("quantum-dynamics-1d-block-electric-field-intensity-field") as HTMLInputElement;
+      electricFieldIntensityField.value = block.getElectricField() ? block.getElectricField().getIntensity().toString() : "0";
+      let electricFieldFrequencyField = document.getElementById("quantum-dynamics-1d-block-electric-field-frequency-field") as HTMLInputElement;
+      electricFieldFrequencyField.value = block.getElectricField() ? block.getElectricField().getFrequency().toString() : "0";
 
       let wavepacketColorField = document.getElementById("quantum-dynamics-1d-block-wavepacket-color-field") as HTMLInputElement;
       wavepacketColorField.value = block.getWavepacketColor();
@@ -189,6 +204,36 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
           success = false;
           message = initialMomentumField.value + " is not a valid number for the initial momentum";
         }
+        // set electric field intensity
+        let eFieldIntensity = parseFloat(electricFieldIntensityField.value);
+        if (isNumber(eFieldIntensity)) {
+          if (eFieldIntensity <= 0) {
+            block.setElectricField(undefined);
+          } else {
+            let eField = block.getElectricField();
+            if (eField) {
+              eField.setIntensity(eFieldIntensity);
+            } else {
+              let ef = new ElectricField1D();
+              ef.setIntensity(eFieldIntensity);
+              block.setElectricField(ef);
+            }
+          }
+        } else {
+          success = false;
+          message = electricFieldIntensityField.value + " is not a valid value for electric field intensity";
+        }
+        // set electric field frequency
+        let eFieldFrequency = parseFloat(electricFieldFrequencyField.value);
+        if (isNumber(eFieldFrequency)) {
+          let eField = block.getElectricField();
+          if (eField) {
+            eField.setFrequency(eFieldFrequency);
+          }
+        } else {
+          success = false;
+          message = electricFieldFrequencyField.value + " is not a valid value for electric field frequency";
+        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -238,6 +283,8 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       initialWavepacketWidthField.addEventListener("keyup", enterKeyUp);
       initialWavepacketPositionField.addEventListener("keyup", enterKeyUp);
       initialMomentumField.addEventListener("keyup", enterKeyUp);
+      electricFieldIntensityField.addEventListener("keyup", enterKeyUp);
+      electricFieldFrequencyField.addEventListener("keyup", enterKeyUp);
       wavepacketColorField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);

@@ -69,6 +69,7 @@ import {RadarChart} from "./blocks/RadarChart";
 import {KNNClassifierBlock} from "./blocks/KNNClassifierBlock";
 import {QuantumStationaryState1DBlock} from "./blocks/QuantumStationaryState1DBlock";
 import {QuantumDynamics1DBlock} from "./blocks/QuantumDynamics1DBlock";
+import {ElectricField1D} from "./physics/quantum/qm1d/ElectricField1D";
 
 export class StateIO {
 
@@ -541,6 +542,18 @@ export class StateIO {
           if (state.initialWavepacketPosition !== undefined) block.setInitialWavepacketPosition(state.initialWavepacketPosition);
           if (state.initialMomentum !== undefined) block.setInitialMomentum(state.initialMomentum);
           if (state.wavepacketColor !== undefined) block.setWavepacketColor(state.wavepacketColor);
+          if (state.electricFieldIntensity !== undefined) {
+            let eField = block.getElectricField();
+            if (eField) {
+              eField.setIntensity(state.electricFieldIntensity);
+              if (state.electricFieldFrequency !== undefined) eField.setFrequency(state.electricFieldFrequency);
+            } else {
+              let ef = new ElectricField1D();
+              ef.setIntensity(state.electricFieldIntensity);
+              if (state.electricFieldFrequency !== undefined) ef.setFrequency(state.electricFieldFrequency);
+              block.setElectricField(ef);
+            }
+          }
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

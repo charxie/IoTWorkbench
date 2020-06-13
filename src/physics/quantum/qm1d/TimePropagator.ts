@@ -59,7 +59,7 @@ export abstract class TimePropagator {
   }
 
   getPotential(): number[] {
-    if (this.eField != null) {
+    if (this.eField) {
       let ef = this.particle.getCharge() * this.eField.getValue(this.getTime());
       let p: number[] = new Array(this.nPoints);
       for (let i = 0; i < this.nPoints; i++) {
@@ -85,6 +85,10 @@ export abstract class TimePropagator {
 
   setElectricField(eField: ElectricField1D): void {
     this.eField = eField;
+  }
+
+  getElectricField(): ElectricField1D {
+    return this.eField;
   }
 
   setTimeStep(timestep: number): void {

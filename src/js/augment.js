@@ -143,6 +143,47 @@ if (typeof Array.prototype.removeItem !== 'function') {
   };
 }
 
+if (typeof CanvasRenderingContext2D.prototype.drawLine !== 'function') {
+  CanvasRenderingContext2D.prototype.drawLine = function drawLine(x1, y1, x2, y2) {
+    this.beginPath();
+    this.moveTo(x1, y1);
+    this.lineTo(x2, y2);
+    this.stroke();
+  }
+}
+
+if (typeof CanvasRenderingContext2D.prototype.fillCircle !== 'function') {
+  CanvasRenderingContext2D.prototype.fillCircle = function fillCircle(x, y, r) {
+    this.beginPath();
+    this.arc(x, y, r, 0, 2 * Math.PI);
+    this.fill();
+  }
+}
+
+if (typeof CanvasRenderingContext2D.prototype.drawCircle !== 'function') {
+  CanvasRenderingContext2D.prototype.drawCircle = function drawCircle(x, y, r) {
+    this.beginPath();
+    this.arc(x, y, r, 0, 2 * Math.PI);
+    this.stroke();
+  }
+}
+
+if (typeof CanvasRenderingContext2D.prototype.fillRect !== 'function') {
+  CanvasRenderingContext2D.prototype.fillRect = function fillRect(x, y, w, h) {
+    this.beginPath();
+    this.rect(x, y, w, h);
+    this.fill();
+  }
+}
+
+if (typeof CanvasRenderingContext2D.prototype.drawRect !== 'function') {
+  CanvasRenderingContext2D.prototype.drawRect = function drawRect(x, y, w, h) {
+    this.beginPath();
+    this.rect(x, y, w, h);
+    this.stroke();
+  }
+}
+
 if (typeof CanvasRenderingContext2D.prototype.fillRoundedRect !== 'function') {
   CanvasRenderingContext2D.prototype.fillRoundedRect = function fillRoundedRect(x, y, w, h, r) {
     this.beginPath();

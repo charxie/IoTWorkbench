@@ -6,9 +6,17 @@ export class ElectricField1D {
 
   private intensity: number = 0.0001;
   private frequency: number = 0.05;
-  private phase: number;
+  private phase: number = 0;
 
   constructor() {
+  }
+
+  copy(): ElectricField1D {
+    let c = new ElectricField1D();
+    c.intensity = this.intensity;
+    c.frequency = this.frequency;
+    c.phase = this.phase;
+    return c;
   }
 
   public getValue(time: number): number {
