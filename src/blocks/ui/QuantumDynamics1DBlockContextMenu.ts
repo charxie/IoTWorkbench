@@ -59,7 +59,15 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-points-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Initial State:</td>
+                  <td>Solver Internal Steps:</td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-solver-steps-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Energy Bar Scale:</td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-energy-scale-field" style="width: 100%"></td>
+                </tr>
+                <tr>
+                  <td>Initial State (Ground State is 1):</td>
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-initial-state-field" style="width: 100%"></td>
                 </tr>
                 <tr>
@@ -120,9 +128,13 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       potentialSelector.value = this.block.getPotentialName();
       let pointsField = document.getElementById("quantum-dynamics-1d-block-points-field") as HTMLInputElement;
       pointsField.value = Math.round(block.getNPoints()).toString();
+      let solverStepsField = document.getElementById("quantum-dynamics-1d-block-solver-steps-field") as HTMLInputElement;
+      solverStepsField.value = Math.round(block.getSolverSteps()).toString();
+      let energyScaleField = document.getElementById("quantum-dynamics-1d-block-energy-scale-field") as HTMLInputElement;
+      energyScaleField.value = block.getEnergyScale().toString();
 
       let initialStateField = document.getElementById("quantum-dynamics-1d-block-initial-state-field") as HTMLInputElement;
-      initialStateField.value = Math.round(block.getInitialState()).toString();
+      initialStateField.value = (block.getInitialState() + 1).toString(); // internally ground state has an index of zero
       let initialWavepacketWidthField = document.getElementById("quantum-dynamics-1d-block-initial-wavepacket-width-field") as HTMLInputElement;
       initialWavepacketWidthField.value = block.getInitialWavepacketWidth().toString();
       let initialWavepacketPositionField = document.getElementById("quantum-dynamics-1d-block-initial-wavepacket-position-field") as HTMLInputElement;
@@ -174,8 +186,9 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
         let initialState = parseInt(initialStateField.value);
         let computeInitialState = false;
         if (isNumber(initialState)) {
-          if (initialState >= 0 && block.getInitialState() === -1) computeInitialState = true;
-          block.setInitialState(Math.max(-1, initialState));
+          initialState -= 1; // internally the ground state has an index of zero
+          if (initialState >= 0 && block.getInitialState() < 0) computeInitialState = true;
+          block.setInitialState(Math.max(-2, initialState));
         } else {
           success = false;
           message = initialStateField.value + " is not a valid number for the initial state";
@@ -234,6 +247,22 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
           success = false;
           message = electricFieldFrequencyField.value + " is not a valid value for electric field frequency";
         }
+        // set solver internal steps
+        let solverSteps = parseInt(solverStepsField.value);
+        if (isNumber(solverSteps)) {
+          block.setSolverSteps(Math.max(1, solverSteps));
+        } else {
+          success = false;
+          message = solverStepsField.value + " is not a valid number for solver internal steps";
+        }
+        // set energy bar scale factor
+        let energyScale = parseFloat(energyScaleField.value);
+        if (isNumber(energyScale)) {
+          block.setEnergyScale(Math.max(0.01, energyScale));
+        } else {
+          success = false;
+          message = energyScaleField.value + " is not a valid value for energy bar scale";
+        }
         // set width
         let w = parseInt(widthField.value);
         if (isNumber(w)) {
@@ -279,6 +308,8 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       nameField.addEventListener("keyup", enterKeyUp);
       timeStepField.addEventListener("keyup", enterKeyUp);
       pointsField.addEventListener("keyup", enterKeyUp);
+      solverStepsField.addEventListener("keyup", enterKeyUp);
+      energyScaleField.addEventListener("keyup", enterKeyUp);
       initialStateField.addEventListener("keyup", enterKeyUp);
       initialWavepacketWidthField.addEventListener("keyup", enterKeyUp);
       initialWavepacketPositionField.addEventListener("keyup", enterKeyUp);

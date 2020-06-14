@@ -536,6 +536,8 @@ export class StateIO {
           block.setInitialState(state.initialState);
           block.setPotentialName(state.potentialName);
           if (state.method !== undefined) block.setMethod(state.method);
+          if (state.solverSteps !== undefined) block.setSolverSteps(state.solverSteps);
+          if (state.energyScale !== undefined) block.setEnergyScale(state.energyScale);
           if (state.nPoints !== undefined) block.setNpoints(state.nPoints);
           if (state.timeStep !== undefined) block.setTimeStep(state.timeStep);
           if (state.initialWavepacketWidth !== undefined) block.setInitialWavepacketWidth(state.initialWavepacketWidth);

@@ -276,7 +276,7 @@ export class QuantumStationaryState1DBlock extends Quantum1DBlock {
     }
     if (this.selectedEnergyLevel >= 0) {
       ctx.font = "10px Arial";
-      let label = "E" + Util.subscriptNumbers((this.selectedEnergyLevel + 1).toString()) + "=" + this.energyLevels[this.selectedEnergyLevel].toFixed(3) + " eV";
+      let label = "E" + Util.subscriptNumbers((this.selectedEnergyLevel + 1).toString()) + "=" + this.energyLevels[this.selectedEnergyLevel].toFixed(4) + " eV";
       let w1 = ctx.measureText(label).width + 12;
       let h1 = 20;
       let x1 = this.viewWindow.x + 4;
