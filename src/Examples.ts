@@ -3,6 +3,8 @@
  */
 
 // @ts-ignore
+import quantum_transition_coulomb_well_1d from "./examples/quantum-transition-coulomb-well-1d.json";
+// @ts-ignore
 import quantum_tunneling_1d from "./examples/quantum-tunneling-1d.json";
 // @ts-ignore
 import band_gaps_crystal_lattice_1d from "./examples/band-gaps-crystal-lattice-1d.json";
@@ -592,6 +594,7 @@ export class Examples {
     this.files.push({name: "Quantum Mechanics: Morse Potential", data: morse_potential_1d_stationary});
     this.files.push({name: "Quantum Mechanics: Band Gaps in Crystal Lattice", data: band_gaps_crystal_lattice_1d});
     this.files.push({name: "Quantum Mechanics: Quantum Tunneling 1D", data: quantum_tunneling_1d});
+    this.files.push({name: "Quantum Mechanics: Quantum Transition 1D", data: quantum_transition_coulomb_well_1d});
     this.files.push({name: "Quantum Computing: Hadamard Gate", data: quantum_hadamard_gate});
     this.files.push({name: "Quantum Computing: CNOT Gate", data: quantum_cnot_gate});
 

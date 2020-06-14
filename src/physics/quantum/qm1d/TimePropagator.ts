@@ -33,7 +33,7 @@ export abstract class TimePropagator {
   momentum: number = 0;
 
   // parameters for the initial state
-  mu: number = 5;
+  mu: number = 0;
   sigma: number = 2;
   initialState: number = -1;
   initialStateVector: number[];
@@ -115,11 +115,17 @@ export abstract class TimePropagator {
 
   abstract setInitialMomentum(momentum: number): void;
 
+  abstract setInitialMomentumOnly(momentum: number): void;
+
   abstract getInitialMomentum(): number;
 
   setInitialWavepacketPosition(mu: number): void {
     this.mu = mu;
     if (this.initialState >= 0) this.initWavepacket();
+  }
+
+  setInitialWavepacketPositionOnly(mu: number): void {
+    this.mu = mu;
   }
 
   getInitialWavepacketPosition(): number {
@@ -129,6 +135,10 @@ export abstract class TimePropagator {
   setInitialWavepacketWidth(sigma: number): void {
     this.sigma = sigma;
     if (this.initialState >= 0) this.initWavepacket();
+  }
+
+  setInitialWavepacketWidthOnly(sigma: number): void {
+    this.sigma = sigma;
   }
 
   getInitialWavepacketWidth(): number {

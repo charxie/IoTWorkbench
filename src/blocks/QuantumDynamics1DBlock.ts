@@ -118,7 +118,28 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   public setMethod(method: string): void {
     if (this.method === method && this.dynamicSolver !== undefined) return;
     this.method = method;
-    let timeStep = this.dynamicSolver !== undefined ? this.dynamicSolver.getTimeStep() : 0.2;
+    // save solver parameters before switching
+    let timeStep;
+    let initialState;
+    let initialMomentum;
+    let initialWavepacketPosition;
+    let initialWavepacketWidth;
+    let electricField;
+    if (this.dynamicSolver !== undefined) {
+      timeStep = this.dynamicSolver.getTimeStep();
+      initialState = this.dynamicSolver.getInitialState();
+      initialMomentum = this.dynamicSolver.getInitialMomentum();
+      initialWavepacketPosition = this.dynamicSolver.getInitialWavepacketPosition();
+      initialWavepacketWidth = this.dynamicSolver.getInitialWavepacketWidth();
+      electricField = this.dynamicSolver.getElectricField() ? this.dynamicSolver.getElectricField().copy() : undefined;
+    } else {
+      timeStep = 0.2;
+      initialState = -1;
+      initialMomentum = 0;
+      initialWavepacketPosition = 0;
+      initialWavepacketWidth = 2;
+      electricField = undefined;
+    }
     switch (method) {
       case "Runge-Kutta":
         this.dynamicSolver = new RungeKuttaSolver(this.nPoints);
@@ -127,6 +148,11 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
         this.dynamicSolver = new CayleySolver(this.nPoints);
     }
     this.dynamicSolver.setTimeStep(timeStep);
+    this.dynamicSolver.setInitialState(initialState);
+    this.dynamicSolver.setInitialMomentumOnly(initialMomentum);
+    this.dynamicSolver.setInitialWavepacketPositionOnly(initialWavepacketPosition);
+    this.dynamicSolver.setInitialWavepacketWidthOnly(initialWavepacketWidth);
+    this.dynamicSolver.setElectricField(electricField);
     this.dynamicSolver.setPotential(this.potential);
     this.dynamicSolver.initWavepacket();
     this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
@@ -472,7 +498,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     ctx.beginPath();
     ctx.moveTo(x0 - x, y0);
     for (let i = 1; i < dy; i++) {
-      x = eField.getValue(time - this.getTimeStep() * i) / eField.getIntensity() * 0.5 * dx;
+      x = eField.getValue(time - this.getTimeStep() * i * 5) / eField.getIntensity() * 0.5 * dx;
       ctx.lineTo(x0 - x, y0 + i);
     }
     ctx.stroke();

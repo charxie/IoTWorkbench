@@ -77,7 +77,7 @@ export class WorkerBlockContextMenu extends BlockContextMenu {
         // set interval
         let interval = parseInt(intervalField.value);
         if (isNumber(interval)) {
-          worker.setInterval(Math.max(50, interval)); // set the mininum interval to be 100 to avoid slowing down the UI
+          worker.setInterval(Math.max(50, interval)); // set a mininum interval to avoid slowing down the UI
         } else {
           success = false;
           message = intervalField.value + " is not a valid interval";

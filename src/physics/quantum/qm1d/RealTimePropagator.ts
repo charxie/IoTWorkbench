@@ -67,7 +67,7 @@ export abstract class RealTimePropagator extends TimePropagator {
   generateHamiltonianMatrix(): void {
     this.delta = this.potential.getXLength() / this.nPoints;
     let a = 0.5 / (this.delta * this.delta * this.particle.getMass() * Constants.MASS_UNIT_CONVERTER);
-    let ef = this.eField? this.particle.getCharge() * this.eField.getValue(this.getTime()) : 0;
+    let ef = this.eField ? this.particle.getCharge() * this.eField.getValue(this.getTime()) : 0;
     let slk: boolean = Math.abs(this.slkFriction) > 0 && this.psi[0] != null;
     let ft = 0;
     if (slk) ft = this.calculateExpectation(this.phase);
@@ -75,7 +75,7 @@ export abstract class RealTimePropagator extends TimePropagator {
     for (let i = 0; i < this.nPoints; i++) {
       p = 2 * a + this.clampPotential(this.potential.getValue(i));
       if (ef != 0) {
-        p += ef * (i - this.nPoints / 2) * Constants.ENERGY_UNIT_CONVERTER;
+        p += ef * (i - this.nPoints / 2) * this.delta * Constants.ENERGY_UNIT_CONVERTER;
       }
       if (slk) {
         this.calculatePhase(i);
@@ -116,6 +116,10 @@ export abstract class RealTimePropagator extends TimePropagator {
     this.initWavepacket();
   }
 
+  setInitialMomentumOnly(momentum: number): void {
+    this.p0 = momentum;
+  }
+
   getInitialMomentum(): number {
     return this.p0;
   }
@@ -141,13 +145,15 @@ export abstract class RealTimePropagator extends TimePropagator {
         }
       }
     }
-    for (let i = 0; i < this.nPoints; i++) {
-      this.amplitude[i] = this.psi[i].absSquare();
-    }
-    if (Math.abs(this.slkFriction) > 0) {
+    if (this.psi && this.psi[0]) {
       for (let i = 0; i < this.nPoints; i++) {
-        this.phase[i] = this.psi[i].arg();
-        this.foldedPhase[i] = this.phase[i];
+        this.amplitude[i] = this.psi[i].absSquare();
+      }
+      if (Math.abs(this.slkFriction) > 0) {
+        for (let i = 0; i < this.nPoints; i++) {
+          this.phase[i] = this.psi[i].arg();
+          this.foldedPhase[i] = this.phase[i];
+        }
       }
     }
   }
