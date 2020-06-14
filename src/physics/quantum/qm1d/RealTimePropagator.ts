@@ -16,7 +16,7 @@ export abstract class RealTimePropagator extends TimePropagator {
   private p0: number = 0;
 
   // Schrodinger-Langevin-Kostin dissipation
-  private slkFriction: number = 0;
+  private dampingFactor: number = 0;
   private phase: number[];
   private foldedPhase: number[];
 
@@ -34,12 +34,16 @@ export abstract class RealTimePropagator extends TimePropagator {
     this.particle = new Particle();
   }
 
-  setSlkFriction(slkFriction: number): void {
-    this.slkFriction = slkFriction;
-    if (Math.abs(slkFriction) > 0) {
+  setDampingFactor(dampingFactor: number): void {
+    this.dampingFactor = dampingFactor;
+    if (Math.abs(dampingFactor) > 0) {
       if (this.phase == null) this.phase = new Array(this.nPoints);
       if (this.foldedPhase == null) this.foldedPhase = new Array(this.nPoints);
     }
+  }
+
+  getDampingFactor(): number {
+    return this.dampingFactor;
   }
 
   heat(ratio: number): void {
@@ -68,7 +72,7 @@ export abstract class RealTimePropagator extends TimePropagator {
     this.delta = this.potential.getXLength() / this.nPoints;
     let a = 0.5 / (this.delta * this.delta * this.particle.getMass() * Constants.MASS_UNIT_CONVERTER);
     let ef = this.eField ? this.particle.getCharge() * this.eField.getValue(this.getTime()) : 0;
-    let slk: boolean = Math.abs(this.slkFriction) > 0 && this.psi[0] != null;
+    let slk: boolean = Math.abs(this.dampingFactor) > 0 && this.psi[0] != null;
     let ft = 0;
     if (slk) ft = this.calculateExpectation(this.phase);
     let p;
@@ -79,7 +83,7 @@ export abstract class RealTimePropagator extends TimePropagator {
       }
       if (slk) {
         this.calculatePhase(i);
-        p += this.slkFriction * (this.phase[i] - ft) / (this.particle.getMass() * Constants.MASS_UNIT_CONVERTER);
+        p += this.dampingFactor * (this.phase[i] - ft) / (this.particle.getMass() * Constants.MASS_UNIT_CONVERTER);
       }
       if (this.boundary == null) {
         this.hamiltonian[i][i] = new MyComplex(0, -this.timeStep * p);
@@ -149,7 +153,7 @@ export abstract class RealTimePropagator extends TimePropagator {
       for (let i = 0; i < this.nPoints; i++) {
         this.amplitude[i] = this.psi[i].absSquare();
       }
-      if (Math.abs(this.slkFriction) > 0) {
+      if (Math.abs(this.dampingFactor) > 0) {
         for (let i = 0; i < this.nPoints; i++) {
           this.phase[i] = this.psi[i].arg();
           this.foldedPhase[i] = this.phase[i];

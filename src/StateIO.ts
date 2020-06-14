@@ -535,6 +535,7 @@ export class StateIO {
           block.setViewWindowColor(state.viewWindowColor);
           block.setInitialState(state.initialState);
           block.setPotentialName(state.potentialName);
+          if (state.dampingFactor !== undefined) block.setDampingFactor(state.dampingFactor);
           if (state.method !== undefined) block.setMethod(state.method);
           if (state.solverSteps !== undefined) block.setSolverSteps(state.solverSteps);
           if (state.energyScale !== undefined) block.setEnergyScale(state.energyScale);

@@ -46,6 +46,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     readonly method: string;
     readonly solverSteps: number;
     readonly energyScale: number;
+    readonly dampingFactor: number;
     readonly electricFieldIntensity: number;
     readonly electricFieldFrequency: number;
 
@@ -68,6 +69,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       this.method = block.method;
       this.solverSteps = block.solverSteps;
       this.energyScale = block.energyScale;
+      this.dampingFactor = block.getDampingFactor();
       if (block.getElectricField()) {
         this.electricFieldIntensity = block.getElectricField().getIntensity();
         this.electricFieldFrequency = block.getElectricField().getFrequency();
@@ -111,6 +113,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     copy.setMethod(this.method);
     copy.setSolverSteps(this.solverSteps);
     copy.setEnergyScale(this.energyScale);
+    copy.setDampingFactor(this.getDampingFactor());
     if (this.getElectricField()) copy.setElectricField(this.getElectricField().copy());
     return copy;
   }
@@ -134,19 +137,22 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     let initialWavepacketPosition;
     let initialWavepacketWidth;
     let electricField;
+    let dampingFactor;
     if (this.dynamicSolver !== undefined) {
-      timeStep = this.dynamicSolver.getTimeStep();
-      initialState = this.dynamicSolver.getInitialState();
-      initialMomentum = this.dynamicSolver.getInitialMomentum();
-      initialWavepacketPosition = this.dynamicSolver.getInitialWavepacketPosition();
-      initialWavepacketWidth = this.dynamicSolver.getInitialWavepacketWidth();
-      electricField = this.dynamicSolver.getElectricField() ? this.dynamicSolver.getElectricField().copy() : undefined;
+      timeStep = this.getTimeStep();
+      initialState = this.getInitialState();
+      initialMomentum = this.getInitialMomentum();
+      initialWavepacketPosition = this.getInitialWavepacketPosition();
+      initialWavepacketWidth = this.getInitialWavepacketWidth();
+      dampingFactor = this.getDampingFactor();
+      electricField = this.getElectricField() ? this.getElectricField().copy() : undefined;
     } else {
       timeStep = 0.2;
       initialState = -1;
       initialMomentum = 0;
       initialWavepacketPosition = 0;
       initialWavepacketWidth = 2;
+      dampingFactor = 0;
       electricField = undefined;
     }
     switch (method) {
@@ -156,14 +162,14 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       default:
         this.dynamicSolver = new CayleySolver(this.nPoints);
     }
-    this.dynamicSolver.setTimeStep(timeStep);
-    this.dynamicSolver.setInitialState(initialState);
+    this.setTimeStep(timeStep);
+    this.setInitialState(initialState);
     this.dynamicSolver.setInitialMomentumOnly(initialMomentum);
     this.dynamicSolver.setInitialWavepacketPositionOnly(initialWavepacketPosition);
     this.dynamicSolver.setInitialWavepacketWidthOnly(initialWavepacketWidth);
     this.dynamicSolver.setElectricField(electricField);
     this.dynamicSolver.setPotential(this.potential);
-    //(<RealTimePropagator>this.dynamicSolver).setSlkFriction(1);
+    this.setDampingFactor(dampingFactor);
     this.dynamicSolver.initWavepacket();
     this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
   }
@@ -235,6 +241,15 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   getInitialWavepacketPosition(): number {
     return this.dynamicSolver.getInitialWavepacketPosition();
+  }
+
+  public setDampingFactor(dampingFactor: number): void {
+    if (this.dynamicSolver instanceof RealTimePropagator) this.dynamicSolver.setDampingFactor(dampingFactor);
+  }
+
+  public getDampingFactor(): number {
+    if (this.dynamicSolver instanceof RealTimePropagator) return this.dynamicSolver.getDampingFactor();
+    return 0;
   }
 
   setElectricField(eField: ElectricField1D): void {

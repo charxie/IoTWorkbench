@@ -91,6 +91,10 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-electric-field-frequency-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Damping Factor:</td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-damping-factor-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Wavepacket Color:</td>
                   <td><input type="color" id="quantum-dynamics-1d-block-wavepacket-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="quantum-dynamics-1d-block-wavepacket-color-field" style="width: 100%"></td>
@@ -142,6 +146,8 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       let initialMomentumField = document.getElementById("quantum-dynamics-1d-block-initial-momentum-field") as HTMLInputElement;
       initialMomentumField.value = block.getInitialMomentum().toString();
 
+      let dampingFactorField = document.getElementById("quantum-dynamics-1d-block-damping-factor-field") as HTMLInputElement;
+      dampingFactorField.value = block.getDampingFactor().toString();
       let electricFieldIntensityField = document.getElementById("quantum-dynamics-1d-block-electric-field-intensity-field") as HTMLInputElement;
       electricFieldIntensityField.value = block.getElectricField() ? block.getElectricField().getIntensity().toString() : "0";
       let electricFieldFrequencyField = document.getElementById("quantum-dynamics-1d-block-electric-field-frequency-field") as HTMLInputElement;
@@ -216,6 +222,14 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
         } else {
           success = false;
           message = initialMomentumField.value + " is not a valid number for the initial momentum";
+        }
+        // set the damping factor
+        let dampingFactor = parseFloat(dampingFactorField.value);
+        if (isNumber(dampingFactor)) {
+          block.setDampingFactor(dampingFactor);
+        } else {
+          success = false;
+          message = dampingFactorField.value + " is not a valid number for the damping factor";
         }
         // set electric field intensity
         let eFieldIntensity = parseFloat(electricFieldIntensityField.value);
@@ -314,6 +328,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       initialWavepacketWidthField.addEventListener("keyup", enterKeyUp);
       initialWavepacketPositionField.addEventListener("keyup", enterKeyUp);
       initialMomentumField.addEventListener("keyup", enterKeyUp);
+      dampingFactorField.addEventListener("keyup", enterKeyUp);
       electricFieldIntensityField.addEventListener("keyup", enterKeyUp);
       electricFieldFrequencyField.addEventListener("keyup", enterKeyUp);
       wavepacketColorField.addEventListener("keyup", enterKeyUp);
