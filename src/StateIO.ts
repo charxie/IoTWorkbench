@@ -557,6 +557,8 @@ export class StateIO {
               block.setElectricField(ef);
             }
           }
+          if (state.showWaveFunction !== undefined) block.setShowWaveFunction(state.showWaveFunction);
+          if (state.showWaveProbabilityDensity !== undefined) block.setShowProbabilityDensity(state.showWaveProbabilityDensity);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

@@ -19,6 +19,8 @@ import quantum_harmonic_oscillator_1d_dynamic from "./examples/quantum-harmonic-
 // @ts-ignore
 import quantum_harmonic_oscillator_1d_stationary from "./examples/quantum-harmonic-oscillator-1d-stationary.json";
 // @ts-ignore
+import square_well_1d from "./examples/square-well-1d.json";
+// @ts-ignore
 import quantum_hadamard_gate from "./examples/quantum-hadamard-gate.json";
 // @ts-ignore
 import quantum_cnot_gate from "./examples/quantum-cnot-gate.json";
@@ -593,6 +595,7 @@ export class Examples {
     this.files.push({name: "Engineering: Mixed Boundary Condition", data: mixed_boundary_condition});
     this.files.push({name: "Engineering: Convection-Diffusion Equation", data: convection_diffusion_equation});
     this.files.push({name: "Engineering: Rayleigh–Bénard Convection", data: rayleigh_benard_convection});
+    this.files.push({name: "Quantum Mechanics: Square Well", data: square_well_1d});
     this.files.push({name: "Quantum Mechanics: Harmonic Oscillator", data: quantum_harmonic_oscillator_1d_stationary});
     this.files.push({name: "Quantum Mechanics: Harmonic Oscillator Dynamics", data: quantum_harmonic_oscillator_1d_dynamic});
     this.files.push({name: "Quantum Mechanics: Morse Potential", data: morse_potential_1d_stationary});

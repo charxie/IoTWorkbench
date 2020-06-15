@@ -9,23 +9,26 @@ import {flowchart} from "../Main";
 import {Rectangle} from "../math/Rectangle";
 import {StationaryStateSolver} from "../physics/quantum/qm1d/StationaryStateSolver";
 import {CustomPotential} from "../physics/quantum/qm1d/potentials/CustomPotential";
-import {TimePropagator} from "../physics/quantum/qm1d/TimePropagator";
 import {Quantum1DBlock} from "./Quantum1DBlock";
 import {RungeKuttaSolver} from "../physics/quantum/qm1d/RungeKuttaSolver";
 import {CayleySolver} from "../physics/quantum/qm1d/CayleySolver";
 import {SquareWell} from "../physics/quantum/qm1d/potentials/SquareWell";
 import {ElectricField1D} from "../physics/quantum/qm1d/ElectricField1D";
 import {RealTimePropagator} from "../physics/quantum/qm1d/RealTimePropagator";
+import {MyComplex} from "../math/MyComplex";
 
 export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   private portIN: Port;
+  private waveFunction: MyComplex[];
   private probabilityDensityFunction: number[];
-  private dynamicSolver: TimePropagator;
+  private dynamicSolver: RealTimePropagator;
   private baseLineOffet: number = 50;
   private method: string = "Cayley";
   private solverSteps: number = 10;
   private energyScale: number = 500;
+  private showWaveFunction: boolean = false;
+  private showProbabilityDensity: boolean = true;
 
   static State = class {
     readonly uid: string;
@@ -49,6 +52,8 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     readonly dampingFactor: number;
     readonly electricFieldIntensity: number;
     readonly electricFieldFrequency: number;
+    readonly showWaveFunction: boolean;
+    readonly showProbabilityDensity: boolean;
 
     constructor(block: QuantumDynamics1DBlock) {
       this.uid = block.uid;
@@ -74,6 +79,8 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
         this.electricFieldIntensity = block.getElectricField().getIntensity();
         this.electricFieldFrequency = block.getElectricField().getFrequency();
       }
+      this.showWaveFunction = block.showWaveFunction;
+      this.showProbabilityDensity = block.showProbabilityDensity;
     }
   };
 
@@ -115,6 +122,8 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     copy.setEnergyScale(this.energyScale);
     copy.setDampingFactor(this.getDampingFactor());
     if (this.getElectricField()) copy.setElectricField(this.getElectricField().copy());
+    copy.setShowWaveFunction(this.showWaveFunction);
+    copy.setShowProbabilityDensity(this.showProbabilityDensity);
     return copy;
   }
 
@@ -172,10 +181,27 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.setDampingFactor(dampingFactor);
     this.dynamicSolver.initWavepacket();
     this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
+    this.waveFunction = this.dynamicSolver.getWaveFunction();
   }
 
   public getMethod(): string {
     return this.method;
+  }
+
+  public setShowWaveFunction(showWaveFunction: boolean): void {
+    this.showWaveFunction = showWaveFunction;
+  }
+
+  public getShowWaveFunction(): boolean {
+    return this.showWaveFunction;
+  }
+
+  public setShowProbabilityDensity(showProbabilityDensity: boolean): void {
+    this.showProbabilityDensity = showProbabilityDensity;
+  }
+
+  public getShowProbabilityDensity(): boolean {
+    return this.showProbabilityDensity;
   }
 
   public setSolverSteps(solverSteps: number): void {
@@ -244,12 +270,11 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   }
 
   public setDampingFactor(dampingFactor: number): void {
-    if (this.dynamicSolver instanceof RealTimePropagator) this.dynamicSolver.setDampingFactor(dampingFactor);
+    this.dynamicSolver.setDampingFactor(dampingFactor);
   }
 
   public getDampingFactor(): number {
-    if (this.dynamicSolver instanceof RealTimePropagator) return this.dynamicSolver.getDampingFactor();
-    return 0;
+    return this.dynamicSolver.getDampingFactor();
   }
 
   setElectricField(eField: ElectricField1D): void {
@@ -321,7 +346,8 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       ctx.stroke();
     } else {
       if (this.potential !== undefined) {
-        this.drawProbabilityDensityFunctions(ctx);
+        if (this.showProbabilityDensity) this.drawProbabilityDensityFunction(ctx);
+        if (this.showWaveFunction) this.drawWaveFunction(ctx);
         this.drawPotential(ctx);
         this.drawElectricField(ctx);
         this.drawAxes(ctx);
@@ -527,11 +553,38 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     ctx.stroke();
   }
 
-  private drawProbabilityDensityFunctions(ctx: CanvasRenderingContext2D): void {
+  private drawWaveFunction(ctx: CanvasRenderingContext2D): void {
+    if (this.waveFunction === undefined) return;
+    let n = this.waveFunction.length;
+    let bottom = this.viewWindow.y + this.viewWindow.height / 2;
+    let h = this.viewWindow.height / 2;
+    let dx = this.viewWindow.width / n;
+    ctx.lineWidth = 1;
+    // draw the real part
+    ctx.beginPath();
+    ctx.moveTo(this.viewWindow.x, bottom);
+    for (let i = 0; i < n; i++) {
+      ctx.lineTo(this.viewWindow.x + i * dx, bottom - h * this.waveFunction[i].re);
+    }
+    ctx.lineTo(this.viewWindow.x + this.viewWindow.width, bottom);
+    ctx.strokeStyle = "blue";
+    ctx.stroke();
+    // draw the imaginary part
+    ctx.beginPath();
+    ctx.moveTo(this.viewWindow.x, bottom);
+    for (let i = 0; i < n; i++) {
+      ctx.lineTo(this.viewWindow.x + i * dx, bottom - h * this.waveFunction[i].im);
+    }
+    ctx.lineTo(this.viewWindow.x + this.viewWindow.width, bottom);
+    ctx.strokeStyle = "red";
+    ctx.stroke();
+  }
+
+  private drawProbabilityDensityFunction(ctx: CanvasRenderingContext2D): void {
     if (this.probabilityDensityFunction === undefined) return;
     let n = this.probabilityDensityFunction.length;
     let bottom = this.viewWindow.y + this.viewWindow.height - this.baseLineOffet;
-    let h = this.viewWindow.height * 2;
+    let h = this.viewWindow.height * 4;
     let dx = this.viewWindow.width / n;
     ctx.beginPath();
     ctx.moveTo(this.viewWindow.x, bottom);
@@ -577,9 +630,9 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     }
     let steps = this.portIN.getValue();
     if (steps === undefined || steps === 0) return;
-    for (let i = 0; i < this.solverSteps; i++)
-      this.dynamicSolver.nextStep();
+    for (let i = 0; i < this.solverSteps; i++) this.dynamicSolver.nextStep();
     this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
+    this.waveFunction = this.dynamicSolver.getWaveFunction();
   }
 
   findStates(): void {

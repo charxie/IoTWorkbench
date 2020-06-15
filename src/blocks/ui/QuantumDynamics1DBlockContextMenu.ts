@@ -36,22 +36,11 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
                   <td>Time Step:</td>
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-time-step-field" style="width: 100%"></td>
                 </tr>
-               <tr>
-                  <td>Potential:</td>
+                <tr>
+                  <td>Representation:</td>
                   <td colspan="2">
-                    <select id="quantum-dynamics-1d-block-potential-selector" style="width: 100%">
-                      <option value="Custom" selected>Custom</option>
-                      <option value="Square Well">Square Well</option>
-                      <option value="Coulomb Well">Coulomb Well</option>
-                      <option value="Morse Well">Morse Well</option>
-                      <option value="Harmonic Oscillator">Harmonic Oscillator</option>
-                      <option value="Anharmonic Oscillator">Anharmonic Oscillator</option>
-                      <option value="Diatomic Molecule">Diatomic Molecule</option>
-                      <option value="Crystal Lattice">Crystal Lattice</option>
-                      <option value="Crystal Lattice in a Field">Crystal Lattice in a Field</option>
-                      <option value="Crystal Lattice with a Vacancy">Crystal Lattice with a Vacancy</option>
-                      <option value="Crystal Lattice with an Interstitial">Crystal Lattice with an Interstitial</option>
-                    </select>
+                    <input type="checkbox" id="quantum-dynamics-1d-block-wave-function-check-box"> Wavefunction
+                    <input type="checkbox" id="quantum-dynamics-1d-block-probability-density-function-check-box" checked> Probability Density
                   </td>
                 </tr>
                 <tr>
@@ -95,7 +84,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-damping-factor-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Wavepacket Color:</td>
+                  <td>Probability Denisty Color:</td>
                   <td><input type="color" id="quantum-dynamics-1d-block-wavepacket-color-chooser" style="width: 50px"></td>
                   <td><input type="text" id="quantum-dynamics-1d-block-wavepacket-color-field" style="width: 100%"></td>
                 </tr>
@@ -128,14 +117,17 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       methodSelector.value = this.block.getMethod();
       let timeStepField = document.getElementById("quantum-dynamics-1d-block-time-step-field") as HTMLInputElement;
       timeStepField.value = block.getTimeStep().toString();
-      let potentialSelector = document.getElementById("quantum-dynamics-1d-block-potential-selector") as HTMLSelectElement;
-      potentialSelector.value = this.block.getPotentialName();
       let pointsField = document.getElementById("quantum-dynamics-1d-block-points-field") as HTMLInputElement;
       pointsField.value = Math.round(block.getNPoints()).toString();
       let solverStepsField = document.getElementById("quantum-dynamics-1d-block-solver-steps-field") as HTMLInputElement;
       solverStepsField.value = Math.round(block.getSolverSteps()).toString();
       let energyScaleField = document.getElementById("quantum-dynamics-1d-block-energy-scale-field") as HTMLInputElement;
       energyScaleField.value = block.getEnergyScale().toString();
+
+      let showWaveFunctionCheckBox = document.getElementById("quantum-dynamics-1d-block-wave-function-check-box") as HTMLInputElement;
+      showWaveFunctionCheckBox.checked = block.getShowWaveFunction();
+      let showProbabilityDensityCheckBox = document.getElementById("quantum-dynamics-1d-block-probability-density-function-check-box") as HTMLInputElement;
+      showProbabilityDensityCheckBox.checked = block.getShowProbabilityDensity();
 
       let initialStateField = document.getElementById("quantum-dynamics-1d-block-initial-state-field") as HTMLInputElement;
       initialStateField.value = (block.getInitialState() + 1).toString(); // internally ground state has an index of zero
@@ -296,8 +288,9 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
         // finish up
         if (success) {
           block.setName(nameField.value);
+          block.setShowWaveFunction(showWaveFunctionCheckBox.checked);
+          block.setShowProbabilityDensity(showProbabilityDensityCheckBox.checked);
           block.setMethod(methodSelector.value);
-          block.setPotentialName(potentialSelector.value);
           if (computeInitialState) {
             block.findStates();
           }
