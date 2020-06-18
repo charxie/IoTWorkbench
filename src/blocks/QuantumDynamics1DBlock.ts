@@ -31,6 +31,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   private showWaveFunction: boolean = false;
   private showProbabilityDensity: boolean = true;
   private showStateSpace: boolean = false;
+  private stateSpaceWidth: number = 20;
 
   static State = class {
     readonly uid: string;
@@ -368,6 +369,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
         this.drawPotential(ctx);
         this.drawElectricField(ctx);
         this.drawAxes(ctx);
+        this.drawClock(ctx);
         this.drawResults(ctx);
       }
       this.drawAxisLabels(ctx);
@@ -386,9 +388,16 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   }
 
+  private drawClock(ctx: CanvasRenderingContext2D): void {
+    ctx.font = "10px Arial";
+    ctx.fillStyle = "black";
+    let time = Math.round(this.dynamicSolver.getTime() * 24.19 * 0.001) + " fs";
+    ctx.fillText(time, this.viewWindow.x + this.viewWindow.width - ctx.measureText(time).width - 8, this.viewWindow.y + this.viewWindow.height - 10);
+  }
+
   private drawResults(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    ctx.translate(this.viewWindow.x, this.viewWindow.y);
+    ctx.translate(this.showStateSpace ? this.viewWindow.x + this.stateSpaceWidth + 8 : this.viewWindow.x, this.viewWindow.y);
     ctx.font = "12px Arial";
     ctx.fillStyle = "black";
     ctx.fillText("E", 10, 15);
@@ -423,6 +432,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     let position = this.dynamicSolver.getPosition();
     let momentum = this.dynamicSolver.getMomentum();
     let x = position * this.viewWindow.width / this.probabilityDensityFunction.length;
+    if (this.showStateSpace) x -= this.stateSpaceWidth + 8;
     ctx.strokeStyle = "gray";
     ctx.setLineDash([2, 2]);
     ctx.drawLine(x, 0, x, this.viewWindow.height);
@@ -500,7 +510,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     if (this.energyLevels === undefined) return;
     let emin = this.energyLevels[0];
     let emax = this.energyLevels[this.maxState];
-    let h = this.viewWindow.height / 2;
+    let h = this.viewWindow.height - this.baseLineOffet;
     let dh = h / (emax - emin);
     let bottom = this.viewWindow.y + this.viewWindow.height - this.baseLineOffet;
     let y;
@@ -508,15 +518,18 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     ctx.fillStyle = "gray";
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
-    let zoneWidth = 40;
+    ctx.font = "10px Arial";
+    let label;
     for (let i = 0; i < this.maxState; i++) {
       y = bottom - dh * (this.energyLevels[i] - this.energyLevels[0]);
-      ctx.drawLine(this.viewWindow.x, y, this.viewWindow.x + zoneWidth, y);
+      ctx.drawLine(this.viewWindow.x, y, this.viewWindow.x + this.stateSpaceWidth, y);
+      label = (i + 1).toString();
+      ctx.fillText(label, this.viewWindow.x - ctx.measureText(label).width - 4, y + 4);
       if (this.stateProbabilities) {
-        ctx.fillCircle(this.viewWindow.x + zoneWidth / 2, y, this.stateProbabilities[i] * zoneWidth * 0.4);
+        ctx.fillCircle(this.viewWindow.x + this.stateSpaceWidth / 2, y, this.stateProbabilities[i] * this.stateSpaceWidth * 0.4);
       }
     }
-    ctx.drawLine(this.viewWindow.x + zoneWidth, bottom, this.viewWindow.x + zoneWidth, bottom - h);
+    ctx.drawLine(this.viewWindow.x + this.stateSpaceWidth, bottom, this.viewWindow.x + this.stateSpaceWidth, bottom - h);
   }
 
   private drawPotential(ctx: CanvasRenderingContext2D): void {

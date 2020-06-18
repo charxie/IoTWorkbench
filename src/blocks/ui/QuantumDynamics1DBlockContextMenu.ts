@@ -51,6 +51,10 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-points-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Highest State:</td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-highest-state-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Solver Internal Steps:</td>
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-solver-steps-field" style="width: 100%"></td>
                 </tr>
@@ -120,6 +124,8 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       methodSelector.value = this.block.getMethod();
       let timeStepField = document.getElementById("quantum-dynamics-1d-block-time-step-field") as HTMLInputElement;
       timeStepField.value = block.getTimeStep().toString();
+      let highestStateField = document.getElementById("quantum-dynamics-1d-block-highest-state-field") as HTMLInputElement;
+      highestStateField.value = Math.round(block.getMaxState()).toString();
       let pointsField = document.getElementById("quantum-dynamics-1d-block-points-field") as HTMLInputElement;
       pointsField.value = Math.round(block.getNPoints()).toString();
       let solverStepsField = document.getElementById("quantum-dynamics-1d-block-solver-steps-field") as HTMLInputElement;
@@ -176,6 +182,14 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
         } else {
           success = false;
           message = timeStepField.value + " is not a valid number for time step";
+        }
+        // set highest state
+        let maxState = parseInt(highestStateField.value);
+        if (isNumber(maxState)) {
+          block.setMaxState(Math.max(10, maxState));
+        } else {
+          success = false;
+          message = highestStateField.value + " is not a valid number for highest state";
         }
         // set points
         let points = parseInt(pointsField.value);
@@ -320,6 +334,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       };
       nameField.addEventListener("keyup", enterKeyUp);
       timeStepField.addEventListener("keyup", enterKeyUp);
+      highestStateField.addEventListener("keyup", enterKeyUp);
       pointsField.addEventListener("keyup", enterKeyUp);
       solverStepsField.addEventListener("keyup", enterKeyUp);
       energyScaleField.addEventListener("keyup", enterKeyUp);

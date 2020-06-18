@@ -41,8 +41,8 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
-                  <td>Steps:</td>
-                  <td colspan="2"><input type="text" id="quantum-stationary-state-1d-block-steps-field" style="width: 100%"></td>
+                  <td>Number of Points:</td>
+                  <td colspan="2"><input type="text" id="quantum-stationary-state-1d-block-npoints-field" style="width: 100%"></td>
                 </tr>
                 <tr>
                   <td>Highest State:</td>
@@ -80,8 +80,8 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
       nameField.value = block.getName();
       let potentialSelector = document.getElementById("quantum-stationary-state-1d-block-potential-selector") as HTMLSelectElement;
       potentialSelector.value = this.block.getPotentialName();
-      let stepsField = document.getElementById("quantum-stationary-state-1d-block-steps-field") as HTMLInputElement;
-      stepsField.value = Math.round(block.getNPoints()).toString();
+      let nPointsField = document.getElementById("quantum-stationary-state-1d-block-npoints-field") as HTMLInputElement;
+      nPointsField.value = Math.round(block.getNPoints()).toString();
       let highestStateField = document.getElementById("quantum-stationary-state-1d-block-highest-state-field") as HTMLInputElement;
       highestStateField.value = Math.round(block.getMaxState()).toString();
 
@@ -104,13 +104,13 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
       const okFunction = () => {
         let success = true;
         let message;
-        // set steps
-        let steps = parseInt(stepsField.value);
-        if (isNumber(steps)) {
-          block.setNpoints(Math.max(50, steps));
+        // set number of points
+        let nPoints = parseInt(nPointsField.value);
+        if (isNumber(nPoints)) {
+          block.setNpoints(Math.max(50, nPoints));
         } else {
           success = false;
-          message = stepsField.value + " is not a valid number for steps";
+          message = nPointsField.value + " is not a valid number for number of points";
         }
         // set highest state
         let maxState = parseInt(highestStateField.value);
@@ -157,7 +157,7 @@ export class QuantumStationaryState1DBlockContextMenu extends BlockContextMenu {
         }
       };
       nameField.addEventListener("keyup", enterKeyUp);
-      stepsField.addEventListener("keyup", enterKeyUp);
+      nPointsField.addEventListener("keyup", enterKeyUp);
       highestStateField.addEventListener("keyup", enterKeyUp);
       wavepacketColorField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
