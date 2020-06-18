@@ -12,8 +12,6 @@ import {SquareWell} from "./potentials/SquareWell";
 
 export abstract class TimePropagator {
 
-  static readonly VMAX: number = 5;
-
   nPoints: number;
   delta: number = 0;
   coordinates: number[];
@@ -68,16 +66,6 @@ export abstract class TimePropagator {
       return p;
     }
     return this.potential.getValues();
-  }
-
-  /* Clamp the potential function to avoid numeric instability due to large potential value. */
-  clampPotential(v: number): number {
-    if (v > TimePropagator.VMAX) {
-      v = TimePropagator.VMAX;
-    } else if (v < -TimePropagator.VMAX) {
-      v = -TimePropagator.VMAX;
-    }
-    return v * Constants.ENERGY_UNIT_CONVERTER;
   }
 
   /* Discretize the Hamiltonian into a matrix using the finite-difference method. */

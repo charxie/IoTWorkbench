@@ -139,6 +139,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   reset(): void {
     super.reset();
     this.dynamicSolver.reset();
+    this.computeStateProbabilities();
   }
 
   initWavepacket(): void {
@@ -397,7 +398,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   private drawResults(ctx: CanvasRenderingContext2D): void {
     ctx.save();
-    ctx.translate(this.showStateSpace ? this.viewWindow.x + this.stateSpaceWidth + 8 : this.viewWindow.x, this.viewWindow.y);
+    ctx.translate(this.showStateSpace ? this.viewWindow.x + this.stateSpaceWidth : this.viewWindow.x, this.viewWindow.y);
     ctx.font = "12px Arial";
     ctx.fillStyle = "black";
     ctx.fillText("E", 10, 15);
@@ -431,8 +432,12 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     }
     let position = this.dynamicSolver.getPosition();
     let momentum = this.dynamicSolver.getMomentum();
-    let x = position * this.viewWindow.width / this.probabilityDensityFunction.length;
-    if (this.showStateSpace) x -= this.stateSpaceWidth + 8;
+    let x;
+    if (this.showStateSpace) {
+      x = position * (this.viewWindow.width - this.stateSpaceWidth) / this.probabilityDensityFunction.length;
+    } else {
+      x = position * this.viewWindow.width / this.probabilityDensityFunction.length;
+    }
     ctx.strokeStyle = "gray";
     ctx.setLineDash([2, 2]);
     ctx.drawLine(x, 0, x, this.viewWindow.height);
@@ -464,27 +469,29 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     ctx.fillStyle = "black";
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
+    let x0 = this.showStateSpace ? this.viewWindow.x + this.stateSpaceWidth : this.viewWindow.x;
     let y0 = this.viewWindow.y + this.viewWindow.height;
     // draw x-axis tickmarks
     let inx = (this.potential.getXmax() - this.potential.getXmin()) / 10;
-    let dx = this.viewWindow.width / 10;
+    let dx = (this.showStateSpace ? this.viewWindow.width - this.stateSpaceWidth : this.viewWindow.width) / 10;
+    let tmpX, xtick, precision, diff, iString;
     for (let i = 0; i < 11; i++) {
-      let tmpX = this.viewWindow.x + dx * i;
+      tmpX = x0 + dx * i;
       ctx.drawLine(tmpX, y0, tmpX, y0 - 4);
-      let xtick = this.potential.getXmin() + i * inx;
-      let precision = 2;
+      xtick = this.potential.getXmin() + i * inx;
+      precision = 2;
       if (Math.abs(xtick) >= 1) {
-        let diff = Math.abs(xtick - Math.round(xtick));
+        diff = Math.abs(xtick - Math.round(xtick));
         precision = Math.round(Math.abs(xtick)).toString().length + (diff < 0.1 ? 0 : 1);
       } else {
         if (xtick.toPrecision(precision).endsWith("0")) {
           precision--;
         }
       }
-      let iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
+      iString = Math.abs(xtick) < 0.01 ? "0" : xtick.toPrecision(precision);
       ctx.fillText(iString, tmpX - ctx.measureText(iString).width / 2, y0 + 10);
     }
-    let x0 = this.viewWindow.x + this.viewWindow.width / 2;
+    x0 = this.showStateSpace ? this.viewWindow.x + (this.stateSpaceWidth + this.viewWindow.width) / 2 : this.viewWindow.x + this.viewWindow.width / 2;
     ctx.drawLine(x0, y0, x0, this.viewWindow.y);
     let vmin = this.potential.getVmin();
     let vmax = this.potential.getVmax();
@@ -513,52 +520,62 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     let h = this.viewWindow.height - this.baseLineOffet;
     let dh = h / (emax - emin);
     let bottom = this.viewWindow.y + this.viewWindow.height - this.baseLineOffet;
-    let y;
-    let ySelected;
-    ctx.fillStyle = "gray";
+    ctx.fillStyle = "#eeeeee88";
+    ctx.fillRect(this.viewWindow.x, this.viewWindow.y, this.stateSpaceWidth, this.viewWindow.height);
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1;
-    ctx.font = "10px Arial";
+    ctx.font = "9px Arial";
     let label;
+    let r;
+    let x;
+    let y;
     for (let i = 0; i < this.maxState; i++) {
       y = bottom - dh * (this.energyLevels[i] - this.energyLevels[0]);
       ctx.drawLine(this.viewWindow.x, y, this.viewWindow.x + this.stateSpaceWidth, y);
-      label = (i + 1).toString();
-      ctx.fillText(label, this.viewWindow.x - ctx.measureText(label).width - 4, y + 4);
+      label = "|" + (i + 1) + "⟩";
+      ctx.fillStyle = "black";
+      ctx.fillText(label, this.viewWindow.x - ctx.measureText(label).width - 4, y + 3);
       if (this.stateProbabilities) {
-        ctx.fillCircle(this.viewWindow.x + this.stateSpaceWidth / 2, y, this.stateProbabilities[i] * this.stateSpaceWidth * 0.4);
+        r = this.stateProbabilities[i] * this.stateSpaceWidth * 0.35;
+        x = this.viewWindow.x + this.stateSpaceWidth / 2;
+        ctx.fillStyle = "LawnGreen";
+        ctx.fillCircle(x, y, r);
+        ctx.drawCircle(x, y, r);
       }
     }
-    ctx.drawLine(this.viewWindow.x + this.stateSpaceWidth, bottom, this.viewWindow.x + this.stateSpaceWidth, bottom - h);
+    ctx.drawLine(this.viewWindow.x + this.stateSpaceWidth, this.viewWindow.y, this.viewWindow.x + this.stateSpaceWidth, this.viewWindow.y + this.viewWindow.height);
   }
 
   private drawPotential(ctx: CanvasRenderingContext2D): void {
-    let bottom = this.viewWindow.y + this.viewWindow.height - this.baseLineOffet;
-    let h = this.viewWindow.height / 2;
+    let h = this.viewWindow.height - this.baseLineOffet;
+    let bottom = this.viewWindow.y + h;
     let vmin = this.potential.getVmin();
     let vmax = this.potential.getVmax();
     if (vmin === vmax) return;
     let vlen = this.potential.getPoints();
-    let dx = this.viewWindow.width / vlen;
+    let dx = this.showStateSpace ? (this.viewWindow.width - this.stateSpaceWidth) / vlen : this.viewWindow.width / vlen;
+    let x0 = this.showStateSpace ? this.viewWindow.x + this.stateSpaceWidth : this.viewWindow.x;
     let dv = h / (vmax - vmin);
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 3;
     ctx.beginPath();
     let firstTime = true;
+    let y;
     for (let i = 0; i < vlen; i++) {
-      if (this.potential.getValue(i) <= vmax && this.potential.getValue(i) >= vmin) {
+      y = bottom - (this.potential.getValue(i) - vmin) * dv;
+      if (y <= this.viewWindow.y + this.viewWindow.height && y >= this.viewWindow.y) {
         if (firstTime) {
-          ctx.moveTo(this.viewWindow.x + i * dx, bottom - (this.potential.getValue(i) - vmin) * dv);
+          ctx.moveTo(x0 + i * dx, y);
           firstTime = false;
         } else {
-          ctx.lineTo(this.viewWindow.x + i * dx, bottom - (this.potential.getValue(i) - vmin) * dv);
+          ctx.lineTo(x0 + i * dx, y);
         }
       }
     }
     // fill the gap between the last point and the right border line
     let projected = 2 * this.potential.getValue(vlen - 1) - this.potential.getValue(vlen - 2);
     if (projected <= vmax && projected >= vmin) {
-      ctx.lineTo(this.viewWindow.x + vlen * dx, bottom - (projected - vmin) * dv);
+      ctx.lineTo(x0 + vlen * dx, bottom - (projected - vmin) * dv);
     }
     ctx.stroke();
   }
@@ -610,23 +627,24 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     if (this.waveFunction === undefined) return;
     let n = this.waveFunction.length;
     let bottom = this.viewWindow.y + this.viewWindow.height / 2;
+    let x0 = this.showStateSpace ? this.viewWindow.x + this.stateSpaceWidth : this.viewWindow.x;
+    let dx = (this.showStateSpace ? this.viewWindow.width - this.stateSpaceWidth : this.viewWindow.width) / n;
     let h = this.viewWindow.height / 2;
-    let dx = this.viewWindow.width / n;
     ctx.lineWidth = 1;
     // draw the real part
     ctx.beginPath();
-    ctx.moveTo(this.viewWindow.x, bottom);
+    ctx.moveTo(x0, bottom);
     for (let i = 0; i < n; i++) {
-      ctx.lineTo(this.viewWindow.x + i * dx, bottom - h * this.waveFunction[i].re);
+      ctx.lineTo(x0 + i * dx, bottom - h * this.waveFunction[i].re);
     }
     ctx.lineTo(this.viewWindow.x + this.viewWindow.width, bottom);
     ctx.strokeStyle = "blue";
     ctx.stroke();
     // draw the imaginary part
     ctx.beginPath();
-    ctx.moveTo(this.viewWindow.x, bottom);
+    ctx.moveTo(x0, bottom);
     for (let i = 0; i < n; i++) {
-      ctx.lineTo(this.viewWindow.x + i * dx, bottom - h * this.waveFunction[i].im);
+      ctx.lineTo(x0 + i * dx, bottom - h * this.waveFunction[i].im);
     }
     ctx.lineTo(this.viewWindow.x + this.viewWindow.width, bottom);
     ctx.strokeStyle = "red";
@@ -638,11 +656,12 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     let n = this.probabilityDensityFunction.length;
     let bottom = this.viewWindow.y + this.viewWindow.height - this.baseLineOffet;
     let h = this.viewWindow.height * 4;
-    let dx = this.viewWindow.width / n;
+    let x0 = this.showStateSpace ? this.viewWindow.x + this.stateSpaceWidth : this.viewWindow.x;
+    let dx = (this.showStateSpace ? this.viewWindow.width - this.stateSpaceWidth : this.viewWindow.width) / n;
     ctx.beginPath();
-    ctx.moveTo(this.viewWindow.x, bottom);
+    ctx.moveTo(x0, bottom);
     for (let i = 0; i < n; i++) {
-      ctx.lineTo(this.viewWindow.x + i * dx, bottom - h * this.probabilityDensityFunction[i]);
+      ctx.lineTo(x0 + i * dx, bottom - h * this.probabilityDensityFunction[i]);
     }
     ctx.lineTo(this.viewWindow.x + this.viewWindow.width, bottom);
     ctx.closePath();
@@ -657,7 +676,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     super.refreshView();
     this.viewMargin.top = 10;
     this.viewMargin.bottom = 30;
-    this.viewMargin.left = 30;
+    this.viewMargin.left = this.showStateSpace ? 40 : 30;
     this.viewMargin.right = 10;
     let dh = (this.height - this.barHeight) / 5;
     this.portIN.setY(this.barHeight + dh);
@@ -687,6 +706,12 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
     this.waveFunction = this.dynamicSolver.getWaveFunction();
     if (this.showStateSpace && this.waveFunctions) {
+      this.computeStateProbabilities();
+    }
+  }
+
+  private computeStateProbabilities(): void {
+    if (this.waveFunction && this.waveFunctions) {
       if (this.stateProbabilities === undefined || this.stateProbabilities.length !== this.waveFunction.length) {
         this.stateProbabilities = new Array(this.waveFunction.length);
       }

@@ -186,7 +186,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
         // set highest state
         let maxState = parseInt(highestStateField.value);
         if (isNumber(maxState)) {
-          block.setMaxState(Math.max(10, maxState));
+          block.setMaxState(Math.max(5, maxState));
         } else {
           success = false;
           message = highestStateField.value + " is not a valid number for highest state";

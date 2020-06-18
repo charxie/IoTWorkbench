@@ -2,10 +2,14 @@
  * @author Charles Xie
  */
 
+import {Constants} from "../Constants";
+
 export abstract class Potential1D {
 
-  protected xmin: number = -10;
-  protected xmax: number = 10;
+  static readonly VMAX: number = 10;
+
+  protected xmin: number = -Potential1D.VMAX;
+  protected xmax: number = Potential1D.VMAX;
   protected values: number[];
 
   constructor(n: number, xmin: number, xmax: number) {
@@ -28,11 +32,11 @@ export abstract class Potential1D {
   }
 
   public getVmin(): number {
-    return Math.max(-10, Math.min(...this.values));
+    return Math.max(-Potential1D.VMAX, Math.min(...this.values));
   }
 
   public getVmax(): number {
-    return Math.min(10, Math.max(...this.values));
+    return Math.min(Potential1D.VMAX, Math.max(...this.values));
   }
 
   public getXmin(): number {
@@ -45,6 +49,16 @@ export abstract class Potential1D {
 
   public getXLength(): number {
     return this.xmax - this.xmin;
+  }
+
+  /* Cut off the potential function to avoid numeric instability due to large potential value. */
+  static truncatePotential(v: number): number {
+    if (v > Potential1D.VMAX) {
+      v = Potential1D.VMAX;
+    } else if (v < -Potential1D.VMAX) {
+      v = -Potential1D.VMAX;
+    }
+    return v * Constants.ENERGY_UNIT_CONVERTER;
   }
 
 }

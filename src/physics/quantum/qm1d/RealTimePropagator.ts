@@ -7,6 +7,7 @@ import {Particle} from "../Particle";
 import {TimePropagator} from "./TimePropagator";
 import {Constants} from "../Constants";
 import {AbsorbingBoundary} from "./AbsorbingBoundary";
+import {Potential1D} from "./Potential1D";
 
 export abstract class RealTimePropagator extends TimePropagator {
 
@@ -77,7 +78,7 @@ export abstract class RealTimePropagator extends TimePropagator {
     if (slk) ft = this.calculateExpectation(this.phase);
     let p;
     for (let i = 0; i < this.nPoints; i++) {
-      p = 2 * a + this.clampPotential(this.potential.getValue(i));
+      p = 2 * a + Potential1D.truncatePotential(this.potential.getValue(i));
       if (ef != 0) {
         p += ef * (i - this.nPoints / 2) * this.delta * Constants.ENERGY_UNIT_CONVERTER;
       }
