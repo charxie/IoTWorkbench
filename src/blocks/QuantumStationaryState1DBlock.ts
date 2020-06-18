@@ -13,7 +13,6 @@ import {Quantum1DBlock} from "./Quantum1DBlock";
 
 export class QuantumStationaryState1DBlock extends Quantum1DBlock {
 
-  private maxState: number = 10;  // highest number of energy levels from the ground state we will show
   private selectedEnergyLevel: number = 0;
   private energyLevelOffset: number = 8;
 
@@ -71,14 +70,6 @@ export class QuantumStationaryState1DBlock extends Quantum1DBlock {
     copy.setMaxState(this.maxState);
     copy.setPotentialName(this.potentialName);
     return copy;
-  }
-
-  public setMaxState(maxState: number): void {
-    this.maxState = maxState;
-  }
-
-  public getMaxState(): number {
-    return this.maxState;
   }
 
   draw(ctx: CanvasRenderingContext2D): void {

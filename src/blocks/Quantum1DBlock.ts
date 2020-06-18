@@ -16,6 +16,7 @@ import {CoulombWells} from "../physics/quantum/qm1d/potentials/CoulombWells";
 
 export abstract class Quantum1DBlock extends Block {
 
+  protected maxState: number = 10;  // highest number of energy levels from the ground state we will show
   protected potentialName: string = "Custom";
   protected nPoints: number = 100;
   protected potential: Potential1D;
@@ -47,6 +48,14 @@ export abstract class Quantum1DBlock extends Block {
 
   getPotentialName(): string {
     return this.potentialName;
+  }
+
+  public setMaxState(maxState: number): void {
+    this.maxState = maxState;
+  }
+
+  public getMaxState(): number {
+    return this.maxState;
   }
 
   setNpoints(nPoints: number): void {

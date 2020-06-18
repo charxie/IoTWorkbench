@@ -37,10 +37,13 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-time-step-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Representation:</td>
+                  <td>Representations:</td>
                   <td colspan="2">
                     <input type="checkbox" id="quantum-dynamics-1d-block-wave-function-check-box"> Wavefunction
-                    <input type="checkbox" id="quantum-dynamics-1d-block-probability-density-function-check-box" checked> Probability Density
+                    <br>
+                    <input type="checkbox" id="quantum-dynamics-1d-block-probability-density-function-check-box" checked> Probability Density Function
+                    <br>
+                    <input type="checkbox" id="quantum-dynamics-1d-block-state-space-check-box"> State Space Probability Distribution
                   </td>
                 </tr>
                 <tr>
@@ -128,6 +131,8 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       showWaveFunctionCheckBox.checked = block.getShowWaveFunction();
       let showProbabilityDensityCheckBox = document.getElementById("quantum-dynamics-1d-block-probability-density-function-check-box") as HTMLInputElement;
       showProbabilityDensityCheckBox.checked = block.getShowProbabilityDensity();
+      let showStateSpaceCheckBox = document.getElementById("quantum-dynamics-1d-block-state-space-check-box") as HTMLInputElement;
+      showStateSpaceCheckBox.checked = block.getShowStateSpace();
 
       let initialStateField = document.getElementById("quantum-dynamics-1d-block-initial-state-field") as HTMLInputElement;
       initialStateField.value = (block.getInitialState() + 1).toString(); // internally ground state has an index of zero
@@ -290,6 +295,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
           block.setName(nameField.value);
           block.setShowWaveFunction(showWaveFunctionCheckBox.checked);
           block.setShowProbabilityDensity(showProbabilityDensityCheckBox.checked);
+          block.setShowStateSpace(showStateSpaceCheckBox.checked);
           block.setMethod(methodSelector.value);
           if (computeInitialState) {
             block.findStates();

@@ -89,7 +89,7 @@ declare global {
 
 export const system = new System();
 export const flowchart = new Flowchart();
-export const user = new User("Charles", null, "Xie");
+export const user = new User("User", null, "Surname");
 export const contextMenus: any = {};
 export const sound = new Sound();
 export const math = create(all, {});

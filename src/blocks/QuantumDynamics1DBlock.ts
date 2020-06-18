@@ -21,6 +21,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   private portIN: Port;
   private waveFunction: MyComplex[];
+  private stateProbabilities: number[];
   private probabilityDensityFunction: number[];
   private dynamicSolver: RealTimePropagator;
   private baseLineOffet: number = 50;
@@ -29,6 +30,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   private energyScale: number = 500;
   private showWaveFunction: boolean = false;
   private showProbabilityDensity: boolean = true;
+  private showStateSpace: boolean = false;
 
   static State = class {
     readonly uid: string;
@@ -39,6 +41,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     readonly name: string;
     readonly wavepacketColor: string;
     readonly viewWindowColor: string;
+    readonly maxState: number;
     readonly nPoints: number;
     readonly timeStep: number;
     readonly initialState: number;
@@ -54,6 +57,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     readonly electricFieldFrequency: number;
     readonly showWaveFunction: boolean;
     readonly showProbabilityDensity: boolean;
+    readonly showStateSpace: boolean;
 
     constructor(block: QuantumDynamics1DBlock) {
       this.uid = block.uid;
@@ -64,6 +68,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       this.name = block.name;
       this.wavepacketColor = block.wavepacketColor;
       this.viewWindowColor = block.viewWindowColor;
+      this.maxState = block.maxState;
       this.nPoints = block.nPoints;
       this.timeStep = block.getTimeStep();
       this.initialState = block.getInitialState();
@@ -81,6 +86,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       }
       this.showWaveFunction = block.showWaveFunction;
       this.showProbabilityDensity = block.showProbabilityDensity;
+      this.showStateSpace = block.showStateSpace;
     }
   };
 
@@ -112,6 +118,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     copy.setName(this.name);
     copy.setNpoints(this.nPoints);
     copy.setTimeStep(this.getTimeStep());
+    copy.setMaxState(this.maxState);
     copy.setInitialState(this.getInitialState());
     copy.setInitialWavepacketWidth(this.getInitialWavepacketWidth());
     copy.setInitialWavepacketPosition(this.getInitialWavepacketPosition());
@@ -124,6 +131,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     if (this.getElectricField()) copy.setElectricField(this.getElectricField().copy());
     copy.setShowWaveFunction(this.showWaveFunction);
     copy.setShowProbabilityDensity(this.showProbabilityDensity);
+    copy.setShowStateSpace(this.showStateSpace);
     return copy;
   }
 
@@ -202,6 +210,14 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   public getShowProbabilityDensity(): boolean {
     return this.showProbabilityDensity;
+  }
+
+  public setShowStateSpace(showStateSpace: boolean): void {
+    this.showStateSpace = showStateSpace;
+  }
+
+  public getShowStateSpace(): boolean {
+    return this.showStateSpace;
   }
 
   public setSolverSteps(solverSteps: number): void {
@@ -348,6 +364,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       if (this.potential !== undefined) {
         if (this.showProbabilityDensity) this.drawProbabilityDensityFunction(ctx);
         if (this.showWaveFunction) this.drawWaveFunction(ctx);
+        if (this.showStateSpace) this.drawStateSpace(ctx);
         this.drawPotential(ctx);
         this.drawElectricField(ctx);
         this.drawAxes(ctx);
@@ -477,6 +494,29 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     ctx.rotate(-Math.PI / 2);
     ctx.fillText("V(x) (eV)", -ctx.measureText("V(x) (eV)").width / 2, 0);
     ctx.restore();
+  }
+
+  private drawStateSpace(ctx: CanvasRenderingContext2D): void {
+    if (this.energyLevels === undefined) return;
+    let emin = this.energyLevels[0];
+    let emax = this.energyLevels[this.maxState];
+    let h = this.viewWindow.height / 2;
+    let dh = h / (emax - emin);
+    let bottom = this.viewWindow.y + this.viewWindow.height - this.baseLineOffet;
+    let y;
+    let ySelected;
+    ctx.fillStyle = "gray";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+    let zoneWidth = 40;
+    for (let i = 0; i < this.maxState; i++) {
+      y = bottom - dh * (this.energyLevels[i] - this.energyLevels[0]);
+      ctx.drawLine(this.viewWindow.x, y, this.viewWindow.x + zoneWidth, y);
+      if (this.stateProbabilities) {
+        ctx.fillCircle(this.viewWindow.x + zoneWidth / 2, y, this.stateProbabilities[i] * zoneWidth * 0.4);
+      }
+    }
+    ctx.drawLine(this.viewWindow.x + zoneWidth, bottom, this.viewWindow.x + zoneWidth, bottom - h);
   }
 
   private drawPotential(ctx: CanvasRenderingContext2D): void {
@@ -633,6 +673,24 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     for (let i = 0; i < this.solverSteps; i++) this.dynamicSolver.nextStep();
     this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
     this.waveFunction = this.dynamicSolver.getWaveFunction();
+    if (this.showStateSpace && this.waveFunctions) {
+      if (this.stateProbabilities === undefined || this.stateProbabilities.length !== this.waveFunction.length) {
+        this.stateProbabilities = new Array(this.waveFunction.length);
+      }
+      let sumRe = 0;
+      let sumIm = 0;
+      //let sumWeight = 0;
+      for (let k = 0; k < this.stateProbabilities.length; k++) {
+        sumRe = 0;
+        sumIm = 0;
+        for (let i = 0; i < this.waveFunction.length; i++) {
+          sumRe += this.waveFunctions[i][k] * this.waveFunction[i].re;
+          sumIm += this.waveFunctions[i][k] * this.waveFunction[i].im;
+        }
+        this.stateProbabilities[k] = sumRe * sumRe + sumIm * sumIm;
+        //sumWeight += this.stateProbabilities[k];
+      }
+    }
   }
 
   findStates(): void {
