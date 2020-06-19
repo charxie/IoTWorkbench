@@ -17,7 +17,7 @@ import band_gaps_crystal_lattice_1d from "./examples/band-gaps-crystal-lattice-1
 // @ts-ignore
 import morse_potential_1d_stationary from "./examples/morse-potential-1d-stationary.json";
 // @ts-ignore
-import quantum_harmonic_oscillator_1d_dynamic from "./examples/quantum-harmonic-oscillator-1d-dynamic.json";
+import quantum_harmonic_oscillator_coherent_state_1d from "./examples/quantum-harmonic-oscillator-coherent-state-1d.json";
 // @ts-ignore
 import quantum_harmonic_oscillator_1d_stationary from "./examples/quantum-harmonic-oscillator-1d-stationary.json";
 // @ts-ignore
@@ -599,13 +599,13 @@ export class Examples {
     this.files.push({name: "Engineering: Rayleigh–Bénard Convection", data: rayleigh_benard_convection});
     this.files.push({name: "Quantum Mechanics: Square Well", data: square_well_1d});
     this.files.push({name: "Quantum Mechanics: Harmonic Oscillator", data: quantum_harmonic_oscillator_1d_stationary});
-    this.files.push({name: "Quantum Mechanics: Harmonic Oscillator Dynamics", data: quantum_harmonic_oscillator_1d_dynamic});
+    this.files.push({name: "Quantum Mechanics: Coherent State", data: quantum_harmonic_oscillator_coherent_state_1d});
+    this.files.push({name: "Quantum Mechanics: Squeezed Coherent States", data: squeezed_coherent_states});
     this.files.push({name: "Quantum Mechanics: Morse Potential", data: morse_potential_1d_stationary});
-    this.files.push({name: "Quantum Mechanics: Anharmonicity and Qubit", data: anharmonic_oscillator_qubit});
     this.files.push({name: "Quantum Mechanics: Band Gaps in Crystal Lattice", data: band_gaps_crystal_lattice_1d});
     this.files.push({name: "Quantum Mechanics: Quantum Tunneling 1D", data: quantum_tunneling_1d});
-    this.files.push({name: "Quantum Mechanics: Quantum Transition (Rabi Cycle)", data: quantum_transition_coulomb_well_1d});
-    this.files.push({name: "Quantum Mechanics: Squeezed Coherent States", data: squeezed_coherent_states});
+    this.files.push({name: "Quantum Mechanics: Quantum Transition and Rabi Cycle", data: quantum_transition_coulomb_well_1d});
+    this.files.push({name: "Quantum Mechanics: Anharmonicity and Qubit", data: anharmonic_oscillator_qubit});
     this.files.push({name: "Quantum Mechanics: Dissipative Quantum System 1D", data: dissipative_quantum_harmonic_oscillator_1d});
     this.files.push({name: "Quantum Computing: Hadamard Gate", data: quantum_hadamard_gate});
     this.files.push({name: "Quantum Computing: CNOT Gate", data: quantum_cnot_gate});
