@@ -604,7 +604,7 @@ export class Examples {
     this.files.push({name: "Quantum Mechanics: Anharmonicity and Qubit", data: anharmonic_oscillator_qubit});
     this.files.push({name: "Quantum Mechanics: Band Gaps in Crystal Lattice", data: band_gaps_crystal_lattice_1d});
     this.files.push({name: "Quantum Mechanics: Quantum Tunneling 1D", data: quantum_tunneling_1d});
-    this.files.push({name: "Quantum Mechanics: Quantum Transition 1D", data: quantum_transition_coulomb_well_1d});
+    this.files.push({name: "Quantum Mechanics: Quantum Transition (Rabi Cycle)", data: quantum_transition_coulomb_well_1d});
     this.files.push({name: "Quantum Mechanics: Squeezed Coherent States", data: squeezed_coherent_states});
     this.files.push({name: "Quantum Mechanics: Dissipative Quantum System 1D", data: dissipative_quantum_harmonic_oscillator_1d});
     this.files.push({name: "Quantum Computing: Hadamard Gate", data: quantum_hadamard_gate});
