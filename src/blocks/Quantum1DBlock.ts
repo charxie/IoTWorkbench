@@ -23,6 +23,8 @@ export abstract class Quantum1DBlock extends Block {
   protected energyLevels: number[];
   protected waveFunctions: number[][];
   protected staticSolver: StationaryStateSolver;
+  protected selectedEnergyLevel: number = 0;
+  protected baseLineOffet: number = 50;
   wavepacketColor: string = "#eeeeee";
 
   portVX: Port; // port for importing potential's values (array)
@@ -132,5 +134,16 @@ export abstract class Quantum1DBlock extends Block {
   onDraggableArea(x: number, y: number): boolean {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
   }
+
+  mouseMove(e: MouseEvent): void {
+    this.selectEnergyLevel(e);
+  }
+
+  mouseDown(e: MouseEvent): boolean {
+    this.selectEnergyLevel(e);
+    return false;
+  }
+
+  abstract selectEnergyLevel(e: MouseEvent): void;
 
 }

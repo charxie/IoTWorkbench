@@ -740,8 +740,6 @@ export class StateIO {
       } else if (b instanceof ArrayInput || b instanceof StringInput) {
         b.locateOverlay();
       } else if (b instanceof QuantumDynamics1DBlock) {
-        //b.updateElectricFieldIntensity();
-        //b.updateElectricFieldFrequency();
         b.initWavepacket();
       }
     }

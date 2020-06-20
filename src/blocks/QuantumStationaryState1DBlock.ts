@@ -13,9 +13,6 @@ import {Quantum1DBlock} from "./Quantum1DBlock";
 
 export class QuantumStationaryState1DBlock extends Quantum1DBlock {
 
-  private selectedEnergyLevel: number = 0;
-  private energyLevelOffset: number = 8;
-
   static State = class {
     readonly uid: string;
     readonly x: number;
@@ -49,6 +46,7 @@ export class QuantumStationaryState1DBlock extends Quantum1DBlock {
     this.symbol = "QS1D";
     this.name = "Quantum Stationary State 1D Block";
     this.color = "#C0DCFA";
+    this.baseLineOffet = 8;
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 4;
     this.portVX = new Port(this, true, "VX", 0, this.barHeight + dh, false);
@@ -245,9 +243,9 @@ export class QuantumStationaryState1DBlock extends Quantum1DBlock {
     this.drawPotential(ctx);
     let emin = this.energyLevels[0];
     let emax = this.energyLevels[this.maxState];
-    let h = this.viewWindow.height / 2 - this.energyLevelOffset;
+    let h = this.viewWindow.height / 2 - this.baseLineOffet;
     let dh = h / (emax - emin);
-    let bottom = this.viewWindow.y + this.viewWindow.height - this.energyLevelOffset;
+    let bottom = this.viewWindow.y + this.viewWindow.height - this.baseLineOffet;
     let y;
     let ySelected;
     for (let i = 0; i < this.maxState; i++) {
@@ -282,7 +280,7 @@ export class QuantumStationaryState1DBlock extends Quantum1DBlock {
     }
   }
 
-  private selectEnergyLevel(e: MouseEvent): void {
+  selectEnergyLevel(e: MouseEvent): void {
     if (this.energyLevels !== undefined) {
       // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
       let rect = flowchart.blockView.canvas.getBoundingClientRect();
@@ -290,10 +288,10 @@ export class QuantumStationaryState1DBlock extends Quantum1DBlock {
       let y = e.clientY - rect.top - this.viewWindow.y;
       if (x > 0 && x < this.viewWindow.width && y > this.viewWindow.height / 2 && y < this.viewWindow.height) {
         let de = this.energyLevels[this.maxState] - this.energyLevels[0];
-        let h = this.viewWindow.height / 2 - this.energyLevelOffset;
+        let h = this.viewWindow.height / 2 - this.baseLineOffet;
         let dh = h / de;
         let y = e.clientY - rect.top;
-        let bottom = this.viewWindow.y + this.viewWindow.height - this.energyLevelOffset;
+        let bottom = this.viewWindow.y + this.viewWindow.height - this.baseLineOffet;
         let energy = (bottom - y) / dh + this.energyLevels[0];
         let minDistance = Number.MAX_VALUE;
         let distance;

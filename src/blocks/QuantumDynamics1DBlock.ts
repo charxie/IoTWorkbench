@@ -24,7 +24,6 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   private stateProbabilities: number[];
   private probabilityDensityFunction: number[];
   private dynamicSolver: RealTimePropagator;
-  private baseLineOffet: number = 50;
   private method: string = "Cayley";
   private solverSteps: number = 10;
   private energyScale: number = 500;
@@ -102,6 +101,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.symbol = "QD1D";
     this.name = "Quantum Dynamics 1D Block";
     this.color = "#CCFCFA";
+    this.baseLineOffet = 50;
     this.barHeight = Math.min(30, this.height / 3);
     let dh = (this.height - this.barHeight) / 5;
     this.portIN = new Port(this, true, "IN", 0, this.barHeight + dh, false);
@@ -422,12 +422,12 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       if (this.potential !== undefined) {
         if (this.showProbabilityDensity) this.drawProbabilityDensityFunction(ctx);
         if (this.showWaveFunction) this.drawWaveFunction(ctx);
-        if (this.showStateSpace) this.drawStateSpace(ctx);
         this.drawPotential(ctx);
         this.drawElectricField(ctx);
         this.drawAxes(ctx);
         this.drawClock(ctx);
         this.drawResults(ctx);
+        if (this.showStateSpace) this.drawStateSpace(ctx);
       }
       this.drawAxisLabels(ctx);
     }
@@ -585,9 +585,21 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     let r;
     let x;
     let y;
+    let ySelected;
     for (let i = 0; i < this.maxState; i++) {
       y = bottom - dh * (this.energyLevels[i] - this.energyLevels[0]);
-      ctx.drawLine(this.viewWindow.x, y, this.viewWindow.x + this.stateSpaceWidth, y);
+      ctx.beginPath();
+      ctx.moveTo(this.viewWindow.x, y);
+      ctx.lineTo(this.viewWindow.x + this.stateSpaceWidth, y)
+      if (i === this.selectedEnergyLevel) {
+        ctx.strokeStyle = "yellow";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        ySelected = y;
+      }
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 1;
+      ctx.stroke();
       label = "|" + (i + 1) + "⟩";
       ctx.fillStyle = "black";
       ctx.fillText(label, this.viewWindow.x - ctx.measureText(label).width - 4, y + 3);
@@ -600,6 +612,48 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       }
     }
     ctx.drawLine(this.viewWindow.x + this.stateSpaceWidth, this.viewWindow.y, this.viewWindow.x + this.stateSpaceWidth, this.viewWindow.y + this.viewWindow.height);
+    if (this.selectedEnergyLevel >= 0) {
+      ctx.font = "10px Arial";
+      let label = "E" + Util.subscriptNumbers((this.selectedEnergyLevel + 1).toString()) + "=" + this.energyLevels[this.selectedEnergyLevel].toFixed(4) + " eV";
+      let w1 = ctx.measureText(label).width + 12;
+      let h1 = 20;
+      let x1 = this.viewWindow.x + this.stateSpaceWidth + 4;
+      let y1 = ySelected + 10;
+      ctx.fillStyle = "white";
+      ctx.beginPath();
+      ctx.rect(x1, y1 - h1, w1, h1);
+      ctx.fill();
+      ctx.fillStyle = "black";
+      ctx.stroke();
+      ctx.fillText(label, x1 + 6, y1 - 6);
+    }
+  }
+
+  selectEnergyLevel(e: MouseEvent): void {
+    if (this.energyLevels !== undefined) {
+      // get the position of a touch relative to the canvas (don't use offsetX and offsetY as they are not supported in TouchEvent)
+      let rect = flowchart.blockView.canvas.getBoundingClientRect();
+      let x = e.clientX - rect.left - this.viewWindow.x;
+      let y = e.clientY - rect.top - this.viewWindow.y;
+      if (x > 0 && x < this.viewWindow.width && y > 0 && y < this.viewWindow.height) {
+        let de = this.energyLevels[this.maxState] - this.energyLevels[0];
+        let h = this.viewWindow.height - this.baseLineOffet;
+        let dh = h / de;
+        let y = e.clientY - rect.top;
+        let bottom = this.viewWindow.y + this.viewWindow.height - this.baseLineOffet;
+        let energy = (bottom - y) / dh + this.energyLevels[0];
+        let minDistance = Number.MAX_VALUE;
+        let distance;
+        for (let i = 0; i < this.maxState; i++) {
+          distance = Math.abs(energy - this.energyLevels[i]);
+          if (distance < minDistance) {
+            this.selectedEnergyLevel = i;
+            minDistance = distance;
+          }
+        }
+      }
+      flowchart.blockView.requestDraw();
+    }
   }
 
   private drawPotential(ctx: CanvasRenderingContext2D): void {
