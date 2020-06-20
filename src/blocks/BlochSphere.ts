@@ -4,13 +4,13 @@
 
 import {Block} from "./Block";
 import {Port} from "./Port";
-import {Util} from "../Util";
 import {Rectangle} from "../math/Rectangle";
-import {flowchart} from "../Main";
 
 export class BlochSphere extends Block {
 
-  private portI: Port;
+  private sphereRadius: number;
+  private portTheta: Port;
+  private portPhi: Port;
   private theta: number = 0;
   private phi: number = 0;
   private viewWindowColor: string = "white";
@@ -52,9 +52,11 @@ export class BlochSphere extends Block {
     this.name = name;
     this.color = "#ACFDCE";
     this.barHeight = Math.min(30, this.height / 3);
-    let dh = (this.height - this.barHeight) / 2;
-    this.portI = new Port(this, true, "I", 0, this.barHeight + dh, false)
-    this.ports.push(this.portI);
+    let dh = (this.height - this.barHeight) / 3;
+    this.portTheta = new Port(this, true, "θ", 0, this.barHeight + dh, false)
+    this.portPhi = new Port(this, true, "ɸ", 0, this.barHeight + 2 * dh, false)
+    this.ports.push(this.portTheta);
+    this.ports.push(this.portPhi);
     this.viewWindow = new Rectangle(0, 0, 1, 1);
   }
 
@@ -122,21 +124,52 @@ export class BlochSphere extends Block {
 
     ctx.save();
     ctx.translate(this.viewWindow.x + this.viewWindow.width / 2, this.viewWindow.y + this.viewWindow.height / 2);
-    let r = Math.min(this.viewWindow.width, this.viewWindow.height) * 0.35;
-    let angle = 0;
+    this.sphereRadius = Math.min(this.viewWindow.width, this.viewWindow.height) * 0.35;
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(0, 0, this.sphereRadius, 0, Math.PI * 2, false);
+    ctx.closePath();
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = this.iconic ? 0.5 : 3;
+    ctx.stroke();
     if (this.iconic) {
-      angle = Math.PI * 2;
+      ctx.lineWidth = 0.5;
+    } else {
+      ctx.lineWidth = 1;
+      ctx.setLineDash([2, 2]);
+    }
+    ctx.beginPath();
+    ctx.ellipse(0, 0, this.sphereRadius, this.sphereRadius / 4, 0, 0, 2 * Math.PI);
+    ctx.stroke();
+    if (!this.iconic) {
+      ctx.lineWidth = 0.5;
+      ctx.setLineDash([]);
+      let a = this.sphereRadius * 1.2;
+      // z-axis
+      ctx.drawLine(0, 0, 0, -a);
+      ctx.drawLine(0, -a, 5, 5 - a);
+      ctx.drawLine(0, -a, -5, 5 - a);
+      // x-axis
+      ctx.drawLine(0, 0, a, 0);
+      ctx.drawLine(a, 0, a - 5, 5);
+      ctx.drawLine(a, 0, a - 5, -5);
+      // y-axis
+      a /= 3;
+      ctx.drawLine(0, 0, -a, a);
+      ctx.drawLine(-a, a, -a, a - 7);
+      ctx.drawLine(-a, a, -a + 7, a);
       ctx.fillStyle = "white";
       ctx.beginPath();
-      ctx.arc(0, 0, r, 0, angle, false);
-      ctx.closePath();
+      ctx.arc(0, -this.sphereRadius, 5, 0, 2 * Math.PI);
       ctx.fill();
-      ctx.strokeStyle = "black";
       ctx.stroke();
-      ctx.lineWidth = 0.5;
-      ctx.drawEllipse(0, 0, r, r / 4);
-      ctx.drawEllipse(0, 0, r / 3, r);
-    } else {
+      ctx.beginPath();
+      ctx.arc(0, this.sphereRadius, 5, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "black";
+      ctx.lineWidth = 3;
+      this.drawVector(ctx, this.theta, this.phi);
     }
     ctx.restore();
 
@@ -153,22 +186,39 @@ export class BlochSphere extends Block {
 
   }
 
+  // theta = 0 corresponds to the north pole, theta = pi to the south pole
+  private drawVector(ctx: CanvasRenderingContext2D, theta: number, phi: number): void {
+    let x = this.sphereRadius * Math.sin(theta) * Math.cos(phi);
+    let y = -this.sphereRadius * Math.cos(theta);
+    let z = this.sphereRadius * Math.sin(theta) * Math.sin(phi);
+    let x1 = x + z * 0.25;
+    let y1 = y - z * 0.25;
+    ctx.drawLine(0, 0, x1, y1);
+    ctx.fillCircle(x1, y1, 5);
+  }
+
   onDraggableArea(x: number, y: number): boolean {
     return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
   }
 
   updateModel(): void {
-    let v = this.portI.getValue();
+    let theta = this.portTheta.getValue();
+    let phi = this.portPhi.getValue();
+    if (theta !== undefined && phi !== undefined) {
+      this.theta = theta;
+      this.phi = phi;
+    }
   }
 
   refreshView(): void {
     super.refreshView();
     this.viewMargin.top = 10;
     this.viewMargin.bottom = 10;
-    this.viewMargin.left = 10;
+    this.viewMargin.left = 20;
     this.viewMargin.right = 10;
-    let dh = (this.height - this.barHeight) / 2;
-    this.portI.setY(this.barHeight + dh);
+    let dh = (this.height - this.barHeight) / 3;
+    this.portTheta.setY(this.barHeight + dh);
+    this.portPhi.setY(this.barHeight + 2 * dh);
   }
 
 }

@@ -55,9 +55,6 @@ declare global {
 
     fillCircle(x, y, r);
 
-    drawEllipse(x, y, a, b);
-
-    fillEllipse(x, y, a, b);
   }
 
   interface Array<T> {

@@ -160,28 +160,6 @@ if (typeof CanvasRenderingContext2D.prototype.drawLine !== 'function') {
   }
 }
 
-if (typeof CanvasRenderingContext2D.prototype.drawEllipse !== 'function') {
-  CanvasRenderingContext2D.prototype.drawEllipse = function drawEllipse(x, y, a, b) {
-    this.beginPath();
-    this.moveTo(x, y - b);
-    this.bezierCurveTo(x + a, y - b, x + a, y + b, x, y + b);
-    this.bezierCurveTo(x - a, y + b, x - a, y - b, x, y - b);
-    this.closePath();
-    this.stroke();
-  }
-}
-
-if (typeof CanvasRenderingContext2D.prototype.fillEllipse !== 'function') {
-  CanvasRenderingContext2D.prototype.fillEllipse = function fillEllipse(x, y, a, b) {
-    this.beginPath();
-    this.moveTo(x, y - b);
-    this.bezierCurveTo(x + a, y - b, x + a, y + b, x, y + b);
-    this.bezierCurveTo(x - a, y + b, x - a, y - b, x, y - b);
-    this.closePath();
-    this.fill();
-  }
-}
-
 if (typeof CanvasRenderingContext2D.prototype.fillCircle !== 'function') {
   CanvasRenderingContext2D.prototype.fillCircle = function fillCircle(x, y, r) {
     this.beginPath();
