@@ -68,6 +68,7 @@ import {RadarChart} from "../RadarChart";
 import {KNNClassifierBlock} from "../KNNClassifierBlock";
 import {QuantumStationaryState1DBlock} from "../QuantumStationaryState1DBlock";
 import {QuantumDynamics1DBlock} from "../QuantumDynamics1DBlock";
+import {BlochSphere} from "../BlochSphere";
 
 export class BlockElementsPanel {
 
@@ -168,6 +169,7 @@ export class BlockElementsPanel {
                   <td><canvas draggable="true" id="knn-classifier-block" title="KNN Classifier" width="45px" height="70px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="quantum-stationary-state-1d-block" title="Quantum Stationary States 1D" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="quantum-dynamics-1d-block" title="Quantum Dynamics 1D" width="60px" height="60px" style="cursor: pointer;"/></td>
+                  <td><canvas draggable="true" id="bloch-sphere-block" title="Bloch Sphere" width="60px" height="60px" style="cursor: pointer;"/></td>
                   <td><canvas draggable="true" id="molecular-viewer-block" title="Molecular Viewer" width="60px" height="60px" style="cursor: pointer;"/></td>
                   </tr>
                 </table>
@@ -244,6 +246,7 @@ export class BlockElementsPanel {
     this.drawArrayAdapter("Array Adapter", "array-adapter-block");
     this.drawQuantumStationaryState1DBlock("Quantum Stationary State 1D Block", "Quantum Stationary State 1D", "quantum-stationary-state-1d-block");
     this.drawQuantumDynamics1DBlock("Quantum Dynamics 1D Block", "Quantum Dynamics 1D", "quantum-dynamics-1d-block");
+    this.drawBlochSphereBlock("Bloch Sphere Block", "Bloch Sphere", "bloch-sphere-block");
   }
 
   private drawRandomNumberGeneratorBlock(name: string, symbol: string, canvasId: string): void {
@@ -315,6 +318,14 @@ export class BlockElementsPanel {
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
     let ctx = canvas.getContext('2d');
     let block = new QuantumDynamics1DBlock("Quantum Dynamics 1D Block Icon", 8, 8, canvas.width - 16, canvas.height - 16);
+    block.setIconic(true);
+    block.draw(ctx);
+  }
+
+  private drawBlochSphereBlock(name: string, symbol: string, canvasId: string): void {
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+    let ctx = canvas.getContext('2d');
+    let block = new BlochSphere("Bloch Sphere Block Icon", "Bloch Sphere", 8, 8, canvas.width - 16, canvas.height - 16);
     block.setIconic(true);
     block.draw(ctx);
   }

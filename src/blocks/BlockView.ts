@@ -80,6 +80,7 @@ import {RadarChart} from "./RadarChart";
 import {KNNClassifierBlock} from "./KNNClassifierBlock";
 import {QuantumStationaryState1DBlock} from "./QuantumStationaryState1DBlock";
 import {QuantumDynamics1DBlock} from "./QuantumDynamics1DBlock";
+import {BlochSphere} from "./BlochSphere";
 
 export class BlockView {
 
@@ -413,6 +414,9 @@ export class BlockView {
         break;
       case "quantum-dynamics-1d-block":
         b = this.addBlockUndoable(new QuantumDynamics1DBlock("Quantum Dynamics 1D Block #" + timestamp, x - 150, y - 150, 300, 300));
+        break;
+      case "bloch-sphere-block":
+        b = this.addBlockUndoable(new BlochSphere("Bloch Sphere Block #" + timestamp, "Bloch Sphere", x - 150, y - 150, 300, 300));
         break;
     }
     return b;

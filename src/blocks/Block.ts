@@ -342,6 +342,32 @@ export abstract class Block implements Movable {
 
   }
 
+  protected drawTitleBar(ctx: CanvasRenderingContext2D, barHeight: number): void {
+    switch (flowchart.blockView.getBlockStyle()) {
+      case "Shade":
+        let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + barHeight);
+        shade.addColorStop(0, "white");
+        shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
+        shade.addColorStop(1, Util.adjust(this.color, -100));
+        ctx.fillStyle = shade;
+        break;
+      case "Plain":
+        ctx.fillStyle = this.color;
+        break;
+    }
+    ctx.fillHalfRoundedRect(this.x, this.y, this.width, barHeight, this.radius, "Top");
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "black";
+    ctx.drawHalfRoundedRect(this.x, this.y, this.width, barHeight, this.radius, "Top");
+    if (!this.iconic) {
+      ctx.lineWidth = 0.75;
+      ctx.font = "14px Arial";
+      ctx.fillStyle = "white";
+      let titleWidth = ctx.measureText(this.name).width;
+      ctx.fillText(this.name, this.x + this.width / 2 - titleWidth / 2, this.y + barHeight / 2 + 3);
+    }
+  }
+
   protected highlightSelection(ctx: CanvasRenderingContext2D): void {
     ctx.save();
     ctx.shadowColor = "dimgray";

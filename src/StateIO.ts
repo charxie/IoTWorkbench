@@ -70,6 +70,7 @@ import {KNNClassifierBlock} from "./blocks/KNNClassifierBlock";
 import {QuantumStationaryState1DBlock} from "./blocks/QuantumStationaryState1DBlock";
 import {QuantumDynamics1DBlock} from "./blocks/QuantumDynamics1DBlock";
 import {ElectricField1D} from "./physics/quantum/qm1d/ElectricField1D";
+import {BlochSphere} from "./blocks/BlochSphere";
 
 export class StateIO {
 
@@ -523,6 +524,11 @@ export class StateIO {
           if (state.alignment !== undefined) block.setAlignment(state.alignment);
           if (state.colorScheme !== undefined) block.setColorScheme(state.colorScheme);
           if (state.viewWindowColor !== undefined) block.setViewWindowColor(state.viewWindowColor);
+        } else if (block instanceof BlochSphere) {
+          block.setName(state.name);
+          block.setViewWindowColor(state.viewWindowColor);
+          block.setTheta(state.theta);
+          block.setPhi(state.phi);
         } else if (block instanceof QuantumStationaryState1DBlock) {
           block.setName(state.name);
           block.setViewWindowColor(state.viewWindowColor);

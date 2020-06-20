@@ -71,6 +71,7 @@ import {RadarChartContextMenu} from "./blocks/ui/RadarChartContextMenu";
 import {KNNClassifierBlockContextMenu} from "./blocks/ui/KNNClassifierBlockContextMenu";
 import {QuantumStationaryState1DBlockContextMenu} from "./blocks/ui/QuantumStationaryState1DBlockContextMenu";
 import {QuantumDynamics1DBlockContextMenu} from "./blocks/ui/QuantumDynamics1DBlockContextMenu";
+import {BlochSphereContextMenu} from "./blocks/ui/BlochSphereContextMenu";
 
 export function createContextMenusForBlocks() {
 
@@ -143,6 +144,7 @@ export function createContextMenusForBlocks() {
   addPlaceholder("wordcloud-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("quantum-stationary-state-1d-block-context-menu-placeholder", blockPlayground);
   addPlaceholder("quantum-dynamics-1d-block-context-menu-placeholder", blockPlayground);
+  addPlaceholder("bloch-sphere-block-context-menu-placeholder", blockPlayground);
 
   setupContextMenuForBlocks();
 
@@ -489,6 +491,11 @@ function setupContextMenuForBlocks() {
   quantumDynamics1DBlockContextMenu.render("quantum-dynamics-1d-block-context-menu-placeholder");
   quantumDynamics1DBlockContextMenu.addListeners();
   contextMenus.quantumDynamics1DBlock = quantumDynamics1DBlockContextMenu;
+
+  let blochSphereContextMenu = new BlochSphereContextMenu();
+  blochSphereContextMenu.render("bloch-sphere-block-context-menu-placeholder");
+  blochSphereContextMenu.addListeners();
+  contextMenus.blochSphereBlock = blochSphereContextMenu;
 
 }
 

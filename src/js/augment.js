@@ -28,6 +28,14 @@ if (typeof Math.sign !== 'function') {
   Math.sign = x => ((x > 0) - (x < 0)) || +x;
 }
 
+if (typeof Math.toRadian !== 'function') {
+  Math.toRadian = x => x / 180 * Math.PI;
+}
+
+if (typeof Math.toDegree !== 'function') {
+  Math.toDegree = x => x / Math.PI * 180;
+}
+
 // A convenient method for counting the number of members of an object
 if (typeof Object.size !== 'function') {
   Object.size = function (obj) {
@@ -149,6 +157,28 @@ if (typeof CanvasRenderingContext2D.prototype.drawLine !== 'function') {
     this.moveTo(x1, y1);
     this.lineTo(x2, y2);
     this.stroke();
+  }
+}
+
+if (typeof CanvasRenderingContext2D.prototype.drawEllipse !== 'function') {
+  CanvasRenderingContext2D.prototype.drawEllipse = function drawEllipse(x, y, a, b) {
+    this.beginPath();
+    this.moveTo(x, y - b);
+    this.bezierCurveTo(x + a, y - b, x + a, y + b, x, y + b);
+    this.bezierCurveTo(x - a, y + b, x - a, y - b, x, y - b);
+    this.closePath();
+    this.stroke();
+  }
+}
+
+if (typeof CanvasRenderingContext2D.prototype.fillEllipse !== 'function') {
+  CanvasRenderingContext2D.prototype.fillEllipse = function fillEllipse(x, y, a, b) {
+    this.beginPath();
+    this.moveTo(x, y - b);
+    this.bezierCurveTo(x + a, y - b, x + a, y + b, x, y + b);
+    this.bezierCurveTo(x - a, y + b, x - a, y - b, x, y - b);
+    this.closePath();
+    this.fill();
   }
 }
 

@@ -54,6 +54,10 @@ declare global {
     drawCircle(x, y, r);
 
     fillCircle(x, y, r);
+
+    drawEllipse(x, y, a, b);
+
+    fillEllipse(x, y, a, b);
   }
 
   interface Array<T> {
@@ -84,6 +88,10 @@ declare global {
     cosh(x);
 
     sign(x);
+
+    toRadian(x);
+
+    toDegree(x);
   }
 }
 
