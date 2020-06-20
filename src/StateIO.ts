@@ -561,6 +561,8 @@ export class StateIO {
           if (state.showWaveFunction !== undefined) block.setShowWaveFunction(state.showWaveFunction);
           if (state.showWaveProbabilityDensity !== undefined) block.setShowProbabilityDensity(state.showWaveProbabilityDensity);
           if (state.showStateSpace !== undefined) block.setShowStateSpace(state.showStateSpace);
+          if (state.electricFieldIntensityParameter !== undefined) block.setElectricFieldIntensityParameter(state.electricFieldIntensityParameter);
+          if (state.electricFieldFrequencyParameter !== undefined) block.setElectricFieldFrequencyParameter(state.electricFieldFrequencyParameter);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }
@@ -738,6 +740,8 @@ export class StateIO {
       } else if (b instanceof ArrayInput || b instanceof StringInput) {
         b.locateOverlay();
       } else if (b instanceof QuantumDynamics1DBlock) {
+        //b.updateElectricFieldIntensity();
+        //b.updateElectricFieldFrequency();
         b.initWavepacket();
       }
     }

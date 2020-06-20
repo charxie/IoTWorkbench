@@ -152,9 +152,9 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       let dampingFactorField = document.getElementById("quantum-dynamics-1d-block-damping-factor-field") as HTMLInputElement;
       dampingFactorField.value = block.getDampingFactor().toString();
       let electricFieldIntensityField = document.getElementById("quantum-dynamics-1d-block-electric-field-intensity-field") as HTMLInputElement;
-      electricFieldIntensityField.value = block.getElectricField() ? block.getElectricField().getIntensity().toString() : "0";
+      electricFieldIntensityField.value = block.getElectricFieldIntensityParameter() ? block.getElectricFieldIntensityParameter() : (block.getElectricField() ? block.getElectricField().getIntensity().toString() : "0");
       let electricFieldFrequencyField = document.getElementById("quantum-dynamics-1d-block-electric-field-frequency-field") as HTMLInputElement;
-      electricFieldFrequencyField.value = block.getElectricField() ? block.getElectricField().getFrequency().toString() : "0";
+      electricFieldFrequencyField.value = block.getElectricFieldFrequencyParameter() ? block.getElectricFieldFrequencyParameter() : (block.getElectricField() ? block.getElectricField().getFrequency().toString() : "0");
 
       let wavepacketColorField = document.getElementById("quantum-dynamics-1d-block-wavepacket-color-field") as HTMLInputElement;
       wavepacketColorField.value = block.getWavepacketColor();
@@ -242,7 +242,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
           success = false;
           message = dampingFactorField.value + " is not a valid number for the damping factor";
         }
-        // set electric field intensity
+        // set electrical field intensity
         let eFieldIntensity = parseFloat(electricFieldIntensityField.value);
         if (isNumber(eFieldIntensity)) {
           if (eFieldIntensity <= 0) {
@@ -258,10 +258,15 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
             }
           }
         } else {
-          success = false;
-          message = electricFieldIntensityField.value + " is not a valid value for electric field intensity";
+          let input = electricFieldIntensityField.value.trim();
+          if (input.length > 0) {
+            block.setElectricFieldIntensityParameter(input);
+          } else {
+            success = false;
+            message = input + " is not a valid value for electrical field intensity";
+          }
         }
-        // set electric field frequency
+        // set electrical field frequency
         let eFieldFrequency = parseFloat(electricFieldFrequencyField.value);
         if (isNumber(eFieldFrequency)) {
           let eField = block.getElectricField();
@@ -269,8 +274,13 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
             eField.setFrequency(eFieldFrequency);
           }
         } else {
-          success = false;
-          message = electricFieldFrequencyField.value + " is not a valid value for electric field frequency";
+          let input = electricFieldFrequencyField.value.trim();
+          if (input.length > 0) {
+            block.setElectricFieldFrequencyParameter(input);
+          } else {
+            success = false;
+            message = input + " is not a valid value for electrical field frequency";
+          }
         }
         // set solver internal steps
         let solverSteps = parseInt(solverStepsField.value);
