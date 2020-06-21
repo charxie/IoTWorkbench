@@ -6,6 +6,7 @@ import {Block} from "./Block";
 import {Port} from "./Port";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
+import {MyVector} from "../math/MyVector";
 
 export class BlochSphere extends Block {
 
@@ -250,9 +251,24 @@ export class BlochSphere extends Block {
     } else {
       let input = this.portI.getValue();
       if (input !== undefined) {
-        if (Array.isArray(input) && input.length > 1) {
-          this.theta = input[0];
-          this.phi = input[1];
+        if (input instanceof MyVector) { // this is from ArithmeticBlock
+          if (input.size() > 1) {
+            this.theta = Math.atan2(input.getValue(0), input.getValue(1)) * 2;
+            this.phi = 0;
+          }
+        } else {
+          if (Array.isArray(input)) {
+            if (input.length > 1) { // this is from QuantumDynamics1DBlock
+              this.theta = input[0];
+              this.phi = input[1];
+            } else { // this is from ArrayInput
+              input = input[0];
+              if (Array.isArray(input) && input.length > 1) {
+                this.theta = Math.atan2(input[0], input[1]) * 2;
+                this.phi = 0;
+              }
+            }
+          }
         }
       }
     }

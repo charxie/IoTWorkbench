@@ -29,6 +29,10 @@ import square_well_1d from "./examples/square-well-1d.json";
 // @ts-ignore
 import quantum_hadamard_gate from "./examples/quantum-hadamard-gate.json";
 // @ts-ignore
+import quantum_pauli_x_gate from "./examples/quantum-pauli-x-gate.json";
+// @ts-ignore
+import quantum_pauli_z_gate from "./examples/quantum-pauli-z-gate.json";
+// @ts-ignore
 import quantum_cnot_gate from "./examples/quantum-cnot-gate.json";
 // @ts-ignore
 import hadamard_matrix from "./examples/hadamard-matrix.json";
@@ -613,6 +617,8 @@ export class Examples {
     this.files.push({name: "Quantum Mechanics: Control a Qubit", data: control_qubit_rabi_oscillation});
     this.files.push({name: "Quantum Mechanics: Dissipative Quantum System 1D", data: dissipative_quantum_harmonic_oscillator_1d});
     this.files.push({name: "Quantum Computing: Bloch Sphere", data: bloch_sphere});
+    this.files.push({name: "Quantum Computing: Pauli-X Gate", data: quantum_pauli_x_gate});
+    this.files.push({name: "Quantum Computing: Pauli-Z Gate", data: quantum_pauli_z_gate});
     this.files.push({name: "Quantum Computing: Hadamard Gate", data: quantum_hadamard_gate});
     this.files.push({name: "Quantum Computing: CNOT Gate", data: quantum_cnot_gate});
 
