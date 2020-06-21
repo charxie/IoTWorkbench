@@ -5,8 +5,9 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Util} from "../Util";
-import {closeAllContextMenus, flowchart} from "../Main";
+import {closeAllContextMenus, flowchart, math} from "../Main";
 import {Rectangle} from "../math/Rectangle";
+import {MyComplex} from "../math/MyComplex";
 
 export class ArrayInput extends Block {
 
@@ -333,14 +334,21 @@ export class ArrayInput extends Block {
   updateModel(): void {
     if (this.multidimensionalOutput) {
       if (this.array) {
+        let val;
         let numbers = new Array(this.array.length);
         for (let col = 0; col < this.array.length; col++) {
           numbers[col] = new Array(this.array[col].length);
           for (let row = 0; row < numbers[col].length; row++) {
-            try {
-              numbers[col][row] = parseFloat(this.array[col][row]);
-            } catch (e) {
-              numbers[col][row] = this.array[col][row];
+            val = this.array[col][row];
+            if (val.indexOf("i") >= 0) { // complex number
+              let c = math.complex(val);
+              numbers[col][row] = new MyComplex(c.re, c.im);
+            } else {
+              try {
+                numbers[col][row] = parseFloat(val);
+              } catch (e) {
+                numbers[col][row] = val;
+              }
             }
           }
         }
@@ -349,13 +357,15 @@ export class ArrayInput extends Block {
       }
     } else {
       if (this.array) {
+        let val;
         for (let col = 0; col < this.array[0].length; col++) {
           let numbers = new Array(this.array.length);
           for (let row = 0; row < numbers.length; row++) {
+            val = this.array[row][col];
             try {
-              numbers[row] = parseFloat(this.array[row][col]);
+              numbers[row] = parseFloat(val);
             } catch (e) {
-              numbers[row] = this.array[row][col];
+              numbers[row] = val;
             }
           }
           if (col < this.ports.length) this.ports[col].setValue(numbers);

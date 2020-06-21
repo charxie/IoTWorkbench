@@ -4,8 +4,8 @@
 
 export class MyComplex {
 
-  public re: number;
-  public im: number;
+  public re: number = 0;
+  public im: number = 0;
 
   constructor(re: number, im: number) {
     this.set(re, im);

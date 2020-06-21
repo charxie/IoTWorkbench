@@ -7,6 +7,7 @@ import {Port} from "./Port";
 import {Rectangle} from "../math/Rectangle";
 import {flowchart} from "../Main";
 import {MyVector} from "../math/MyVector";
+import {MyComplexVector} from "../math/MyComplexVector";
 
 export class BlochSphere extends Block {
 
@@ -251,7 +252,18 @@ export class BlochSphere extends Block {
     } else {
       let input = this.portI.getValue();
       if (input !== undefined) {
-        if (input instanceof MyVector) { // this is from ArithmeticBlock
+        if (input instanceof MyComplexVector) { // this is from ArithmeticBlock
+          if (input.size() > 1) {
+            let v0 = input.getValue(0);
+            let v1 = input.getValue(1);
+            let s0 = Math.sign(v0.im);
+            let s1 = Math.sign(v1.im);
+            if (s0 === 0) s0 = Math.sign(v0.re);
+            if (s1 === 0) s1 = Math.sign(v1.re);
+            this.theta = Math.atan2(s0 * v0.abs(), s1 * v1.abs()) * 2;
+            this.phi = 0;
+          }
+        } else if (input instanceof MyVector) { // this is from ArithmeticBlock
           if (input.size() > 1) {
             this.theta = Math.atan2(input.getValue(0), input.getValue(1)) * 2;
             this.phi = 0;

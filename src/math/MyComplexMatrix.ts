@@ -5,6 +5,8 @@
 import {math} from "../Main";
 import {MyComplex} from "./MyComplex";
 import {MyComplexVector} from "./MyComplexVector";
+import {MyMatrix} from "./MyMatrix";
+import instantiate = WebAssembly.instantiate;
 
 export class MyComplexMatrix {
 
@@ -102,11 +104,51 @@ export class MyComplexMatrix {
     return result;
   }
 
+  public getRealPart(): MyMatrix {
+    let r = new MyMatrix(this.getRows(), this.getColumns());
+    let val;
+    for (let i = 0; i < this.getRows(); i++) {
+      for (let j = 0; j < this.getColumns(); j++) {
+        val = this.values[i][j];
+        r.setValue(i, j, val instanceof MyComplex ? val.re : val);
+      }
+    }
+    return r;
+  }
+
+  public getImaginaryPart(): MyMatrix {
+    let r = new MyMatrix(this.getRows(), this.getColumns());
+    let val;
+    for (let i = 0; i < this.getRows(); i++) {
+      for (let j = 0; j < this.getColumns(); j++) {
+        val = this.values[i][j];
+        r.setValue(i, j, val instanceof MyComplex ? val.im : val);
+      }
+    }
+    return r;
+  }
+
   public multiplyVector(v: MyComplexVector): MyComplexVector {
     let result = new MyComplexVector(v.size());
-    let tmp = math.multiply(this.values, v.getValues());
+    let mr = this.getRealPart();
+    let mi = this.getImaginaryPart();
+    let vr = v.getRealPart();
+    let vi = v.getImaginaryPart();
+    let tmp = math.multiply(mr.getValues(), vr.getValues());
     for (let i = 0; i < tmp.length; i++) {
-      result.setValue(i, JSON.parse(JSON.stringify(tmp[i])));
+      result.setValue(i, new MyComplex(JSON.parse(JSON.stringify(tmp[i])), 0));
+    }
+    tmp = math.multiply(mi.getValues(), vi.getValues());
+    for (let i = 0; i < tmp.length; i++) {
+      result.setValue(i, new MyComplex(result.getValue(i).re - JSON.parse(JSON.stringify(tmp[i])), 0));
+    }
+    tmp = math.multiply(mr.getValues(), vi.getValues());
+    for (let i = 0; i < tmp.length; i++) {
+      result.setValue(i, new MyComplex(result.getValue(i).re, JSON.parse(JSON.stringify(tmp[i]))));
+    }
+    tmp = math.multiply(mi.getValues(), vr.getValues());
+    for (let i = 0; i < tmp.length; i++) {
+      result.setValue(i, new MyComplex(result.getValue(i).re, result.getValue(i).im + JSON.parse(JSON.stringify(tmp[i]))));
     }
     return result;
   }

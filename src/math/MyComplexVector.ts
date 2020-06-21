@@ -3,6 +3,7 @@
  */
 
 import {MyComplex} from "./MyComplex";
+import {MyVector} from "./MyVector";
 
 export class MyComplexVector {
 
@@ -101,6 +102,30 @@ export class MyComplexVector {
 
   public getValues(): MyComplex[] {
     return this.values;
+  }
+
+  public getRealPart(): MyVector {
+    let r = new MyVector(this.size());
+    for (let i = 0; i < this.size(); i++) {
+      r.setValue(i, this.getValue(i).re);
+    }
+    return r;
+  }
+
+  public getImaginaryPart(): MyVector {
+    let r = new MyVector(this.size());
+    for (let i = 0; i < this.size(); i++) {
+      r.setValue(i, this.getValue(i).im);
+    }
+    return r;
+  }
+
+  public setVector(v: MyVector): void {
+    let n = Math.min(v.size(), this.size());
+    for (let i = 0; i < n; i++) {
+      if (this.values[i] === undefined) this.values[i] = new MyComplex(0, 0);
+      this.values[i].re = v.getValue(i);
+    }
   }
 
   public size(): number {

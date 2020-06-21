@@ -8,6 +8,9 @@ import {MyComplex} from "../math/MyComplex";
 import {MyVector} from "../math/MyVector";
 import {MyMatrix} from "../math/MyMatrix";
 import {Util} from "../Util";
+import {isNumber} from "../Main";
+import {MyComplexMatrix} from "../math/MyComplexMatrix";
+import {MyComplexVector} from "../math/MyComplexVector";
 
 export class ArithmeticBlock extends Block {
 
@@ -43,6 +46,15 @@ export class ArithmeticBlock extends Block {
     this.portR.setY(this.height / 2);
   }
 
+  isComplex(a: any[][]): boolean {
+    for (let i = 0; i < a.length; i++) {
+      for (let j = 0; j < a[i].length; j++) {
+        if (a[i][j] instanceof MyComplex) return true;
+      }
+    }
+    return false;
+  }
+
   updateModel(): void {
     this.hasError = false;
     let a = this.portA.getValue();
@@ -50,16 +62,30 @@ export class ArithmeticBlock extends Block {
     if (Array.isArray(a) && Array.isArray(b)) {
       if (Array.isArray(a[0]) && Array.isArray(b[0])) {
         if (b.length === 1) { // MV
-          let m = new MyMatrix(a[0].length, a.length);
-          let v = new MyVector(b[0].length);
-          m.setValues(a);
-          v.setValues(b[0]);
-          try {
-            this.portR.setValue(this.getResult(m, v));
-          } catch (e) {
-            console.log(e.stack);
-            Util.showBlockError(e.toString());
-            this.hasError = true;
+          if (this.isComplex(a)) {
+            let m = new MyComplexMatrix(a[0].length, a.length);
+            let v = new MyVector(b[0].length);
+            m.setValues(a);
+            v.setValues(b[0]);
+            try {
+              this.portR.setValue(this.getResult(m, v));
+            } catch (e) {
+              console.log(e.stack);
+              Util.showBlockError(e.toString());
+              this.hasError = true;
+            }
+          } else {
+            let m = new MyMatrix(a[0].length, a.length);
+            let v = new MyVector(b[0].length);
+            m.setValues(a);
+            v.setValues(b[0]);
+            try {
+              this.portR.setValue(this.getResult(m, v));
+            } catch (e) {
+              console.log(e.stack);
+              Util.showBlockError(e.toString());
+              this.hasError = true;
+            }
           }
         } else if (a.length === 1) { // VM
           Util.showBlockError("VxM not supported");
@@ -242,6 +268,11 @@ export class ArithmeticBlock extends Block {
         }
         if (b instanceof MyMatrix && typeof a === "number") {
           return b.scale(a);
+        }
+        if (a instanceof MyComplexMatrix && b instanceof MyVector) {
+          let v = new MyComplexVector(b.size());
+          v.setVector(b);
+          return a.multiplyVector(v);
         }
         throw new Error("Cannot multiply " + a + " by " + b);
       case "Divide Block":
