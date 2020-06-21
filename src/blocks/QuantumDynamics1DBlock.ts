@@ -20,7 +20,7 @@ import {MyComplex} from "../math/MyComplex";
 export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   private portIN: Port;
-  private portO: Port; // Qubit output
+  private portQB: Port; // Qubit output
   private waveFunction: MyComplex[];
   private stateProbabilities: number[];
   private statePhases: number[];
@@ -114,8 +114,8 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.ports.push(this.portVX);
     this.ports.push(this.portX0);
     this.ports.push(this.portDX);
-    this.portO = new Port(this, false, "O", this.width, (this.barHeight + this.height) / 2, true);
-    this.ports.push(this.portO);
+    this.portQB = new Port(this, false, "QB", this.width, (this.barHeight + this.height) / 2, true);
+    this.ports.push(this.portQB);
     this.marginX = 30;
     this.viewWindow = new Rectangle(0, 0, 1, 1);
     this.potential = new SquareWell(this.nPoints, 0, 0, -10, 10);
@@ -152,6 +152,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     super.reset();
     this.dynamicSolver.reset();
     this.computeStateProbabilities();
+    this.updateOutput();
   }
 
   initWavepacket(): void {
@@ -450,9 +451,9 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   }
 
   private drawClock(ctx: CanvasRenderingContext2D): void {
-    ctx.font = "10px Arial";
+    ctx.font = "12px Arial";
     ctx.fillStyle = "black";
-    let time = Math.round(this.dynamicSolver.getTime() * 24.19 * 0.001) + " fs";
+    let time = Math.round(this.dynamicSolver.getTime() * 24.19 * 0.001) + " fs 🕑";
     ctx.fillText(time, this.viewWindow.x + this.viewWindow.width - ctx.measureText(time).width - 8, this.viewWindow.y + this.viewWindow.height - 10);
   }
 
@@ -791,9 +792,9 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.viewMargin.top = 10;
     this.viewMargin.bottom = 30;
     this.viewMargin.left = this.showStateSpace ? 40 : 30;
-    this.viewMargin.right = 20;
-    this.portO.setX(this.width);
-    this.portO.setY((this.height + this.barHeight) / 2);
+    this.viewMargin.right = 30;
+    this.portQB.setX(this.width);
+    this.portQB.setY((this.height + this.barHeight) / 2);
     let dh = (this.height - this.barHeight) / 5;
     this.portIN.setY(this.barHeight + dh);
     this.portVX.setY(this.barHeight + dh * 2);
@@ -826,12 +827,16 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     if (this.showStateSpace && this.waveFunctions) {
       this.computeStateProbabilities();
     }
+    this.updateOutput();
+  }
+
+  private updateOutput(): void {
     if (this.getElectricField() && this.energyLevels) {
       let finalState = this.findEnergyLevel(this.getElectricField().getFrequency() + this.energyLevels[this.getInitialState()]);
       let tls: number[] = new Array(2);
       tls[0] = Math.atan(this.stateProbabilities[finalState] / this.stateProbabilities[this.getInitialState()]) * 2;
       tls[1] = this.statePhases[finalState] - this.statePhases[this.getInitialState()];
-      this.portO.setValue(tls);
+      this.portQB.setValue(tls);
       this.updateConnectors();
     }
   }

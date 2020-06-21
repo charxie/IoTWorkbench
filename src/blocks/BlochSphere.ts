@@ -67,7 +67,7 @@ export class BlochSphere extends Block {
   }
 
   getCopy(): Block {
-    let copy = new BlochSphere("Bloch Sphere #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
+    let copy = new BlochSphere("Bloch Sphere Block #" + Date.now().toString(16), this.name, this.x, this.y, this.width, this.height);
     copy.viewWindowColor = this.viewWindowColor;
     copy.setTheta(this.theta);
     copy.setPhi(this.phi);
@@ -130,7 +130,7 @@ export class BlochSphere extends Block {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
-    this.drawTitleBar(ctx, this.barHeight);
+    if (this.name) this.drawTitleBar(ctx, this.barHeight);
     // draw the space
     ctx.fillStyle = "#FDFFFD";
     ctx.beginPath();
@@ -145,8 +145,10 @@ export class BlochSphere extends Block {
     ctx.rect(this.viewWindow.x, this.viewWindow.y, this.viewWindow.width, this.viewWindow.height);
     ctx.fillStyle = this.viewWindowColor;
     ctx.fill();
-    ctx.strokeStyle = "black";
-    ctx.stroke();
+    if (this.name) {
+      ctx.strokeStyle = "black";
+      ctx.stroke();
+    }
 
     ctx.save();
     ctx.translate(this.viewWindow.x + this.viewWindow.width / 2, this.viewWindow.y + this.viewWindow.height / 2);
@@ -162,28 +164,38 @@ export class BlochSphere extends Block {
       ctx.lineWidth = 0.5;
     } else {
       ctx.lineWidth = 1;
-      ctx.setLineDash([2, 2]);
+      ctx.setLineDash([4, 2]);
     }
     ctx.beginPath();
     ctx.ellipse(0, 0, this.sphereRadius, this.sphereRadius / 4, 0, 0, 2 * Math.PI);
     ctx.stroke();
-    if (!this.iconic) {
-      ctx.lineWidth = 0.5;
-      ctx.setLineDash([]);
-      let a = this.sphereRadius * 1.2;
+    ctx.lineWidth = 0.5;
+    ctx.fillStyle = "black";
+    ctx.setLineDash([]);
+    let a = this.sphereRadius * 1.2;
+    if (this.iconic) {
+      ctx.drawLine(0, a, 0, -a);
+      ctx.drawLine(-a, 0, a, 0);
+      a /= 3;
+      ctx.drawLine(-a, a, a, -a);
+    } else {
+      ctx.font = "12px Arial";
       // z-axis
-      ctx.drawLine(0, 0, 0, -a);
+      ctx.drawLine(0, a, 0, -a);
       ctx.drawLine(0, -a, 5, 5 - a);
       ctx.drawLine(0, -a, -5, 5 - a);
+      ctx.fillText("z", -2, -a - 6);
       // x-axis
-      ctx.drawLine(0, 0, a, 0);
+      ctx.drawLine(-a, 0, a, 0);
       ctx.drawLine(a, 0, a - 5, 5);
       ctx.drawLine(a, 0, a - 5, -5);
+      ctx.fillText("x", a + 6, 3);
       // y-axis
       a /= 3;
-      ctx.drawLine(0, 0, -a, a);
-      ctx.drawLine(-a, a, -a, a - 7);
-      ctx.drawLine(-a, a, -a + 7, a);
+      ctx.drawLine(-a, a, a, -a);
+      ctx.drawLine(a, -a, a, -a + 7);
+      ctx.drawLine(a, -a, a - 7, -a);
+      ctx.fillText("y", a + 4, -a - 4);
       ctx.fillStyle = "white";
       ctx.beginPath();
       ctx.arc(0, -this.sphereRadius, 5, 0, 2 * Math.PI);
@@ -194,7 +206,7 @@ export class BlochSphere extends Block {
       ctx.fill();
       ctx.stroke();
       ctx.fillStyle = "black";
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 5;
       this.drawVector(ctx, this.theta, this.phi);
     }
     ctx.restore();
@@ -224,7 +236,9 @@ export class BlochSphere extends Block {
   }
 
   onDraggableArea(x: number, y: number): boolean {
-    return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
+    if (this.name)
+      return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
+    return super.onDraggableArea(x, y);
   }
 
   updateModel(): void {
@@ -246,10 +260,11 @@ export class BlochSphere extends Block {
 
   refreshView(): void {
     super.refreshView();
-    this.viewMargin.top = 10;
-    this.viewMargin.bottom = 10;
-    this.viewMargin.left = 20;
-    this.viewMargin.right = 10;
+    let m = this.name ? 10 : 4;
+    this.viewMargin.top = m;
+    this.viewMargin.bottom = m;
+    this.viewMargin.left = this.singleInput ? m : 2 * m;
+    this.viewMargin.right = m;
     if (this.singleInput) {
       this.portI.setY((this.height + this.barHeight) / 2);
     } else {

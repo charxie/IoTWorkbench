@@ -61,11 +61,11 @@ export class BlochSphereContextMenu extends BlockContextMenu {
                   </td>
                 </tr>
                 <tr>
-                  <td>Theta:</td>
+                  <td>Theta (°):</td>
                   <td colspan="2"><input type="text" id="bloch-sphere-theta-field" style="width: 100%"></td>
                 </tr>
                 <tr>
-                  <td>Phi:</td>
+                  <td>Phi (°):</td>
                   <td colspan="2"><input type="text" id="bloch-sphere-phi-field" style="width: 100%"></td>
                 </tr>
                 <tr>

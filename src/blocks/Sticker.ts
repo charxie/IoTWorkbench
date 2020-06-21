@@ -234,29 +234,31 @@ export class Sticker extends Block {
   }
 
   draw(ctx: CanvasRenderingContext2D): void {
-    switch (flowchart.blockView.getBlockStyle()) {
-      case "Shade":
-        let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
-        shade.addColorStop(0, "white");
-        shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
-        shade.addColorStop(1, Util.adjust(this.color, -100));
-        ctx.fillStyle = shade;
-        break;
-      case "Plain":
-        ctx.fillStyle = this.color;
-        break;
-    }
-    ctx.fillHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "black";
-    ctx.drawHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
-    if (!this.iconic) {
-      ctx.lineWidth = 0.75;
-      ctx.font = "14px Arial";
-      ctx.fillStyle = this.textColor;
-      let name2 = this.arrayLength !== undefined ? this.name + " (" + this.arrayLength + ")" : this.name;
-      let titleWidth = ctx.measureText(name2).width;
-      ctx.fillText(name2, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
+    if (this.name) {
+      switch (flowchart.blockView.getBlockStyle()) {
+        case "Shade":
+          let shade = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.barHeight);
+          shade.addColorStop(0, "white");
+          shade.addColorStop(this.iconic ? 0.2 : 0.1, Util.adjust(this.color, -20));
+          shade.addColorStop(1, Util.adjust(this.color, -100));
+          ctx.fillStyle = shade;
+          break;
+        case "Plain":
+          ctx.fillStyle = this.color;
+          break;
+      }
+      ctx.fillHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "black";
+      ctx.drawHalfRoundedRect(this.x, this.y, this.width, this.barHeight, this.radius, "Top");
+      if (!this.iconic) {
+        ctx.lineWidth = 0.75;
+        ctx.font = "14px Arial";
+        ctx.fillStyle = this.textColor;
+        let name2 = this.arrayLength !== undefined ? this.name + " (" + this.arrayLength + ")" : this.name;
+        let titleWidth = ctx.measureText(name2).width;
+        ctx.fillText(name2, this.x + this.width / 2 - titleWidth / 2, this.y + this.barHeight / 2 + 3);
+      }
     }
 
     // draw the text area
@@ -342,7 +344,9 @@ export class Sticker extends Block {
   }
 
   onDraggableArea(x: number, y: number): boolean {
-    return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
+    if (this.name)
+      return x > this.x && x < this.x + this.width && y > this.y && y < this.y + this.barHeight;
+    return super.onDraggableArea(x, y);
   }
 
   updateModel(): void {
