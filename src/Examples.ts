@@ -3,6 +3,10 @@
  */
 
 // @ts-ignore
+import control_qubit_rabi_oscillation from "./examples/control-qubit-rabi-oscillation.json";
+// @ts-ignore
+import bloch_sphere from "./examples/bloch-sphere.json";
+// @ts-ignore
 import squeezed_coherent_states from "./examples/squeezed-coherent-states.json";
 // @ts-ignore
 import anharmonic_oscillator_qubit from "./examples/anharmonic-oscillator-qubit.json";
@@ -606,7 +610,9 @@ export class Examples {
     this.files.push({name: "Quantum Mechanics: Quantum Tunneling 1D", data: quantum_tunneling_1d});
     this.files.push({name: "Quantum Mechanics: Quantum Transition and Rabi Cycle", data: quantum_transition_coulomb_well_1d});
     this.files.push({name: "Quantum Mechanics: Anharmonicity and Qubit", data: anharmonic_oscillator_qubit});
+    this.files.push({name: "Quantum Mechanics: Control a Qubit", data: control_qubit_rabi_oscillation});
     this.files.push({name: "Quantum Mechanics: Dissipative Quantum System 1D", data: dissipative_quantum_harmonic_oscillator_1d});
+    this.files.push({name: "Quantum Computing: Bloch Sphere", data: bloch_sphere});
     this.files.push({name: "Quantum Computing: Hadamard Gate", data: quantum_hadamard_gate});
     this.files.push({name: "Quantum Computing: CNOT Gate", data: quantum_cnot_gate});
 

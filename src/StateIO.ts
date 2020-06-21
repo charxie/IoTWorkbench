@@ -529,6 +529,7 @@ export class StateIO {
           block.setViewWindowColor(state.viewWindowColor);
           //block.setTheta(state.theta);
           //block.setPhi(state.phi);
+          if (state.singleInput !== undefined) block.setSingleInput(state.singleInput);
         } else if (block instanceof QuantumStationaryState1DBlock) {
           block.setName(state.name);
           block.setViewWindowColor(state.viewWindowColor);

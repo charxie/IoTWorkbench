@@ -54,6 +54,13 @@ export class BlochSphereContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="bloch-sphere-name-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Input Type:</td>
+                  <td colspan="2">
+                    <input type="radio" name="input" id="bloch-sphere-dual-input-radio-button" checked> Dual
+                    <input type="radio" name="input" id="bloch-sphere-single-input-radio-button"> Single
+                  </td>
+                </tr>
+                <tr>
                   <td>Theta:</td>
                   <td colspan="2"><input type="text" id="bloch-sphere-theta-field" style="width: 100%"></td>
                 </tr>
@@ -86,6 +93,10 @@ export class BlochSphereContextMenu extends BlockContextMenu {
       const d = $("#modal-dialog").html(this.getPropertiesUI());
       let nameField = document.getElementById("bloch-sphere-name-field") as HTMLInputElement;
       nameField.value = g.getName();
+      let dualInputRadioButton = document.getElementById("bloch-sphere-dual-input-radio-button") as HTMLInputElement;
+      dualInputRadioButton.checked = !g.getSingleInput();
+      let singleInputRadioButton = document.getElementById("bloch-sphere-single-input-radio-button") as HTMLInputElement;
+      singleInputRadioButton.checked = g.getSingleInput();
       let thetaField = document.getElementById("bloch-sphere-theta-field") as HTMLInputElement;
       thetaField.value = Math.toDegree(g.getTheta()).toString();
       let phiField = document.getElementById("bloch-sphere-phi-field") as HTMLInputElement;
@@ -141,6 +152,7 @@ export class BlochSphereContextMenu extends BlockContextMenu {
         // finish
         if (success) {
           g.setName(nameField.value);
+          g.setSingleInput(singleInputRadioButton.checked);
           g.setViewWindowColor(windowColorField.value);
           g.refreshView();
           flowchart.storeBlockStates();

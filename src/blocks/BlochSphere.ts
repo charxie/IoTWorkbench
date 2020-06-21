@@ -5,12 +5,15 @@
 import {Block} from "./Block";
 import {Port} from "./Port";
 import {Rectangle} from "../math/Rectangle";
+import {flowchart} from "../Main";
 
 export class BlochSphere extends Block {
 
+  private singleInput: boolean = false;
   private sphereRadius: number;
   private portTheta: Port;
   private portPhi: Port;
+  private portI: Port;
   private theta: number = 0;
   private phi: number = 0;
   private viewWindowColor: string = "white";
@@ -33,6 +36,7 @@ export class BlochSphere extends Block {
     readonly viewWindowColor: string;
     readonly theta: number;
     readonly phi: number;
+    readonly singleInput: boolean;
 
     constructor(b: BlochSphere) {
       this.name = b.name;
@@ -44,6 +48,7 @@ export class BlochSphere extends Block {
       this.viewWindowColor = b.viewWindowColor;
       this.theta = b.theta;
       this.phi = b.phi;
+      this.singleInput = b.singleInput;
     }
   };
 
@@ -57,6 +62,7 @@ export class BlochSphere extends Block {
     this.portPhi = new Port(this, true, "ɸ", 0, this.barHeight + 2 * dh, false)
     this.ports.push(this.portTheta);
     this.ports.push(this.portPhi);
+    this.portI = new Port(this, true, "I", 0, (this.height + this.barHeight) / 2, false)
     this.viewWindow = new Rectangle(0, 0, 1, 1);
   }
 
@@ -65,6 +71,7 @@ export class BlochSphere extends Block {
     copy.viewWindowColor = this.viewWindowColor;
     copy.setTheta(this.theta);
     copy.setPhi(this.phi);
+    copy.setSingleInput(this.singleInput);
     return copy;
   }
 
@@ -77,6 +84,25 @@ export class BlochSphere extends Block {
   }
 
   erase(): void {
+  }
+
+  setSingleInput(singleInput: boolean): void {
+    if (this.singleInput === singleInput) return;
+    for (let p of this.ports) {
+      flowchart.removeConnectorsToPort(p);
+    }
+    this.ports.length = 0;
+    this.singleInput = singleInput;
+    if (this.singleInput) {
+      this.ports.push(this.portI);
+    } else {
+      this.ports.push(this.portTheta);
+      this.ports.push(this.portPhi);
+    }
+  }
+
+  getSingleInput(): boolean {
+    return this.singleInput;
   }
 
   setTheta(theta: number): void {
@@ -189,7 +215,7 @@ export class BlochSphere extends Block {
   // theta = 0 corresponds to the north pole, theta = pi to the south pole
   private drawVector(ctx: CanvasRenderingContext2D, theta: number, phi: number): void {
     let x = this.sphereRadius * Math.sin(theta) * Math.cos(phi);
-    let y = -this.sphereRadius * Math.cos(theta);
+    let y = this.sphereRadius * Math.cos(theta);
     let z = this.sphereRadius * Math.sin(theta) * Math.sin(phi);
     let x1 = x + z * 0.25;
     let y1 = y - z * 0.25;
@@ -207,6 +233,14 @@ export class BlochSphere extends Block {
     if (theta !== undefined && phi !== undefined) {
       this.theta = theta;
       this.phi = phi;
+    } else {
+      let input = this.portI.getValue();
+      if (input !== undefined) {
+        if (Array.isArray(input) && input.length > 1) {
+          this.theta = input[0];
+          this.phi = input[1];
+        }
+      }
     }
   }
 
@@ -216,9 +250,13 @@ export class BlochSphere extends Block {
     this.viewMargin.bottom = 10;
     this.viewMargin.left = 20;
     this.viewMargin.right = 10;
-    let dh = (this.height - this.barHeight) / 3;
-    this.portTheta.setY(this.barHeight + dh);
-    this.portPhi.setY(this.barHeight + 2 * dh);
+    if (this.singleInput) {
+      this.portI.setY((this.height + this.barHeight) / 2);
+    } else {
+      let dh = (this.height - this.barHeight) / 3;
+      this.portTheta.setY(this.barHeight + dh);
+      this.portPhi.setY(this.barHeight + 2 * dh);
+    }
   }
 
 }

@@ -20,8 +20,10 @@ import {MyComplex} from "../math/MyComplex";
 export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   private portIN: Port;
+  private portO: Port; // Qubit output
   private waveFunction: MyComplex[];
   private stateProbabilities: number[];
+  private statePhases: number[];
   private probabilityDensityFunction: number[];
   private dynamicSolver: RealTimePropagator;
   private method: string = "Cayley";
@@ -112,6 +114,8 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.ports.push(this.portVX);
     this.ports.push(this.portX0);
     this.ports.push(this.portDX);
+    this.portO = new Port(this, false, "O", this.width, (this.barHeight + this.height) / 2, true);
+    this.ports.push(this.portO);
     this.marginX = 30;
     this.viewWindow = new Rectangle(0, 0, 1, 1);
     this.potential = new SquareWell(this.nPoints, 0, 0, -10, 10);
@@ -787,7 +791,9 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     this.viewMargin.top = 10;
     this.viewMargin.bottom = 30;
     this.viewMargin.left = this.showStateSpace ? 40 : 30;
-    this.viewMargin.right = 10;
+    this.viewMargin.right = 20;
+    this.portO.setX(this.width);
+    this.portO.setY((this.height + this.barHeight) / 2);
     let dh = (this.height - this.barHeight) / 5;
     this.portIN.setY(this.barHeight + dh);
     this.portVX.setY(this.barHeight + dh * 2);
@@ -820,12 +826,38 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     if (this.showStateSpace && this.waveFunctions) {
       this.computeStateProbabilities();
     }
+    if (this.getElectricField() && this.energyLevels) {
+      let finalState = this.findEnergyLevel(this.getElectricField().getFrequency() + this.energyLevels[this.getInitialState()]);
+      let tls: number[] = new Array(2);
+      tls[0] = Math.atan(this.stateProbabilities[finalState] / this.stateProbabilities[this.getInitialState()]) * 2;
+      tls[1] = this.statePhases[finalState] - this.statePhases[this.getInitialState()];
+      this.portO.setValue(tls);
+      this.updateConnectors();
+    }
+  }
+
+  private findEnergyLevel(energy: number): number {
+    if (this.energyLevels === undefined) return 0;
+    let s = 0;
+    let min = Number.MAX_VALUE;
+    let dif;
+    for (let i = 0; i < this.energyLevels.length; i++) {
+      dif = Math.abs(this.energyLevels[i] - energy);
+      if (dif < min) {
+        min = dif;
+        s = i;
+      }
+    }
+    return s;
   }
 
   private computeStateProbabilities(): void {
     if (this.waveFunction && this.waveFunctions) {
       if (this.stateProbabilities === undefined || this.stateProbabilities.length !== this.waveFunction.length) {
         this.stateProbabilities = new Array(this.waveFunction.length);
+      }
+      if (this.statePhases === undefined || this.statePhases.length !== this.waveFunction.length) {
+        this.statePhases = new Array(this.waveFunction.length);
       }
       let sumRe = 0;
       let sumIm = 0;
@@ -838,6 +870,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
           sumIm += this.waveFunctions[i][k] * this.waveFunction[i].im;
         }
         this.stateProbabilities[k] = sumRe * sumRe + sumIm * sumIm;
+        this.statePhases[k] = Math.atan2(sumIm, sumRe);
         //sumWeight += this.stateProbabilities[k];
       }
     }
