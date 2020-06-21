@@ -102,11 +102,11 @@ export class MyVector {
     return p;
   }
 
-  public setValue(index: number, value: number) {
+  public setValue(index: number, value: number): void {
     this.values[index] = value;
   }
 
-  public getValue(index: number) {
+  public getValue(index: number): number {
     return this.values[index];
   }
 

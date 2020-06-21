@@ -3,11 +3,12 @@
  */
 
 import {math} from "../Main";
-import {MyVector} from "./MyVector";
+import {MyComplex} from "./MyComplex";
+import {MyComplexVector} from "./MyComplexVector";
 
-export class MyMatrix {
+export class MyComplexMatrix {
 
-  private values: number[][];
+  private values: MyComplex[][];
 
   public constructor(rows: number, cols: number) {
     this.values = new Array(rows);
@@ -24,9 +25,9 @@ export class MyMatrix {
     return this.values[0].length;
   }
 
-  public transpose(): MyMatrix {
+  public transpose(): MyComplexMatrix {
     let that = this;
-    let t = new MyMatrix(this.getRows(), this.getColumns());
+    let t = new MyComplexMatrix(this.getRows(), this.getColumns());
     t.setValues(Object.keys(this.values[0]).map(function (c) {
       return that.values.map(function (r) {
         return r[c];
@@ -35,74 +36,74 @@ export class MyMatrix {
     return t;
   }
 
-  public add(m: MyMatrix): MyMatrix {
-    let result = new MyMatrix(this.getRows(), this.getColumns());
+  public add(m: MyComplexMatrix): MyComplexMatrix {
+    let result = new MyComplexMatrix(this.getRows(), this.getColumns());
     for (let i = 0; i < this.getRows(); i++) {
       for (let j = 0; j < this.getColumns(); j++) {
-        result.values[i][j] = this.values[i][j] + m.values[i][j];
+        result.values[i][j] = this.values[i][j].plus(m.values[i][j]);
       }
     }
     return result;
   }
 
-  public subtract(m: MyMatrix): MyMatrix {
-    let result = new MyMatrix(this.getRows(), this.getColumns());
+  public subtract(m: MyComplexMatrix): MyComplexMatrix {
+    let result = new MyComplexMatrix(this.getRows(), this.getColumns());
     for (let i = 0; i < this.getRows(); i++) {
       for (let j = 0; j < this.getColumns(); j++) {
-        result.values[i][j] = this.values[i][j] - m.values[i][j];
+        result.values[i][j] = this.values[i][j].minus(m.values[i][j]);
       }
     }
     return result;
   }
 
-  public negate(): MyMatrix {
-    let result = new MyMatrix(this.getRows(), this.getColumns());
+  public negate(): MyComplexMatrix {
+    let result = new MyComplexMatrix(this.getRows(), this.getColumns());
     for (let i = 0; i < this.getRows(); i++) {
       for (let j = 0; j < this.getColumns(); j++) {
-        result.values[i][j] = -this.values[i][j];
+        result.values[i][j] = this.values[i][j].negate();
       }
     }
     return result;
   }
 
-  public modulus(x: number): MyMatrix {
-    let result = new MyMatrix(this.getRows(), this.getColumns());
+  public scale(s: number): MyComplexMatrix {
+    let result = new MyComplexMatrix(this.getRows(), this.getColumns());
     for (let i = 0; i < this.getRows(); i++) {
       for (let j = 0; j < this.getColumns(); j++) {
-        result.values[i][j] = this.values[i][j] % x;
+        result.values[i][j] = this.values[i][j].scale(s);
       }
     }
     return result;
   }
 
-  public scale(s: number): MyMatrix {
-    let result = new MyMatrix(this.getRows(), this.getColumns());
+  public shiftReal(s: number): MyComplexMatrix {
+    let result = new MyComplexMatrix(this.getRows(), this.getColumns());
     for (let i = 0; i < this.getRows(); i++) {
       for (let j = 0; j < this.getColumns(); j++) {
-        result.values[i][j] = this.values[i][j] * s;
+        result.values[i][j] = this.values[i][j].shiftReal(s);
       }
     }
     return result;
   }
 
-  public shift(s: number): MyMatrix {
-    let result = new MyMatrix(this.getRows(), this.getColumns());
+  public shiftImaginary(s: number): MyComplexMatrix {
+    let result = new MyComplexMatrix(this.getRows(), this.getColumns());
     for (let i = 0; i < this.getRows(); i++) {
       for (let j = 0; j < this.getColumns(); j++) {
-        result.values[i][j] = this.values[i][j] + s;
+        result.values[i][j] = this.values[i][j].shiftImaginary(s);
       }
     }
     return result;
   }
 
-  public multiply(m: MyMatrix): MyMatrix {
-    let result = new MyMatrix(this.getRows(), this.getColumns());
+  public multiply(m: MyComplexMatrix): MyComplexMatrix {
+    let result = new MyComplexMatrix(this.getRows(), this.getColumns());
     result.setValues(math.multiply(this.values, m.values));
     return result;
   }
 
-  public multiplyVector(v: MyVector): MyVector {
-    let result = new MyVector(v.size());
+  public multiplyVector(v: MyComplexVector): MyComplexVector {
+    let result = new MyComplexVector(v.size());
     let tmp = math.multiply(this.values, v.getValues());
     for (let i = 0; i < tmp.length; i++) {
       result.setValue(i, JSON.parse(JSON.stringify(tmp[i])));
@@ -110,34 +111,23 @@ export class MyMatrix {
     return result;
   }
 
-  public det(): number {
-    return math.det(this.values);
-  }
-
-  public inv(): MyMatrix {
-    let result = math.inv(this.values) as number[][];
-    let m = new MyMatrix(result.length, result[0].length);
-    m.setValues(result);
-    return m;
-  }
-
-  public setValues(values: number[][]) {
+  public setValues(values: MyComplex[][]) {
     this.values = values;
   }
 
-  public getValues(): number[][] {
+  public getValues(): MyComplex[][] {
     return this.values;
   }
 
-  public setValue(row: number, col: number, value: number) {
+  public setValue(row: number, col: number, value: MyComplex): void {
     this.values[row][col] = value;
   }
 
-  public getValue(row: number, col: number) {
+  public getValue(row: number, col: number): MyComplex {
     return this.values[row][col];
   }
 
-  public setRowValuesByVector(row: number, v: MyVector): void {
+  public setRowValuesByVector(row: number, v: MyComplexVector): void {
     for (let col = 0; col < this.getColumns(); col++) {
       if (v.getValue(col) !== undefined) {
         this.values[row][col] = v.getValue(col);
@@ -145,7 +135,7 @@ export class MyMatrix {
     }
   }
 
-  public setRowValuesByArray(row: number, v: number[]): void {
+  public setRowValuesByArray(row: number, v: MyComplex[]): void {
     for (let col = 0; col < this.getColumns(); col++) {
       if (v[col] !== undefined) {
         this.values[row][col] = v[col];

@@ -16,6 +16,18 @@ export class MyComplex {
     this.im = im;
   }
 
+  public scale(s: number): MyComplex {
+    return new MyComplex(s * this.re, s * this.im);
+  }
+
+  public shiftReal(x: number): MyComplex {
+    return new MyComplex(this.re + x, this.im);
+  }
+
+  public shiftImaginary(x: number): MyComplex {
+    return new MyComplex(this.re, this.im + x);
+  }
+
   public abs(): number {
     return Math.hypot(this.re, this.im);
   }
@@ -43,10 +55,6 @@ export class MyComplex {
 
   public negate(): MyComplex {
     return new MyComplex(-this.re, -this.im);
-  }
-
-  public scale(s: number): MyComplex {
-    return new MyComplex(s * this.re, s * this.im);
   }
 
   public conjugate(): MyComplex {

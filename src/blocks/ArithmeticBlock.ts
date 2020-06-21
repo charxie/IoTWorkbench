@@ -148,13 +148,13 @@ export class ArithmeticBlock extends Block {
           return b.shift(a);
         }
         if (a instanceof MyMatrix && b instanceof MyMatrix) {
-          return a.addMatrix(b);
+          return a.add(b);
         }
         if (a instanceof MyMatrix && typeof b === "number") {
-          return a.shiftMatrix(b);
+          return a.shift(b);
         }
         if (b instanceof MyMatrix && typeof a === "number") {
-          return b.shiftMatrix(a);
+          return b.shift(a);
         }
         throw new Error("Cannot add " + b + " to " + a);
       case "Subtract Block":
@@ -190,13 +190,13 @@ export class ArithmeticBlock extends Block {
           return b.negate().shift(a);
         }
         if (a instanceof MyMatrix && b instanceof MyMatrix) {
-          return a.subtractMatrix(b);
+          return a.subtract(b);
         }
         if (a instanceof MyMatrix && typeof b === "number") {
-          return a.shiftMatrix(-b);
+          return a.shift(-b);
         }
         if (b instanceof MyMatrix && typeof a === "number") {
-          return b.negateMatrix().shiftMatrix(a);
+          return b.negate().shift(a);
         }
         throw new Error("Cannot subtract " + b + " from " + a);
       case "Multiply Block":
@@ -235,13 +235,13 @@ export class ArithmeticBlock extends Block {
           return a.multiplyVector(b);
         }
         if (a instanceof MyMatrix && b instanceof MyMatrix) {
-          return a.multiplyMatrix(b);
+          return a.multiply(b);
         }
         if (a instanceof MyMatrix && typeof b === "number") {
-          return a.scaleMatrix(b);
+          return a.scale(b);
         }
         if (b instanceof MyMatrix && typeof a === "number") {
-          return b.scaleMatrix(a);
+          return b.scale(a);
         }
         throw new Error("Cannot multiply " + a + " by " + b);
       case "Divide Block":
@@ -274,7 +274,7 @@ export class ArithmeticBlock extends Block {
           throw new Error("A vector cannot be divided.");
         }
         if (a instanceof MyMatrix && typeof b === "number") {
-          return a.scaleMatrix(1 / b);
+          return a.scale(1 / b);
         }
         if (b instanceof MyMatrix) {
           throw new Error("A matrix cannot be divided.");
@@ -298,7 +298,7 @@ export class ArithmeticBlock extends Block {
           return a.modulus(b);
         }
         if (a instanceof MyMatrix && typeof b === "number") {
-          return a.modulusMatrix(b);
+          return a.modulus(b);
         }
         throw new Error("Modulus of " + a + " and " + b + " is not supported");
       case "Exponentiation Block":
