@@ -122,7 +122,7 @@ export class MyComplexMatrix {
     for (let i = 0; i < this.getRows(); i++) {
       for (let j = 0; j < this.getColumns(); j++) {
         val = this.values[i][j];
-        r.setValue(i, j, val instanceof MyComplex ? val.im : val);
+        r.setValue(i, j, val instanceof MyComplex ? val.im : 0);
       }
     }
     return r;
