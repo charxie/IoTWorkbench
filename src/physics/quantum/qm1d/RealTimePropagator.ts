@@ -72,7 +72,12 @@ export abstract class RealTimePropagator extends TimePropagator {
   generateHamiltonianMatrix(): void {
     this.delta = this.potential.getXLength() / this.nPoints;
     let a = 0.5 / (this.delta * this.delta * this.particle.getMass() * Constants.MASS_UNIT_CONVERTER);
-    let ef = this.eField ? this.particle.getCharge() * this.eField.getValue(this.getTime()) : 0;
+    let ef;
+    if (this.eField && this.eField.getDuration() > this.getFemtoseconds()) {
+      ef = this.particle.getCharge() * this.eField.getValue(this.getTime());
+    } else {
+      ef = 0;
+    }
     let slk: boolean = Math.abs(this.dampingFactor) > 0 && this.psi[0] != null;
     let ft = 0;
     if (slk) ft = this.calculateExpectation(this.phase);

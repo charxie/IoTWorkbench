@@ -87,6 +87,10 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-electric-field-frequency-field" style="width: 100%"></td>
                 </tr>
                 <tr>
+                  <td>Electric Field Duration (fs):</td>
+                  <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-electric-field-duration-field" style="width: 100%"></td>
+                </tr>
+                <tr>
                   <td>Damping Factor:</td>
                   <td colspan="2"><input type="text" id="quantum-dynamics-1d-block-damping-factor-field" style="width: 100%"></td>
                 </tr>
@@ -155,6 +159,8 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       electricFieldIntensityField.value = block.getElectricFieldIntensityParameter() ? block.getElectricFieldIntensityParameter() : (block.getElectricField() ? block.getElectricField().getIntensity().toString() : "0");
       let electricFieldFrequencyField = document.getElementById("quantum-dynamics-1d-block-electric-field-frequency-field") as HTMLInputElement;
       electricFieldFrequencyField.value = block.getElectricFieldFrequencyParameter() ? block.getElectricFieldFrequencyParameter() : (block.getElectricField() ? block.getElectricField().getFrequency().toString() : "0");
+      let electricFieldDurationField = document.getElementById("quantum-dynamics-1d-block-electric-field-duration-field") as HTMLInputElement;
+      electricFieldDurationField.value = block.getElectricFieldDurationParameter() ? block.getElectricFieldDurationParameter() : (block.getElectricField() ? block.getElectricField().getDuration().toString() : "0");
 
       let wavepacketColorField = document.getElementById("quantum-dynamics-1d-block-wavepacket-color-field") as HTMLInputElement;
       wavepacketColorField.value = block.getWavepacketColor();
@@ -257,6 +263,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
               block.setElectricField(ef);
             }
           }
+          block.setElectricFieldIntensityParameter(undefined);
         } else {
           let input = electricFieldIntensityField.value.trim();
           if (input.length > 0) {
@@ -273,6 +280,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
           if (eField) {
             eField.setFrequency(eFieldFrequency);
           }
+          block.setElectricFieldFrequencyParameter(undefined);
         } else {
           let input = electricFieldFrequencyField.value.trim();
           if (input.length > 0) {
@@ -280,6 +288,27 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
           } else {
             success = false;
             message = input + " is not a valid value for electrical field frequency";
+          }
+        }
+        // set electrical field duration
+        let eFieldDuration = parseFloat(electricFieldDurationField.value);
+        if (isNumber(eFieldDuration)) {
+          if (eFieldDuration <= 0) {
+            block.setElectricField(undefined);
+          } else {
+            let eField = block.getElectricField();
+            if (eField) {
+              eField.setDuration(eFieldDuration);
+            }
+          }
+          block.setElectricFieldDurationParameter(undefined);
+        } else {
+          let input = electricFieldDurationField.value.trim();
+          if (input.length > 0) {
+            block.setElectricFieldDurationParameter(input);
+          } else {
+            success = false;
+            message = input + " is not a valid value for electrical field duration";
           }
         }
         // set solver internal steps
@@ -355,6 +384,7 @@ export class QuantumDynamics1DBlockContextMenu extends BlockContextMenu {
       dampingFactorField.addEventListener("keyup", enterKeyUp);
       electricFieldIntensityField.addEventListener("keyup", enterKeyUp);
       electricFieldFrequencyField.addEventListener("keyup", enterKeyUp);
+      electricFieldDurationField.addEventListener("keyup", enterKeyUp);
       wavepacketColorField.addEventListener("keyup", enterKeyUp);
       windowColorField.addEventListener("keyup", enterKeyUp);
       widthField.addEventListener("keyup", enterKeyUp);

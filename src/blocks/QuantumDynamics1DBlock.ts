@@ -35,6 +35,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   private stateSpaceWidth: number = 20;
   private electricFieldIntensityParameter: string;
   private electricFieldFrequencyParameter: string;
+  private electricFieldDurationParameter: string;
 
   static State = class {
     readonly uid: string;
@@ -59,8 +60,10 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     readonly dampingFactor: number;
     readonly electricFieldIntensity: number;
     readonly electricFieldFrequency: number;
+    readonly electricFieldDuration: number;
     readonly electricFieldIntensityParameter: string;
     readonly electricFieldFrequencyParameter: string;
+    readonly electricFieldDurationParameter: string;
     readonly showWaveFunction: boolean;
     readonly showProbabilityDensity: boolean;
     readonly showStateSpace: boolean;
@@ -89,9 +92,11 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
       if (block.getElectricField()) {
         this.electricFieldIntensity = block.getElectricField().getIntensity();
         this.electricFieldFrequency = block.getElectricField().getFrequency();
+        this.electricFieldDuration = block.getElectricField().getDuration();
       }
       this.electricFieldIntensityParameter = block.electricFieldIntensityParameter;
       this.electricFieldFrequencyParameter = block.electricFieldFrequencyParameter;
+      this.electricFieldDurationParameter = block.electricFieldDurationParameter;
       this.showWaveFunction = block.showWaveFunction;
       this.showProbabilityDensity = block.showProbabilityDensity;
       this.showStateSpace = block.showStateSpace;
@@ -145,6 +150,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     copy.setShowStateSpace(this.showStateSpace);
     copy.setElectricFieldIntensityParameter(this.electricFieldIntensityParameter);
     copy.setElectricFieldFrequencyParameter(this.electricFieldFrequencyParameter);
+    copy.setElectricFieldDurationParameter(this.electricFieldDurationParameter);
     return copy;
   }
 
@@ -364,6 +370,30 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     }
   }
 
+  setElectricFieldDurationParameter(p: string): void {
+    this.electricFieldDurationParameter = p;
+  }
+
+  getElectricFieldDurationParameter(): string {
+    return this.electricFieldDurationParameter;
+  }
+
+  updateElectricFieldDuration(): void {
+    if (this.electricFieldDurationParameter) {
+      let value = flowchart.globalVariables[this.electricFieldDurationParameter];
+      if (value !== undefined) {
+        if (value <= 0) {
+          this.setElectricField(undefined);
+        } else {
+          let eField = this.getElectricField();
+          if (eField) {
+            eField.setDuration(value);
+          }
+        }
+      }
+    }
+  }
+
   draw(ctx: CanvasRenderingContext2D): void {
     switch (flowchart.blockView.getBlockStyle()) {
       case "Shade":
@@ -453,7 +483,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
   private drawClock(ctx: CanvasRenderingContext2D): void {
     ctx.font = "12px Arial";
     ctx.fillStyle = "black";
-    let time = Math.round(this.dynamicSolver.getTime() * 24.19 * 0.001) + " fs 🕑";
+    let time = Math.round(this.dynamicSolver.getFemtoseconds()) + " fs 🕑";
     ctx.fillText(time, this.viewWindow.x + this.viewWindow.width - ctx.measureText(time).width - 8, this.viewWindow.y + this.viewWindow.height - 10);
   }
 
@@ -697,7 +727,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
 
   private drawElectricField(ctx: CanvasRenderingContext2D): void {
     let eField = this.dynamicSolver.getElectricField();
-    if (eField === undefined) return;
+    if (eField === undefined || this.dynamicSolver.getFemtoseconds() > eField.getDuration()) return;
     let time = this.dynamicSolver.getTime();
     let eFieldValue = eField.getValue(time);
     ctx.strokeStyle = "black";
@@ -821,6 +851,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     if (steps === undefined || steps === 0) return;
     this.updateElectricFieldIntensity();
     this.updateElectricFieldFrequency();
+    this.updateElectricFieldDuration();
     for (let i = 0; i < this.solverSteps; i++) this.dynamicSolver.nextStep();
     this.probabilityDensityFunction = this.dynamicSolver.getAmplitude();
     this.waveFunction = this.dynamicSolver.getWaveFunction();

@@ -561,10 +561,12 @@ export class StateIO {
             if (eField) {
               eField.setIntensity(state.electricFieldIntensity);
               if (state.electricFieldFrequency !== undefined) eField.setFrequency(state.electricFieldFrequency);
+              if (state.electricFieldDuration !== undefined) eField.setDuration(state.electricFieldDuration);
             } else {
               let ef = new ElectricField1D();
               ef.setIntensity(state.electricFieldIntensity);
               if (state.electricFieldFrequency !== undefined) ef.setFrequency(state.electricFieldFrequency);
+              if (state.electricFieldDuration !== undefined) ef.setDuration(state.electricFieldDuration);
               block.setElectricField(ef);
             }
           }
@@ -573,6 +575,7 @@ export class StateIO {
           if (state.showStateSpace !== undefined) block.setShowStateSpace(state.showStateSpace);
           if (state.electricFieldIntensityParameter !== undefined) block.setElectricFieldIntensityParameter(state.electricFieldIntensityParameter);
           if (state.electricFieldFrequencyParameter !== undefined) block.setElectricFieldFrequencyParameter(state.electricFieldFrequencyParameter);
+          if (state.electricFieldDurationParameter !== undefined) block.setElectricFieldDurationParameter(state.electricFieldDurationParameter);
         } else if (block instanceof RainbowHatBlock) {
           //TODO
         }

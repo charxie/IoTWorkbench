@@ -91,6 +91,10 @@ export abstract class TimePropagator {
     return this.iStep * this.timeStep;
   }
 
+  getFemtoseconds(): number {
+    return this.getTime() * 24.19 * 0.001;
+  }
+
   abstract setInitialWaveFunction(waveFunction: number[]): void;
 
   setInitialState(initialState: number): void {
