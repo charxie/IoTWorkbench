@@ -1056,6 +1056,8 @@ export class Flowchart {
         blockStates.push(new VectorBlock.State(b));
       } else if (b instanceof MatrixBlock) {
         blockStates.push(new MatrixBlock.State(b));
+      } else if (b instanceof MatrixTranspositionBlock) {
+        blockStates.push(new MatrixTranspositionBlock.State(b));
       } else if (b instanceof WorkerBlock) {
         blockStates.push(new WorkerBlock.State(b));
       } else if (b instanceof ActionBlock) {

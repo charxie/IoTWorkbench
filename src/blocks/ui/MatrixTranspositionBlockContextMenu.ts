@@ -19,6 +19,13 @@ export class MatrixTranspositionBlockContextMenu extends BlockContextMenu {
     return `<div style="font-size: 90%;">
               <table class="w3-table-all w3-left w3-hoverable">
                 <tr>
+                  <td>Conjugate:</td>
+                  <td>
+                    <input type="radio" name="conjugate" id="matrix-transposition-not-conjugate-radio-button" checked> No
+                    <input type="radio" name="conjugate" id="matrix-transposition-conjugate-radio-button"> Yes
+                  </td>
+                </tr>
+                <tr>
                   <td>Width:</td>
                   <td><input type="text" id="matrix-transposition-block-width-field" style="width: 100%"></td>
                 </tr>
@@ -36,6 +43,10 @@ export class MatrixTranspositionBlockContextMenu extends BlockContextMenu {
     if (this.block instanceof MatrixTranspositionBlock) {
       const block = this.block;
       const d = $("#modal-dialog").html(this.getPropertiesUI());
+      let conjugateRadioButton = document.getElementById("matrix-transposition-conjugate-radio-button") as HTMLInputElement;
+      conjugateRadioButton.checked = block.isConjugate();
+      let notConjugateRadioButton = document.getElementById("matrix-transposition-not-conjugate-radio-button") as HTMLInputElement;
+      notConjugateRadioButton.checked = !block.isConjugate();
       let widthField = document.getElementById("matrix-transposition-block-width-field") as HTMLInputElement;
       widthField.value = Math.round(block.getWidth()).toString();
       let heightField = document.getElementById("matrix-transposition-block-height-field") as HTMLInputElement;
@@ -61,6 +72,7 @@ export class MatrixTranspositionBlockContextMenu extends BlockContextMenu {
         }
         // finish
         if (success) {
+          block.setConjugate(conjugateRadioButton.checked);
           block.refreshView();
           flowchart.blockView.requestDraw();
           flowchart.updateResultsForBlock(block);

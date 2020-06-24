@@ -27,6 +27,8 @@ import quantum_harmonic_oscillator_1d_stationary from "./examples/quantum-harmon
 // @ts-ignore
 import square_well_1d from "./examples/square-well-1d.json";
 // @ts-ignore
+import quantum_unitary_operator from "./examples/quantum-unitary-operator.json";
+// @ts-ignore
 import quantum_hadamard_gate from "./examples/quantum-hadamard-gate.json";
 // @ts-ignore
 import quantum_pauli_x_gate from "./examples/quantum-pauli-x-gate.json";
@@ -624,6 +626,7 @@ export class Examples {
     this.files.push({name: "Quantum Computing: Pauli-Z Gate", data: quantum_pauli_z_gate});
     this.files.push({name: "Quantum Computing: Hadamard Gate", data: quantum_hadamard_gate});
     this.files.push({name: "Quantum Computing: CNOT Gate", data: quantum_cnot_gate});
+    this.files.push({name: "Quantum Computing: Unitary Operator", data: quantum_unitary_operator});
 
     let selectElement = document.getElementById("example-list") as HTMLSelectElement;
 

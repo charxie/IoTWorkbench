@@ -11,6 +11,7 @@ import {MyVector} from "../math/MyVector";
 import {MyMatrix} from "../math/MyMatrix";
 import {BoundaryCondition} from "./BoundaryCondition";
 import {Rectangle} from "../math/Rectangle";
+import {MyComplexMatrix} from "../math/MyComplexMatrix";
 
 export class Sticker extends Block {
 
@@ -400,7 +401,7 @@ export class Sticker extends Block {
             this.text = v.toFixed(this.decimals);
           } else if (v instanceof MyVector) {
             this.text = v.toFixed(this.decimals);
-          } else if (v instanceof MyMatrix) {
+          } else if (v instanceof MyMatrix || v instanceof MyComplexMatrix) {
             this.text = v.toFixed(this.decimals);
             this.isArray = true;
           } else if (v instanceof BoundaryCondition) {

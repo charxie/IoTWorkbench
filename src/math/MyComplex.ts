@@ -16,6 +16,10 @@ export class MyComplex {
     this.im = im;
   }
 
+  public clone(): MyComplex {
+    return new MyComplex(this.re, this.im);
+  }
+
   public scale(s: number): MyComplex {
     return new MyComplex(s * this.re, s * this.im);
   }
@@ -112,8 +116,15 @@ export class MyComplex {
   }
 
   public toFixed(fractionDigits: number): string {
-    if (this.im == 0) return this.re.toFixed(fractionDigits) + "";
-    if (this.re == 0) return this.im.toFixed(fractionDigits) + "i";
+    if (this.re === 0) {
+      if (this.im === 0) return "0";
+      if (this.im === 1) return "i";
+      if (this.im === -1) return "-i";
+      return this.im.toFixed(fractionDigits) + "i";
+    }
+    if (this.im === 0) return this.re.toFixed(fractionDigits) + "";
+    if (this.im === 1) return this.re.toFixed(fractionDigits) + " + i";
+    if (this.im === -1) return this.re.toFixed(fractionDigits) + " - i";
     if (this.im < 0) return this.re.toFixed(fractionDigits) + " - " + (-this.im.toFixed(fractionDigits)) + "i";
     return this.re.toFixed(fractionDigits) + " + " + this.im.toFixed(fractionDigits) + "i";
   }

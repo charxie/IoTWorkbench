@@ -3,8 +3,18 @@
  */
 
 import $ from "jquery";
+import {MyComplex} from "./math/MyComplex";
 
 export class Util {
+
+  static isComplex(a: any[][]): boolean {
+    for (let i = 0; i < a.length; i++) {
+      for (let j = 0; j < a[i].length; j++) {
+        if (a[i][j] instanceof MyComplex) return true;
+      }
+    }
+    return false;
+  }
 
   static arrayEqual(a: any[], b: any[]): boolean {
     if (a.length !== b.length) return false;

@@ -71,6 +71,7 @@ import {QuantumStationaryState1DBlock} from "./blocks/QuantumStationaryState1DBl
 import {QuantumDynamics1DBlock} from "./blocks/QuantumDynamics1DBlock";
 import {ElectricField1D} from "./physics/quantum/qm1d/ElectricField1D";
 import {BlochSphere} from "./blocks/BlochSphere";
+import {MatrixTranspositionBlock} from "./blocks/MatrixTranspositionBlock";
 
 export class StateIO {
 
@@ -154,6 +155,8 @@ export class StateIO {
           block.setName(state.name);
           block.setFractionDigits(state.fractionDigits != undefined ? state.fractionDigits : 3);
           block.setValues(state.values != undefined ? state.values : [[1, 0], [1, 0]]);
+        } else if (block instanceof MatrixTranspositionBlock) {
+          if (state.conjugate !== undefined) block.setConjugate(state.conjugate);
         } else if (block instanceof WorkerBlock) {
           block.setName(state.name);
           block.setOutputType(state.outputType ? state.outputType : "Natural Number");

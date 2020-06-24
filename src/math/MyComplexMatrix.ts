@@ -6,7 +6,6 @@ import {math} from "../Main";
 import {MyComplex} from "./MyComplex";
 import {MyComplexVector} from "./MyComplexVector";
 import {MyMatrix} from "./MyMatrix";
-import instantiate = WebAssembly.instantiate;
 
 export class MyComplexMatrix {
 
@@ -32,6 +31,18 @@ export class MyComplexMatrix {
     let t = new MyComplexMatrix(this.getRows(), this.getColumns());
     t.setValues(Object.keys(this.values[0]).map(function (c) {
       return that.values.map(function (r) {
+        return r[c];
+      });
+    }));
+    return t;
+  }
+
+  public conjugateTranspose(): MyComplexMatrix {
+    let that = this;
+    let t = new MyComplexMatrix(this.getRows(), this.getColumns());
+    t.setValues(Object.keys(this.values[0]).map(function (c) {
+      return that.values.map(function (r) {
+        if (r[c] instanceof MyComplex) return r[c].conjugate();
         return r[c];
       });
     }));
@@ -99,8 +110,20 @@ export class MyComplexMatrix {
   }
 
   public multiply(m: MyComplexMatrix): MyComplexMatrix {
+    let m1r = this.getRealPart();
+    let m1i = this.getImaginaryPart();
+    let m2r = m.getRealPart();
+    let m2i = m.getImaginaryPart();
+    let m1rm2r = math.multiply(m1r.values, m2r.values); // real
+    let m1im2i = math.multiply(m1i.values, m2i.values); // real
+    let m1rm2i = math.multiply(m1r.values, m2i.values); // imaginary
+    let m1im2r = math.multiply(m1i.values, m2r.values); // imaginary
     let result = new MyComplexMatrix(this.getRows(), this.getColumns());
-    result.setValues(math.multiply(this.values, m.values));
+    for (let i = 0; i < this.getRows(); i++) {
+      for (let j = 0; j < this.getColumns(); j++) {
+        result.setValue(i, j, new MyComplex(m1rm2r[i][j] - m1im2i[i][j], m1rm2i[i][j] + m1im2r[i][j]));
+      }
+    }
     return result;
   }
 
@@ -155,6 +178,20 @@ export class MyComplexMatrix {
 
   public setValues(values: MyComplex[][]) {
     this.values = values;
+  }
+
+  public setValuesAny(values: any[][]) {
+    this.values = new Array(values.length);
+    for (let i = 0; i < values.length; i++) {
+      this.values[i] = new Array(values[i].length);
+      for (let j = 0; j < values[i].length; j++) {
+        if (values[i][j] instanceof MyComplex) {
+          this.values[i][j] = values[i][j].clone();
+        } else if (typeof values[i][j] === "number") {
+          this.values[i][j] = new MyComplex(values[i][j], 0);
+        }
+      }
+    }
   }
 
   public getValues(): MyComplex[][] {

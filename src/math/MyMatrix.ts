@@ -7,7 +7,7 @@ import {MyVector} from "./MyVector";
 
 export class MyMatrix {
 
-  private values: number[][];
+  values: number[][];
 
   public constructor(rows: number, cols: number) {
     this.values = new Array(rows);
