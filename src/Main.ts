@@ -133,9 +133,7 @@ function showUnderConstructionMessage() {
 }
 
 let social = `<span style="font-size: 2em; vertical-align: middle; cursor: pointer;" title="Facebook"><i class="fab fa-facebook-square"></i></span>
-              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;" title="WeChat"><i class="fab fa-weixin"></i></span>
               <span style="font-size: 2em; vertical-align: middle; cursor: pointer;" title="Twitter"><i class="fab fa-twitter"></i></span>
-              <span style="font-size: 2em; vertical-align: middle; cursor: pointer;" title="Weibo"><i class="fab fa-weibo"></i></span>
               <span style="font-size: 2em; vertical-align: middle; cursor: pointer;" title="YouTube"><i class="fab fa-youtube"></i></span>`;
 
 window.onload = function () {

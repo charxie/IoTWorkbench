@@ -557,7 +557,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     let vmin = this.potential.getVmin();
     let vmax = this.potential.getVmax();
     ctx.lineWidth = 0.5;
-    let h = this.viewWindow.height / 2;
+    let h = this.viewWindow.height - 2 * this.baseLineOffet;
     let bottom = y0 - this.baseLineOffet;
     let dv = h / (vmax - vmin);
     let y;
@@ -670,7 +670,7 @@ export class QuantumDynamics1DBlock extends Quantum1DBlock {
     let vlen = this.potential.getPoints();
     let dx = this.showStateSpace ? (this.viewWindow.width - this.stateSpaceWidth) / vlen : this.viewWindow.width / vlen;
     let x0 = this.showStateSpace ? this.viewWindow.x + this.stateSpaceWidth : this.viewWindow.x;
-    let dv = h / (vmax - vmin);
+    let dv = (h - this.baseLineOffet) / (vmax - vmin);
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 3;
     ctx.beginPath();
