@@ -230,10 +230,15 @@ window.onload = function () {
 };
 
 function setupFooter() {
+  document.title = Constants.Software.name;
   let footer = document.getElementById('footer');
   footer.innerHTML = social + "<div class='horizontal-divider'></div>"
-    + Constants.Software.name + " Version " + Constants.Software.version
-    + ", created by <a href='https://charxie.github.io/' style='text-decoration: none;'>Dr. Charles Xie</a>, " + new Date().getFullYear();
+    + Constants.Software.name + " Version " + Constants.Software.version;
+  if (Constants.Software.name === "iFlow") {
+    footer.innerHTML += ", created by <a href='https://charxie.github.io/' style='text-decoration: none;'>Dr. Charles Xie</a>, Institute for Future Intelligence, &copy;" + new Date().getFullYear();
+  } else {
+    footer.innerHTML += ", created by <a href='https://charxie.github.io/' style='text-decoration: none;'>Dr. Charles Xie</a>, " + new Date().getFullYear();
+  }
   if (query.footer === "no") {
     footer.style.display = "none";
   }

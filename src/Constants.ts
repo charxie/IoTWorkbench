@@ -4,7 +4,7 @@
 
 export const Software = {
   name: <string>'IoT Workbench',
-  abbreviation: <string>'IW',
+  abbreviation: <string>'IF',
   tagline: <string>'Visualizing Computation',
   version: <string>'0.0.1'
 }
