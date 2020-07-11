@@ -10,7 +10,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel ./src/index.html",
-    "build": "parcel build ./src/index.html --public-url /iot/workbench --out-dir ./workbench"
+    "build": "parcel build ./src/index.html --public-url /iflow --out-dir ./iflow"
   },
   "author": "",
   "license": "ISC",

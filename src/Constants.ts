@@ -3,7 +3,7 @@
  */
 
 export const Software = {
-  name: <string>'IoT Workbench',
+  name: <string>'iFlow',
   abbreviation: <string>'IF',
   tagline: <string>'Visualizing Computation',
   version: <string>'0.0.1'

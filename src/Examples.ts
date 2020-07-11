@@ -321,6 +321,8 @@ import langevin_equation from "./examples/langevin-equation.json";
 // @ts-ignore
 import random_walk from "./examples/random-walk.json";
 // @ts-ignore
+import multithread_random_walk from "./examples/multithread-random-walk.json";
+// @ts-ignore
 import random_walk_3d from "./examples/random-walk-3d.json";
 // @ts-ignore
 import spirals from "./examples/spirals.json";
@@ -432,6 +434,7 @@ export class Examples {
     this.files.push({name: "Basics: For Loops", data: for_loop});
     this.files.push({name: "Basics: While Loop", data: while_loop});
     this.files.push({name: "Basics: Do...While Loop", data: do_while_loop});
+    this.files.push({name: "Basics: Multithreading", data: multithread_random_walk});
     this.files.push({name: "Math: Univariate Functions", data: univariate_functions});
     this.files.push({name: "Math: Bundled Functions", data: bundled_functions});
     this.files.push({name: "Math: Bivariate Function 1D Output", data: bivariate_functions});
